@@ -54,8 +54,14 @@ data class InvalidProtoTypeResponseError(
     override val msg: String = "Invalid proto type or missing proto mapping!"
 ) : SocketResponseError
 
+//等待API回來時超出預期時間
 data class ResponseTimeOutError(
     override val msg: String = "response time out!!"
+) : SocketResponseError
+
+//沒有token
+data class LoginTokenFailedError(
+    override val msg: String = "no token or uid data!!"
 ) : SocketResponseError
 
 

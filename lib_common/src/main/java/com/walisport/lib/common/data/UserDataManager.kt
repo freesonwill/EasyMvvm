@@ -33,4 +33,8 @@ class UserDataManager {
     fun getStringValue(key: UserDataKey, default: String): String {
         return mmkv.getString(key.key, default) ?: default
     }
+
+    fun getIntValue(key: UserDataKey, default: Int): Int {
+        return mmkv.getInt(key.key, default)
+    }
 }
