@@ -11,7 +11,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         const val MIN_MONEY = 10
     }
 
-    private val _onEditMoney = MutableLiveData<String>()
+    protected val _onEditMoney = MutableLiveData("")
     val onEditMoney: LiveData<String> = _onEditMoney
 
     fun addNumber(number: Int) {

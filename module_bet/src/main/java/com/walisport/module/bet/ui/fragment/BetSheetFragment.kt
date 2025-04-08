@@ -10,10 +10,7 @@ import com.walisport.module.bet.ui.adapter.BetSheetAdapter
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
 import com.walisport.module.bet.viewmodel.BetSheetViewModel
 import com.walisport.module.bet.viewmodel.NumberCalculatorViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.qualifier.named
 
 class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
 
@@ -22,6 +19,8 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
     private lateinit var betSheetAdapter: BetSheetAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
+        isCancelable = false
+
         mBinding.etMoney.requestFocus()
         mBinding.etMoney.hint = getString(R.string.et_money_hint).format(NumberCalculatorViewModel.MIN_MONEY, NumberCalculatorViewModel.MAX_MONEY)
 
@@ -80,6 +79,12 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
         mBinding.btn5000.setOnClickListener {
             mViewModel.setNumber(5000)
         }
+        mBinding.btnCollusion.setOnClickListener {
+            dismiss()
+        }
+        mBinding.clBet.setOnClickListener {
+            mViewModel.sendBet()
+        }
     }
 
     override fun createObserver() {
@@ -90,6 +95,10 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
         }
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             betSheetAdapter.submitList(it)
+        }
+        mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
+            val money = getString(R.string.btn_bet_win_money).format(it)
+            mBinding.tvBetMoney.text = money
         }
     }
 }

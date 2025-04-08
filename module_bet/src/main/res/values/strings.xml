@@ -9,4 +9,6 @@
     <string name="btn_bet">投注</string>
     <string name="et_money_hint">限额%d&#8211;%d</string>
     <string name="bet_sheet_stop">盘口失效</string>
+    <string name="btn_bet_hint">投注</string>
+    <string name="btn_bet_win_money">可赢$%s</string>
 </resources>
