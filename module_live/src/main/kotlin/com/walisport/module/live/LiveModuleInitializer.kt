@@ -22,7 +22,7 @@ import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipInvalidViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
 
@@ -53,7 +53,7 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveBetSlipUnsettledViewModel)
         viewModelOf(::LiveBetSlipUnsettledViewModel)
         viewModelOf(::LiveBetSlipConfirmViewModel)
-        viewModelOf(::LiveBetSlipInvalidViewModel)
+        viewModelOf(::LiveBetSlipExpiredViewModel)
         viewModelOf(::LiveBetSlipReserveViewModel)
         viewModelOf(::LiveBetSlipSettledViewModel)
     }
