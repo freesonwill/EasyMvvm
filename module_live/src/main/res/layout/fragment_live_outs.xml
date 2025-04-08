@@ -3,11 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_0E0F19"
     tools:context=".ui.LiveOutsFragment">
 
-    <TextView
+    <com.walisport.module.live.widget.TechnicalCountView
+        android:id="@+id/view_tech_static"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="LiveOutsFragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_16"/>
 
 </FrameLayout>
