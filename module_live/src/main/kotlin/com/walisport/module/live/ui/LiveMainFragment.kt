@@ -40,7 +40,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
-       // setCountView()
+        setVideoView()
         loadFragment()
     }
 
@@ -50,7 +50,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun createObserver() {
     }
 
-    private fun setCountView() {
+    private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)
                 as? LiveVideoFragment ?: LiveVideoFragment().also {
             childFragmentManager.beginTransaction()
