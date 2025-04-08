@@ -39,6 +39,7 @@ abstract class BaseBottomSheetFragment<VB : ViewBinding> : BottomSheetDialogFrag
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initListener()
+        createObserver()
     }
 
     private fun setScrollView() {

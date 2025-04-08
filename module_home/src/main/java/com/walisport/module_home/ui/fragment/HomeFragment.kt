@@ -10,6 +10,8 @@ import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.bet.ui.fragment.BetSheetFragment
+import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
 import kotlin.reflect.KClass
@@ -26,7 +28,9 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         .build()
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.floatingContainer.id, FloatingButtonFragment())
+            .commit()
     }
 
     override fun initListener() {
@@ -87,6 +91,10 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         mBinding.tv8.clickNoRepeat{
             findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
+        mBinding.tv9.setOnClickListener {
+            BetSheetFragment().show(childFragmentManager)
+        }
+
     }
 
     private fun toFragmentInner(){
