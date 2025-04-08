@@ -29,7 +29,7 @@ class LiveVideoLandscapeFragment :
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        "onConfigurationChanged".logd(TAG)
+//        "onConfigurationChanged".logd(TAG)
     }
 
 
