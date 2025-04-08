@@ -15,6 +15,8 @@
     <string name="standings_b">B Group</string>
     <string name="standings_c">C Group</string>
     <string name="standings_d">D Group</string>
+    <string name="technical_statistics">Technical Statistics</string>
+
     <string-array name="bet_slip_menus">
         <item>Unsettled</item>
         <item>Confirming</item>
