@@ -85,6 +85,14 @@ class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
         }
+        mBinding.btnReserve.setOnClickListener {
+            val location = IntArray(2)
+            mBinding.btnReserve.getLocationInWindow(location)
+            ReserveDialogFragment.newInstance(
+                location.first() + mBinding.btnReserve.width / 2,
+                location.last() + mBinding.btnReserve.height
+            ).show(childFragmentManager)
+        }
     }
 
     override fun createObserver() {
