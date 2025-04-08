@@ -32,9 +32,6 @@ class LiveVideoLandscapeFragment :
         "onConfigurationChanged".logd(TAG)
     }
 
-    override fun configStatusBar(): StatusBarConfig {
-        return StatusBarConfig(hideStatusBar = true)
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -101,6 +98,9 @@ class LiveVideoLandscapeFragment :
         AutoSizeConfig.getInstance().setDesignWidthInDp(812)
         AutoSizeConfig.getInstance().setDesignHeightInDp(375)
 
+        mBinding.root.fitsSystemWindows = false
+        setStatusBar(StatusBarConfig(hideStatusBar = true))
+
     }
 
     override fun onPause() {
@@ -110,6 +110,9 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(375)
         AutoSizeConfig.getInstance().setDesignHeightInDp(812)
+
+        mBinding.root.fitsSystemWindows = true
+        setStatusBar(StatusBarConfig(hideStatusBar = false))
     }
 
 
