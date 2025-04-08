@@ -7,7 +7,7 @@ import com.walisport.module.live.databinding.FragmentLiveBetslipSettledLayoutBin
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
-
+//注单已结算
 class LiveBetSlipSettledFragment:BaseFragment<LiveBetSlipSettledViewModel,FragmentLiveBetslipSettledLayoutBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> = FragmentLiveBetslipSettledLayoutBinding::class
     override val vmClass: KClass<LiveBetSlipSettledViewModel> = LiveBetSlipSettledViewModel::class

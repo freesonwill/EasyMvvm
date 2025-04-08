@@ -22,7 +22,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun initListener() {
-        mBinding.ivChooseSource.clickNoRepeat {
+        mBinding.ivChooseSource.setOnClickListener {
 
         }
         mBinding.ivToFullscreen.clickNoRepeat {

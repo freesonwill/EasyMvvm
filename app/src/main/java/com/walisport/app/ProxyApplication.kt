@@ -5,8 +5,6 @@ import android.app.Application
 import android.os.Bundle
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.utils.LogUtilsExt.loge
-import com.walisport.lib.common.utils.UserSetting
-import org.koin.android.ext.android.getKoin
 
 class ProxyApplication : Application() {
 
@@ -17,7 +15,6 @@ class ProxyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
-        UserSetting.getInstance().initializeMMKV(this)
         registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activityCount++

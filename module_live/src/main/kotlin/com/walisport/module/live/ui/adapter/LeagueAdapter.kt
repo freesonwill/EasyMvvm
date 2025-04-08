@@ -3,8 +3,8 @@ package com.walisport.module.live.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.common.ui.adapter.BaseAdapter
-import com.walisport.lib.common.ui.adapter.BaseViewHolder
+import com.walisport.lib.base.adapter.BaseAdapter
+import com.walisport.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.compare.LeagueMatchCompare
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.databinding.ItemLeagueBinding

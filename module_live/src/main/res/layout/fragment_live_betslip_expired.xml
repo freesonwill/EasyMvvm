@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel" />
+            type="com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel" />
     </data>
 
 
@@ -16,26 +16,41 @@
         android:background="@drawable/shape_betslip_card">
 
         <com.walisport.lib.skin.widget.SportImageView
-            android:id="@+id/bet_unsettled_iv_top"
+            android:id="@+id/bet_expired_iv_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_37"
             android:src="@drawable/live_betslip_card_top"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/bet_expired_tv_status"
+            android:layout_width="@dimen/dp_73"
+            android:layout_height="@dimen/dp_21"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center"
+            android:text="@string/live_bet_reserve_expired"
+            android:background="@drawable/bet_confirm_status"
+            android:textColor="@color/color_2c3c3e"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_top"
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_top"
+            app:layout_constraintTop_toTopOf="@id/bet_expired_iv_top" />
+
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_date"
+            android:id="@+id/bet_expired_tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_8"
             android:text="2024/11/14 05:03"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_13"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_iv_top"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_top"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_top" />
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_tv_status"
+            app:layout_constraintLeft_toRightOf="@id/bet_expired_tv_status"
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_status" />
 
         <ImageView
-            android:id="@+id/bet_unsettled_iv_ball"
+            android:id="@+id/bet_expired_iv_ball"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_12"
@@ -43,84 +58,84 @@
             android:scaleType="fitXY"
             android:src="@drawable/icon_football"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_top" />
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_top" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_race"
+            android:id="@+id/bet_expired_tv_race"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_6"
             android:text="中国 vs 巴西"
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintLeft_toRightOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_ball" />
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_ball"
+            app:layout_constraintLeft_toRightOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toTopOf="@id/bet_expired_iv_ball" />
 
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_introduce"
+            android:id="@+id/bet_expired_tv_introduce"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_12"
             android:text="中国 +0.5"
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_ball" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_ball" />
 
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_aodds"
+            android:id="@+id/bet_expired_tv_aodds"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="\@1.85"
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_introduce"
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_tv_introduce"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_introduce" />
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_introduce" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_status"
+            android:id="@+id/bet_expired_tv_match_status"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_12"
-            android:background="@drawable/shape_betslip_unsettled_status"
+            android:background="@drawable/shape_betslip_match_status"
             android:gravity="center"
-            android:text="滚球"
+            android:text="@string/live_bet_grounder"
             android:textColor="@color/color_15b264"
             android:textSize="@dimen/sp_13"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_introduce" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_introduce" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_score"
+            android:id="@+id/bet_expired_tv_score"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_12"
-            android:text="全场让球 (0-0)"
+            android:text="@string/live_bet_full_handicap"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_status"
-            app:layout_constraintLeft_toRightOf="@id/bet_unsettled_tv_status"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_status" />
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_tv_match_status"
+            app:layout_constraintLeft_toRightOf="@id/bet_expired_tv_match_status"
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_match_status" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_start"
+            android:id="@+id/bet_expired_tv_start"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_12"
             android:text="11月14日 15:00"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_tv_status"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_status" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_match_status"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_match_status" />
 
         <com.walisport.lib.skin.widget.SportImageView
-            android:id="@+id/bet_unsettled_iv_avava"
+            android:id="@+id/bet_expired_iv_avava"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_18"
             android:layout_marginTop="@dimen/dp_6"
@@ -128,64 +143,43 @@
             android:src="@drawable/live_betslip_avava"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_start" />
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_start" />
 
         <com.walisport.lib.skin.widget.SportView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_1"
             android:layout_marginEnd="@dimen/dp_3.5"
             android:background="@drawable/bet_line_left"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_iv_avava"
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_avava"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/bet_unsettled_iv_avava"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_avava" />
+            app:layout_constraintRight_toLeftOf="@id/bet_expired_iv_avava"
+            app:layout_constraintTop_toTopOf="@id/bet_expired_iv_avava" />
 
         <com.walisport.lib.skin.widget.SportView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_1"
             android:layout_marginStart="@dimen/dp_8"
             android:background="@drawable/bet_line_left"
-            app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_iv_avava"
-            app:layout_constraintLeft_toRightOf="@id/bet_unsettled_iv_avava"
+            app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_avava"
+            app:layout_constraintLeft_toRightOf="@id/bet_expired_iv_avava"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_avava" />
+            app:layout_constraintTop_toTopOf="@id/bet_expired_iv_avava" />
 
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_betcode"
+            android:id="@+id/bet_expired_tv_odds"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_27"
-            android:text="注单号"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/live_bet_reserve_odds"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_avava" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_avava"
+            />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_betcode_value"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:text="2025021112000001"
-            android:textColor="@color/main_text"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_betcode" />
-
-        <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_odds"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_10"
-            android:text="赔率"
-            android:textColor="@color/secondary_text"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_betcode" />
-
-        <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_odds_value"
+            android:id="@+id/bet_expired_tv_odds_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
@@ -193,21 +187,21 @@
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_odds" />
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_odds" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_betting"
+            android:id="@+id/bet_expired_tv_betting"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="投注"
+            android:text="@string/live_bet_reserve_bet"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_odds" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_odds" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_betting_value"
+            android:id="@+id/bet_expired_tv_betting_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
@@ -215,21 +209,21 @@
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_betting" />
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_betting" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_except"
+            android:id="@+id/bet_expired_tv_except"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_10"
-            android:text="预计最高可赢"
+            android:text="@string/live_bet_except_max_win"
             android:textColor="@color/secondary_text"
             android:textSize="@dimen/sp_14"
-            app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_betting" />
+            app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_betting" />
 
         <com.walisport.lib.skin.widget.SportTextView
-            android:id="@+id/bet_unsettled_tv_except_value"
+            android:id="@+id/bet_expired_tv_except_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
@@ -237,39 +231,13 @@
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_except" />
+            app:layout_constraintTop_toTopOf="@id/bet_expired_tv_except" />
 
-        <LinearLayout
-            android:id="@+id/bet_unsettled_bt_settle"
-            android:layout_width="@dimen/dp_335"
-            android:layout_height="@dimen/dp_48"
-            android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_16"
-            android:background="@drawable/bet_settle_button"
-            android:gravity="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_except">
-
-            <com.walisport.lib.skin.widget.SportTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="提前结算 "
-                android:textColor="@color/theme_text"
-                android:textSize="@dimen/sp_16" />
-
-            <com.walisport.lib.skin.widget.SportTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$109.00"
-                android:textColor="@color/color_016f4a"
-                android:textSize="@dimen/sp_16" />
-        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_16"
-            app:layout_constraintTop_toBottomOf="@id/bet_unsettled_bt_settle"
+            app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_except"
             />
     </com.walisport.lib.skin.widget.SportConstraintLayout>
 

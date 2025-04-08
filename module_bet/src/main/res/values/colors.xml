@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color_button_number">#FFFFFF</color>
+    <color name="diver">#FFFFFF</color>
+    <color name="color_button_normal">#E8E8EA</color>
+    <color name="color_textview">#000000</color>
+    <color name="color_background_balance">#21C77921</color>
+    <color name="color_textview_balance">#FF7700</color>
+    <color name="color_button">#24EE8A</color>
+    <color name="color_edittext_hint">#929298</color>
+    <color name="color_edittext_cursor">#24EE8A</color>
+</resources>

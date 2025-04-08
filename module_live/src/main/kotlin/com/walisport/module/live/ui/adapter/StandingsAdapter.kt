@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.common.ui.adapter.BaseAdapter
-import com.walisport.lib.common.ui.adapter.BaseViewHolder
+import com.walisport.lib.base.adapter.BaseAdapter
+import com.walisport.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.StandingsCompare
 import com.walisport.module.live.data.model.StandingsBean
@@ -33,6 +33,7 @@ class StandingsAdapter(private val context: Context) :
     ) {
         val item = getItem(position)
         if (binding is ItemStandingsBinding) {
+            binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
             binding.layTeam.removeAllViews()
             for (i in 0 until 4) {
                 val view =
