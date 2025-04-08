@@ -58,8 +58,8 @@ class SocketClientService(
     private var host: String = ""
 
     override suspend fun connect(host: String): SharedFlow<ConnectState> {
-        if (currentState != SocketConnectState.None) {
-            throw IllegalStateException("socket need to set back to none or using reconnect!")
+        if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
+            throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")
         }
 
         return connectStateFlow.collectFirstSubscribe {
@@ -89,8 +89,13 @@ class SocketClientService(
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
                 "Socket Client -> ConnectClosed".loge(SocketClientService::class.java.simpleName)
-                currentState = SocketConnectState.Closed
-                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
+                currentState = if (reason == SocketConnectState.None.name) {
+                    SocketConnectState.None
+                } else {
+                    workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
+                    SocketConnectState.Closed
+                }
+
             }
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -132,10 +137,9 @@ class SocketClientService(
         }
     }
 
-    override fun destroy() {
-        workingScope.cancel()
-        webSocket?.close(1001, null)
-        currentState = SocketConnectState.None
+    override fun reset() {
+        "reset webSocket to init state".logi(this::class.java.simpleName)
+        webSocket?.close(1001, SocketConnectState.None.name)
     }
 
 

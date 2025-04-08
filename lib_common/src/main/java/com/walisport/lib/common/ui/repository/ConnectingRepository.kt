@@ -48,4 +48,8 @@ class ConnectingRepository(
             }.build()
         }
     }
+
+    fun reset() {
+        socketManager.reset()
+    }
 }

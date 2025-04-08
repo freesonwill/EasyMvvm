@@ -25,11 +25,4 @@ class AppNavActivity : BaseNavActivity<AppNavViewModel>() {
         super.initData()
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        mViewModel.loginIsSuccess.observe(this) {
-            "login????? ${it}".logi("AppNavActivity")
-        }
-    }
-
 }

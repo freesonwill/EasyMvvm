@@ -3,8 +3,10 @@ package com.walisport.app
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
+import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.utils.LogUtilsExt.loge
 import com.walisport.lib.common.utils.UserSetting
+import org.koin.android.ext.android.getKoin
 
 class ProxyApplication : Application() {
 
@@ -39,7 +41,9 @@ class ProxyApplication : Application() {
             override fun onActivityDestroyed(activity: Activity) {
                 activityCount--
                 "Activity $activity has destroyed. Count: $activityCount".loge(ProxyApplication::class.java.simpleName)
-
+                if (activityCount == 0 && activity is BaseActivity<*, *>) {
+                    activity.reset()
+                }
             }
         })
     }

@@ -58,6 +58,8 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 }
             }
         }
-
+    }
+    override fun reset() {
+        connectingRepository.reset()
     }
 }
