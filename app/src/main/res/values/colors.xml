@@ -9,6 +9,6 @@
     <color name="color_button_number">#FFFFFFFF</color>
     <color name="bar_color">#0E0F1A</color>
     <color name="app_bg">#0E0F1A</color>
-
+    <color name="splash_bg">#050416</color>
     <color name="splash_counter_down_skip">#929298</color>
 </resources>
