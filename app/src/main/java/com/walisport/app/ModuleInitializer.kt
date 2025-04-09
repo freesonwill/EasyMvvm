@@ -22,6 +22,7 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  * @author: zhangsan
@@ -82,6 +83,6 @@ class ModuleInitializer : Initializer<String> {
         factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
-    private val moduleList:List<Module> = listOf(viewModules,repoModules)
+    private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }
 
