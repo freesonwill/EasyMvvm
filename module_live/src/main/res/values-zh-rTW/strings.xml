@@ -15,6 +15,7 @@
     <string name="standings_b">B組</string>
     <string name="standings_c">C組</string>
     <string name="standings_d">D組</string>
+    <string name="technical_statistics">技術統計</string>
 
     <string-array name="bet_slip_menus">
         <item>未結算</item>

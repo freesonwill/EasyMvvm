@@ -3,14 +3,11 @@ package com.walisport.module.live.ui
 import android.net.Uri
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBinding>() {
@@ -28,7 +25,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mBinding.ivToFullscreen.clickNoRepeat {
             destroyPlayer()
 
-            findNavController().navigate(Uri.parse("walisport://video_landscape_activity?userId=lucy"))
+            findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
         }
     }
 
@@ -62,7 +59,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     }
 
-    private fun destroyPlayer(){
+    private fun destroyPlayer() {
         mBinding.videoView.stopPlayback()
         mBinding.videoView.release(true)
         mBinding.videoView.stopBackgroundPlay()
