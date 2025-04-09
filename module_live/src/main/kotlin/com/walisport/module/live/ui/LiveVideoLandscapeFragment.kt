@@ -1,5 +1,7 @@
 package com.walisport.module.live.ui
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
@@ -9,12 +11,14 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
+
 
 class LiveVideoLandscapeFragment :
     BaseFragment<VideoActivityViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
@@ -27,7 +31,7 @@ class LiveVideoLandscapeFragment :
 
     private var videoViewFullScreen = true
 
-    private var displayExtraButton = true
+    private var buttonsDisplaying = true
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -47,17 +51,17 @@ class LiveVideoLandscapeFragment :
 
         mBinding.root.clickNoRepeat {
             if (videoViewFullScreen) {
-                if (displayExtraButton) {
-                    mBinding.topArea.visibility = View.GONE
-                    mBinding.bottomArea.visibility = View.GONE
-                    displayExtraButton = false
+                if (buttonsDisplaying) {
+                    buttonsDisplaying = false
+
+                    hideButtonsAnimated()
                 } else {
-                    mBinding.topArea.visibility = View.VISIBLE
-                    mBinding.bottomArea.visibility = View.VISIBLE
-                    displayExtraButton = true
+                    buttonsDisplaying = true
+
+                    showButtonsAnimated()
                 }
             } else {
-
+                showButtons()
             }
         }
 
@@ -69,15 +73,87 @@ class LiveVideoLandscapeFragment :
             jumpToLeagueFragment()
         }
 
-        mBinding.ivShare.clickNoRepeat { }
+        mBinding.ivShare.clickNoRepeat {
+            hideButtons()
+        }
 
-        mBinding.ivChooseSource.clickNoRepeat { }
+        mBinding.ivChooseSource.clickNoRepeat {
+            hideButtons()
+        }
 
-        mBinding.tvChooseVideoSource.clickNoRepeat { }
+        mBinding.tvChooseVideoSource.clickNoRepeat {
+            hideButtons()
+        }
 
-        mBinding.tvMatchStatus.clickNoRepeat { }
+        mBinding.tvMatchStatus.clickNoRepeat {
+            hideButtons()
+        }
 
     }
+
+    private fun showButtons() {
+        mBinding.topArea.visibility = View.VISIBLE
+        mBinding.bottomArea.visibility = View.VISIBLE
+    }
+
+    private fun hideButtons() {
+        mBinding.topArea.visibility = View.GONE
+        mBinding.bottomArea.visibility = View.GONE
+    }
+
+    private fun showButtonsAnimated() {
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.topArea,
+                    "translationY",
+                    *floatArrayOf(-100f.dp2px.toFloat(), 0f)
+                ),
+                ObjectAnimator.ofFloat(
+                    mBinding.topArea,
+                    "alpha",
+                    *floatArrayOf(0.5f, 1f)
+                ),
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(100f.dp2px.toFloat(), 0f)
+                ),
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "alpha",
+                    *floatArrayOf(0.5f, 1f)
+                ),
+
+                )
+            setDuration(300)
+            start()
+        }
+    }
+
+    private fun hideButtonsAnimated() {
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.topArea,
+                    "translationY",
+                    0f, -100f.dp2px.toFloat()
+                ),
+                ObjectAnimator.ofFloat(mBinding.topArea, "alpha", 1f, 0.5f),
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(0f, 100f.dp2px.toFloat())
+                ),
+                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+            )
+            setDuration(300)
+
+            start()
+        }
+    }
+
+
 
     override fun createObserver() {
         mViewModel.url.observe(this) {
