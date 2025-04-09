@@ -10,6 +10,7 @@ import com.walisport.app.ui.MainActivity
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib_socket.data.LoginTokenFailedError
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import kotlin.random.Random
@@ -173,7 +174,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     private fun jumpToMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+        navigate(Intent(this, MainActivity::class.java))
         finish()
     }
 
