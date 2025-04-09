@@ -4,11 +4,11 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
-import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
@@ -25,6 +25,9 @@ class LiveVideoLandscapeFragment :
 
     private var mBackPressed = false
 
+    private var videoViewFullScreen = true
+
+    private var displayExtraButton = true
 
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -40,6 +43,22 @@ class LiveVideoLandscapeFragment :
     override fun initListener() {
         mBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
+        }
+
+        mBinding.root.clickNoRepeat {
+            if (videoViewFullScreen) {
+                if (displayExtraButton) {
+                    mBinding.topArea.visibility = View.GONE
+                    mBinding.bottomArea.visibility = View.GONE
+                    displayExtraButton = false
+                } else {
+                    mBinding.topArea.visibility = View.VISIBLE
+                    mBinding.bottomArea.visibility = View.VISIBLE
+                    displayExtraButton = true
+                }
+            } else {
+
+            }
         }
 
         mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {
@@ -114,7 +133,6 @@ class LiveVideoLandscapeFragment :
         mBinding.root.fitsSystemWindows = true
         setStatusBar(StatusBarConfig(hideStatusBar = false))
     }
-
 
 
 //    override fun onBackPressed() {

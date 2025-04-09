@@ -51,6 +51,7 @@
     <dimen name="dp_91">91dp</dimen>
     <dimen name="dp_94">94dp</dimen>
     <dimen name="dp_96">96dp</dimen>
+    <dimen name="dp_100">100dp</dimen>
     <dimen name="dp_105">105dp</dimen>
     <dimen name="dp_110">110dp</dimen>
     <dimen name="dp_148">148dp</dimen>
