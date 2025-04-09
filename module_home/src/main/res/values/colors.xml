@@ -2,4 +2,6 @@
 <resources>
     <color name="bg_home">#161823</color>
     <color name="tab_indicator_color">#24EE8A</color>
+    <color name="bg_sport_item_selected">#1BAF6A</color>
+    <color name="bg_sport_item_unselect">#3F434B</color>
 </resources>

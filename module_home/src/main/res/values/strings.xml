@@ -5,4 +5,10 @@
     <string name="title_today">今日</string>
     <string name="title_early">早盘</string>
     <string name="title_champion">冠军</string>
+
+    <string name="tittle_soccer">足球</string>
+    <string name="tittle_volleyball">排球</string>
+    <string name="tittle_basketball">篮球</string>
+    <string name="tittle_football">橄榄球</string>
+    <string name="tittle_baseball">棒球</string>
 </resources>
