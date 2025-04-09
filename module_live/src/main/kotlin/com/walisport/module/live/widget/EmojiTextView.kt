@@ -1,27 +1,18 @@
-package com.walisport.lib.common.widget
+package com.walisport.module.live.widget
 
 import android.content.Context
-import android.text.Spannable
 import android.text.SpannableString
-import android.text.SpannableStringBuilder
-import android.text.style.DynamicDrawableSpan
-import android.text.style.ImageSpan
 import android.util.AttributeSet
-import android.util.Log
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.walisport.lib.common.data.EmojiEnum
-import com.walisport.lib.common.utils.ViewUtils.replaceEmoji
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.skin.SportSkinManager
 import com.walisport.lib.skin.widget.helper.SportSkinBackGroundHelper
 import com.walisport.lib.skin.widget.helper.SportSkinTextHelper
+import com.walisport.module.live.utils.EmojiUtils
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import java.util.concurrent.Flow
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 
 class EmojiTextView :
@@ -64,7 +55,7 @@ class EmojiTextView :
     override fun setText(text: CharSequence?, type: BufferType?) {
         var builder = SpannableString(text)
         if (!text.isNullOrEmpty()) {
-            replaceEmoji(context, builder, textSize)
+            EmojiUtils.replaceEmoji(context, builder, 20.dp2px.toFloat())
         }
         super.setText(builder, type)
     }

@@ -1,21 +1,18 @@
-package com.walisport.lib.common.widget
+package com.walisport.module.live.widget
 
 import android.content.Context
-import android.text.Spannable
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import com.walisport.lib.common.data.EmojiEnum
 import com.walisport.lib.common.utils.ViewUtils
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.skin.SportSkinManager
 import com.walisport.lib.skin.widget.helper.SportSkinBackGroundHelper
 import com.walisport.lib.skin.widget.helper.SportSkinTextHelper
+import com.walisport.module.live.utils.EmojiUtils
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
-import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 class EmojiEditTextView : AppCompatEditText {
    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
@@ -61,7 +58,7 @@ class EmojiEditTextView : AppCompatEditText {
     ) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         if (!getText().isNullOrEmpty()) {
-            ViewUtils.replaceEmoji(context, getText()!!, textSize)
+            EmojiUtils.replaceEmoji(context, getText()!!, 20.dp2px.toFloat())
         }
     }
 
