@@ -1,6 +1,7 @@
 package com.walisport.lib_socket
 
 import android.util.Log
+import com.walisport.lib.base.utils.LogUtilsExt.loge
 import com.walisport.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
@@ -59,7 +60,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
                     originProto = jsonPayload
                 )
             } catch (e: Exception) {
-                "message decrypt failed".logi(NativeLib::class.java.simpleName)
+                "message decrypt failed".loge(NativeLib::class.java.simpleName)
                 InvalidDataResponseError()
             }
         }

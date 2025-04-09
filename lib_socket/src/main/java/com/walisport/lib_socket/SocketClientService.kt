@@ -12,6 +12,8 @@ import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ISecurity
 import com.walisport.lib_socket.data.ISocket
 import com.walisport.lib_socket.data.SocketConnectState
+import com.walisport.lib_socket.data.SocketOriginResponseData
+import com.walisport.lib_socket.data.SocketResponseData
 import com.walisport.lib_socket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

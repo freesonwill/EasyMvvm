@@ -8,5 +8,7 @@
             android:theme="@style/Theme.Wsl.Android">
         </activity>
     </application>
-
+    <meta-data
+        android:name="com.walisport.module_home.HomeModuleInitializer"
+        android:value="androidx.startup" />
 </manifest>

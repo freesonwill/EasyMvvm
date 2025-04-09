@@ -1,6 +1,7 @@
 package com.walisport.lib_socket.extension
 
 import com.google.protobuf.GeneratedMessageLite
+import com.walisport.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.WebSocketManager.Companion.responseTimeout
 import com.walisport.lib_socket.data.ApiCode
@@ -30,7 +31,7 @@ fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode) : SocketRequest
 
 inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<SocketResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
-    .filter {it.mid == apiCode.mid && it.sid == apiCode.sid}
+    .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
         try {
             val proto = it.originProto?.let { byteArray ->
