@@ -32,6 +32,10 @@ message ChangeLangReq {
   string lang = 1; //required client端语言
 }
 
+message ChangeLangResp {
+  bool success = 1;
+}
+
 // 7-10: 离开游戏（无携带消息）
 message LogoutReq {
 }
@@ -176,7 +180,7 @@ message EarlySettleResp {
 
 // 500-1012: 获取用户下注记录列表
 message GetOrderReq {
-  bool settled = 1;       //required  false-未结算 true-已结算
+  int32 status = 1;       //required 1投注确认中，2失效，3接单成功，4已结算
   int64 start_time = 2;   //开始时间,13位时间戳
   int64 end_time = 3;     //结束时间,13位时间戳
   int32 page = 4;         //required 当前页码
@@ -351,6 +355,7 @@ message SubscribeMatchReq {
 message SubscribeMatchResp {
   bool success = 1;
   string message = 2;
+  repeated galaxy.common.proto.Match match = 3;
 }
 
 // 500-1101: 取消订阅比赛
