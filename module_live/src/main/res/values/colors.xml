@@ -29,6 +29,8 @@
     <color name="color_f2f3ff">#f2f3ff</color>
     <color name="color_2c3c3e">#2c3c3e</color>
 
+    <color name="tran_10_4150F6">#1A4150F6</color>
+    <color name="tran_10_fe3666">#1AFE3666</color>
     <color name="tran_08_ac8e6a">#08ac8e6a</color>
     <color name="tran_05_white">#05ffffff</color>
 </resources>
