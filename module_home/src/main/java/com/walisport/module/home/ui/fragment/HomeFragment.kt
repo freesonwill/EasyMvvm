@@ -79,9 +79,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv6.setOnClickListener{
-            //
-//            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
-
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToNewHomeFragment())
         }
 
         mBinding.tv7.clickNoRepeat{
