@@ -151,7 +151,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      * @param id
      * @return
      */
-    fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
+    private fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
     }
 }

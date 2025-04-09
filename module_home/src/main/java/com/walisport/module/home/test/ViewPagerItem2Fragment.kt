@@ -4,10 +4,9 @@ import android.os.Bundle
 import androidx.navigation.fragment.navArgs
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestViewPagerItem2Binding
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 /**
@@ -27,11 +26,11 @@ class ViewPagerItem2Fragment : BaseFragment<EmptyViewModel, FragmentTestViewPage
 
     override fun initListener() {
         mBinding.tv.setOnClickListener {
-            //findNavController().navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
+            //navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
             //val navController = (requireActivity() as BaseNavActivity).findNavController()
             //navController.navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
-            findActivityNavController().navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
-//            findNavController().navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
+            requireActivity().navigate(ViewPagerFragmentDirections.actionViewPagerItem2FragmentToHomeFragment())
+        //            navigate(ViewPagerItem2FragmentDirections.actionTextViewScreenToHomeFragment3())
         }
     }
 
