@@ -14,7 +14,7 @@ import com.walisport.module.home.databinding.FragmentHomeBinding
 import com.walisport.module.home.ui.fragment.HomeFragmentDirections
 import kotlin.reflect.KClass
 
-class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
+class TestFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
     override val vbClass: KClass<FragmentHomeBinding> = FragmentHomeBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 

@@ -37,8 +37,6 @@
             android:id="@+id/action_homeFragment_to_LoginActivity2"
             app:destination="@id/LoginActivity2" />
 
-
-
     </fragment>
 
 
@@ -91,7 +89,7 @@
 
 
     <activity
-        android:id="@+id/homeActivity"
+        android:id="@+id/TestActivity"
         android:name="com.walisport.module.home.test.TestActivity"
         android:label="activity_home"
         />
