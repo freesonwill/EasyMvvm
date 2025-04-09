@@ -70,7 +70,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv6.setOnClickListener{
-           //navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
+            navigate(HomeFragmentDirections.actionHomeFragmentToNewHomeFragment())
         }
 
         mBinding.tv7.clickNoRepeat{
