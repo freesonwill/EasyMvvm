@@ -4,7 +4,6 @@ import com.walisport.module.live.R
 
 
 enum class EmojiEnum(val key: String, val resId: Int) {
-    //TODO 服务器还没定好，emoji对应id，暂时不添加表情
     Gin("emoji20", R.drawable.emoji20),
     Smile("emoji47", R.drawable.emoji47),
     Boring("emoji6", R.drawable.emoji6),
