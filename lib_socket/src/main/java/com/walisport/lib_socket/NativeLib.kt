@@ -75,4 +75,8 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
             dataSize = data.payloadByteArray?.size ?: 0
         )
     }
+
+    override fun resetSecurity() {
+        reset()
+    }
 }

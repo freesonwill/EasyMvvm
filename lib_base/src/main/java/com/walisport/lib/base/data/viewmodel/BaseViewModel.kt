@@ -9,5 +9,6 @@ import org.koin.core.component.KoinComponent
  * @description:
  */
 abstract class BaseViewModel : ViewModel(), KoinComponent {
-
+    //如果有需要的話，把一些相關的元件設定回初始狀態
+    open fun reset() {}
 }

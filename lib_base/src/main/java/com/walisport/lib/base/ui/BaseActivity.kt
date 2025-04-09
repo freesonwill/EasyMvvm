@@ -78,6 +78,9 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         }
         return super.dispatchTouchEvent(ev)
     }
+    fun reset() {
+        mViewModel.reset()
+    }
 }
 
 /**
