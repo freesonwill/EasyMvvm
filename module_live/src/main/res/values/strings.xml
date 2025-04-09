@@ -15,6 +15,7 @@
     <string name="standings_b">B组</string>
     <string name="standings_c">C组</string>
     <string name="standings_d">D组</string>
+    <string name="technical_statistics">技术统计</string>
 
     <string-array name="bet_slip_menus">
         <item>未结算</item>
