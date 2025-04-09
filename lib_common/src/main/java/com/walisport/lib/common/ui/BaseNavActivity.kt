@@ -19,7 +19,6 @@ import kotlin.reflect.KClass
  * @description: 基础navigation的activity
  */
 abstract class BaseNavActivity<VM: BaseViewModel> : BaseActivity<VM, ActvityBaseNavBinding>() {
-
     override val vbClass: KClass<ActvityBaseNavBinding> get() = ActvityBaseNavBinding::class
     protected fun findNavController(): NavController = supportFragmentManager
         .findFragmentById(R.id.nav_host)!!.findNavController()

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestSecondBinding
 import kotlin.reflect.KClass
 
@@ -18,7 +19,7 @@ class SecondFragment : BaseFragment<EmptyViewModel,FragmentTestSecondBinding>() 
 
     override fun initListener() {
         mBinding.root.setOnClickListener {
-            findNavController().navigate(SecondFragmentDirections.actionSecondFragmentToThirdFragment())
+            navigate(SecondFragmentDirections.actionSecondFragmentToThirdFragment())
         }
     }
 
