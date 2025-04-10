@@ -33,7 +33,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
     override val mBinding: FragmentBetSheetBinding by viewBind()
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        isCancelable = false
     }
 
     override fun initListener() {

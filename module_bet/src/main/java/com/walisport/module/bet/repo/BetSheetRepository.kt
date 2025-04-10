@@ -11,7 +11,22 @@ import kotlinx.coroutines.withContext
 class BetSheetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    fun observeBetSheet() = betDao.observeBetSheet()
+    fun observeSingleBet() = betDao.observeSingleBet()
+
+    fun removeBet(id: Int) {
+        scope.launch {
+            betDao.removeBet(id)
+        }
+    }
+
+    fun saveToCombo(id: Int) {
+        scope.launch {
+            betDao.getBetById(id)?.let {
+                it.status = 1
+                betDao.update(it)
+            }
+        }
+    }
 
     // TODO 此為測試用！！之後會刪除  此為測試用！！之後會刪除  此為測試用！！之後會刪除
     fun addMockData() {

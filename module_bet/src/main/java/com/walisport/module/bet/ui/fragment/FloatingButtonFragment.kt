@@ -23,7 +23,7 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
             mViewModel.onBettingCount.value?.let { count ->
                 if (count == 1) {
                     lifecycleScope.launch {
-                        val id = mViewModel.getSingleBetId()
+                        val id = mViewModel.getSingleBetById()
                         BetSheetFragment.newInstance(id).show(parentFragmentManager)
                     }
                 } else {

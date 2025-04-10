@@ -49,7 +49,7 @@ abstract class BaseBottomSheetFragment<VB : ViewBinding> : BottomSheetDialogFrag
             sheetContainer = root.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) // sheet 本體
 
             backgroundView.setOnClickListener {
-                dismiss()
+//                dismiss()
             }
 
             // 彈出動畫

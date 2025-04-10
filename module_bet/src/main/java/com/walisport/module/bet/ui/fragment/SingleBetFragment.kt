@@ -1,24 +1,21 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
+import android.view.View
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ViewUtils
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentSingleBetBinding
-import com.walisport.module.bet.ui.adapter.BetSheetAdapter
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
-import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import com.walisport.module.bet.viewmodel.NumberCalculatorViewModel
+import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
 
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>() {
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
-
-    private lateinit var betSheetAdapter: BetSheetAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
@@ -48,18 +45,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
 
         })
-
-        betSheetAdapter = BetSheetAdapter(object : BetSheetAdapter.OnBetSheetClickListener {
-            override fun onDeleteClick(item: BetBean) {
-
-            }
-        })
-//        mBinding.rvBet.adapter = betSheetAdapter
     }
 
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
-
+            mViewModel.removeBet()
         }
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
@@ -86,13 +76,13 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.setNumber(5000)
         }
         mBinding.btnCollusion.setOnClickListener {
-
+            mViewModel.saveToCombo()
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
         }
         mBinding.btnReserve.setOnClickListener {
-            mViewModel.onBetSheetListener.value?.first()?.let {
+            mViewModel.onBetSheetListener.value?.let {
                 val location = IntArray(2)
                 mBinding.btnReserve.getLocationInWindow(location)
                 ReserveDialogFragment.newInstance(
@@ -112,11 +102,21 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
-            betSheetAdapter.submitList(it)
+            setBetData(it)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             val money = getString(R.string.btn_bet_win_money).format(it)
             mBinding.tvBetMoney.text = money
         }
+    }
+
+    private fun setBetData(data: BetBean) {
+        val odds = "@${data.odds}"
+        mBinding.layoutBet.tvOdds.text = odds
+
+        mBinding.layoutBet.tvMatchName.text = data.matchName
+        mBinding.layoutBet.tvLeagueName.text = data.leagueName
+
+        mBinding.layoutBet.ivDelete.visibility = View.GONE
     }
 }

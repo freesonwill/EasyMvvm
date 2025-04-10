@@ -10,15 +10,13 @@ import kotlinx.coroutines.launch
 
 class SingleBetViewModel(private val betRepo: BetSheetRepository) : NumberCalculatorViewModel() {
 
-    private val _onBetSheetListener = MutableLiveData<List<BetBean>>()
-    val onBetSheetListener: LiveData<List<BetBean>> get() =  _onBetSheetListener
+    private val _onBetSheetListener = MutableLiveData<BetBean>()
+    val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1.0f
         addSource(_onBetSheetListener) { data ->
-            data.forEach {
-                odds *= it.odds
-            }
+            data.odds *= odds
         }
         addSource(_onEditMoney) {
             val money = if (it.isEmpty()) {
@@ -40,13 +38,27 @@ class SingleBetViewModel(private val betRepo: BetSheetRepository) : NumberCalcul
 
     init {
         viewModelScope.launch {
-            betRepo.observeBetSheet().collect {
-                _onBetSheetListener.value = it
+            betRepo.observeSingleBet().collect {
+                if (it != null) {
+                    _onBetSheetListener.value = it
+                }
             }
         }
     }
 
     fun sendBet() {
 
+    }
+
+    fun removeBet() {
+        _onBetSheetListener.value?.let {
+            betRepo.removeBet(it.gameId)
+        }
+    }
+
+    fun saveToCombo() {
+        _onBetSheetListener.value?.let {
+            betRepo.saveToCombo(it.gameId)
+        }
     }
 }

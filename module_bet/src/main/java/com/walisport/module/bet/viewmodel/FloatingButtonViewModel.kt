@@ -15,13 +15,15 @@ class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : Base
 
     init {
         viewModelScope.launch {
-            repo.observeBettingCount().collect {
+            repo.observeComboBetCount().collect {
                 _onBettingCount.value = it
             }
         }
     }
 
-    suspend fun getSingleBetId() = viewModelScope.async {
-        repo.getSingleBetId()
+    suspend fun getSingleBetById() = viewModelScope.async {
+        repo.getSingleBetId().apply {
+            repo.saveToSingleBet(this@apply)
+        }
     }.await()
 }

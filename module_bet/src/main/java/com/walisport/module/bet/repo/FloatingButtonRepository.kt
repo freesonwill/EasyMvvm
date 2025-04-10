@@ -4,15 +4,25 @@ import com.walisport.lib.base.data.repository.BaseRepository
 import com.walisport.lib.database.dao.BetDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class FloatingButtonRepository(private val betDao: BetDao): BaseRepository() {
 
-    fun observeBettingCount() = betDao.observeBetCount()
+    fun observeComboBetCount() = betDao.observeComboBetCount()
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     suspend fun getSingleBetId() = with(scope.coroutineContext) {
-        betDao.getSingleBet()?.gameId
+        betDao.getBetSheet().first().gameId
+    }
+
+    fun saveToSingleBet(id: Int) {
+        scope.launch {
+            betDao.getBetById(id)?.let {
+                it.status = 0
+                betDao.update(it)
+            }
+        }
     }
 }

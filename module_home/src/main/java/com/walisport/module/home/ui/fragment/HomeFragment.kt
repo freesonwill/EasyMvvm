@@ -85,6 +85,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
            navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
         mBinding.tv9.setOnClickListener {
+            // TODO 此為測試用！！之後會刪除
             val repo: BetSheetRepository by KoinJavaComponent.inject(BetSheetRepository::class.java)
             lifecycleScope.launch {
                 repo.getOneMockData()?.let {
