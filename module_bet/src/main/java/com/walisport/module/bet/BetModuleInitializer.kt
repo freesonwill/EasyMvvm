@@ -8,7 +8,7 @@ import com.walisport.module.bet.repo.FloatingButtonRepository
 import com.walisport.module.bet.viewmodel.ComboBetViewModel
 import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import com.walisport.module.bet.viewmodel.ReserveDialogViewModel
-import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
+import com.walisport.module.bet.viewmodel.FloatingButtonViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

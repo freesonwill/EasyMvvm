@@ -1,33 +1,23 @@
 package com.walisport.module.bet.ui.fragment
 
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup.LayoutParams
-import android.view.ViewTreeObserver
-import android.view.animation.AnimationUtils
-import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
+import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentBetSheetBinding
 
 class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBetSheetBinding>() {
 
     companion object {
-        const val MATCH_ID = "matchId"
+        private const val MATCH_ID = "matchId"
         fun newInstance(matchId: Int? = null): BetSheetFragment {
-            val b = Bundle()
-            return if (matchId == null) {
-                BetSheetFragment().apply {
-                    arguments = b
-                }
-            } else {
-
-                b.putInt(MATCH_ID, matchId)
-                BetSheetFragment().apply {
-                    arguments = b
-                }
+            val b = Bundle().apply {
+                putInt(MATCH_ID, matchId ?: -1)
+            }
+            return BetSheetFragment().apply {
+                arguments = b
             }
         }
     }
@@ -35,53 +25,29 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
     override val mBinding: FragmentBetSheetBinding by viewBind()
 
     override fun initView(savedInstanceState: Bundle?) {
+
     }
 
     override fun initListener() {
     }
 
-    override fun createObserver() {
-
-//        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
-//        navController.addOnDestinationChangedListener { _, d, b ->
-//            val curHeight = mBinding.root.height
-//            if (curHeight == 0) {
-//                mBinding.mainNav.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-//                    override fun onGlobalLayout() {
-//                        mBinding.mainNav.viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                        val nextHeight = mBinding.root.measuredHeight
-//                        if (curHeight != nextHeight) {
-//                            animateBottomSheetHeight(nextHeight)
-//                        }
-//                    }
-//                })
-//            }
-//
-//        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setStartDestination()
     }
 
-    private fun animateBottomSheetHeight(to: Int) {
-        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            ?: return
+    private fun setStartDestination() {
+        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
+        val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
-        val anim = AnimationUtils.loadAnimation(requireContext(), com.walisport.lib.base.R.anim.slide_bottom_sheet_up)
-        bottomSheet.startAnimation(anim)
+        val bundle = requireArguments()
 
-        val valueAnimator = ValueAnimator.ofInt(0, to).apply {
-            duration = anim.duration
-            addUpdateListener { valueAnimator ->
-                val newHeight = valueAnimator.animatedValue as Int
-                bottomSheet.layoutParams = bottomSheet.layoutParams.apply {
-                    height = newHeight
-                }
-                bottomSheet.requestLayout()
-            }
-            doOnEnd {
-                bottomSheet.layoutParams = bottomSheet.layoutParams.apply {
-                    height = LayoutParams.WRAP_CONTENT
-                }
-            }
+        val matchId = requireArguments().getInt(MATCH_ID)
+        if (matchId == -1) {
+            navGraph.setStartDestination(R.id.comboBetFragment)
+        } else {
+            navGraph.setStartDestination(R.id.singleBetFragment)
         }
-        valueAnimator.start()
+        navController.setGraph(navGraph, bundle)
     }
 }

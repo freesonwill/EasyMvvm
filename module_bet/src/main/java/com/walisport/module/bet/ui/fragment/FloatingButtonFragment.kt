@@ -3,9 +3,11 @@ package com.walisport.module.bet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
+import androidx.lifecycle.lifecycleScope
+import com.walisport.module.bet.viewmodel.FloatingButtonViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.module.bet.databinding.FragmentFloatingButtonBinding
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
@@ -18,7 +20,16 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            BetSheetFragment.newInstance().show(parentFragmentManager)
+            mViewModel.onBettingCount.value?.let { count ->
+                if (count == 1) {
+                    lifecycleScope.launch {
+                        val id = mViewModel.getSingleBetId()
+                        BetSheetFragment.newInstance(id).show(parentFragmentManager)
+                    }
+                } else {
+                    BetSheetFragment.newInstance().show(parentFragmentManager)
+                }
+            }
         }
     }
 

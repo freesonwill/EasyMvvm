@@ -54,7 +54,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
             }
         })
-        mBinding.rvBet.adapter = betSheetAdapter
+//        mBinding.rvBet.adapter = betSheetAdapter
     }
 
     override fun initListener() {
@@ -86,7 +86,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.setNumber(5000)
         }
         mBinding.btnCollusion.setOnClickListener {
-            findNavController().navigate(SingleBetFragmentDirections.actionSingleBetFragmentToComboBetFragment())
+
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
