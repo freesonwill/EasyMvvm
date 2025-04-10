@@ -3,7 +3,8 @@ package com.walisport.module.bet
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.module.bet.repo.BetSheetRepository
+import com.walisport.module.bet.repo.SingleBetRepository
+import com.walisport.module.bet.repo.ComboBetRepository
 import com.walisport.module.bet.repo.FloatingButtonRepository
 import com.walisport.module.bet.viewmodel.ComboBetResultViewModel
 import com.walisport.module.bet.viewmodel.ComboBetViewModel
@@ -40,7 +41,8 @@ class BetModuleInitializer: Initializer<String> {
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
-        factoryOf(::BetSheetRepository)
+        factoryOf(::SingleBetRepository)
+        factoryOf(::ComboBetRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

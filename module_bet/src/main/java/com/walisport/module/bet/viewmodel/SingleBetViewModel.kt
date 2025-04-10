@@ -5,10 +5,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.walisport.lib.database.entity.BetBean
-import com.walisport.module.bet.repo.BetSheetRepository
+import com.walisport.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class SingleBetViewModel(private val betRepo: BetSheetRepository) : NumberCalculatorViewModel() {
+class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalculatorViewModel() {
 
     private val _onBetSheetListener = MutableLiveData<BetBean>()
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener

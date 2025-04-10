@@ -20,6 +20,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT COUNT(*) FROM BetBean WHERE status = 1")
     abstract fun observeComboBetCount(): Flow<Int>
 
+    @Query("SELECT * FROM BetBean WHERE status = 1")
+    abstract fun observeComboBet(): Flow<List<BetBean>>
+
     /**
      * 移除非roundId的投注記錄
      */

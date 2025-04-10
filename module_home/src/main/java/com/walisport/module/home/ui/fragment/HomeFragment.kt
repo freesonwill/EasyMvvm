@@ -10,7 +10,7 @@ import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.bet.repo.BetSheetRepository
+import com.walisport.module.bet.repo.SingleBetRepository
 import com.walisport.module.bet.ui.fragment.BetSheetFragment
 import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
 import com.walisport.module.home.R
@@ -86,7 +86,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
         mBinding.tv9.setOnClickListener {
             // TODO 此為測試用！！之後會刪除
-            val repo: BetSheetRepository by KoinJavaComponent.inject(BetSheetRepository::class.java)
+            val repo: SingleBetRepository by KoinJavaComponent.inject(SingleBetRepository::class.java)
             lifecycleScope.launch {
                 repo.getOneMockData()?.let {
                     BetSheetFragment.newInstance(it.gameId).show(childFragmentManager)

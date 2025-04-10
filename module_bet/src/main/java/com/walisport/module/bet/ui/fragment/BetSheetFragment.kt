@@ -10,7 +10,7 @@ import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentBetSheetBinding
-import com.walisport.module.bet.repo.BetSheetRepository
+import com.walisport.module.bet.repo.SingleBetRepository
 import org.koin.java.KoinJavaComponent.inject
 
 class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBetSheetBinding>() {
@@ -31,7 +31,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
 
         // TODO 此為測試用！！之後會刪除  此為測試用！！之後會刪除  此為測試用！！之後會刪除
         fun addMockData() {
-            val repo: BetSheetRepository by inject(BetSheetRepository::class.java)
+            val repo: SingleBetRepository by inject(SingleBetRepository::class.java)
             repo.addMockData()
         }
     }

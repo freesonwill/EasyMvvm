@@ -10,6 +10,7 @@ class BetSheetViewHolder(private val mBinding: ItemBetSheetBinding): BaseViewHol
         val odds = "@${bean.odds}"
         mBinding.tvOdds.text = odds
 
+        mBinding.tvBetTeamName.text = bean.betTeamName
         mBinding.tvMatchName.text = bean.matchName
         mBinding.tvLeagueName.text = bean.leagueName
     }

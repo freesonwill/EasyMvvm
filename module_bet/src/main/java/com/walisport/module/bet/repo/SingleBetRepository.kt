@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BetSheetRepository(private val betDao: BetDao) : BaseRepository() {
+class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     fun observeSingleBet() = betDao.observeSingleBet()
