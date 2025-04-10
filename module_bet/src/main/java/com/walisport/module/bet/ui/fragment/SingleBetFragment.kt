@@ -2,6 +2,7 @@ package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ViewUtils
 import com.walisport.lib.database.entity.BetBean
@@ -12,7 +13,7 @@ import com.walisport.module.bet.viewmodel.NumberCalculatorViewModel
 import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
 
-class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>() {
+class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(), BetSheetListener {
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
@@ -50,6 +51,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
             mViewModel.removeBet()
+            dismiss()
         }
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
@@ -77,6 +79,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnCollusion.setOnClickListener {
             mViewModel.saveToCombo()
+            dismiss()
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
@@ -118,5 +121,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.layoutBet.tvLeagueName.text = data.leagueName
 
         mBinding.layoutBet.ivDelete.visibility = View.GONE
+    }
+
+    override fun dismiss(key: String, value: String) {
+        findNavController().getBackStackEntry(R.id.singleBetFragment).savedStateHandle[BetSheetFragment.RESULT_KEY] =
+            BetSheetFragment.DISMISS_KEY
     }
 }

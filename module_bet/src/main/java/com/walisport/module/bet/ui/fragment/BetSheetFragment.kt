@@ -2,6 +2,9 @@ package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
@@ -14,6 +17,9 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
 
     companion object {
         private const val MATCH_ID = "matchId"
+        const val RESULT_KEY = "result_key"
+        const val DISMISS_KEY = "dismiss_key"
+
         fun newInstance(matchId: Int? = null): BetSheetFragment {
             val b = Bundle().apply {
                 putInt(MATCH_ID, matchId ?: -1)
@@ -30,10 +36,16 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
         }
     }
 
+    private val dismissObserver = Observer<String> { value ->
+        if (value == DISMISS_KEY) {
+            dismiss()
+        }
+    }
+    private var lastLiveData: LiveData<String>? = null
+
     override val mBinding: FragmentBetSheetBinding by viewBind()
 
     override fun initView(savedInstanceState: Bundle?) {
-        isCancelable = false
     }
 
     override fun initListener() {
@@ -58,4 +70,30 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
         }
         navController.setGraph(navGraph, bundle)
     }
+
+    override fun createObserver() {
+        // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
+        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            removeLastObserver()
+            handleDismissObserve(navController, destination.id)
+        }
+    }
+
+    private fun removeLastObserver() {
+        lastLiveData?.removeObserver(dismissObserver)
+        lastLiveData = null
+    }
+
+    private fun handleDismissObserve(navController: NavController, destinationId: Int) {
+        val backStackEntry = navController.getBackStackEntry(destinationId)
+
+        lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(RESULT_KEY).apply {
+            observe(viewLifecycleOwner, dismissObserver)
+        }
+    }
+}
+
+interface BetSheetListener {
+    fun dismiss(key: String = BetSheetFragment.RESULT_KEY, value: String = BetSheetFragment.DISMISS_KEY)
 }
