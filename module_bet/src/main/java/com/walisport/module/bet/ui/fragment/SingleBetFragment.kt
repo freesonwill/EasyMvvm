@@ -124,7 +124,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun dismiss(key: String, value: String) {
-        findNavController().getBackStackEntry(R.id.singleBetFragment).savedStateHandle[BetSheetFragment.RESULT_KEY] =
-            BetSheetFragment.DISMISS_KEY
+        findNavController().getBackStackEntry(R.id.singleBetFragment).savedStateHandle[key] = value
     }
 }

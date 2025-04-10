@@ -9,7 +9,10 @@
         android:id="@+id/singleBetFragment"
         android:name="com.walisport.module.bet.ui.fragment.SingleBetFragment"
         android:label="SingleBetFragment"
-        tools:layout="@layout/fragment_single_bet" >
+        tools:layout="@layout/fragment_single_bet">
+        <action
+            android:id="@+id/action_singleBetFragment_to_singleBetResultFragment"
+            app:destination="@id/singleBetResultFragment" />
     </fragment>
 
     <fragment
@@ -20,7 +23,22 @@
         <action
             android:id="@+id/action_comboBetFragment_to_singleBetFragment"
             app:destination="@id/singleBetFragment" />
+        <action
+            android:id="@+id/action_comboBetFragment_to_comboBetResultFragment"
+            app:destination="@id/comboBetResultFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/singleBetResultFragment"
+        android:name="com.walisport.module.bet.ui.fragment.SingleBetResultFragment"
+        android:label="SingleBetResultFragment"
+        tools:layout="@layout/fragment_single_bet_result" />
+
+    <fragment
+        android:id="@+id/comboBetResultFragment"
+        android:name="com.walisport.module.bet.ui.fragment.ComboBetResultFragment"
+        android:label="ComboBetResultFragment"
+        tools:layout="@layout/fragment_combo_bet_result" />
 
 
 </navigation>
