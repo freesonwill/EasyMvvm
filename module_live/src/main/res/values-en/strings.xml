@@ -15,6 +15,14 @@
     <string name="standings_b">B Group</string>
     <string name="standings_c">C Group</string>
     <string name="standings_d">D Group</string>
+    <string name="standings_start">Start</string>
+    <string name="standings_over">Over</string>
+    <string name="standings_goal">Goal</string>
+    <string name="standings_help">Assists</string>
+    <string name="standings_yellow">Yellow Card</string>
+    <string name="standings_red">Red Card</string>
+    <string name="standings_up">Up</string>
+    <string name="standings_down">Down</string>
     <string name="technical_statistics">Technical Statistics</string>
 
     <string-array name="bet_slip_menus">
