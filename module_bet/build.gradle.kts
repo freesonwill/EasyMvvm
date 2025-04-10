@@ -39,6 +39,7 @@ dependencies {
 
     api(project(":lib_base"))
     api(project(":lib_database"))
+    api(project(":lib_common"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

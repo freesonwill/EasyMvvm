@@ -11,15 +11,24 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         const val MIN_MONEY = 10
     }
 
-    private val _onEditMoney = MutableLiveData<String>()
+    protected val _onEditMoney = MutableLiveData("")
     val onEditMoney: LiveData<String> = _onEditMoney
 
     fun addNumber(number: Int) {
-        _onEditMoney.value = _onEditMoney.value?.let {
-            val newValue = it + number
-            val formattedValue = formatMoney(newValue)
-            if (formattedValue.toDouble() > MAX_MONEY) MAX_MONEY.toString() else formattedValue
-        } ?: number.toString()
+        val current = _onEditMoney.value.orEmpty()
+
+        val newValue = if (current.contains('.')) {
+            val decimalPart = current.substringAfter('.', "")
+            if (decimalPart.length >= 2) return  // 最多兩位小數，直接返回不修改
+            current + number
+        } else {
+            current + number
+        }
+
+        val formatted = formatMoney(newValue)
+        val limited = if (formatted.toDouble() > MAX_MONEY) MAX_MONEY.toString() else formatted
+
+        _onEditMoney.value = limited
     }
 
     fun setDot() {
@@ -44,11 +53,19 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         }
     }
 
-    fun clearMoney() {
+    fun setNumber(number: Float) {
+        if (number > MAX_MONEY) {
+            setMaxMoney()
+        } else {
+            _onEditMoney.value = number.toString()
+        }
+    }
+
+    fun clearNumber() {
         _onEditMoney.value = ""
     }
 
-    fun double() {
+    fun doubleNumber() {
         _onEditMoney.value = _onEditMoney.value?.let {
             if (it.isEmpty()) {
                 ""
@@ -65,7 +82,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         } ?: ""
     }
 
-    fun back() {
+    fun backNumber() {
         _onEditMoney.value = _onEditMoney.value?.let {
             if (it.length > 1) {
                 it.substring(0, it.length - 1)
