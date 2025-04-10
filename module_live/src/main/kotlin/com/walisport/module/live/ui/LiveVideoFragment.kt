@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
@@ -24,8 +25,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         }
         mBinding.ivToFullscreen.clickNoRepeat {
             destroyPlayer()
-
-            findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
+            navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
         }
     }
 

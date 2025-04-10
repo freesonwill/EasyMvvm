@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewbinding.ViewBinding
@@ -25,7 +26,6 @@ class StandingsAdapter(private val context: Context) :
         const val TYPE_ITEM = 1
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     override fun convertPlus(
         holder: BaseViewHolder,
         binding: ViewBinding,
@@ -40,7 +40,7 @@ class StandingsAdapter(private val context: Context) :
                     ItemStandingsLayBinding.inflate(LayoutInflater.from(context), null, false)
                 val lay = view.root.findViewById<ConstraintLayout>(R.id.item_standings)
                 if (i < 2) {
-                    lay.background = context.getDrawable(R.color.tran_08_ac8e6a)
+                    lay.background = AppCompatResources.getDrawable(context, R.color.tran_08_ac8e6a)
                 } else {
                     lay.background = null
                 }

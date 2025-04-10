@@ -9,6 +9,7 @@ import com.walisport.lib.base.adapter.PagerAdapter
 import com.walisport.lib.base.data.PagerBean
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.lib.common.utils.ext.removeAllTips
@@ -37,7 +38,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tvCompetitionName.clickNoRepeat {
             }
             ivLandscapeLeagueIcon.clickNoRepeat {
-                findNavController().navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
         setVideoView()

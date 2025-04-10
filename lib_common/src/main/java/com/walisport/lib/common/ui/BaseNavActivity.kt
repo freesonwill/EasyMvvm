@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import com.walisport.lib.base.data.viewmodel.BaseViewModel
 import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseActivity
@@ -16,8 +18,7 @@ import kotlin.reflect.KClass
  * @date: 2025/3/26 10:29
  * @description: 基础navigation的activity
  */
-abstract class BaseNavActivity : BaseActivity<EmptyViewModel, ActvityBaseNavBinding>() {
-    override val vmClass: KClass<EmptyViewModel> get() = EmptyViewModel::class
+abstract class BaseNavActivity<VM: BaseViewModel> : BaseActivity<VM, ActvityBaseNavBinding>() {
     override val vbClass: KClass<ActvityBaseNavBinding> get() = ActvityBaseNavBinding::class
     protected fun findNavController(): NavController = supportFragmentManager
         .findFragmentById(R.id.nav_host)!!.findNavController()

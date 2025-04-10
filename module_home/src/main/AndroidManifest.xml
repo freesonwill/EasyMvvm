@@ -7,11 +7,6 @@
             android:exported="true"
             android:theme="@style/Theme.Wsl.Android">
         </activity>
-        <activity
-            android:name="com.walisport.module.home.test.TestActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Wsl.Android">
-        </activity>
     </application>
 
 </manifest>

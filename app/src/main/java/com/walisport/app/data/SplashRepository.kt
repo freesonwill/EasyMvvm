@@ -1,6 +1,8 @@
 package com.walisport.app.data
 
 import com.walisport.lib.base.data.repository.BaseRepository
+import com.walisport.lib.common.data.UserDataKey
+import com.walisport.lib.common.data.UserDataManager
 import com.walisport.lib.common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.data.ApiCode
@@ -15,7 +17,8 @@ import kotlinx.coroutines.flow.first
 
 class SplashRepository(
     override val scope: CoroutineScope,
-    private val socketManager: WebSocketManager
+    private val socketManager: WebSocketManager,
+    private val userDataManager: UserDataManager
 ) : BaseRepository() {
 
     private val countDownHelper = CountDownHelper()
@@ -26,6 +29,11 @@ class SplashRepository(
 
     init {
         countDown = 5_000
+    }
+
+    fun saveUserData(uid: Int, token: String) {
+        userDataManager.setKeyValue(UserDataKey.KEY_UID, uid)
+        userDataManager.setKeyValue(UserDataKey.KEY_TOKEN, token)
     }
 
     suspend fun startSocket() : ConnectState {

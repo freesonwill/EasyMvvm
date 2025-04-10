@@ -7,6 +7,7 @@ import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.login.R
 import com.walisport.module.login.databinding.FragmentLoginBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -31,7 +32,7 @@ class LoginFragment : BaseFragment<EmptyViewModel, FragmentLoginBinding>() {
 
     override fun initListener() {
         mBinding.login.setOnClickListener {
-            findNavController().navigate(R.id.loginSecondFragment)
+            navigate(R.id.loginSecondFragment)
         }
     }
 

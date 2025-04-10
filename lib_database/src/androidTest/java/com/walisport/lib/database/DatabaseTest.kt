@@ -30,7 +30,7 @@ class DatabaseTest {
 //            val data = async {
 //                gameDB.testDao().getAll()
 //            }.await()
-            println("data $data")
+//            println("data $data")
         }
     }
 

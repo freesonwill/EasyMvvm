@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.lib.skin.res.SportSkinResourceManager.getDrawable
 import com.walisport.module.live.R
@@ -356,7 +357,7 @@ class LiveVideoLandscapeFragment :
 //    }
 
     private fun jumpToLeagueFragment() {
-        findNavController().navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
+        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
     }
 
     companion object {
