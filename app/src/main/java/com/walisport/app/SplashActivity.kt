@@ -2,12 +2,17 @@ package com.walisport.app
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.lib.base.ui.BaseActivity
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
+import com.walisport.lib_socket.data.LoginTokenFailedError
+import com.walisport.lib_socket.data.ResponseTimeOutError
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -114,7 +119,12 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
-        return StatusBarConfig(hideStatusBar = true)
+        return StatusBarConfig(hideStatusBar = false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+        super.onCreate(savedInstanceState)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -123,7 +133,8 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun initData() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
-        mViewModel.startSocketConnectAndLogin(uid, token)
+        mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
+        mViewModel.connectToServer()
     }
 
     override fun initListener() {
@@ -136,17 +147,34 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun createObserver() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
+            mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
+        }
 
-            if (seconds == 0) {
-                jumpToMainActivity()
+        mViewModel.jumpToMainOrLogin.observe(this) {
+            if (!it) {
+                //TODO 跳到登入頁
             } else {
-                mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
+                jumpToMainActivity()
+            }
+        }
+
+        mViewModel.connectingError.observe(this) {
+            when(it) {
+                is LoginTokenFailedError -> {   //準備登入時沒有取得token或是uid
+                    //TODO 跳到登入頁
+                }
+                is ResponseTimeOutError -> {    //send login timeout
+                    Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
+                }
+                else -> {   //其餘錯誤
+                    Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
+                }
             }
         }
     }
 
     private fun jumpToMainActivity() {
-        startActivity(Intent(this, MainActivity::class.java))
+        navigate(Intent(this, MainActivity::class.java))
         finish()
     }
 

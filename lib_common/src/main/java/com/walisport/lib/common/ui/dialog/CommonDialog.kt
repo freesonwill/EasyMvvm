@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.R
 import com.walisport.lib.common.databinding.DialogCommonBinding
 import com.walisport.lib.common.utils.ViewUtils
 
-class CommonDialog private constructor() : DialogFragment() {
-    private val mBinding: DialogCommonBinding by viewBind()
+class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
+    override val mBinding: DialogCommonBinding by viewBind()
     private var title: String? = null
     private var message: String? = null
     private var okText: String? = null
@@ -27,8 +27,7 @@ class CommonDialog private constructor() : DialogFragment() {
         return mBinding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             title = it.getString(ARG_TITLE)
             message = it.getString(ARG_MESSAGE)
@@ -57,6 +56,7 @@ class CommonDialog private constructor() : DialogFragment() {
         }
     }
 
+
     fun setOnOkClickListener(listener: () -> Unit) {
         onOkClick = listener
     }
@@ -64,17 +64,29 @@ class CommonDialog private constructor() : DialogFragment() {
     fun setOnCancelClickListener(listener: () -> Unit) {
         onCancelClick = listener
     }
+
     fun showSafely(manager: FragmentManager, tag: String) {
         if (!isAdded && manager.findFragmentByTag(tag) == null) {
             show(manager, tag)
         }
     }
 
+    override fun initListener() {
+    }
+
+    override fun createObserver() {
+    }
+
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
             setLayout(ViewUtils.dpToPx(280f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable( ContextCompat.getDrawable(requireContext(), R.drawable.shape_corner_12))
+            setBackgroundDrawable(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    R.drawable.shape_corner_12
+                )
+            )
         }
     }
 

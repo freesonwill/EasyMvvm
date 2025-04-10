@@ -17,5 +17,5 @@ interface ISocket<REQ, RES, State> {
     //socket client目前的狀態
     fun stateChangeObserve() : SharedFlow<State>
 
-    fun destroy()
+    fun reset()
 }

@@ -74,12 +74,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mBinding.root.fitsSystemWindows = true
         initView(savedInstanceState)
         initListener()
         initData()
         createObserver()
         trackLoadingTime()
     }
+
+
 
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
@@ -148,7 +151,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      * @param id
      * @return
      */
-    fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
+    private fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
     }
 }
@@ -212,4 +215,51 @@ fun <T : ViewBinding> Fragment.getViewBind(
         Boolean::class.java
     )
     return inflaterMethod.invoke(null, layoutInflater, root, attachedToParent) as T
+}
+
+
+/**
+ * 向目标fragment发送结果
+ *
+ * @param key
+ * @param value
+ * @param destinationId  navigation.xml中定义的fragmentID。默认为上一个fragment
+ *
+ * @see observeResult
+ * @example
+ *  // FragmentB
+ *  sendResultTo("key", "data")
+ *  findNavController().navigateUp()
+ *
+ *  //FragmentA
+ *  observeNavResult<String>("key") {
+ *     // 处理结果
+ *  }
+ */
+fun <T> Fragment.sendResult(key: String, value: T, destinationId: Int? = null) {
+    if (destinationId == null) {
+        findNavController().previousBackStackEntry?.savedStateHandle?.set(key, value)
+        return
+    }
+    findNavController().getBackStackEntry(destinationId).savedStateHandle[key] = value
+}
+
+/**
+ * 监听其他fragment发送过来的result
+ *
+ * @see sendResult
+ * @param key
+ * @param onResult
+ * @param fromId navigation.xml中定义的fragmentID。默认为当前fragment
+ */
+fun <T> Fragment.observeResult(key: String, onResult: (T) -> Unit, fromId: Int? = null) {
+    if (fromId == null) {
+        findNavController().currentBackStackEntry
+            ?.savedStateHandle?.getLiveData<T>(key)
+            ?.observe(viewLifecycleOwner) { onResult(it) }
+        return
+    }
+    findNavController().getBackStackEntry(fromId)
+        .savedStateHandle.getLiveData<T>(key)
+        .observe(viewLifecycleOwner) { onResult(it) }
 }
