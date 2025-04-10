@@ -31,4 +31,10 @@ class BetSheetRepository(private val betDao: BetDao) : BaseRepository() {
     fun sendBetting() {
 
     }
+
+    fun clearBet() {
+        scope.launch {
+            betDao.deleteAll()
+        }
+    }
 }
