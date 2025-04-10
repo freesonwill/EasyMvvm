@@ -287,7 +287,7 @@ class LiveVideoLandscapeFragment :
             setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoView.background =
-                    getDrawable(requireContext(), R.drawable.bg_shape_zoom_out_video_view)
+                    getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
             }
             start()
         }
