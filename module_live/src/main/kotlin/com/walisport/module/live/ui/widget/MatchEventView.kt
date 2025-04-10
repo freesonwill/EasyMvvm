@@ -3,8 +3,10 @@ package com.walisport.module.live.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.walisport.module.live.data.model.MatchEventBean
 import com.walisport.module.live.databinding.ViewMatchEventBinding
 import com.walisport.module.live.ui.adapter.MatchEventAdapter
@@ -26,6 +28,16 @@ class MatchEventView @JvmOverloads constructor(
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = matchAdapter
+            //加入针对RecyclerView的触摸事件拦截，解决RecyclerView嵌套在ScrollView中上滑不够丝滑的问题
+            addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    // 返回true以拦截触摸事件，防止滑动
+                    return true
+                }
+
+                override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
+                override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+            })
         }
     }
 
