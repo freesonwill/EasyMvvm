@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_bet"
+    app:startDestination="@id/enterBetFragment">
+
+    <fragment
+        android:id="@+id/enterBetFragment"
+        android:name="com.walisport.module.bet.ui.fragment.EnterBetFragment"
+        android:label="EnterBetFragment"
+        tools:layout="@layout/fragment_enter_bet">
+        <action
+            android:id="@+id/action_enterBetFragment_to_singleBetFragment"
+            app:destination="@id/singleBetFragment" />
+        <action
+            android:id="@+id/action_enterBetFragment_to_comboBetFragment"
+            app:destination="@id/comboBetFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/singleBetFragment"
+        android:name="com.walisport.module.bet.ui.fragment.SingleBetFragment"
+        android:label="SingleBetFragment"
+        tools:layout="@layout/fragment_single_bet" >
+        <action
+            android:id="@+id/action_singleBetFragment_to_comboBetFragment"
+            app:destination="@id/comboBetFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/comboBetFragment"
+        android:name="com.walisport.module.bet.ui.fragment.ComboBetFragment"
+        android:label="ComboBetFragment"
+        tools:layout="@layout/fragment_combo_bet"/>
+
+
+</navigation>

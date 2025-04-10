@@ -92,7 +92,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             findNavController().navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
         mBinding.tv9.setOnClickListener {
-            BetSheetFragment().show(childFragmentManager)
+            BetSheetFragment.newInstance(1).show(childFragmentManager)
         }
 
     }

@@ -1,120 +1,87 @@
 package com.walisport.module.bet.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
+import androidx.core.animation.doOnEnd
+import androidx.navigation.fragment.NavHostFragment
 import com.walisport.lib.base.ui.BaseBottomSheetFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.database.entity.BetBean
-import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentBetSheetBinding
-import com.walisport.module.bet.ui.adapter.BetSheetAdapter
-import com.walisport.module.bet.ui.custom.NumberKeyboardView
-import com.walisport.module.bet.viewmodel.BetSheetViewModel
-import com.walisport.module.bet.viewmodel.NumberCalculatorViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class BetSheetFragment : BaseBottomSheetFragment<FragmentBetSheetBinding>() {
+class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBetSheetBinding>() {
+
+    companion object {
+        const val MATCH_ID = "matchId"
+        fun newInstance(matchId: Int? = null): BetSheetFragment {
+            val b = Bundle()
+            return if (matchId == null) {
+                BetSheetFragment().apply {
+                    arguments = b
+                }
+            } else {
+
+                b.putInt(MATCH_ID, matchId)
+                BetSheetFragment().apply {
+                    arguments = b
+                }
+            }
+        }
+    }
 
     override val mBinding: FragmentBetSheetBinding by viewBind()
-    private val mViewModel: BetSheetViewModel by viewModel()
-    private lateinit var betSheetAdapter: BetSheetAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
-        isCancelable = false
-
-        mBinding.etMoney.requestFocus()
-        mBinding.etMoney.hint = getString(R.string.et_money_hint).format(
-            NumberCalculatorViewModel.MIN_MONEY,
-            NumberCalculatorViewModel.MAX_MONEY
-        )
-
-        mBinding.numberKeyboard.setOnCalculatorClickListener(object :
-            NumberKeyboardView.OnCalculatorClickListener {
-            override fun onNumberClick(number: Int) {
-                mViewModel.addNumber(number)
-            }
-
-            override fun onDotClick() {
-                mViewModel.setDot()
-            }
-
-            override fun onOtherClick() {
-                mViewModel.setMaxMoney()
-            }
-
-            override fun getOtherText(): String {
-                return getString(R.string.btn_max)
-            }
-
-        })
-
-        betSheetAdapter = BetSheetAdapter(object : BetSheetAdapter.OnBetSheetClickListener {
-            override fun onDeleteClick(item: BetBean) {
-
-            }
-        })
-        mBinding.rvBet.adapter = betSheetAdapter
     }
 
     override fun initListener() {
-        mBinding.ivClose.setOnClickListener {
-            dismiss()
-        }
-        mBinding.btnBack.setOnClickListener {
-            mViewModel.backNumber()
-        }
-        mBinding.btnClear.setOnClickListener {
-            mViewModel.clearNumber()
-        }
-        mBinding.btnDouble.setOnClickListener {
-            mViewModel.doubleNumber()
-        }
-        mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(100)
-        }
-        mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(500)
-        }
-        mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(1000)
-        }
-        mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(2000)
-        }
-        mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(5000)
-        }
-        mBinding.btnCollusion.setOnClickListener {
-            dismiss()
-        }
-        mBinding.clBet.setOnClickListener {
-            mViewModel.sendBet()
-        }
-        mBinding.btnReserve.setOnClickListener {
-            mViewModel.onBetSheetListener.value?.first()?.let {
-                val location = IntArray(2)
-                mBinding.btnReserve.getLocationInWindow(location)
-                ReserveDialogFragment.newInstance(
-                    location.first() + mBinding.btnReserve.width / 2,
-                    location.last() + mBinding.btnReserve.height,
-                    rateNumber = it.odds
-                ).show(childFragmentManager)
-            }
-
-        }
     }
 
     override fun createObserver() {
-        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
-            mBinding.etMoney.setText(it)
-            val length = it.length
-            mBinding.etMoney.setSelection(length)
+
+//        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
+//        navController.addOnDestinationChangedListener { _, d, b ->
+//            val curHeight = mBinding.root.height
+//            if (curHeight == 0) {
+//                mBinding.mainNav.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//                    override fun onGlobalLayout() {
+//                        mBinding.mainNav.viewTreeObserver.removeOnGlobalLayoutListener(this)
+//                        val nextHeight = mBinding.root.measuredHeight
+//                        if (curHeight != nextHeight) {
+//                            animateBottomSheetHeight(nextHeight)
+//                        }
+//                    }
+//                })
+//            }
+//
+//        }
+    }
+
+    private fun animateBottomSheetHeight(to: Int) {
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            ?: return
+
+        val anim = AnimationUtils.loadAnimation(requireContext(), com.walisport.lib.base.R.anim.slide_bottom_sheet_up)
+        bottomSheet.startAnimation(anim)
+
+        val valueAnimator = ValueAnimator.ofInt(0, to).apply {
+            duration = anim.duration
+            addUpdateListener { valueAnimator ->
+                val newHeight = valueAnimator.animatedValue as Int
+                bottomSheet.layoutParams = bottomSheet.layoutParams.apply {
+                    height = newHeight
+                }
+                bottomSheet.requestLayout()
+            }
+            doOnEnd {
+                bottomSheet.layoutParams = bottomSheet.layoutParams.apply {
+                    height = LayoutParams.WRAP_CONTENT
+                }
+            }
         }
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
-            betSheetAdapter.submitList(it)
-        }
-        mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
-            val money = getString(R.string.btn_bet_win_money).format(it)
-            mBinding.tvBetMoney.text = money
-        }
+        valueAnimator.start()
     }
 }

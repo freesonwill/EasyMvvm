@@ -8,7 +8,7 @@ import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.repo.BetSheetRepository
 import kotlinx.coroutines.launch
 
-class BetSheetViewModel(private val betRepo: BetSheetRepository) : NumberCalculatorViewModel() {
+class SingleBetViewModel(private val betRepo: BetSheetRepository) : NumberCalculatorViewModel() {
 
     private val _onBetSheetListener = MutableLiveData<List<BetBean>>()
     val onBetSheetListener: LiveData<List<BetBean>> get() =  _onBetSheetListener

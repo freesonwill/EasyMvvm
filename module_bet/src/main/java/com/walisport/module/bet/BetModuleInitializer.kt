@@ -5,7 +5,8 @@ import androidx.startup.Initializer
 import com.walisport.lib.base.ApplicationModuleInitializer
 import com.walisport.module.bet.repo.BetSheetRepository
 import com.walisport.module.bet.repo.FloatingButtonRepository
-import com.walisport.module.bet.viewmodel.BetSheetViewModel
+import com.walisport.module.bet.viewmodel.ComboBetViewModel
+import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import com.walisport.module.bet.viewmodel.ReserveDialogViewModel
 import com.walisport.module_bet.viewmodel.FloatingButtonViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -29,8 +30,9 @@ class BetModuleInitializer: Initializer<String> {
 
     private val viewModules = module {
         viewModelOf(::FloatingButtonViewModel)
-        viewModelOf(::BetSheetViewModel)
+        viewModelOf(::SingleBetViewModel)
         viewModelOf(::ReserveDialogViewModel)
+        viewModelOf(::ComboBetViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
