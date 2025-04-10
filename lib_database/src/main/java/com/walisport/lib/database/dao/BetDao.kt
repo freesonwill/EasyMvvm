@@ -23,6 +23,6 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("delete from BetBean")
     abstract suspend fun deleteAll()
 
-    @Query("SELECT * FROM BetBean ORDER BY 1")
-    abstract suspend fun getSingleBet(): BetBean
+    @Query("SELECT * FROM BetBean WHERE status = :status LIMIT 1")
+    abstract suspend fun getSingleBet(status: Int = 0): BetBean?
 }

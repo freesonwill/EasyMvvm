@@ -8,9 +8,9 @@ data class BetBean(
     @PrimaryKey
     val gameId: Int,
     val betTeamName: String,
-    val handicap: String,
-    val odds: Float,
-    val status: Int,
+    var handicap: String,
+    var odds: Float,
+    var status: Int,
     val leagueName: String,
     val matchName: String,
     var isBetStop: Boolean = false,
