@@ -6,9 +6,17 @@
     <string name="title_early">早盘</string>
     <string name="title_champion">冠军</string>
 
-    <string name="tittle_soccer">足球</string>
-    <string name="tittle_volleyball">排球</string>
-    <string name="tittle_basketball">篮球</string>
-    <string name="tittle_football">橄榄球</string>
-    <string name="tittle_baseball">棒球</string>
+    <!--Sport name-->
+    <string name="title_soccer">足球</string>
+    <string name="title_volleyball">排球</string>
+    <string name="title_basketball">篮球</string>
+    <string name="title_football">橄榄球</string>
+    <string name="title_baseball">棒球</string>
+
+    <!--League name-->
+    <string name="league_all">全部</string>
+    <string name="league_ucl">欧冠</string>
+    <string name="league_premier">英超</string>
+    <string name="league_laliga">西甲</string>
+    <string name="league_seriea">意甲</string>
 </resources>

@@ -5,7 +5,7 @@ import androidx.annotation.StringRes
 import androidx.fragment.app.Fragment
 import com.walisport.module.home.R
 import com.walisport.module_home.ui.fragment.ChampionFragment
-import com.walisport.module_home.ui.fragment.EarlyFragment
+import com.walisport.module.home.ui.fragment.EarlyFragment
 import com.walisport.module_home.ui.fragment.TodayFragment
 
 enum class HomeTab(@StringRes val titleRes: Int, val fragment: Fragment) {

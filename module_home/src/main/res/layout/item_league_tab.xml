@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="68dp"
+    android:layout_height="@dimen/dp_32"
+    android:background="@android:color/transparent"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:padding="6dp">
+
+    <ImageView
+        android:id="@+id/iv_league_icon"
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:layout_marginEnd="3dp" />
+
+    <TextView
+        android:id="@+id/tv_league_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:paddingBottom="@dimen/dp_2"
+        android:gravity="center_vertical"
+        android:textColor="@color/selector_league_tab_tint"
+        android:textSize="14sp" />
+</androidx.appcompat.widget.LinearLayoutCompat>

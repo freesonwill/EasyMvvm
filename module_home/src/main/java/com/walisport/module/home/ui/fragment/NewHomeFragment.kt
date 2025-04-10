@@ -1,20 +1,18 @@
 package com.walisport.module.home.ui.fragment
 
 import android.os.Bundle
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import com.google.android.material.tabs.TabLayoutMediator
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
 import com.walisport.module.home.databinding.FragmentNewHomeBinding
 import com.walisport.module.home.enums.HomeTab
 import com.walisport.module.home.enums.SportType
 import com.walisport.module.home.ui.adapter.HomePagerAdapter
-import com.walisport.module.home.ui.adapter.SportsListAdapter
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
@@ -46,7 +44,6 @@ class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 adapter = SportsListAdapter(sportsList) { sport ->
-                    // 點擊事件處理
                     Toast.makeText(
                         requireContext(),
                         "選擇：${getString(sport.titleResId)}",
@@ -58,7 +55,23 @@ class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun initListener() {
+        with(mBinding) {
+            llWalletEntry.setOnClickListener {
 
+            }
+
+            llFavoriteEntry.setOnClickListener {
+
+            }
+
+            llSearchEntry.setOnClickListener {
+
+            }
+
+            llBetEntry.setOnClickListener {
+
+            }
+        }
     }
 
     override fun createObserver() {

@@ -40,7 +40,7 @@
          />-->
     <androidx.fragment.app.FragmentContainerView
          android:id="@+id/fr2"
-         android:name="com.walisport.module.home.test.ViewPager2Fragment"
+         android:name="arch.cayenne.module.home.test.ViewPager2Fragment"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
          />
