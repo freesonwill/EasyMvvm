@@ -1,0 +1,27 @@
+<resources>
+    <string name="video_landscape_choose_video_source">選解說</string>
+    <string name="live_note_order">註單</string>
+    <string name="live_bet_on">投註</string>
+    <string name="live_chat">聊天</string>
+    <string name="live_outs">赛况</string>
+    <string name="live_lineup">陣容</string>
+    <string name="live_standings">積分榜</string>
+    <string name="live_word_cup">世界杯</string>
+    <string name="standings_score">積分</string>
+    <string name="standings_js">進/失</string>
+    <string name="standings_spf">勝/平/負</string>
+    <string name="standings_cc">場次</string>
+    <string name="standings_a">A組</string>
+    <string name="standings_b">B組</string>
+    <string name="standings_c">C組</string>
+    <string name="standings_d">D組</string>
+    <string name="technical_statistics">技術統計</string>
+
+    <string-array name="bet_slip_menus">
+        <item>未結算</item>
+        <item>確認中</item>
+        <item>已結算</item>
+        <item>預約</item>
+        <item>失效</item>
+    </string-array>
+</resources>

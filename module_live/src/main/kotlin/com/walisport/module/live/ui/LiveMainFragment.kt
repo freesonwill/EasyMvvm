@@ -6,23 +6,21 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.lib.base.adapter.PagerAdapter
-import com.walisport.lib.base.ben.PagerBean
+import com.walisport.lib.base.data.PagerBean
 import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.lib.common.utils.ext.clickNoRepeat
 import com.walisport.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
-import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TittleBarLiveBinding
-import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
+
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
 
@@ -38,10 +36,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tvCompetitionName.text = "中国VS日本"
             tvMoney.text = "¥ 10000.00"
             tvCompetitionName.clickNoRepeat {
-
+            }
+            ivLandscapeLeagueIcon.clickNoRepeat {
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
             }
         }
-        setCountView()
+        setVideoView()
         loadFragment()
     }
 
@@ -51,7 +51,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun createObserver() {
     }
 
-    private fun setCountView() {
+    private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)
                 as? LiveVideoFragment ?: LiveVideoFragment().also {
             childFragmentManager.beginTransaction()

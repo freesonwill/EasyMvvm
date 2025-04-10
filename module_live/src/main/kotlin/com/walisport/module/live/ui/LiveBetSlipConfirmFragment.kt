@@ -8,7 +8,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
-
+//注单确认
 class LiveBetSlipConfirmFragment:
     BaseFragment<LiveBetSlipConfirmViewModel, FragmentLiveBetslipConfirmBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> = FragmentLiveBetslipConfirmBinding::class

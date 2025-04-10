@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <tv.danmaku.ijk.media.example.widget.media.IjkVideoView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_back"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_36"
+        android:layout_marginTop="@dimen/dp_4"
+        android:paddingStart="@dimen/dp_14"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_14"
+        android:paddingBottom="@dimen/dp_10"
+        android:scaleType="fitXY"
+        android:src="@drawable/video_landscape_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_22"
+        android:layout_marginTop="@dimen/dp_13"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintLeft_toRightOf="@+id/iv_back"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_video_landscape_league_icon"
+            android:layout_width="@dimen/dp_96"
+            android:layout_height="@dimen/dp_22"
+            android:scaleType="centerCrop"
+            android:src="@drawable/title_league_icon" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="1.3dp"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:src="@drawable/title_landscape_separator" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_competition_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/color_E6E6E6"
+            android:textSize="@dimen/sp_15" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_share"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:paddingStart="@dimen/dp_9"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_9"
+        android:paddingBottom="@dimen/dp_12"
+        android:scaleType="fitXY"
+        android:src="@drawable/video_landscape_share"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_choose_source"
+        android:layout_width="@dimen/dp_22"
+        android:layout_height="@dimen/dp_22"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:layout_marginBottom="@dimen/dp_39"
+        android:src="@drawable/video_landscape_choose_source"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_choose_video_source" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_choose_video_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:text="@string/video_landscape_choose_video_source"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/tv_match_status" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_match_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_36"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:text="@string/live_outs"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

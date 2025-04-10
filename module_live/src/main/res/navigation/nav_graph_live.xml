@@ -16,6 +16,9 @@
             app:destination="@id/leagueFragment" />
 
         <deepLink app:uri="walisport://module_live/liveFragment" />
+        <action
+            android:id="@+id/action_liveMainFragment_to_VideoLandscapeFragment"
+            app:destination="@id/liveVideoLandscapeFragment" />
     </fragment>
 
     <fragment
@@ -27,18 +30,16 @@
         <deepLink app:uri="walisport://module_live/leagueFragment" />
     </fragment>
 
-    <activity
-        android:id="@+id/VideoLandscapeActivity"
-        android:label="activity_video_landscape"
-        app:data="walisport://video_landscape_activity"
-        app:targetPackage="${applicationId}">
 
-        <argument
-            android:name="userId"
-            android:defaultValue="@null"
-            app:argType="string"
-            app:nullable="true" />
+    <fragment
+        android:id="@+id/liveVideoLandscapeFragment"
+        android:name="com.walisport.module.live.ui.LiveVideoLandscapeFragment"
+        android:label="fragment_video_landscape"
+        tools:layout="@layout/fragment_live_video_landscape">
 
-        <deepLink app:uri="walisport://video_landscape_activity?userId={userId}" />
-    </activity>
+
+        <action
+            android:id="@+id/action_liveVideoLandscapeFragment_to_leagueFragment"
+            app:destination="@id/leagueFragment" />
+    </fragment>
 </navigation>

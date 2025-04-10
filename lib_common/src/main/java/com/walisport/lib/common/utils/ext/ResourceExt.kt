@@ -1,13 +1,12 @@
 package com.walisport.lib.common.utils.ext
 
 import android.app.Application
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.R
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**
@@ -16,12 +15,13 @@ import org.koin.java.KoinJavaComponent.getKoin
  * @description: 资源扩展
  */
 object ResourceExt {
+    private val application: Application by lazy { getKoin().get<Application>() }
 
     /***
      *  無Context狀態下取得String
      */
     fun @receiver:StringRes Int.getString(vararg formatArgs: Any): String {
-        return getKoin().get<Application>().getString(this, *formatArgs)
+        return application.getString(this, *formatArgs)
     }
 
 
@@ -29,7 +29,15 @@ object ResourceExt {
      *  获取Color
      */
     fun @receiver:ColorRes Int.getColor(): Int {
-        return ContextCompat.getColor(getKoin().get<Application>(), this)
+        return ContextCompat.getColor(application, this)
+    }
+
+    /**
+     * 获取ColorDrawable
+     * @return
+     */
+    fun @receiver:ColorRes Int.getColorDrawable(): ColorDrawable {
+        return ColorDrawable(ContextCompat.getColor(application, this))
     }
 
     /**
@@ -37,7 +45,7 @@ object ResourceExt {
      * @return
      */
     fun @receiver:DrawableRes Int.getDrawable(): Drawable {
-        return ContextCompat.getDrawable(getKoin().get<Application>(), this)!!
+        return ContextCompat.getDrawable(application, this)!!
     }
 
 }

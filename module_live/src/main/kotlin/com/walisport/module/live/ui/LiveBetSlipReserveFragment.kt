@@ -7,7 +7,7 @@ import com.walisport.module.live.databinding.FragmentLiveBetslipReserveBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
-
+//注单预约
 class LiveBetSlipReserveFragment :BaseFragment<LiveBetSlipReserveViewModel,FragmentLiveBetslipReserveBinding>(){
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> = FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<LiveBetSlipReserveViewModel> = LiveBetSlipReserveViewModel::class

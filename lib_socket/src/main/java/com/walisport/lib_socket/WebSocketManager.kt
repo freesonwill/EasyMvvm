@@ -53,6 +53,7 @@ class WebSocketManager(
                         stopReconnect()
                         startHeartbeat()
                     }
+                    is ConnectState.ConnectClosed -> Unit
                     else -> {
                         stopHeartbeat()
                         startReconnect()
@@ -71,8 +72,8 @@ class WebSocketManager(
         socket.reconnect()
     }
 
-    fun destroy() {
-        socket.destroy()
+    fun reset() {
+        socket.reset()
         stopHeartbeat()
     }
 

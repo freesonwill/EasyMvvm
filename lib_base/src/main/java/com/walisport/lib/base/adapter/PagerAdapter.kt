@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
-import com.walisport.lib.base.ben.PagerBean
+import com.walisport.lib.base.data.PagerBean
 class PagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,

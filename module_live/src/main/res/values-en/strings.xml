@@ -1,0 +1,27 @@
+<resources>
+    <string name="video_landscape_choose_video_source">Chose Commentary</string>
+    <string name="live_note_order">Bet slip</string>
+    <string name="live_bet_on">Betting</string>
+    <string name="live_chat">Chat</string>
+    <string name="live_outs">Match results</string>
+    <string name="live_lineup">Line-up</string>
+    <string name="live_standings">Standings</string>
+    <string name="live_word_cup">World Cup</string>
+    <string name="standings_score">Score</string>
+    <string name="standings_js">Goal/Lose</string>
+    <string name="standings_spf">Win/Equal/Lose</string>
+    <string name="standings_cc">Sessions</string>
+    <string name="standings_a">A Group</string>
+    <string name="standings_b">B Group</string>
+    <string name="standings_c">C Group</string>
+    <string name="standings_d">D Group</string>
+    <string name="technical_statistics">Technical Statistics</string>
+
+    <string-array name="bet_slip_menus">
+        <item>Unsettled</item>
+        <item>Confirming</item>
+        <item>Settled</item>
+        <item>Reserve</item>
+        <item>Invalidation</item>
+    </string-array>
+</resources>
