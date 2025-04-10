@@ -4,20 +4,15 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
-import com.walisport.lib.base.ui.interface_.IView
+import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.module.bet.databinding.FragmentReserveDialogBinding
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
 import com.walisport.module.bet.viewmodel.ReserveDialogViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ReserveDialogFragment private constructor() : DialogFragment(), IView {
+class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentReserveDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
@@ -39,23 +34,8 @@ class ReserveDialogFragment private constructor() : DialogFragment(), IView {
         }
     }
 
-    private val mBinding: FragmentReserveDialogBinding by viewBind()
+    override val mBinding: FragmentReserveDialogBinding by viewBind()
     private val mViewModel: ReserveDialogViewModel by viewModel()
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        initView(savedInstanceState)
-        initListener()
-        return mBinding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        createObserver()
-    }
 
     override fun onStart() {
         super.onStart()
@@ -83,13 +63,6 @@ class ReserveDialogFragment private constructor() : DialogFragment(), IView {
                     }
                 })
             }
-        }
-    }
-
-    fun show(manager: FragmentManager) {
-        val f = manager.findFragmentByTag(this::class.java.simpleName)
-        if (f == null || !f.isAdded) {
-            super.show(manager, this::class.java.simpleName)
         }
     }
 
