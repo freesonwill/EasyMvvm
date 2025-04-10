@@ -69,6 +69,7 @@ class LiveVideoLandscapeFragment :
             } else {
                 enlarge {
                     showButtons()
+                    videoViewFullScreen = true
                 }
             }
         }
@@ -82,24 +83,31 @@ class LiveVideoLandscapeFragment :
         }
 
         mBinding.ivShare.clickNoRepeat {
-            videoViewFullScreen = false
             hideButtons()
-            reduce()
+            reduce {
+                videoViewFullScreen = false
+            }
         }
 
         mBinding.ivChooseSource.clickNoRepeat {
             hideButtons()
-            reduce()
+            reduce {
+                videoViewFullScreen = false
+            }
         }
 
         mBinding.tvChooseVideoSource.clickNoRepeat {
             hideButtons()
-            reduce()
+            reduce {
+                videoViewFullScreen = false
+            }
         }
 
         mBinding.tvMatchStatus.clickNoRepeat {
             hideButtons()
-            reduce()
+            reduce {
+                videoViewFullScreen = false
+            }
         }
 
     }
@@ -237,7 +245,7 @@ class LiveVideoLandscapeFragment :
     /**
      * 缩小视频播放区
      */
-    private fun reduce() {
+    private fun reduce(onEndAction: () -> Unit) {
         //width， height， marginStart, marginTop
         val currentHeight = mBinding.root.measuredHeight
         val targetHeight = 275.dp2px
@@ -288,6 +296,7 @@ class LiveVideoLandscapeFragment :
             doOnEnd {
                 mBinding.videoView.background =
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
+                onEndAction()
             }
             start()
         }
@@ -330,8 +339,8 @@ class LiveVideoLandscapeFragment :
         super.onResume()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         //使用横屏时到宽高
-        AutoSizeConfig.getInstance().setDesignWidthInDp(812)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(375)
+        AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
+        AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
 
         mBinding.root.fitsSystemWindows = false
         setStatusBar(StatusBarConfig(hideStatusBar = true))
@@ -343,8 +352,8 @@ class LiveVideoLandscapeFragment :
         super.onPause()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         //恢复竖屏，宽高也要回到竖屏时到宽高
-        AutoSizeConfig.getInstance().setDesignWidthInDp(375)
-        AutoSizeConfig.getInstance().setDesignHeightInDp(812)
+        AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
+        AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
 
         mBinding.root.fitsSystemWindows = true
         setStatusBar(StatusBarConfig(hideStatusBar = false))
@@ -362,6 +371,12 @@ class LiveVideoLandscapeFragment :
 
     companion object {
         const val ANIMATION_DURATION = 300L
+
+        const val LANDSCAPE_WIDTH = 812
+        const val LANDSCAPE_HEIGHT = 375
+
+        const val PORTRAIT_WIDTH = 375
+        const val PORTRAIT_HEIGHT = 812
     }
 
 }
