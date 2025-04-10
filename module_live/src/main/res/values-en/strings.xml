@@ -16,6 +16,10 @@
     <string name="standings_c">C Group</string>
     <string name="standings_d">D Group</string>
     <string name="technical_statistics">Technical Statistics</string>
+    <string name="share">Share with friends</string>
+    <string name="share_link">Copy link</string>
+
+
 
     <string-array name="bet_slip_menus">
         <item>Unsettled</item>

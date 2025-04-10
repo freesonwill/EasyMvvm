@@ -87,6 +87,8 @@ class LiveVideoLandscapeFragment :
             reduce {
                 videoViewFullScreen = false
             }
+            setVideoShareView()
+            showVideoShareView()
         }
 
         mBinding.ivChooseSource.clickNoRepeat {
@@ -367,6 +369,34 @@ class LiveVideoLandscapeFragment :
 
     private fun jumpToLeagueFragment() {
         navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
+    }
+
+    private fun setVideoShareView() {
+        childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
+                as? LiveVideoShareFragment ?: LiveVideoShareFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentShare.id, it, LiveVideoShareFragment.TAG)
+                .commitNow()
+        }
+
+    }
+
+    private fun showVideoShareView() {
+        val currentMarginStart =
+            (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = -mBinding.fragmentShare.measuredWidth
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentShare.layoutParams = lp
+
+            }
+        }.apply {
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
     }
 
     companion object {
