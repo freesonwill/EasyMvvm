@@ -2,17 +2,22 @@ package com.walisport.module.live.ui
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.clickNoRepeat
+import com.walisport.lib.skin.res.SportSkinResourceManager.getDrawable
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import me.jessyan.autosize.AutoSizeConfig
@@ -61,7 +66,9 @@ class LiveVideoLandscapeFragment :
                     showButtonsAnimated()
                 }
             } else {
-                showButtons()
+                enlarge {
+                    showButtons()
+                }
             }
         }
 
@@ -74,19 +81,24 @@ class LiveVideoLandscapeFragment :
         }
 
         mBinding.ivShare.clickNoRepeat {
+            videoViewFullScreen = false
             hideButtons()
+            reduce()
         }
 
         mBinding.ivChooseSource.clickNoRepeat {
             hideButtons()
+            reduce()
         }
 
         mBinding.tvChooseVideoSource.clickNoRepeat {
             hideButtons()
+            reduce()
         }
 
         mBinding.tvMatchStatus.clickNoRepeat {
             hideButtons()
+            reduce()
         }
 
     }
@@ -102,12 +114,15 @@ class LiveVideoLandscapeFragment :
     }
 
     private fun showButtonsAnimated() {
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
+
         with(AnimatorSet()) {
             playTogether(
                 ObjectAnimator.ofFloat(
                     mBinding.topArea,
                     "translationY",
-                    *floatArrayOf(-100f.dp2px.toFloat(), 0f)
+                    *floatArrayOf(-operateAreaHeight, 0f)
                 ),
                 ObjectAnimator.ofFloat(
                     mBinding.topArea,
@@ -117,7 +132,7 @@ class LiveVideoLandscapeFragment :
                 ObjectAnimator.ofFloat(
                     mBinding.bottomArea,
                     "translationY",
-                    *floatArrayOf(100f.dp2px.toFloat(), 0f)
+                    *floatArrayOf(operateAreaHeight, 0f)
                 ),
                 ObjectAnimator.ofFloat(
                     mBinding.bottomArea,
@@ -126,33 +141,157 @@ class LiveVideoLandscapeFragment :
                 ),
 
                 )
-            setDuration(300)
+            setDuration(ANIMATION_DURATION)
             start()
         }
     }
 
     private fun hideButtonsAnimated() {
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
+
         with(AnimatorSet()) {
             playTogether(
                 ObjectAnimator.ofFloat(
                     mBinding.topArea,
                     "translationY",
-                    0f, -100f.dp2px.toFloat()
+                    0f, -operateAreaHeight
                 ),
                 ObjectAnimator.ofFloat(mBinding.topArea, "alpha", 1f, 0.5f),
                 ObjectAnimator.ofFloat(
                     mBinding.bottomArea,
                     "translationY",
-                    *floatArrayOf(0f, 100f.dp2px.toFloat())
+                    *floatArrayOf(0f, operateAreaHeight)
                 ),
                 ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
             )
-            setDuration(300)
+            setDuration(ANIMATION_DURATION)
 
             start()
         }
     }
 
+    /**
+     * 放大视频播放区
+     */
+    private fun enlarge(onEndAction: () -> Unit) {
+        //width， height， marginStart, marginTop
+        val currentHeight = mBinding.videoView.measuredHeight
+        val targetWidth = mBinding.root.measuredWidth
+        val currentWidth = mBinding.videoView.measuredWidth
+        val targetHeight = mBinding.root.measuredHeight
+        val currentMarginTop =
+            (mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams).topMargin
+        val targetMarginTop = 0
+        val currentMarginStart =
+            (mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = 0
+
+        with(AnimatorSet()) {
+            playTogether(
+                ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams
+                        lp.height = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+                    }
+                },
+                ValueAnimator.ofInt(currentWidth, targetWidth).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams
+                        lp.width = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+                    }
+                },
+                ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        lp.topMargin = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+
+                    }
+                },
+                ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        lp.marginStart = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+
+                    }
+                })
+            setDuration(ANIMATION_DURATION)
+            doOnEnd {
+                mBinding.videoView.background =
+                    getDrawable(requireContext(), com.walisport.lib.common.R.color.black)
+                onEndAction()
+            }
+            start()
+        }
+    }
+
+    /**
+     * 缩小视频播放区
+     */
+    private fun reduce() {
+        //width， height， marginStart, marginTop
+        val currentHeight = mBinding.root.measuredHeight
+        val targetHeight = 275.dp2px
+        val currentWidth = mBinding.root.measuredWidth
+        val targetWidth = 495.dp2px
+        val currentMarginTop = 0
+        val targetMarginTop = (currentHeight - targetHeight) / 2
+        val currentMarginStart = 0
+        val targetMarginStart = 32.dp2px
+
+        with(AnimatorSet()) {
+            playTogether(
+                ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams
+                        lp.height = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+                    }
+                },
+                ValueAnimator.ofInt(currentWidth, targetWidth).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams
+                        lp.width = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+                    }
+                },
+                ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        lp.topMargin = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+
+                    }
+                },
+                ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+                    addUpdateListener {
+                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        lp.marginStart = it.animatedValue as Int
+
+                        mBinding.videoView.layoutParams = lp
+
+                    }
+                })
+            setDuration(ANIMATION_DURATION)
+            doOnEnd {
+                mBinding.videoView.background =
+                    getDrawable(requireContext(), R.drawable.bg_shape_zoom_out_video_view)
+            }
+            start()
+        }
+
+    }
 
 
     override fun createObserver() {
@@ -218,6 +357,10 @@ class LiveVideoLandscapeFragment :
 
     private fun jumpToLeagueFragment() {
         findNavController().navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
+    }
+
+    companion object {
+        const val ANIMATION_DURATION = 300L
     }
 
 }
