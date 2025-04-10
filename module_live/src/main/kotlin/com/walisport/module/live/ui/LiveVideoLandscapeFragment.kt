@@ -71,6 +71,9 @@ class LiveVideoLandscapeFragment :
                     showButtons()
                     videoViewFullScreen = true
                 }
+
+                //隐藏子fragment
+                hideFragment()
             }
         }
 
@@ -393,10 +396,39 @@ class LiveVideoLandscapeFragment :
                 mBinding.fragmentShare.layoutParams = lp
 
             }
-        }.apply {
             setDuration(ANIMATION_DURATION)
             start()
         }
+    }
+
+    private fun hideVideoShareView(onEndAction: () -> Unit){
+        val currentMarginStart =
+            (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = 0
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentShare.layoutParams = lp
+
+            }
+            doOnEnd { onEndAction() }
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
+    }
+
+    private fun hideFragment(){
+        val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
+
+        if(fragment is LiveVideoShareFragment) {
+            hideVideoShareView {
+                childFragmentManager.beginTransaction().remove(fragment).commit()
+            }
+        }
+
+
     }
 
     companion object {

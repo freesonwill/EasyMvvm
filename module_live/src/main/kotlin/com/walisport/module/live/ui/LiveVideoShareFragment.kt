@@ -35,8 +35,8 @@ class LiveVideoShareFragment : BaseFragment<LiveVideoViewModel, FragmentLiveShar
     override fun onResume() {
         super.onResume()
         mBinding.root.fitsSystemWindows = false
-
     }
+
 
     companion object {
         const val TAG = "LiveVideoShareFragment"
