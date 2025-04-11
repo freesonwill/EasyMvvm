@@ -25,7 +25,7 @@ res.srcDirs("src/main/res","src/main/res-light")
 ```
 - (2) 将对应的TextView改成SportTextView 根据需要有SportImageView,SportLinearLayout等，可根据需要在lib_skin下的wight包中查找对应view或自行添加
 ```
-<com.walisport.lib.skin.widget.SportTextView
+<arch.cayenne.lib.skin.widget.SportTextView
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:textColor="@color/secondary_text"

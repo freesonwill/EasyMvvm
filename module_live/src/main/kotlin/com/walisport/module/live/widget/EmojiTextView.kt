@@ -6,10 +6,9 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.lib.skin.SportSkinManager
-import com.walisport.lib.skin.widget.helper.SportSkinBackGroundHelper
-import com.walisport.lib.skin.widget.helper.SportSkinTextHelper
+import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SportSkinTextHelper
 import com.walisport.module.live.utils.EmojiUtils
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject

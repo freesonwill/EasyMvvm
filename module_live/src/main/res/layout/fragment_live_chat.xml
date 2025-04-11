@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="live_chat_recycler,live_chat_ll_search,live_chat_iv_share" />
 
-        <com.walisport.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/live_chat_iv_status"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_180"
@@ -40,7 +40,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/live_chat_tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintLeft_toLeftOf="parent">
 
-            <com.walisport.lib.skin.widget.SportEditText
+            <arch.cayenne.lib.skin.widget.SportEditText
                 android:id="@+id/live_chat_et_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
