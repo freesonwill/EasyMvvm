@@ -99,6 +99,9 @@ class LiveVideoLandscapeFragment :
             reduce {
                 videoViewFullScreen = false
             }
+
+            setVideoChooseSourceView()
+            showVideoChooseSourceView()
         }
 
         mBinding.tvChooseVideoSource.clickNoRepeat {
@@ -419,12 +422,65 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    private fun setVideoChooseSourceView() {
+        childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
+                as? LiveVideoChooseSourceFragment ?: LiveVideoChooseSourceFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentChooseSource.id, it, LiveVideoChooseSourceFragment.TAG)
+                .commitNow()
+        }
+
+    }
+
+    private fun showVideoChooseSourceView() {
+        val currentMarginStart =
+            (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = -mBinding.fragmentChooseSource.measuredWidth
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentChooseSource.layoutParams = lp
+
+            }
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
+    }
+
+    private fun hideVideoChooseSourceView(onEndAction: () -> Unit){
+        val currentMarginStart =
+            (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = 0
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentChooseSource.layoutParams = lp
+
+            }
+            doOnEnd { onEndAction() }
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
+    }
+
     private fun hideFragment(){
         val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
 
         if(fragment is LiveVideoShareFragment) {
             hideVideoShareView {
                 childFragmentManager.beginTransaction().remove(fragment).commit()
+            }
+        }
+
+        val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
+
+        if(fragment2 is LiveVideoChooseSourceFragment) {
+            hideVideoChooseSourceView {
+                childFragmentManager.beginTransaction().remove(fragment2).commit()
             }
         }
 

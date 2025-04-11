@@ -133,4 +133,11 @@
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_choose_source"
+        android:layout_width="@dimen/dp_253"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
