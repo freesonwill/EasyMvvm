@@ -55,7 +55,7 @@ class EmojiTextView :
     override fun setText(text: CharSequence?, type: BufferType?) {
         var builder = SpannableString(text)
         if (!text.isNullOrEmpty()) {
-            EmojiUtils.replaceEmoji(context, builder, 20.dp2px.toFloat())
+            EmojiUtils.replaceEmoji(context, builder, )
         }
         super.setText(builder, type)
     }

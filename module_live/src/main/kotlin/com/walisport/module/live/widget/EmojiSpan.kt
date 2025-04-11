@@ -7,17 +7,19 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.text.style.DynamicDrawableSpan
 import androidx.core.content.ContextCompat
+import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
 internal class EmojiSpan(
     private val context: Context,
     private val emojiResId: Int,
-    private val size: Float,
+    private val height: Float,
+    private val width: Float,
 ) : DynamicDrawableSpan() {
     private val deferredDrawable by lazy(LazyThreadSafetyMode.NONE) {
         val drawable = ContextCompat.getDrawable(context, emojiResId)
-        drawable?.setBounds(0, 0, size.toInt(), size.toInt())
+        drawable?.setBounds(0, 0, width.toInt(), height.toInt())
         drawable
     }
 
@@ -30,12 +32,13 @@ internal class EmojiSpan(
         end: Int,
         fontMetrics: FontMetricsInt?,
     ): Int {
+        val rect = deferredDrawable?.bounds
         if (fontMetrics != null) {
             val paintFontMetrics = paint.fontMetrics
             val ascent = paintFontMetrics.ascent
             val descent = paintFontMetrics.descent
             val targetSize = abs(ascent) + abs(descent)
-            val roundEmojiSize = size.roundToInt()
+            val roundEmojiSize = height.roundToInt()
             // Equal size use default font metrics.
             if (roundEmojiSize == targetSize.roundToInt()) {
                 fontMetrics.ascent = ascent.toInt()
@@ -45,13 +48,13 @@ internal class EmojiSpan(
             } else {
                 val fontHeight = paintFontMetrics.descent - paintFontMetrics.ascent
                 val centerY = paintFontMetrics.ascent + fontHeight / 2
-                fontMetrics.ascent = (centerY - size / 2).toInt()
+                fontMetrics.ascent = (centerY - height / 2).toInt()
                 fontMetrics.top = fontMetrics.ascent
-                fontMetrics.bottom = (centerY + size / 2).toInt()
+                fontMetrics.bottom = (centerY + height / 2).toInt()
                 fontMetrics.descent = fontMetrics.bottom
             }
         }
-        return size.toInt()
+        return rect!!.right
     }
 
     override fun draw(
@@ -69,7 +72,7 @@ internal class EmojiSpan(
         val paintFontMetrics = paint.fontMetrics
         val fontHeight = paintFontMetrics.descent - paintFontMetrics.ascent
         val centerY = y + paintFontMetrics.descent - fontHeight / 2
-        val transitionY = centerY - size / 2
+        val transitionY = centerY - height / 2
         canvas.save()
         canvas.translate(x, transitionY)
         drawable?.draw(canvas)

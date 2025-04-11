@@ -58,7 +58,7 @@ class EmojiEditTextView : AppCompatEditText {
     ) {
         super.onTextChanged(text, start, lengthBefore, lengthAfter)
         if (!getText().isNullOrEmpty()) {
-            EmojiUtils.replaceEmoji(context, getText()!!, 20.dp2px.toFloat())
+            EmojiUtils.replaceEmoji(context, getText()!!)
         }
     }
 
