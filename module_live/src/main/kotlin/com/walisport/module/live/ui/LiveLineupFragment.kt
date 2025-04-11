@@ -16,10 +16,14 @@ import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
-//阵容
+/**
+ * 阵容
+ * 描述:live_lineup_item_layout and live_lineup_item_bottom_layout 列表控件根据数据动态添加lineup_head 数据
+ */
 class LiveLineupFragment : BaseFragment<LiveLineupViewModel,FragmentLiveLineupBinding>() {
     override val vbClass: KClass<FragmentLiveLineupBinding> = FragmentLiveLineupBinding::class
     override val vmClass: KClass<LiveLineupViewModel> = LiveLineupViewModel::class
+
 
     override fun initView(savedInstanceState: Bundle?) {
     }
@@ -29,6 +33,5 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel,FragmentLiveLineupBi
 
     override fun createObserver() {
     }
-
 
 }

@@ -1,13 +1,183 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.LiveLineupFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="LiveLineupFragment" />
+  <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      tools:ignore="ScrollViewCount">
 
-</FrameLayout>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="7dp"
+        android:paddingStart="7dp"
+        android:paddingEnd="7dp"
+        android:background="@color/black"
+        >
+    <include layout="@layout/live_lineup_item_layout"
+        android:id="@+id/lineup_item_top"
+        />
+    <include layout="@layout/live_lineup_item_bottom_layout"
+        android:id="@+id/lineup_item_bottom"
+        />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_marginTop="10dp"
+        android:paddingBottom="@dimen/dp_10"
+        android:layout_width="match_parent"
+        android:background="@drawable/lineup_substitution_bg"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+      <androidx.appcompat.widget.AppCompatTextView
+          android:layout_margin="@dimen/dp_1"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/sp_14"
+          android:gravity="center_vertical"
+          android:paddingStart="@dimen/dp_12"
+          android:background="@drawable/lineup_substitution_title_bg"
+          android:text="@string/live_substitution_lineup"
+          android:textColor="@color/color_929298"
+          tools:ignore="RtlSymmetry" />
+
+
+      <androidx.appcompat.widget.LinearLayoutCompat
+          android:layout_width="match_parent"
+          android:orientation="vertical"
+          android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_width="wrap_content"
+            android:text="法国"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/live_bet_country_icon"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+        <include layout="@layout/lineup_substitution_item"/>
+        <include layout="@layout/lineup_substitution_item"/>
+        <include layout="@layout/lineup_substitution_item"/>
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+
+      <androidx.appcompat.widget.LinearLayoutCompat
+          android:layout_marginTop="@dimen/dp_30"
+          android:layout_width="match_parent"
+          android:orientation="vertical"
+          android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_6"
+            android:layout_width="wrap_content"
+            android:text="法国"
+            android:gravity="center_vertical"
+            android:drawableStart="@drawable/live_bet_country_icon"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/white"
+            android:drawablePadding="8dp"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+        <include layout="@layout/lineup_substitution_item_blue"/>
+        <include layout="@layout/lineup_substitution_item_blue"/>
+        <include layout="@layout/lineup_substitution_item_blue"/>
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+      <androidx.appcompat.widget.LinearLayoutCompat
+          android:layout_marginTop="10dp"
+          android:paddingBottom="@dimen/dp_10"
+          android:layout_width="match_parent"
+          android:background="@drawable/lineup_substitution_bg"
+          android:orientation="vertical"
+          android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_margin="@dimen/dp_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp_14"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/dp_12"
+            android:background="@drawable/lineup_substitution_title_bg"
+            android:text="@string/live_repair_lineup"
+            android:textColor="@color/color_929298"
+            tools:ignore="RtlSymmetry" />
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+          <androidx.appcompat.widget.LinearLayoutCompat
+              android:layout_width="match_parent"
+              android:orientation="horizontal"
+              android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:text="法国"
+                android:gravity="center_vertical"
+                android:drawableStart="@drawable/live_bet_country_icon"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/white"
+                android:drawablePadding="8dp"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_marginEnd="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginBottom="@dimen/dp_6"
+                android:layout_width="wrap_content"
+                android:text="阿根廷 "
+                android:gravity="center_vertical"
+                android:drawableEnd="@drawable/live_bet_country_icon"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/white"
+                android:drawablePadding="8dp"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+          <include layout="@layout/lineup_repair_item"/>
+          <include layout="@layout/lineup_repair_item"/>
+          <include layout="@layout/lineup_repair_item"/>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+      </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+  </ScrollView>
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
