@@ -1,7 +1,7 @@
-package com.walisport.app.data
+package com.walisport.module.home.data
 
 //對應API所需的play_type參數
-sealed class PlayType(id: Int) {
+sealed class PlayType(val id: Int) {
     //全部
     data object All: PlayType(0)
     //滾地

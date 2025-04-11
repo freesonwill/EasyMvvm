@@ -3,6 +3,7 @@ package com.walisport.module.home
 import android.content.Context
 import androidx.startup.Initializer
 import com.walisport.lib.base.utils.LogUtilsExt.logd
+import com.walisport.lib.database.GameDatabase
 import com.walisport.module.home.repository.HomeRepository
 import com.walisport.module.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -32,8 +33,11 @@ class HomeModuleInitializer: Initializer<Unit> {
     private val viewModules = module {
         viewModel { HomeViewModel() }
     }
-    private val repoModules = module {
-        factory { (scope: CoroutineScope) -> HomeRepository(scope, get()) }
+    private val daoModule = module {
+//        factory { get<GameDatabase>().sportDao() }
     }
-    private val moduleList: List<Module> = listOf(viewModules, repoModules)
+    private val repoModules = module {
+        factory { (scope: CoroutineScope) -> HomeRepository(scope, get(), get()) }
+    }
+    private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }

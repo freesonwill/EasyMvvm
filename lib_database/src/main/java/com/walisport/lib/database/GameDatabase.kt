@@ -5,10 +5,12 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.walisport.lib.database.dao.BetDao
+import com.walisport.lib.database.dao.SportDao
 import com.walisport.lib.database.entity.BetBean
+import com.walisport.lib.database.entity.SportBean
 
 @Database(
-    entities = [BetBean::class],
+    entities = [BetBean::class, SportBean::class],
     version = 1,
     exportSchema = false
 )
@@ -35,4 +37,6 @@ abstract class GameDatabase: RoomDatabase() {
     }
 
     abstract fun betDao(): BetDao
+
+    abstract fun sportDao(): SportDao
 }
