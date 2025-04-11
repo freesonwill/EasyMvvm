@@ -128,7 +128,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        jumpToMainActivity()
     }
 
     override fun initData() {
