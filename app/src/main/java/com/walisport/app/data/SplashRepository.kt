@@ -1,14 +1,14 @@
 package com.walisport.app.data
 
-import com.walisport.lib.base.data.repository.BaseRepository
-import com.walisport.lib.common.data.UserDataKey
-import com.walisport.lib.common.data.UserDataManager
-import com.walisport.lib.common.helper.CountDownHelper
-import com.walisport.lib_socket.WebSocketManager
-import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.ConnectState
-import com.walisport.lib_socket.data.SocketResponseData
-import com.walisport.lib_socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.UserDataKey
+import arch.cayenne.lib.common.data.UserDataManager
+import arch.cayenne.lib.common.helper.CountDownHelper
+import arch.cayenne.lib.socket.WebSocketManager
+import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.data.ConnectState
+import arch.cayenne.lib.socket.data.SocketResponseData
+import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

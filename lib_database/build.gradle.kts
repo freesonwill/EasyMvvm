@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
-    id("kotlin-kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
-    namespace = "com.walisport.lib.databse"
+    namespace = "arch.cayenne.lib.database"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "com.walisport.lib.database.InstrumentationTestRunner"
+        testInstrumentationRunner = "arch.cayenne.lib.database.InstrumentationTestRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -43,7 +43,7 @@ dependencies {
 
     api(libs.room)
     api(libs.room.ktx)
-    kapt(libs.room.compiler)
+    ksp(libs.room.compiler)
 
     implementation(libs.koin)
     implementation(libs.startup)

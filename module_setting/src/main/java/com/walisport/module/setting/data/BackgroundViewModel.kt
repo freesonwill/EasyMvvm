@@ -2,8 +2,8 @@ package com.walisport.module.setting.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.common.data.UserDataKey
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.UserDataKey
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 

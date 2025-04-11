@@ -6,8 +6,8 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.data.model.StandingsBean
 import com.walisport.module.live.data.model.StandingsTeam
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding

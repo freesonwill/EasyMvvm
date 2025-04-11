@@ -1,12 +1,11 @@
 package com.walisport.module.live.ui.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.base.adapter.BaseAdapter
-import com.walisport.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.databinding.AdapterLiveBetContentItemLayoutBinding
 
 class LiveBetContentAdapter(compare: DiffUtil.ItemCallback<String>) :

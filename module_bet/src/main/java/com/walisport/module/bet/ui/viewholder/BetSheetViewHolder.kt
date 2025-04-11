@@ -1,7 +1,7 @@
 package com.walisport.module.bet.ui.viewholder
 
-import com.walisport.lib.base.viewholder.BaseViewHolder
-import com.walisport.lib.database.entity.BetBean
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.database.entity.BetBean
 import com.walisport.module.bet.databinding.ItemBetSheetBinding
 
 class BetSheetViewHolder(private val mBinding: ItemBetSheetBinding): BaseViewHolder(mBinding) {
@@ -10,6 +10,7 @@ class BetSheetViewHolder(private val mBinding: ItemBetSheetBinding): BaseViewHol
         val odds = "@${bean.odds}"
         mBinding.tvOdds.text = odds
 
+        mBinding.tvBetTeamName.text = bean.betTeamName
         mBinding.tvMatchName.text = bean.matchName
         mBinding.tvLeagueName.text = bean.leagueName
     }

@@ -2,7 +2,7 @@ package com.walisport.module.live.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 
 class VideoActivityViewModel : BaseViewModel() {
 

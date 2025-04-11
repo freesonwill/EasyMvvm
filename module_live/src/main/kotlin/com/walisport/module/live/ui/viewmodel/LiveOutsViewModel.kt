@@ -3,7 +3,7 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.GoalTrendBean
 import com.walisport.module.live.data.model.MatchEventBean

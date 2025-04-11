@@ -7,7 +7,7 @@
     android:id="@+id/root"
     android:background="@color/color_0E0F19">
 
-    <com.walisport.lib.common.widget.TitleBarView
+    <arch.cayenne.lib.common.ui.widget.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -2,8 +2,8 @@ package com.walisport.module.bet.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.walisport.lib.base.adapter.BaseAdapter
-import com.walisport.lib.database.entity.BetBean
+import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.database.entity.BetBean
 import com.walisport.module.bet.databinding.ItemBetSheetBinding
 import com.walisport.module.bet.ui.compare.BetBeanCompare
 import com.walisport.module.bet.ui.viewholder.BetSheetViewHolder
@@ -18,7 +18,7 @@ class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListen
     ) {
         holder.init(getItem(position))
         binding.ivDelete.setOnClickListener {
-            onBetSheetClickListener.onDeleteClick(getItem(position))
+            onBetSheetClickListener.onDeleteClick(getItem(holder.adapterPosition))
         }
     }
 

@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.base.adapter.BaseAdapter
-import com.walisport.lib.base.viewholder.BaseViewHolder
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 
 class LiveBetOnAdapter(compare: DiffUtil.ItemCallback<String>) :

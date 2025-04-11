@@ -1,7 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.module.live.data.model.GoalTrendBean
 import com.walisport.module.live.data.model.MatchEventBean
 import com.walisport.module.live.databinding.FragmentLiveOutsBinding

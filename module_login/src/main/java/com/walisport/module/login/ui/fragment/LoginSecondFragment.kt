@@ -1,9 +1,9 @@
 package com.walisport.module.login.ui.fragment
 
 import android.os.Bundle
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewBind
 import com.walisport.module.login.databinding.FragmentLoginSecondBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass

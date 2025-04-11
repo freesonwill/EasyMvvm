@@ -2,8 +2,8 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.compare.VideoSourceCompare
 import com.walisport.module.live.databinding.FragmentLiveChooseSourceBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceAdapter

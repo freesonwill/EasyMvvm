@@ -11,14 +11,13 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SportSkinResourceManager.getDrawable
 import com.bumptech.glide.Glide
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.interface_.StatusBarConfig
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.lib.skin.res.SportSkinResourceManager.getDrawable
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
@@ -238,7 +237,7 @@ class LiveVideoLandscapeFragment :
             setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoView.background =
-                    getDrawable(requireContext(), com.walisport.lib.common.R.color.black)
+                    getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
             start()
@@ -315,7 +314,7 @@ class LiveVideoLandscapeFragment :
 
         mViewModel.leagueIconUrl.observe(this) {
             Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
-                .placeholder(com.walisport.lib.common.R.drawable.title_league_icon)
+                .placeholder(R.drawable.title_league_icon)
                 .into(mBinding.ivVideoLandscapeLeagueIcon)
         }
 
