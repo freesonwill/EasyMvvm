@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.clickNoRepeat
+import com.walisport.module.live.databinding.FragmentLiveChooseSourceBinding
 import com.walisport.module.live.databinding.FragmentLiveShareBinding
 import com.walisport.module.live.ui.LiveVideoLandscapeFragment.Companion.LANDSCAPE_HEIGHT
 import com.walisport.module.live.ui.LiveVideoLandscapeFragment.Companion.LANDSCAPE_WIDTH
@@ -14,8 +15,8 @@ import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
-class LiveVideoChooseSourceFragment : BaseFragment<LiveVideoViewModel, FragmentLiveShareBinding>() , CancelAdapt{
-    override val vbClass: KClass<FragmentLiveShareBinding> = FragmentLiveShareBinding::class
+class LiveVideoChooseSourceFragment : BaseFragment<LiveVideoViewModel, FragmentLiveChooseSourceBinding>() , CancelAdapt{
+    override val vbClass: KClass<FragmentLiveChooseSourceBinding> = FragmentLiveChooseSourceBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -23,9 +24,7 @@ class LiveVideoChooseSourceFragment : BaseFragment<LiveVideoViewModel, FragmentL
     }
 
     override fun initListener() {
-        mBinding.operateShare.clickNoRepeat {
-            "operateShare clicked".logd(TAG)
-        }
+
     }
 
     override fun createObserver() {
