@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.walisport.module.live.widget.EmojiTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/dp_12"
+    android:layout_marginTop="@dimen/dp_6"
+    android:layout_weight="1"
+    android:background="@drawable/chat_shape_item_bg"
+    android:ellipsize="end"
+    android:maxWidth="261dp"
+    android:maxLines="2"
+    android:paddingHorizontal="@dimen/dp_6"
+    android:paddingVertical="@dimen/dp_3"
+    android:textColor="@color/main_text"
+    android:textFontWeight="500"
+    android:textSize="@dimen/sp_13">
+
+</com.walisport.module.live.widget.EmojiTextView>
