@@ -7,7 +7,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 

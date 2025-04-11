@@ -10,7 +10,7 @@ import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib_socket.data.LoginTokenFailedError
 import com.walisport.lib_socket.data.ResponseTimeOutError
 import kotlin.random.Random

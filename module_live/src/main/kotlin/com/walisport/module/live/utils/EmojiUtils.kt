@@ -5,7 +5,7 @@ import android.text.Spannable
 import android.text.TextUtils
 import android.util.Log
 import arch.cayenne.lib.base.utils.LogUtils
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.data.EmojiEnum
 import com.walisport.module.live.widget.EmojiSpan
 import java.util.regex.Matcher

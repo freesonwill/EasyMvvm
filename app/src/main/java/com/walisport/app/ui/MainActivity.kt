@@ -4,7 +4,7 @@ package com.walisport.app.ui
 import android.os.Bundle
 import com.walisport.app.R
 import com.walisport.app.data.AppNavViewModel
-import com.walisport.lib.common.ui.BaseNavActivity
+import arch.cayenne.lib.common.ui.BaseNavActivity
 import kotlin.reflect.KClass
 
 class MainActivity : BaseNavActivity<AppNavViewModel>() {

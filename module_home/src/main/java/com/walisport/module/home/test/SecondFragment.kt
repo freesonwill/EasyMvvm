@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestSecondBinding
 import kotlin.reflect.KClass
 

@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlin.reflect.KClass

@@ -5,10 +5,10 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.lib.common.utils.ext.DimensionExt.px2dp
-import com.walisport.lib.common.utils.ext.DimensionExt.px2sp
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2dp
+import arch.cayenne.lib.common.utils.ext.DimensionExt.px2sp
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.data.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
 import com.walisport.module.setting.databinding.TittleBarBackgroundBinding

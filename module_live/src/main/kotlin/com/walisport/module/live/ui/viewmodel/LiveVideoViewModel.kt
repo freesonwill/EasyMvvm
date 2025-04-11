@@ -21,11 +21,11 @@ class LiveVideoViewModel : BaseViewModel() {
 
 
     val titleText = MutableLiveData<String>("")
-    val titleTextColor = MutableLiveData<Int>(com.walisport.lib.common.R.color.white)
-    val titleTextSize = MutableLiveData<Int>(com.walisport.lib.common.R.dimen.sp_17)
+    val titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
+    val titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
 
     val subTitleText = MutableLiveData<String>("")
-    val subTitleTextColor = MutableLiveData<Int>(com.walisport.lib.common.R.color.color_929298)
-    val subTitleTextSize = MutableLiveData<Int>(com.walisport.lib.common.R.dimen.sp_14)
+    val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
+    val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
 
 }

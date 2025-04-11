@@ -14,7 +14,7 @@ import arch.cayenne.lib.base.ApplicationModuleInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import com.walisport.lib.common.CommonModuleInitializer
+import arch.cayenne.lib.common.CommonModuleInitializer
 import com.walisport.lib_socket.SocketModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf

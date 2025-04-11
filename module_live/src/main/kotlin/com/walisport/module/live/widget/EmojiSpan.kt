@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.text.style.DynamicDrawableSpan
 import androidx.core.content.ContextCompat
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.math.abs
 import kotlin.math.roundToInt
 

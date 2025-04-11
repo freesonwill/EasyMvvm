@@ -3,7 +3,7 @@ package com.walisport.module.login.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.ui.BaseNavActivity
+import arch.cayenne.lib.common.ui.BaseNavActivity
 import com.walisport.module.login.R
 import kotlin.reflect.KClass
 

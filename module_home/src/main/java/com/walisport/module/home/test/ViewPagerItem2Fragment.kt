@@ -5,7 +5,7 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestViewPagerItem2Binding
 import kotlin.reflect.KClass
 

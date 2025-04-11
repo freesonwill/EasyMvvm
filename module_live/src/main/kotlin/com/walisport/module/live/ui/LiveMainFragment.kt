@@ -8,11 +8,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.lib.base.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TittleBarLiveBinding
@@ -30,7 +30,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             findNavController().navigateUp()
         }
         Glide.with(this).load("").override(96.dp2px, 22.dp2px)
-            .error(com.walisport.lib.common.R.drawable.title_league_icon)           // 加载失败时的占位符
+            .error(arch.cayenne.lib.common.R.drawable.title_league_icon)           // 加载失败时的占位符
             .into(binding.ivLandscapeLeagueIcon)
         binding.apply {
             tvCompetitionName.text = "中国VS日本"

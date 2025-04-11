@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
-import com.walisport.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ViewUtils
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentSingleBetBinding

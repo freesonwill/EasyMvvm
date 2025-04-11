@@ -9,8 +9,8 @@ import com.bumptech.glide.Glide
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import me.jessyan.autosize.AutoSizeConfig
@@ -69,7 +69,7 @@ class LiveVideoLandscapeFragment :
 
         mViewModel.leagueIconUrl.observe(this) {
             Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
-                .placeholder(com.walisport.lib.common.R.drawable.title_league_icon)
+                .placeholder(arch.cayenne.lib.common.R.drawable.title_league_icon)
                 .into(mBinding.ivVideoLandscapeLeagueIcon)
         }
 

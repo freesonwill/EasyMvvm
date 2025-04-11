@@ -1,9 +1,9 @@
 package com.walisport.app.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import com.walisport.lib.common.data.UserDataKey
-import com.walisport.lib.common.data.UserDataManager
-import com.walisport.lib.common.helper.CountDownHelper
+import arch.cayenne.lib.common.data.UserDataKey
+import arch.cayenne.lib.common.data.UserDataManager
+import arch.cayenne.lib.common.helper.CountDownHelper
 import com.walisport.lib_socket.WebSocketManager
 import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.ConnectState

@@ -8,8 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.bet.repo.SingleBetRepository
 import com.walisport.module.bet.ui.fragment.BetSheetFragment
 import com.walisport.module.bet.ui.fragment.FloatingButtonFragment

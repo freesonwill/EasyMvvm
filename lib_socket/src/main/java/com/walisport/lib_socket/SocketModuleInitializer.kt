@@ -6,6 +6,8 @@ import androidx.startup.Initializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib_socket.data.ISecurity
 import com.walisport.lib_socket.data.ISocket
+import com.walisport.lib_socket.repository.ConnectingRepository
+import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -29,6 +31,7 @@ class SocketModuleInitializer : Initializer<String> {
         factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext() as Application), get()) }
         factory<ISecurity<*, *, *>> { NativeLib() }
         single { WebSocketManager(get()) }
+        factory { (scope: CoroutineScope) -> ConnectingRepository(scope, get(), get()) }
     }
 
     private val moduleList:List<Module> = listOf(socketModules)

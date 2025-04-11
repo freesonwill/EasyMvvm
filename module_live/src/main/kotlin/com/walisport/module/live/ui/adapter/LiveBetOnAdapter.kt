@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 
 class LiveBetOnAdapter(compare: DiffUtil.ItemCallback<String>) :
