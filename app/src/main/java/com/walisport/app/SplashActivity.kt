@@ -7,12 +7,12 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
-import com.walisport.lib.base.ui.BaseActivity
-import com.walisport.lib.base.ui.interface_.StatusBarConfig
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib_socket.data.LoginTokenFailedError
-import com.walisport.lib_socket.data.ResponseTimeOutError
+import arch.cayenne.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.socket.data.LoginTokenFailedError
+import arch.cayenne.lib.socket.data.ResponseTimeOutError
 import kotlin.random.Random
 import kotlin.reflect.KClass
 

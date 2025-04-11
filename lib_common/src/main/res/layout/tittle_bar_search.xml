@@ -10,7 +10,7 @@
         tools:ignore="MissingConstraints"
         app:srcCompat="@drawable/base_backin"
         />
-    <com.walisport.lib.common.widget.ClearableEditText
+    <arch.cayenne.lib.common.ui.widget.ClearableEditText
         android:id="@+id/ce_search"
         android:textColor="@color/white"
         style="@style/CustomToolbarEditStyle"

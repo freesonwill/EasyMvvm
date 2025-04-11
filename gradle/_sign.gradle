@@ -1,0 +1,60 @@
+android {
+    signingConfigs {
+        debug {
+            storeFile rootProject.file("./signkey/wls.jks")
+            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
+            keyAlias 'wls'
+            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+        //测试专用
+        qatest {
+            storeFile rootProject.file("./signkey/wls.jks")
+            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
+            keyAlias 'wls'
+            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+
+        release {
+            storeFile rootProject.file("./signkey/wls.jks")
+            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
+            keyAlias 'wls'
+            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        debug {
+            zipAlignEnabled true
+            minifyEnabled false
+            debuggable true
+            jniDebuggable true
+            signingConfig signingConfigs.debug
+        }
+
+        //测试专用
+        qatest {
+            debuggable false
+            zipAlignEnabled true
+            minifyEnabled false
+            signingConfig signingConfigs.qatest
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), rootProject.file('app/proguard-rules.pro')
+        }
+
+        release {
+            zipAlignEnabled true
+            minifyEnabled false
+            shrinkResources false
+            debuggable false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), rootProject.file('app/proguard-rules.pro')
+        }
+
+    }
+}

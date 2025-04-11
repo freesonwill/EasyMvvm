@@ -2,10 +2,10 @@ package com.walisport.module.home.test
 
 import android.os.Bundle
 import androidx.navigation.fragment.navArgs
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestViewPagerItem2Binding
 import kotlin.reflect.KClass
 

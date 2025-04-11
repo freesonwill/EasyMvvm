@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib.skin"
+    namespace = "arch.cayenne.lib.skin"
     compileSdk = 34
 
     defaultConfig {

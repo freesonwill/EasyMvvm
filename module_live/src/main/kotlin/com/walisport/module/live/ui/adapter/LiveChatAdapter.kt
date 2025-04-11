@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.base.adapter.BaseAdapter
-import com.walisport.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.LiveChatCompare
 import com.walisport.module.live.data.model.LiveChatBean

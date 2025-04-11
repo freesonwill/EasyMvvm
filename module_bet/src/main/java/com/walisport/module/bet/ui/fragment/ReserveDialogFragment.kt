@@ -5,8 +5,8 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewTreeObserver
-import com.walisport.lib.base.ui.BaseDialogFragment
-import com.walisport.lib.base.ui.viewBind
+import arch.cayenne.lib.base.ui.BaseDialogFragment
+import arch.cayenne.lib.base.ui.viewBind
 import com.walisport.module.bet.databinding.FragmentReserveDialogBinding
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
 import com.walisport.module.bet.viewmodel.ReserveDialogViewModel

@@ -40,7 +40,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 
-import com.walisport.lib.videoplayer.R;
+import arch.cayenne.lib.videoplayer.R;
 
 import java.io.File;
 import java.io.IOException;

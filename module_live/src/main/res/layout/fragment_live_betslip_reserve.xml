@@ -10,19 +10,19 @@
     </data>
 
 
-    <com.walisport.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:layout_width="@dimen/dp_359"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_betslip_card">
 
-        <com.walisport.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/bet_reserve_iv_top"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_37"
             android:src="@drawable/live_betslip_card_top"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_top" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_race"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -58,7 +58,7 @@
             app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_ball" />
 
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_introduce"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -70,7 +70,7 @@
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_ball" />
 
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_aodds"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -82,7 +82,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_introduce" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_status"
             android:layout_width="@dimen/dp_42"
             android:layout_height="@dimen/dp_20"
@@ -95,7 +95,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_introduce" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_score"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -108,7 +108,7 @@
             app:layout_constraintLeft_toRightOf="@id/bet_reserve_tv_status"
             app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_status" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_start"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -119,7 +119,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_status"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_status" />
 
-        <com.walisport.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/bet_reserve_iv_avava"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_18"
@@ -130,7 +130,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_start" />
 
-        <com.walisport.lib.skin.widget.SportView
+        <arch.cayenne.lib.skin.widget.SportView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_1"
             android:layout_marginEnd="@dimen/dp_3.5"
@@ -140,7 +140,7 @@
             app:layout_constraintRight_toLeftOf="@id/bet_reserve_iv_avava"
             app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_avava" />
 
-        <com.walisport.lib.skin.widget.SportView
+        <arch.cayenne.lib.skin.widget.SportView
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_1"
             android:layout_marginStart="@dimen/dp_8"
@@ -151,7 +151,7 @@
             app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_avava" />
 
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_odds"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -162,7 +162,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_avava" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_odds_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -173,7 +173,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_odds" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_betting"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -184,7 +184,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_odds" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_betting_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -195,7 +195,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_betting" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_except"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -206,7 +206,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_betting" />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_tv_except_value"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_20"
@@ -218,7 +218,7 @@
             app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_except" />
 
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_bt_cancel"
             android:layout_width="120dp"
             android:layout_height="48dp"
@@ -232,7 +232,7 @@
             app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
             />
 
-        <com.walisport.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/bet_reserve_bt_modify"
             android:layout_width="207dp"
             android:layout_height="48dp"
@@ -252,6 +252,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@id/bet_reserve_bt_cancel" />
-    </com.walisport.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
 </layout>

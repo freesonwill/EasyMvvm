@@ -1,9 +1,9 @@
 package com.walisport.module.setting.dialog
 
 import android.os.Bundle
-import com.walisport.lib.base.ui.BaseBottomSheetFragment
-import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.databinding.DialogMatchNoticeBinding
 
 class MatchNoticeDialog : BaseBottomSheetFragment<DialogMatchNoticeBinding>() {

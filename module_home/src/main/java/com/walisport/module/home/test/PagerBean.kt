@@ -1,7 +1,7 @@
 package com.walisport.module.home.test
 
 import androidx.fragment.app.Fragment
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.BaseFragment
 
 /**
  * @author: zhangsan
