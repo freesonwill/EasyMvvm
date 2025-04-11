@@ -3,6 +3,7 @@ package arch.cayenne.lib.socket
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.socket.data.ISecurity
 import arch.cayenne.lib.socket.data.ISocket
@@ -24,7 +25,7 @@ class SocketModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
+        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val socketModules = module {
