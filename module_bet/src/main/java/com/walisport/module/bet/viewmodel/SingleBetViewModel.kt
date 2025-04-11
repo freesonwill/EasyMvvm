@@ -5,20 +5,18 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.walisport.lib.database.entity.BetBean
-import com.walisport.module.bet.repo.BetSheetRepository
+import com.walisport.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class BetSheetViewModel(private val betRepo: BetSheetRepository) : NumberCalculatorViewModel() {
+class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalculatorViewModel() {
 
-    private val _onBetSheetListener = MutableLiveData<List<BetBean>>()
-    val onBetSheetListener: LiveData<List<BetBean>> get() =  _onBetSheetListener
+    private val _onBetSheetListener = MutableLiveData<BetBean>()
+    val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1.0f
+        val odds = 1.0f
         addSource(_onBetSheetListener) { data ->
-            data.forEach {
-                odds *= it.odds
-            }
+            data.odds *= odds
         }
         addSource(_onEditMoney) {
             val money = if (it.isEmpty()) {
@@ -40,13 +38,27 @@ class BetSheetViewModel(private val betRepo: BetSheetRepository) : NumberCalcula
 
     init {
         viewModelScope.launch {
-            betRepo.observeBetSheet().collect {
-                _onBetSheetListener.value = it
+            betRepo.observeSingleBet().collect {
+                if (it != null) {
+                    _onBetSheetListener.value = it
+                }
             }
         }
     }
 
     fun sendBet() {
 
+    }
+
+    fun removeBet() {
+        _onBetSheetListener.value?.let {
+            betRepo.removeBet(it.gameId)
+        }
+    }
+
+    fun saveToCombo() {
+        _onBetSheetListener.value?.let {
+            betRepo.saveToCombo(it.gameId)
+        }
     }
 }
