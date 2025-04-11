@@ -9,4 +9,11 @@
     <string name="btn_bet">投注</string>
     <string name="et_money_hint">限额%d&#8211;%d</string>
     <string name="bet_sheet_stop">盘口失效</string>
+    <string name="btn_bet_hint">投注</string>
+    <string name="btn_bet_win_money">可赢$%s</string>
+    <string name="btn_confirm">确定</string>
+    <string name="btn_cancel">确定</string>
+
+    <string name="title_rate">达到此赔率时自动投注</string>
+    <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
 </resources>

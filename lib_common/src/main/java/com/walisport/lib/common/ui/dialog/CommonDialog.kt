@@ -1,14 +1,11 @@
 package com.walisport.lib.common.ui.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentManager
 import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.R
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.databinding.DialogCommonBinding
 import com.walisport.lib.common.utils.ViewUtils
 
@@ -20,12 +17,6 @@ class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
     private var cancelText: String? = null
     private var onOkClick: (() -> Unit)? = null
     private var onCancelClick: (() -> Unit)? = null
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return mBinding.root
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
@@ -34,7 +25,6 @@ class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
             okText = it.getString(ARG_OK_TEXT)
             cancelText = it.getString(ARG_CANCEL_TEXT)
         }
-
         with(mBinding) {
             tvCommonDialogTitle.apply {
                 text = title ?: ""
@@ -43,7 +33,11 @@ class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
             tvCommonDialogMessage.text = message ?: ""
             btnCommonDialogOk.text = okText ?: ""
             btnCommonDialogCancel.text = cancelText ?: ""
+        }
+    }
 
+    override fun initListener() {
+        with(mBinding) {
             btnCommonDialogOk.setOnClickListener {
                 onOkClick?.invoke()
                 dismiss()
@@ -65,28 +59,10 @@ class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
         onCancelClick = listener
     }
 
-    fun showSafely(manager: FragmentManager, tag: String) {
-        if (!isAdded && manager.findFragmentByTag(tag) == null) {
-            show(manager, tag)
-        }
-    }
-
-    override fun initListener() {
-    }
-
-    override fun createObserver() {
-    }
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
             setLayout(ViewUtils.dpToPx(280f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.shape_corner_12
-                )
-            )
         }
     }
 
