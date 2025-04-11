@@ -2,6 +2,7 @@ package arch.cayenne.lib.database
 
 import android.content.Context
 import androidx.startup.Initializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -16,7 +17,7 @@ class DatabaseModuleInitializer: Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return emptyList()
+        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val daoModule = module {
