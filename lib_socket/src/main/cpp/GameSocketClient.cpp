@@ -26,7 +26,7 @@ static CCSPayloadCipher *getChipper(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT jbyteArray JNICALL
 
-Java_com_walisport_lib_1socket_NativeLib_pack(JNIEnv *env,
+Java_arch_cayenne_lib_socket_NativeLib_pack(JNIEnv *env,
                                                       jobject thiz,
                                                       jshort mid,
                                                       jshort sid,
@@ -70,7 +70,7 @@ Java_com_walisport_lib_1socket_NativeLib_pack(JNIEnv *env,
 
 extern "C"
 JNIEXPORT jbyteArray JNICALL
-Java_com_walisport_lib_1socket_NativeLib_newPack(JNIEnv *env,
+Java_arch_cayenne_lib_socket_NativeLib_newPack(JNIEnv *env,
                                                          jobject thiz,
                                                          jshort mid,
                                                          jshort sid,
@@ -106,7 +106,7 @@ Java_com_walisport_lib_1socket_NativeLib_newPack(JNIEnv *env,
 }
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_walisport_lib_1socket_NativeLib_nativeCreateChiper(JNIEnv *env, jobject thiz) {
+Java_arch_cayenne_lib_socket_NativeLib_nativeCreateChiper(JNIEnv *env, jobject thiz) {
 
     CCSPayloadCipher *chiper = new CCSPayloadCipher();
 
@@ -116,7 +116,7 @@ Java_com_walisport_lib_1socket_NativeLib_nativeCreateChiper(JNIEnv *env, jobject
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_walisport_lib_1socket_NativeLib_reset(JNIEnv *env, jobject thiz) {
+Java_arch_cayenne_lib_socket_NativeLib_reset(JNIEnv *env, jobject thiz) {
 
     CCSPayloadCipher *chiper = getChipper(env, thiz);
 
@@ -126,7 +126,7 @@ Java_com_walisport_lib_1socket_NativeLib_reset(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_walisport_lib_1socket_NativeLib_unpack(JNIEnv *env,
+Java_arch_cayenne_lib_socket_NativeLib_unpack(JNIEnv *env,
                                                         jobject thiz,
                                                         jbyteArray data
 ) {
@@ -173,7 +173,7 @@ Java_com_walisport_lib_1socket_NativeLib_unpack(JNIEnv *env,
 
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_walisport_lib_1socket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
+Java_arch_cayenne_lib_socket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
                                                            jbyteArray data) {
     CCSPayloadCipher *cipher = getChipper(env, thiz);
 
@@ -217,7 +217,7 @@ Java_com_walisport_lib_1socket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_walisport_lib_1socket_NativeLib_nativeFinalizer(JNIEnv *env, jobject thiz,
+Java_arch_cayenne_lib_socket_NativeLib_nativeFinalizer(JNIEnv *env, jobject thiz,
                                                                  jlong ptr) {
     CCSPayloadCipher *chiper = getChipper(env, thiz);
 
@@ -229,7 +229,7 @@ Java_com_walisport_lib_1socket_NativeLib_nativeFinalizer(JNIEnv *env, jobject th
 }
 extern "C"
 JNIEXPORT jobjectArray JNICALL
-Java_com_walisport_lib_1socket_NativeLib_test(JNIEnv *env, jobject thiz) {
+Java_arch_cayenne_lib_socket_NativeLib_test(JNIEnv *env, jobject thiz) {
 
 
     short int mid = 7;

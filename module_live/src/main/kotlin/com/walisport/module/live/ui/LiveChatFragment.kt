@@ -7,8 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewBind
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean

@@ -1,8 +1,8 @@
 package com.walisport.module.bet.repo
 
-import com.walisport.lib.base.data.repository.BaseRepository
-import com.walisport.lib.database.dao.BetDao
-import com.walisport.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

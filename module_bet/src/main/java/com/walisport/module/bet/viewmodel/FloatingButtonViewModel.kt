@@ -3,7 +3,7 @@ package com.walisport.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.bet.repo.FloatingButtonRepository
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch

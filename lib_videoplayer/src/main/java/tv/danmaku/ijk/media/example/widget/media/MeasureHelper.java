@@ -22,7 +22,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.walisport.lib.videoplayer.R;
+import arch.cayenne.lib.videoplayer.R;
 
 import java.lang.ref.WeakReference;
 

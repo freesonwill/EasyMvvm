@@ -2,10 +2,10 @@ package com.walisport.module.setting.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.data.NoticeViewModel

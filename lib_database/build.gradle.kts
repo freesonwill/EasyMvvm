@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib.databse"
+    namespace = "arch.cayenne.lib.database"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "com.walisport.lib.database.InstrumentationTestRunner"
+        testInstrumentationRunner = "arch.cayenne.lib.database.InstrumentationTestRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
