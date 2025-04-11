@@ -1,4 +1,4 @@
-package com.walisport.lib.database.entity
+package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

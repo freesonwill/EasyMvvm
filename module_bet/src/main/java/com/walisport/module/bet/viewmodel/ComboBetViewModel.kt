@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetBean
 import com.walisport.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

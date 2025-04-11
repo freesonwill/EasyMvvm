@@ -1,9 +1,9 @@
-package com.walisport.lib.database.dao
+package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.walisport.lib.database.entity.BetBean
-import com.walisport.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.flow.Flow
 
 @Dao

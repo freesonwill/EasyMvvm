@@ -1,4 +1,4 @@
-package com.walisport.lib.database.dao
+package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

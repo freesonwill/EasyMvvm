@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetBean
 import com.walisport.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 

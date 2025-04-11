@@ -1,7 +1,7 @@
-package com.walisport.lib.database
+package arch.cayenne.lib.database
 
 import androidx.room.TypeConverter
-import com.walisport.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.BetTypeEnum
 
 class GameTypeConverter {
 

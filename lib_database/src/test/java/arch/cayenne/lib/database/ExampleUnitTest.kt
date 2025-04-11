@@ -1,4 +1,4 @@
-package com.walisport.lib.database
+package arch.cayenne.lib.database
 
 import org.junit.Test
 

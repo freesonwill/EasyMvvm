@@ -1,12 +1,12 @@
-package com.walisport.lib.database
+package arch.cayenne.lib.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.walisport.lib.database.dao.BetDao
-import com.walisport.lib.database.entity.BetBean
+import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.entity.BetBean
 
 @Database(
     entities = [BetBean::class],

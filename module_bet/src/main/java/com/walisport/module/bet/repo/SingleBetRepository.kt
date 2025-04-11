@@ -1,9 +1,9 @@
 package com.walisport.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import com.walisport.lib.database.dao.BetDao
-import com.walisport.lib.database.entity.BetBean
-import com.walisport.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -30,7 +30,8 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     fun addMockData() {
         scope.launch {
             val data = betDao.getBetSheet()
-            betDao.insert(BetBean(
+            betDao.insert(
+                BetBean(
                 gameId = data.size,
                 betTeamName = "Test ${data.size}",
                 handicap = "-1.5",
@@ -38,7 +39,8 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betType = BetTypeEnum.COMBO,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
-            ))
+            )
+            )
         }
     }
 
