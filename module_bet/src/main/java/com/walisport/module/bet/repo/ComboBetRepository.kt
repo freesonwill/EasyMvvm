@@ -7,15 +7,21 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
-class FloatingButtonRepository(private val betDao: BetDao): BaseRepository() {
-
-    fun observeComboBetCount() = betDao.observeComboBetCount()
-
+class ComboBetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    suspend fun getSingleBetId() = with(scope.coroutineContext) {
-        betDao.getBetSheet().first().gameId
+    fun observeComboBet() = betDao.observeComboBet()
+
+    fun removeBet(id: Int) {
+        scope.launch {
+            betDao.removeBet(id)
+        }
+    }
+
+    fun removeAll() {
+        scope.launch {
+            betDao.deleteAll()
+        }
     }
 
     fun saveToSingleBet(id: Int) {

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.walisport.lib.database.dao.BetDao
 import com.walisport.lib.database.entity.BetBean
 
@@ -12,6 +13,7 @@ import com.walisport.lib.database.entity.BetBean
     version = 1,
     exportSchema = false
 )
+@TypeConverters(GameTypeConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
