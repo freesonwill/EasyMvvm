@@ -3,6 +3,7 @@ package com.walisport.lib.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import com.walisport.lib.database.entity.BetBean
+import com.walisport.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -24,7 +25,7 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract fun observeComboBet(): Flow<List<BetBean>>
 
     @Query("UPDATE BetBean SET betType = :type WHERE gameId = :id")
-    abstract suspend fun updateBetType(id: Int, type: Int)
+    abstract suspend fun updateBetType(id: Int, type: BetTypeEnum)
     /**
      * 移除非roundId的投注記錄
      */

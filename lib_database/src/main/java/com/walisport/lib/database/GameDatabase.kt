@@ -13,6 +13,7 @@ import com.walisport.lib.database.entity.BetBean
     version = 1,
     exportSchema = false
 )
+@TypeConverters(GameTypeConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {

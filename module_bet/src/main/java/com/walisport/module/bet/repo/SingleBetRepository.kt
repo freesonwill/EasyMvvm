@@ -3,6 +3,7 @@ package com.walisport.module.bet.repo
 import com.walisport.lib.base.data.repository.BaseRepository
 import com.walisport.lib.database.dao.BetDao
 import com.walisport.lib.database.entity.BetBean
+import com.walisport.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
 
     fun saveToCombo(id: Int) {
         scope.launch {
-            betDao.updateBetType(id, 1)
+            betDao.updateBetType(id, BetTypeEnum.COMBO)
         }
     }
 
@@ -34,7 +35,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betTeamName = "Test ${data.size}",
                 handicap = "-1.5",
                 odds = 1.98f,
-                betType = 1,
+                betType = BetTypeEnum.COMBO,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
             ))
@@ -49,7 +50,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betTeamName = "Test ${0}",
                 handicap = "-1.5",
                 odds = 1.98f,
-                betType = 0,
+                betType = BetTypeEnum.SINGLE,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
             ).apply {
