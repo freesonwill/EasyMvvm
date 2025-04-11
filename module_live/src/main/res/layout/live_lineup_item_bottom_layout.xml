@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="272dp"
-    android:background="@drawable/live_lineup_bottom_bg"
+    android:paddingTop="-2dp"
     android:id="@+id/roots"
     >
 

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".ui.LiveLineupFragment">
 
   <ScrollView
@@ -17,7 +18,13 @@
         android:paddingTop="7dp"
         android:paddingStart="7dp"
         android:paddingEnd="7dp"
-        android:background="@color/black"
+        >
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/live_lineup_top_bbg"
         >
     <include layout="@layout/live_lineup_item_layout"
         android:id="@+id/lineup_item_top"
@@ -25,7 +32,7 @@
     <include layout="@layout/live_lineup_item_bottom_layout"
         android:id="@+id/lineup_item_bottom"
         />
-
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_marginTop="10dp"
