@@ -30,7 +30,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             findNavController().navigateUp()
         }
         Glide.with(this).load("").override(96.dp2px, 22.dp2px)
-            .error(arch.cayenne.lib.common.R.drawable.title_league_icon)           // 加载失败时的占位符
+            .error(R.drawable.title_league_icon)           // 加载失败时的占位符
             .into(binding.ivLandscapeLeagueIcon)
         binding.apply {
             tvCompetitionName.text = "中国VS日本"
