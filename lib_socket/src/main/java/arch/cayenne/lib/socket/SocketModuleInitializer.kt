@@ -1,12 +1,12 @@
-package com.walisport.lib_socket
+package arch.cayenne.lib.socket
 
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib_socket.data.ISecurity
-import com.walisport.lib_socket.data.ISocket
-import com.walisport.lib_socket.repository.ConnectingRepository
+import arch.cayenne.lib.socket.data.ISecurity
+import arch.cayenne.lib.socket.data.ISocket
+import arch.cayenne.lib.socket.repository.ConnectingRepository
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules

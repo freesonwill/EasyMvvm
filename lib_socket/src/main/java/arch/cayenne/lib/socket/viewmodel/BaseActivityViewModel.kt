@@ -1,13 +1,13 @@
-package com.walisport.lib_socket.ui.viewmodel
+package arch.cayenne.lib.socket.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import com.walisport.lib_socket.data.ConnectState
-import com.walisport.lib_socket.data.SocketResponseError
-import com.walisport.lib_socket.repository.ConnectingRepository
+import arch.cayenne.lib.socket.data.ConnectState
+import arch.cayenne.lib.socket.data.SocketResponseError
+import arch.cayenne.lib.socket.repository.ConnectingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

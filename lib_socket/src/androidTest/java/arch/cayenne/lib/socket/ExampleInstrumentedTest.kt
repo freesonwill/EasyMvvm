@@ -1,4 +1,4 @@
-package com.walisport.lib_socket
+package arch.cayenne.lib.socket
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -19,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.walisport.lib_socket.test", appContext.packageName)
+        assertEquals("arch.cayenne.lib.socket.test", appContext.packageName)
     }
 }

@@ -1,4 +1,4 @@
-package com.walisport.lib_socket.extension
+package arch.cayenne.lib.socket.extension
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,14 +1,13 @@
-package com.walisport.lib_socket.repository
+package arch.cayenne.lib.socket.repository
 
-import com.google.protobuf.Api
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
-import com.walisport.lib_socket.WebSocketManager
-import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.LoginTokenFailedError
-import com.walisport.lib_socket.data.SocketResponseData
-import com.walisport.lib_socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.socket.WebSocketManager
+import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.data.LoginTokenFailedError
+import arch.cayenne.lib.socket.data.SocketResponseData
+import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

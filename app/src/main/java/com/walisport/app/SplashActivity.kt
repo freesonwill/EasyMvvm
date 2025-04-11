@@ -11,8 +11,8 @@ import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib_socket.data.LoginTokenFailedError
-import com.walisport.lib_socket.data.ResponseTimeOutError
+import arch.cayenne.lib.socket.data.LoginTokenFailedError
+import arch.cayenne.lib.socket.data.ResponseTimeOutError
 import kotlin.random.Random
 import kotlin.reflect.KClass
 

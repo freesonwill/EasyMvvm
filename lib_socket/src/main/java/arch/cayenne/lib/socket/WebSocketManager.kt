@@ -1,12 +1,12 @@
-package com.walisport.lib_socket
+package arch.cayenne.lib.socket
 
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.ConnectState
-import com.walisport.lib_socket.data.IRequest
-import com.walisport.lib_socket.data.IResponse
-import com.walisport.lib_socket.data.ISocket
-import com.walisport.lib_socket.extension.asRemoteRequest
+import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.data.ConnectState
+import arch.cayenne.lib.socket.data.IRequest
+import arch.cayenne.lib.socket.data.IResponse
+import arch.cayenne.lib.socket.data.ISocket
+import arch.cayenne.lib.socket.extension.asRemoteRequest
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

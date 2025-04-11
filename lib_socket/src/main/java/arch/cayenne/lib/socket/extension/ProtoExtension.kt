@@ -1,14 +1,14 @@
-package com.walisport.lib_socket.extension
+package arch.cayenne.lib.socket.extension
 
 import com.google.protobuf.GeneratedMessageLite
-import com.walisport.lib_socket.WebSocketManager
-import com.walisport.lib_socket.WebSocketManager.Companion.responseTimeout
-import com.walisport.lib_socket.data.ApiCode
-import com.walisport.lib_socket.data.InvalidProtoTypeResponseError
-import com.walisport.lib_socket.data.ResponseTimeOutError
-import com.walisport.lib_socket.data.SocketRequestData
-import com.walisport.lib_socket.data.SocketOriginResponseData
-import com.walisport.lib_socket.data.SocketResponseData
+import arch.cayenne.lib.socket.WebSocketManager
+import arch.cayenne.lib.socket.WebSocketManager.Companion.responseTimeout
+import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.data.InvalidProtoTypeResponseError
+import arch.cayenne.lib.socket.data.ResponseTimeOutError
+import arch.cayenne.lib.socket.data.SocketRequestData
+import arch.cayenne.lib.socket.data.SocketOriginResponseData
+import arch.cayenne.lib.socket.data.SocketResponseData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -28,7 +28,7 @@ fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode) : SocketRequest
     )
 }
 
-inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<SocketResponseData<T>> = getSocketFlow()
+inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<SocketResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
     .filter {it.mid == apiCode.mid && it.sid == apiCode.sid}
     .map {
@@ -53,7 +53,7 @@ inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMe
         }
     }
 
-suspend inline fun<reified T: GeneratedMessageLite<*,*>>WebSocketManager.sendAndWaitProtoMessageResponse(
+suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAndWaitProtoMessageResponse(
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,

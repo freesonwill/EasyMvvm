@@ -3,7 +3,7 @@ package com.walisport.app.data
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib_socket.ui.viewmodel.BaseActivityViewModel
+import arch.cayenne.lib.socket.viewmodel.BaseActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject

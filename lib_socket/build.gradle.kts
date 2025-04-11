@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib_socket"
+    namespace = "arch.cayenne.lib.socket"
     compileSdk = 34
 
     defaultConfig {

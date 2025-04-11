@@ -1,13 +1,13 @@
-package com.walisport.lib_socket
+package arch.cayenne.lib.socket
 
 import android.util.Log
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import com.walisport.lib_socket.data.IRequest
-import com.walisport.lib_socket.data.IResponse
-import com.walisport.lib_socket.data.ISecurity
-import com.walisport.lib_socket.data.InvalidDataResponseError
-import com.walisport.lib_socket.data.SocketRequestData
-import com.walisport.lib_socket.data.SocketOriginResponseData
+import arch.cayenne.lib.socket.data.IRequest
+import arch.cayenne.lib.socket.data.IResponse
+import arch.cayenne.lib.socket.data.ISecurity
+import arch.cayenne.lib.socket.data.InvalidDataResponseError
+import arch.cayenne.lib.socket.data.SocketRequestData
+import arch.cayenne.lib.socket.data.SocketOriginResponseData
 import java.lang.Exception
 
 class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
@@ -67,7 +67,8 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
 
     override fun encrypt(data: IRequest): ByteArray? {
         if (data !is SocketRequestData) return null
-        "encrypt and send data -> mid = ${data.mid}, sid = ${data.sid} data = ${data.payloadByteArray}".logi(NativeLib::class.java.simpleName)
+        "encrypt and send data -> mid = ${data.mid}, sid = ${data.sid} data = ${data.payloadByteArray}".logi(
+            NativeLib::class.java.simpleName)
         return newPack(
             mid = data.mid,
             sid = data.sid,

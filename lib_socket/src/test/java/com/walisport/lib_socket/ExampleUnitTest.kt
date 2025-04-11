@@ -1,4 +1,4 @@
-package com.walisport.lib_socket
+package arch.cayenne.lib.socket
 
 import org.junit.Test
 
