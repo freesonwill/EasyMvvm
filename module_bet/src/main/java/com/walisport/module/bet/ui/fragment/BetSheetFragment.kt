@@ -41,11 +41,13 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
             dismiss()
         }
     }
+
     private var lastLiveData: LiveData<String>? = null
 
     override val mBinding: FragmentBetSheetBinding by viewBind()
 
     override fun initView(savedInstanceState: Bundle?) {
+        isCancelable = false
     }
 
     override fun initListener() {
@@ -91,6 +93,14 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
         lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(RESULT_KEY).apply {
             observe(viewLifecycleOwner, dismissObserver)
         }
+    }
+
+    override fun superDismiss() {
+        parentFragmentManager.setFragmentResult(RESULT_KEY, Bundle().apply {
+            putString(DISMISS_KEY, DISMISS_KEY)
+        })
+        super.superDismiss()
+
     }
 }
 

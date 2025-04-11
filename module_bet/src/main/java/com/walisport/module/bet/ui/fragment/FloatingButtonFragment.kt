@@ -13,6 +13,7 @@ import kotlin.reflect.KClass
 class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
     override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
     override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
+    private var isShowBetSheet = false
 
     override fun initView(savedInstanceState: Bundle?) {
         setFloatingViewPosition(requireActivity().resources.displayMetrics.heightPixels)
@@ -21,6 +22,8 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
     override fun initListener() {
         mBinding.fab.setPerformClick {
             mViewModel.onBettingCount.value?.let { count ->
+                mBinding.root.visibility = View.GONE
+                isShowBetSheet = true
                 if (count == 1) {
                     lifecycleScope.launch {
                         val id = mViewModel.getSingleBetById()
@@ -28,6 +31,17 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                     }
                 } else {
                     BetSheetFragment.newInstance().show(parentFragmentManager)
+                    parentFragmentManager.setFragmentResultListener(BetSheetFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
+                        if (resultKey == BetSheetFragment.RESULT_KEY) {
+                            val dismissKey = bundle.getString(BetSheetFragment.DISMISS_KEY)
+                            if (dismissKey == BetSheetFragment.DISMISS_KEY) {
+                                isShowBetSheet = false
+                                mViewModel.onBettingCount.value?.let {
+                                    setVisibility(it)
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -35,12 +49,19 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
 
     override fun createObserver() {
         mViewModel.onBettingCount.observe(viewLifecycleOwner) {
-            if (it == 0) {
-                mBinding.root.visibility = View.GONE
-            } else {
-                mBinding.fab.setCount(it)
-                mBinding.root.visibility = View.VISIBLE
+            if (!isShowBetSheet) {
+                setVisibility(it)
             }
+
+        }
+    }
+
+    private fun setVisibility(count: Int) {
+        if (count == 0) {
+            mBinding.root.visibility = View.GONE
+        } else {
+            mBinding.fab.setCount(count)
+            mBinding.root.visibility = View.VISIBLE
         }
     }
 

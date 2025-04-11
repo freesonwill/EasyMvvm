@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.walisport.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.repo.ComboBetRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(private val repo: ComboBetRepository): BaseViewModel() {
@@ -33,6 +34,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository): BaseViewModel() {
     }
 
     fun removeAll() {
-        repo.removeAll()
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.removeAll()
+        }
     }
 }

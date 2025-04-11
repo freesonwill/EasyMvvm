@@ -18,7 +18,7 @@ class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListen
     ) {
         holder.init(getItem(position))
         binding.ivDelete.setOnClickListener {
-            onBetSheetClickListener.onDeleteClick(getItem(position))
+            onBetSheetClickListener.onDeleteClick(getItem(holder.adapterPosition))
         }
     }
 

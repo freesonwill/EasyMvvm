@@ -20,7 +20,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     private val betSheetAdapter by lazy {
         BetSheetAdapter(object : BetSheetAdapter.OnBetSheetClickListener {
             override fun onDeleteClick(item: BetBean) {
-
+                CommonDialog.newInstance(
+                    title = "",
+                    message = getString(R.string.title_dialog_remove),
+                    okText = getString(R.string.btn_confirm),
+                    cancelText = getString(R.string.btn_cancel)
+                ).apply {
+                    setOnOkClickListener {
+                        mViewModel.removeBet(item.gameId)
+                    }
+                }.show(childFragmentManager)
             }
         })
     }
