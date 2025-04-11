@@ -34,7 +34,7 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":lib_base"))
     testImplementation(libs.androidx.junit.ktx)
     testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
