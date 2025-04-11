@@ -38,7 +38,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvBet.adapter = betSheetAdapter
 
-        val decoration = BetSheetDecoration(24)
+        val decoration = BetSheetDecoration(12)
         mBinding.rvBet.addItemDecoration(decoration)
     }
 
