@@ -31,14 +31,15 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                     }
                 } else {
                     BetSheetFragment.newInstance().show(parentFragmentManager)
-                    parentFragmentManager.setFragmentResultListener(BetSheetFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
-                        if (resultKey == BetSheetFragment.RESULT_KEY) {
-                            val dismissKey = bundle.getString(BetSheetFragment.DISMISS_KEY)
-                            if (dismissKey == BetSheetFragment.DISMISS_KEY) {
-                                isShowBetSheet = false
-                                mViewModel.onBettingCount.value?.let {
-                                    setVisibility(it)
-                                }
+                }
+                parentFragmentManager.setFragmentResultListener(BetSheetFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
+                    if (resultKey == BetSheetFragment.RESULT_KEY) {
+                        parentFragmentManager.clearFragmentResultListener(BetSheetFragment.RESULT_KEY)
+                        val dismissKey = bundle.getString(BetSheetFragment.DISMISS_KEY)
+                        if (dismissKey == BetSheetFragment.DISMISS_KEY) {
+                            isShowBetSheet = false
+                            mViewModel.onBettingCount.value?.let {
+                                setVisibility(it)
                             }
                         }
                     }

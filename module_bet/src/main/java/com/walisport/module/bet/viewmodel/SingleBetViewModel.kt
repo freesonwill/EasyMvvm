@@ -14,7 +14,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1.0f
+        val odds = 1.0f
         addSource(_onBetSheetListener) { data ->
             data.odds *= odds
         }
