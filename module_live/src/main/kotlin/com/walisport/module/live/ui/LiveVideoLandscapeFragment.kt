@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.interface_.StatusBarConfig
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.clickNoRepeat
@@ -94,7 +95,7 @@ class LiveVideoLandscapeFragment :
             showVideoShareView()
         }
 
-        mBinding.ivChooseSource.clickNoRepeat {
+        mBinding.llChooseSource.clickNoRepeat {
             hideButtons()
             reduce {
                 videoViewFullScreen = false
@@ -104,12 +105,6 @@ class LiveVideoLandscapeFragment :
             showVideoChooseSourceView()
         }
 
-        mBinding.tvChooseVideoSource.clickNoRepeat {
-            hideButtons()
-            reduce {
-                videoViewFullScreen = false
-            }
-        }
 
         mBinding.tvMatchStatus.clickNoRepeat {
             hideButtons()
@@ -436,6 +431,7 @@ class LiveVideoLandscapeFragment :
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = -mBinding.fragmentChooseSource.measuredWidth
+
         ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
             addUpdateListener {
                 val lp = mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams
