@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class BetDao: BaseDao<BetBean>() {
 
-    @Query("SELECT * FROM BetBean WHERE status = 0 LIMIT 1")
+    @Query("SELECT * FROM BetBean WHERE betType = 0 LIMIT 1")
     abstract fun observeSingleBet(): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean")
@@ -17,12 +17,14 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT * FROM BetBean WHERE gameId = :id")
     abstract suspend fun getBetById(id: Int): BetBean?
 
-    @Query("SELECT COUNT(*) FROM BetBean WHERE status = 1")
+    @Query("SELECT COUNT(*) FROM BetBean WHERE betType = 1")
     abstract fun observeComboBetCount(): Flow<Int>
 
-    @Query("SELECT * FROM BetBean WHERE status = 1")
+    @Query("SELECT * FROM BetBean WHERE betType = 1")
     abstract fun observeComboBet(): Flow<List<BetBean>>
 
+    @Query("UPDATE BetBean SET betType = :type WHERE gameId = :id")
+    abstract suspend fun updateBetType(id: Int, type: Int)
     /**
      * 移除非roundId的投注記錄
      */

@@ -12,7 +12,9 @@
         tools:layout="@layout/fragment_single_bet">
         <action
             android:id="@+id/action_singleBetFragment_to_singleBetResultFragment"
-            app:destination="@id/singleBetResultFragment" />
+            app:destination="@id/singleBetResultFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/singleBetFragment" />
     </fragment>
 
     <fragment
@@ -22,10 +24,14 @@
         tools:layout="@layout/fragment_combo_bet">
         <action
             android:id="@+id/action_comboBetFragment_to_singleBetFragment"
-            app:destination="@id/singleBetFragment" />
+            app:destination="@id/singleBetFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/comboBetFragment" />
         <action
             android:id="@+id/action_comboBetFragment_to_comboBetResultFragment"
-            app:destination="@id/comboBetResultFragment" />
+            app:destination="@id/comboBetResultFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/comboBetFragment" />
     </fragment>
 
     <fragment

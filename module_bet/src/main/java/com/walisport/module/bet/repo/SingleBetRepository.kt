@@ -21,10 +21,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
 
     fun saveToCombo(id: Int) {
         scope.launch {
-            betDao.getBetById(id)?.let {
-                it.status = 1
-                betDao.update(it)
-            }
+            betDao.updateBetType(id, 1)
         }
     }
 
@@ -37,7 +34,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betTeamName = "Test ${data.size}",
                 handicap = "-1.5",
                 odds = 1.98f,
-                status = 1,
+                betType = 1,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
             ))
@@ -52,7 +49,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betTeamName = "Test ${0}",
                 handicap = "-1.5",
                 odds = 1.98f,
-                status = 0,
+                betType = 0,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
             ).apply {
