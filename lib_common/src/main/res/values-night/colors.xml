@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dialog_title">#24EE8A</color>
+    <color name="secondary_text">#929298</color>
+    <color name="district_line">#282A34</color>
+</resources>

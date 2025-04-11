@@ -1,41 +1,30 @@
 package com.walisport.lib.common.ui.dialog
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.FragmentManager
+import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.R
+import com.walisport.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.databinding.DialogCommonBinding
 import com.walisport.lib.common.utils.ViewUtils
 
-class CommonDialog private constructor() : DialogFragment() {
-    private val mBinding: DialogCommonBinding by viewBind()
+class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
+    override val mBinding: DialogCommonBinding by viewBind()
     private var title: String? = null
     private var message: String? = null
     private var okText: String? = null
     private var cancelText: String? = null
     private var onOkClick: (() -> Unit)? = null
     private var onCancelClick: (() -> Unit)? = null
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return mBinding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
             title = it.getString(ARG_TITLE)
             message = it.getString(ARG_MESSAGE)
             okText = it.getString(ARG_OK_TEXT)
             cancelText = it.getString(ARG_CANCEL_TEXT)
         }
-
         with(mBinding) {
             tvCommonDialogTitle.apply {
                 text = title ?: ""
@@ -44,7 +33,11 @@ class CommonDialog private constructor() : DialogFragment() {
             tvCommonDialogMessage.text = message ?: ""
             btnCommonDialogOk.text = okText ?: ""
             btnCommonDialogCancel.text = cancelText ?: ""
+        }
+    }
 
+    override fun initListener() {
+        with(mBinding) {
             btnCommonDialogOk.setOnClickListener {
                 onOkClick?.invoke()
                 dismiss()
@@ -57,6 +50,7 @@ class CommonDialog private constructor() : DialogFragment() {
         }
     }
 
+
     fun setOnOkClickListener(listener: () -> Unit) {
         onOkClick = listener
     }
@@ -64,17 +58,11 @@ class CommonDialog private constructor() : DialogFragment() {
     fun setOnCancelClickListener(listener: () -> Unit) {
         onCancelClick = listener
     }
-    fun showSafely(manager: FragmentManager, tag: String) {
-        if (!isAdded && manager.findFragmentByTag(tag) == null) {
-            show(manager, tag)
-        }
-    }
 
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
             setLayout(ViewUtils.dpToPx(280f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable( ContextCompat.getDrawable(requireContext(), R.drawable.shape_corner_12))
         }
     }
 
