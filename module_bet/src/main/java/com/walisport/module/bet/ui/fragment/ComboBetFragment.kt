@@ -1,9 +1,10 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.sendResult
 import com.walisport.lib.common.ui.dialog.CommonDialog
+import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentComboBetBinding
@@ -56,12 +57,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             if (it.size > 1) {
                 betSheetAdapter.submitList(it)
             } else {
-                findNavController().navigate(ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment())
+                navigate(ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(), null)
             }
         }
     }
 
     override fun dismiss(key: String, value: String) {
-        findNavController().getBackStackEntry(R.id.comboBetFragment).savedStateHandle[key] = value
+        sendResult(key, value, R.id.comboBetFragment)
     }
 }

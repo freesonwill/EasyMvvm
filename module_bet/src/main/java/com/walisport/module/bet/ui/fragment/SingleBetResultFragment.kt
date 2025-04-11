@@ -1,8 +1,8 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
 import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.lib.base.ui.sendResult
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentSingleBetResultBinding
 import com.walisport.module.bet.viewmodel.SingleBetResultViewModel
@@ -25,6 +25,6 @@ class SingleBetResultFragment : BaseFragment<SingleBetResultViewModel, FragmentS
     }
 
     override fun dismiss(key: String, value: String) {
-        findNavController().getBackStackEntry(R.id.singleBetResultFragment).savedStateHandle[key] = value
+        sendResult(key, value, R.id.singleBetResultFragment)
     }
 }

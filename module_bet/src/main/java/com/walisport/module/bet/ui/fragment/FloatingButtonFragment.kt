@@ -22,7 +22,6 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
     override fun initListener() {
         mBinding.fab.setPerformClick {
             mViewModel.onBettingCount.value?.let { count ->
-                mBinding.root.visibility = View.GONE
                 isShowBetSheet = true
                 if (count == 1) {
                     lifecycleScope.launch {
@@ -32,6 +31,7 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                 } else {
                     BetSheetFragment.newInstance().show(parentFragmentManager)
                 }
+                mBinding.root.visibility = View.GONE
                 parentFragmentManager.setFragmentResultListener(BetSheetFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
                     if (resultKey == BetSheetFragment.RESULT_KEY) {
                         parentFragmentManager.clearFragmentResultListener(BetSheetFragment.RESULT_KEY)
