@@ -2,9 +2,9 @@ package com.walisport.lib.common.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.base.utils.LogUtilsExt.loge
-import com.walisport.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib.common.ui.repository.ConnectingRepository
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.LoginTokenFailedError

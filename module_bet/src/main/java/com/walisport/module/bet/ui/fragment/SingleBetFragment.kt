@@ -2,8 +2,8 @@ package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.sendResult
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.sendResult
 import com.walisport.lib.common.utils.ViewUtils
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.R

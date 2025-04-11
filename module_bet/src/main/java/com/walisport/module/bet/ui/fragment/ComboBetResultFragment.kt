@@ -1,8 +1,8 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.sendResult
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.sendResult
 import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentComboBetResultBinding
 import com.walisport.module.bet.viewmodel.ComboBetResultViewModel

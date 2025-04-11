@@ -10,11 +10,10 @@ import com.walisport.app.data.MainRepository
 import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.data.SplashViewModel
-import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib.base.ui.BaseActivity
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.base.utils.LogUtilsExt.loge
-import com.walisport.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib.common.CommonModuleInitializer
 import com.walisport.lib_socket.SocketModuleInitializer
 import kotlinx.coroutines.CoroutineScope
@@ -22,7 +21,6 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  * @author: zhangsan

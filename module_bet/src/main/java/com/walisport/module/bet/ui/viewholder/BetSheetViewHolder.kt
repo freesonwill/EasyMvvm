@@ -1,6 +1,6 @@
 package com.walisport.module.bet.ui.viewholder
 
-import com.walisport.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.databinding.ItemBetSheetBinding
 

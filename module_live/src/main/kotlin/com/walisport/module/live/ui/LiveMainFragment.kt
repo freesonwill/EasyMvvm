@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
-import com.walisport.lib.base.adapter.PagerAdapter
-import com.walisport.lib.base.data.PagerBean
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.adapter.PagerAdapter
+import arch.cayenne.lib.base.data.PagerBean
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.lib.common.utils.ext.ResourceExt.getString

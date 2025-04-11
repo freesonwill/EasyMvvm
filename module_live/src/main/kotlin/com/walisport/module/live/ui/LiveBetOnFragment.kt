@@ -9,8 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.material.tabs.TabLayout
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
@@ -18,7 +17,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.reflect.KClass
 
 //投注
-class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel,FragmentLiveBetOnBinding>() {
+class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     class LinearSpacingItemDecoration(

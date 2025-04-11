@@ -1,7 +1,7 @@
 package com.walisport.lib.common.helper
 
-import com.walisport.lib.base.utils.LogUtils
-import com.walisport.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.utils.ThreadUtils.launchWithCustomContext
 import com.walisport.lib.common.utils.ThreadUtils.mainScope
 import com.walisport.lib.common.utils.ext.CommonExt.isMainThread

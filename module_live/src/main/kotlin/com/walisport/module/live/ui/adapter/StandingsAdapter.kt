@@ -1,6 +1,5 @@
 package com.walisport.module.live.ui.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,8 +7,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewbinding.ViewBinding
-import com.walisport.lib.base.adapter.BaseAdapter
-import com.walisport.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.StandingsCompare
 import com.walisport.module.live.data.model.StandingsBean

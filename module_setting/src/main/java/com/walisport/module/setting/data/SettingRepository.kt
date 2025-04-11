@@ -1,6 +1,6 @@
 package com.walisport.module.setting.data
 
-import com.walisport.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.data.repository.BaseRepository
 import com.walisport.lib.common.data.UserDataKey
 import com.walisport.lib.common.data.UserDataManager
 import kotlinx.coroutines.CoroutineScope

@@ -1,7 +1,7 @@
 package com.walisport.lib.common.ui.repository
 
 import com.google.protobuf.Api
-import com.walisport.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.data.repository.BaseRepository
 import com.walisport.lib.common.data.UserDataKey
 import com.walisport.lib.common.data.UserDataManager
 import com.walisport.lib_socket.WebSocketManager

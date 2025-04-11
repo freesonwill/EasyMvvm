@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.lib.common.utils.ext.DimensionExt.px2dp
 import com.walisport.lib.common.utils.ext.DimensionExt.px2sp

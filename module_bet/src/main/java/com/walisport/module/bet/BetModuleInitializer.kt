@@ -2,7 +2,7 @@ package com.walisport.module.bet
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import com.walisport.module.bet.repo.SingleBetRepository
 import com.walisport.module.bet.repo.ComboBetRepository
 import com.walisport.module.bet.repo.FloatingButtonRepository

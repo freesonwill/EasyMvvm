@@ -5,10 +5,10 @@ import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseActivity
 import com.walisport.lib.common.R
 import com.walisport.lib.common.databinding.ActvityBaseNavBinding
 import kotlin.reflect.KClass

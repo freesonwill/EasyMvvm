@@ -1,7 +1,7 @@
 package com.walisport.lib.common.helper
 
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import com.walisport.lib.common.databinding.ToastLayoutBinding
 import com.walisport.lib.common.utils.ThreadUtils.launchWithCustomContext
 import android.animation.ValueAnimator

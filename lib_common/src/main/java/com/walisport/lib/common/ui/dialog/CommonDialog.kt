@@ -3,9 +3,9 @@ package com.walisport.lib.common.ui.dialog
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import com.walisport.lib.base.ui.BaseDialogFragment
-import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.BaseDialogFragment
+import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import com.walisport.lib.common.databinding.DialogCommonBinding
 import com.walisport.lib.common.utils.ViewUtils
 

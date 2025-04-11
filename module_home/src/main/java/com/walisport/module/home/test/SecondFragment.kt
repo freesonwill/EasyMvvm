@@ -2,14 +2,14 @@ package com.walisport.module.home.test
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.home.databinding.FragmentTestSecondBinding
 import kotlin.reflect.KClass
 
 
-class SecondFragment : BaseFragment<EmptyViewModel,FragmentTestSecondBinding>() {
+class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>() {
     override val vbClass: KClass<FragmentTestSecondBinding> = FragmentTestSecondBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 

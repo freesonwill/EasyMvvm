@@ -2,8 +2,7 @@ package com.walisport.lib.skin
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module

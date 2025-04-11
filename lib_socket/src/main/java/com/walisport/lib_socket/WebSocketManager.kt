@@ -1,6 +1,6 @@
 package com.walisport.lib_socket
 
-import com.walisport.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.ApiCode
 import com.walisport.lib_socket.data.ConnectState
 import com.walisport.lib_socket.data.IRequest

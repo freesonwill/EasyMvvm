@@ -1,4 +1,4 @@
-package com.walisport.lib.base
+package arch.cayenne.lib.base
 
 import org.junit.Test
 

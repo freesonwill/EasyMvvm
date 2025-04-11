@@ -2,8 +2,7 @@ package com.walisport.module.live
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel

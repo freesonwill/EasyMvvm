@@ -1,7 +1,7 @@
 package com.walisport.lib_socket
 
 import android.util.Log
-import com.walisport.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib_socket.data.IRequest
 import com.walisport.lib_socket.data.IResponse
 import com.walisport.lib_socket.data.ISecurity

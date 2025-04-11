@@ -3,7 +3,7 @@ package com.walisport.lib.common
 import android.content.Context
 import androidx.startup.Initializer
 import com.tencent.mmkv.MMKV
-import com.walisport.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import com.walisport.lib.common.data.UserDataManager
 import com.walisport.lib.common.ui.repository.ConnectingRepository
 import kotlinx.coroutines.CoroutineScope
