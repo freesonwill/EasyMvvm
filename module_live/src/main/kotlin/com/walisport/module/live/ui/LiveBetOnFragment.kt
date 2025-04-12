@@ -30,6 +30,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             view: View,
             parent: RecyclerView,
             state: RecyclerView.State
+
+
         ) {
             val position = parent.getChildAdapterPosition(view) // item 位置
             val itemCount = parent.adapter?.itemCount ?: 0 // 总 item 数
