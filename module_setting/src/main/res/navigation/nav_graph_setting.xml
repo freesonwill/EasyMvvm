@@ -13,10 +13,6 @@
 
         <action
             android:id="@+id/action_settingFragment_to_noticedFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/noticedFragment" />
 
         <action
@@ -29,10 +25,6 @@
 
         <action
             android:id="@+id/action_settingFragment_to_languageFragment"
-            app:enterAnim="@anim/slide_in_right"
-            app:exitAnim="@anim/slide_out_left"
-            app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"
             app:destination="@id/languageFragment" />
 
         <deepLink app:uri="walisport://module_setting/settingFragment" />

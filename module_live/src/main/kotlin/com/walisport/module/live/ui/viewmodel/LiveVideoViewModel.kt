@@ -25,7 +25,7 @@ class LiveVideoViewModel : BaseViewModel() {
     val titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
 
     val subTitleText = MutableLiveData<String>("")
-    val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
+    val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
     val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
 
 }
