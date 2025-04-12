@@ -25,26 +25,30 @@ class LiveVideoSourceAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
         private val viewBinding: AdapterLiveVideoSourceItemLayoutBinding =
             binding as AdapterLiveVideoSourceItemLayoutBinding
 
-        init {
-            setOnClickListener()
-        }
 
-        private fun setOnClickListener() {
-
-        }
 
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvTitle.text = item.title
-            viewBinding.tvSubtitle.text=item.subTitle
+            viewBinding.tvSubtitle.text = item.subTitle
 
             Glide.with(viewBinding.ivThumb).load(item.thumb)
-                .placeholder(R.drawable.live_video_source_thumb_placeholder).apply(RequestOptions().transform(CenterCrop(), RoundedCorners(4.dp2px)))
+                .placeholder(R.drawable.live_video_source_thumb_placeholder)
+                .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(4.dp2px)))
                 .into(viewBinding.ivThumb)
+
+            viewBinding.root.setOnClickListener{
+                listener(item.sources)
+            }
 
         }
     }
 
+    private lateinit var listener: (String) -> Unit
+
+    fun setOnClickListener(listener: (String) -> Unit) {
+        this.listener = listener
+    }
 
     override fun convertPlus(
         holder: LiveVideoSourceViewHolder,

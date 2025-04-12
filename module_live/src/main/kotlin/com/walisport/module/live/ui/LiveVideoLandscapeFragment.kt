@@ -13,6 +13,7 @@ import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -20,18 +21,18 @@ import arch.cayenne.lib.skin.res.SportSkinResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
-import com.walisport.module.live.viewmodel.VideoActivityViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
 
 class LiveVideoLandscapeFragment :
-    BaseFragment<VideoActivityViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
 
     override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
         FragmentLiveVideoLandscapeBinding::class
-    override val vmClass: KClass<VideoActivityViewModel> = VideoActivityViewModel::class
+    override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     private var mBackPressed = false
 
@@ -307,10 +308,14 @@ class LiveVideoLandscapeFragment :
 
 
     override fun createObserver() {
-        mViewModel.url.observe(this) {
-            mBinding.videoView.setVideoURI(Uri.parse(it))
-            mBinding.videoView.start()
+        with(mViewModel) {
+            url.observe(viewLifecycleOwner) {
+                mBinding.videoView.setVideoURI(Uri.parse(it))
+                mBinding.videoView.start()
+            }
         }
+
+
 
         mViewModel.leagueIconUrl.observe(this) {
             Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
@@ -398,7 +403,7 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun hideVideoShareView(onEndAction: () -> Unit){
+    private fun hideVideoShareView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
@@ -444,7 +449,7 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun hideVideoChooseSourceView(onEndAction: () -> Unit){
+    private fun hideVideoChooseSourceView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
@@ -462,10 +467,10 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun hideFragment(){
+    private fun hideFragment() {
         val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
 
-        if(fragment is LiveVideoShareFragment) {
+        if (fragment is LiveVideoShareFragment) {
             hideVideoShareView {
                 childFragmentManager.beginTransaction().remove(fragment).commit()
             }
@@ -473,7 +478,7 @@ class LiveVideoLandscapeFragment :
 
         val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
 
-        if(fragment2 is LiveVideoChooseSourceFragment) {
+        if (fragment2 is LiveVideoChooseSourceFragment) {
             hideVideoChooseSourceView {
                 childFragmentManager.beginTransaction().remove(fragment2).commit()
             }

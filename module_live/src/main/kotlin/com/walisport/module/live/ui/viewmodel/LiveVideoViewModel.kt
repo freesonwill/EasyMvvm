@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.viewmodel
 
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.live.data.model.VideoSourceBean
@@ -15,10 +16,8 @@ class LiveVideoViewModel : BaseViewModel() {
     val statusVisible = MutableLiveData(View.INVISIBLE)
 
     val playerAUrl = MutableLiveData<String>("")
-    val playerAName = MutableLiveData<String>("")
 
     val playerBUrl = MutableLiveData<String>("")
-    val playerBName = MutableLiveData<String>("")
 
 
     val titleText = MutableLiveData<String>("")
@@ -28,6 +27,19 @@ class LiveVideoViewModel : BaseViewModel() {
     val subTitleText = MutableLiveData<String>("")
     val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
     val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
+
+    private val _url =
+        MutableLiveData("http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1")
+    val url: LiveData<String> = _url
+
+    private val _leagueIconUrl = MutableLiveData("")
+    val leagueIconUrl: LiveData<String> = _leagueIconUrl
+
+    private val _playerAName = MutableLiveData("法国")
+    val playerAName: LiveData<String> = _playerAName
+
+    private val _playerBName = MutableLiveData("阿根廷")
+    val playerBName: LiveData<String> = _playerBName
 
 
     val sources =
@@ -59,5 +71,9 @@ class LiveVideoViewModel : BaseViewModel() {
                 )
             )
         )
+
+    fun setUrl(url: String) {
+        _url.value = url
+    }
 
 }
