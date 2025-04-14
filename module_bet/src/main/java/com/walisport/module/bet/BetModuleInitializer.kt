@@ -8,6 +8,7 @@ import com.walisport.module.bet.repo.ComboBetRepository
 import com.walisport.module.bet.repo.FloatingButtonRepository
 import com.walisport.module.bet.viewmodel.ComboBetResultViewModel
 import com.walisport.module.bet.viewmodel.ComboBetViewModel
+import com.walisport.module.bet.viewmodel.ComboRateKeyboardDialogViewModel
 import com.walisport.module.bet.viewmodel.SingleBetViewModel
 import com.walisport.module.bet.viewmodel.ReserveDialogViewModel
 import com.walisport.module.bet.viewmodel.FloatingButtonViewModel
@@ -38,6 +39,7 @@ class BetModuleInitializer: Initializer<String> {
         viewModelOf(::ComboBetViewModel)
         viewModelOf(::SingleBetResultViewModel)
         viewModelOf(::ComboBetResultViewModel)
+        viewModelOf(::ComboRateKeyboardDialogViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)

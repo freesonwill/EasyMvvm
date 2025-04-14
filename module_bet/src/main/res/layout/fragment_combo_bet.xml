@@ -14,7 +14,7 @@
             android:id="@+id/cl_title_bet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintBottom_toTopOf="@id/rv_bet">
 
             <TextView
                 android:id="@+id/tv_title_betting_slip"
@@ -62,7 +62,7 @@
             android:layout_marginHorizontal="10dp"
             android:nestedScrollingEnabled="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/cl_title_bet"
+            app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
             tools:itemCount="2"
             tools:listitem="@layout/item_bet_sheet" />
 
@@ -72,8 +72,9 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/bg_bet_sheet"
-            app:layout_constraintTop_toBottomOf="@id/rv_bet">
+            app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_rate_title"
@@ -149,8 +150,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginVertical="12dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cl_rate">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_delete"
