@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":lib_base"))
     implementation(libs.ijkplayer)
     implementation(libs.androidx.annotation.jvm)
     implementation(libs.android.exoplayer)

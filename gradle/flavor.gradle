@@ -36,7 +36,7 @@ android{
             variant.outputs.configureEach { output ->
                 def GIT_VERSION = getGitVersion()
                 def LIB_NAME = project.name
-                outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
+                //outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
             }
         }
     }

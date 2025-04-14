@@ -33,7 +33,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-            viewBinding = true
+        viewBinding = true
     }
     sourceSets {
         getByName("main") {
@@ -47,7 +47,6 @@ android {
 
 dependencies {
     api(project(":lib_base"))
-    api(project(":lib_skin"))
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)
