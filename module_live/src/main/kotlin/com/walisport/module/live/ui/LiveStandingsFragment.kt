@@ -23,15 +23,25 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
 
     override val vbClass: KClass<FragmentLiveStandingsBinding> = FragmentLiveStandingsBinding::class
     override val vmClass: KClass<LiveStandingsViewModel> = LiveStandingsViewModel::class
-
-    private val itemDecoration: ItemDecoration = object : ItemDecoration() {
+    class StandingsItemDecoration(
+        private val spacing: Int = 12.dp2px ,         // 常规间距大小（像素）
+        private val leftRight: Int = 8.dp2px,         // 左右边距（像素）
+        private val bottomSpacing: Int = 20.dp2px,   // 最后一个 item 与底部的距离（像素）
+    ) : ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect,
             view: View,
             parent: RecyclerView,
             state: RecyclerView.State
         ) {
-            outRect.set(8.dp2px, 8.dp2px, 12.dp2px, 0)
+            val position = parent.getChildAdapterPosition(view) // item 位置
+            val itemCount = parent.adapter?.itemCount ?: 0 // 总 item 数
+
+                // 包含边缘的情况
+                outRect.top = if (position == 0) spacing else spacing / 2
+                outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
+                outRect.left = leftRight
+                outRect.right = leftRight
         }
     }
 
@@ -40,7 +50,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = StandingsAdapter(context).apply {
-                addItemDecoration(itemDecoration)
+                addItemDecoration(StandingsItemDecoration())
                 val tm1 = StandingsTeam(1, "厄瓜多尔", 1, 1)
                 val tm2 = StandingsTeam(2, "荷兰", 3, 1)
                 val tm3 = StandingsTeam(3, "巴西", 2, 1)

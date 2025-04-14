@@ -10,7 +10,7 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/black</item>
+<!--        <item name="android:statusBarColor">@color/black</item>-->
 <!--
         <item name="android:windowFullscreen">true</item>
 -->
@@ -23,7 +23,7 @@
     <style name="Theme.Wsl.Android.Splash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_bg</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/splash_background</item>
-        <item name="android:statusBarColor">@color/black</item>
+<!--        <item name="android:statusBarColor">@color/black</item>-->
         <item name="postSplashScreenTheme">@style/Theme.Wsl.Android</item>
 
     </style>

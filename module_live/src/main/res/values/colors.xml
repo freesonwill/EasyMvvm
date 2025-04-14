@@ -34,6 +34,9 @@
     <color name="tran_10_fe3666">#1AFE3666</color>
     <color name="tran_08_ac8e6a">#08ac8e6a</color>
     <color name="tran_05_white">#05ffffff</color>
+    <color name="color_FE3666">#FE3666</color>
+    <color name="color_3D404D">#3D404D</color>
+    <color name="color_line_282a34">#282a34</color>
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
     <color name="input_box2">#232530</color>
