@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/color_0E0F19">
+    android:background="@color/title_bg">
 
     <arch.cayenne.lib.common.ui.widget.TitleBarView
         android:id="@+id/title_bar"
@@ -15,52 +15,50 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_marginTop="@dimen/dp_20"
+        android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/language_simple"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_12"
             android:background="@drawable/ripple_effect_top">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_simple"
-                android:textColor="@color/white"
+                android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/radio_simple"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:button="@null"
-                android:checked="true"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SportView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_1d1f29"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="@color/notice_line"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/language_tradition"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
@@ -68,39 +66,37 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:background="@drawable/ripple_effect_rectangle">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_traditional"
-                android:textColor="@color/white"
+                android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/radio_traditional"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:button="@null"
-                android:checked="false"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SportView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
                 android:layout_marginStart="@dimen/dp_10"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:background="@color/color_1d1f29"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="@color/notice_line"
+                app:layout_constraintBottom_toBottomOf="parent" />
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/language_english"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
@@ -108,29 +104,26 @@
             android:layout_marginEnd="@dimen/dp_12"
             android:background="@drawable/ripple_effect_bottom">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
                 android:text="@string/menu_language_english"
-                android:textColor="@color/white"
+                android:textColor="@color/notice_title"
                 android:textSize="@dimen/sp_15"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/radio_english"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_10"
-                android:button="@null"
-                android:checked="false"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SportConstraintLayout>

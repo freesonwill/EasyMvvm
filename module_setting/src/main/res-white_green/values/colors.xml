@@ -9,4 +9,8 @@
     <color name="skin_title_normal_white_green">#787878</color>
     <color name="skin_title_press_white_green">#222222</color>
     <color name="effect_ripple_white_green">#FFFFFF</color>
+
+    <color name="notice_type_white_green">#666666</color>
+    <color name="notice_title_white_green">#222222</color>
+    <color name="notice_line_white_green">#f3f3f4</color>
 </resources>
