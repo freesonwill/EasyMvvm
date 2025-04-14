@@ -77,13 +77,11 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_menu_ep"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/radio_ep"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:button="@null"
-                android:checked="true"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -137,13 +135,11 @@
                 app:layout_constraintStart_toEndOf="@+id/tv_menu_hk"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/radio_hk"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginEnd="@dimen/dp_20"
-                android:button="@null"
-                android:checked="false"
                 android:background="@drawable/selector_radio_button"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
