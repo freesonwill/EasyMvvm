@@ -6,14 +6,11 @@ import arch.cayenne.lib.skin.res.SportSkinBuildInResourceLoader
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 
 class SportSkinManager {
-    private val TAG: String = "sportmanager"
-    private var languageCode: String = "en"
-    val resourcesManager: SportSkinResourceManager by inject(SportSkinResourceManager::class.java)
-
+    //val resourcesManager: SportSkinResourceManager by inject(SportSkinResourceManager::class.java)
+    private val resourcesManager = SportSkinResourceManager
     private val _skinFlow = MutableStateFlow("")
     private val _languageFlow = MutableStateFlow<Locale?>(null)
     val skinFlow: Flow<String> = _skinFlow
@@ -34,7 +31,7 @@ class SportSkinManager {
         _skinFlow.emit("")
     }
 
-    suspend fun changeLanguage(local:Locale) {
+    suspend fun changeLanguage(local: Locale) {
         _languageFlow.emit(local)
     }
 
