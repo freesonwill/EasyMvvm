@@ -12,10 +12,14 @@ import kotlin.reflect.KClass
 class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListBinding>() {
     override val vbClass: KClass<FragmentHomeGameListBinding> = FragmentHomeGameListBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
-    private var leagueId: Int? = null
+    private var leagueId: Int = -1
+    private var selectedDate: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        leagueId = arguments?.getInt(ARG_LEAGUE_ID)
+        arguments?.let {
+            leagueId = it.getInt(ARG_LEAGUE_ID)
+            selectedDate = it.getString(ARG_DATE).orEmpty()
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -29,7 +33,6 @@ class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListB
             rvHomeGameList.layoutManager = LinearLayoutManager(context)
 //            rvHomeGameList.adapter = adapter
         }
-
     }
 
     override fun initListener() {
@@ -37,13 +40,25 @@ class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListB
 
     override fun createObserver() {
     }
+
+    fun onDateChanged(newDate: String) {
+        selectedDate = newDate
+        refreshData()
+    }
+
+    private fun refreshData() {
+        // 根據 leagueId 與 date 更新列表
+    }
+
     companion object {
         private const val ARG_DATE = "arg_date"
         private const val ARG_LEAGUE_ID = "league_id"
-        fun newInstance(leagueId: Int, date: String) = EarlyGameListFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_LEAGUE_ID, leagueId)
-                putString(ARG_DATE, date)
+        fun newInstance(leagueId: Int, date: String): EarlyGameListFragment {
+            return EarlyGameListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_LEAGUE_ID, leagueId)
+                    putString(ARG_DATE, date)
+                }
             }
         }
     }

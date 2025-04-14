@@ -1,4 +1,4 @@
-package arch.cayenne.module_home.ui.fragment
+package com.walisport.module.home.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager

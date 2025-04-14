@@ -7,13 +7,14 @@ import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.skin.res.SportSkinResourceManager.getColorStateList
-import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentTodayBinding
 import com.walisport.module.home.databinding.ItemLeagueTabBinding
+import com.walisport.module.home.enums.HomeTab
 import com.walisport.module.home.enums.LeagueType
+import com.walisport.module.home.ui.adapter.LeaguePagerAdapter
 import kotlin.reflect.KClass
 
 class TodayFragment : BaseFragment<EmptyViewModel, FragmentTodayBinding>() {
@@ -29,7 +30,7 @@ class TodayFragment : BaseFragment<EmptyViewModel, FragmentTodayBinding>() {
         val apiLeagueIds = listOf(1, 2, 3, 4)
         leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
         with(mBinding) {
-            leagueAdapter = LeaguePagerAdapter(childFragmentManager, lifecycle, leagues)
+            leagueAdapter = LeaguePagerAdapter(childFragmentManager, lifecycle, leagues, HomeTab.TODAY)
             vpGameList.adapter = leagueAdapter
 
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
