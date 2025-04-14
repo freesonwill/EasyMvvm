@@ -3,9 +3,8 @@ package com.walisport.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.database.entity.BetBean
-import com.walisport.module.bet.data.ComboRateBean
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.BetBean
 import com.walisport.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 

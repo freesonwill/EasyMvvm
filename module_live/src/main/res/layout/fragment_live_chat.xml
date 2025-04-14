@@ -1,13 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".ui.LiveChatFragment">
 
-    <TextView
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.walisport.module.live.ui.viewmodel.LiveChatViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="LiveChatFragment" />
+        android:background="@color/color_0E0F1A">
 
-</FrameLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/live_chat_group_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="live_chat_iv_status,live_chat_tv_status" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/live_chat_group_chat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="live_chat_recycler,live_chat_ll_search,live_chat_iv_share" />
+
+        <arch.cayenne.lib.skin.widget.SportImageView
+            android:id="@+id/live_chat_iv_status"
+            android:layout_width="@dimen/dp_180"
+            android:layout_height="@dimen/dp_180"
+            android:layout_marginTop="@dimen/dp_60"
+            android:src="@drawable/live_chat_is_empty"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/live_chat_tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/live_chat_empty"
+            android:textColor="@color/secondary_text"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintLeft_toLeftOf="@id/live_chat_iv_status"
+            app:layout_constraintRight_toRightOf="@id/live_chat_iv_status"
+            app:layout_constraintTop_toBottomOf="@id/live_chat_iv_status" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/live_chat_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintBottom_toTopOf="@id/live_chat_ll_search"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/live_chat_ll_search"
+            android:layout_width="307dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="@dimen/dp_10"
+            android:background="@drawable/input_shape_bg"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SportEditText
+                android:id="@+id/live_chat_et_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center_vertical"
+                android:hint="@string/live_chat_talk"
+                android:paddingStart="@dimen/dp_16"
+                android:textColor="@color/main_text"
+                android:textColorHint="@color/secondary_text"
+                android:textSize="@dimen/sp_15" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="7dp"
+                android:src="@drawable/icon_input_phiz" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/live_chat_iv_share"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:background="@drawable/icon_input_circle"
+            android:paddingHorizontal="7dp"
+            android:paddingTop="@dimen/dp_6"
+            android:paddingBottom="@dimen/dp_8"
+            android:src="@drawable/icn_input_arrow"
+            app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_search"
+            app:layout_constraintLeft_toRightOf="@id/live_chat_ll_search"
+            app:layout_constraintTop_toTopOf="@id/live_chat_ll_search" />
+
+        <View
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

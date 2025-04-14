@@ -2,6 +2,7 @@ package com.walisport.module.home
 
 import android.content.Context
 import androidx.startup.Initializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 
 /**
  * @author: zhangsan
@@ -15,7 +16,6 @@ class ModuleInitializer: Initializer<Unit> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-
-       return emptyList()
+       return listOf(ApplicationModuleInitializer::class.java)
     }
 }

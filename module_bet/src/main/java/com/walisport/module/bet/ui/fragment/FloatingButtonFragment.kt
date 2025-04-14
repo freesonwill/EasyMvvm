@@ -5,7 +5,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import com.walisport.module.bet.viewmodel.FloatingButtonViewModel
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.module.bet.databinding.FragmentFloatingButtonBinding
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass

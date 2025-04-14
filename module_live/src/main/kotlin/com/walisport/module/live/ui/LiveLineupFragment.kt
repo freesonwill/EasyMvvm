@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewBind
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
@@ -16,10 +16,14 @@ import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
-//阵容
-class LiveLineupFragment : BaseFragment<LiveLineupViewModel,FragmentLiveLineupBinding>() {
+/**
+ * 阵容
+ * 描述:live_lineup_item_layout and live_lineup_item_bottom_layout 列表控件根据数据动态添加lineup_head 数据
+ */
+class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupBinding>() {
     override val vbClass: KClass<FragmentLiveLineupBinding> = FragmentLiveLineupBinding::class
     override val vmClass: KClass<LiveLineupViewModel> = LiveLineupViewModel::class
+
 
     override fun initView(savedInstanceState: Bundle?) {
     }
@@ -29,6 +33,5 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel,FragmentLiveLineupBi
 
     override fun createObserver() {
     }
-
 
 }
