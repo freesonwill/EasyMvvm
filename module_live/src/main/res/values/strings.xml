@@ -51,6 +51,9 @@
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
     <string name="live_chat_talk">和大家聊聊...</string>
+    <string name="share">分享给朋友</string>
+    <string name="share_link">复制链接</string>
+    <string name="choose_source">选解说</string>
 
 
     <string name="live_starting_lineup">首发阵容</string>
