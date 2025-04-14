@@ -8,7 +8,7 @@
         android:id="@+id/ivBack"
         style="@style/CustomToolbarImgStyle"
         tools:ignore="MissingConstraints"
-        app:srcCompat="@drawable/base_backin"
+        app:srcCompat="@drawable/bg_left_arrow"
         />
     <arch.cayenne.lib.common.ui.widget.ClearableEditText
         android:id="@+id/ce_search"
