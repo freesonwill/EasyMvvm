@@ -22,7 +22,7 @@ class ComboRateAdapter(
 
     override fun convertPlus(holder: ComboRateViewHolder, binding: ItemComboRateBinding, position: Int) {
         val item = getItem(holder.adapterPosition)
-        holder.bind(item)
+        holder.bind(currentList.size, item)
     }
 
     override fun createViewBinding(

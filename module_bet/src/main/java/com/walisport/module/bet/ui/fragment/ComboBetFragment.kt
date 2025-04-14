@@ -61,11 +61,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeAll()
             dismiss()
+            mViewModel.removeAll()
         }
         mBinding.llRateCollapse.setOnClickListener {
             comboRateAdapter.toggleExpand()
+            if (comboRateAdapter.isExpanded) {
+                mBinding.tvRateExpand.text = getString(R.string.title_rate_collapse)
+            } else {
+                mBinding.tvRateExpand.text = getString(R.string.title_rate_expand)
+            }
         }
     }
 

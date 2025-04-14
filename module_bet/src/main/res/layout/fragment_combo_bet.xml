@@ -99,10 +99,11 @@
                         android:layout_height="wrap_content" />
 
                     <TextView
+                        android:id="@+id/tv_rate_expand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="@string/title_rate_collapse"
+                        android:text="@string/title_rate_expand"
                         android:textColor="@color/color_bet_sheet_text_second"
                         android:textSize="13sp" />
                 </LinearLayout>
@@ -152,13 +153,11 @@
             android:layout_marginVertical="12dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <ImageView
                 android:id="@+id/btn_delete"
-                style="@style/ButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="21dp"
-                android:text="test delete"
+                android:layout_width="90dp"
+                android:layout_height="48dp"
+                android:src="@mipmap/icon_delete_combo"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

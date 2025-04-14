@@ -1,20 +1,19 @@
 package com.walisport.module.bet.ui.viewholder
 
 import com.walisport.lib.base.viewholder.BaseViewHolder
-import com.walisport.lib.common.utils.ViewUtils
+import com.walisport.module.bet.R
 import com.walisport.module.bet.data.ComboRateBean
 import com.walisport.module.bet.databinding.ItemComboRateBinding
 import com.walisport.module.bet.ui.adapter.ComboRateAdapter
 
 class ComboRateViewHolder(private val mBinding: ItemComboRateBinding, private val onComboRateClickListener: ComboRateAdapter.OnComboRateClickListener): BaseViewHolder(mBinding) {
 
-    fun bind(item: ComboRateBean) {
-        val title = "${item.combo} combo @${item.rate}"
+    fun bind(size: Int, item: ComboRateBean) {
+        val combo = getString(R.string.title_combo_bet_rate).format(size, item.combo)
+        val title = "$combo @${item.rate}"
         mBinding.tvTitleCombo.text = title
 
-        ViewUtils.hideKeyboard(itemView.context, mBinding.etMoney)
-        mBinding.root.setOnClickListener {
-            mBinding.etMoney.requestFocus()
+        mBinding.etMoney.setOnClickListener {
             val location = IntArray(2)
             mBinding.etMoney.getLocationOnScreen(location)
             val x = location.first() + mBinding.etMoney.width / 2

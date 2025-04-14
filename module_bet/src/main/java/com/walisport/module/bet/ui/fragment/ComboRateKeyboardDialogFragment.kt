@@ -13,7 +13,9 @@ import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ViewUtils
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import com.walisport.module.bet.R
 import com.walisport.module.bet.databinding.FragmentComboRateKeyboardDialogBinding
+import com.walisport.module.bet.ui.custom.NumberKeyboardView
 import com.walisport.module.bet.viewmodel.ComboRateKeyboardDialogViewModel
 
 class ComboRateKeyboardDialogFragment private constructor():
@@ -76,17 +78,65 @@ class ComboRateKeyboardDialogFragment private constructor():
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
         mBinding.etMoney.setText(requireArguments().getString(RATE_NUMBER) ?: "")
+
+        mBinding.numberKeyboard.setOnCalculatorClickListener(object :
+            NumberKeyboardView.OnCalculatorClickListener {
+            override fun onNumberClick(number: Int) {
+                mViewModel.addNumber(number)
+            }
+
+            override fun onDotClick() {
+                mViewModel.setDot()
+            }
+
+            override fun onOtherClick() {
+                mViewModel.setMaxMoney()
+            }
+
+            override fun getOtherText(): String {
+                return getString(R.string.btn_max)
+            }
+
+        })
     }
 
     override fun initListener() {
         mBinding.btnConfirm.setOnClickListener {
             dismiss()
         }
+        mBinding.btnBack.setOnClickListener {
+            mViewModel.backNumber()
+        }
+        mBinding.btnClear.setOnClickListener {
+            mViewModel.clearNumber()
+        }
+        mBinding.btnDouble.setOnClickListener {
+            mViewModel.doubleNumber()
+        }
+        mBinding.btn100.setOnClickListener {
+            mViewModel.setNumber(100)
+        }
+        mBinding.btn500.setOnClickListener {
+            mViewModel.setNumber(500)
+        }
+        mBinding.btn1000.setOnClickListener {
+            mViewModel.setNumber(1000)
+        }
+        mBinding.btn2000.setOnClickListener {
+            mViewModel.setNumber(2000)
+        }
+        mBinding.btn5000.setOnClickListener {
+            mViewModel.setNumber(5000)
+        }
     }
 
 
     override fun createObserver() {
-
+        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+            mBinding.etMoney.setText(it)
+            val length = it.length
+            mBinding.etMoney.setSelection(length)
+        }
     }
 
     private fun setTrianglePosition(targetPositionX: Int) {

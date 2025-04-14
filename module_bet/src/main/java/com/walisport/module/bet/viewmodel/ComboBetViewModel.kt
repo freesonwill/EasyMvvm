@@ -68,8 +68,6 @@ class ComboBetViewModel(private val repo: ComboBetRepository): BaseViewModel() {
     }
 
     fun removeAll() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.removeAll()
-        }
+        repo.removeAll()
     }
 }

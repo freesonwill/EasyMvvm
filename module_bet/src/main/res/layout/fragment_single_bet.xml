@@ -282,8 +282,8 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_collusion"
             style="@style/ButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="90dp"
+            android:layout_height="48dp"
             android:paddingHorizontal="21dp"
             android:text="@string/btn_collusion"
             app:layout_constraintBottom_toBottomOf="parent"
