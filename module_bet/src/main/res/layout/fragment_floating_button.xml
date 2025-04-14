@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="end">
 
-    <com.walisport.module.bet.ui.custom.MovableFloatingButton
+    <arch.cayenne.module.bet.ui.custom.MovableFloatingButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
