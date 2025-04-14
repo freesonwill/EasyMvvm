@@ -25,7 +25,7 @@ class LiveVideoChooseSourceFragment :
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = LiveVideoSourceAdapter(VideoSourceCompare()).apply {
                 post {
-                    addItemDecoration(LinearSpacingItemDecoration(16.dp2px, 0))
+                    addItemDecoration(LinearSpacingItemDecoration(16.dp2px, 8.dp2px))
                     submitList(mViewModel.sources.value)
                 }
 
