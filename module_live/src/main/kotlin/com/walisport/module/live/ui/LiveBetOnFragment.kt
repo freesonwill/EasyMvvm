@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.R
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
@@ -8,18 +9,22 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.reflect.KClass
 
+
 //投注
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
+
     class LinearSpacingItemDecoration(
         private val spacing: Int,         // 常规间距大小（像素）
         private val bottomSpacing: Int,   // 最后一个 item 与底部的距离（像素）
@@ -50,27 +55,35 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
         }
     }
+
     //测试数据
     //赛选条件
-    private var tabList : List<String> = listOf("全部","让球大小","波胆","角球&罚牌","罚球","角球&罚牌")
+    private var tabList: List<String> =
+        listOf("全部", "让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
+
     //赛选内容
-    private var list : List<String> = listOf("让球大小","波胆","角球&罚牌","罚球","角球&罚牌")
+    private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
         addNewTab()
         mBinding.rvBetList.apply {
             itemAnimator = null
-            layoutManager = LinearLayoutManager(this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false)
-             adapter = LiveBetOnAdapter(object : DiffUtil.ItemCallback<String>() {
+            layoutManager = LinearLayoutManager(
+                this@LiveBetOnFragment.context,
+                LinearLayoutManager.VERTICAL,
+                false
+            )
+            adapter = LiveBetOnAdapter(object : DiffUtil.ItemCallback<String>() {
                 override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
                     return oldItem == newItem
                 }
+
                 override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
                     return oldItem == newItem
                 }
             }).apply {
                 post {
-                    addItemDecoration(LinearSpacingItemDecoration(8.dp2px,10.dp2px))
+                    addItemDecoration(LinearSpacingItemDecoration(8.dp2px, 10.dp2px))
                     submitList(list)
                 }
             }
@@ -82,12 +95,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             override fun onTabSelected(tab: TabLayout.Tab?) {
 
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
+
+        mBinding.ivMenu.clickNoRepeat {
+            navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
+        }
     }
-
-
 
 
     override fun createObserver() {
@@ -95,7 +111,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     // 动态添加Tab的方法
     private fun addNewTab() {
-        tabList.forEach{ text ->
+        tabList.forEach { text ->
             // 添加新Tab
             val newTab = mBinding.tabLayout.newTab()
             newTab.text = text
@@ -103,6 +119,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
         reflexPadding(mBinding.tabLayout)
     }
+
     //设置tab之间的外边距
     private fun reflexPadding(tabLayout: TabLayout) {
         tabLayout.post {
@@ -118,10 +135,12 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             params.leftMargin = marginStart
                             params.rightMargin = margin
                         }
+
                         mTabStrip.childCount - 1 -> {
                             params.leftMargin = margin
                             params.rightMargin = marginStart
                         }
+
                         else -> {
                             params.leftMargin = margin
                             params.rightMargin = margin
