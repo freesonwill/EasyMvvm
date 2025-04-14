@@ -26,6 +26,12 @@ android {
         prop.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("int", "uid", prop.getProperty("user.uid"))
         buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
+
+        ndk {
+            // 只接入 armeabi-v7a 和 x86 架构
+            //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a")) // 仅支持 arm 版本
+        }
     }
 
     buildTypes {
