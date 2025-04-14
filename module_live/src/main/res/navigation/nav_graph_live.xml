@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_liveMainFragment_to_VideoLandscapeFragment"
             app:destination="@id/liveVideoLandscapeFragment" />
+
+        <action
+            android:id="@+id/action_liveMainFragment_to_liveBetOnMenuFragment"
+            app:destination="@id/liveBetOnMenuFragment" />
     </fragment>
 
     <fragment
@@ -42,4 +46,11 @@
             android:id="@+id/action_liveVideoLandscapeFragment_to_leagueFragment"
             app:destination="@id/leagueFragment" />
     </fragment>
+
+
+
+    <dialog
+        android:id="@+id/liveBetOnMenuFragment"
+        android:name="com.walisport.module.live.ui.LiveBetOnMenuFragment"
+        android:label="CommonDialog" />
 </navigation>

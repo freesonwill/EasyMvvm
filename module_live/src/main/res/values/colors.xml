@@ -21,6 +21,7 @@
     <color name="color_24ee8a_20">#cc24ee8a</color>
     <color name="color_24ee8a">#cc24ee8a</color>
     <color name="color_929298">#929298</color>
+    <color name="color_bbbbbb">#bbbbbb</color>
     <color name="color_ffffff">#ffffff</color>
     <color name="color_fe3666">#FE3666</color>
     <color name="color_4150f6">#4150F6</color>
@@ -40,4 +41,5 @@
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
     <color name="input_box2">#232530</color>
+    <color name="menu_lin">#232530</color>
 </resources>
