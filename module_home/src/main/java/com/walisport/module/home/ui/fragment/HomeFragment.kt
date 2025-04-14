@@ -10,9 +10,9 @@ import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.bet.repo.SingleBetRepository
-import com.walisport.module.bet.ui.fragment.BetSheetFragment
-import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
+import arch.cayenne.module.bet.repo.SingleBetRepository
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
 import kotlinx.coroutines.launch

@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="background">#FF0E0F19</color>
+    <color name="title_bar">#E6E6E6</color>
+    <color name="title_skin">#929298</color>
+    <color name="title_confirm">#71E993</color>
+    <color name="title_cancel">#FFFFFF</color>
 
+    <color name="skin_title_normal">#929298</color>
+    <color name="skin_title_press">#FFFFFF</color>
+    <color name="effect_ripple">#161823</color>
+
+    <color name="notice_type">#929298</color>
+    <color name="notice_title">#FFFFFF</color>
+    <color name="notice_line">#1d1f29</color>
 </resources>

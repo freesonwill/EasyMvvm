@@ -9,7 +9,7 @@
             android:exported="false"
             tools:node="merge">
             <meta-data
-                android:name="com.walisport.module.bet.BetModuleInitializer"
+                android:name="arch.cayenne.module.bet.BetModuleInitializer"
                 android:value="androidx.startup" />
         </provider>
     </application>

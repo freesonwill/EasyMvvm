@@ -1,16 +1,20 @@
 package com.walisport.module.live.ui
 
+
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.reflect.KClass
+
 
 //投注
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
@@ -60,6 +64,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
+
+        mBinding.ivMenu.clickNoRepeat {
+            navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
+        }
     }
 
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="38dp"
+    android:background="@drawable/bet_menu_selected"
+    android:orientation="vertical"
+    android:id="@+id/clRoot"
+    >
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvName"
+        android:layout_marginEnd="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_18"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:text="阿根廷"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/live_bet_menu_list_selected_text"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints" />
+
+</FrameLayout>
