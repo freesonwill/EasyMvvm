@@ -9,7 +9,7 @@ object DateUtils {
         val dateList = mutableListOf<Pair<String, String>>()
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault()) // MMDD 格式
-        val weekdayFormat = SimpleDateFormat("E", Locale.CHINESE) // 取得星期幾 (中文)
+        val weekdayFormat = SimpleDateFormat("E", Locale.CHINESE) // TODO 取得星期幾 (中文, 未來再因應多語系修改)
 
         repeat(7) {
             val dateStr = dateFormat.format(calendar.time) // MMDD

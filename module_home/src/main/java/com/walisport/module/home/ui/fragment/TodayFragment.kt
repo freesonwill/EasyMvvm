@@ -20,6 +20,7 @@ import kotlin.reflect.KClass
 class TodayFragment : BaseFragment<EmptyViewModel, FragmentTodayBinding>() {
     override val vbClass: KClass<FragmentTodayBinding> = FragmentTodayBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
     private val leagues = mutableListOf<LeagueType>()
     private lateinit var leagueAdapter: LeaguePagerAdapter
     override fun initView(savedInstanceState: Bundle?) {

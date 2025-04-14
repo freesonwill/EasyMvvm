@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
 class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListBinding>() {
     override val vbClass: KClass<FragmentHomeGameListBinding> = FragmentHomeGameListBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
     private var leagueId: Int = -1
     private var selectedDate: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {

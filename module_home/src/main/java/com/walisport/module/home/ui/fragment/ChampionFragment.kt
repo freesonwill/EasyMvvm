@@ -7,10 +7,10 @@ import com.walisport.module.home.databinding.FragmentChampionBinding
 import kotlin.reflect.KClass
 
 class ChampionFragment: BaseFragment<EmptyViewModel, FragmentChampionBinding>(){
+    // TODO 待實作
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
-//        override val mBinding: FragmentChampionBinding by viewBind()
-//        override val mViewModel: EmptyViewModel by viewModel()
+
     override fun initView(savedInstanceState: Bundle?) {
     }
 

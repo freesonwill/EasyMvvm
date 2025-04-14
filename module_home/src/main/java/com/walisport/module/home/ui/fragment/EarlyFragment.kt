@@ -24,6 +24,7 @@ import kotlin.reflect.KClass
 class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
 
     private val leagues = mutableListOf<LeagueType>()
     private val dateTabManager = DateTabManager()

@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
-
+    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
     override fun initView(savedInstanceState: Bundle?) {
         childFragmentManager.beginTransaction()
             .replace(mBinding.floatingContainer.id, FloatingButtonFragment())
@@ -37,7 +37,7 @@ class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
             }.attach()
 
 
-            val apiSportIds = listOf(1, 2, 3, 4, 5) // mock API 回傳的運動 ID
+            val apiSportIds = listOf(1, 2, 3, 4, 5) // TODO mock API 回傳的運動 ID
             val sportsList = apiSportIds.mapNotNull { SportType.fromId(it) }
 
             rvSportsList.apply {
