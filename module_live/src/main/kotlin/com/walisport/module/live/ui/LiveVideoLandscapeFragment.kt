@@ -49,6 +49,8 @@ class LiveVideoLandscapeFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
 
+        mViewModel.addMockData()
+
     }
 
     override fun initListener() {
@@ -309,8 +311,8 @@ class LiveVideoLandscapeFragment :
 
     override fun createObserver() {
         with(mViewModel) {
-            url.observe(viewLifecycleOwner) {
-                mBinding.videoView.setVideoURI(Uri.parse(it))
+            liveVideoBean.observe(viewLifecycleOwner) {
+                mBinding.videoView.setVideoURI(Uri.parse(it.url))
                 mBinding.videoView.start()
             }
         }

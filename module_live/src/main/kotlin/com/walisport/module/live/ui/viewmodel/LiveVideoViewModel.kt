@@ -3,10 +3,14 @@ package com.walisport.module.live.ui.viewmodel
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.LiveVideoBean
+import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.VideoSourceBean
+import kotlinx.coroutines.launch
 
-class LiveVideoViewModel : BaseViewModel() {
+class LiveVideoViewModel(private val repo:LiveMainRepository) : BaseViewModel() {
 
     val liveUrl =
         MutableLiveData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
@@ -28,9 +32,6 @@ class LiveVideoViewModel : BaseViewModel() {
     val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
     val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
 
-    private val _url =
-        MutableLiveData("http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1")
-    val url: LiveData<String> = _url
 
     private val _leagueIconUrl = MutableLiveData("")
     val leagueIconUrl: LiveData<String> = _leagueIconUrl
@@ -40,7 +41,6 @@ class LiveVideoViewModel : BaseViewModel() {
 
     private val _playerBName = MutableLiveData("阿根廷")
     val playerBName: LiveData<String> = _playerBName
-
 
     val sources =
         MutableLiveData(
@@ -72,8 +72,25 @@ class LiveVideoViewModel : BaseViewModel() {
             )
         )
 
-    fun setUrl(url: String) {
-        _url.value = url
+    private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
+    val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
+
+    init {
+        viewModelScope.launch {
+            repo.observeLiveVideoBean().collect {
+                if (it != null) {
+                    _liveVideoBean.value = it
+                }
+            }
+        }
+    }
+
+    fun setPlayingVideoUrl(url: String) {
+        repo.setPlayingVideoUrl(url)
+    }
+
+    fun addMockData(){
+        repo.addMockData()
     }
 
 }

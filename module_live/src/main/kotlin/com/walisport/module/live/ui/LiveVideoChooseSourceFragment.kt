@@ -3,7 +3,6 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.compare.VideoSourceCompare
 import com.walisport.module.live.databinding.FragmentLiveChooseSourceBinding
@@ -31,7 +30,7 @@ class LiveVideoChooseSourceFragment :
                 }
 
                 setOnClickListener {
-                    mViewModel.setUrl(it)
+                    mViewModel.setPlayingVideoUrl(it)
                 }
             }
         }
@@ -44,6 +43,11 @@ class LiveVideoChooseSourceFragment :
 
     override fun createObserver() {
 
+        with(mViewModel) {
+            liveVideoBean.observe(viewLifecycleOwner) {
+
+            }
+        }
     }
 
     override fun onResume() {
