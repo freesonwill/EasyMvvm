@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.lifecycle.viewModelScope
 import com.walisport.lib.base.data.viewmodel.EmptyViewModel
 import com.walisport.lib.base.ui.BaseFragment
+import com.walisport.module.home.data.PlayType
 import com.walisport.module.home.databinding.FragmentNewHomeBinding
 import com.walisport.module.home.viewmodel.HomeViewModel
 import kotlin.reflect.KClass
