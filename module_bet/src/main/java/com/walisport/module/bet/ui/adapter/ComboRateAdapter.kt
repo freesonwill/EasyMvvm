@@ -53,7 +53,17 @@ class ComboRateAdapter(
         }
     }
 
+    override fun submitList(list: List<ComboRateBean>?, commitCallback: Runnable?) {
+        val runnable = Runnable {
+            commitCallback?.run()
+            if (!isExpanded) {
+                notifyItemChanged(0)
+            }
+        }
+        super.submitList(list, runnable)
+    }
+
     interface OnComboRateClickListener {
-        fun onEditRateClick(positionX: Int, positionY: Int, rate: String)
+        fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String)
     }
 }

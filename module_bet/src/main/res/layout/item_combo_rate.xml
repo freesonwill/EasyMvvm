@@ -6,15 +6,16 @@
     android:paddingTop="10dp"
     android:paddingBottom="6dp">
 
-    <TextView
+    <EditText
         android:id="@+id/et_money"
         android:layout_width="130dp"
         android:layout_height="36dp"
         android:background="@drawable/shape_8dp"
         android:backgroundTint="@color/color_main_background"
+        android:cursorVisible="false"
         android:padding="8dp"
-        android:textColor="@color/color_textview"
-        android:textColorHint="@color/color_edittext_hint"
+        android:textColor="@color/color_bet_sheet_text_second"
+        android:textColorHint="@color/color_bet_sheet_text_second"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

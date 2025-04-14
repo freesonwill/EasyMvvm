@@ -7,7 +7,6 @@ import com.walisport.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.lib.database.entity.BetBean
 import com.walisport.module.bet.data.ComboRateBean
 import com.walisport.module.bet.repo.ComboBetRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ComboBetViewModel(private val repo: ComboBetRepository): BaseViewModel() {
@@ -69,5 +68,18 @@ class ComboBetViewModel(private val repo: ComboBetRepository): BaseViewModel() {
 
     fun removeAll() {
         repo.removeAll()
+    }
+
+    fun updateRateMoney(id: Int, money: String) {
+        _onComboRateListener.value?.let {
+            val updatedList = it.map { rate ->
+                if (rate.combo == id) {
+                    rate.copy(money = money)
+                } else {
+                    rate
+                }
+            }
+            _onComboRateListener.value = updatedList
+        }
     }
 }

@@ -8,25 +8,28 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.walisport.lib.base.ui.BaseDialogFragment
 import com.walisport.lib.base.ui.viewBind
 import com.walisport.lib.common.utils.ViewUtils
 import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.bet.R
-import com.walisport.module.bet.databinding.FragmentComboRateKeyboardDialogBinding
+import com.walisport.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import com.walisport.module.bet.ui.custom.NumberKeyboardView
-import com.walisport.module.bet.viewmodel.ComboRateKeyboardDialogViewModel
+import com.walisport.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 
-class ComboRateKeyboardDialogFragment private constructor():
-    BaseDialogFragment<FragmentComboRateKeyboardDialogBinding>() {
+class ComboBetMoneyKeyboardDialogFragment private constructor():
+    BaseDialogFragment<FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
         private const val RATE_NUMBER = "rateNumber"
+        const val RESULT_KEY = "combo_rate_result_key"
+        const val MONEY_INPUT = "money_input"
 
-        fun newInstance(positionX: Int?, positionY: Int?, rateNumber: String? = null): ComboRateKeyboardDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, rateNumber: String? = null): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -35,14 +38,14 @@ class ComboRateKeyboardDialogFragment private constructor():
                 b.putInt(POSITION_Y, it)
             }
             b.putString(RATE_NUMBER, rateNumber)
-            return ComboRateKeyboardDialogFragment().apply {
+            return ComboBetMoneyKeyboardDialogFragment().apply {
                 arguments = b
             }
         }
     }
 
-    override val mBinding: FragmentComboRateKeyboardDialogBinding by viewBind()
-    private val mViewModel: ComboRateKeyboardDialogViewModel by viewModels()
+    override val mBinding: FragmentComboBetMoneyKeyboardDialogBinding by viewBind()
+    private val mViewModel: ComboBetMoneyKeyboardDialogViewModel by viewModels()
 
     override fun onStart() {
         super.onStart()
@@ -75,9 +78,17 @@ class ComboRateKeyboardDialogFragment private constructor():
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        isCancelable = false
+
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
-        mBinding.etMoney.setText(requireArguments().getString(RATE_NUMBER) ?: "")
+        requireArguments().getString(RATE_NUMBER)?.let {
+            if (it.contains('.')) {
+                mViewModel.setNumber(it.toFloat())
+            } else if (it.isNotEmpty()){
+                mViewModel.setNumber(it.toInt())
+            }
+        }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -113,6 +124,7 @@ class ComboRateKeyboardDialogFragment private constructor():
         mBinding.btnDouble.setOnClickListener {
             mViewModel.doubleNumber()
         }
+        // TODO 有時間改成adapter
         mBinding.btn100.setOnClickListener {
             mViewModel.setNumber(100)
         }
@@ -146,5 +158,14 @@ class ComboRateKeyboardDialogFragment private constructor():
         val params = mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams
         params.rightMargin = params.rightMargin - px
         mBinding.triangle.layoutParams = params
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        val money = mBinding.etMoney.text.toString()
+        val bundle = Bundle().apply {
+            putString(MONEY_INPUT, money)
+        }
+        setFragmentResult(RESULT_KEY, bundle)
     }
 }

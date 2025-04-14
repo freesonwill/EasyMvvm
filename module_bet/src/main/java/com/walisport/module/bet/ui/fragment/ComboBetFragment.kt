@@ -1,6 +1,7 @@
 package com.walisport.module.bet.ui.fragment
 
 import android.os.Bundle
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.walisport.lib.base.ui.BaseFragment
 import com.walisport.lib.base.ui.sendResult
 import com.walisport.lib.common.ui.dialog.CommonDialog
@@ -40,14 +41,23 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private val comboRateAdapter by lazy {
         ComboRateAdapter(object : ComboRateAdapter.OnComboRateClickListener {
-
-            override fun onEditRateClick(positionX: Int, positionY: Int, rate: String) {
-                ComboRateKeyboardDialogFragment.newInstance(positionX, positionY, rate).show(childFragmentManager)
+            override fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String) {
+                childFragmentManager.setFragmentResultListener(ComboBetMoneyKeyboardDialogFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
+                    if (resultKey == ComboBetMoneyKeyboardDialogFragment.RESULT_KEY) {
+                        parentFragmentManager.clearFragmentResultListener(ComboBetMoneyKeyboardDialogFragment.RESULT_KEY)
+                        val money = bundle.getString(ComboBetMoneyKeyboardDialogFragment.MONEY_INPUT, "")
+                        mViewModel.updateRateMoney(id, money)
+                    }
+                }
+                ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, rate).show(childFragmentManager)
             }
         })
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        (mBinding.rvRate.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+
         mBinding.rvBet.adapter = betSheetAdapter
 
         val decoration = BetSheetDecoration(6.dp2px)
@@ -61,7 +71,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
-            dismiss()
             mViewModel.removeAll()
         }
         mBinding.llRateCollapse.setOnClickListener {
@@ -76,7 +85,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     override fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
-            if (it.size > 1) {
+            if (it.isEmpty()) {
+                dismiss()
+            } else if (it.size > 1) {
                 betSheetAdapter.submitList(it)
             } else {
                 navigate(
@@ -85,13 +96,21 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 )
             }
         }
+        var hasLockBetSheetView = false
         mViewModel.onComboRateListener.observe(viewLifecycleOwner) {
             comboRateAdapter.submitList(it) {
-                mBinding.root.post {
-                    val paddingBottom = mBinding.clRate.height + 24.dp2px
-                    mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
+                if (!hasLockBetSheetView) {
+                    hasLockBetSheetView = true
+                    setBetSheetView()
                 }
             }
+        }
+    }
+
+    private fun setBetSheetView() {
+        mBinding.root.post {
+            val paddingBottom = mBinding.clRate.height + 22.dp2px
+            mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
         }
     }
 
