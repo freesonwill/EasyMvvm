@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
@@ -11,6 +12,7 @@ import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.repo.SingleBetRepository
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.java.KoinJavaComponent.inject
 
 class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBetSheetBinding>() {
@@ -56,6 +58,18 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setStartDestination()
+        setFitToContents()
+    }
+
+    private fun setFitToContents() {
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+        bottomSheet?.let { sheet ->
+            val behavior = BottomSheetBehavior.from(sheet)
+
+            behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
+            behavior.isFitToContents = true
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        }
     }
 
     private fun setStartDestination() {
