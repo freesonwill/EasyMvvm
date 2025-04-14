@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
@@ -17,13 +18,12 @@ import com.walisport.module.home.enums.HomeTab
 import com.walisport.module.home.enums.LeagueType
 import com.walisport.module.home.manager.DateTabManager
 import com.walisport.module.home.ui.adapter.LeaguePagerAdapter
-import com.walisport.module.home.ui.viewmodel.HomeViewModel
 import com.walisport.module.home.utils.DateUtils.getNext7Days
 import kotlin.reflect.KClass
 
-class EarlyFragment : BaseFragment<HomeViewModel, FragmentEarlyBinding>() {
+class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
-    override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
+    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     private val leagues = mutableListOf<LeagueType>()
     private val dateTabManager = DateTabManager()

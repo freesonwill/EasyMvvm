@@ -1,7 +1,6 @@
 package com.walisport.module.home.test
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate

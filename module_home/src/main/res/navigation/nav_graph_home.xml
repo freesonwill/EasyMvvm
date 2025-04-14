@@ -8,7 +8,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="arch.cayenne.module.home.ui.fragment.HomeFragment"
+        android:name="com.walisport.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/secondFragment"
-        android:name="arch.cayenne.module.home.test.SecondFragment"
+        android:name="com.walisport.module.home.test.SecondFragment"
         android:label="fragment_second"
         tools:layout="@layout/fragment_test_second"
         >
@@ -89,12 +89,12 @@
 
     <activity
         android:id="@+id/homeActivity"
-        android:name="arch.cayenne.module.home.ui.HomeActivity"
+        android:name="com.walisport.module.home.ui.HomeActivity"
         android:label="activity_home"
         />
     <fragment
         android:id="@+id/thirdFragment"
-        android:name="arch.cayenne.module.home.test.ThirdFragment"
+        android:name="com.walisport.module.home.test.ThirdFragment"
         android:label="fragment_third"
         tools:layout="@layout/fragment_test_third" >
         <action
@@ -107,7 +107,7 @@
 
     <fragment
         android:id="@+id/viewPagerFragment"
-        android:name="arch.cayenne.module.home.test.ViewPagerFragment"
+        android:name="com.walisport.module.home.test.ViewPagerFragment"
         android:label="ViewPagerFragment"
         >
         <action
