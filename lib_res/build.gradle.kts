@@ -6,9 +6,17 @@ plugins {
 android {
     namespace = "arch.cayenne.lib.res"
     compileSdk = 34
+
+    defaultConfig {
+        minSdk = 24
+
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles("consumer-rules.pro")
+    }
 }
 
 dependencies {
+    implementation(project(":lib_common"))
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
 }

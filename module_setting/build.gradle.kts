@@ -47,6 +47,7 @@ android {
 
 dependencies {
     implementation(project(":lib_res"))
+    implementation(project(":lib_skin"))
     implementation(project(":lib_common"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
