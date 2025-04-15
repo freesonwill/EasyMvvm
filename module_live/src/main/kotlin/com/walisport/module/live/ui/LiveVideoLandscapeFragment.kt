@@ -13,7 +13,6 @@ import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -95,8 +94,8 @@ class LiveVideoLandscapeFragment :
             reduce {
                 videoViewFullScreen = false
             }
-            setVideoShareView()
-            showVideoShareView()
+            setShareView()
+            showShareView()
         }
 
         mBinding.llChooseSource.clickNoRepeat {
@@ -105,16 +104,19 @@ class LiveVideoLandscapeFragment :
                 videoViewFullScreen = false
             }
 
-            setVideoChooseSourceView()
-            showVideoChooseSourceView()
+            setChooseSourceView()
+            showChooseSourceView()
         }
 
 
-        mBinding.tvMatchStatus.clickNoRepeat {
+        mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
-            reduce {
+            reduce(targetWidth = 376.dp2px, targetHeight = 209.dp2px, targetMarginStart = 32.dp2px) {
                 videoViewFullScreen = false
             }
+
+            setStatisticsView()
+            showStatisticsView()
         }
 
     }
@@ -252,16 +254,18 @@ class LiveVideoLandscapeFragment :
     /**
      * 缩小视频播放区
      */
-    private fun reduce(onEndAction: () -> Unit) {
+    private fun reduce(
+        targetWidth: Int = 495.dp2px,
+        targetHeight: Int = 275.dp2px,
+        targetMarginStart: Int = 32.dp2px,
+        onEndAction: () -> Unit
+    ) {
         //width， height， marginStart, marginTop
         val currentHeight = mBinding.root.measuredHeight
-        val targetHeight = 275.dp2px
         val currentWidth = mBinding.root.measuredWidth
-        val targetWidth = 495.dp2px
         val currentMarginTop = 0
         val targetMarginTop = (currentHeight - targetHeight) / 2
         val currentMarginStart = 0
-        val targetMarginStart = 32.dp2px
 
         with(AnimatorSet()) {
             playTogether(
@@ -380,7 +384,7 @@ class LiveVideoLandscapeFragment :
         navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
     }
 
-    private fun setVideoShareView() {
+    private fun setShareView() {
         childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
                 as? LiveVideoShareFragment ?: LiveVideoShareFragment().also {
             childFragmentManager.beginTransaction()
@@ -390,7 +394,7 @@ class LiveVideoLandscapeFragment :
 
     }
 
-    private fun showVideoShareView() {
+    private fun showShareView() {
         val currentMarginStart =
             (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = -mBinding.fragmentShare.measuredWidth
@@ -407,7 +411,7 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun hideVideoShareView(onEndAction: () -> Unit) {
+    private fun hideShareView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
@@ -425,7 +429,7 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun setVideoChooseSourceView() {
+    private fun setChooseSourceView() {
         childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
                 as? LiveVideoChooseSourceFragment ?: LiveVideoChooseSourceFragment().also {
             childFragmentManager.beginTransaction()
@@ -435,7 +439,7 @@ class LiveVideoLandscapeFragment :
 
     }
 
-    private fun showVideoChooseSourceView() {
+    private fun showChooseSourceView() {
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = -mBinding.fragmentChooseSource.measuredWidth
@@ -453,7 +457,7 @@ class LiveVideoLandscapeFragment :
         }
     }
 
-    private fun hideVideoChooseSourceView(onEndAction: () -> Unit) {
+    private fun hideChooseSourceView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
@@ -471,11 +475,56 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    private fun setStatisticsView() {
+        childFragmentManager.findFragmentByTag(LiveVideoStatisticsFragment.TAG)
+                as? LiveVideoStatisticsFragment ?: LiveVideoStatisticsFragment().also {
+            childFragmentManager.beginTransaction()
+                .replace(mBinding.fragmentStatistics.id, it, LiveVideoStatisticsFragment.TAG)
+                .commitNow()
+        }
+
+    }
+
+    private fun showStatisticsView() {
+        val currentMarginStart =
+            (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = -mBinding.fragmentStatistics.measuredWidth
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentStatistics.layoutParams = lp
+
+            }
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
+    }
+
+    private fun hideStatisticsView(onEndAction: () -> Unit) {
+        val currentMarginStart =
+            (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
+        val targetMarginStart = 0
+        ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+            addUpdateListener {
+                val lp = mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams
+                lp.marginStart = it.animatedValue as Int
+
+                mBinding.fragmentStatistics.layoutParams = lp
+
+            }
+            doOnEnd { onEndAction() }
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
+    }
+
     private fun hideFragment() {
         val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
 
         if (fragment is LiveVideoShareFragment) {
-            hideVideoShareView {
+            hideShareView {
                 childFragmentManager.beginTransaction().remove(fragment).commit()
             }
         }
@@ -483,8 +532,16 @@ class LiveVideoLandscapeFragment :
         val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
 
         if (fragment2 is LiveVideoChooseSourceFragment) {
-            hideVideoChooseSourceView {
+            hideChooseSourceView {
                 childFragmentManager.beginTransaction().remove(fragment2).commit()
+            }
+        }
+
+        val fragment3 = childFragmentManager.findFragmentByTag(LiveVideoStatisticsFragment.TAG)
+
+        if (fragment3 is LiveVideoStatisticsFragment) {
+            hideStatisticsView {
+                childFragmentManager.beginTransaction().remove(fragment3).commit()
             }
         }
 
