@@ -5,6 +5,7 @@ import android.view.View
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
@@ -92,7 +93,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
                     location.last() + mBinding.btnReserve.height,
-                    rateNumber = it.odds
+                    odds = it.odds.getOdds()
                 ).show(childFragmentManager)
             }
 
@@ -115,7 +116,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun setBetData(data: BetBean) {
-        val odds = "@${data.odds}"
+        val odds = "@${data.odds.getOdds()}"
         mBinding.layoutBet.tvOdds.text = odds
 
         mBinding.layoutBet.tvMatchName.text = data.matchName

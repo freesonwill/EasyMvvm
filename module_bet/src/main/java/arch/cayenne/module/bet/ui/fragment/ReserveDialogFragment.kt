@@ -17,9 +17,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
-        private const val RATE_NUMBER = "rateNumber"
+        private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, rateNumber: Float): ReserveDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, odds: String): ReserveDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -27,7 +27,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putFloat(RATE_NUMBER, rateNumber)
+            b.putString(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
             }
@@ -69,8 +69,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.etRate.requestFocus()
 
-        val rate = requireArguments().getFloat(RATE_NUMBER)
-        mViewModel.setNumber(rate)
+        val rate = requireArguments().getString(ODDS_NUMBER)
+        if (!rate.isNullOrEmpty()) {
+            mViewModel.setNumber(rate.toFloat())
+        }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
             override fun onNumberClick(number: Int) {

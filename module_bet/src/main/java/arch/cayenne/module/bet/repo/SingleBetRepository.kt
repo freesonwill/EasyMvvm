@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -35,7 +36,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 gameId = data.size,
                 betTeamName = "Test ${data.size}",
                 handicap = "-1.5",
-                odds = 1.98f,
+                odds = "1.98".toValue(),
                 betType = BetTypeEnum.COMBO,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
@@ -51,7 +52,7 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 gameId = 0,
                 betTeamName = "Test ${0}",
                 handicap = "-1.5",
-                odds = 1.98f,
+                odds = "1.98".toValue(),
                 betType = BetTypeEnum.SINGLE,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
