@@ -5,8 +5,11 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewTreeObserver
+import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.module.bet.Config.KEY_RESULT
+import arch.cayenne.module.bet.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
@@ -17,9 +20,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
+        private const val MATCH_ID = "matchId"
         private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, odds: String): ReserveDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, id: Int, odds: String): ReserveDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -27,6 +31,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
+            b.putInt(MATCH_ID, id)
             b.putString(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
@@ -102,7 +107,13 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
             mViewModel.clearNumber()
         }
         mBinding.btnConfirm.setOnClickListener {
-            mViewModel.reserve()
+            val id = requireArguments().getInt(MATCH_ID, -1)
+            if (id != -1) {
+                mViewModel.reserve(id)
+                arguments = Bundle().apply {
+                    putString(KEY_RESULT, VALUE_RESERVE_COMPLETE)
+                }
+            }
             dismiss()
         }
     }
@@ -114,5 +125,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
             val length = text.length
             mBinding.etRate.setSelection(length)
         }
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        setFragmentResult(KEY_RESULT, arguments ?: Bundle())
     }
 }

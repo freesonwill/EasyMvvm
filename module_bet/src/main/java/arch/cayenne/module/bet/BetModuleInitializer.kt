@@ -6,12 +6,14 @@ import arch.cayenne.lib.base.ApplicationModuleInitializer
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.repo.FloatingButtonRepository
+import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.viewmodel.ComboBetResultViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
+import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetResultViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
@@ -40,11 +42,13 @@ class BetModuleInitializer: Initializer<String> {
         viewModelOf(::SingleBetResultViewModel)
         viewModelOf(::ComboBetResultViewModel)
         viewModelOf(::ComboBetMoneyKeyboardDialogViewModel)
+        viewModelOf(::ReserveViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
         factoryOf(::SingleBetRepository)
         factoryOf(::ComboBetRepository)
+        factoryOf(::ReserveRepository)
     }
     private val moduleList:List<Module> = listOf(viewModules,repoModules)
 }

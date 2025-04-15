@@ -26,6 +26,9 @@ abstract class BetDao: BaseDao<BetBean>() {
 
     @Query("UPDATE BetBean SET betType = :type WHERE gameId = :id")
     abstract suspend fun updateBetType(id: Int, type: BetTypeEnum)
+
+    @Query("UPDATE BetBean SET reverseOdds = :reserveOdds WHERE gameId = :id")
+    abstract suspend fun setReserveOdds(id: Int, reserveOdds: Int?)
     /**
      * 移除非roundId的投注記錄
      */

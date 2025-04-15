@@ -2,36 +2,30 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.module.bet.Config.KEY_RESULT
-import arch.cayenne.module.bet.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
-import arch.cayenne.module.bet.viewmodel.NumberCalculatorViewModel
-import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
+import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import kotlin.reflect.KClass
 
-class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
-    BetSheetListener {
+class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>(), BetSheetListener {
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
-    override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
+    override val vmClass: KClass<ReserveViewModel> = ReserveViewModel::class
+    private val args: ReserveFragmentArgs by navArgs()
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
-
-        mBinding.etMoney.hint = getString(R.string.et_money_hint).format(
-            NumberCalculatorViewModel.MIN_MONEY,
-            NumberCalculatorViewModel.MAX_MONEY
-        )
+        mBinding.tvBetHint.text = getString(R.string.title_reserve)
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -52,9 +46,16 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
 
         })
+
+        mViewModel.setReserveBet(args.id)
     }
 
     override fun initListener() {
+        mBinding.ivCancelReserve.setOnClickListener {
+            mViewModel.removeReserve(args.id)
+            navigate(ReserveFragmentDirections.actionReserveFragmentToSingleBetFragment())
+        }
+
         mBinding.ivClose.setOnClickListener {
             mViewModel.removeBet()
             dismiss()
@@ -88,26 +89,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
-            mViewModel.sendBet()
-        }
-        mBinding.btnReserve.setOnClickListener {
-            mViewModel.onBetSheetListener.value?.let {
-                childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                    if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(it.gameId))
-                    }
-                }
-                val location = IntArray(2)
-                mBinding.btnReserve.getLocationInWindow(location)
-                ReserveDialogFragment.newInstance(
-                    location.first() + mBinding.btnReserve.width / 2,
-                    location.last() + mBinding.btnReserve.height,
-                    it.gameId,
-                    odds = it.odds.getOdds()
-                ).show(childFragmentManager)
-            }
-
+            mViewModel.sendReserve()
         }
     }
 
@@ -117,10 +99,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val length = it.length
             mBinding.etMoney.setSelection(length)
         }
-        mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
+        mViewModel.onReserveSheetListener.observe(viewLifecycleOwner) {
             setBetData(it)
         }
-        mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
+        mViewModel.onReserveWinMoney.observe(viewLifecycleOwner) {
             val money = getString(R.string.btn_bet_win_money).format(it)
             mBinding.tvBetMoney.text = money
         }
@@ -129,9 +111,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
         mBinding.layoutBet.ivDelete.visibility = View.GONE
+        val odds = "@${data.reverseOdds?.getOdds()}"
+        mBinding.tvCancelReserve.text = odds
+
+        mBinding.btnReserve.visibility = View.GONE
+        mBinding.clCancelReserve.visibility = View.VISIBLE
     }
 
     override fun dismiss(key: String, value: String) {
-        sendResult(key, value, R.id.singleBetFragment)
+        sendResult(key, value, R.id.reserveFragment)
     }
 }

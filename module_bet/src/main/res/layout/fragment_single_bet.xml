@@ -68,16 +68,15 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_money"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="46dp"
             android:layout_marginEnd="4dp"
             android:background="@drawable/shape_8dp"
             android:backgroundTint="@color/color_button_normal"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            app:layout_constraintBottom_toBottomOf="@id/btn_reserve"
-            app:layout_constraintEnd_toStartOf="@id/btn_reserve"
+            app:layout_constraintEnd_toStartOf="@id/cl_reserve"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/btn_reserve">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/iv_money"
@@ -108,16 +107,69 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_reserve"
-            style="@style/ButtonStyle"
-            android:layout_width="62dp"
-            android:layout_height="wrap_content"
-            android:paddingStart="8dp"
-            android:paddingEnd="8dp"
-            android:text="@string/btn_reserve"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_reserve"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/cl_money"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/cl_money">
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_reserve"
+                style="@style/ButtonStyle"
+                android:layout_width="62dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/btn_reserve"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_cancel_reserve"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:background="@drawable/shape_8dp"
+                android:backgroundTint="@color/color_button_normal"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/tv_cancel_reserve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_margin="4dp"
+                    android:background="@drawable/shape_6dp"
+                    android:backgroundTint="@color/color_button_number"
+                    android:gravity="center"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="8dp"
+                    android:textColor="@color/color_textview"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/iv_cancel_reserve"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:padding="8dp"
+                    android:src="@mipmap/icon_close"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/tv_cancel_reserve"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         <LinearLayout
             android:id="@+id/ll_common_amount"
@@ -130,7 +182,7 @@
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_reserve">
+            app:layout_constraintTop_toBottomOf="@id/cl_reserve">
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_100"
@@ -228,7 +280,7 @@
             android:layout_height="0dp"
             android:columnCount="1"
             app:layout_constraintBottom_toBottomOf="@id/ll_common_amount"
-            app:layout_constraintEnd_toEndOf="@id/btn_reserve"
+            app:layout_constraintEnd_toEndOf="@id/cl_reserve"
             app:layout_constraintTop_toTopOf="@id/ll_common_amount">
 
             <ImageButton

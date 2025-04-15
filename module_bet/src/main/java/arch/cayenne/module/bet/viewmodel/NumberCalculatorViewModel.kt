@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 
 open class NumberCalculatorViewModel : BaseViewModel() {
 
@@ -13,6 +14,8 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
     protected val _onEditMoney = MutableLiveData("")
     val onEditMoney: LiveData<String> = _onEditMoney
+
+    val odds: Int get() = _onEditMoney.value?.toValue() ?: 0
 
     fun addNumber(number: Int) {
         val current = _onEditMoney.value.orEmpty()

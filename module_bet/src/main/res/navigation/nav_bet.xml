@@ -61,6 +61,11 @@
             app:destination="@id/singleBetFragment"
             app:popUpToInclusive="true"
             app:popUpTo="@id/reserveFragment" />
+
+        <argument
+            android:name="id"
+            app:argType="integer"
+            app:nullable="false" />
     </fragment>
 
 
