@@ -111,7 +111,11 @@ class LiveVideoLandscapeFragment :
 
         mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
-            reduce(targetWidth = 376.dp2px, targetHeight = 209.dp2px, targetMarginStart = 32.dp2px) {
+            reduce(
+                targetWidth = 376.dp2px,
+                targetHeight = 209.dp2px,
+                targetMarginStart = 32.dp2px
+            ) {
                 videoViewFullScreen = false
             }
 
@@ -121,16 +125,25 @@ class LiveVideoLandscapeFragment :
 
     }
 
+    /**
+     * 展示上边和下边的操作按钮，不带动画
+     */
     private fun showButtons() {
         mBinding.topArea.visibility = View.VISIBLE
         mBinding.bottomArea.visibility = View.VISIBLE
     }
 
+    /**
+     * 隐藏上边和下边的操作按钮，不带动画
+     */
     private fun hideButtons() {
         mBinding.topArea.visibility = View.GONE
         mBinding.bottomArea.visibility = View.GONE
     }
 
+    /**
+     * 展示上边和下边的操作按钮，带动画
+     */
     private fun showButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
@@ -164,6 +177,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 隐藏上边和下边的操作按钮，带动画
+     */
     private fun hideButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
@@ -380,10 +396,16 @@ class LiveVideoLandscapeFragment :
 //        super.onBackPressed()
 //    }
 
+    /**
+     * 跳转到联赛赛程页
+     */
     private fun jumpToLeagueFragment() {
         navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
     }
 
+    /**
+     *  创建视频分享页
+     */
     private fun setShareView() {
         childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
                 as? LiveVideoShareFragment ?: LiveVideoShareFragment().also {
@@ -394,6 +416,9 @@ class LiveVideoLandscapeFragment :
 
     }
 
+    /**
+     * 视频分享页入场动画
+     */
     private fun showShareView() {
         val currentMarginStart =
             (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -411,6 +436,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 视频分享页退场动画
+     */
     private fun hideShareView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -429,6 +457,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 创建选择视频源页
+     */
     private fun setChooseSourceView() {
         childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
                 as? LiveVideoChooseSourceFragment ?: LiveVideoChooseSourceFragment().also {
@@ -439,6 +470,9 @@ class LiveVideoLandscapeFragment :
 
     }
 
+    /**
+     *视频源页入场动画
+     */
     private fun showChooseSourceView() {
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -457,6 +491,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 视频源页面退场动画
+     */
     private fun hideChooseSourceView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentChooseSource.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -475,6 +512,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 创建赛况统计页
+     */
     private fun setStatisticsView() {
         childFragmentManager.findFragmentByTag(LiveVideoStatisticsFragment.TAG)
                 as? LiveVideoStatisticsFragment ?: LiveVideoStatisticsFragment().also {
@@ -485,6 +525,9 @@ class LiveVideoLandscapeFragment :
 
     }
 
+    /**
+     * 赛况页入场动画
+     */
     private fun showStatisticsView() {
         val currentMarginStart =
             (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -502,6 +545,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 赛况页退场动画
+     */
     private fun hideStatisticsView(onEndAction: () -> Unit) {
         val currentMarginStart =
             (mBinding.fragmentStatistics.layoutParams as ConstraintLayout.LayoutParams).marginStart
@@ -520,6 +566,9 @@ class LiveVideoLandscapeFragment :
         }
     }
 
+    /**
+     * 移除分享页，视频源页，赛况页
+     */
     private fun hideFragment() {
         val fragment = childFragmentManager.findFragmentByTag(LiveVideoShareFragment.TAG)
 
