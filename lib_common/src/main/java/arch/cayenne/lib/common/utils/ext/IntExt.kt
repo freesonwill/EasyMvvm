@@ -27,13 +27,13 @@ object IntExt {
         }
     }
 
-    fun Int.getRate(): String {
+    fun Int.getOdds(): String {
         val rate = this / 100f
         val adjusted = if (rate < 0.1f) 0.1f else rate
         return String.format("%.2f", adjusted)
     }
 
-    fun Int.getRate(multiply: Int): String {
+    fun Int.getOdds(multiply: Int): String {
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(100))
         return decimal.setScale(2, RoundingMode.DOWN).toPlainString()
