@@ -1,15 +1,15 @@
 package com.walisport.module.live.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.walisport.module.live.data.model.LeagueMatchBean
+import com.walisport.module.live.data.model.MatchBean
 
-class LeagueMatchCompare : DiffUtil.ItemCallback<LeagueMatchBean>() {
+class LeagueMatchCompare : DiffUtil.ItemCallback<MatchBean>() {
 
-    override fun areItemsTheSame(oldItem: LeagueMatchBean, newItem: LeagueMatchBean): Boolean {
-        return oldItem.homeTeamName == newItem.homeTeamName || oldItem.awayTeamName == newItem.awayTeamName || oldItem.isWeek == newItem.isWeek
+    override fun areItemsTheSame(oldItem: MatchBean, newItem: MatchBean): Boolean {
+        return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: LeagueMatchBean, newItem: LeagueMatchBean): Boolean {
+    override fun areContentsTheSame(oldItem: MatchBean, newItem: MatchBean): Boolean {
         return oldItem == newItem
     }
 }
