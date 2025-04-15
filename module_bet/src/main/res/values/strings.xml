@@ -23,4 +23,6 @@
     <string name="title_combo_bet_rate_money">本金：</string>
     <string name="title_combo_bet_rate_max_money">预计最高可赢：</string>
     <string name="title_combo_bet_rate">%d串%d：</string>
+
+    <string name="title_reserve">预约</string>
 </resources>

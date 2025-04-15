@@ -14,6 +14,8 @@ import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.bet.Config.KEY_RESULT
+import arch.cayenne.module.bet.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
@@ -26,8 +28,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
         private const val RATE_NUMBER = "rateNumber"
-        const val RESULT_KEY = "combo_rate_result_key"
-        const val MONEY_INPUT = "money_input"
 
         fun newInstance(positionX: Int?, positionY: Int?, rateNumber: String? = null): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
@@ -164,8 +164,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         super.dismiss()
         val money = mBinding.etMoney.text.toString()
         val bundle = Bundle().apply {
-            putString(MONEY_INPUT, money)
+            putString(VALUE_MONEY_INPUT, money)
         }
-        setFragmentResult(RESULT_KEY, bundle)
+        setFragmentResult(KEY_RESULT, bundle)
     }
 }

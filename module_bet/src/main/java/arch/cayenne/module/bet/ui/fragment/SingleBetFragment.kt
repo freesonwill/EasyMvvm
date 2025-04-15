@@ -14,7 +14,7 @@ import arch.cayenne.module.bet.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
 
-class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
+open class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
     BetSheetListener {
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class

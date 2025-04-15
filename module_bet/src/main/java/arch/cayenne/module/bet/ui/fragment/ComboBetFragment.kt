@@ -8,6 +8,8 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.module.bet.Config.KEY_RESULT
+import arch.cayenne.module.bet.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
 import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
@@ -42,12 +44,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     private val comboRateAdapter by lazy {
         ComboRateAdapter(object : ComboRateAdapter.OnComboRateClickListener {
             override fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String) {
-                childFragmentManager.setFragmentResultListener(ComboBetMoneyKeyboardDialogFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == ComboBetMoneyKeyboardDialogFragment.RESULT_KEY) {
+                childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
+                    if (resultKey == KEY_RESULT) {
                         parentFragmentManager.clearFragmentResultListener(
-                            ComboBetMoneyKeyboardDialogFragment.RESULT_KEY
+                            KEY_RESULT
                         )
-                        val money = bundle.getString(ComboBetMoneyKeyboardDialogFragment.MONEY_INPUT, "")
+                        val money = bundle.getString(VALUE_MONEY_INPUT, "")
                         mViewModel.updateRateMoney(id, money)
                     }
                 }

@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.module.bet.Config.KEY_RESULT
+import arch.cayenne.module.bet.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -32,11 +34,11 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                     BetSheetFragment.newInstance().show(parentFragmentManager)
                 }
                 mBinding.root.visibility = View.GONE
-                parentFragmentManager.setFragmentResultListener(BetSheetFragment.RESULT_KEY, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == BetSheetFragment.RESULT_KEY) {
-                        parentFragmentManager.clearFragmentResultListener(BetSheetFragment.RESULT_KEY)
-                        val dismissKey = bundle.getString(BetSheetFragment.DISMISS_KEY)
-                        if (dismissKey == BetSheetFragment.DISMISS_KEY) {
+                parentFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
+                    if (resultKey == KEY_RESULT) {
+                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
+                        val dismissKey = bundle.getString(VALUE_DISMISS)
+                        if (dismissKey == VALUE_DISMISS) {
                             isShowBetSheet = false
                             mViewModel.onBettingCount.value?.let {
                                 setVisibility(it)
