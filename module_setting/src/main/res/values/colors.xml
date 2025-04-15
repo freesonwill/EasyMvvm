@@ -9,4 +9,8 @@
     <color name="skin_title_normal">#929298</color>
     <color name="skin_title_press">#FFFFFF</color>
     <color name="effect_ripple">#161823</color>
+
+    <color name="notice_type">#929298</color>
+    <color name="notice_title">#FFFFFF</color>
+    <color name="notice_line">#1d1f29</color>
 </resources>

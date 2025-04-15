@@ -10,4 +10,8 @@
     <color name="color_edittext_hint">#929298</color>
     <color name="color_edittext_cursor">#24EE8A</color>
     <color name="color_main_background">#F3F3F4</color>
+
+    <color name="color_bet_sheet_stroke">#FFFFFF</color>
+    <color name="color_bet_sheet_text_first">#222222</color>
+    <color name="color_bet_sheet_text_second">#666666</color>
 </resources>

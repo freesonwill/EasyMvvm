@@ -33,7 +33,15 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-            viewBinding = true
+        viewBinding = true
+    }
+    sourceSets {
+        getByName("main") {
+            res.srcDirs(
+                "src/main/res", "src/main/res-black_blue", "src/main/res-black_red",
+                "src/main/res-classic", "src/main/res-white_blue", "src/main/res-white_green"
+            )
+        }
     }
 }
 

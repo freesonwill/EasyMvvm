@@ -59,6 +59,11 @@ android {
             }
         }
     }
+    packaging {
+        resources {
+            excludes += "**/*.proto"
+        }
+    }
 }
 protobuf {
     protoc {
