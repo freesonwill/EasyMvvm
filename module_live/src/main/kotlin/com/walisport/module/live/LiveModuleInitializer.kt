@@ -7,24 +7,23 @@ import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
+import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
+import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
+import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
+import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import com.walisport.module.live.viewmodel.VideoActivityViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
-import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
-import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
-import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
 
 class LiveModuleInitializer : Initializer<String> {
 
@@ -43,7 +42,6 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveMainViewModel)
         viewModelOf(::LiveVideoViewModel)
         viewModelOf(::LiveBetSlipViewModel)
-        viewModelOf(::VideoActivityViewModel)
         viewModelOf(::LiveChatViewModel)
         viewModelOf(::LeagueViewModel)
         viewModelOf(::LiveOutsViewModel)

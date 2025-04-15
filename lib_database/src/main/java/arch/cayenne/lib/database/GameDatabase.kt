@@ -6,10 +6,12 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.LiveVideoBean
 
 @Database(
-    entities = [BetBean::class],
+    entities = [BetBean::class, LiveVideoBean::class],
     version = 1,
     exportSchema = false
 )
@@ -37,4 +39,6 @@ abstract class GameDatabase: RoomDatabase() {
     }
 
     abstract fun betDao(): BetDao
+
+    abstract fun liveVideoDao(): LiveVideoDao
 }
