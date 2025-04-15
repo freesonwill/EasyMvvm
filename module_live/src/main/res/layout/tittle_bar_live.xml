@@ -1,36 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SportLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@color/tran_0"
+    android:background="@color/title_bg"
     android:gravity="center_vertical"
     android:orientation="horizontal"
     >
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/iv_landscape_league_icon"
             android:layout_width="@dimen/dp_96"
             android:layout_height="@dimen/dp_22"
             android:scaleType="centerCrop"
             android:src="@drawable/title_league_icon" />
-        <androidx.appcompat.widget.AppCompatImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:layout_width="10dp"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginEnd="@dimen/dp_6"
             android:src="@drawable/title_landscape_separator" />
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_competition_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="法国vs阿根廷"
             android:drawablePadding="5dp"
-            android:drawableEnd="@drawable/title_bar_dow_icon"
-            android:textColor="@color/white"
+            android:textColor="@color/title_bar"
             android:textSize="15sp" />
-
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SportImageView
+            android:layout_width="10dp"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:src="@drawable/title_bar_dow_icon" />
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_money"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_24"
@@ -45,4 +49,4 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</arch.cayenne.lib.skin.widget.SportLinearLayout>

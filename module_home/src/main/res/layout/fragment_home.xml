@@ -98,10 +98,15 @@
                 android:padding="10dp"
                 android:text="添加注單" />
 
+
+
         </LinearLayout>
 
 
-
+        <arch.cayenne.lib.common.ui.widget.TitleBarView
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.fragment.app.FragmentContainerView
