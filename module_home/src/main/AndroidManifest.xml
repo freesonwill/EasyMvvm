@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="com.walisport.module.home.ui.HomeActivity"
+            android:name="arch.cayenne.module.home.ui.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.Wsl.Android">
         </activity>

@@ -6,7 +6,7 @@
     >
     <fragment
         android:id="@+id/viewPager2Fragment"
-        android:name="com.walisport.module.home.test.ViewPager2Fragment"
+        android:name="arch.cayenne.module.home.test.ViewPager2Fragment"
         android:label="ViewPager2Fragment" />
 
 </navigation>

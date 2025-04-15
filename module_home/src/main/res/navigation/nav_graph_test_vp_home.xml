@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/textViewScreen"
-        android:name="com.walisport.module.home.test.ViewPagerItem2Fragment"
+        android:name="arch.cayenne.module.home.test.ViewPagerItem2Fragment"
         android:label="TextView Screen"
         tools:layout="@layout/fragment_test_view_pager_item2"
         >
@@ -28,7 +28,7 @@
 
     <fragment
         android:id="@+id/homeFragment3"
-        android:name="com.walisport.module.home.ui.fragment.HomeFragment"
+        android:name="arch.cayenne.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
 
