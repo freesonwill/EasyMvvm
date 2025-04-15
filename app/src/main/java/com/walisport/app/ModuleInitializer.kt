@@ -16,7 +16,7 @@ import com.walisport.app.data.MainRepository
 import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.data.SplashViewModel
-import com.walisport.module.home.HomeModuleInitializer
+import arch.cayenne.module.home.HomeModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules

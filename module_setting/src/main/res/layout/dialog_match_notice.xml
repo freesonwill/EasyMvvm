@@ -263,7 +263,7 @@
             android:background="@drawable/ripple_effect_rectangle"
             android:gravity="center"
             android:text="@string/shut_down"
-            android:textColor="@color/title_confirm"
+            android:textColor="@color/notice_close"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold" />
     </LinearLayout>

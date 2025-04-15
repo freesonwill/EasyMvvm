@@ -19,7 +19,7 @@ class BackgroundViewModel : BaseViewModel() {
     fun setSkinType(type: SkinType) {
         viewModelScope.launch {
             if (SkinType.SKIN_CLASSIC == type) {
-                skinManager.loadSkin("")
+                skinManager.loadSkin("classic")
             } else if (SkinType.SKIN_BLACK_BLUE == type) {
                 skinManager.loadSkin("black_blue")
             } else if (SkinType.SKIN_BLACK_GREEN == type) {
