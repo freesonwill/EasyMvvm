@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.compare.VideoSourceCompare
 import com.walisport.module.live.databinding.FragmentLiveChooseSourceBinding
@@ -51,9 +52,11 @@ class LiveVideoChooseSourceFragment :
             sources.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
                     (adapter as LiveVideoSourceAdapter).apply {
-                        post {
-                            submitList(mViewModel.sources.value)
-                        }
+                        val list = mViewModel.sources.value
+                        val size = list?.size?:0
+                        submitList(list)
+
+                        notifyItemRangeChanged(0, size)
                     }
                 }
             }
