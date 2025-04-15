@@ -26,7 +26,9 @@ import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
-
+/**
+ * 视频横屏播放页
+ */
 class LiveVideoLandscapeFragment :
     BaseFragment<LiveVideoViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
 

@@ -12,6 +12,9 @@ import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 
+/**
+ * 视频横屏播放时的选择数据源页
+ */
 class LiveVideoChooseSourceFragment :
     BaseFragment<LiveVideoViewModel, FragmentLiveChooseSourceBinding>(), CancelAdapt {
     override val vbClass: KClass<FragmentLiveChooseSourceBinding> =

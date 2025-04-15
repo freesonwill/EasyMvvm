@@ -19,6 +19,9 @@ import com.walisport.module.live.databinding.TittleBarLiveBinding
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 直播详情页
+ */
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
