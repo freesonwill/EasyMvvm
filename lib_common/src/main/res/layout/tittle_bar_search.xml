@@ -37,6 +37,7 @@
             style="@style/CustomToolbarEditStyle"
             android:textColor="@color/search_text"
             android:textColorHint="@color/search_hint"
+            android:drawablePadding="@dimen/dp_10"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:background="@null"
