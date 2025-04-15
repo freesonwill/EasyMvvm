@@ -17,7 +17,7 @@ class SettingViewModel : BaseViewModel() {
         viewModelScope.launch {
             val skinType = repository.getSkinType()
             if (SkinType.SKIN_CLASSIC.value == skinType) {
-                skinManager.loadSkin("")
+                skinManager.loadSkin("classic")
             } else if (SkinType.SKIN_BLACK_BLUE.value == skinType) {
                 skinManager.loadSkin("black_blue")
             } else if (SkinType.SKIN_BLACK_GREEN.value == skinType) {

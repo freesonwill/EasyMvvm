@@ -23,7 +23,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return manager.getStringValue(UserDataKey.KEY_SKIN, "CLASSIC")
+        return manager.getStringValue(UserDataKey.KEY_SKIN, "BLACK_GREEN")
     }
 
     //设置赔率显示方式

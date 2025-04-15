@@ -13,4 +13,6 @@
     <color name="notice_type">#929298</color>
     <color name="notice_title">#FFFFFF</color>
     <color name="notice_line">#1d1f29</color>
+
+    <color name="notice_close">#69da8a</color>
 </resources>
