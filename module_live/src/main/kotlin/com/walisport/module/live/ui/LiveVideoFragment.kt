@@ -2,9 +2,11 @@ package com.walisport.module.live.ui
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.PositionedDialogFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
@@ -27,11 +29,14 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             val location = IntArray(2)
             mBinding.videoView.getLocationOnScreen(location)
             val x = location[0]
-            val y = location[1] + mBinding.videoView.measuredHeight
+            val y =
+                location[1] + mBinding.videoView.measuredHeight - getStatusBarHeight(requireContext())
             LiveVideoPortraitSourceFragment().apply {
                 arguments = Bundle().apply {
                     putInt(PositionedDialogFragment.POSITION_X, x)
                     putInt(PositionedDialogFragment.POSITION_Y, y)
+                    putInt(PositionedDialogFragment.WIDTH, ViewGroup.LayoutParams.MATCH_PARENT)
+                    putInt(PositionedDialogFragment.HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 }
                 show(this@LiveVideoFragment.childFragmentManager)
             }

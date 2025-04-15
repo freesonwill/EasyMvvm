@@ -3,6 +3,7 @@ package arch.cayenne.lib.base.ui
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.Gravity
+import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
@@ -16,6 +17,9 @@ abstract class PositionedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
     companion object {
         const val POSITION_X = "positionX"
         const val POSITION_Y = "positionY"
+
+        const val WIDTH = "width"
+        const val HEIGHT = "height"
     }
 
     override fun onStart() {
@@ -25,7 +29,8 @@ abstract class PositionedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             val positionX = requireArguments().getInt(POSITION_X, -1)
             val positionY = requireArguments().getInt(POSITION_Y, -1)
-
+            val width = requireArguments().getInt(WIDTH, ViewGroup.LayoutParams.WRAP_CONTENT)
+            val height = requireArguments().getInt(HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
             if (positionX != -1 && positionY != -1) {
                 mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
                     ViewTreeObserver.OnGlobalLayoutListener {
@@ -36,6 +41,9 @@ abstract class PositionedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
 
                         layoutParams.x = positionX
                         layoutParams.y = positionY
+
+                        layoutParams.width = width
+                        layoutParams.height = height
 
                         it.attributes = layoutParams
                     }

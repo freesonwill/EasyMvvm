@@ -8,7 +8,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
-import androidx.window.layout.WindowMetricsCalculator
+import arch.cayenne.lib.common.utils.ViewUtils.getNavigationBarHeight
+import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.module.bet.databinding.LayoutMovableFloatingButtonBinding
 import kotlin.math.abs
 
@@ -93,22 +94,6 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
         }
     }
 
-    private fun getStatusBarHeight(context: Context): Int {
-        val rect = Rect()
-        val window = (context as? Activity)?.window
-        window?.decorView?.getWindowVisibleDisplayFrame(rect)
-        return rect.top
-    }
-
-    private fun getNavigationBarHeight(context: Context): Int {
-        val metrics = context.resources.displayMetrics
-        val usableHeight = metrics.heightPixels
-
-        val realMetrics = WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context).bounds
-        val realHeight = realMetrics.height()
-
-        return if (realHeight > usableHeight) realHeight - usableHeight else 0
-    }
 
     override fun performClick(): Boolean {
         performClick?.invoke()
