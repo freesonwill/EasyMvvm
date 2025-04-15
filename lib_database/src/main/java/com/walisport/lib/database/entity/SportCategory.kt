@@ -2,9 +2,9 @@ package com.walisport.lib.database.entity
 
 import androidx.room.Entity
 
-@Entity(tableName = "sport_category", primaryKeys = ["gameType","sportId"])
+@Entity(tableName = "sport_category", primaryKeys = ["playType","sportId"])
 data class SportCategory(
-    val gameType: Int,
+    val playType: Int,
     val sportId: Int,
     val matchCount: Int,
     val sportOrder: Int

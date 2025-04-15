@@ -34,10 +34,12 @@ inline fun <reified T: GeneratedMessageLite<*,*>>WebSocketManager.observeProtoMe
     .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
         try {
+
             val proto = it.originProto?.let { byteArray ->
                 T::class.java.getMethod("parseFrom", ByteArray::class.java)
                     .invoke(null, byteArray) as T
             }
+            "observeProtoMessage map proto success sid -> ${it.sid}".logi(WebSocketManager::class.java.simpleName)
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,

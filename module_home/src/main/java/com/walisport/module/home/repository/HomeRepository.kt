@@ -1,6 +1,7 @@
 package com.walisport.module.home.repository
 
 import com.walisport.lib.base.data.repository.BaseRepository
+import com.walisport.lib.base.utils.LogUtilsExt.logi
 import com.walisport.lib.database.GameDatabase
 import com.walisport.lib.database.entity.SportBean
 import com.walisport.lib.database.entity.SportCategory
@@ -23,7 +24,13 @@ class HomeRepository(
     private val tournamentCategoryDao = database.tournamentCategoryDao()
     private val tournamentDao = database.tournamentDao()
 
-    suspend fun getAllStatistical() : Boolean {
+    suspend fun getSportStatistical(playType: Int): List<SportCategory>? {
+        //先從DB拿取
+        val queryResult = sportCategoryDao.querySportsMatchCount(playType)
+        if (queryResult.isNotEmpty()) {
+            return queryResult
+        }
+        //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.StatisticalResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -32,12 +39,14 @@ class HomeRepository(
             Client.StatisticalReq.newBuilder().build()
         }
         return if (res.error == null && res.data != null) {
-             return saveSports(res.data!!)
+            return saveSports(playType, res.data!!)
         } else {
-            false
+            res.error
+            null
         }
+
     }
-    private fun saveSports(data: Client.StatisticalResp): Boolean {
+    private fun saveSports(playType: Int, data: Client.StatisticalResp): List<SportCategory> {
         val sportMap = hashMapOf<Int, SportBean>()
         val categoryList = arrayListOf<SportCategory>()
         data.statisticalList.forEach { play ->
@@ -49,20 +58,16 @@ class HomeRepository(
                 sportMap[bean.sportId] = bean
                 val category = SportCategory(
                     sportId = sport.sportId,
-                    gameType = play.playType,
+                    playType = play.playType,
                     matchCount = sport.matchCount,
                     sportOrder = index
                 )
                 categoryList.add(category)
             }
         }
-
-        return sportDao
-                .insert(sportMap.map{ it.value }.toList())
-                .isNotEmpty() &&
-               sportCategoryDao
-                .insert(categoryList)
-                .isNotEmpty()
+        sportDao.insert(sportMap.map{ it.value }.toList())
+        sportCategoryDao.insert(categoryList)
+        return sportCategoryDao.querySportsMatchCount(playType)
     }
 
     suspend fun getAllTournaments(playType: Int, sportId: Int): List<TournamentCategory>? {
@@ -117,7 +122,20 @@ class HomeRepository(
         return tournamentCategoryList
     }
 
-    fun getSportStatistical(playType: Int): List<SportCategory> = sportCategoryDao.querySportsMatchCount(playType)
-
-    fun getDefaultSport(playType: Int): Int = sportCategoryDao.getDefaultSportId(playType)
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int) {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.LIST_MATCH,
+        ) {
+            Client.ListMatchReq.newBuilder().apply {
+                this.sportId = sportId
+                this.playType = playType
+                this.tournamentId = tournamentId
+                this.page = 1
+                this.size = 10
+            }.build()
+        }
+        val l = res.data
+    }
 }
