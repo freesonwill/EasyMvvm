@@ -38,7 +38,7 @@ android {
     sourceSets {
         getByName("main") {
             res.srcDirs(
-                "src/main/res", "src/main/res-black_blue", "src/main/res-black_red",
+                "src/main/res", "src/main/res-black_blue", "src/main/res-black_red","src/main/res-black_green",
                 "src/main/res-classic", "src/main/res-white_blue", "src/main/res-white_green"
             )
         }
