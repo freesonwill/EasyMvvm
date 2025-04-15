@@ -8,22 +8,31 @@
             type="com.walisport.module.live.ui.viewmodel.LiveVideoViewModel" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:paddingStart="0dp"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/dp_37">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_32"
-            android:text="@string/statistics"
-            android:textColor="@color/white"
-            android:textSize="17sp" />
+            android:orientation="vertical">
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_32"
+                android:layout_marginStart="@dimen/dp_12"
+                android:text="@string/statistics"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            <com.walisport.module.live.ui.widget.TechnicalCountView
+                android:id="@+id/view_tech_static"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_16"/>
+        </LinearLayout>
+    </ScrollView>
 </layout>
