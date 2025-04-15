@@ -1,4 +1,4 @@
-package com.walisport.module.home.ui.fragment
+package arch.cayenne.module.home.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
@@ -13,8 +13,8 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
-import com.walisport.module.home.R
-import com.walisport.module.home.databinding.FragmentHomeBinding
+import arch.cayenne.module.home.databinding.FragmentHomeBinding
+import arch.cayenne.module.home.R
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent
 import kotlin.reflect.KClass

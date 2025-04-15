@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.google.android.material.tabs.TabLayoutMediator
-import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
+import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.enums.HomeTab
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.ui.adapter.HomePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
