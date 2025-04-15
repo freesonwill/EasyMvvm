@@ -132,7 +132,7 @@ UI層不要有資料層的東西注入
 ```
 11. 消息推送设计： Netty or WebSocket？
 ```text
-
+WebSocket
 ```
 12. 自定义title：所有标题继承于TitleBarView
 ```text
@@ -157,6 +157,5 @@ UI層不要有資料層的東西注入
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack 
      */
-   
 
 ```
