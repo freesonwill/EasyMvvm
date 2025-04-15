@@ -1,8 +1,6 @@
 package arch.cayenne.lib.common
 
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.IntExt.getRate
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import org.junit.Test
 
