@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib_socket"
+    namespace = "arch.cayenne.lib.socket"
     compileSdk = 34
 
     defaultConfig {
@@ -59,6 +59,11 @@ android {
             }
         }
     }
+    packaging {
+        resources {
+            excludes += "**/*.proto"
+        }
+    }
 }
 protobuf {
     protoc {
@@ -77,7 +82,7 @@ protobuf {
 }
 
 dependencies {
-    api(project(":lib_base"))
+    implementation(project(":lib_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

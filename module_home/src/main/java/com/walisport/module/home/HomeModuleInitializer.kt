@@ -2,8 +2,7 @@ package com.walisport.module.home
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.database.GameDatabase
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import com.walisport.module.home.repository.HomeRepository
 import com.walisport.module.home.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope

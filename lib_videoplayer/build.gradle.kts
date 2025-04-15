@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.walisport.lib.videoplayer"
+    namespace = "arch.cayenne.lib.videoplayer"
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -41,6 +41,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":lib_base"))
     implementation(libs.ijkplayer)
     implementation(libs.androidx.annotation.jvm)
     implementation(libs.android.exoplayer)

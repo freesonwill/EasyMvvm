@@ -4,15 +4,19 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.app.ActivityOptionsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
-import com.walisport.lib.base.data.viewmodel.EmptyViewModel
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.common.utils.ext.NavigationExt.navigate
-import com.walisport.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.bet.ui.fragment.BetSheetFragment
-import com.walisport.module.bet.ui.fragment.FloatingButtonFragment
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.module.bet.repo.SingleBetRepository
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import com.walisport.module.home.R
 import com.walisport.module.home.databinding.FragmentHomeBinding
+import kotlinx.coroutines.launch
+import org.koin.java.KoinJavaComponent
 import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
@@ -81,7 +85,17 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
            navigate(Uri.parse("walisport://module_live/liveFragment"))
         }
         mBinding.tv9.setOnClickListener {
-            BetSheetFragment().show(childFragmentManager)
+            // TODO 此為測試用！！之後會刪除
+            val repo: SingleBetRepository by KoinJavaComponent.inject(SingleBetRepository::class.java)
+            lifecycleScope.launch {
+                repo.getOneMockData()?.let {
+                    BetSheetFragment.newInstance(it.gameId).show(childFragmentManager)
+                }
+            }
+
+        }
+        mBinding.tv10.setOnClickListener {
+            BetSheetFragment.addMockData()
         }
 
     }

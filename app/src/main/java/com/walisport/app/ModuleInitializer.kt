@@ -5,25 +5,23 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
+import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.common.CommonModuleInitializer
+import arch.cayenne.lib.socket.SocketModuleInitializer
 import com.walisport.app.data.AppNavViewModel
 import com.walisport.app.data.MainRepository
 import com.walisport.app.data.SplashRepository
 import com.walisport.app.data.MainViewModel
 import com.walisport.app.data.SplashViewModel
-import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib.base.ui.BaseActivity
-import com.walisport.lib.base.utils.LogUtilsExt.logd
-import com.walisport.lib.base.utils.LogUtilsExt.loge
-import com.walisport.lib.base.utils.LogUtilsExt.logi
-import com.walisport.lib.common.CommonModuleInitializer
-import com.walisport.lib_socket.SocketModuleInitializer
 import com.walisport.module.home.HomeModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  * @author: zhangsan
@@ -57,7 +55,7 @@ class ModuleInitializer : Initializer<String> {
             override fun onActivityDestroyed(activity: Activity) {
                 activityCount--
                 "Activity $activity has destroyed. Count: $activityCount".logi(ModuleInitializer::class.java.simpleName)
-                if (activityCount == 0 && activity is BaseActivity<*, *>) {
+                if (activityCount == 0 && activity is BaseActivity<*,*>) {
                     activity.reset()
                 }
             }

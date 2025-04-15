@@ -1,7 +1,8 @@
 package com.walisport.module.home.ui.fragment
 
 import android.os.Bundle
-import com.walisport.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.BaseFragment
 import com.walisport.module.home.data.PlayType
 import com.walisport.module.home.databinding.FragmentNewHomeBinding
 import com.walisport.module.home.viewmodel.HomeViewModel

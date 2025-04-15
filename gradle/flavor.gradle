@@ -3,7 +3,6 @@ ext {
     SDK_VERSION_NAME = "0.0.1"
     SDK_PRODUCT = "general"
     BUILD_TIME = String.format('%s', new Date().format('yyyyMMddHHmmss'))
-    TAG_DEFAULT = "WLS"
 }
 
 apply plugin: 'androidx.navigation.safeargs.kotlin'
@@ -18,66 +17,31 @@ android{
     }
 
     defaultConfig {
-        buildConfigField "String", "TAG_DEFAULT", "\"${TAG_DEFAULT}\""
+        buildConfigField "String", "TAG_DEFAULT", "\"${ project.findProperty("TAG_DEFAULT") ?: ""}\""
     }
 
-
-    signingConfigs {
-        debug {
-            storeFile rootProject.file("./signkey/wls.jks")
-            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
-            keyAlias 'wls'
-            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
-            v1SigningEnabled true
-            v2SigningEnabled true
+    if (project.plugins.hasPlugin("com.android.application")) {
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                def GIT_VERSION = getGitVersion()
+                def APK_NAME = project.findProperty("APK_NAME") ?: ""
+                outputFileName = "${APK_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.apk"
+            }
         }
-
-        //测试专用
-        qatest {
-            storeFile rootProject.file("./signkey/wls.jks")
-            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
-            keyAlias 'wls'
-            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
-            v1SigningEnabled true
-            v2SigningEnabled true
-        }
-
-        release {
-            storeFile rootProject.file("./signkey/wls.jks")
-            storePassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfU1RPUkVfUEFTU1dPUkQ='
-            keyAlias 'wls'
-            keyPassword 'WLS_ANDROID_$20250325$_V0xTX0FORFJPSURfS0VZX1BBU1NXT1JE'
-            v1SigningEnabled true
-            v2SigningEnabled true
+    } else if (project.plugins.hasPlugin("com.android.library")) {
+        libraryVariants.configureEach { variant ->
+            variant.assembleProvider.configure {
+                delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
+            }
+            variant.outputs.configureEach { output ->
+                def GIT_VERSION = getGitVersion()
+                def LIB_NAME = project.name
+                //outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
+            }
         }
     }
+}
 
-    buildTypes {
-        debug {
-            zipAlignEnabled true
-            minifyEnabled false
-            debuggable true
-            jniDebuggable true
-            signingConfig signingConfigs.debug
-        }
-
-        //测试专用
-        qatest {
-            debuggable false
-            zipAlignEnabled true
-            minifyEnabled false
-            signingConfig signingConfigs.qatest
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), rootProject.file('app/proguard-rules.pro')
-        }
-
-        release {
-            zipAlignEnabled true
-            minifyEnabled false
-            shrinkResources false
-            debuggable false
-            signingConfig signingConfigs.release
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), rootProject.file('app/proguard-rules.pro')
-        }
-
-    }
+static def getGitVersion() {
+    return "git rev-parse --short HEAD".execute().text.trim()
 }

@@ -11,9 +11,31 @@ sportSkinManager.loadSkin("light")
 ``` 
 val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
 sportSkinManager.loadSkinAsset("light.skin")
-```
 
-## 2. 可以根据需求自定义换肤的View
+```
+## 2. 使用后缀名换肤如下所示
+
+- (1) 新建res-light并在在对应项目的build.gradle下添加
+``` 
+sourceSets {
+getByName("main"){
+res.srcDirs("src/main/res","src/main/res-light")
+ }
+}
+```
+- (2) 将对应的TextView改成SportTextView 根据需要有SportImageView,SportLinearLayout等，可根据需要在lib_skin下的wight包中查找对应view或自行添加
+```
+<arch.cayenne.lib.skin.widget.SportTextView
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:textColor="@color/secondary_text"
+ />
+``` 
+- (3) res-light下的value/color中添加需要换肤的颜色并改名为 secondary_text_light  
+```
+    <color name="secondary_text_light">#232530</color>
+```
+## 3. 可以根据需求自定义换肤的View
 
 - （1）更新 background -> SportSkinBackgroundHelper ,ImageView -> SportSkinImageHelper, TextView ->SportSkinTextHelper
 -  (2) 在自定义view中订阅SportSkinManager 的skinflow，

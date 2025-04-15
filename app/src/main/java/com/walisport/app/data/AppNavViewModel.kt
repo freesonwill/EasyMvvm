@@ -1,7 +1,6 @@
 package com.walisport.app.data
 
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.lib.common.ui.viewmodel.BaseActivityViewModel
+import arch.cayenne.lib.socket.viewmodel.BaseActivityViewModel
 
 class AppNavViewModel : BaseActivityViewModel() {
 

@@ -2,10 +2,10 @@ package com.walisport.module.live
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.walisport.lib.base.ApplicationModuleInitializer
-import com.walisport.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ApplicationModuleInitializer
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
@@ -56,6 +56,8 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveBetSlipExpiredViewModel)
         viewModelOf(::LiveBetSlipReserveViewModel)
         viewModelOf(::LiveBetSlipSettledViewModel)
+        viewModelOf(::LiveBetOnMenuViewModel)
+
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)

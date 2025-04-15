@@ -1,14 +1,15 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import com.walisport.lib.base.ui.BaseFragment
-import com.walisport.lib.base.ui.viewBind
+import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewBind
 import com.walisport.module.live.databinding.FragmentLiveBetslipSettledLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 //注单已结算
-class LiveBetSlipSettledFragment:BaseFragment<LiveBetSlipSettledViewModel,FragmentLiveBetslipSettledLayoutBinding>() {
+class LiveBetSlipSettledFragment:
+    BaseFragment<LiveBetSlipSettledViewModel, FragmentLiveBetslipSettledLayoutBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> = FragmentLiveBetslipSettledLayoutBinding::class
     override val vmClass: KClass<LiveBetSlipSettledViewModel> = LiveBetSlipSettledViewModel::class
 

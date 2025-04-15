@@ -5,7 +5,7 @@ plugins {
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
 android {
-    namespace = "com.walisport.lib.base"
+    namespace = "arch.cayenne.lib.base"
     compileSdk = 34
 
     defaultConfig {

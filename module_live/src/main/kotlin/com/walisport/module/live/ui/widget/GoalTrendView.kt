@@ -9,7 +9,7 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.walisport.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.GoalTrendBean
 

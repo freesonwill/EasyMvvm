@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import com.walisport.lib.base.ui.BaseBottomSheetFragment
-import com.walisport.lib.base.ui.viewBind
-import com.walisport.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
+import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 
@@ -23,11 +23,11 @@ class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
             displayType = it.getString(bundle) ?: ""
         }
         if ("EP" == displayType) {
-            mBinding.radioEp.isChecked = true
-            mBinding.radioHk.isChecked = false
+            mBinding.radioEp.isSelected = true
+            mBinding.radioHk.isSelected = false
         } else {
-            mBinding.radioEp.isChecked = false
-            mBinding.radioHk.isChecked = true
+            mBinding.radioEp.isSelected = false
+            mBinding.radioHk.isSelected = true
         }
         val spannableString = SpannableString(getString(R.string.display_odds_ben))
         spannableString.setSpan(
@@ -48,28 +48,14 @@ class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
     }
 
     override fun initListener() {
-        mBinding.radioEp.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                mBinding.radioEp.isChecked = true
-                mBinding.radioHk.isChecked = false
-                clicklistener?.onClickEP()
-            }
-        }
-        mBinding.radioHk.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                mBinding.radioEp.isChecked = false
-                mBinding.radioHk.isChecked = true
-                clicklistener?.onClickHK()
-            }
-        }
         mBinding.itemHk.clickNoRepeat {
-            mBinding.radioEp.isChecked = false
-            mBinding.radioHk.isChecked = true
+            mBinding.radioEp.isSelected = false
+            mBinding.radioHk.isSelected = true
             clicklistener?.onClickHK()
         }
         mBinding.itemEp.clickNoRepeat {
-            mBinding.radioEp.isChecked = true
-            mBinding.radioHk.isChecked = false
+            mBinding.radioEp.isSelected = true
+            mBinding.radioHk.isSelected = false
             clicklistener?.onClickEP()
         }
         mBinding.tvClose.clickNoRepeat {
