@@ -47,6 +47,16 @@ class LiveVideoChooseSourceFragment :
             liveVideoBean.observe(viewLifecycleOwner) {
 
             }
+
+            sources.observe(viewLifecycleOwner) {
+                mBinding.rvSource.apply {
+                    (adapter as LiveVideoSourceAdapter).apply {
+                        post {
+                            submitList(mViewModel.sources.value)
+                        }
+                    }
+                }
+            }
         }
     }
 
