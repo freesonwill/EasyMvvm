@@ -36,8 +36,11 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
         val apiLeagueIds = listOf(1, 2, 3, 4)
         leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
         with(mBinding) {
+            leagueAdapter =
+                LeaguePagerAdapter(childFragmentManager, lifecycle, leagues, HomeTab.TODAY)
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            vpGameList.adapter = leagueAdapter
             vpGameList.adapter = leagueAdapter
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {

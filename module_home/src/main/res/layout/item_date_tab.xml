@@ -4,14 +4,13 @@
     android:layout_height="50dp"
     android:background="@drawable/selector_date_tab_bg"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="6dp">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_date"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_2"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:gravity="center"
         android:text="11.21"
         android:textColor="@color/selector_date_text"
@@ -20,9 +19,10 @@
     <TextView
         android:id="@+id/tv_week_day"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center_vertical"
-        android:gravity="center"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
         android:text="星期一"
         android:textColor="@color/selector_date_text"
         android:textSize="14sp" />
