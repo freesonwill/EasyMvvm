@@ -13,6 +13,6 @@ class HomePagerAdapter(fragmentManager: FragmentManager,
     override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment {
-        return  fragments[position].fragment
+        return  if (fragments[position].fragment == null) { throw NullPointerException() } else { fragments[position].fragment!! }
     }
 }

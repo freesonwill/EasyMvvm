@@ -28,7 +28,7 @@ class LeaguePagerAdapter(
                 EarlyGameListFragment.newInstance(leagueId, date)
             }
 
-            HomeTab.CHAMPION -> throw IllegalStateException("CHAMPION tab does not support league pager")//暫時不需要
+            else -> throw IllegalStateException("CHAMPION tab does not support league pager")//暫時不需要
         }
     }
 }
