@@ -98,6 +98,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             BetSheetFragment.addMockData()
         }
 
+        mBinding.titleBar.loadSearchTitleBar("请输入内容", {},{})
     }
 
     private fun toFragmentInner(){
