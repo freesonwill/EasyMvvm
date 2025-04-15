@@ -56,6 +56,7 @@ abstract class BaseVMDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dial
                 )
             )
         }
+        initView(savedInstanceState)
         initListener()
         createObserver()
     }
