@@ -8,8 +8,6 @@ import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentEarlyBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
@@ -19,6 +17,8 @@ import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.manager.DateTabManager
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.utils.DateUtils.getNext7Days
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
@@ -41,6 +41,8 @@ class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
 
         with(mBinding) {
             //聯賽
+            vpGameList.isSaveEnabled = false
+            vpGameList.adapter = null
             leagueAdapter = LeaguePagerAdapter(
                 childFragmentManager,
                 lifecycle,

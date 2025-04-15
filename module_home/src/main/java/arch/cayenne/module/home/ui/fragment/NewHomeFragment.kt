@@ -77,4 +77,9 @@ class NewHomeFragment : BaseFragment<EmptyViewModel, FragmentNewHomeBinding>() {
     override fun createObserver() {
 
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mBinding.vpHome.adapter = null
+    }
 }

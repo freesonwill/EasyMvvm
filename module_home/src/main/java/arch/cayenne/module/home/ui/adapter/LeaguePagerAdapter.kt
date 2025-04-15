@@ -9,18 +9,6 @@ import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.ui.fragment.EarlyGameListFragment
 import arch.cayenne.module.home.ui.fragment.TodayGameListFragment
 
-//class LeaguePagerAdapter(
-//    fragmentManager: FragmentManager,
-//    lifecycle: Lifecycle,
-//    private val leagues: List<LeagueType>
-//) : FragmentStateAdapter(fragmentManager, lifecycle) {
-////
-//    override fun getItemCount(): Int = leagues.size
-//
-//    override fun createFragment(position: Int): Fragment {
-//        return TodayGameListFragment.newInstance(leagues[position].leagueId)
-//    }
-//}
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,

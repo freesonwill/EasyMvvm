@@ -10,7 +10,7 @@ class HomePagerAdapter(fragmentManager: FragmentManager,
                        lifecycle: Lifecycle,
                        private val fragments: List<HomeTab>
 ) : FragmentStateAdapter(fragmentManager,lifecycle) {
-    override fun getItemCount(): Int = HomeTab.entries.size
+    override fun getItemCount(): Int = fragments.size
 
     override fun createFragment(position: Int): Fragment {
         return  fragments[position].fragment
