@@ -119,7 +119,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
     }
 
     override fun createObserver() {
-        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+        mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             val text = "@$it"
             mBinding.etRate.setText(text)
             val length = text.length

@@ -20,7 +20,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
         addSource(_onBetSheetListener) { data ->
             odds *= data.odds
         }
-        addSource(_onEditMoney) {
+        addSource(_onEdidNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {

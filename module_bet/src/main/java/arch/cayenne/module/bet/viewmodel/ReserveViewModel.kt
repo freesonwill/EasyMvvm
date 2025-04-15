@@ -21,7 +21,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         addSource(_onReserveSheetListener) { data ->
             odds *= data.reverseOdds ?: 1
         }
-        addSource(_onEditMoney) {
+        addSource(_onEdidNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {

@@ -14,7 +14,6 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
-import arch.cayenne.module.bet.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
 
@@ -27,11 +26,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
-
-        mBinding.etMoney.hint = getString(R.string.et_money_hint).format(
-            NumberCalculatorViewModel.MIN_MONEY,
-            NumberCalculatorViewModel.MAX_MONEY
-        )
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
             NumberKeyboardView.OnCalculatorClickListener {
@@ -112,7 +106,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun createObserver() {
-        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+        mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)

@@ -144,7 +144,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
 
     override fun createObserver() {
-        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+        mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)

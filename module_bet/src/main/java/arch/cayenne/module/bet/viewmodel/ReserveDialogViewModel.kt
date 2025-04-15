@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.repo.ReserveRepository
 
 class ReserveDialogViewModel(private val repository: ReserveRepository) : NumberCalculatorViewModel() {
@@ -7,7 +8,7 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
     val mixRate = 0.01f
 
     fun addMixRate() {
-        _onEditMoney.value = _onEditMoney.value?.let {
+        _onEdidNumber.value = _onEdidNumber.value?.let {
             if (it.isEmpty()) {
                 mixRate.toString()
             } else {
@@ -24,6 +25,7 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
     }
 
     fun reserve(id: Int) {
+        val odds = _onEdidNumber.value?.toValue() ?: 0
         repository.setSingleToReserve(id, odds)
     }
 }
