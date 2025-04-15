@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.net.Uri
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.PositionedDialogFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -23,6 +24,17 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initListener() {
         mBinding.ivChooseSource.setOnClickListener {
+            val location = IntArray(2)
+            mBinding.videoView.getLocationOnScreen(location)
+            val x = location[0]
+            val y = location[1] + mBinding.videoView.measuredHeight
+            LiveVideoPortraitSourceFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(PositionedDialogFragment.POSITION_X, x)
+                    putInt(PositionedDialogFragment.POSITION_Y, y)
+                }
+                show(this@LiveVideoFragment.childFragmentManager)
+            }
 
         }
         mBinding.ivToFullscreen.clickNoRepeat {

@@ -62,6 +62,7 @@
     <dimen name="dp_105">105dp</dimen>
     <dimen name="dp_110">110dp</dimen>
     <dimen name="dp_130">130dp</dimen>
+    <dimen name="dp_153">153dp</dimen>
     <dimen name="dp_180">180dp</dimen>
     <dimen name="dp_148">148dp</dimen>
     <dimen name="dp_154">154dp</dimen>
@@ -75,6 +76,7 @@
     <dimen name="dp_335">335dp</dimen>
     <dimen name="dp_359">359dp</dimen>
     <dimen name="dp_372">372dp</dimen>
+    <dimen name="dp_375">375dp</dimen>
     <dimen name="dp_418">418dp</dimen>
 
     <dimen name="sp_12">12sp</dimen>
