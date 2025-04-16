@@ -6,7 +6,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.enums.PlayType
-import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.ui.fragment.EarlyGameListFragment
 import arch.cayenne.module.home.ui.fragment.TodayGameListFragment
 

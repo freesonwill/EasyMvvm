@@ -14,10 +14,10 @@ import arch.cayenne.module.home.databinding.FragmentEarlyBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.enums.PlayType
-import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.manager.DateTabManager
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.utils.DateUtils.getNext7Days
+import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import com.bumptech.glide.Glide
@@ -29,20 +29,12 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
     override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
     // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
-
-    private val leagues = mutableListOf<LeagueType>()
     private val dateTabManager = DateTabManager()
     private val leagueAdapter: LeaguePagerAdapter by lazy { LeaguePagerAdapter(childFragmentManager, lifecycle, PlayType.TODAY){ leagueId ->
         dateTabManager.getDateString(leagueId, getNext7Days())
     } }
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     override fun initView(savedInstanceState: Bundle?) {
-        // 預設 "全部"
-        leagues.clear()
-        leagues.add(LeagueType.ALL)
-        val apiLeagueIds = listOf(1, 2, 3, 4) // 模擬 API 返回的聯賽 ID
-        leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
-
         val dateTabs = getNext7Days() // 取得未來 7 天 (MMDD, 星期)
 
         with(mBinding) {
@@ -70,7 +62,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val dateTabIndex = tab?.position ?: 0
                     val position = vpGameList.currentItem
-                    val leagueId = leagues[position].leagueId
+                    val leagueId = leagueAdapter.getItemId(position).toInt()
 
                     // 記錄當前聯賽所選的 tab index
                     dateTabManager.setSelectedIndex(leagueId, dateTabIndex)
@@ -86,7 +78,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
             //ViewPager
             vpGameList.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    val leagueId = leagues[position].leagueId
+                    val leagueId = leagueAdapter.getItemId(position).toInt()
                     mBinding.tlLeagueList.getTabAt(position)?.select()
                     // 找到該聯賽目前記錄的日期 tab index
                     updateDateTabs(tlDateList, dateTabs)
@@ -150,17 +142,18 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
                 val tabBinding =
                     ItemLeagueTabBinding.inflate(LayoutInflater.from(context), null, false)
                 tabBinding.apply {
-                    Glide.with(this@EarlyFragment).load(tournament.icon).into(ivLeagueIcon)
-                    tvLeagueName.text = tournament.simpleName
-
-                    ivLeagueIcon.imageTintList = context?.let {
-                        SportSkinResourceManager.getColorStateList(
-                            it,
-                            R.color.selector_league_tab_tint
-                        )
-                    }
-                    if (tournament.id == LeagueType.ALL.leagueId) {
+                    if (tournament.id == TOURNAMENT_ALL_ID) {   //ALL 標籤
                         ivLeagueIcon.visibility = View.GONE
+                        tvLeagueName.text = getString(R.string.league_all)
+                    } else {
+                        Glide.with(this@EarlyFragment).load(tournament.icon).into(ivLeagueIcon)
+                        tvLeagueName.text = tournament.simpleName
+                        ivLeagueIcon.imageTintList = context?.let {
+                            SportSkinResourceManager.getColorStateList(
+                                it,
+                                R.color.selector_league_tab_tint
+                            )
+                        }
                     }
 
                     root.setBackgroundResource(R.drawable.selector_league_tab_bg)

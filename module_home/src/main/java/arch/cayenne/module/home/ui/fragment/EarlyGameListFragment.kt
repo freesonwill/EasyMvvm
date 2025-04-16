@@ -6,7 +6,6 @@ import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
-import arch.cayenne.module.home.enums.LeagueType
 import kotlin.reflect.KClass
 
 class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListBinding>() {
@@ -26,8 +25,8 @@ class EarlyGameListFragment : BaseFragment<EmptyViewModel, FragmentHomeGameListB
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
 
-            tvHomeGameTitle.text = getString(leagueId?.let { LeagueType.fromId(it)?.titleRes }
-                ?: R.string.league_all)
+//            tvHomeGameTitle.text = getString(leagueId?.let { LeagueType.fromId(it)?.titleRes }
+//                ?: R.string.league_all)
 
             // 初始化 RecyclerView
 //            adapter = GameListAdapter()
