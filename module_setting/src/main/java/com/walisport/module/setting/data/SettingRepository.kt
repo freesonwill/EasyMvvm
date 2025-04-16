@@ -3,6 +3,7 @@ package com.walisport.module.setting.data
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
+import arch.cayenne.lib.common.enums.SkinType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +24,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return manager.getStringValue(UserDataKey.KEY_SKIN, "BLACK_GREEN")
+        return manager.getStringValue(UserDataKey.KEY_SKIN, SkinType.SKIN_BLACK_GREEN.value)
     }
 
     //设置赔率显示方式
