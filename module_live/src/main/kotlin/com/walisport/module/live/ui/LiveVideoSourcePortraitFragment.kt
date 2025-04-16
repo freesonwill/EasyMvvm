@@ -10,6 +10,9 @@ import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 竖屏播放时的视频源页面
+ */
 class LiveVideoSourcePortraitFragment :
     PositionedDialogFragment<LiveVideoViewModel, FragmentLiveSourcePortraitBinding>() {
 
@@ -42,7 +45,7 @@ class LiveVideoSourcePortraitFragment :
     }
 
     override fun initListener() {
-        with(mBinding){
+        with(mBinding) {
             ivClose.clickNoRepeat {
                 dismiss()
             }
