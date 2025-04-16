@@ -3,6 +3,7 @@ package com.walisport.module.live.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.GoalTrendBean
@@ -18,6 +19,13 @@ class TechnicalCountView @JvmOverloads constructor(
 
     private val mBinding: ViewTechnicalStatisticsBinding =
         ViewTechnicalStatisticsBinding.inflate(LayoutInflater.from(context), this, true)
+
+    //在全屏直播模式下，只需要展示技术统计的部分数据
+    fun setFullScreenMode() {
+        mBinding.layData.visibility = View.GONE
+        mBinding.tvStatisticsTitle.visibility = View.GONE
+        mBinding.root.background = null
+    }
 
     fun setTeamName(homeName: String, awayName: String) {
         mBinding.tvHomeCountry.text = homeName

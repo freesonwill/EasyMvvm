@@ -12,9 +12,17 @@
         tools:layout="@layout/fragment_single_bet">
         <action
             android:id="@+id/action_singleBetFragment_to_singleBetResultFragment"
-            app:destination="@id/singleBetResultFragment"
+            app:destination="@id/betResultFragment"
             app:popUpToInclusive="true"
             app:popUpTo="@id/singleBetFragment" />
+        <action
+            android:id="@+id/action_singleBetFragment_to_reserveFragment"
+            app:destination="@id/reserveFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/singleBetFragment" />
+        <action
+            android:id="@+id/action_singleBetFragment_to_betResultFragment"
+            app:destination="@id/betResultFragment" />
     </fragment>
 
     <fragment
@@ -28,23 +36,41 @@
             app:popUpToInclusive="true"
             app:popUpTo="@id/comboBetFragment" />
         <action
-            android:id="@+id/action_comboBetFragment_to_comboBetResultFragment"
-            app:destination="@id/comboBetResultFragment"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/comboBetFragment" />
+            android:id="@+id/action_comboBetFragment_to_betResultFragment"
+            app:destination="@id/betResultFragment" />
     </fragment>
 
     <fragment
-        android:id="@+id/singleBetResultFragment"
-        android:name="arch.cayenne.module.bet.ui.fragment.SingleBetResultFragment"
+        android:id="@+id/betResultFragment"
+        android:name="arch.cayenne.module.bet.ui.fragment.BetResultFragment"
         android:label="SingleBetResultFragment"
-        tools:layout="@layout/fragment_single_bet_result" />
+        tools:layout="@layout/fragment_bet_result" >
+
+        <argument
+            android:name="id"
+            app:argType="integer"
+            android:defaultValue="-1" />
+    </fragment>
 
     <fragment
-        android:id="@+id/comboBetResultFragment"
-        android:name="arch.cayenne.module.bet.ui.fragment.ComboBetResultFragment"
-        android:label="ComboBetResultFragment"
-        tools:layout="@layout/fragment_combo_bet_result" />
+        android:id="@+id/reserveFragment"
+        android:name="arch.cayenne.module.bet.ui.fragment.ReserveFragment"
+        android:label="ReserveFragment"
+        tools:layout="@layout/fragment_single_bet" >
+        <action
+            android:id="@+id/action_reserveFragment_to_singleBetFragment"
+            app:destination="@id/singleBetFragment"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/reserveFragment" />
+
+        <argument
+            android:name="id"
+            app:argType="integer"
+            app:nullable="false" />
+        <action
+            android:id="@+id/action_reserveFragment_to_betResultFragment"
+            app:destination="@id/betResultFragment" />
+    </fragment>
 
 
 </navigation>

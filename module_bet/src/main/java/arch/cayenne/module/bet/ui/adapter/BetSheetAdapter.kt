@@ -8,7 +8,7 @@ import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import arch.cayenne.module.bet.ui.compare.BetBeanCompare
 import arch.cayenne.module.bet.ui.viewholder.BetSheetViewHolder
 
-class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListener): BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBinding>(
+class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListener? = null): BaseAdapter<BetBean, BetSheetViewHolder, ItemBetSheetBinding>(
     BetBeanCompare()
 ) {
     override fun convertPlus(
@@ -18,7 +18,7 @@ class BetSheetAdapter(private val onBetSheetClickListener: OnBetSheetClickListen
     ) {
         holder.init(getItem(position))
         binding.ivDelete.setOnClickListener {
-            onBetSheetClickListener.onDeleteClick(getItem(holder.adapterPosition))
+            onBetSheetClickListener?.onDeleteClick(getItem(holder.adapterPosition))
         }
     }
 
