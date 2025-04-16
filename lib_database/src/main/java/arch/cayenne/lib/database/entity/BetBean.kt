@@ -13,6 +13,8 @@ data class BetBean(
     var status: BetStatusEnum = BetStatusEnum.PENDING_BET, // 下注狀態
     val leagueName: String,
     val matchName: String,
+    var minAmount: Int,
+    var maxAmount: Int,
     var isBetStop: Boolean = false,
     val isPlaying: Boolean = false,
 )

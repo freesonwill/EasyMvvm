@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
@@ -20,7 +21,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
         addSource(_onBetSheetListener) { data ->
             odds *= data.selection.odds
         }
-        addSource(_onEdidNumber) {
+        addSource(_onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -42,6 +43,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
             betRepo.observeSingleBet().collect {
                 if (it != null) {
                     _onBetSheetListener.value = it
+                    setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
                 }
             }
         }
@@ -49,7 +51,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
 
     fun sendBet() {
         val id = _onBetSheetListener.value?.matchId ?: return
-        val money = _onEdidNumber.value?.toValue() ?: return
+        val money = _onEditNumber.value?.toValue() ?: return
         betRepo.sendBet(id, money)
     }
 

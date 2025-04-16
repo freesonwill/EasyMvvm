@@ -46,7 +46,9 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                     ),
                     betType = BetTypeEnum.COMBO,
                     leagueName = "亞洲青年U19錦標賽A",
-                    matchName = "長春亞泰 vs 廣州隊"
+                    matchName = "長春亞泰 vs 廣州隊",
+                    minAmount = 1000,
+                    maxAmount = 1000000,
                 )
             )
         }
@@ -67,6 +69,8 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
                 betType = BetTypeEnum.SINGLE,
                 leagueName = "亞洲青年U19錦標賽A",
                 matchName = "長春亞泰 vs 廣州隊",
+                minAmount = 1000,
+                maxAmount = 1000000,
                 isPlaying = true
             ).apply {
                 betDao.insert(this)

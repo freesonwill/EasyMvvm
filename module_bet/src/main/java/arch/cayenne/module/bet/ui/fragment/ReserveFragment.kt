@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
@@ -108,10 +109,18 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             val money = getString(R.string.btn_bet_win_money).format(it)
             mBinding.tvBetMoney.text = money
         }
+        mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
+        }
     }
 
     private fun setBetData(data: BetBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
+
+        mBinding.btnReserve.isVisible = false
+        mBinding.clCancelReserve.isVisible = true
+        val odds = "@${data.reverseOdds?.getOdds()}"
+        mBinding.tvCancelReserve.text = odds
     }
 
     override fun dismiss(key: String, value: String) {

@@ -20,5 +20,6 @@ internal object ViewHelper {
 
         binding.ivDelete.isVisible = bean.betType == BetTypeEnum.COMBO && bean.status == BetStatusEnum.PENDING_BET
         binding.tvStatus.isVisible = bean.isPlaying
+        binding.tvBetStop.isVisible = bean.isBetStop
     }
 }

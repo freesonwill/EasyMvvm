@@ -119,6 +119,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             val money = getString(R.string.btn_bet_win_money).format(it)
             mBinding.tvBetMoney.text = money
         }
+        mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
+        }
     }
 
     private fun setBetData(data: BetBean) {

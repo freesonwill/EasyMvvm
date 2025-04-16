@@ -8,7 +8,7 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
     val mixRate = 0.01f
 
     fun addMixRate() {
-        _onEdidNumber.value = _onEdidNumber.value?.let {
+        _onEditNumber.value = _onEditNumber.value?.let {
             if (it.isEmpty()) {
                 mixRate.toString()
             } else {
@@ -25,7 +25,7 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
     }
 
     fun reserve(id: Int) {
-        val odds = _onEdidNumber.value?.toValue() ?: 0
+        val odds = _onEditNumber.value?.toValue() ?: 0
         repository.setSingleToReserve(id, odds)
     }
 }
