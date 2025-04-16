@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboRateBean
 import arch.cayenne.module.bet.databinding.ItemComboRateBinding
@@ -11,8 +12,8 @@ class ComboRateViewHolder(private val mBinding: ItemComboRateBinding, private va
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(size: Int, item: ComboRateBean) {
-        val combo = getString(R.string.title_combo_bet_rate).format(size, item.combo)
-        val title = "$combo @${item.rate}"
+        val combo = getString(R.string.title_combo_bet_odds).format(size, item.combo)
+        val title = "$combo @${item.odds.getOdds()}"
         mBinding.tvTitleCombo.text = title
 
         val money = if (item.money.isNotEmpty()) {

@@ -1,13 +1,17 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -29,29 +33,30 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     // TODO 此為測試用！！之後會刪除  此為測試用！！之後會刪除  此為測試用！！之後會刪除
     fun addMockData() {
         scope.launch {
-            val data = betDao.getBetSheet()
+            val id = Random.nextInt()
             betDao.insert(
                 BetBean(
-                gameId = data.size,
-                betTeamName = "Test ${data.size}",
-                handicap = "-1.5",
-                odds = 1.98f,
-                betType = BetTypeEnum.COMBO,
-                leagueName = "世界盃",
-                matchName = "中國vs巴西"
-            )
+                    gameId = id,
+                    betTeamName = "Test $id",
+                    handicap = "-1.5",
+                    odds = "1.98".toValue(),
+                    betType = BetTypeEnum.COMBO,
+                    leagueName = "世界盃",
+                    matchName = "中國vs巴西"
+                )
             )
         }
     }
 
     suspend fun getOneMockData() = withContext(scope.coroutineContext) {
         val data = betDao.getBetSheet()
-        if (data.isEmpty()) {
+        if (!data.any { it.betType == BetTypeEnum.SINGLE && it.status == BetStatusEnum.PENDING_BET }) {
+            val id = Random.nextInt()
             BetBean(
-                gameId = 0,
-                betTeamName = "Test ${0}",
+                gameId = id,
+                betTeamName = "Test $id",
                 handicap = "-1.5",
-                odds = 1.98f,
+                odds = "1.98".toValue(),
                 betType = BetTypeEnum.SINGLE,
                 leagueName = "世界盃",
                 matchName = "中國vs巴西"
@@ -60,6 +65,19 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
             }
         } else {
             null
+        }
+    }
+
+    fun sendBet(id: Int, money: Int) {
+        scope.launch {
+            betDao.getBetById(id)?.let {
+                if (it.betType == BetTypeEnum.SINGLE) {
+                    betDao.updateBetStatus(id, BetStatusEnum.BETTING)
+                    delay(5_000L) // 模擬網路延遲
+                    betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                }
+
+            }
         }
     }
 }
