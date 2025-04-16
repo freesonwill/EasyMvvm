@@ -4,12 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
@@ -22,8 +20,6 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.interface_.IStatusBar
 import arch.cayenne.lib.base.ui.interface_.IView
 import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.LogUtilsExt.printStackTrace
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -40,90 +36,56 @@ import kotlin.reflect.KClass
  */
 abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), IView, IStatusBar {
     protected open val TAG = this.javaClass.simpleName
-
-    //VB,VM
-    protected lateinit var mBinding: VB; private set
-    protected lateinit var mViewModel: VM; private set
+    //#region VB,VM
+    protected val mBinding: VB get() = uiBind.binding
+    protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
+    private val uiBind by lazy {
+        UIBindComponent(
+            uiOwner = this,
+            vmProvider = ::createVM,
+            vbProvider = ::createVB)
+    }
 
     protected open fun createVB(container: ViewGroup?): VB {
-        return getViewBind(vbClass,container,false)
+        return getViewBind(vbClass, container, false)
     }
+
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+    //#endregion VB,VM
 
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
 
-
+    @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
-        mBinding = createVB(container)
-        mViewModel = createVM()
-        if (mBinding is ViewDataBinding) {
-            (mBinding as ViewDataBinding).lifecycleOwner = viewLifecycleOwner
-        }
+        uiBind.onCreateView(inflater,container,savedInstanceState)
         return mBinding.root
     }
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mBinding.root.fitsSystemWindows = true
-        initView(savedInstanceState)
-        initListener()
-        initData()
-        createObserver()
-        trackLoadingTime()
+        uiBind.onViewCreated(view,savedInstanceState)
     }
 
+    @CallSuper
+    override fun onDestroyView() {
+        super.onDestroyView()
+        uiBind.onDestroyView()
+    }
 
 
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
-    }
-
-    /**
-     * 是否开启统计加载时间
-     */
-    open fun enableTrackLoadTime() = false
-
-    /**
-     * 统计加载时间
-     */
-    private fun trackLoadingTime() {
-        if (!enableTrackLoadTime()) return
-        lifecycle.addObserver(object : DefaultLifecycleObserver {
-            val TAG = this@BaseFragment.javaClass.simpleName
-            val FRAGMENT_INFO =
-                "${this@BaseFragment::class.java.simpleName}{${Integer.toHexString(this.hashCode())}}"
-            var t1 = longArrayOf(0, 0, 0)
-
-            override fun onCreate(owner: LifecycleOwner) {
-                super.onCreate(owner)
-                t1[0] = System.currentTimeMillis()
-            }
-
-            override fun onStart(owner: LifecycleOwner) {
-                super.onStart(owner)
-                t1[1] = System.currentTimeMillis()
-                //"$FRAGMENT_INFO costMills onCreate->onStart: ${t1[1]-t1[0]}".logd(TAG)
-            }
-
-            override fun onResume(owner: LifecycleOwner) {
-                super.onResume(owner)
-                t1[2] = System.currentTimeMillis()
-                "$FRAGMENT_INFO costMills onCreate->onStart: ${t1[1] - t1[0]}, onStart->onResume:${t1[2] - t1[1]}, onCreate->onResume: ${t1[2] - t1[0]}".logd(
-                    TAG
-                )
-                lifecycle.removeObserver(this)
-            }
-        })
     }
 
     /**
@@ -183,7 +145,7 @@ fun Fragment.launch(
  * @return
  */
 inline fun <reified T : ViewBinding> Fragment.viewBind(
-    root: ViewGroup?=null,
+    root: ViewGroup? = null,
     attachedToParent: Boolean = false
 ): Lazy<T> =
     lazy {
