@@ -5,17 +5,18 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
-import com.walisport.app.data.AppNavViewModel
-import com.walisport.app.data.MainRepository
-import com.walisport.app.data.SplashRepository
-import com.walisport.app.data.MainViewModel
-import com.walisport.app.data.SplashViewModel
 import arch.cayenne.lib.base.ApplicationModuleInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.socket.SocketModuleInitializer
+import com.walisport.app.data.AppNavViewModel
+import com.walisport.app.data.MainRepository
+import com.walisport.app.data.SplashRepository
+import com.walisport.app.data.MainViewModel
+import com.walisport.app.data.SplashViewModel
+import arch.cayenne.module.home.HomeModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
@@ -54,7 +55,7 @@ class ModuleInitializer : Initializer<String> {
             override fun onActivityDestroyed(activity: Activity) {
                 activityCount--
                 "Activity $activity has destroyed. Count: $activityCount".logi(ModuleInitializer::class.java.simpleName)
-                if (activityCount == 0 && activity is BaseActivity<*, *>) {
+                if (activityCount == 0 && activity is BaseActivity<*,*>) {
                     activity.reset()
                 }
             }
@@ -69,7 +70,7 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java, SocketModuleInitializer::class.java, CommonModuleInitializer::class.java)
+        return listOf(ApplicationModuleInitializer::class.java, SocketModuleInitializer::class.java, CommonModuleInitializer::class.java, HomeModuleInitializer::class.java)
     }
 
     private val viewModules = module {

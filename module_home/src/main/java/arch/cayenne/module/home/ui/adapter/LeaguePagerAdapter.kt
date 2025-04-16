@@ -4,7 +4,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import arch.cayenne.module.home.enums.HomeTab
+import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.ui.fragment.EarlyGameListFragment
 import arch.cayenne.module.home.ui.fragment.TodayGameListFragment
@@ -12,23 +13,32 @@ import arch.cayenne.module.home.ui.fragment.TodayGameListFragment
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val leagues: List<LeagueType>,
-    private val homeTab: HomeTab,
+    private val playType: PlayType,
     private val getSelectedDate: ((Int) -> String)? = null // 可選
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItemCount(): Int = leagues.size
+    private var tournament: List<TournamentDataModel>? = null
+
+    fun setData(list: List<TournamentDataModel>) {
+        tournament = list
+        notifyItemRangeChanged(0, list.size-1)
+    }
+
+    override fun getItemCount(): Int = tournament?.size ?: 0
 
     override fun createFragment(position: Int): Fragment {
-        val leagueId = leagues[position].leagueId
-        return when (homeTab) {
-            HomeTab.TODAY -> TodayGameListFragment.newInstance(leagueId)
-            HomeTab.EARLY -> {
+        if (tournament.isNullOrEmpty()) {
+            throw IllegalStateException("league list is null or empty")
+        }
+        val leagueId = tournament!![position].id
+        return when (playType) {
+            PlayType.TODAY -> TodayGameListFragment.newInstance(leagueId)
+            PlayType.EARLY -> {
                 val date = getSelectedDate?.invoke(leagueId) ?: ""
                 EarlyGameListFragment.newInstance(leagueId, date)
             }
 
-            HomeTab.CHAMPION -> throw IllegalStateException("CHAMPION tab does not support league pager")//暫時不需要
+            else -> throw IllegalStateException("CHAMPION tab does not support league pager")//暫時不需要
         }
     }
 }

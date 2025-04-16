@@ -18,6 +18,7 @@ class ChampionFragment: BaseFragment<EmptyViewModel, FragmentChampionBinding>(){
     }
 
     override fun createObserver() {
+
     }
 
 }
