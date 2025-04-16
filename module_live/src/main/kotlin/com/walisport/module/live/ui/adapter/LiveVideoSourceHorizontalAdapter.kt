@@ -14,17 +14,18 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.VideoSourceBean
+import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemLayoutBinding
 
 
-class LiveVideoSourceAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
-    BaseAdapter<VideoSourceBean, LiveVideoSourceAdapter.LiveVideoSourceViewHolder, ViewBinding>(
+class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
+    BaseAdapter<VideoSourceBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare
     ) {
 
     inner class LiveVideoSourceViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
-        private val viewBinding: AdapterLiveVideoSourceItemLayoutBinding =
-            binding as AdapterLiveVideoSourceItemLayoutBinding
+        private val viewBinding: AdapterLiveVideoSourceItemHorizontalLayoutBinding =
+            binding as AdapterLiveVideoSourceItemHorizontalLayoutBinding
 
 
 
@@ -70,7 +71,7 @@ class LiveVideoSourceAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
         parent: ViewGroup,
         viewType: Int
     ): ViewBinding {
-        val binding = AdapterLiveVideoSourceItemLayoutBinding.inflate(inflater, parent, false)
+        val binding = AdapterLiveVideoSourceItemHorizontalLayoutBinding.inflate(inflater, parent, false)
         return binding
     }
 

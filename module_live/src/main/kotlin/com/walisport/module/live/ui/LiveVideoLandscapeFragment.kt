@@ -44,14 +44,11 @@ class LiveVideoLandscapeFragment :
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-//        "onConfigurationChanged".logd(TAG)
     }
 
 
     override fun initView(savedInstanceState: Bundle?) {
-
-        mViewModel.addMockData()
-
+//        mViewModel.addMockData()
     }
 
     override fun initListener() {
@@ -390,6 +387,17 @@ class LiveVideoLandscapeFragment :
         setStatusBar(StatusBarConfig(hideStatusBar = false))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyPlayer()
+    }
+
+    private fun destroyPlayer() {
+        mBinding.videoView.stopPlayback()
+        mBinding.videoView.release(true)
+        mBinding.videoView.stopBackgroundPlay()
+    }
+
 
 //    override fun onBackPressed() {
 //        mBackPressed = true
@@ -461,10 +469,10 @@ class LiveVideoLandscapeFragment :
      * 创建选择视频源页
      */
     private fun setChooseSourceView() {
-        childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
-                as? LiveVideoChooseSourceFragment ?: LiveVideoChooseSourceFragment().also {
+        childFragmentManager.findFragmentByTag(LiveVideoSourceLandscapeFragment.TAG)
+                as? LiveVideoSourceLandscapeFragment ?: LiveVideoSourceLandscapeFragment().also {
             childFragmentManager.beginTransaction()
-                .replace(mBinding.fragmentChooseSource.id, it, LiveVideoChooseSourceFragment.TAG)
+                .replace(mBinding.fragmentChooseSource.id, it, LiveVideoSourceLandscapeFragment.TAG)
                 .commitNow()
         }
 
@@ -578,9 +586,9 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-        val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoChooseSourceFragment.TAG)
+        val fragment2 = childFragmentManager.findFragmentByTag(LiveVideoSourceLandscapeFragment.TAG)
 
-        if (fragment2 is LiveVideoChooseSourceFragment) {
+        if (fragment2 is LiveVideoSourceLandscapeFragment) {
             hideChooseSourceView {
                 childFragmentManager.beginTransaction().remove(fragment2).commit()
             }
