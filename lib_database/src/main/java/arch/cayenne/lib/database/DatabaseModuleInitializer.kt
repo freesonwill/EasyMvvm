@@ -22,6 +22,7 @@ class DatabaseModuleInitializer: Initializer<String> {
 
     private val daoModule = module {
         factory { get<GameDatabase>().betDao() }
+        factory { get<GameDatabase>().liveVideoDao() }
     }
 
     private val moduleList: List<Module> = listOf(module {

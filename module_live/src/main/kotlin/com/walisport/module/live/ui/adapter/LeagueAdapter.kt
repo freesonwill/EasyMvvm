@@ -6,11 +6,11 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.compare.LeagueMatchCompare
-import com.walisport.module.live.data.model.LeagueMatchBean
+import com.walisport.module.live.data.model.MatchBean
 import com.walisport.module.live.databinding.ItemLeagueBinding
 import com.walisport.module.live.databinding.ItemWeekBinding
 
-class LeagueAdapter : BaseAdapter<LeagueMatchBean, BaseViewHolder, ViewBinding>(
+class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
     LeagueMatchCompare()
 ) {
     companion object {

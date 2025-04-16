@@ -13,8 +13,9 @@ import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.skin.widget.SportEditText
 
-class ClearableEditText : AppCompatEditText, OnTouchListener,
+class ClearableEditText : SportEditText, OnTouchListener,
     OnFocusChangeListener, TextWatcher {
     private var clearTextIcon: Drawable? = null
     private var mOnFocusChangeListener: OnFocusChangeListener? = null

@@ -65,7 +65,7 @@ class TitleBarView @JvmOverloads constructor(
         }
     }
     /**
-     * 搜索标题
+     * 动态标题
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack
      */

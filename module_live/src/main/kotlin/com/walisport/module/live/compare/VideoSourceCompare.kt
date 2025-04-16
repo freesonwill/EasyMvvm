@@ -6,7 +6,7 @@ import com.walisport.module.live.data.model.VideoSourceBean
 class VideoSourceCompare : DiffUtil.ItemCallback<VideoSourceBean>() {
 
     override fun areItemsTheSame(oldItem: VideoSourceBean, newItem: VideoSourceBean): Boolean {
-        return oldItem === newItem
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(oldItem: VideoSourceBean, newItem: VideoSourceBean): Boolean {

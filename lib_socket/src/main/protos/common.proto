@@ -1,4 +1,5 @@
 syntax = "proto3";
+
 package galaxy.common.proto;
 
 
@@ -11,7 +12,7 @@ message Match {
 }
 
 //比赛基本信息
-message MatchBasicInfo{
+message MatchBasicInfo {
     int64 match_id = 1;       //比赛id
     string match_name = 2;    //比赛名称
     string home_team = 3;     //主队名称
@@ -41,8 +42,9 @@ message MatchLiveInfo {
     string period = 3;      //阶段
     string score = 4;       //比分
     bool live_video = 5;    //该比赛是否有视频或者直播
-    int32 viewer_count = 6;    //观看数量
-    int64 clock_modified = 7;  //走表修改时间
+    bool chat_room = 6;    //是否开启了聊天室
+    int32 viewer_count = 7;    //观看数量
+    int64 clock_modified = 8;  //走表修改时间
 }
 
 //盘口
@@ -50,12 +52,15 @@ message Market {
     int64 market_id = 1;      //盘口id
     string market_name = 2;   //盘口名称
     repeated MarketDetail market_detail = 3;
+    int32 status = 4;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
 }
 
 //盘口详情
 message MarketDetail {
     string specifier = 1;     //盘口说明符，可能为空
     repeated Selection selection = 2; //选项
+    bool active = 3;    //true - 可以投注  false - 不可投注
+    bool parlay = 4;    //true - 支持串关  false - 不支持串关
 }
 
 //盘口选项
@@ -149,9 +154,9 @@ message OrderSelection {
 message ReserveOrder {
     string reserve_id = 1;        //下注id
     int64 reserve_time = 2;       //预约时间
-    int64 bet_amount = 3;     //下注金额
+    string bet_amount = 3;     //下注金额
     ReserveOrderSelection selection = 4; //选项
-    int32 status = 5;        //选项状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消
+    int32 status = 5;        //选项状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消，4确认中
 }
 
 

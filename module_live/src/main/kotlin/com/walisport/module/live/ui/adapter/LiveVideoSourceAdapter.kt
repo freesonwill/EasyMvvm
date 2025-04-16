@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
@@ -31,6 +32,12 @@ class LiveVideoSourceAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
             val item = getItem(position)
             viewBinding.tvTitle.text = item.title
             viewBinding.tvSubtitle.text = item.subTitle
+
+            viewBinding.ivPlaying.visibility = if (item.isPlaying) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
             Glide.with(viewBinding.ivThumb).load(item.thumb)
                 .placeholder(R.drawable.live_video_source_thumb_placeholder)

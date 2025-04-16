@@ -39,6 +39,7 @@ dependencies {
     implementation(project(":lib_skin"))
     implementation(project(":lib_common"))
     implementation(project(":lib_videoplayer"))
+    implementation(project(":lib_database"))
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
