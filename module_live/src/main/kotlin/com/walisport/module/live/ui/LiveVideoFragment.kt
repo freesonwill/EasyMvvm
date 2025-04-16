@@ -21,7 +21,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        mViewModel.addMockData()
     }
 
     override fun initListener() {
