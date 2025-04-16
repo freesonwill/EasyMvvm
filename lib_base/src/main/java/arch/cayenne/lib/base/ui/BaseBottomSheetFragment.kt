@@ -12,22 +12,43 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
+import androidx.annotation.CallSuper
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import arch.cayenne.lib.base.R
+import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.interface_.IView
+import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import kotlin.reflect.KClass
 
-abstract class BaseBottomSheetFragment<VB : ViewBinding> : BottomSheetDialogFragment(), IView {
+abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : BottomSheetDialogFragment(), IView {
 
-    protected abstract val mBinding: VB
     private var mScrollY: Int? = null
     private lateinit var backgroundView: View
     private lateinit var sheetContainer: View
     private var isDismissing = false
+    //#region VB,VM
+    private val uiBind by lazy {
+        UIBindComponent(
+            uiOwner = this,
+            vmProvider = ::createVM,
+            vbProvider = ::createVB)
+    }
+    protected val mBinding: VB get() = uiBind.binding
+    protected val mViewModel: VM get() = uiBind.viewModel
+    abstract val vbClass: KClass<VB>
+    abstract val vmClass: KClass<VM>
+    protected open fun createVB(container: ViewGroup?): VB {
+        return getViewBind(vbClass, container, false)
+    }
 
+    protected open fun createVM(): VM {
+        return viewModelForClass(vmClass).value
+    }
+    //#endregion VB,VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,21 +90,28 @@ abstract class BaseBottomSheetFragment<VB : ViewBinding> : BottomSheetDialogFrag
         sheetContainer.startAnimation(sheetAnim)
     }
 
+    @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        initView(savedInstanceState)
+        uiBind.onCreateView(inflater,container,savedInstanceState)
         setScrollView()
         setKeyboardEvent()
         return mBinding.root
     }
 
+    @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initListener()
-        createObserver()
+        uiBind.onViewCreated(view,savedInstanceState)
+    }
+
+    @CallSuper
+    override fun onDestroyView() {
+        super.onDestroyView()
+        uiBind.onDestroyView()
     }
 
     private fun setScrollView() {
