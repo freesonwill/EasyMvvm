@@ -9,25 +9,24 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.ui.BaseDialogFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
+import kotlin.reflect.KClass
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
-    BaseDialogFragment<FragmentComboBetMoneyKeyboardDialogBinding>() {
+    BaseDialogFragment<ComboBetMoneyKeyboardDialogViewModel,FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
         private const val RATE_NUMBER = "rateNumber"
-        const val RESULT_KEY = "combo_rate_result_key"
-        const val MONEY_INPUT = "money_input"
 
         fun newInstance(positionX: Int?, positionY: Int?, rateNumber: String? = null): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
@@ -44,8 +43,10 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
     }
 
-    override val mBinding: FragmentComboBetMoneyKeyboardDialogBinding by viewBind()
-    private val mViewModel: ComboBetMoneyKeyboardDialogViewModel by viewModels()
+    override val vbClass: KClass<FragmentComboBetMoneyKeyboardDialogBinding>
+        get() = FragmentComboBetMoneyKeyboardDialogBinding::class
+    override val vmClass: KClass<ComboBetMoneyKeyboardDialogViewModel>
+        get() = ComboBetMoneyKeyboardDialogViewModel::class
 
     override fun onStart() {
         super.onStart()
@@ -144,7 +145,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
 
     override fun createObserver() {
-        mViewModel.onEditMoney.observe(viewLifecycleOwner) {
+        mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)
@@ -164,8 +165,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         super.dismiss()
         val money = mBinding.etMoney.text.toString()
         val bundle = Bundle().apply {
-            putString(MONEY_INPUT, money)
+            putString(VALUE_MONEY_INPUT, money)
         }
-        setFragmentResult(RESULT_KEY, bundle)
+        setFragmentResult(KEY_RESULT, bundle)
     }
 }

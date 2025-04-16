@@ -12,9 +12,6 @@ import kotlinx.coroutines.launch
 
 class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
-    val liveUrl =
-        MutableLiveData("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4")
-
     val videoPlayVisible = MutableLiveData(View.VISIBLE)
 
     val statusVisible = MutableLiveData(View.INVISIBLE)

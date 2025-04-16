@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
@@ -14,11 +16,11 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
-        val odds = 1.0f
+        var odds = 1
         addSource(_onBetSheetListener) { data ->
-            data.odds *= odds
+            odds *= data.odds
         }
-        addSource(_onEditMoney) {
+        addSource(_onEdidNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -29,8 +31,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                val betMoney = money.toFloatOrNull() ?: 0f
-                String.format("%.2f", betMoney * odds)
+               money.toValue().getOdds(odds)
             }
         }
     }
@@ -47,7 +48,9 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     }
 
     fun sendBet() {
-
+        val id = _onBetSheetListener.value?.gameId ?: return
+        val money = _onEdidNumber.value?.toValue() ?: return
+        betRepo.sendBet(id, money)
     }
 
     fun removeBet() {

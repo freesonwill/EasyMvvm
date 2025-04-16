@@ -7,20 +7,21 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.java.KoinJavaComponent.inject
+import kotlin.reflect.KClass
 
-class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBetSheetBinding>() {
+class BetSheetFragment private constructor(): BaseBottomSheetFragment<EmptyViewModel,FragmentBetSheetBinding>() {
 
     companion object {
         private const val MATCH_ID = "matchId"
-        const val RESULT_KEY = "result_key"
-        const val DISMISS_KEY = "dismiss_key"
 
         fun newInstance(matchId: Int? = null): BetSheetFragment {
             val b = Bundle().apply {
@@ -38,15 +39,19 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
         }
     }
 
+    override val vbClass: KClass<FragmentBetSheetBinding>
+        get() = FragmentBetSheetBinding::class
+    override val vmClass: KClass<EmptyViewModel>
+        get() = EmptyViewModel::class
+
     private val dismissObserver = Observer<String> { value ->
-        if (value == DISMISS_KEY) {
+        if (value == VALUE_DISMISS) {
             dismiss()
         }
     }
 
     private var lastLiveData: LiveData<String>? = null
 
-    override val mBinding: FragmentBetSheetBinding by viewBind()
 
     override fun initView(savedInstanceState: Bundle?) {
         isCancelable = false
@@ -104,14 +109,14 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
     private fun handleDismissObserve(navController: NavController, destinationId: Int) {
         val backStackEntry = navController.getBackStackEntry(destinationId)
 
-        lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(RESULT_KEY).apply {
+        lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(KEY_RESULT).apply {
             observe(viewLifecycleOwner, dismissObserver)
         }
     }
 
     override fun superDismiss() {
-        parentFragmentManager.setFragmentResult(RESULT_KEY, Bundle().apply {
-            putString(DISMISS_KEY, DISMISS_KEY)
+        parentFragmentManager.setFragmentResult(KEY_RESULT, Bundle().apply {
+            putString(VALUE_DISMISS, VALUE_DISMISS)
         })
         super.superDismiss()
 
@@ -119,5 +124,5 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<FragmentBe
 }
 
 interface BetSheetListener {
-    fun dismiss(key: String = BetSheetFragment.RESULT_KEY, value: String = BetSheetFragment.DISMISS_KEY)
+    fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
 }

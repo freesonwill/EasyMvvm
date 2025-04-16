@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_live"
+    app:startDestination="@id/searchMainFragment">
+
+
+    <fragment
+        android:id="@+id/searchMainFragment"
+        android:name="com.walisport.module.search.ui.SearchMainFragment"
+        android:label="SearchMainFragment"
+        tools:layout="@layout/fragment_search_main">
+
+        <deepLink app:uri="walisport://module_search/searchFragment" />
+
+    </fragment>
+</navigation>

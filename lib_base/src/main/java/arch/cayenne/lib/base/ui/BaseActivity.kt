@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -32,38 +33,47 @@ import kotlin.reflect.KClass
 abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActivity(), IView,
     IStatusBar {
     protected open val TAG = this.javaClass.simpleName
-    //VB VM
-    protected lateinit var mBinding: VB; private set
-    protected lateinit var mViewModel: VM; private set
+    //#region VB,VM
+    protected val mBinding: VB get() = uiBind.binding
+    protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
-
-    protected open fun createVB(parent: ViewGroup?): VB {
-        return getViewBind(vbClass,parent,false)
+    private val uiBind by lazy {
+        UIBindComponent(
+            uiOwner = this,
+            vmProvider = ::createVM,
+            vbProvider = ::createVB)
     }
+
+    protected open fun createVB(container: ViewGroup?): VB {
+        return getViewBind(vbClass, container, false)
+    }
+
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+    //#endregion VB,VM
 
-    //是否第一次加载
-    private var isFirst: Boolean = true
     // 默认不启用键盘隐藏功能，子类可覆盖 edittext软键盘弹出后，点击外部虚拟键盘消失
     open val enableHideKeyboardOnTouchOutside = false
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(this)  }
 
+    @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mBinding = createVB(null)
-        mViewModel = createVM()
+        uiBind.onCreateView(layoutInflater,null,savedInstanceState)
         setContentView(mBinding.root)
-        mBinding.root.fitsSystemWindows = true
-        initView(savedInstanceState)
-        initListener()
-        initData()
-        createObserver()
+        uiBind.onViewCreated(mBinding.root,savedInstanceState)
         setStatusBar(configStatusBar())
     }
+
+    @CallSuper
+    override fun onDestroy() {
+        super.onDestroy()
+        uiBind.onDestroyView()
+    }
+
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
     }

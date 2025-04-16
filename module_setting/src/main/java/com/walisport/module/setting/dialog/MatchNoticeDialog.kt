@@ -1,14 +1,18 @@
 package com.walisport.module.setting.dialog
 
 import android.os.Bundle
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.databinding.DialogMatchNoticeBinding
+import kotlin.reflect.KClass
 
-class MatchNoticeDialog : BaseBottomSheetFragment<DialogMatchNoticeBinding>() {
+class MatchNoticeDialog : BaseBottomSheetFragment<EmptyViewModel,DialogMatchNoticeBinding>() {
 
-    override val mBinding: DialogMatchNoticeBinding by viewBind()
+    override val vbClass: KClass<DialogMatchNoticeBinding>
+        get() = DialogMatchNoticeBinding::class
+    override val vmClass: KClass<EmptyViewModel>
+        get() = EmptyViewModel::class
     private var clicklistener: OnClickListener? = null
 
     override fun initView(savedInstanceState: Bundle?) {

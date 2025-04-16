@@ -18,7 +18,7 @@ object IntExt {
 
     fun Int.getMoney(multiply: Int): String {
         val result = this * multiply
-        val decimal = BigDecimal(result).divide(BigDecimal(100))
+        val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)
         return if (decimal.stripTrailingZeros().scale() <= 0) {
             decimal.toPlainString().split(".")[0] // 僅整數部分
@@ -35,7 +35,7 @@ object IntExt {
 
     fun Int.getOdds(multiply: Int): String {
         val result = this * multiply
-        val decimal = BigDecimal(result).divide(BigDecimal(100))
+        val decimal = BigDecimal(result).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN).toPlainString()
     }
 }

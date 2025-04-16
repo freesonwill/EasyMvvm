@@ -102,11 +102,13 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tv11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="搜索页" />
 
-        <arch.cayenne.lib.common.ui.widget.TitleBarView
-            android:id="@+id/titleBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.fragment.app.FragmentContainerView
