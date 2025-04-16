@@ -6,21 +6,22 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 
 open class NumberCalculatorViewModel : BaseViewModel() {
 
-    protected val _onEdidNumber = MutableLiveData("")
-    val onEditNumber: LiveData<String> get() =  _onEdidNumber
+    protected val _onEditNumber = MutableLiveData("")
+    val onEditNumber: LiveData<String> get() =  _onEditNumber
 
+
+    private val _onNumberLimit = MutableLiveData<Pair<Int, Int>>()
     /***
      * @param first min number
      * @param second max number
      */
-    protected val _onNumberLimit = MutableLiveData<Pair<Int, Int>>()
     val onNumberLimit: LiveData<Pair<Int, Int>> get() =  _onNumberLimit
 
     val mixMoney: Int get() = _onNumberLimit.value?.first ?: 0
     val maxMoney: Int get() = _onNumberLimit.value?.second ?: Int.MAX_VALUE
 
     fun addNumber(number: Int) {
-        val current = _onEdidNumber.value.orEmpty()
+        val current = _onEditNumber.value.orEmpty()
 
         val newValue = if (current.contains('.')) {
             val decimalPart = current.substringAfter('.', "")
@@ -33,11 +34,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         val formatted = formatMoney(newValue)
         val limited = if (formatted.toDouble() > maxMoney) maxMoney.toString() else formatted
 
-        _onEdidNumber.value = limited
+        _onEditNumber.value = limited
     }
 
     fun setDot() {
-        _onEdidNumber.value = _onEdidNumber.value?.let {
+        _onEditNumber.value = _onEditNumber.value?.let {
             if (!it.contains(".")) {
                 "$it."
             } else {
@@ -47,14 +48,14 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun setMaxMoney() {
-        _onEdidNumber.value = maxMoney.toString()
+        _onEditNumber.value = maxMoney.toString()
     }
 
     fun setNumber(number: Int) {
         if (number > maxMoney) {
             setMaxMoney()
         } else {
-            _onEdidNumber.value = number.toString()
+            _onEditNumber.value = number.toString()
         }
     }
 
@@ -62,16 +63,16 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         if (number > maxMoney) {
             setMaxMoney()
         } else {
-            _onEdidNumber.value = number.toString()
+            _onEditNumber.value = number.toString()
         }
     }
 
     fun clearNumber() {
-        _onEdidNumber.value = ""
+        _onEditNumber.value = ""
     }
 
     fun doubleNumber() {
-        _onEdidNumber.value = _onEdidNumber.value?.let {
+        _onEditNumber.value = _onEditNumber.value?.let {
             if (it.isEmpty()) {
                 ""
             } else {
@@ -88,7 +89,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun backNumber() {
-        _onEdidNumber.value = _onEdidNumber.value?.let {
+        _onEditNumber.value = _onEditNumber.value?.let {
             if (it.length > 1) {
                 it.substring(0, it.length - 1)
             } else {

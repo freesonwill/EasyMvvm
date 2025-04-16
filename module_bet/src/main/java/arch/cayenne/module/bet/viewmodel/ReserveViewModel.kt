@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
@@ -21,7 +22,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         addSource(_onReserveSheetListener) { data ->
             odds *= data.reverseOdds ?: 1
         }
-        addSource(_onEdidNumber) {
+        addSource(_onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -42,6 +43,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         viewModelScope.launch {
             repo.getReverseById(id)?.let {
                 _onReserveSheetListener.value = it
+                setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
             }
         }
     }
@@ -52,20 +54,20 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun removeBet() {
         _onReserveSheetListener.value?.let {
-            betRepo.removeBet(it.gameId)
+            betRepo.removeBet(it.matchId)
         }
     }
 
     fun saveToCombo() {
         _onReserveSheetListener.value?.let {
-            repo.updateReserveOdds(it.gameId, null)
-            betRepo.saveToCombo(it.gameId)
+            repo.updateReserveOdds(it.matchId, null)
+            betRepo.saveToCombo(it.matchId)
         }
     }
 
     fun sendReserve() {
-        val id = _onReserveSheetListener.value?.gameId ?: return
-        val money = _onEdidNumber.value?.toValue() ?: return
+        val id = _onReserveSheetListener.value?.matchId ?: return
+        val money = _onEditNumber.value?.toValue() ?: return
         repo.sendReserve(id, money)
     }
 }

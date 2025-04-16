@@ -34,7 +34,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     cancelText = getString(R.string.btn_cancel)
                 ).apply {
                     setOnOkClickListener {
-                        mViewModel.removeBet(item.gameId)
+                        mViewModel.removeBet(item.matchId)
                     }
                 }.show(childFragmentManager)
             }
