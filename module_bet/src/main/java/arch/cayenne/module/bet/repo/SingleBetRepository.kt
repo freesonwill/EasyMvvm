@@ -7,14 +7,17 @@ import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.Selection
+import arch.cayenne.module.bet.BettingRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.random.Random
 
-class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
+class SingleBetRepository(
+    private val betDao: BetDao,
+    private val remoteManager: BettingRemoteManager
+) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     fun observeSingleBet() = betDao.observeSingleBet()
@@ -85,8 +88,13 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
             betDao.getBetById(id)?.let {
                 if (it.betType == BetTypeEnum.SINGLE) {
                     betDao.updateBetStatus(id, BetStatusEnum.BETTING)
-                    delay(5_000L) // 模擬網路延遲
-                    betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                    // TODO 等接入實際盤口資料後再測試
+                    val resp = remoteManager.singleBet(scope, it, money)
+                    if (resp == null || !resp.isSuccessful) {
+                        betDao.updateBetStatus(id, BetStatusEnum.FAIL)
+                    } else {
+                        betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                    }
                 }
 
             }
