@@ -9,7 +9,7 @@ import androidx.room.TypeConverter
  * @date: 2025/4/14 10:35
  * @description:
  */
-@Entity(tableName = "SimpleBean")
+@Entity(tableName = "ExampleBean")
 data class ExampleBean(
     @PrimaryKey
     val id: Int,

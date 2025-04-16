@@ -2,6 +2,7 @@ package arch.cayenne.lib.socket
 
 import android.util.Log
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.socket.data.IRequest
 import arch.cayenne.lib.socket.data.IResponse
 import arch.cayenne.lib.socket.data.ISecurity
@@ -40,15 +41,15 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
     }
 
     override fun decrypt(data: ByteArray): IResponse {
-        val unpack = newUnpack(data)
-        return if (unpack == null
-            || unpack.size != 3
-            || unpack[0] !is Int
-            || unpack[1] !is Int
-            || unpack[2] !is ByteArray) {
-            InvalidDataResponseError()
-        } else {
-            try {
+        try {
+            val unpack = newUnpack(data)
+            return if (unpack == null
+                || unpack.size != 3
+                || unpack[0] !is Int
+                || unpack[1] !is Int
+                || unpack[2] !is ByteArray) {
+                InvalidDataResponseError()
+            } else {
                 val mid = (unpack[0] as Int).toShort()
                 val sid = (unpack[1] as Int).toShort()
                 val jsonPayload = unpack[2] as ByteArray
@@ -58,10 +59,10 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
                     sid = sid,
                     originProto = jsonPayload
                 )
-            } catch (e: Exception) {
-                "message decrypt failed".logi(NativeLib::class.java.simpleName)
-                InvalidDataResponseError()
             }
+        } catch (e: Exception) {
+            "message decrypt failed".loge(NativeLib::class.java.simpleName)
+            return InvalidDataResponseError()
         }
     }
 

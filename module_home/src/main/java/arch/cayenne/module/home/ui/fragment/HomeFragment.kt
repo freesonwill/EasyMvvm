@@ -98,7 +98,11 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             BetSheetFragment.addMockData()
         }
 
-        mBinding.titleBar.loadSearchTitleBar("请输入内容", {},{})
+        mBinding.tv11.clickNoRepeat{
+            navigate(Uri.parse("walisport://module_search/searchFragment"))
+        }
+
+
     }
 
     private fun toFragmentInner(){

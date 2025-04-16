@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
+import kotlin.reflect.KClass
 
-class OddsDisplayDialog : BaseBottomSheetFragment<DialogOddsDisplayBinding>() {
-
-    override val mBinding: DialogOddsDisplayBinding by viewBind()
+class OddsDisplayDialog : BaseBottomSheetFragment<EmptyViewModel,DialogOddsDisplayBinding>() {
+    override val vbClass: KClass<DialogOddsDisplayBinding>
+        get() = DialogOddsDisplayBinding::class
+    override val vmClass: KClass<EmptyViewModel>
+        get() = EmptyViewModel::class
     private var clicklistener: OnClickListener? = null
     val bundle = "display_type"
     private var displayType = "EP"

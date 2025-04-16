@@ -5,11 +5,12 @@ import arch.cayenne.module.home.R
 
 //串接資料時再調整
 enum class SportType(val id: Int, @StringRes val titleResId: Int, val iconResActive: Int, val iconResInactive: Int) {
+    Init(0, R.string.title_init, R.drawable.ic_soccer_active, R.drawable.ic_soccer_inactive),
     Soccer(1, R.string.title_soccer, R.drawable.ic_soccer_active, R.drawable.ic_soccer_inactive),
-    VOLLEYBALL(2, R.string.title_volleyball, R.drawable.ic_volleyball_active, R.drawable.ic_volleyball_inactive),
-    BASKETBALL(3, R.string.title_basketball, R.drawable.ic_basketball_active, R.drawable.ic_basketball_inactive),
-    FOOTBALL(4, R.string.title_football, R.drawable.ic_football_active, R.drawable.ic_football_inactive),
-    BASEBALL(5, R.string.title_baseball, R.drawable.ic_baseball_active, R.drawable.ic_baseball_inactive),
+    VOLLEYBALL(23, R.string.title_volleyball, R.drawable.ic_volleyball_active, R.drawable.ic_volleyball_inactive),
+    BASKETBALL(2, R.string.title_basketball, R.drawable.ic_basketball_active, R.drawable.ic_basketball_inactive),
+    FOOTBALL(12, R.string.title_football, R.drawable.ic_football_active, R.drawable.ic_football_inactive),
+    BASEBALL(3, R.string.title_baseball, R.drawable.ic_baseball_active, R.drawable.ic_baseball_inactive),
 //    // 🔽 其他運動類型（共 24 種）
 //    RUGBY(6, R.string.sport_rugby, R.drawable.ic_rugby_active, R.drawable.ic_rugby_inactive),
 //    ICE_HOCKEY(7, R.string.sport_ice_hockey, R.drawable.ic_ice_hockey_active, R.drawable.ic_ice_hockey_inactive),

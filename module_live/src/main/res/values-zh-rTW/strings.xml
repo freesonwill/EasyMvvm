@@ -26,8 +26,10 @@
     <string name="technical_statistics">技術統計</string>
     <string name="share">分享給朋友</string>
     <string name="share_link">複製連結</string>
-    <string name="choose_source">選解說</string>
+    <string name="choose_commentary">選解說</string>
     <string name="statistics">技術統計</string>
+    <string name="choose_source">選直播源</string>
+
 
 
 

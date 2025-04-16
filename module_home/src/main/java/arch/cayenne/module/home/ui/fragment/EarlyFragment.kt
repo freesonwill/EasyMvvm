@@ -4,32 +4,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentEarlyBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.enums.HomeTab
+import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.manager.DateTabManager
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.utils.DateUtils.getNext7Days
+import arch.cayenne.module.home.viewmodel.EarlyViewModel
+import arch.cayenne.module.home.viewmodel.HomeViewModel
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
-class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
+class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
     // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
 
     private val leagues = mutableListOf<LeagueType>()
     private val dateTabManager = DateTabManager()
-    private lateinit var leagueAdapter: LeaguePagerAdapter
-
+    private val leagueAdapter: LeaguePagerAdapter by lazy { LeaguePagerAdapter(childFragmentManager, lifecycle, PlayType.TODAY){ leagueId ->
+        dateTabManager.getDateString(leagueId, getNext7Days())
+    } }
+    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     override fun initView(savedInstanceState: Bundle?) {
         // 預設 "全部"
         leagues.clear()
@@ -43,49 +49,9 @@ class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
-            leagueAdapter = LeaguePagerAdapter(
-                childFragmentManager,
-                lifecycle,
-                leagues,
-                HomeTab.EARLY,
-            ) { leagueId ->
-                dateTabManager.getDateString(leagueId, dateTabs)
-            }
+
             vpGameList.adapter = leagueAdapter
-            TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
-                val league = leagues[position]
-                val tabBinding =
-                    ItemLeagueTabBinding.inflate(LayoutInflater.from(context), null, false)
-                tabBinding.apply {
-                    league.iconRes?.let { ivLeagueIcon.setImageResource(it) }
-                    tvLeagueName.setText(league.titleRes)
 
-                    ivLeagueIcon.imageTintList = context?.let {
-                        SportSkinResourceManager.getColorStateList(
-                            it,
-                            R.color.selector_league_tab_tint
-                        )
-                    }
-                    if (league.leagueId == LeagueType.ALL.leagueId) {
-                        ivLeagueIcon.visibility = View.GONE
-                    } else {
-                        league.iconRes?.let { ivLeagueIcon.setImageResource(it) }
-                    }
-
-                    root.setBackgroundResource(R.drawable.selector_league_tab_bg)
-                }
-
-                tab.customView = tabBinding.root
-                tab.view.setPadding(
-                    0,
-                    0,
-                    ViewUtils.dpToPx(10f).toInt(),
-                    0
-                )
-                tab.view.setOnClickListener {
-                    //傳聯賽id索取賽事列表資料更新列表
-                }
-            }.attach()
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.customView?.isSelected = true
@@ -166,6 +132,53 @@ class EarlyFragment : BaseFragment<EmptyViewModel, FragmentEarlyBinding>() {
     }
 
     override fun createObserver() {
+        homeViewModel.currentSportChange.observe(this) {
+            mViewModel.setCurrentSport(it)
+            mViewModel.getCurrentTournament(it)
+        }
+        mViewModel.tournaments.observe(this) {
+            initLeaguesLayout(it)
+        }
+    }
+
+    private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
+        mBinding.apply {
+            leagueAdapter.setData(tournaments)
+            TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
+                val tournament = tournaments[position]
+
+                val tabBinding =
+                    ItemLeagueTabBinding.inflate(LayoutInflater.from(context), null, false)
+                tabBinding.apply {
+                    Glide.with(this@EarlyFragment).load(tournament.icon).into(ivLeagueIcon)
+                    tvLeagueName.text = tournament.simpleName
+
+                    ivLeagueIcon.imageTintList = context?.let {
+                        SportSkinResourceManager.getColorStateList(
+                            it,
+                            R.color.selector_league_tab_tint
+                        )
+                    }
+                    if (tournament.id == LeagueType.ALL.leagueId) {
+                        ivLeagueIcon.visibility = View.GONE
+                    }
+
+                    root.setBackgroundResource(R.drawable.selector_league_tab_bg)
+                }
+
+                tab.customView = tabBinding.root
+                tab.view.setPadding(
+                    0,
+                    0,
+                    ViewUtils.dpToPx(10f).toInt(),
+                    0
+                )
+                tab.view.setOnClickListener {
+                    //傳聯賽id索取賽事列表資料更新列表
+                }
+            }.attach()
+        }
+
     }
 
 }
