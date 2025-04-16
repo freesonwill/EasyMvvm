@@ -11,8 +11,8 @@ import arch.cayenne.lib.skin.res.SportSkinResourceManager.getColorStateList
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentTodayBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.LeagueType
+import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayViewModel
@@ -36,11 +36,8 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
         val apiLeagueIds = listOf(1, 2, 3, 4)
         leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
         with(mBinding) {
-            leagueAdapter =
-                LeaguePagerAdapter(childFragmentManager, lifecycle, leagues, HomeTab.TODAY)
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
-            vpGameList.adapter = leagueAdapter
             vpGameList.adapter = leagueAdapter
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
