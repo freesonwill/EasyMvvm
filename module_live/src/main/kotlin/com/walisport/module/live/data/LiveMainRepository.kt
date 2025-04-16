@@ -21,12 +21,14 @@ class LiveMainRepository(private val liveVideoDao: LiveVideoDao) : BaseRepositor
 
     fun addMockData() {
         scope.launch {
-            liveVideoDao.insert(
-                LiveVideoBean(
-                    1,
-                    "http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1"
+            if (liveVideoDao.queryCount() < 1) {
+                liveVideoDao.insert(
+                    LiveVideoBean(
+                        1,
+                        "http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1"
+                    )
                 )
-            )
+            }
         }
     }
 
