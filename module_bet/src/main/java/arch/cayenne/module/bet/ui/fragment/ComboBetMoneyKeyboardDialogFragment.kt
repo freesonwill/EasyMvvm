@@ -9,9 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
-import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.ui.BaseDialogFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -20,9 +18,10 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
+import kotlin.reflect.KClass
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
-    BaseDialogFragment<FragmentComboBetMoneyKeyboardDialogBinding>() {
+    BaseDialogFragment<ComboBetMoneyKeyboardDialogViewModel,FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
@@ -44,8 +43,10 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
     }
 
-    override val mBinding: FragmentComboBetMoneyKeyboardDialogBinding by viewBind()
-    private val mViewModel: ComboBetMoneyKeyboardDialogViewModel by viewModels()
+    override val vbClass: KClass<FragmentComboBetMoneyKeyboardDialogBinding>
+        get() = FragmentComboBetMoneyKeyboardDialogBinding::class
+    override val vmClass: KClass<ComboBetMoneyKeyboardDialogViewModel>
+        get() = ComboBetMoneyKeyboardDialogViewModel::class
 
     override fun onStart() {
         super.onStart()

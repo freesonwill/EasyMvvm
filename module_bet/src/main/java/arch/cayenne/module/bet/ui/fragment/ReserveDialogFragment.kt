@@ -7,15 +7,14 @@ import android.view.Gravity
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.reflect.KClass
 
-class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentReserveDialogBinding>() {
+class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel,FragmentReserveDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"
@@ -39,8 +38,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<FragmentR
         }
     }
 
-    override val mBinding: FragmentReserveDialogBinding by viewBind()
-    private val mViewModel: ReserveDialogViewModel by viewModel()
+    override val vbClass: KClass<FragmentReserveDialogBinding>
+        get() = FragmentReserveDialogBinding::class
+    override val vmClass: KClass<ReserveDialogViewModel>
+        get() = ReserveDialogViewModel::class
 
     override fun onStart() {
         super.onStart()
