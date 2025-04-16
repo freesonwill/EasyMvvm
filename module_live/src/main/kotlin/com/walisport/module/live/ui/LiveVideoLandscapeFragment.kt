@@ -44,14 +44,11 @@ class LiveVideoLandscapeFragment :
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-//        "onConfigurationChanged".logd(TAG)
     }
 
 
     override fun initView(savedInstanceState: Bundle?) {
-
-        mViewModel.addMockData()
-
+//        mViewModel.addMockData()
     }
 
     override fun initListener() {
