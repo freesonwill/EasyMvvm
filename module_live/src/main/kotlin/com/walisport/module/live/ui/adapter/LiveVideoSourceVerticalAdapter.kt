@@ -17,8 +17,8 @@ import com.walisport.module.live.data.model.VideoSourceBean
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemLayoutBinding
 
 
-class LiveVideoSourceAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
-    BaseAdapter<VideoSourceBean, LiveVideoSourceAdapter.LiveVideoSourceViewHolder, ViewBinding>(
+class LiveVideoSourceVerticalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
+    BaseAdapter<VideoSourceBean, LiveVideoSourceVerticalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare
     ) {
 

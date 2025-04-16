@@ -10,7 +10,7 @@ import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlin.reflect.KClass
 
-class LiveVideoPortraitSourceFragment :
+class LiveVideoSourcePortraitFragment :
     PositionedDialogFragment<LiveVideoViewModel, FragmentLiveSourcePortraitBinding>() {
 
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =

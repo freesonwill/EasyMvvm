@@ -31,7 +31,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             val x = location[0]
             val y =
                 location[1] + mBinding.videoView.measuredHeight - getStatusBarHeight(requireContext())
-            LiveVideoPortraitSourceFragment().apply {
+            LiveVideoSourcePortraitFragment().apply {
                 arguments = Bundle().apply {
                     putInt(PositionedDialogFragment.POSITION_X, x)
                     putInt(PositionedDialogFragment.POSITION_Y, y)
