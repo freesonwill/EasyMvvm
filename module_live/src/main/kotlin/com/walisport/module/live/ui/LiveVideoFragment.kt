@@ -4,8 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.PositionedDialogFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -33,10 +32,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 location[1] + mBinding.videoView.measuredHeight - getStatusBarHeight(requireContext())
             LiveVideoSourcePortraitFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(PositionedDialogFragment.POSITION_X, x)
-                    putInt(PositionedDialogFragment.POSITION_Y, y)
-                    putInt(PositionedDialogFragment.WIDTH, ViewGroup.LayoutParams.MATCH_PARENT)
-                    putInt(PositionedDialogFragment.HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    putInt(LocationFixedDialogFragment.POSITION_X, x)
+                    putInt(LocationFixedDialogFragment.POSITION_Y, y)
+                    putInt(LocationFixedDialogFragment.WIDTH, ViewGroup.LayoutParams.MATCH_PARENT)
+                    putInt(LocationFixedDialogFragment.HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 }
                 show(this@LiveVideoFragment.childFragmentManager)
             }

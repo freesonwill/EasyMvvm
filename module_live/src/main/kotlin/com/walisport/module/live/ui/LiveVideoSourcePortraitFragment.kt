@@ -6,7 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.PositionedDialogFragment
+import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.VideoSourceCompare
@@ -19,7 +19,7 @@ import kotlin.reflect.KClass
  * 竖屏播放时的视频源页面
  */
 class LiveVideoSourcePortraitFragment :
-    PositionedDialogFragment<LiveVideoViewModel, FragmentLiveSourcePortraitBinding>() {
+    LocationFixedDialogFragment<LiveVideoViewModel, FragmentLiveSourcePortraitBinding>() {
 
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
         FragmentLiveSourcePortraitBinding::class

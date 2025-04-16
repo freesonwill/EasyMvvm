@@ -11,7 +11,7 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 /**
  * 指定位置的DialogFragment
  */
-abstract class PositionedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
+abstract class LocationFixedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
     BaseVMDialogFragment<VM, VB>() {
 
     companion object {
