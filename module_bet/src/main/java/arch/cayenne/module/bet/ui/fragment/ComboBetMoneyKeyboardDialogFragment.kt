@@ -14,8 +14,8 @@ import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.module.bet.Config.KEY_RESULT
-import arch.cayenne.module.bet.Config.VALUE_MONEY_INPUT
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView

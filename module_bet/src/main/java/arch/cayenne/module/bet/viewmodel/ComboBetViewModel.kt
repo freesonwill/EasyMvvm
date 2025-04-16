@@ -87,4 +87,9 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             _onComboRateListener.value = updatedList
         }
     }
+
+    fun sendBet() {
+        val betList = _onBetListListener.value ?: return
+        repo.sendBet(betList.map { it.gameId })
+    }
 }

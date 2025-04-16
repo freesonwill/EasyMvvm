@@ -6,8 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.module.bet.Config.KEY_RESULT
-import arch.cayenne.module.bet.Config.VALUE_DISMISS
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass

@@ -9,8 +9,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.BaseBottomSheetFragment
 import arch.cayenne.lib.base.ui.viewBind
-import arch.cayenne.module.bet.Config.KEY_RESULT
-import arch.cayenne.module.bet.Config.VALUE_DISMISS
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
 import arch.cayenne.module.bet.repo.SingleBetRepository

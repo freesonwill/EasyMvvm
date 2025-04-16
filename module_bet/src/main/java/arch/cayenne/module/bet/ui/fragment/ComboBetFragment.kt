@@ -8,8 +8,8 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.module.bet.Config.KEY_RESULT
-import arch.cayenne.module.bet.Config.VALUE_MONEY_INPUT
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
 import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
@@ -84,6 +84,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             } else {
                 mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_expand)
             }
+        }
+        mBinding.clBet.setOnClickListener {
+            mViewModel.sendBet()
+            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
         }
     }
 
