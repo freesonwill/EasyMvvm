@@ -36,7 +36,6 @@ class LiveVideoSourcePortraitFragment :
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
                 adapter = LiveVideoSourceHorizontalAdapter(VideoSourceCompare()).apply {
                     post {
-//                        addItemDecoration(LinearSpacingItemDecoration(16.dp2px, 8.dp2px))
                         addItemDecoration( HorizontalItemDecoration())
                         submitList(mViewModel.sources.value)
                     }
