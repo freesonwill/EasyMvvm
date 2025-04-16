@@ -10,7 +10,7 @@
 
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/dp_375"
         android:layout_height="@dimen/dp_275"
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
@@ -18,7 +18,7 @@
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/choose_source"
+            android:text="@string/choose_commentary"
             android:textColor="@color/white"
             android:textSize="17sp" />
 

@@ -28,4 +28,8 @@ interface IView {
      */
     fun createObserver()
 
+    /**
+     * 是否追踪加载时间（DEBUG用）
+     */
+    fun enableTrackLoadTime() = false
 }

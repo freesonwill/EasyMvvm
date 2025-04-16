@@ -2,8 +2,10 @@ package com.walisport.module.live.ui
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
+import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
@@ -18,11 +20,25 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        mViewModel.addMockData()
     }
 
     override fun initListener() {
         mBinding.ivChooseSource.setOnClickListener {
+            val location = IntArray(2)
+            mBinding.videoView.getLocationOnScreen(location)
+            val x = location[0]
+            val y =
+                location[1] + mBinding.videoView.measuredHeight - getStatusBarHeight(requireContext())
+            LiveVideoSourcePortraitFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(LocationFixedDialogFragment.POSITION_X, x)
+                    putInt(LocationFixedDialogFragment.POSITION_Y, y)
+                    putInt(LocationFixedDialogFragment.WIDTH, ViewGroup.LayoutParams.MATCH_PARENT)
+                    putInt(LocationFixedDialogFragment.HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                }
+                show(this@LiveVideoFragment.childFragmentManager)
+            }
 
         }
         mBinding.ivToFullscreen.clickNoRepeat {
@@ -32,33 +48,30 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun createObserver() {
-        mViewModel.liveUrl.observe(viewLifecycleOwner) {
-            mBinding.videoView.setVideoURI(Uri.parse(it))
-            mBinding.videoView.start()
-//            "videoView.start".logd(TAG)
+        with(mViewModel) {
+            liveVideoBean.observe(viewLifecycleOwner) {
+                mBinding.videoView.setVideoURI(Uri.parse(it.url))
+                mBinding.videoView.start()
+            }
         }
 
     }
 
     override fun onPause() {
-//        "onPause".logd(TAG)
         super.onPause()
-//        mBinding.videoView.pause()
+        mBinding.videoView.pause()
     }
 
     override fun onResume() {
-//        "onResume".logd(TAG)
         super.onResume()
         if (!mBinding.videoView.isPlaying) {
             mBinding.videoView.start()
         }
     }
 
-
     override fun onDestroy() {
-        "onDestroy".logd(TAG)
         super.onDestroy()
-
+        destroyPlayer()
     }
 
     private fun destroyPlayer() {

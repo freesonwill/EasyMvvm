@@ -1,5 +1,6 @@
 package arch.cayenne.lib.socket.extension
 
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import com.google.protobuf.GeneratedMessageLite
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.WebSocketManager.Companion.responseTimeout
@@ -30,13 +31,15 @@ fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode) : SocketRequest
 
 inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoMessage(apiCode: ApiCode) : Flow<SocketResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
-    .filter {it.mid == apiCode.mid && it.sid == apiCode.sid}
+    .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
         try {
+
             val proto = it.originProto?.let { byteArray ->
                 T::class.java.getMethod("parseFrom", ByteArray::class.java)
                     .invoke(null, byteArray) as T
             }
+            "observeProtoMessage map proto success sid -> ${it.sid}".logi(WebSocketManager::class.java.simpleName)
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,

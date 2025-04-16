@@ -2,6 +2,7 @@ package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import arch.cayenne.lib.database.entity.ExampleBean
 
 /**
  * @author: zhangsan
@@ -9,12 +10,12 @@ import androidx.room.Query
  * @description:
  */
 @Dao
-abstract class ExampleDao : BaseDao<ExampleDao>() {
+abstract class ExampleDao : BaseDao<ExampleBean>() {
 
-    @Query("delete from SimpleBean")
+    @Query("delete from ExampleBean")
     abstract suspend fun deleteAll()
 
-    @Query("DELETE FROM SimpleBean WHERE id = :id")
+    @Query("DELETE FROM ExampleBean WHERE id = :id")
     abstract suspend fun remove(id: Int)
 
 }

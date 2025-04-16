@@ -3,14 +3,17 @@ package arch.cayenne.lib.common.ui.dialog
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseDialogFragment
-import arch.cayenne.lib.base.ui.viewBind
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.databinding.DialogCommonBinding
 import arch.cayenne.lib.common.utils.ViewUtils
+import kotlin.reflect.KClass
 
-class CommonDialog : BaseDialogFragment<DialogCommonBinding>() {
-    override val mBinding: DialogCommonBinding by viewBind()
+class CommonDialog : BaseDialogFragment<EmptyViewModel,DialogCommonBinding>() {
+    override val vbClass: KClass<DialogCommonBinding>
+        get() = DialogCommonBinding::class
+    override val vmClass: KClass<EmptyViewModel>
+        get() = EmptyViewModel::class
     private var title: String? = null
     private var message: String? = null
     private var okText: String? = null

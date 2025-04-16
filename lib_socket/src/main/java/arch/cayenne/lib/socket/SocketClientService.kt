@@ -114,6 +114,9 @@ class SocketClientService(
                     "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
+                        workingScope.launch(Dispatchers.Main) {
+
+                        }
                         val data = security.decrypt(byteArray)
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
