@@ -56,7 +56,7 @@ UI層不要有資料層的東西注入
 ```text
 使用Navigation
 ```
-[NavigationTutuorial.md](./z_doc/NavigationTutuorial.md)
+[NavigationTutuorial.md](./z_doc/NavigationTutorial)
 
 3. 通用的标题栏样式? 需要内置到BaseActivity,BaseFragment中吗？
 ```text
