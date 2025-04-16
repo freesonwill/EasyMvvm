@@ -48,7 +48,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
         leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
 
         val dateTabs =
-            getFutureDays(7, Locale.getDefault()) // e.g., List<Pair<String, String>> → (MMDD, 星期)
+            getFutureDays(7, Locale.getDefault()) // List<Pair<String, String>> → (MMDD, 星期)
         dateTabManager.setSelectedIndex(LeagueType.ALL.leagueId, 0)
         setupDateTabs(dateTabs)
         setupLeagueViewPager(leagues, dateTabs)
