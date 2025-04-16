@@ -17,12 +17,24 @@
     <string name="title_rate">达到此赔率时自动投注</string>
     <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
 
-    <string name="title_rate_expand">展开更多串关方式</string>
-    <string name="title_rate_collapse">关闭更多串关方式</string>
+    <string name="title_combo_bet_odds_expand">展开更多串关方式</string>
+    <string name="title_combo_bet_odds_collapse">关闭更多串关方式</string>
     <string name="title_combo_bet_money">共投注：</string>
-    <string name="title_combo_bet_rate_money">本金：</string>
-    <string name="title_combo_bet_rate_max_money">预计最高可赢：</string>
-    <string name="title_combo_bet_rate">%d串%d：</string>
+    <string name="title_combo_bet_odds_amount">本金：</string>
+    <string name="title_combo_bet_odds_max_money">预计最高可赢：</string>
+    <string name="title_combo_bet_odds">%d串%d：</string>
 
     <string name="title_reserve">预约</string>
+
+    <string name="title_result_hint">无需在本页等待，稍后可在注单记录中查看结果</string>
+    <string name="title_result_success_bet">投注成功</string>
+    <string name="title_result_success_reserve">预约成功</string>
+    <string name="title_result_pending_bet">投注确认中</string>
+    <string name="title_result_pending_reserve">预约确认中</string>
+    <string name="title_result_fail_bet">投注失败</string>
+    <string name="title_result_fail_reserve">预约失败</string>
+    <string name="title_result_amount">本金</string>
+    <string name="title_result_win_single_bet">可赢</string>
+    <string name="title_result_win_combo_bet">最高可赢</string>
+    <string name="btn_result_continue_bet">续投</string>
 </resources>

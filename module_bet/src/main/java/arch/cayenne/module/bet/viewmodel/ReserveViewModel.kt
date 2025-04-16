@@ -64,6 +64,8 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     }
 
     fun sendReserve() {
-
+        val id = _onReserveSheetListener.value?.gameId ?: return
+        val money = _onEdidNumber.value?.toValue() ?: return
+        repo.sendReserve(id, money)
     }
 }

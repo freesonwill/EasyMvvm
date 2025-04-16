@@ -4,9 +4,11 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -61,6 +63,19 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
             }
         } else {
             null
+        }
+    }
+
+    fun sendBet(id: Int, money: Int) {
+        scope.launch {
+            betDao.getBetById(id)?.let {
+                if (it.betType == BetTypeEnum.SINGLE) {
+                    betDao.updateBetStatus(id, BetStatusEnum.BETTING)
+                    delay(5_000L) // 模擬網路延遲
+                    betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                }
+
+            }
         }
     }
 }

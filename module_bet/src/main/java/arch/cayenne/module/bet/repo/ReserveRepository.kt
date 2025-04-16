@@ -2,9 +2,11 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -37,6 +39,18 @@ class ReserveRepository(private val betDao: BetDao): BaseRepository() {
     fun updateReserveOdds(id: Int, odds: Int?) {
         scope.launch {
             betDao.setReserveOdds(id, odds)
+        }
+    }
+
+    fun sendReserve(id: Int, money: Int) {
+        scope.launch {
+            betDao.getBetById(id)?.let {
+                if (it.betType == BetTypeEnum.RESERVE) {
+                    betDao.updateBetStatus(id, BetStatusEnum.BETTING)
+                    delay(5_000L) // 模擬網路延遲
+                    betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                }
+            }
         }
     }
 }

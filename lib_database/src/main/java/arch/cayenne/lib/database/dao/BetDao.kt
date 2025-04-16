@@ -3,6 +3,7 @@ package arch.cayenne.lib.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.flow.Flow
 
@@ -11,6 +12,9 @@ abstract class BetDao: BaseDao<BetBean>() {
 
     @Query("SELECT * FROM BetBean WHERE betType = 0 LIMIT 1")
     abstract fun observeSingleBet(): Flow<BetBean?>
+
+    @Query("SELECT * FROM BetBean WHERE gameId = :id LIMIT 1")
+    abstract fun observeBetById(id: Int): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean")
     abstract suspend fun getBetSheet(): List<BetBean>
@@ -26,6 +30,9 @@ abstract class BetDao: BaseDao<BetBean>() {
 
     @Query("UPDATE BetBean SET betType = :type WHERE gameId = :id")
     abstract suspend fun updateBetType(id: Int, type: BetTypeEnum)
+
+    @Query("UPDATE BetBean SET status = :status WHERE gameId = :id")
+    abstract suspend fun updateBetStatus(id: Int, status: BetStatusEnum)
 
     @Query("UPDATE BetBean SET reverseOdds = :reserveOdds WHERE gameId = :id")
     abstract suspend fun setReserveOdds(id: Int, reserveOdds: Int?)

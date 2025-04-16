@@ -12,7 +12,7 @@ class ComboRateViewHolder(private val mBinding: ItemComboRateBinding, private va
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(size: Int, item: ComboRateBean) {
-        val combo = getString(R.string.title_combo_bet_rate).format(size, item.combo)
+        val combo = getString(R.string.title_combo_bet_odds).format(size, item.combo)
         val title = "$combo @${item.odds.getOdds()}"
         mBinding.tvTitleCombo.text = title
 

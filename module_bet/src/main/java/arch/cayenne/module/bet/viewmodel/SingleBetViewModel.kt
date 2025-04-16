@@ -48,7 +48,9 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     }
 
     fun sendBet() {
-
+        val id = _onBetSheetListener.value?.gameId ?: return
+        val money = _onEdidNumber.value?.toValue() ?: return
+        betRepo.sendBet(id, money)
     }
 
     fun removeBet() {

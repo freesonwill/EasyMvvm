@@ -80,9 +80,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.llRateCollapse.setOnClickListener {
             comboRateAdapter.toggleExpand()
             if (comboRateAdapter.isExpanded) {
-                mBinding.tvRateExpand.text = getString(R.string.title_rate_collapse)
+                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_collapse)
             } else {
-                mBinding.tvRateExpand.text = getString(R.string.title_rate_expand)
+                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_expand)
             }
         }
     }

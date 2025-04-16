@@ -83,6 +83,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
+            val id = mViewModel.onBetSheetListener.value?.gameId ?: -1
+            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(id))
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
