@@ -11,8 +11,8 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -374,7 +374,8 @@ class LiveVideoLandscapeFragment :
         AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
 
         mBinding.root.fitsSystemWindows = false
-        setStatusBar(StatusBarConfig(hideStatusBar = true))
+        StatusBarConfig.hideStatusBar = true
+        setStatusBar(StatusBarConfig)
 
     }
 
@@ -385,9 +386,9 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
-
         mBinding.root.fitsSystemWindows = true
-        setStatusBar(StatusBarConfig(hideStatusBar = false))
+        StatusBarConfig.hideStatusBar = false
+        setStatusBar(StatusBarConfig)
     }
 
 

@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.BaseSideSheetDialogFragment
-import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnMenuAdapter

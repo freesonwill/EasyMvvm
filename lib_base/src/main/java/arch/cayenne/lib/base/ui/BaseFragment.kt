@@ -18,10 +18,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
+import arch.cayenne.lib.base.data.StatusBarConfig
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.interface_.IStatusBar
 import arch.cayenne.lib.base.ui.interface_.IView
-import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.LogUtilsExt.printStackTrace
 import kotlinx.coroutines.CoroutineScope
@@ -81,11 +81,12 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         createObserver()
         trackLoadingTime()
     }
-
-
-
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)
+    }
+
+     fun getStatusBarColor() : Int{
+       return statusBar.configStatusBar().statusBarColor
     }
 
     /**
