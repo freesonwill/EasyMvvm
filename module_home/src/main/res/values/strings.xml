@@ -7,6 +7,7 @@
     <string name="title_today">今日</string>
     <string name="title_early">早盘</string>
     <string name="title_champion">冠军</string>
+    <string name="tab_text_all">全部</string>
 
     <!--Sport name-->
     <string name="title_init">預設</string>
@@ -22,4 +23,7 @@
     <string name="league_premier">英超</string>
     <string name="league_laliga">西甲</string>
     <string name="league_seriea">意甲</string>
+    <string name="bet_title">注单</string>
+    <string name="search_title">搜索</string>
+    <string name="favorite_title">收藏</string>
 </resources>

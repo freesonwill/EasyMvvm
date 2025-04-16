@@ -11,8 +11,8 @@ import arch.cayenne.lib.skin.res.SportSkinResourceManager.getColorStateList
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentTodayBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.LeagueType
+import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayViewModel
