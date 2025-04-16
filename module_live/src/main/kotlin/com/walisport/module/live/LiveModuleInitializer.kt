@@ -24,6 +24,9 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
+import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
+import com.walisport.module.live.ui.viewmodel.EmojiViewModel
+
 
 class LiveModuleInitializer : Initializer<String> {
 
@@ -55,6 +58,9 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveBetSlipExpiredViewModel)
         viewModelOf(::LiveBetSlipReserveViewModel)
         viewModelOf(::LiveBetSlipSettledViewModel)
+        viewModelOf(::LiveSoftKeyboardViewModel)
+        viewModelOf(::EmojiViewModel)
+
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
