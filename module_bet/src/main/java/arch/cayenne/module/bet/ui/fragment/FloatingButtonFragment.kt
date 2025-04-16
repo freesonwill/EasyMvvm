@@ -25,15 +25,6 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
         mBinding.fab.setPerformClick {
             mViewModel.onBettingCount.value?.let { count ->
                 isShowBetSheet = true
-                if (count == 1) {
-                    lifecycleScope.launch {
-                        val id = mViewModel.getSingleBetById()
-                        BetSheetFragment.newInstance(id).show(parentFragmentManager)
-                    }
-                } else {
-                    BetSheetFragment.newInstance().show(parentFragmentManager)
-                }
-                mBinding.root.visibility = View.GONE
                 parentFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
                     if (resultKey == KEY_RESULT) {
                         parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
@@ -46,6 +37,15 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                         }
                     }
                 }
+                if (count == 1) {
+                    lifecycleScope.launch {
+                        val id = mViewModel.getSingleBetById()
+                        BetSheetFragment.newInstance(id).show(parentFragmentManager)
+                    }
+                } else {
+                    BetSheetFragment.newInstance().show(parentFragmentManager)
+                }
+                mBinding.root.visibility = View.GONE
             }
         }
     }

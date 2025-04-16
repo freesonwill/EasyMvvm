@@ -124,7 +124,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     private fun setBetData(data: BetBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
-        mBinding.layoutBet.ivDelete.visibility = View.GONE
     }
 
     override fun dismiss(key: String, value: String) {

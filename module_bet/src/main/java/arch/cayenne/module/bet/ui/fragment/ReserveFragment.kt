@@ -112,12 +112,6 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
 
     private fun setBetData(data: BetBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
-        mBinding.layoutBet.ivDelete.visibility = View.GONE
-        val odds = "@${data.reverseOdds?.getOdds()}"
-        mBinding.tvCancelReserve.text = odds
-
-        mBinding.btnReserve.visibility = View.GONE
-        mBinding.clCancelReserve.visibility = View.VISIBLE
     }
 
     override fun dismiss(key: String, value: String) {

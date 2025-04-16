@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
+import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import com.bumptech.glide.Glide
 import kotlin.reflect.KClass
@@ -18,10 +19,13 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val args: BetResultFragmentArgs by navArgs()
+    private val betSheetAdapter by lazy { BetSheetAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
         val id = args.id
         mViewModel.setBetSheet(if (id == -1) null else id)
+
+        mBinding.rvBet.adapter = betSheetAdapter
     }
 
     override fun initListener() {
@@ -32,7 +36,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
-
+            betSheetAdapter.submitList(it)
         }
         mViewModel.onBetModeListener.observe(viewLifecycleOwner) {
             setBetMode(it.first, it.second)

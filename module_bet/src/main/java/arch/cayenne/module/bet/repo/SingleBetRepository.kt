@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.random.Random
 
 class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -32,27 +33,28 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
     // TODO 此為測試用！！之後會刪除  此為測試用！！之後會刪除  此為測試用！！之後會刪除
     fun addMockData() {
         scope.launch {
-            val data = betDao.getBetSheet()
+            val id = Random.nextInt()
             betDao.insert(
                 BetBean(
-                gameId = data.size,
-                betTeamName = "Test ${data.size}",
-                handicap = "-1.5",
-                odds = "1.98".toValue(),
-                betType = BetTypeEnum.COMBO,
-                leagueName = "世界盃",
-                matchName = "中國vs巴西"
-            )
+                    gameId = id,
+                    betTeamName = "Test $id",
+                    handicap = "-1.5",
+                    odds = "1.98".toValue(),
+                    betType = BetTypeEnum.COMBO,
+                    leagueName = "世界盃",
+                    matchName = "中國vs巴西"
+                )
             )
         }
     }
 
     suspend fun getOneMockData() = withContext(scope.coroutineContext) {
         val data = betDao.getBetSheet()
-        if (data.isEmpty()) {
+        if (!data.any { it.betType == BetTypeEnum.SINGLE && it.status == BetStatusEnum.PENDING_BET }) {
+            val id = Random.nextInt()
             BetBean(
-                gameId = 0,
-                betTeamName = "Test ${0}",
+                gameId = id,
+                betTeamName = "Test $id",
                 handicap = "-1.5",
                 odds = "1.98".toValue(),
                 betType = BetTypeEnum.SINGLE,

@@ -1,7 +1,10 @@
 package arch.cayenne.module.bet.util
 
+import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetStatusEnum
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 
 object ViewHelper {
@@ -12,5 +15,7 @@ object ViewHelper {
 
         binding.tvMatchName.text = bean.matchName
         binding.tvLeagueName.text = bean.leagueName
+
+        binding.ivDelete.isVisible = bean.betType == BetTypeEnum.COMBO && bean.status == BetStatusEnum.PENDING_BET
     }
 }
