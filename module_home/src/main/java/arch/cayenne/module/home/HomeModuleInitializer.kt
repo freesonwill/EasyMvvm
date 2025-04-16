@@ -4,7 +4,9 @@ import android.content.Context
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.module.home.repository.HomeRepository
+import arch.cayenne.module.home.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel
+import arch.cayenne.module.home.viewmodel.TodayViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -31,6 +33,8 @@ class HomeModuleInitializer: Initializer<Unit> {
 
     private val viewModules = module {
         viewModel { HomeViewModel() }
+        viewModel { TodayViewModel() }
+        viewModel { EarlyViewModel() }
     }
     private val daoModule = module {
 //        factory { get<GameDatabase>().sportDao() }

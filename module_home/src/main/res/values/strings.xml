@@ -9,6 +9,7 @@
     <string name="title_champion">冠军</string>
 
     <!--Sport name-->
+    <string name="title_init">預設</string>
     <string name="title_soccer">足球</string>
     <string name="title_volleyball">排球</string>
     <string name="title_basketball">篮球</string>

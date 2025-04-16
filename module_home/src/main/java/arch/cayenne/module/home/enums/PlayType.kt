@@ -8,7 +8,7 @@ import arch.cayenne.module.home.ui.fragment.ChampionFragment
 import arch.cayenne.module.home.ui.fragment.EarlyFragment
 import arch.cayenne.module.home.ui.fragment.TodayFragment
 
-enum class HomeTab(val id: Int, @StringRes val titleRes: Int, val fragment: Fragment?) {
+enum class PlayType(val id: Int, @StringRes val titleRes: Int, val fragment: Fragment?) {
 //    ALL(0,R.string.title_all, null),
 //    IN_PLAY_ODDS(1,R.string.title_in_play_odds, null),
     TODAY(2,R.string.title_today, TodayFragment()),

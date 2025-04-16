@@ -10,3 +10,11 @@ data class TournamentCategory(
     val hot: Boolean,
     val weight: Int,
 )
+
+data class TournamentDataModel(
+    val id: Int,
+    val name: String,
+    val simpleName: String,
+    val icon: String,
+    val weight: Int,
+)

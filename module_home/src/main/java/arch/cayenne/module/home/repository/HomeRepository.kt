@@ -6,6 +6,7 @@ import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportCategory
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentCategory
+import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
@@ -69,9 +70,9 @@ class HomeRepository(
         return sportCategoryDao.querySportsMatchCount(playType)
     }
 
-    suspend fun getAllTournaments(playType: Int, sportId: Int): List<TournamentCategory>? {
+    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         //先從DB拿取
-        val queryResult = tournamentCategoryDao.queryTournamentBySportId(playType, sportId)
+        val queryResult = tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
         if (queryResult.isNotEmpty()) {
             return queryResult
         }
@@ -94,7 +95,7 @@ class HomeRepository(
         }
     }
 
-    private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentCategory> {
+    private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
         val tournamentCategoryList = arrayListOf<TournamentCategory>()
         data.tournamentList.forEach { tournament ->
@@ -116,9 +117,9 @@ class HomeRepository(
                 )
             )
         }
-        tournamentDao.insert(tournamentList).isNotEmpty()
-        tournamentCategoryDao.insert(tournamentCategoryList).isNotEmpty()
-        return tournamentCategoryList
+        tournamentDao.insert(tournamentList)
+        tournamentCategoryDao.insert(tournamentCategoryList)
+        return tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int) {

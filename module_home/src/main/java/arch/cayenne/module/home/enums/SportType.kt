@@ -5,6 +5,7 @@ import arch.cayenne.module.home.R
 
 //串接資料時再調整
 enum class SportType(val id: Int, @StringRes val titleResId: Int, val iconResActive: Int, val iconResInactive: Int) {
+    Init(0, R.string.title_init, R.drawable.ic_soccer_active, R.drawable.ic_soccer_inactive),
     Soccer(1, R.string.title_soccer, R.drawable.ic_soccer_active, R.drawable.ic_soccer_inactive),
     VOLLEYBALL(23, R.string.title_volleyball, R.drawable.ic_volleyball_active, R.drawable.ic_volleyball_inactive),
     BASKETBALL(2, R.string.title_basketball, R.drawable.ic_basketball_active, R.drawable.ic_basketball_inactive),

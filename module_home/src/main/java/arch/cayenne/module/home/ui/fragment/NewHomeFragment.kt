@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,16 +7,13 @@ import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
-import arch.cayenne.module.home.data.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
-import arch.cayenne.module.home.enums.HomeTab
+import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.ui.adapter.HomePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.module.home.viewmodel.HomeViewModel
-import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
@@ -42,21 +38,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             .commit()
         with(mBinding) {
             vpHome.apply {
-                adapter = HomePagerAdapter(childFragmentManager, lifecycle, HomeTab.entries)
+                adapter = HomePagerAdapter(childFragmentManager, lifecycle, PlayType.entries)
                 isUserInputEnabled = false
                 currentItem = 0
-
             }
 
             TabLayoutMediator(tlHome, vpHome) { tab, position ->
                 val tabView = tab.view
-                tab.text = HomeTab.entries[position].getTitle(this@NewHomeFragment.requireContext())
+                tab.text = PlayType.entries[position].getTitle(this@NewHomeFragment.requireContext())
                 tabView.setPadding(11.dp2px, 0, 11.dp2px, 0)
             }.attach()
             vpHome.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    mViewModel.setCurrentPlayType(HomeTab.entries[position])
+                    mViewModel.setCurrentPlayType(PlayType.entries[position])
                 }
             })
 
@@ -88,24 +83,23 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
         mViewModel.sportsStatistical.observe(this) {
-            //TODO sport那一塊的UI
             sportsListAdapter.setData(it)
-            sportsListAdapter.notifyDataSetChanged()
-            if (mViewModel.currentSport == null) {
+            sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
+            if (mViewModel.currentSportChange.value == null) {
                 mViewModel.setCurrentSport(it[0].id)
             }
 //            mViewModel.getCurrentTournament()
         }
-        mViewModel.tournaments.observe(this) {
-            //TODO 聯賽那一塊的UI
-            if (!mViewModel.currentTournament.containsKey(mViewModel.currentSport)) {
-                mViewModel.setCurrentTournament(mViewModel.currentSport!!, it[0].tournamentId)
-            }
-            mViewModel.getCurrentMatch()
-        }
+
+//        mViewModel.tournaments.observe(this) {
+//            //TODO 聯賽那一塊的UI
+//            if (!mViewModel.currentTournament.containsKey(mViewModel.currentSport)) {
+//                mViewModel.setCurrentTournament(mViewModel.currentSport!!, it[0].tournamentId)
+//            }
+//            mViewModel.getCurrentMatch()
+//        }
     }
 
     override fun onDestroyView() {
