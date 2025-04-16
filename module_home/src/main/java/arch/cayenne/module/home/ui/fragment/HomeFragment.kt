@@ -89,7 +89,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             val repo: SingleBetRepository by KoinJavaComponent.inject(SingleBetRepository::class.java)
             lifecycleScope.launch {
                 repo.getOneMockData()?.let {
-                    BetSheetFragment.newInstance(it.gameId).show(childFragmentManager)
+                    BetSheetFragment.newInstance(it.matchId).show(childFragmentManager)
                 }
             }
 

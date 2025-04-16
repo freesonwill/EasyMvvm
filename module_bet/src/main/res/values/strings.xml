@@ -14,6 +14,7 @@
     <string name="btn_confirm">确定</string>
     <string name="btn_cancel">确定</string>
 
+    <string name="title_playing">滚球</string>
     <string name="title_rate">达到此赔率时自动投注</string>
     <string name="title_dialog_remove">串关删除后将无法恢复，确定删除串关吗？</string>
 

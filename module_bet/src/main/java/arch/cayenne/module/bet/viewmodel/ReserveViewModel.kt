@@ -52,19 +52,19 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun removeBet() {
         _onReserveSheetListener.value?.let {
-            betRepo.removeBet(it.gameId)
+            betRepo.removeBet(it.matchId)
         }
     }
 
     fun saveToCombo() {
         _onReserveSheetListener.value?.let {
-            repo.updateReserveOdds(it.gameId, null)
-            betRepo.saveToCombo(it.gameId)
+            repo.updateReserveOdds(it.matchId, null)
+            betRepo.saveToCombo(it.matchId)
         }
     }
 
     fun sendReserve() {
-        val id = _onReserveSheetListener.value?.gameId ?: return
+        val id = _onReserveSheetListener.value?.matchId ?: return
         val money = _onEdidNumber.value?.toValue() ?: return
         repo.sendReserve(id, money)
     }

@@ -18,7 +18,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds *= data.odds
+            odds *= data.selection.odds
         }
         addSource(_onEdidNumber) {
             val money = if (it.isEmpty()) {
@@ -48,20 +48,20 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     }
 
     fun sendBet() {
-        val id = _onBetSheetListener.value?.gameId ?: return
+        val id = _onBetSheetListener.value?.matchId ?: return
         val money = _onEdidNumber.value?.toValue() ?: return
         betRepo.sendBet(id, money)
     }
 
     fun removeBet() {
         _onBetSheetListener.value?.let {
-            betRepo.removeBet(it.gameId)
+            betRepo.removeBet(it.matchId)
         }
     }
 
     fun saveToCombo() {
         _onBetSheetListener.value?.let {
-            betRepo.saveToCombo(it.gameId)
+            betRepo.saveToCombo(it.matchId)
         }
     }
 }

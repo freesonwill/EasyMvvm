@@ -6,6 +6,7 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.Selection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -36,13 +37,16 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
             val id = Random.nextInt()
             betDao.insert(
                 BetBean(
-                    gameId = id,
-                    betTeamName = "Test $id",
-                    handicap = "-1.5",
-                    odds = "1.98".toValue(),
+                    matchId = id,
+                    selection = Selection(
+                        marketName = "讓分盤",
+                        id = 212263384,
+                        name = "長春亞泰 (+0.5)",
+                        odds = "1.9".toValue()
+                    ),
                     betType = BetTypeEnum.COMBO,
-                    leagueName = "世界盃",
-                    matchName = "中國vs巴西"
+                    leagueName = "亞洲青年U19錦標賽A",
+                    matchName = "長春亞泰 vs 廣州隊"
                 )
             )
         }
@@ -53,13 +57,17 @@ class SingleBetRepository(private val betDao: BetDao) : BaseRepository() {
         if (!data.any { it.betType == BetTypeEnum.SINGLE && it.status == BetStatusEnum.PENDING_BET }) {
             val id = Random.nextInt()
             BetBean(
-                gameId = id,
-                betTeamName = "Test $id",
-                handicap = "-1.5",
-                odds = "1.98".toValue(),
+                matchId = id,
+                selection = Selection(
+                    marketName = "讓分盤",
+                    id = 212263384,
+                    name = "長春亞泰 (+0.5)",
+                    odds = "1.9".toValue()
+                ),
                 betType = BetTypeEnum.SINGLE,
-                leagueName = "世界盃",
-                matchName = "中國vs巴西"
+                leagueName = "亞洲青年U19錦標賽A",
+                matchName = "長春亞泰 vs 廣州隊",
+                isPlaying = true
             ).apply {
                 betDao.insert(this)
             }

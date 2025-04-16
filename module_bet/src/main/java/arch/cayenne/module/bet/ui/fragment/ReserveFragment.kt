@@ -90,7 +90,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendReserve()
-            val id = mViewModel.onReserveSheetListener.value?.gameId ?: -1
+            val id = mViewModel.onReserveSheetListener.value?.matchId ?: -1
             navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment(id))
         }
     }

@@ -15,7 +15,7 @@ class FloatingButtonRepository(private val betDao: BetDao): BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     suspend fun getSingleBetId() = with(scope.coroutineContext) {
-        betDao.getBetSheet().first().gameId
+        betDao.getBetSheet().first().matchId
     }
 
     fun saveToSingleBet(id: Int) {
