@@ -12,7 +12,7 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
  * 指定位置的DialogFragment
  */
 abstract class LocationFixedDialogFragment<VM : BaseViewModel, VB : ViewBinding> :
-    BaseVMDialogFragment<VM, VB>() {
+    BaseDialogFragment<VM, VB>() {
 
     companion object {
         const val POSITION_X = "positionX"
