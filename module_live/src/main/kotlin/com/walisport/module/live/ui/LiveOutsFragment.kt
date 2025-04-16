@@ -44,5 +44,11 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
             val list = it as ArrayList<GoalTrendBean>
             mBinding.viewTechStatic.setData(list)
         }
+        mViewModel.matchLiveData.observe(this) {
+
+        }
+        mViewModel.matchTrendData.observe(this) {
+
+        }
     }
 }

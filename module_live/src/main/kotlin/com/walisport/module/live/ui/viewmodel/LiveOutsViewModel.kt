@@ -7,12 +7,39 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.GoalTrendBean
 import com.walisport.module.live.data.model.MatchEventBean
+import com.walisport.module.live.data.model.MatchLiveData
+import com.walisport.module.live.data.model.MatchTrendData
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
 class LiveOutsViewModel : BaseViewModel() {
 
     private val repository: LiveMainRepository by inject { parametersOf(viewModelScope) }
+
+    //比赛统计数据
+    private val _matchLiveData = MutableLiveData<MatchLiveData>()
+    val matchLiveData: LiveData<MatchLiveData> = _matchLiveData
+
+    //添加比赛统计数据
+    fun addMatchLiveData(data: MatchLiveData) {
+        _matchLiveData.value = data
+    }
+
+    //比赛趋势数据
+    private val _matchTrendData = MutableLiveData<MatchTrendData>()
+    val matchTrendData: LiveData<MatchTrendData> = _matchTrendData
+
+    //添加比赛统计数据
+    fun addMatchTrendData(data: MatchTrendData) {
+        _matchTrendData.value = data
+    }
+
+
+
+
+
+
+
 
     //直播详情页的赛况tab下的比赛事件列表数据
     private val _matchEventList = MutableLiveData<List<MatchEventBean>>()
