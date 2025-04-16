@@ -7,7 +7,7 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 
-object ViewHelper {
+internal object ViewHelper {
 
     fun bindBetSheet(bean: BetBean, binding: ItemBetSheetBinding) {
         val odds = "@${bean.odds.getOdds()}"

@@ -1,6 +1,6 @@
-package arch.cayenne.module.bet
+package arch.cayenne.module.bet.data
 
-object Config {
+internal object Config {
 
     const val KEY_RESULT = "key_result"
     const val VALUE_DISMISS = "value_dismiss"
