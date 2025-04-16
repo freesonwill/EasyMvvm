@@ -387,6 +387,17 @@ class LiveVideoLandscapeFragment :
         setStatusBar(StatusBarConfig(hideStatusBar = false))
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        destroyPlayer()
+    }
+
+    private fun destroyPlayer() {
+        mBinding.videoView.stopPlayback()
+        mBinding.videoView.release(true)
+        mBinding.videoView.stopBackgroundPlay()
+    }
+
 
 //    override fun onBackPressed() {
 //        mBackPressed = true

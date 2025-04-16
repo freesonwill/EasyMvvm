@@ -59,24 +59,20 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun onPause() {
-//        "onPause".logd(TAG)
         super.onPause()
-//        mBinding.videoView.pause()
+        mBinding.videoView.pause()
     }
 
     override fun onResume() {
-//        "onResume".logd(TAG)
         super.onResume()
         if (!mBinding.videoView.isPlaying) {
             mBinding.videoView.start()
         }
     }
 
-
     override fun onDestroy() {
-        "onDestroy".logd(TAG)
         super.onDestroy()
-
+        destroyPlayer()
     }
 
     private fun destroyPlayer() {
