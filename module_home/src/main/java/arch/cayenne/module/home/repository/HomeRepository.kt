@@ -80,7 +80,7 @@ class HomeRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListTournamentResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.Tournament,
+            apiCode = ApiCode.TOURNAMENT,
         ) {
             Client.ListTournamentReq.newBuilder().apply {
                 this.sportId = sportId
