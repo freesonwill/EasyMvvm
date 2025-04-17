@@ -75,6 +75,8 @@
             android:layout_marginTop="12dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_bet_sheet"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -98,7 +100,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/icom_combo_bet_ham"/>
+                        android:src="@mipmap/icom_combo_bet_ham" />
 
                     <TextView
                         android:id="@+id/tv_multi_bet_expand"
