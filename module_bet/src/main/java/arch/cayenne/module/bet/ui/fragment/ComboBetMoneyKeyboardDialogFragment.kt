@@ -32,7 +32,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         private const val MIN_NUMBER = "minNumber"
         private const val MAX_NUMBER = "maxNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: String, minNumber: Int, maxNumber: Int): ComboBetMoneyKeyboardDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: Int?, minNumber: Int, maxNumber: Int): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -40,7 +40,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putString(CURRENT_MONEY_NUMBER, currentMoney)
+            currentMoney?.let {
+                b.putInt(CURRENT_MONEY_NUMBER, it)
+            }
             b.putInt(MIN_NUMBER, minNumber)
             b.putInt(MAX_NUMBER, maxNumber)
             return ComboBetMoneyKeyboardDialogFragment().apply {
@@ -130,9 +132,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun initKeyboard() {
-        requireArguments().getString(CURRENT_MONEY_NUMBER)?.let {
-            mViewModel.setNumber(it.toValue())
+        val currentMoney = requireArguments().getInt(CURRENT_MONEY_NUMBER, -1)
+        if (currentMoney != -1) {
+            mViewModel.setNumber(currentMoney)
         }
+
         val minNumber = requireArguments().getInt(MIN_NUMBER, -1)
         val maxNumber = requireArguments().getInt(MAX_NUMBER, -1)
         if (minNumber != -1 && maxNumber != -1) {
@@ -180,9 +184,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override fun dismiss() {
         super.dismiss()
-        val money = mBinding.etMoney.text.toString()
-        val bundle = Bundle().apply {
-            putString(VALUE_MONEY_INPUT, money)
+        val bundle = Bundle()
+        mViewModel.onEditNumber.value?.let {
+            if (it.isNotEmpty()) {
+                val money = it.toValue()
+                bundle.putInt(VALUE_MONEY_INPUT, money)
+            }
         }
         setFragmentResult(KEY_RESULT, bundle)
     }

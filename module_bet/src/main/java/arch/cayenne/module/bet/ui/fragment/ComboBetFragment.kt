@@ -9,7 +9,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
@@ -52,11 +51,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
                         parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
-                            val money = bundle.getString(VALUE_MONEY_INPUT, "")
-                            mViewModel.updateMultiBetMoney(id, money.toValue())
+                            val money = bundle.getInt(VALUE_MONEY_INPUT, 0)
+                            mViewModel.updateMultiBetMoney(id, money)
                         }
                     }
-                    val currentMoney = if (it.inputMoney == 0) "" else it.inputMoney.getMoney()
+                    val currentMoney = if (it.inputMoney == 0) null else it.inputMoney
                     val minAmount = it.minAmount
                     val maxAmount = it.maxAmount
                     ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount).show(childFragmentManager)
