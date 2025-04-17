@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,6 +48,16 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
 
+    /**
+     * 对话框默认背景，默认白色，子类根据需求复写
+     */
+    protected open val dialogBackground: Drawable? by lazy {
+        ContextCompat.getDrawable(
+            requireContext(),
+            R.drawable.bg_base_dialog
+        )
+    }
+
     @CallSuper
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,12 +72,7 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         dialog?.window?.apply {
-            setBackgroundDrawable(
-                ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.bg_base_dialog
-                )
-            )
+            setBackgroundDrawable(dialogBackground)
         }
         uiBind.onViewCreated(view,savedInstanceState)
     }
