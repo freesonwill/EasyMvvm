@@ -24,7 +24,8 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
             immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
         } else {
             immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
-                .fullScreen(false) //启用全屏模式
+            immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
+                .fullScreen(false) //退出全屏模式
                // .hideBar(BarHide.FLAG_HIDE_NAVIGATION_BAR)   // 隐藏虚拟导航栏
                 .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 .autoStatusBarDarkModeEnable(true,1.0f)

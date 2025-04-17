@@ -17,4 +17,16 @@ data class TournamentDataModel(
     val simpleName: String,
     val icon: String,
     val weight: Int,
-)
+) {
+    companion object {
+        fun createAllItem(): TournamentDataModel {
+            return TournamentDataModel(
+                id = 0,
+                name = "ALL",
+                simpleName = "ALL",
+                icon = "",
+                weight = Int.MAX_VALUE
+            )
+        }
+    }
+}

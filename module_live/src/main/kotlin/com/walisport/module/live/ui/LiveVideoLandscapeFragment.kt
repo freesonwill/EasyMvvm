@@ -369,7 +369,6 @@ class LiveVideoLandscapeFragment :
         //使用横屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
-
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.hideStatusBar = true
         setStatusBar(StatusBarConfig)
@@ -383,13 +382,12 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
-        mBinding.root.fitsSystemWindows = true
-        StatusBarConfig.hideStatusBar = false
-        setStatusBar(StatusBarConfig)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        StatusBarConfig.hideStatusBar = false
+        setStatusBar(StatusBarConfig)
         destroyPlayer()
     }
 
