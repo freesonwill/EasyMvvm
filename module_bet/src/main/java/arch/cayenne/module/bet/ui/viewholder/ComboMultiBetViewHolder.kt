@@ -36,9 +36,9 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
             "\$ ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         }
         mBinding.etMoney.setText(money)
-        val amountMoney = "\$${item.amount}"
+        val amountMoney = "\$${item.amount.getMoney()}"
         mBinding.tvMoney.text = amountMoney
-        val maxMoney = "\$${item.maxWinMoney}"
+        val maxMoney = "\$${item.maxWinMoney.getMoney()}"
         mBinding.tvMaxMoney.text = maxMoney
     }
 }

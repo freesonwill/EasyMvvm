@@ -32,12 +32,16 @@ object IntExt {
     }
 
     fun Int.getOdds(): String {
+        if (this == 0) return "0.00" // ← 明確處理 0
+
         val rate = this / 100f
         val adjusted = if (rate < 0.1f) 0.1f else rate
         return String.format("%.2f", adjusted)
     }
 
     fun Int.getOdds(multiply: Int): String {
+        if (this == 0 || multiply == 0) return "0.00" // ← 明確處理 0
+
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN).toPlainString()

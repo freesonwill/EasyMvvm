@@ -123,6 +123,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
+            // TODO show toast
+        }
     }
 
     private fun setBetData(data: BetBean) {

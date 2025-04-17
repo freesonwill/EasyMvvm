@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.data
 
 import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 
 data class ComboMultiBetBean(
     val combo: Int, // 串關次數
@@ -10,17 +11,9 @@ data class ComboMultiBetBean(
     val minAmount: Int,
     val maxAmount: Int
 ) {
-    val amount: String
-        get() = if (inputMoney > 0) {
-            (inputMoney * count).getMoney()
-        } else {
-            0.getMoney()
-        }
+    val amount: Int
+        get() = inputMoney * count
 
-    val maxWinMoney: String
-        get() = if (inputMoney > 0) {
-            inputMoney.getMoney(sumOdds)
-        } else {
-            0.getMoney()
-        }
+    val maxWinMoney: Int
+        get() = inputMoney.getMoney(sumOdds).toValue()
 }

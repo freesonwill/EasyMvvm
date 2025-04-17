@@ -124,11 +124,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
-        val sumMoney = data.sumOf { it.amount.toValue() }
+        val sumMoney = data.sumOf { it.amount }
         val money = "\$${sumMoney.getMoney()}"
         mBinding.tvSumBetMoney.text = money
 
-        val winMoney = data.sumOf { it.maxWinMoney.toValue() }
+        val winMoney = data.sumOf { it.maxWinMoney }
         val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getOdds())
         mBinding.tvBetMoney.text = sumWinMoney
     }

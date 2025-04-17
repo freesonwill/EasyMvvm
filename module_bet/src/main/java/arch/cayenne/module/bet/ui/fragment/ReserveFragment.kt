@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
@@ -112,6 +111,9 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+        }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
+            // TODO show toast
         }
     }
 
