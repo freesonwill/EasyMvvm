@@ -3,11 +3,14 @@ package com.walisport.module.setting.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarConfig
+import arch.cayenne.lib.common.enums.SkinType
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.data.BackgroundViewModel
-import com.walisport.module.setting.data.SkinType
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
 import com.walisport.module.setting.databinding.TittleBarBackgroundBinding
 import kotlin.reflect.KClass
@@ -21,8 +24,10 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
     override val vmClass: KClass<BackgroundViewModel> = BackgroundViewModel::class
     private var skinType: String = "CLASSIC"
-
+    private var defaultImmColor :Int = 0
+    private var immColor :Int = 0
     override fun initView(savedInstanceState: Bundle?) {
+        defaultImmColor =getStatusBarColor()
         skinType = mViewModel.getSkinData()
         changeSkinType(skinType)
         val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
@@ -33,6 +38,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
                 findNavController().navigateUp()
             }
             tvTitleRight.clickNoRepeat {
+                defaultImmColor = immColor
                 mViewModel.setSkinData(skinType)
                 findNavController().navigateUp()
             }
@@ -43,27 +49,38 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         mBinding.layClassic.clickNoRepeat {
             skinType = SkinType.SKIN_CLASSIC.value
             mViewModel.setSkinType(SkinType.SKIN_CLASSIC)
+            setImmColor(SkinType.SKIN_CLASSIC.value)
         }
         mBinding.layBlackBlue.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_BLUE)
+            setImmColor(SkinType.SKIN_BLACK_BLUE.value)
         }
         mBinding.layBlackRed.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_RED.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_RED)
+            setImmColor(SkinType.SKIN_BLACK_RED.value)
         }
         mBinding.layBlackGreen.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_GREEN.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_GREEN)
+            setImmColor(SkinType.SKIN_BLACK_GREEN.value)
         }
         mBinding.layWhiteGreen.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_GREEN.value
             mViewModel.setSkinType(SkinType.SKIN_WHITE_GREEN)
+            setImmColor(SkinType.SKIN_WHITE_GREEN.value)
         }
         mBinding.layWhiteBlue.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_WHITE_BLUE)
+            setImmColor(SkinType.SKIN_WHITE_BLUE.value)
         }
+    }
+    private fun setImmColor(type: String){
+        immColor = immersionBarColorExt(type)
+        StatusBarConfig.statusBarColor =immColor
+        setStatusBar(StatusBarConfig)
     }
 
     override fun createObserver() {
@@ -88,5 +105,11 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
             SkinType.SKIN_WHITE_BLUE.value -> mBinding.radioWhiteBlue.isSelected = true
             SkinType.SKIN_WHITE_GREEN.value -> mBinding.radioWhiteGreen.isSelected = true
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        StatusBarConfig.statusBarColor =defaultImmColor
+        setStatusBar(StatusBarConfig)
     }
 }

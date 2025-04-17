@@ -82,7 +82,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
-            val id = mViewModel.onBetSheetListener.value?.gameId ?: -1
+            val id = mViewModel.onBetSheetListener.value?.matchId ?: -1
             navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(id))
         }
         mBinding.btnReserve.setOnClickListener {
@@ -90,7 +90,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(it.gameId))
+                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(it.matchId))
                     }
                 }
                 val location = IntArray(2)
@@ -98,8 +98,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
                     location.last() + mBinding.btnReserve.height,
-                    it.gameId,
-                    odds = it.odds.getOdds()
+                    it.matchId,
+                    odds = it.selection.odds.getOdds()
                 ).show(childFragmentManager)
             }
 
@@ -118,6 +118,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
             val money = getString(R.string.btn_bet_win_money).format(it)
             mBinding.tvBetMoney.text = money
+        }
+        mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
         }
     }
 

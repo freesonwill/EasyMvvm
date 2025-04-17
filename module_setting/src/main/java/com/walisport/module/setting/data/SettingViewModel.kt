@@ -2,6 +2,7 @@ package com.walisport.module.setting.data
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.enums.SkinType
 import arch.cayenne.lib.skin.SportSkinManager
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -16,19 +17,7 @@ class SettingViewModel : BaseViewModel() {
     fun loadMyAppSkin() {
         viewModelScope.launch {
             val skinType = repository.getSkinType()
-            if (SkinType.SKIN_CLASSIC.value == skinType) {
-                skinManager.loadSkin("classic")
-            } else if (SkinType.SKIN_BLACK_BLUE.value == skinType) {
-                skinManager.loadSkin("black_blue")
-            } else if (SkinType.SKIN_BLACK_GREEN.value == skinType) {
-                skinManager.loadSkin("black_green")
-            } else if (SkinType.SKIN_BLACK_RED.value == skinType) {
-                skinManager.loadSkin("black_red")
-            } else if (SkinType.SKIN_WHITE_BLUE.value == skinType) {
-                skinManager.loadSkin("white_blue")
-            } else if (SkinType.SKIN_WHITE_GREEN.value == skinType) {
-                skinManager.loadSkin("white_green")
-            }
+            skinManager.loadSkin(skinType)
         }
     }
 

@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.interface_.StatusBarConfig
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.model.LeagueMatchBean
@@ -56,8 +56,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             }
         }
         mBinding.root.fitsSystemWindows = false
-        setStatusBar(StatusBarConfig(hideStatusBar = true))
-
+        StatusBarConfig.hideStatusBar = true
+        setStatusBar(StatusBarConfig)
         //测试背景切换，接入数据后需屏蔽
         val week1 = LeagueMatchBean(0, match1, "#008040", "#0E0F1A")
         mViewModel.setData(week1)
@@ -70,11 +70,11 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         mBinding.root.fitsSystemWindows = true
-        setStatusBar(StatusBarConfig(hideStatusBar = false))
+        StatusBarConfig.hideStatusBar = false
+        setStatusBar(StatusBarConfig)
+        super.onDestroyView()
     }
-
 
     override fun createObserver() {
         //当数据发生变化时页面需要更新数据和背景

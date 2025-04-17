@@ -34,6 +34,10 @@ class BetModuleInitializer: Initializer<String> {
         return listOf(ApplicationModuleInitializer::class.java)
     }
 
+    private val managerModule = module {
+        factoryOf(::BettingRemoteManager)
+    }
+
     private val viewModules = module {
         viewModelOf(::FloatingButtonViewModel)
         viewModelOf(::SingleBetViewModel)
@@ -50,5 +54,5 @@ class BetModuleInitializer: Initializer<String> {
         factoryOf(::ReserveRepository)
         factoryOf(::BetResultRepository)
     }
-    private val moduleList:List<Module> = listOf(viewModules,repoModules)
+    private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
 }

@@ -6,29 +6,24 @@
     android:background="@drawable/bg_bet_sheet">
 
     <TextView
-        android:id="@+id/tv_bet_team_name"
+        android:id="@+id/tv_selection_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
+        android:textColor="@color/color_textview"
         android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tv_handicap"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="@id/tv_bet_team_name"
-        app:layout_constraintStart_toEndOf="@id/tv_bet_team_name"
-        app:layout_constraintTop_toTopOf="@id/tv_bet_team_name" />
 
     <TextView
         android:id="@+id/tv_odds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
+        android:textColor="@color/color_textview"
         android:textSize="15sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,13 +31,28 @@
         android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_playing"
         android:gravity="center"
         android:paddingHorizontal="8dp"
         android:paddingVertical="2dp"
+        android:text="@string/title_playing"
+        android:textColor="#15B264"
         android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/tv_bet_team_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_bet_team_name" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/tv_market"
+        app:layout_constraintStart_toStartOf="@id/tv_selection_name"
+        app:layout_constraintTop_toTopOf="@id/tv_market" />
+
+    <TextView
+        android:id="@+id/tv_market"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="12dp"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/tv_status"
+        app:layout_constraintTop_toBottomOf="@id/tv_selection_name"
+        app:layout_goneMarginStart="0dp" />
 
     <TextView
         android:id="@+id/tv_match_name"
@@ -50,18 +60,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@id/tv_bet_team_name"
-        app:layout_constraintTop_toBottomOf="@id/tv_status" />
+        app:layout_constraintStart_toStartOf="@id/tv_selection_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_market" />
 
     <TextView
         android:id="@+id/tv_league_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="6dp"
+        android:layout_marginBottom="10dp"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/tv_bet_team_name"
+        app:layout_constraintStart_toStartOf="@id/tv_selection_name"
         app:layout_constraintTop_toBottomOf="@id/tv_match_name" />
 
     <TextView

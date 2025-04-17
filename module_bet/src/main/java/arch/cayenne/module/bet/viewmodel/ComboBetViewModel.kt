@@ -24,7 +24,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                 _onBetListListener.value = it
                 if (it.size <= 1) {
                     if (it.isNotEmpty()) {
-                        repo.saveToSingleBet(it.first().gameId)
+                        repo.saveToSingleBet(it.first().matchId)
                     }
                 } else {
                     _onComboRateListener.value = calculateMultiRateSums(it)
@@ -40,7 +40,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             val combinations = data.combinations(k)
 
             val totalRate = combinations.fold(0L) { acc, combo ->
-                acc + combo.fold(1L) { prod, bet -> prod * bet.odds }
+                acc + combo.fold(1L) { prod, bet -> prod * bet.selection.odds }
             }
 
             // 將 totalRate 無條件捨去為倍率的前兩位，例如：39204 -> 392
@@ -90,6 +90,6 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
 
     fun sendBet() {
         val betList = _onBetListListener.value ?: return
-        repo.sendBet(betList.map { it.gameId })
+        repo.sendBet(betList.map { it.matchId })
     }
 }
