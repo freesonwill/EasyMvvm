@@ -24,9 +24,11 @@ import kotlin.reflect.KClass
 class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
     override val vbClass: KClass<FragmentTodayBinding> = FragmentTodayBinding::class
     override val vmClass: KClass<TodayViewModel> = TodayViewModel::class
+
     // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
     private val leagues = mutableListOf<LeagueType>()
-    private val leagueAdapter: LeaguePagerAdapter by lazy { LeaguePagerAdapter(childFragmentManager, lifecycle, PlayType.TODAY) }
+
+    private lateinit var leagueAdapter: LeaguePagerAdapter
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     override fun initView(savedInstanceState: Bundle?) {
         // 預設 "全部"
@@ -38,6 +40,11 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
         with(mBinding) {
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            leagueAdapter = LeaguePagerAdapter(
+                childFragmentManager,
+                viewLifecycleOwner.lifecycle,
+                PlayType.TODAY
+            )
             vpGameList.adapter = leagueAdapter
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -75,6 +82,7 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
         mBinding.apply {
             leagueAdapter.setData(tournaments)
+
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
                 val tournament = tournaments[position]
 

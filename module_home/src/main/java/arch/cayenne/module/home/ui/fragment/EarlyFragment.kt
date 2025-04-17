@@ -32,15 +32,11 @@ import kotlin.reflect.KClass
 class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
     override val vbClass: KClass<FragmentEarlyBinding> = FragmentEarlyBinding::class
     override val vmClass: KClass<EarlyViewModel> = EarlyViewModel::class
-    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
 
+    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
+    private lateinit var leagueAdapter: LeaguePagerAdapter
     private val leagues = mutableListOf<LeagueType>()
     private val dateTabManager = DateTabManager()
-    private val leagueAdapter: LeaguePagerAdapter by lazy {
-        LeaguePagerAdapter(childFragmentManager, lifecycle, PlayType.TODAY) { leagueId ->
-            dateTabManager.getDateString(leagueId, getFutureDays(7, Locale.getDefault()))
-        }
-    }
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     override fun initView(savedInstanceState: Bundle?) {
         // 預設 "全部"
@@ -55,7 +51,11 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
-
+            leagueAdapter = LeaguePagerAdapter(
+                childFragmentManager,
+                viewLifecycleOwner.lifecycle,
+                PlayType.TODAY
+            )
             vpGameList.adapter = leagueAdapter
 
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
