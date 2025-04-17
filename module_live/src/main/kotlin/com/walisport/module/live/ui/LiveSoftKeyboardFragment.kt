@@ -38,7 +38,6 @@ class LiveSoftKeyboardFragment :
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData, position: Int) {
             if (item.key == "del") {
-                Log.i("aaa","del")
                 val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
                 ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
                 ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
