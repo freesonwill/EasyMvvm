@@ -67,7 +67,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_6"
             android:text="中国 vs 巴西"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="@id/bet_confirm_iv_ball"
             app:layout_constraintLeft_toRightOf="@id/bet_confirm_iv_ball"
@@ -80,7 +80,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_12"
             android:text="中国 +0.5"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintLeft_toLeftOf="@id/bet_confirm_iv_ball"
             app:layout_constraintTop_toBottomOf="@id/bet_confirm_iv_ball" />
@@ -92,7 +92,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="@string/live_bet_except_odds"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintBottom_toBottomOf="@id/bet_confirm_tv_introduce"
             app:layout_constraintRight_toRightOf="parent"
@@ -184,7 +184,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="2025021112000001"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_betcode" />
@@ -206,7 +206,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="\@1.85"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_odds" />
@@ -236,7 +236,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="$1000"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_betting" />
@@ -258,7 +258,7 @@
             android:layout_height="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_12"
             android:text="$2312"
-            android:textColor="@color/main_text"
+            android:textColor="@color/live_main_text"
             android:textSize="@dimen/sp_14"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/bet_confirm_tv_except" />

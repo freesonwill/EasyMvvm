@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel" />
@@ -34,7 +33,7 @@
                 android:gravity="center_vertical"
                 android:hint="@string/live_chat_talk"
                 android:paddingStart="@dimen/dp_16"
-                android:textColor="@color/main_text"
+                android:textColor="@color/live_main_text"
                 android:textColorHint="@color/secondary_text"
                 android:textSize="@dimen/sp_15" />
 
@@ -101,19 +100,23 @@
             android:id="@+id/keyboard_tb"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_11"
             android:background="@color/card_solid"
             app:layout_constraintTop_toBottomOf="@id/live_chat_ll_search"
             app:tabIndicatorFullWidth="false"
+            app:tabMaxWidth="@dimen/dp_42"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
             app:tabIndicatorHeight="0dp"
-            app:tabMode="auto" />
+            app:tabMode="scrollable" />
 
         <View
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/card_odds_background"
+            android:background="@color/live_card_odds_background"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tb" />
 
         <androidx.viewpager2.widget.ViewPager2

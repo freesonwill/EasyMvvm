@@ -13,7 +13,7 @@
     android:maxLines="2"
     android:paddingHorizontal="@dimen/dp_6"
     android:paddingVertical="@dimen/dp_3"
-    android:textColor="@color/main_text"
+    android:textColor="@color/live_main_text"
     android:textFontWeight="500"
     android:textSize="@dimen/sp_13">
 

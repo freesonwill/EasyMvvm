@@ -3,10 +3,12 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.BidEmojiEnum
 import com.walisport.module.live.data.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
@@ -22,7 +24,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-
         initFragment()
         initTab()
     }
@@ -36,11 +37,18 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun initListener() {
-        mBinding.main.setOnClickListener {
-            childFragmentManager.findFragmentByTag(LiveSoftKeyboardFragment.TAG)?.let {
-                val keyboardFragment = it as LiveSoftKeyboardFragment
-                keyboardFragment.showChat()
-            }
+        mBinding.main.clickNoRepeat {
+            showChat()
+        }
+        mBinding.liveChatRecycler.clickNoRepeat {
+            showChat()
+        }
+    }
+
+    private fun showChat() {
+        childFragmentManager.findFragmentByTag(LiveSoftKeyboardFragment.TAG)?.let {
+            val keyboardFragment = it as LiveSoftKeyboardFragment
+            keyboardFragment.showChat()
         }
     }
 
