@@ -3,17 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_home_game_title"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="冠軍"
-        android:textColor="@color/white"/>
-
     <arch.cayenne.lib.skin.widget.SportRecyclerView
         android:id="@+id/rv_home_game_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/bg_main"
+        android:paddingHorizontal="@dimen/dp_8" />
 
 </FrameLayout>
