@@ -1,10 +1,6 @@
 package com.walisport.module.live.ui
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment

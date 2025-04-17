@@ -13,7 +13,7 @@
     <color name="card_solid">#161823</color>
     <color name="card_border">#282a34</color>
     <color name="secondary_text">#929298</color>
-    <color name="live_main_text">#ffffff</color>
+    <color name="main_text">#ffffff</color>
     <color name="win_color">#01ca52</color>
 
     <color name="color_016f4a">#016f4a</color>
@@ -40,7 +40,7 @@
     <color name="color_line_282a34">#282a34</color>
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
-    <color name="live_card_odds_background">#232530</color>
+    <color name="card_odds_background">#232530</color>
     <color name="color_909092">#909092</color>
     <color name="main_background">#0E0F1A</color>
 
