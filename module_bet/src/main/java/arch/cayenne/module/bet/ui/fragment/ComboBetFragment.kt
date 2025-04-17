@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
@@ -126,6 +127,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         val sumMoney = data.sumOf { it.amount.toValue() }
         val money = "\$${sumMoney.getMoney()}"
         mBinding.tvSumBetMoney.text = money
+
+        val winMoney = data.sumOf { it.maxWinMoney.toValue() }
+        val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getOdds())
+        mBinding.tvBetMoney.text = sumWinMoney
     }
 
     private fun setBetSheetView() {
