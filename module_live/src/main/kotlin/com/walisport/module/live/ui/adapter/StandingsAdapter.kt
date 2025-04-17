@@ -15,7 +15,7 @@ import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
 import com.walisport.module.live.databinding.ItemWorldCupBinding
 
-class StandingsAdapter() :
+class StandingsAdapter :
     BaseAdapter<TableBean, BaseViewHolder, ViewBinding>(
         TablesCompare()
     ) {
@@ -67,12 +67,8 @@ class StandingsAdapter() :
                 rank.text = index.toString()
                 country.text = item.rows[i].team_name
                 total.text = item.rows[i].total.toString()
-                val text1 =
-                    item.rows[i].won.toString() + "/" + item.rows[i].draw.toString() + "/" + item.rows[i].loss.toString()
-                draw.text = text1
-                val text2 =
-                    item.rows[i].goals.toString() + "/" + item.rows[i].goals_against.toString()
-                against.text = text2
+                draw.text = String.format("%d/%d/%d", item.rows[i].won, item.rows[i].draw, item.rows[i].loss)
+                against.text = String.format("%d/%d", item.rows[i].goals, item.rows[i].goals_against)
                 points.text = item.rows[i].points.toString()
                 binding.layTeam.addView(view.root)
             }
