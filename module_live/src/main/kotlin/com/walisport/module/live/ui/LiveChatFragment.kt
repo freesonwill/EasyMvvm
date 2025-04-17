@@ -16,7 +16,8 @@ import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import kotlin.reflect.KClass
 
 //聊天
-class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>(),LiveSoftKeyboardFragment.LiveChatSoftKeyListener {
+class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>(),
+    LiveSoftKeyboardFragment.LiveChatSoftKeyListener {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
 
@@ -35,14 +36,19 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun initListener() {
-
+        mBinding.main.setOnClickListener {
+            childFragmentManager.findFragmentByTag(LiveSoftKeyboardFragment.TAG)?.let {
+                val keyboardFragment = it as LiveSoftKeyboardFragment
+                keyboardFragment.showChat()
+            }
+        }
     }
 
     private fun initFragment() {
         val fragment = LiveSoftKeyboardFragment()
         fragment.setSoftKeyListener(this)
         childFragmentManager.beginTransaction()
-            .replace(mBinding.liveChatKeyboard.id, fragment)
+            .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG)
             .commit()
     }
 

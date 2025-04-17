@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
@@ -37,10 +38,11 @@ class LiveSoftKeyboardFragment :
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData, position: Int) {
             if (item.key == "del") {
+                Log.i("aaa","del")
                 val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
-//                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
-//                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
-                ic?.deleteSurroundingText(1, 0)
+                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
+                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
+//                ic?.deleteSurroundingText(1, 0)
             } else {
                 mBinding.liveChatEtInput.text?.append(item.key)
             }
@@ -67,13 +69,12 @@ class LiveSoftKeyboardFragment :
 
         }
         mBinding.liveChatIvEmoji.setOnClickListener {
-            hideSoftKeyBoard()
             showEmoji()
         }
 
         mBinding.liveChatTvSend.setOnClickListener {
-            hideSoftKeyBoard()
             showChat()
+            sendText()
         }
 
         mBinding.liveChatIvKeyboard.setOnClickListener {
@@ -87,6 +88,10 @@ class LiveSoftKeyboardFragment :
         }
     }
 
+
+    private fun sendText(){
+        mBinding.liveChatEtInput.text?.clear()
+    }
 
     override fun createObserver() {
     }
@@ -155,7 +160,8 @@ class LiveSoftKeyboardFragment :
         EditTextUtils.hideKeyboard(context, mBinding.liveChatEtInput)
     }
 
-    private fun showChat() {
+     fun showChat() {
+         hideSoftKeyBoard()
         mBinding.apply {
             liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
@@ -168,12 +174,13 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun showEmoji() {
+        hideSoftKeyBoard()
         mBinding.apply {
             liveChatIvEmoji.isVisible = false
             liveChatTvSend.isVisible = true
             liveChatIvKeyboard.isVisible = true
             liveChatTvSize.isVisible = true
-            liveChatIvEmoji.isVisible = true
+            liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
             keyboardEmoji.isVisible = true
             softKeyListener?.showKeyBoard()
