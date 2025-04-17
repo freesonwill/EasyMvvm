@@ -42,7 +42,7 @@ android {
 
 dependencies {
     implementation(project(":lib_base"))
-    implementation(libs.ijkplayer)
+    api(libs.ijkplayer)
     implementation(libs.androidx.annotation.jvm)
     implementation(libs.android.exoplayer)
     implementation(libs.androidx.core)

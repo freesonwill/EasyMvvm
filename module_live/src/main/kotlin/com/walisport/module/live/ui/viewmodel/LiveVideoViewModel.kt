@@ -7,8 +7,11 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.model.VideoSourceBean
 import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
 class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
@@ -74,6 +77,13 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
 
+
+    private val _muted = MutableLiveData<Boolean>()
+    val muted: LiveData<Boolean> = _muted
+
+
+    private val muteManager: MuteManager by inject { parametersOf() }
+
     init {
         viewModelScope.launch {
             repo.observeLiveVideoBean().collect {
@@ -87,6 +97,7 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
                     }
                 }
             }
+
         }
     }
 
@@ -97,5 +108,13 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     fun addMockData() {
         repo.addMockData()
     }
+
+    fun changeMuteStatus() {
+        viewModelScope.launch {
+            muteManager.changeMuteStatus()
+        }
+    }
+
+    fun mutedData() = muteManager.mutedLiveData
 
 }
