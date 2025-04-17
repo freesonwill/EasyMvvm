@@ -3,4 +3,7 @@
     <color name="live_main_tab_bg_white_green">#fafbfc</color>
     <color name="tab_selected_text_color_white_green">#000000</color>
     <color name="video_tab_text_color_white_green">#666666</color>
+    <color name="tab_indicator_color_white_green">#24ee8a</color>
+    <color name="text_color_white_green">#000000</color>
+    <color name="menu_lin_white_green">#e8e8ea</color>
 </resources>
