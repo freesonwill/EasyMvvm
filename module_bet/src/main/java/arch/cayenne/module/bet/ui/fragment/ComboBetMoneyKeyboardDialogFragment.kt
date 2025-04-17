@@ -12,6 +12,8 @@ import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
@@ -100,19 +102,19 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
         // TODO 有時間改成adapter
         mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(100)
+            mViewModel.setNumber(10000)
         }
         mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(500)
+            mViewModel.setNumber(50000)
         }
         mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(1000)
+            mViewModel.setNumber(100000)
         }
         mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(2000)
+            mViewModel.setNumber(200000)
         }
         mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(5000)
+            mViewModel.setNumber(500000)
         }
     }
 
@@ -123,17 +125,13 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
     }
 
     private fun initKeyboard() {
         requireArguments().getString(CURRENT_MONEY_NUMBER)?.let {
-            if (it.contains('.')) {
-                mViewModel.setNumber(it.toFloat())
-            } else if (it.isNotEmpty()){
-                mViewModel.setNumber(it.toInt())
-            }
+            mViewModel.setNumber(it.toValue())
         }
         val minNumber = requireArguments().getInt(MIN_NUMBER, -1)
         val maxNumber = requireArguments().getInt(MAX_NUMBER, -1)

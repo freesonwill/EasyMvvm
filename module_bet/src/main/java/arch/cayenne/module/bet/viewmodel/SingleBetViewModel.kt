@@ -21,7 +21,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
         addSource(_onBetSheetListener) { data ->
             odds *= data.selection.odds
         }
-        addSource(_onEditNumber) {
+        addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -43,7 +43,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
             betRepo.observeSingleBet().collect {
                 if (it != null) {
                     _onBetSheetListener.value = it
-                    setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
+                    setNumberLimit(it.minAmount, it.maxAmount)
                 }
             }
         }
@@ -51,7 +51,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
 
     fun sendBet() {
         val id = _onBetSheetListener.value?.matchId ?: return
-        val money = _onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toValue() ?: return
         betRepo.sendBet(id, money)
     }
 

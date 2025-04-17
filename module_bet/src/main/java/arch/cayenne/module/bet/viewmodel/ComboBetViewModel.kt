@@ -39,8 +39,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         val result = mutableListOf<ComboMultiBetBean>()
         val n = data.size
 
-        val minAmount = data.maxOf { it.minAmount }.getMoney().toInt()
-        val maxAmount = data.minOf { it.maxAmount }.getMoney().toInt()
+        val minAmount = data.maxOf { it.minAmount }
+        val maxAmount = data.minOf { it.maxAmount }
 
         for (k in n downTo 1) {
             val combinations = data.combinations(k)

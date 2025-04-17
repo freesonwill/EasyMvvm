@@ -3,10 +3,13 @@ package arch.cayenne.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.module.bet.data.NumberOverEnum
 
 open class NumberCalculatorViewModel : BaseViewModel() {
 
-    protected val _onEditNumber = MutableLiveData("")
+    private val _onEditNumber = MutableLiveData("")
     val onEditNumber: LiveData<String> get() =  _onEditNumber
 
 
@@ -21,7 +24,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     val maxMoney: Int get() = _onNumberLimit.value?.second ?: Int.MAX_VALUE
 
     fun addNumber(number: Int) {
-        val current = _onEditNumber.value.orEmpty()
+        val current = onEditNumber.value.orEmpty()
 
         val newValue = if (current.contains('.')) {
             val decimalPart = current.substringAfter('.', "")
@@ -31,10 +34,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
             current + number
         }
 
-        val formatted = formatMoney(newValue)
-        val limited = if (formatted.toDouble() > maxMoney) maxMoney.toString() else formatted
-
-        _onEditNumber.value = limited
+        setEditNumber(newValue.toValue())
     }
 
     fun setDot() {
@@ -48,23 +48,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun setMaxMoney() {
-        _onEditNumber.value = maxMoney.toString()
+        setEditNumber(maxMoney)
     }
 
     fun setNumber(number: Int) {
-        if (number > maxMoney) {
-            setMaxMoney()
-        } else {
-            _onEditNumber.value = number.toString()
-        }
-    }
-
-    fun setNumber(number: Float) {
-        if (number > maxMoney) {
-            setMaxMoney()
-        } else {
-            _onEditNumber.value = number.toString()
-        }
+        setEditNumber(number)
     }
 
     fun clearNumber() {
@@ -72,7 +60,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun doubleNumber() {
-        _onEditNumber.value = _onEditNumber.value?.let {
+        onEditNumber.value?.let {
             if (it.isEmpty()) {
                 ""
             } else {
@@ -81,9 +69,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                 } else {
                     it
                 }
-                val doubledValue = money.toDouble() * 2
-                val formattedValue = formatMoney(doubledValue.toString())
-                if (doubledValue > maxMoney) maxMoney.toString() else formattedValue
+                setEditNumber(money.toValue() * 2)
             }
         } ?: ""
     }
@@ -98,18 +84,21 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         }
     }
 
-    private fun formatMoney(value: String): String {
-        val regex = "^\\d*(\\.\\d{0,2})?$".toRegex()
-        return if (regex.matches(value)) {
-            value
+    protected fun setEditNumber(value: Int) {
+        _onEditNumber.value = if (value > remainingNumber) {
+            remainingNumber.getMoney()
+        } else if (value > maxMoney) {
+            maxMoney.getMoney()
         } else {
-            value.toDoubleOrNull()?.let {
-                "%.2f".format(it)
-            } ?: ""
+            value.getMoney()
         }
     }
 
     fun setNumberLimit(min: Int, max: Int) {
         _onNumberLimit.value = Pair(min, max)
+    }
+
+    fun setRemainingNumber(number: Int) {
+        remainingNumber = number
     }
 }

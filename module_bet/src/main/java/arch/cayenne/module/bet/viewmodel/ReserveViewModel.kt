@@ -22,7 +22,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         addSource(_onReserveSheetListener) { data ->
             odds *= data.reverseOdds ?: 1
         }
-        addSource(_onEditNumber) {
+        addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -43,7 +43,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         viewModelScope.launch {
             repo.getReverseById(id)?.let {
                 _onReserveSheetListener.value = it
-                setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
+                setNumberLimit(it.minAmount, it.maxAmount)
             }
         }
     }
@@ -67,7 +67,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun sendReserve() {
         val id = _onReserveSheetListener.value?.matchId ?: return
-        val money = _onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toValue() ?: return
         repo.sendReserve(id, money)
     }
 }
