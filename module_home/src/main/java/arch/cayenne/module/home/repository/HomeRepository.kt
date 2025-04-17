@@ -1,7 +1,6 @@
 package arch.cayenne.module.home.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportCategory
@@ -80,6 +79,7 @@ class HomeRepository(
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+        //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
         val queryResult = tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
         if (queryResult.isNotEmpty()) {

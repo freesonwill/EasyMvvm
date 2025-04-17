@@ -2,13 +2,14 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.extension.sharedViewModel
-import arch.cayenne.module.home.R
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.module.home.data.Match
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
-import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel
+import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
+import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
@@ -18,22 +19,21 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
     override val vbClass: KClass<FragmentHomeGameListBinding> = FragmentHomeGameListBinding::class
     override val vmClass: KClass<TodayGameListViewModel> = TodayGameListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    private lateinit var matchAdapter: MatchItemAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
-
         mBinding.apply {
-
-//            tvHomeGameTitle.text = getString(leagueId?.let { LeagueType.fromId(it)?.titleRes }
-//                ?: R.string.league_all)
-
-            // 初始化 RecyclerView
-//            adapter = GameListAdapter()
-            rvHomeGameList.layoutManager = LinearLayoutManager(context)
-//            rvHomeGameList.adapter = adapter
+            matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
+                override fun onLiveEntryClick(item: Match) {
+                    // TODO 跳轉直播頁面
+                }
+            })
+            val decoration = MatchCardItemDecoration(12.dp2px)
+            mBinding.rvHomeGameList.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = matchAdapter
+                addItemDecoration(decoration)
+            }
         }
     }
 
@@ -45,9 +45,12 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentMatch()
         }
-        mViewModel.matchListChange.observe(this) {
+        mViewModel.matchListChange.observe(this) { matchList ->
             //TODO 處理賽事卡片UI
-            "賽事size: ${it.map { "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}" }.toList()}".logi(this::class.java.simpleName)
+            matchAdapter.submitList(matchList)
+            "joseph 賽事size: ${
+                matchList.map { "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}" }.toList()
+            }".logi(this::class.java.simpleName)
         }
     }
 
