@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatTextView
@@ -15,7 +16,7 @@ import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
 import com.walisport.module.live.databinding.ItemWorldCupBinding
 
-class StandingsAdapter() :
+class StandingsAdapter :
     BaseAdapter<TableBean, BaseViewHolder, ViewBinding>(
         TablesCompare()
     ) {
@@ -56,23 +57,24 @@ class StandingsAdapter() :
                 } else {
                     lay.background = null
                 }
+                val line = view.root.findViewById<AppCompatTextView>(R.id.tv_out_line)
+                if (i == 0) {
+                    line.visibility = View.VISIBLE
+                } else {
+                    line.visibility = View.INVISIBLE
+                }
                 val rank = view.root.findViewById<AppCompatTextView>(R.id.tv_standings_rank)
                 val country = view.root.findViewById<AppCompatTextView>(R.id.tv_standings_country)
                 val total = view.root.findViewById<AppCompatTextView>(R.id.tv_total)           //场次
-                val draw =
-                    view.root.findViewById<AppCompatTextView>(R.id.tv_won_draw_loss)           //胜/平/负
+                val draw = view.root.findViewById<AppCompatTextView>(R.id.tv_won_draw_loss)           //胜/平/负
                 val against = view.root.findViewById<AppCompatTextView>(R.id.tv_goals_against) //进/失
                 val points = view.root.findViewById<AppCompatTextView>(R.id.tv_points)         //积分
                 val index = i + 1
                 rank.text = index.toString()
                 country.text = item.rows[i].team_name
                 total.text = item.rows[i].total.toString()
-                val text1 =
-                    item.rows[i].won.toString() + "/" + item.rows[i].draw.toString() + "/" + item.rows[i].loss.toString()
-                draw.text = text1
-                val text2 =
-                    item.rows[i].goals.toString() + "/" + item.rows[i].goals_against.toString()
-                against.text = text2
+                draw.text = String.format("%d/%d/%d", item.rows[i].won, item.rows[i].draw, item.rows[i].loss)
+                against.text = String.format("%d/%d", item.rows[i].goals, item.rows[i].goals_against)
                 points.text = item.rows[i].points.toString()
                 binding.layTeam.addView(view.root)
             }
