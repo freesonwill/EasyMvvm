@@ -42,6 +42,9 @@
     <color name="live_name">#418eff</color>
     <color name="card_odds_background">#232530</color>
     <color name="color_909092">#909092</color>
+    <color name="main_background">#0E0F1A</color>
+
+
 
     <color name="input_box2">#232530</color>
     <color name="menu_lin">#232530</color>

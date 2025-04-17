@@ -1,24 +1,22 @@
 package com.walisport.module.live.ui
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBinding
-import com.walisport.module.live.databinding.ItemKeyboardTabLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.RecyclerItemListener
@@ -39,9 +37,8 @@ class LiveSoftKeyboardFragment :
         override fun onItemClick(item: EmojiData, position: Int) {
             if (item.key == "del") {
                 val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
-                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
-                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
-//                ic?.deleteSurroundingText(1, 0)
+                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
             } else {
                 mBinding.liveChatEtInput.text?.append(item.key)
             }
@@ -49,9 +46,7 @@ class LiveSoftKeyboardFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mKeyboardHelper = SoftKeyboardStateHelper(
-            requireActivity().window.decorView
-        )
+        mKeyboardHelper = SoftKeyboardStateHelper((context as Activity).window.decorView)
         mKeyboardHelper.addSoftKeyboardStateListener(this)
         initTab()
         showChat()
@@ -63,9 +58,7 @@ class LiveSoftKeyboardFragment :
 
     override fun initListener() {
         mBinding.liveChatEtInput.setOnClickListener {
-//            showKeyBoard()
-//            EditTextUtils.hideKeyboard(context, mBinding.liveChatEtInput)
-
+            showSoftKeyBoard()
         }
         mBinding.liveChatIvEmoji.setOnClickListener {
             showEmoji()
@@ -77,6 +70,7 @@ class LiveSoftKeyboardFragment :
         }
 
         mBinding.liveChatIvKeyboard.setOnClickListener {
+            showSoftKeyBoard()
             EditTextUtils.showKeyboard(context, mBinding.liveChatEtInput)
         }
 
@@ -88,7 +82,7 @@ class LiveSoftKeyboardFragment :
     }
 
 
-    private fun sendText(){
+    private fun sendText() {
         mBinding.liveChatEtInput.text?.clear()
     }
 
@@ -138,10 +132,10 @@ class LiveSoftKeyboardFragment :
             override fun onTabReselected(tab: TabLayout.Tab?) {
             }
         })
-
     }
 
     private fun showSoftKeyBoard() {
+
         mBinding.apply {
             liveChatIvKeyboard.isVisible = false
             liveChatTvSize.isVisible = false
@@ -159,8 +153,8 @@ class LiveSoftKeyboardFragment :
         EditTextUtils.hideKeyboard(context, mBinding.liveChatEtInput)
     }
 
-     fun showChat() {
-         hideSoftKeyBoard()
+    fun showChat() {
+        hideSoftKeyBoard()
         mBinding.apply {
             liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
@@ -173,6 +167,7 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun showEmoji() {
+
         hideSoftKeyBoard()
         mBinding.apply {
             liveChatIvEmoji.isVisible = false
@@ -188,11 +183,14 @@ class LiveSoftKeyboardFragment :
 
 
     override fun onSoftKeyboardOpened(keyboardHeightInPx: Int) {
-        showSoftKeyBoard()
+//        showSoftKeyBoard()
+//        softKeyListener?.showKeyBoard()
     }
 
     override fun onSoftKeyboardClosed() {
-
+        if (!mBinding.keyboardEmoji.isVisible) {
+            softKeyListener?.hideKeyboard()
+        }
     }
 
     interface LiveChatSoftKeyListener {
