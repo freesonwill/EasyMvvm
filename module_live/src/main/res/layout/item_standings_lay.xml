@@ -55,6 +55,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,6 +65,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_won_draw_loss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -73,6 +75,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_goals_against"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -82,6 +85,7 @@
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_points"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

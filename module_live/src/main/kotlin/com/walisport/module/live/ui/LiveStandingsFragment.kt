@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.module.live.data.model.StandingsBean
-import com.walisport.module.live.data.model.StandingsTeam
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
 import com.walisport.module.live.ui.adapter.StandingsAdapter
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
@@ -23,8 +21,10 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
 
     override val vbClass: KClass<FragmentLiveStandingsBinding> = FragmentLiveStandingsBinding::class
     override val vmClass: KClass<LiveStandingsViewModel> = LiveStandingsViewModel::class
+    private var standsAdapter = StandingsAdapter()
+
     class StandingsItemDecoration(
-        private val spacing: Int = 12.dp2px ,         // 常规间距大小（像素）
+        private val spacing: Int = 12.dp2px,         // 常规间距大小（像素）
         private val leftRight: Int = 8.dp2px,         // 左右边距（像素）
         private val bottomSpacing: Int = 20.dp2px,   // 最后一个 item 与底部的距离（像素）
     ) : ItemDecoration() {
@@ -36,12 +36,10 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
         ) {
             val position = parent.getChildAdapterPosition(view) // item 位置
             val itemCount = parent.adapter?.itemCount ?: 0 // 总 item 数
-
-                // 包含边缘的情况
-                outRect.top = if (position == 0) spacing else spacing / 2
-                outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
-                outRect.left = leftRight
-                outRect.right = leftRight
+            outRect.top = if (position == 0) spacing else spacing / 2
+            outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
+            outRect.left = leftRight
+            outRect.right = leftRight
         }
     }
 
@@ -49,25 +47,20 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
         mBinding.recyclerStandings.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = StandingsAdapter(context).apply {
-                addItemDecoration(StandingsItemDecoration())
-                val tm1 = StandingsTeam(1, "厄瓜多尔", 1, 1)
-                val tm2 = StandingsTeam(2, "荷兰", 3, 1)
-                val tm3 = StandingsTeam(3, "巴西", 2, 1)
-                val tm4 = StandingsTeam(4, "阿根廷", 4, 1)
-                val team = listOf(tm1, tm2, tm3, tm4)
-                val temp = StandingsBean(0, team)
-                val list = listOf(temp, temp, temp, temp, temp, temp, temp)
-                submitList(list)
-            }
+            adapter = standsAdapter
+            addItemDecoration(StandingsItemDecoration())
         }
+        mViewModel.addCompetitionLiveData()
     }
 
     override fun initListener() {
     }
 
     override fun createObserver() {
+        mViewModel.competitionBean.observe(this) {
+            if (it != null) {
+                standsAdapter.submitList(it.tables)
+            }
+        }
     }
-
-
 }

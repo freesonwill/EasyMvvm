@@ -1,6 +1,5 @@
 package com.walisport.module.live.ui.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
@@ -10,15 +9,15 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.R
-import com.walisport.module.live.compare.StandingsCompare
-import com.walisport.module.live.data.model.StandingsBean
+import com.walisport.module.live.compare.TablesCompare
+import com.walisport.module.live.data.model.TableBean
 import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
 import com.walisport.module.live.databinding.ItemWorldCupBinding
 
-class StandingsAdapter(private val context: Context) :
-    BaseAdapter<StandingsBean, BaseViewHolder, ViewBinding>(
-        StandingsCompare()
+class StandingsAdapter() :
+    BaseAdapter<TableBean, BaseViewHolder, ViewBinding>(
+        TablesCompare()
     ) {
     companion object {
         const val TYPE_HEAD = 0
@@ -32,25 +31,53 @@ class StandingsAdapter(private val context: Context) :
     ) {
         val item = getItem(position)
         if (binding is ItemStandingsBinding) {
-            binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
+            if (item.group == 1) {
+                binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
+            } else if (item.group == 2) {
+                binding.tvStandingsTeam.text = holder.getString(R.string.standings_b)
+            } else if (item.group == 3) {
+                binding.tvStandingsTeam.text = holder.getString(R.string.standings_c)
+            } else if (item.group == 4) {
+                binding.tvStandingsTeam.text = holder.getString(R.string.standings_d)
+            }
             binding.layTeam.removeAllViews()
-            for (i in 0 until 4) {
-                val view =
-                    ItemStandingsLayBinding.inflate(LayoutInflater.from(context), null, false)
+            for (i in 0 until item.rows.size) {
+                val view = ItemStandingsLayBinding.inflate(
+                    LayoutInflater.from(holder.itemView.context),
+                    null,
+                    false
+                )
                 val lay = view.root.findViewById<ConstraintLayout>(R.id.item_standings)
                 if (i < 2) {
-                    lay.background = AppCompatResources.getDrawable(context, R.color.tran_08_ac8e6a)
+                    lay.background = AppCompatResources.getDrawable(
+                        holder.itemView.context,
+                        R.color.tran_08_ac8e6a
+                    )
                 } else {
                     lay.background = null
                 }
                 val rank = view.root.findViewById<AppCompatTextView>(R.id.tv_standings_rank)
                 val country = view.root.findViewById<AppCompatTextView>(R.id.tv_standings_country)
-                rank.text = item.teams[i].rank.toString()
-                country.text = item.teams[i].name
+                val total = view.root.findViewById<AppCompatTextView>(R.id.tv_total)           //场次
+                val draw =
+                    view.root.findViewById<AppCompatTextView>(R.id.tv_won_draw_loss)           //胜/平/负
+                val against = view.root.findViewById<AppCompatTextView>(R.id.tv_goals_against) //进/失
+                val points = view.root.findViewById<AppCompatTextView>(R.id.tv_points)         //积分
+                val index = i + 1
+                rank.text = index.toString()
+                country.text = item.rows[i].team_name
+                total.text = item.rows[i].total.toString()
+                val text1 =
+                    item.rows[i].won.toString() + "/" + item.rows[i].draw.toString() + "/" + item.rows[i].loss.toString()
+                draw.text = text1
+                val text2 =
+                    item.rows[i].goals.toString() + "/" + item.rows[i].goals_against.toString()
+                against.text = text2
+                points.text = item.rows[i].points.toString()
                 binding.layTeam.addView(view.root)
             }
         } else if (binding is ItemWorldCupBinding) {
-            binding.tvWorldCup.text = holder.getString(R.string.live_word_cup)
+            binding.tvWorldCup.text = item.conference
         }
     }
 
