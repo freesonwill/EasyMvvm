@@ -97,8 +97,9 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     }
 
     fun sendBet() {
-        val betList = _onBetListListener.value ?: return
-        repo.sendBet(betList.map { it.matchId })
+        _onComboMultiBetBeanListener.value?.let {
+            repo.sendBet(it)
+        }
     }
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
