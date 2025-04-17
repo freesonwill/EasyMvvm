@@ -40,6 +40,9 @@
     <color name="color_line_282a34">#282a34</color>
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
+    <color name="card_odds_background">#232530</color>
+    <color name="color_909092">#909092</color>
+
     <color name="input_box2">#232530</color>
     <color name="menu_lin">#232530</color>
 </resources>

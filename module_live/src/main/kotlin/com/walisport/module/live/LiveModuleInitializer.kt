@@ -24,6 +24,9 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
+import com.walisport.module.live.ui.viewmodel.EmojiViewModel
+
 
 class LiveModuleInitializer : Initializer<String> {
 
@@ -54,6 +57,9 @@ class LiveModuleInitializer : Initializer<String> {
         viewModelOf(::LiveBetSlipExpiredViewModel)
         viewModelOf(::LiveBetSlipReserveViewModel)
         viewModelOf(::LiveBetSlipSettledViewModel)
+        viewModelOf(::LiveSoftKeyboardViewModel)
+        viewModelOf(::EmojiViewModel)
+
         viewModelOf(::LiveBetOnMenuViewModel)
 
     }
