@@ -46,7 +46,7 @@ class BetResultViewModel(private val repo: BetResultRepository): BaseViewModel()
         _onBetSheetListener.value = data
         if (data.size == 1) {
             val bean = data.first()
-            _onBetModeListener.value = Pair(bean.betType, bean.status)
+            setBetMode(bean.betType, bean.status)
         } else {
             val hasBetting = data.any { it.status == BetStatusEnum.BETTING }
             val hasFail = data.any { it.status == BetStatusEnum.FAIL }
@@ -58,7 +58,7 @@ class BetResultViewModel(private val repo: BetResultRepository): BaseViewModel()
                 allComplete -> BetStatusEnum.COMPLETE
                 else -> BetStatusEnum.BETTING
             }
-            _onBetModeListener.value = Pair(BetTypeEnum.COMBO, status)
+            setBetMode(BetTypeEnum.COMBO, status)
         }
     }
 }

@@ -6,6 +6,8 @@ import java.math.RoundingMode
 object IntExt {
 
     fun Int.getMoney(): String {
+        if (this == 0) return "0" // ← 明確處理 0
+
         val value = this.toBigDecimal().divide(BigDecimal(100))
             .setScale(2, RoundingMode.DOWN)
 
@@ -17,6 +19,8 @@ object IntExt {
     }
 
     fun Int.getMoney(multiply: Int): String {
+        if (this == 0 || multiply == 0) return "0" // ← 明確處理 0
+
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
             .setScale(2, RoundingMode.DOWN)

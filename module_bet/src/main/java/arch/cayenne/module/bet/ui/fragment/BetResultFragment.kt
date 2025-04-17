@@ -29,6 +29,9 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     override fun initListener() {
+        mBinding.btnContinueBet.setOnClickListener {
+
+        }
         mBinding.btnConfirm.setOnClickListener {
             dismiss()
         }

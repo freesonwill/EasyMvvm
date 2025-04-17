@@ -6,14 +6,17 @@ import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
 import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
-import arch.cayenne.module.bet.ui.adapter.ComboRateAdapter
+import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import kotlin.reflect.KClass
@@ -41,8 +44,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         })
     }
 
-    private val comboRateAdapter by lazy {
-        ComboRateAdapter(object : ComboRateAdapter.OnComboRateClickListener {
+    private val comboMultiBetAdapter by lazy {
+        ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboRateClickListener {
             override fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String) {
                 childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
                     if (resultKey == KEY_RESULT) {
@@ -50,7 +53,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                             KEY_RESULT
                         )
                         val money = bundle.getString(VALUE_MONEY_INPUT, "")
-                        mViewModel.updateRateMoney(id, money)
+                        mViewModel.updateMultiBetMoney(id, money.toValue())
                     }
                 }
                 ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, rate).show(childFragmentManager)
@@ -59,7 +62,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        (mBinding.rvRate.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         mBinding.rvBet.adapter = betSheetAdapter
@@ -67,7 +70,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         val decoration = BetSheetDecoration(6.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
 
-        mBinding.rvRate.adapter = comboRateAdapter
+        mBinding.rvMultiBet.adapter = comboMultiBetAdapter
     }
 
     override fun initListener() {
@@ -77,12 +80,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeAll()
         }
-        mBinding.llRateCollapse.setOnClickListener {
-            comboRateAdapter.toggleExpand()
-            if (comboRateAdapter.isExpanded) {
-                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_collapse)
+        mBinding.llMultiBetCollapse.setOnClickListener {
+            comboMultiBetAdapter.toggleExpand()
+            if (comboMultiBetAdapter.isExpanded) {
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
             } else {
-                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_expand)
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
             }
         }
         mBinding.clBet.setOnClickListener {
@@ -105,19 +108,26 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         var hasLockBetSheetView = false
-        mViewModel.onComboRateListener.observe(viewLifecycleOwner) {
-            comboRateAdapter.submitList(it) {
+        mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
+            comboMultiBetAdapter.submitList(it) {
                 if (!hasLockBetSheetView) {
                     hasLockBetSheetView = true
                     setBetSheetView()
                 }
             }
+            setSumBetMoney(it)
         }
+    }
+
+    private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
+        val sumMoney = data.sumOf { it.amount.toValue() }
+        val money = "\$${sumMoney.getMoney()}"
+        mBinding.tvSumBetMoney.text = money
     }
 
     private fun setBetSheetView() {
         mBinding.root.post {
-            val paddingBottom = mBinding.clRate.height + 22.dp2px
+            val paddingBottom = mBinding.clMultiBet.height + 22.dp2px
             mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
         }
     }

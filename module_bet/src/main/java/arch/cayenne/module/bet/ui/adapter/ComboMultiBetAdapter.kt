@@ -3,14 +3,14 @@ package arch.cayenne.module.bet.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.module.bet.data.ComboRateBean
-import arch.cayenne.module.bet.databinding.ItemComboRateBinding
+import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.ComboRateCompare
-import arch.cayenne.module.bet.ui.viewholder.ComboRateViewHolder
+import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
-class ComboRateAdapter(
+class ComboMultiBetAdapter(
     private val onComboRateClickListener: OnComboRateClickListener
-): BaseAdapter<ComboRateBean, ComboRateViewHolder, ItemComboRateBinding>(
+): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBetBinding>(
     ComboRateCompare()
 ) {
 
@@ -20,7 +20,7 @@ class ComboRateAdapter(
             notifyDataSetChanged()
         }
 
-    override fun convertPlus(holder: ComboRateViewHolder, binding: ItemComboRateBinding, position: Int) {
+    override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
         val item = getItem(holder.adapterPosition)
         holder.bind(currentList.size, item)
     }
@@ -29,12 +29,12 @@ class ComboRateAdapter(
         inflater: LayoutInflater,
         parent: ViewGroup,
         viewType: Int
-    ): ItemComboRateBinding {
-        return ItemComboRateBinding.inflate(inflater, parent, false)
+    ): ItemComboMultiBetBinding {
+        return ItemComboMultiBetBinding.inflate(inflater, parent, false)
     }
 
-    override fun createViewHolder(binding: ItemComboRateBinding, viewType: Int): ComboRateViewHolder {
-        return ComboRateViewHolder(binding, onComboRateClickListener)
+    override fun createViewHolder(binding: ItemComboMultiBetBinding, viewType: Int): ComboMultiBetViewHolder {
+        return ComboMultiBetViewHolder(binding, onComboRateClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -45,7 +45,7 @@ class ComboRateAdapter(
         isExpanded = !isExpanded
     }
 
-    override fun getItem(position: Int): ComboRateBean {
+    override fun getItem(position: Int): ComboMultiBetBean {
         return if (isExpanded) {
             currentList[position]
         } else {
@@ -53,7 +53,7 @@ class ComboRateAdapter(
         }
     }
 
-    override fun submitList(list: List<ComboRateBean>?, commitCallback: Runnable?) {
+    override fun submitList(list: List<ComboMultiBetBean>?, commitCallback: Runnable?) {
         val runnable = Runnable {
             commitCallback?.run()
             if (!isExpanded) {
@@ -61,6 +61,19 @@ class ComboRateAdapter(
             }
         }
         super.submitList(list, runnable)
+    }
+
+    override fun onBindViewHolder(
+        holder: ComboMultiBetViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            val item = getItem(holder.adapterPosition)
+            holder.updateMoney(item) // 局部更新
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     interface OnComboRateClickListener {

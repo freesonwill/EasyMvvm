@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.module.bet.data.ComboRateBean
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 import kotlin.math.pow
@@ -15,8 +15,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     private val _onBetListListener = MutableLiveData<List<BetBean>>()
     val onBetListListener: LiveData<List<BetBean>> get() = _onBetListListener
 
-    private val _onComboRateListener = MutableLiveData<List<ComboRateBean>>()
-    val onComboRateListener: LiveData<List<ComboRateBean>> get() = _onComboRateListener
+    private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
+    val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
     init {
         viewModelScope.launch {
@@ -27,14 +27,15 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                         repo.saveToSingleBet(it.first().matchId)
                     }
                 } else {
-                    _onComboRateListener.value = calculateMultiRateSums(it)
+                    val multiBetBean = calculateMultiRateSums(it)
+                    setMultiBetBean(multiBetBean)
                 }
             }
         }
     }
 
-    private fun calculateMultiRateSums(data: List<BetBean>): List<ComboRateBean> {
-        val result = mutableListOf<ComboRateBean>()
+    private fun calculateMultiRateSums(data: List<BetBean>): List<ComboMultiBetBean> {
+        val result = mutableListOf<ComboMultiBetBean>()
         val n = data.size
         for (k in n downTo 1) {
             val combinations = data.combinations(k)
@@ -46,8 +47,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             // 將 totalRate 無條件捨去為倍率的前兩位，例如：39204 -> 392
             val scale = 10.0.pow((k * 2)).toLong() // 每個 odds 是 x100，所以總共乘了 100^k = 10^(2k)
             val oddsInt = (totalRate / (scale / 100)).toInt() // 例如：39204 / 100 = 392
-
-            result.add(ComboRateBean(combo = k, odds = oddsInt))
+            val count = combinations.size
+            result.add(ComboMultiBetBean(combo = k, sumOdds = oddsInt, count = count))
         }
         return result
     }
@@ -75,21 +76,27 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         repo.removeAll()
     }
 
-    fun updateRateMoney(id: Int, money: String) {
-        _onComboRateListener.value?.let {
-            val updatedList = it.map { rate ->
-                if (rate.combo == id) {
-                    rate.copy(money = money)
-                } else {
-                    rate
+    fun updateMultiBetMoney(combo: Int, money: Int) {
+        _onComboMultiBetBeanListener.value?.let {
+            _onComboMultiBetBeanListener.value?.let { list ->
+                val updatedList = it.map { rate ->
+                    if (rate.combo == combo) {
+                        rate.copy(inputMoney = money)
+                    } else {
+                        rate
+                    }
                 }
+                setMultiBetBean(updatedList)
             }
-            _onComboRateListener.value = updatedList
         }
     }
 
     fun sendBet() {
         val betList = _onBetListListener.value ?: return
         repo.sendBet(betList.map { it.matchId })
+    }
+
+    private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
+        _onComboMultiBetBeanListener.value = data
     }
 }
