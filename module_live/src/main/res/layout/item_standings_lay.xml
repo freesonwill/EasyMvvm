@@ -14,6 +14,20 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_out_line"
+            android:layout_width="@dimen/dp_39"
+            android:layout_height="@dimen/dp_13"
+            android:layout_marginStart="@dimen/dp_2"
+            android:background="@drawable/shape_bg_out_line"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="@string/standings_out_line"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_standings_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,38 +69,42 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="1"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_won_draw_loss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="1/0/0"
+                android:text="0/0/0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_goals_against"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="2/0"
+                android:text="0/0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_points"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="2"
+                android:text="0"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
         </LinearLayout>
