@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="app_bg">#0e0f19</color>
     <color name="search_bg">#232530</color>
     <color name="search_bg_white">#36FFFFFF</color>
     <color name="search_btn">#24EE8A</color>

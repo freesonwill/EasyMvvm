@@ -11,9 +11,9 @@ import arch.cayenne.lib.skin.res.SportSkinResourceManager.getColorStateList
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentTodayBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.enums.LeagueType
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
+import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayViewModel
 import com.bumptech.glide.Glide
@@ -24,20 +24,17 @@ import kotlin.reflect.KClass
 class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
     override val vbClass: KClass<FragmentTodayBinding> = FragmentTodayBinding::class
     override val vmClass: KClass<TodayViewModel> = TodayViewModel::class
-    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
-    private val leagues = mutableListOf<LeagueType>()
-    private val leagueAdapter: LeaguePagerAdapter by lazy { LeaguePagerAdapter(childFragmentManager, lifecycle, PlayType.TODAY) }
+    private lateinit var leagueAdapter: LeaguePagerAdapter
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     override fun initView(savedInstanceState: Bundle?) {
-        // 預設 "全部"
-        leagues.add(LeagueType.ALL)
-
-        // 模擬 API 返回的聯賽 ID
-        val apiLeagueIds = listOf(1, 2, 3, 4)
-        leagues.addAll(apiLeagueIds.mapNotNull { LeagueType.fromId(it) })
         with(mBinding) {
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
+            leagueAdapter = LeaguePagerAdapter(
+                childFragmentManager,
+                viewLifecycleOwner.lifecycle,
+                PlayType.TODAY
+            )
             vpGameList.adapter = leagueAdapter
             tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -75,20 +72,23 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
         mBinding.apply {
             leagueAdapter.setData(tournaments)
+
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
                 val tournament = tournaments[position]
 
                 val tabBinding =
                     ItemLeagueTabBinding.inflate(LayoutInflater.from(context), null, false)
                 tabBinding.apply {
-                    Glide.with(this@TodayFragment).load(tournament.icon).into(ivLeagueIcon)
-                    tvLeagueName.text = tournament.simpleName
 
-                    ivLeagueIcon.imageTintList = context?.let {
-                        getColorStateList(it, R.color.selector_league_tab_tint)
-                    }
-                    if (tournament.id == LeagueType.ALL.leagueId) {
+                    if (tournament.id == TOURNAMENT_ALL_ID) {   //ALL 標籤
                         ivLeagueIcon.visibility = View.GONE
+                        tvLeagueName.text = getString(R.string.league_all)
+                    } else {
+                        Glide.with(this@TodayFragment).load(tournament.icon).into(ivLeagueIcon)
+                        tvLeagueName.text = tournament.simpleName
+                        ivLeagueIcon.imageTintList = context?.let {
+                            getColorStateList(it, R.color.selector_league_tab_tint)
+                        }
                     }
 
                     root.setBackgroundResource(R.drawable.selector_league_tab_bg)

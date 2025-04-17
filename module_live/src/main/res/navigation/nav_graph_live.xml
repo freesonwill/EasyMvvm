@@ -11,11 +11,15 @@
         android:label="fragment_live_main"
         tools:layout="@layout/fragment_live_main">
 
+        <argument
+            android:name="matchId"
+            app:argType="long" />
+
+        <deepLink app:uri="walisport://module_live/liveFragment?matchId={matchId}" />
+
         <action
             android:id="@+id/action_liveMainFragment_to_leagueFragment"
             app:destination="@id/leagueFragment" />
-
-        <deepLink app:uri="walisport://module_live/liveFragment" />
         <action
             android:id="@+id/action_liveMainFragment_to_VideoLandscapeFragment"
             app:destination="@id/liveVideoLandscapeFragment" />

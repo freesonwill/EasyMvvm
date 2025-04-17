@@ -15,6 +15,9 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
 abstract class BasePlayTypeViewModel : BaseViewModel() {
+    companion object{
+        const val TOURNAMENT_ALL_ID = 0
+    }
     protected var currentSportId = SportType.Init.id
     abstract val playType: PlayType
     protected val repository : HomeRepository by inject { parametersOf(viewModelScope) }
@@ -30,7 +33,10 @@ abstract class BasePlayTypeViewModel : BaseViewModel() {
                 "Get Tournament List failed!!".loge(this@BasePlayTypeViewModel::class.java.simpleName)
             } else {
                 withContext(Dispatchers.Main) {
-                    tournaments.value = list
+                    tournaments.value = ArrayList<TournamentDataModel>().apply {
+                        add(TournamentDataModel.createAllItem())
+                        addAll(list)
+                    }
                 }
             }
         }

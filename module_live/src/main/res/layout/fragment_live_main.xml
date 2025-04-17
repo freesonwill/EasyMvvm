@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SportLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/app_bg"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.widget.TitleBarView
@@ -17,21 +17,21 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_211" />
 
-    <com.google.android.material.tabs.TabLayout
+    <arch.cayenne.lib.skin.widget.SportTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:background="@color/black"
         android:paddingBottom="2dp"
+        android:background="@color/live_main_tab_bg"
         app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="@color/white"
+        app:tabIndicatorColor="@color/tab_indicator_color"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
         app:tabGravity="fill"
         app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/white"
+        app:tabSelectedTextColor="@color/tab_selected_text_color"
         app:tabTextAppearance="@style/CustomTabText"
         app:tabTextColor="@color/video_tab_text_color"
         tools:ignore="SpeakableTextPresentCheck" />
@@ -46,4 +46,4 @@
         android:overScrollMode="ifContentScrolls"
         android:paddingStart="0dp"
         android:paddingEnd="0dp" />
-</androidx.appcompat.widget.LinearLayoutCompat>
+</arch.cayenne.lib.skin.widget.SportLinearLayout>

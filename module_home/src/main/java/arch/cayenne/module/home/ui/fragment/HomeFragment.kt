@@ -82,7 +82,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv8.clickNoRepeat{
-           navigate(Uri.parse("walisport://module_live/liveFragment"))
+            navigate(Uri.parse("walisport://module_live/liveFragment?matchId=123"))
         }
         mBinding.tv9.setOnClickListener {
             // TODO 此為測試用！！之後會刪除
