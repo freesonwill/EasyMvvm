@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -27,16 +28,20 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                         repo.saveToSingleBet(it.first().matchId)
                     }
                 } else {
-                    val multiBetBean = calculateMultiRateSums(it)
+                    val multiBetBean = calculateMultiBetSums(it)
                     setMultiBetBean(multiBetBean)
                 }
             }
         }
     }
 
-    private fun calculateMultiRateSums(data: List<BetBean>): List<ComboMultiBetBean> {
+    private fun calculateMultiBetSums(data: List<BetBean>): List<ComboMultiBetBean> {
         val result = mutableListOf<ComboMultiBetBean>()
         val n = data.size
+
+        val minAmount = data.maxOf { it.minAmount }.getMoney().toInt()
+        val maxAmount = data.minOf { it.maxAmount }.getMoney().toInt()
+
         for (k in n downTo 1) {
             val combinations = data.combinations(k)
 
@@ -48,7 +53,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             val scale = 10.0.pow((k * 2)).toLong() // 每個 odds 是 x100，所以總共乘了 100^k = 10^(2k)
             val oddsInt = (totalRate / (scale / 100)).toInt() // 例如：39204 / 100 = 392
             val count = combinations.size
-            result.add(ComboMultiBetBean(combo = k, sumOdds = oddsInt, count = count))
+            result.add(ComboMultiBetBean(combo = k, sumOdds = oddsInt, count = count, minAmount = minAmount, maxAmount = maxAmount))
         }
         return result
     }

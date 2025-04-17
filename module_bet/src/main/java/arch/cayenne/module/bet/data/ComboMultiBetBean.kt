@@ -7,6 +7,8 @@ data class ComboMultiBetBean(
     val sumOdds: Int, // 串關後賠率加總
     val count: Int, // 場次組合數量
     var inputMoney: Int = 0,
+    val minAmount: Int,
+    val maxAmount: Int
 ) {
     val amount: String
         get() = if (inputMoney > 0) {

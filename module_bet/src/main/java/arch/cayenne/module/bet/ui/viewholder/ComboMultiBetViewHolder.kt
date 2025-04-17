@@ -9,7 +9,7 @@ import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 
-class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, private val onComboRateClickListener: ComboMultiBetAdapter.OnComboRateClickListener): BaseViewHolder(mBinding) {
+class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(size: Int, item: ComboMultiBetBean) {
@@ -25,7 +25,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
             mBinding.etMoney.getLocationOnScreen(location)
             val x = location.first() + mBinding.etMoney.width / 2
             val y = location.last()
-            onComboRateClickListener.onEditRateClick(item.combo, x, y, if (item.inputMoney == 0) "" else item.inputMoney.getMoney())
+            onComboMultiBetClickListener.onEditMoneyClick(item.combo, x, y)
         }
     }
 
@@ -33,7 +33,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         val money = if (item.inputMoney > 0) {
             "\$ ${item.inputMoney.getMoney()}"
         } else {
-            "\$"
+            "\$ ${getString(R.string.et_money_hint).format(item.minAmount, item.maxAmount)}"
         }
         mBinding.etMoney.setText(money)
         val amountMoney = "\$${item.amount}"

@@ -6,9 +6,21 @@
     android:paddingTop="10dp"
     android:paddingBottom="6dp">
 
+    <TextView
+        android:id="@+id/tv_multi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:textColor="@color/color_textview"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/et_money"
+        app:layout_constraintEnd_toStartOf="@id/et_money"
+        app:layout_constraintTop_toTopOf="@id/et_money" />
+
     <EditText
         android:id="@+id/et_money"
-        android:layout_width="130dp"
+        android:layout_width="150dp"
         android:layout_height="36dp"
         android:background="@drawable/shape_8dp"
         android:backgroundTint="@color/color_main_background"
@@ -17,7 +29,6 @@
         android:textColor="@color/color_bet_sheet_text_second"
         android:textColorHint="@color/color_bet_sheet_text_second"
         android:textSize="14sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

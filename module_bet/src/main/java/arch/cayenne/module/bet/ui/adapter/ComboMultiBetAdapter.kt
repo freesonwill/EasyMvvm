@@ -9,7 +9,7 @@ import arch.cayenne.module.bet.ui.compare.ComboRateCompare
 import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
 class ComboMultiBetAdapter(
-    private val onComboRateClickListener: OnComboRateClickListener
+    private val onComboMultiBetClickListener: OnComboMultiBetClickListener
 ): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBetBinding>(
     ComboRateCompare()
 ) {
@@ -34,7 +34,7 @@ class ComboMultiBetAdapter(
     }
 
     override fun createViewHolder(binding: ItemComboMultiBetBinding, viewType: Int): ComboMultiBetViewHolder {
-        return ComboMultiBetViewHolder(binding, onComboRateClickListener)
+        return ComboMultiBetViewHolder(binding, onComboMultiBetClickListener)
     }
 
     override fun getItemCount(): Int {
@@ -76,7 +76,7 @@ class ComboMultiBetAdapter(
         }
     }
 
-    interface OnComboRateClickListener {
-        fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String)
+    interface OnComboMultiBetClickListener {
+        fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int)
     }
 }

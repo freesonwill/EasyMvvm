@@ -45,18 +45,21 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private val comboMultiBetAdapter by lazy {
-        ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboRateClickListener {
-            override fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String) {
-                childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == KEY_RESULT) {
-                        parentFragmentManager.clearFragmentResultListener(
-                            KEY_RESULT
-                        )
-                        val money = bundle.getString(VALUE_MONEY_INPUT, "")
-                        mViewModel.updateMultiBetMoney(id, money.toValue())
+        ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
+            override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
+                mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
+                    childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
+                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
+                        if (resultKey == KEY_RESULT) {
+                            val money = bundle.getString(VALUE_MONEY_INPUT, "")
+                            mViewModel.updateMultiBetMoney(id, money.toValue())
+                        }
                     }
+                    val currentMoney = if (it.inputMoney == 0) "" else it.inputMoney.getMoney()
+                    val minAmount = it.minAmount
+                    val maxAmount = it.maxAmount
+                    ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount).show(childFragmentManager)
                 }
-                ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, rate).show(childFragmentManager)
             }
         })
     }
