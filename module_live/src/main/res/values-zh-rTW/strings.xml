@@ -24,6 +24,15 @@
     <string name="standings_up">換上</string>
     <string name="standings_down">換下</string>
     <string name="technical_statistics">技術統計</string>
+    <string name="share">分享給朋友</string>
+    <string name="share_link">複製連結</string>
+    <string name="choose_commentary">選解說</string>
+    <string name="statistics">技術統計</string>
+    <string name="choose_source">選直播源</string>
+
+
+
+
 
     <string-array name="bet_slip_menus">
         <item>未結算</item>

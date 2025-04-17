@@ -3,6 +3,8 @@ package com.walisport.app.data
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.enums.SkinType
+import arch.cayenne.lib.skin.SportSkinManager
 import arch.cayenne.lib.socket.viewmodel.BaseActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,7 +15,7 @@ class SplashViewModel : BaseActivityViewModel() {
 
     val homeTimeSeconds: MutableLiveData<Int> = MutableLiveData()
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
-
+    private val skinManager: SportSkinManager by inject { parametersOf(viewModelScope) }
     val jumpToMainOrLogin = MediatorLiveData<Boolean>().apply {
         addSource(homeTimeSeconds) {
             if (it == 0) {
@@ -42,6 +44,19 @@ class SplashViewModel : BaseActivityViewModel() {
     fun connectToServer() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.startSocket()
+        }
+    }
+
+    fun getSkinType():String{
+        return repository.getSkinType()
+    }
+
+
+    //加载皮肤方案
+    fun loadMyAppSkin() {
+        viewModelScope.launch {
+            val skinType = repository.getSkinType()
+            skinManager.loadSkin(skinType)
         }
     }
 

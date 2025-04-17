@@ -2,14 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/shape_bg_league">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_bar"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_25"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_60"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -49,7 +48,7 @@
         android:id="@+id/iv_league_close"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:layout_marginTop="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_60"
         android:layout_marginEnd="@dimen/dp_14"
         android:background="@mipmap/icon_league_close"
         app:layout_constraintEnd_toEndOf="parent"
@@ -59,8 +58,7 @@
         android:id="@+id/recycler_league"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_70"
-        android:layout_marginBottom="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

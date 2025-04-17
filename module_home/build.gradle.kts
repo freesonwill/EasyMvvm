@@ -6,7 +6,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "com.walisport.module.home"
+    namespace = "arch.cayenne.module.home"
     compileSdk = 34
 
     defaultConfig {
@@ -36,6 +36,8 @@ android {
 
 dependencies {
     implementation(project(":lib_common"))
+    implementation(project(":lib_res"))
+    implementation(project(":lib_socket"))
     implementation(project(":module_bet"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

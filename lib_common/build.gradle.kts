@@ -33,7 +33,15 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
-            viewBinding = true
+        viewBinding = true
+    }
+    sourceSets {
+        getByName("main") {
+            res.srcDirs(
+                "src/main/res", "src/main/res-black_blue", "src/main/res-black_red",
+                "src/main/res-classic", "src/main/res-white_blue", "src/main/res-white_green"
+            )
+        }
     }
 }
 
@@ -47,6 +55,7 @@ dependencies {
     api(libs.androidx.constraintlayout)
     api(libs.autosize)
     implementation(libs.mmkv)
+    implementation(libs.androidx.window)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

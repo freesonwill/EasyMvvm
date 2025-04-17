@@ -1,37 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="search_bg">#232530</color>
+    <color name="search_bg_white">#36FFFFFF</color>
     <color name="search_btn">#24EE8A</color>
-    <color name="title_money_bg">#232530</color>
-    <color name="title_money_text">#FFCA57</color>
-    <color name="color_f3f3f4">#FFF3F3F4</color>
-    <color name="color_f3f3f5">#FFF3F3F5</color>
-    <color name="color_222222">#FF222222</color>
-    <color name="color_929292">#FF929292</color>
-    <color name="color_929298">#FF929298</color>
-    <color name="color_666666">#FF666666</color>
-    <color name="color_5fce7b">#FF5FCE7B</color>
-    <color name="color_0E0F1A">#FF0E0F1A</color>
-    <color name="color_0E0F19">#FF0E0F19</color>
-    <color name="color_161822">#FF161822</color>
-    <color name="color_161823">#FF161823</color>
-    <color name="color_1d1f29">#FF1d1f29</color>
-    <color name="color_0f101a">#FF0F101A</color>
-    <color name="color_0f101b">#FF0F101B</color>
-    <color name="color_71e993">#FF71e993</color>
-    <color name="color_0f1016">#FF0f1016</color>
-    <color name="color_E6E6E6">#FFE6E6E6</color>
-
-    <color name="tran_75_white">#BFFFFFFF</color>
-    <color name="tran_20_white">#33E6E6E6</color>
+    <color name="search_hint">#4B4C55</color>
+    <color name="search_text">#ffffff</color>
     <color name="tran_0">#00000000</color>
+
+    <color name="title_bg">#0e0f19</color>
+    <color name="title_bar">#e6e6e6</color>
 
     <!-- Dialog -->
     <color name="dialog_title">#00D271</color>

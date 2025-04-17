@@ -19,13 +19,17 @@ import com.walisport.module.live.databinding.TittleBarLiveBinding
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
+/**
+ * 直播详情页
+ */
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+        val binding =
+            TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
         mBinding.titleBar.loadDynamicsTitleBar(binding.root) {
             findNavController().navigateUp()
         }
@@ -71,6 +75,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+            vpPage.offscreenPageLimit = list.size
             TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 val tabView = tab.view
                 tab.text = list[position].title

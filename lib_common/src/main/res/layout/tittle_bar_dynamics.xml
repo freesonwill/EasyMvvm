@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/title_bg"
     style="@style/CustomToolbarStyle">
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.skin.widget.SportImageView
         android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
         tools:ignore="MissingConstraints"
-        app:srcCompat="@drawable/base_backin"
+        app:srcCompat="@drawable/bg_left_arrow"
         android:visibility="gone"
         />
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,4 +19,4 @@
         android:background="@color/tran_0"
         app:layout_constraintLeft_toRightOf="@+id/iv_back"
         />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SportConstraintLayout>

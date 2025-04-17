@@ -19,4 +19,29 @@ android{
     defaultConfig {
         buildConfigField "String", "TAG_DEFAULT", "\"${ project.findProperty("TAG_DEFAULT") ?: ""}\""
     }
+
+    if (project.plugins.hasPlugin("com.android.application")) {
+        applicationVariants.all { variant ->
+            variant.outputs.all {
+                def GIT_VERSION = getGitVersion()
+                def APK_NAME = project.findProperty("APK_NAME") ?: ""
+                outputFileName = "${APK_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.apk"
+            }
+        }
+    } else if (project.plugins.hasPlugin("com.android.library")) {
+        libraryVariants.configureEach { variant ->
+            variant.assembleProvider.configure {
+                delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
+            }
+            variant.outputs.configureEach { output ->
+                def GIT_VERSION = getGitVersion()
+                def LIB_NAME = project.name
+                //outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
+            }
+        }
+    }
+}
+
+static def getGitVersion() {
+    return "git rev-parse --short HEAD".execute().text.trim()
 }

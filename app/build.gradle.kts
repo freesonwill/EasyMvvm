@@ -26,6 +26,11 @@ android {
         prop.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("int", "uid", prop.getProperty("user.uid"))
         buildConfigField("String", "token", prop.getProperty("user.token").let { it->"\"$it\"" })
+
+        ndk {
+            //abiFilters 'armeabi-v7a', 'x86', 'arm64-v8a', 'x86_64'
+            abiFilters.addAll(listOf("armeabi-v7a", "arm64-v8a")) // 仅支持 arm 版本
+        }
     }
 
     buildTypes {
@@ -59,6 +64,8 @@ dependencies {
     implementation(project(":module_setting"))
     implementation(project(":lib_videoplayer"))
     implementation(project(":module_live"))
+    implementation(project(":lib_base"))
+    implementation(project(":module_search"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)

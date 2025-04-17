@@ -23,14 +23,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/toast_icon"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:src="@drawable/ic_tips"
-            android:visibility="gone" />
-
         <TextView
             android:id="@+id/toast_text"
             android:textColor="@color/white"

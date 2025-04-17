@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_white_green">#FFF3F3F4</color>
+    <color name="title_bar_white_green">#222222</color>
+    <color name="title_skin_white_green">#666666</color>
+    <color name="title_confirm_white_green">#5FCE7B</color>
+    <color name="title_cancel_white_green">#666666</color>
+
+    <color name="skin_title_normal_white_green">#787878</color>
+    <color name="skin_title_press_white_green">#222222</color>
+    <color name="effect_ripple_white_green">#FFFFFF</color>
+
+    <color name="notice_type_white_green">#666666</color>
+    <color name="notice_title_white_green">#222222</color>
+    <color name="notice_line_white_green">#f3f3f4</color>
+
+    <color name="notice_close_white_green">#71e993</color>
+</resources>

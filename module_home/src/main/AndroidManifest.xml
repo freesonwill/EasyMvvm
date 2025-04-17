@@ -3,10 +3,12 @@
 
     <application>
         <activity
-            android:name="com.walisport.module.home.ui.HomeActivity"
+            android:name="arch.cayenne.module.home.ui.HomeActivity"
             android:exported="true"
             android:theme="@style/Theme.Wsl.Android">
         </activity>
     </application>
-
+    <meta-data
+        android:name="com.walisport.module_home.HomeModuleInitializer"
+        android:value="androidx.startup" />
 </manifest>
