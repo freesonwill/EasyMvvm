@@ -2,4 +2,5 @@
 <resources>
     <color name="title_bg_black_red">#0e0f19</color>
     <color name="title_bar_black_red">#e6e6e6</color>
+    <color name="app_bg_black_red">#0e0f19</color>
 </resources>
