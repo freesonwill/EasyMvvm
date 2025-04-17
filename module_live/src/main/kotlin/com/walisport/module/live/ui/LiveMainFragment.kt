@@ -3,11 +3,13 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.lib.base.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -26,6 +28,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
+    private val args: LiveMainFragmentArgs by navArgs()
 
     override fun initView(savedInstanceState: Bundle?) {
         val binding =
@@ -47,6 +50,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         setVideoView()
         loadFragment()
+
+        val matchId = args.matchId
+
+        "matchId:$matchId".logd("LiveMainFragment")
     }
 
     override fun initListener() {
