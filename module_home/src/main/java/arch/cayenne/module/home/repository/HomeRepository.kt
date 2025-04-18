@@ -3,6 +3,7 @@ package arch.cayenne.module.home.repository
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportCategory
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -17,6 +18,7 @@ import arch.cayenne.module.home.data.Match
 import arch.cayenne.module.home.data.MatchBasicInfo
 import arch.cayenne.module.home.data.MatchLiveInfo
 import arch.cayenne.module.home.data.Selection
+import arch.cayenne.module.home.data.toRoomData
 import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
@@ -145,8 +147,14 @@ class HomeRepository(
                 this.size = DEFAULT_MATCH_SIZE
             }.build()
         }
-
         if (resp.error == null && resp.data != null) {
+            val matchFullData = resp.data!!.matchList.toRoomData()
+            database.matchDao().insertFullMatch(
+                matches = matchFullData.match,
+                markets = matchFullData.markets,
+                marketDetails = matchFullData.details,
+                selections = matchFullData.selections
+            )
             return resp.data!!.matchList.map { match ->
                 Match(
                     matchId = match.matchId,

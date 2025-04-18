@@ -1,5 +1,13 @@
 package arch.cayenne.module.home.data
 
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.MarketBean
+import arch.cayenne.lib.database.entity.MarketDetailBean
+import arch.cayenne.lib.database.entity.MatchBasicInfoBean
+import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.MatchLiveInfoBean
+import arch.cayenne.lib.database.entity.SelectionBean
+import galaxy.common.proto.Common
 
 
 //TODO 暫時放置的資料結構，待更新
@@ -62,3 +70,102 @@ data class Selection(
     val active: Boolean,
     val parlay: Boolean,
 )
+
+data class MatchFullData(
+    val match: List<MatchBean>,
+    val markets: List<MarketBean>,
+    val details: List<MarketDetailBean>,
+    val selections: List<SelectionBean>
+)
+
+fun List<Common.Match>.toRoomData(): MatchFullData {
+    val matches = mutableListOf<MatchBean>()
+    val markets = mutableListOf<MarketBean>()
+    val details = mutableListOf<MarketDetailBean>()
+    val selections = mutableListOf<SelectionBean>()
+    for(match in this) {
+        matches.add(
+            MatchBean(
+                matchId = match.matchId,
+                collect = match.collect,
+                basicInfo = MatchBasicInfoBean(
+                    matchId = match.basicInfo.matchId,
+                    matchName = match.basicInfo.matchName,
+                    homeTeam = match.basicInfo.homeTeam,
+                    homeTeamId = match.basicInfo.homeTeamId,
+                    homeTeamIcon = match.basicInfo.homeTeamIcon,
+                    awayTeam = match.basicInfo.awayTeam,
+                    awayTeamId = match.basicInfo.awayTeamId,
+                    awayTeamIcon = match.basicInfo.awayTeamIcon,
+                    startTime = match.basicInfo.startTime,
+                    status = match.basicInfo.status,
+                    tournamentId = match.basicInfo.tournamentId,
+                    tournamentName = match.basicInfo.tournamentName,
+                    tournamentShortName = match.basicInfo.tournamentShortName,
+                    tournamentIcon = match.basicInfo.tournamentIcon,
+                    sportId = match.basicInfo.sportId,
+                    sportName = match.basicInfo.sportName,
+                    betStop = match.basicInfo.betStop,
+                    tournamentHot = match.basicInfo.tournamentHot,
+                    tournamentWeight = match.basicInfo.tournamentWeight
+                ),
+                liveInfo = MatchLiveInfoBean(
+                    clock = match.basicInfo.liveInfo.clock,
+                    rollClock = match.basicInfo.liveInfo.rollClock,
+                    period = match.basicInfo.liveInfo.period,
+                    score = match.basicInfo.liveInfo.score,
+                    liveVideo = match.basicInfo.liveInfo.liveVideo,
+                    charRoom = match.basicInfo.liveInfo.chatRoom,
+                    viewerCount = match.basicInfo.liveInfo.viewerCount,
+                    clockModified = match.basicInfo.liveInfo.clockModified
+                )
+            )
+        )
+
+        for (market in match.marketList) {
+            markets.add(
+                MarketBean(
+                    marketId = market.marketId,
+                    matchId = match.matchId,
+                    marketName = market.marketName,
+                    status = market.status
+                )
+            )
+
+            market.marketDetailList.forEachIndexed { index, detail ->
+                "KC_ detailId = ${market.marketId * 100 + index}".logi("KC_KC_")
+                details.add(
+                    MarketDetailBean(
+                        detailId = market.marketId * 100 + index,
+                        marketId = market.marketId,
+                        specifier = detail.specifier,
+                        active = detail.active,
+                        parlay = detail.parlay
+                    )
+                )
+
+                for (selection in detail.selectionList) {
+                    selections.add(
+                        SelectionBean(
+                            selectionId = selection.selectionId,
+                            detailId = market.marketId * 100 + index,
+                            name = selection.name,
+                            shortName = selection.shortName,
+                            odds = selection.odds,
+                            active = selection.active,
+                            parlay = selection.parlay
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+
+    return MatchFullData(
+        match = matches,
+        markets = markets,
+        details = details,
+        selections = selections
+    )
+}

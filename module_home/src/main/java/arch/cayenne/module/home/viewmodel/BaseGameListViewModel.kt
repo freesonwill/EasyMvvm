@@ -17,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 
 abstract class BaseGameListViewModel: BaseViewModel() {
     companion object {
-        const val DEFAULT_MATCH_SIZE = 10
+        const val DEFAULT_MATCH_SIZE = 3
     }
 
     protected var currentSportId = SportType.Init.id
