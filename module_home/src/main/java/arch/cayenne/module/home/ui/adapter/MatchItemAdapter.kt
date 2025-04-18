@@ -20,6 +20,10 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             // 直播入口
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
+        binding.ivFavorite.setOnClickListener {
+            // 收藏
+            onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
+        }
     }
 
     override fun createViewBinding(
@@ -39,5 +43,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 
     interface OnMatchItemClickListener {
         fun onLiveEntryClick(item: MatchWithMarkets)
+        fun onFavoriteClick(item: MatchWithMarkets)
     }
 }
