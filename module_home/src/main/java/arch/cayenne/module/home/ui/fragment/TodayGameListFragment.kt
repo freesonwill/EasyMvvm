@@ -1,11 +1,13 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.home.data.Match
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -25,7 +27,7 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
         mBinding.apply {
             matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: Match) {
-                    // TODO 跳轉直播頁面
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.matchId}"))
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)

@@ -54,6 +54,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val matchId = args.matchId
 
         "matchId:$matchId".logd("LiveMainFragment")
+        mViewModel.liveStream(matchId)
     }
 
     override fun initListener() {

@@ -10,4 +10,6 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     COMBO_BET(500, 1010),   //500-1010: 串关下注
     SINGLE_BET(500, 1015),   //500-1015: 單注下注
     RESERVE_BET(500, 1020),  //500-1020: 預約下注
+    MATCH_LIVE_STREAM(700, 2005),//700-2005: 比赛直播流
+
 }
