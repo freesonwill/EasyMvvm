@@ -37,7 +37,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             val array = resources.getStringArray(R.array.handicap_tabs)
             val list = listOf(
                 PagerBean(array[0]) { HandicapLetBallFragment() },
-                PagerBean(array[1]) { HandicapSizeFragment() },
+                PagerBean(array[1]) { HandicapBigSmallFragment() },
                 PagerBean(array[2]) { HandicapCornerFragment() }
             )
             viewpager.adapter = null
