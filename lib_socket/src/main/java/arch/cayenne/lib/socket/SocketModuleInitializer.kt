@@ -3,7 +3,7 @@ package arch.cayenne.lib.socket
 import android.app.Application
 import android.content.Context
 import androidx.startup.Initializer
-import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.socket.data.ISecurity
 import arch.cayenne.lib.socket.data.ISocket
@@ -15,17 +15,13 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.lang.ref.WeakReference
 
-class SocketModuleInitializer : Initializer<String> {
+class SocketModuleInitializer : DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context):String {
         "$TAG init....~~~~".logd(TAG)
         loadKoinModules(moduleList)
         return TAG
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val socketModules = module {
