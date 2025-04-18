@@ -2,7 +2,7 @@ package com.walisport.module.live
 
 import android.content.Context
 import androidx.startup.Initializer
-import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
@@ -30,17 +30,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 
-class LiveModuleInitializer : Initializer<String> {
+class LiveModuleInitializer : DefaultInitializer<String> {
 
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context): String {
         loadKoinModules(moduleList)
         return TAG
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val viewModules = module {

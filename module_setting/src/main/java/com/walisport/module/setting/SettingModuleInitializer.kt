@@ -1,8 +1,7 @@
 package com.walisport.module.setting
 
 import android.content.Context
-import androidx.startup.Initializer
-import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.setting.data.SettingRepository
 import com.walisport.module.setting.data.SettingViewModel
 import com.walisport.module.setting.data.NoticeViewModel
@@ -14,17 +13,13 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-class SettingModuleInitializer : Initializer<String> {
+class SettingModuleInitializer : DefaultInitializer<String> {
 
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context): String {
         loadKoinModules(moduleList)
         return TAG
-    }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java)
     }
 
     private val viewModules = module {
