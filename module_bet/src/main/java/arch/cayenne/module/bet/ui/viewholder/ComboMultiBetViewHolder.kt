@@ -2,8 +2,8 @@ package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
@@ -33,12 +33,12 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         val money = if (item.inputMoney > 0) {
             "\$ ${item.inputMoney.getMoney()}"
         } else {
-            "\$ ${getString(R.string.et_money_hint).format(item.minAmount, item.maxAmount)}"
+            "\$ ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         }
         mBinding.etMoney.setText(money)
-        val amountMoney = "\$${item.amount}"
+        val amountMoney = "\$${item.amount.getMoney()}"
         mBinding.tvMoney.text = amountMoney
-        val maxMoney = "\$${item.maxWinMoney}"
+        val maxMoney = "\$${item.maxWinMoney.getMoney()}"
         mBinding.tvMaxMoney.text = maxMoney
     }
 }

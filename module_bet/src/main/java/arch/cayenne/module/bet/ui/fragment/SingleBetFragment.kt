@@ -4,8 +4,10 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
@@ -62,19 +64,19 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mViewModel.doubleNumber()
         }
         mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(100)
+            mViewModel.setNumber(10000)
         }
         mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(500)
+            mViewModel.setNumber(50000)
         }
         mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(1000)
+            mViewModel.setNumber(100000)
         }
         mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(2000)
+            mViewModel.setNumber(200000)
         }
         mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(5000)
+            mViewModel.setNumber(500000)
         }
         mBinding.btnCollusion.setOnClickListener {
             mViewModel.saveToCombo()
@@ -120,7 +122,15 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.tvBetMoney.text = money
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+        }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
+            // TODO show toast
+        }
+        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
+            val money = "\$ ${it.getFormalMoney()}"
+            mBinding.tvBalance.text = money
+            mViewModel.setRemainingNumber(it)
         }
     }
 
