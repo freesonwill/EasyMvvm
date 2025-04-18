@@ -1,14 +1,22 @@
 package arch.cayenne.module.home.ui.viewholder
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
+import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseViewHolder(mBinding) {
@@ -37,51 +45,85 @@ class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseView
             tvHomeName.text = basicInfo.homeTeam
             tvHomeScore.text = liveInfo.score.getHomeScore()
 
-            // TODO 重構為動態生成賠率cell欄位, 串接投注點擊事件
-            data.markets.let {
-                tvWinTitle.text = it.getOrNull(0)?.market?.marketName.orEmpty()
-                tvHandicapTitle.text = it.getOrNull(1)?.market?.marketName.orEmpty()
-                tvOverTitle.text = it.getOrNull(2)?.market?.marketName.orEmpty()
-                // 獨贏、讓球、大小三種玩法
-                val winSelections =
-                    it.getOrNull(0)?.selections
-                val handicapSelections =
-                    it.getOrNull(1)?.selections
-                val overUnderSelections =
-                    it.getOrNull(2)?.selections
-                // 獨贏
-                bindMarketOddsCell(winSelections?.getOrNull(0), tvHomeWinTitle, tvHomeWinOdds)  // 主
-                bindMarketOddsCell(winSelections?.getOrNull(1), tvDrawTitle, tvDrawOdds)        // 和
-                bindMarketOddsCell(winSelections?.getOrNull(2), tvAwayWinTitle, tvAwayWinOdds)  // 客
+            val markets = data.markets
+                .filter { it.selections.isNotEmpty() }
 
-                // 讓球
-                bindMarketOddsCell(
-                    handicapSelections?.getOrNull(0),
-                    tvHandicapHomeTitle,
-                    tvHandicapHomeOdds
-                )
-                bindMarketOddsCell(
-                    handicapSelections?.getOrNull(1),
-                    tvHandicapAwayTitle,
-                    tvHandicapAwayOdds
-                )
+            val columnCount = markets.size
+            layoutOddsTitle.columnCount = columnCount
+            layoutOddsGrid.columnCount = columnCount
 
-                // 大小
-                bindMarketOddsCell(overUnderSelections?.getOrNull(0), tvOverOddsTitle, tvOverOdds)
-                bindMarketOddsCell(overUnderSelections?.getOrNull(1), tvUnderOddsTitle, tvUnderOdds)
+            markets.forEachIndexed { index, bean ->
+                val titleView = TextView(binding.root.context).apply {
+                    text = bean.market.marketName
+                    setTextColor(
+                        ContextCompat.getColorStateList(
+                            context,
+                            R.color.secondary_title
+                        )
+                    )
+                    textSize = 13f
+                    setPadding(5, 4, 5, 4)
+                }
+                val lp = GridLayout.LayoutParams().apply {
+                    width = 0
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    columnSpec = GridLayout.spec(index, 1f)
+                    setMargins(3.dp2px, 0, 0, 0)
+                }
+
+                layoutOddsTitle.addView(titleView, lp)
             }
 
-            tvWatchCount.text = liveInfo.viewerCount.toString()
+            val maxRowCount = markets.maxOfOrNull { it.selections.size } ?: 0
+            layoutOddsGrid.rowCount = maxRowCount
+
+            for (rowIndex in 0 until maxRowCount) {
+                markets.forEachIndexed { columnIndex, market ->
+                    val selections = market.selections
+                    val selection = selections.getOrNull(rowIndex)
+                    "joseph row:$rowIndex column:$columnIndex selection:$selection".logd()
+
+                    val view = LayoutInflater.from(binding.root.context)
+                        .inflate(R.layout.item_odds_cell, layoutOddsGrid, false)
+                    val oddsCellBinding = ItemOddsCellBinding.bind(view)
+
+                    if (selection != null) {
+                        oddsCellBinding.tvShortName.text = selection.shortName
+                        oddsCellBinding.tvOdds.text = selection.odds
+
+                        if (!selection.active) {
+                            oddsCellBinding.tvShortName.visibility = View.GONE
+                            oddsCellBinding.tvOdds.visibility = View.GONE
+                            oddsCellBinding.ivLock.visibility = View.VISIBLE
+                            oddsCellBinding.llOddsCell.isEnabled = false
+                        } else {
+                            oddsCellBinding.ivLock.visibility = View.GONE
+                            oddsCellBinding.tvShortName.visibility = View.VISIBLE
+                            oddsCellBinding.tvOdds.visibility = View.VISIBLE
+                            oddsCellBinding.llOddsCell.isEnabled = true
+                            oddsCellBinding.llOddsCell.setOnClickListener {
+//                                onOddsClick?.invoke(selection)
+                            }
+                        }
+                    } else {
+                        // 無此 row 資料，顯示空白佔位
+                        oddsCellBinding.tvShortName.visibility = View.INVISIBLE
+                        oddsCellBinding.tvOdds.visibility = View.INVISIBLE
+                        oddsCellBinding.ivLock.visibility = View.INVISIBLE
+                        oddsCellBinding.llOddsCell.isEnabled = false
+                    }
+
+                    val cellParams = GridLayout.LayoutParams().apply {
+                        width = 0
+                        height = 43.dp2px
+                        columnSpec = GridLayout.spec(columnIndex, 1f)
+                        rowSpec = GridLayout.spec(rowIndex, 1f)
+                        setMargins(0, 2.dp2px, 2.dp2px, 0)
+                    }
+
+                    layoutOddsGrid.addView(oddsCellBinding.root, cellParams)
+                }
+            }
         }
-
-    }
-
-    private fun bindMarketOddsCell(
-        selection: SelectionBean?,
-        titleView: TextView,
-        oddsView: TextView
-    ) {
-        titleView.text = selection?.shortName.orEmpty()
-        oddsView.text = selection?.odds.orEmpty()
     }
 }

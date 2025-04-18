@@ -15,6 +15,8 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         position: Int
     ) {
+        binding.layoutOddsTitle.removeAllViews()
+        binding.layoutOddsGrid.removeAllViews()
         holder.init(getItem(position))
         binding.layoutLiveEntry.setOnClickListener {
             // 直播入口

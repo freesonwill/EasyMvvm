@@ -1,0 +1,26 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_odds_cell"
+    android:layout_width="60dp"
+    android:layout_height="43dp"
+    android:background="@drawable/selector_match_odds_cell"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_short_name"
+        style="@style/OddsShortNameStyle"
+        android:text="主" />
+
+    <TextView
+        android:id="@+id/tv_odds"
+        style="@style/OddsTextStyle"
+        android:text="1.33" />
+
+    <ImageView
+        android:id="@+id/iv_lock"
+        android:layout_width="17dp"
+        android:layout_height="17dp"
+        android:src="@drawable/ic_market_lock"
+        android:visibility="gone" />
+</LinearLayout>
+
