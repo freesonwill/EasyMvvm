@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet
 
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode

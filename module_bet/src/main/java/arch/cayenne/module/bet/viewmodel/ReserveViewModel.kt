@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.ReserveRepository
@@ -17,12 +16,15 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     private val _onReserveSheetListener = MutableLiveData<BetBean>()
     val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
 
+    private val _onBalanceListener = MutableLiveData(123456)
+    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onReserveSheetListener) { data ->
             odds *= data.reverseOdds ?: 1
         }
-        addSource(_onEditNumber) {
+        addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -43,7 +45,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         viewModelScope.launch {
             repo.getReverseById(id)?.let {
                 _onReserveSheetListener.value = it
-                setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
+                setNumberLimit(it.minAmount, it.maxAmount)
             }
         }
     }
@@ -67,7 +69,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun sendReserve() {
         val id = _onReserveSheetListener.value?.matchId ?: return
-        val money = _onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toValue() ?: return
         repo.sendReserve(id, money)
     }
 }

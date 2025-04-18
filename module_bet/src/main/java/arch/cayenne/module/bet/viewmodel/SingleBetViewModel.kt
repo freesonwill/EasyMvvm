@@ -4,8 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
@@ -16,12 +15,15 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     private val _onBetSheetListener = MutableLiveData<BetBean>()
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
+    private val _onBalanceListener = MutableLiveData(123456)
+    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
             odds *= data.selection.odds
         }
-        addSource(_onEditNumber) {
+        addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
             } else if (it.last() == '.') {
@@ -43,7 +45,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
             betRepo.observeSingleBet().collect {
                 if (it != null) {
                     _onBetSheetListener.value = it
-                    setNumberLimit(it.minAmount.getMoney().toInt(), it.maxAmount.getMoney().toInt())
+                    setNumberLimit(it.minAmount, it.maxAmount)
                 }
             }
         }
@@ -51,7 +53,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
 
     fun sendBet() {
         val id = _onBetSheetListener.value?.matchId ?: return
-        val money = _onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toValue() ?: return
         betRepo.sendBet(id, money)
     }
 
