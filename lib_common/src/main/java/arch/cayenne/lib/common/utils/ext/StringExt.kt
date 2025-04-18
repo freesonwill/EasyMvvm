@@ -16,6 +16,9 @@ object StringExt {
         else this.substring(start.coerceAtMost(length), (start+len).coerceAtMost(length))
     }
 
+    /**
+     * @return 轉換後的整數值，若轉換失敗則返回 0, ex "1.23" -> 123, "0.5" -> 50
+     */
     fun String.toValue(): Int {
         if (this == "0") return 0 // 明確處理 0
 

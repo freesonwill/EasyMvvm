@@ -31,8 +31,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         private const val CURRENT_MONEY_NUMBER = "currentMoneyNumber"
         private const val MIN_NUMBER = "minNumber"
         private const val MAX_NUMBER = "maxNumber"
+        private const val REMAINING_MONEY_Number = "remainingMoney"
 
-        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: Int?, minNumber: Int, maxNumber: Int): ComboBetMoneyKeyboardDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: Int?, minNumber: Int, maxNumber: Int, remainingMoney: Int): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -45,6 +46,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             }
             b.putInt(MIN_NUMBER, minNumber)
             b.putInt(MAX_NUMBER, maxNumber)
+            b.putInt(REMAINING_MONEY_Number, remainingMoney)
             return ComboBetMoneyKeyboardDialogFragment().apply {
                 arguments = b
             }
@@ -129,6 +131,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
             mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
+            // TODO show toast
+        }
     }
 
     private fun initKeyboard() {
@@ -141,6 +146,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         val maxNumber = requireArguments().getInt(MAX_NUMBER, -1)
         if (minNumber != -1 && maxNumber != -1) {
             mViewModel.setNumberLimit(minNumber, maxNumber)
+        }
+
+        val remainingMoney = requireArguments().getInt(REMAINING_MONEY_Number, -1)
+        if (remainingMoney != -1) {
+            mViewModel.setRemainingNumber(remainingMoney)
         }
     }
 

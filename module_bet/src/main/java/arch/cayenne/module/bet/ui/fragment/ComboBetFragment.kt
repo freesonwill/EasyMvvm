@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.IntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -58,7 +59,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     val currentMoney = if (it.inputMoney == 0) null else it.inputMoney
                     val minAmount = it.minAmount
                     val maxAmount = it.maxAmount
-                    ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount).show(childFragmentManager)
+                    val remainingMoney = mViewModel.remainingBalance / it.count
+                    ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount, remainingMoney).show(childFragmentManager)
                 }
             }
         })
@@ -119,6 +121,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 }
             }
             setSumBetMoney(it)
+        }
+        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
+            val money = "\$ ${it.getFormalMoney()}"
+            mBinding.tvBalance.text = money
         }
     }
 

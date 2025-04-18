@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.lib.database.entity.BetBean
@@ -16,6 +15,9 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     private val _onReserveSheetListener = MutableLiveData<BetBean>()
     val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
+
+    private val _onBalanceListener = MutableLiveData(123456)
+    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
 
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
         var odds = 1

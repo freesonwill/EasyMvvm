@@ -4,6 +4,7 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.IntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -125,6 +126,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             // TODO show toast
+        }
+        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
+            val money = "\$ ${it.getFormalMoney()}"
+            mBinding.tvBalance.text = money
+            mViewModel.setRemainingNumber(it)
         }
     }
 
