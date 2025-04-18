@@ -4,19 +4,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.core.app.ActivityOptionsCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
 import arch.cayenne.module.home.R
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent
 import kotlin.reflect.KClass
 
 class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
@@ -83,16 +79,6 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
         mBinding.tv8.clickNoRepeat{
             navigate(Uri.parse("walisport://module_live/liveFragment?matchId=123"))
-        }
-        mBinding.tv9.setOnClickListener {
-            // TODO 此為測試用！！之後會刪除
-            val repo: SingleBetRepository by KoinJavaComponent.inject(SingleBetRepository::class.java)
-            lifecycleScope.launch {
-                repo.getOneMockData()?.let {
-                    BetSheetFragment.newInstance(it.matchId).show(childFragmentManager)
-                }
-            }
-
         }
         mBinding.tv10.setOnClickListener {
             BetSheetFragment.addMockData()

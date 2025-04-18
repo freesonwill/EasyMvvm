@@ -92,16 +92,14 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
 
     fun updateMultiBetMoney(combo: Int, money: Int) {
         _onComboMultiBetBeanListener.value?.let {
-            _onComboMultiBetBeanListener.value?.let { list ->
-                val updatedList = it.map { rate ->
-                    if (rate.combo == combo) {
-                        rate.copy(inputMoney = money)
-                    } else {
-                        rate
-                    }
+            val updatedList = it.map { rate ->
+                if (rate.combo == combo) {
+                    rate.copy(inputMoney = money)
+                } else {
+                    rate
                 }
-                setMultiBetBean(updatedList)
             }
+            setMultiBetBean(updatedList)
         }
     }
 
