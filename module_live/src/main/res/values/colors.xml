@@ -50,6 +50,7 @@
     <color name="input_box2">#232530</color>
     <color name="menu_lin">#232530</color>
 
+    <color name="substitution_text_color">#ffffff</color>
     <color name="live_main_tab_bg">#0e0f19</color>
     <color name="tab_indicator_color">#24ee8a</color>
 
