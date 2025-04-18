@@ -68,12 +68,6 @@
             android:text="到设置页" />
 
 
-        <TextView
-            android:id="@+id/tv8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="直播页" />
 
         <LinearLayout
             android:layout_width="match_parent"
