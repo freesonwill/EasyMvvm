@@ -15,7 +15,7 @@ import org.koin.java.KoinJavaComponent.inject
 class EmojiEditTextView : AppCompatEditText {
    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
    private val textHelper: SportSkinTextHelper = SportSkinTextHelper(this)
-   private val backGroundHelper: SportSkinBackGroundHelper = SportSkinBackGroundHelper(this)
+//   private val backGroundHelper: SportSkinBackGroundHelper = SportSkinBackGroundHelper(this)
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -37,14 +37,14 @@ class EmojiEditTextView : AppCompatEditText {
         super.onAttachedToWindow()
         findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
             sportSkinManager.skinFlow.collect {
-                backGroundHelper.updateSkin()
+//                backGroundHelper.updateSkin()
                 textHelper.updateSkin()
             }
         }
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backGroundHelper.loadFromAttributes(attrs, defStyleAttr)
+//        backGroundHelper.loadFromAttributes(attrs, defStyleAttr)
         textHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 

@@ -101,9 +101,9 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
                     ViewUtils.dpToPx(10f).toInt(),
                     0
                 )
-                tab.view.setOnClickListener {
-                    //傳聯賽id索取賽事列表資料更新列表
-                }
+//                tab.view.setOnClickListener {
+//                    //傳聯賽id索取賽事列表資料更新列表
+//                }
             }.attach()
         }
 

@@ -9,14 +9,14 @@
     android:id="@+id/roots"
     >
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="全场让球"
             android:textStyle="bold"
             android:textSize="@dimen/sp_15"
-            android:textColor="@color/white"
+            android:textColor="@color/text_color"
             tools:ignore="MissingConstraints" />
 
 
@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <View
+    <arch.cayenne.lib.skin.widget.SportView
         android:id="@+id/VLin"
         android:layout_width="match_parent"
         android:layout_height="1dp"
