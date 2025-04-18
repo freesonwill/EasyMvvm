@@ -178,7 +178,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
                 tab.view.setPadding(
                     0,
                     0,
-                    ViewUtils.dpToPx(10f).toInt(),
+                    10f.dp2px,
                     0
                 )
                 tab.view.setOnClickListener {
