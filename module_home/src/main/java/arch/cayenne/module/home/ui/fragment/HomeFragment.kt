@@ -102,7 +102,9 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             navigate(Uri.parse("walisport://module_search/searchFragment"))
         }
 
-
+        mBinding.tv12.clickNoRepeat{
+            navigate(Uri.parse("walisport://module_handicap/HandicapFragment"))
+        }
     }
 
     private fun toFragmentInner(){

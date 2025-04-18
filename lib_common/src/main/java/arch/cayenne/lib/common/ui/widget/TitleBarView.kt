@@ -21,16 +21,24 @@ class TitleBarView @JvmOverloads constructor(
      * @param titleName 标题名称
      * @param callback 返回
      */
-    fun loadGeneralTitleBar(titleName: String, callback: () -> Unit, callbackRight: (() -> Unit)? = null) {
+    fun loadGeneralTitleBar(
+        titleName: String,
+        rightName: String,
+        callback: () -> Unit,
+        callbackRight: (() -> Unit)? = null
+    ) {
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
             ivBack.clickNoRepeat {
                 callback()
             }
-            if (callbackRight!=null){
+            if (callbackRight != null) {
                 tvTitleRight.visibility = VISIBLE
-                tvTitleRight.clickNoRepeat { callbackRight() }
+                tvTitleRight.text = rightName
+                tvTitleRight.clickNoRepeat {
+                    callbackRight()
+                }
             }
         }
     }
@@ -64,12 +72,13 @@ class TitleBarView @JvmOverloads constructor(
             }
         }
     }
+
     /**
      * 动态标题
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack
      */
-    fun loadDynamicsTitleBar(view: ViewGroup, callback: (() -> Unit)? =null ) {
+    fun loadDynamicsTitleBar(view: ViewGroup, callback: (() -> Unit)? = null) {
         val binding = TittleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
         if (callback != null) {
             binding.ivBack.visibility = VISIBLE

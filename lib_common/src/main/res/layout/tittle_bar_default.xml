@@ -2,8 +2,8 @@
 <arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/title_bg"
-    style="@style/CustomToolbarStyle">
+    style="@style/CustomToolbarStyle"
+    android:background="@color/title_bg">
 
     <arch.cayenne.lib.skin.widget.SportImageView
         android:id="@+id/iv_back"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:text="模拟投注"
         android:textColor="@color/title_bar"
-        android:textSize="16sp"
+        android:textSize="15sp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
