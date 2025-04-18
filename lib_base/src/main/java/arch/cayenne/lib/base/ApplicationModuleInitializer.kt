@@ -50,7 +50,6 @@ class ApplicationModuleInitializer : Initializer<String> {
         return emptyList()
     }
 
-
     private val viewModules = module {
         viewModelOf(::EmptyViewModel)
     }
