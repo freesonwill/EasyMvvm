@@ -8,6 +8,9 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
 import arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel
+import arch.cayenne.module.handicap.ui.viewmodel.HandicapSizeViewModel
+import arch.cayenne.module.handicap.ui.viewmodel.HandicapCornerViewModel
+import arch.cayenne.module.handicap.ui.viewmodel.HandicapLetBallViewModel
 
 class HandicapModuleInitializer : Initializer<Unit> {
 
@@ -22,6 +25,9 @@ class HandicapModuleInitializer : Initializer<Unit> {
     private val viewModules = module {
         viewModelOf(::HandicapViewModel)
         viewModelOf(::SimulateViewModel)
+        viewModelOf(::HandicapCornerViewModel)
+        viewModelOf(::HandicapLetBallViewModel)
+        viewModelOf(::HandicapSizeViewModel)
     }
 
     private val repoModules = module {
