@@ -58,7 +58,7 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
                 for (i in 0 until mView.tabCount) {
                     val tab = mView.getTabAt(i)
                     if(tab?.view?.isAttachedToWindow == true){
-                        tab?.view?.setBackgroundResource(tabBackground)
+                        tab?.view?.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context,tabBackground))
                     }
             }
         }
