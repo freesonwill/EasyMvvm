@@ -22,7 +22,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        val matchId = arguments?.getInt("matchId") ?: 0
+        val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.queryLiveStream(matchId)
     }
 

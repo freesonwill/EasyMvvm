@@ -10,14 +10,14 @@ import kotlinx.coroutines.Dispatchers
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
-    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Int): List<Sloth.MatchLiveStream>? {
+    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Long): List<Sloth.MatchLiveStream>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveStreamResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.MATCH_LIVE_STREAM,
         ) {
             Client.MatchLiveStreamReq.newBuilder().apply {
-                this.matchId = matchId
+                this.matchId = matchId.toInt()
             }.build()
         }
 

@@ -22,7 +22,7 @@ class LiveMainRepository(
         }
     }
 
-    fun queryLiveStream(matchId: Int) {
+    fun queryLiveStream(matchId: Long) {
         scope.launch {
             val resp = remoteManager.queryLiveStream(scope, matchId)
             liveVideoDao.deleteAll()
