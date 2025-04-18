@@ -4,4 +4,7 @@
     <color name="tab_selected_text_color_white_blue">#000000</color>
     <color name="video_tab_text_color_white_blue">#666666</color>
     <color name="substitution_text_color_white_blue">#000000</color>
+    <color name="tab_indicator_color_white_blue">#469af7</color>
+    <color name="text_color_white_blue">#000000</color>
+    <color name="menu_lin_white_blue">#e8e8ea</color>
 </resources>

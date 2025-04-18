@@ -35,7 +35,12 @@ class SportsListAdapter(
             tvSportIcon.isEnabled = sport.matchCount > 0
             tvSportIcon.setImageResource(if (tvSportIcon.isEnabled) sportType.iconResActive else sportType.iconResInactive)
 
-            tvSportTitle.setTextColor(ContextCompat.getColorStateList(context, R.color.selector_league_tab_tint))
+            tvSportTitle.setTextColor(
+                ContextCompat.getColorStateList(
+                    context,
+                    R.color.selector_sport_tab_text_color
+                )
+            )
 
             // 依據選中狀態設定 UI
             root.isSelected = (holder.adapterPosition == selectedPosition)

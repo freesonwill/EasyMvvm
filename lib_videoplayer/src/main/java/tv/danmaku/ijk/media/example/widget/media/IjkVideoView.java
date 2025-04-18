@@ -39,9 +39,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-
-import arch.cayenne.lib.videoplayer.R;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,6 +46,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import arch.cayenne.lib.videoplayer.R;
 import tv.danmaku.ijk.media.example.application.Settings;
 import tv.danmaku.ijk.media.example.services.MediaPlayerService;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
@@ -1129,5 +1127,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     public int getSelectedTrack(int trackType) {
         return MediaPlayerCompat.getSelectedTrack(mMediaPlayer, trackType);
+    }
+
+    public IMediaPlayer getMediaPlayer(){
+        return mMediaPlayer;
     }
 }
