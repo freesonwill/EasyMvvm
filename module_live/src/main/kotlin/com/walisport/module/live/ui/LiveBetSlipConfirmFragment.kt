@@ -10,9 +10,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 //注单确认
 class LiveBetSlipConfirmFragment:
-    BaseFragment<LiveBetSlipConfirmViewModel, FragmentLiveBetslipConfirmBinding>() {
+    BaseFragment<LiveBetSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> = FragmentLiveBetslipConfirmBinding::class
-    override val vmClass: KClass<LiveBetSlipConfirmViewModel> = LiveBetSlipConfirmViewModel::class
+    override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }

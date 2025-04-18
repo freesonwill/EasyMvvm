@@ -10,4 +10,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     COMBO_BET(500, 1010),   //500-1010: 串关下注
     SINGLE_BET(500, 1015),   //500-1015: 單注下注
     RESERVE_BET(500, 1020),  //500-1020: 預約下注
+    GET_ORDER(500,1012),    //500-1012: 获取下注记录
+    GER_RESERVE_ORDER(500,1021), //500-1021 获取预约下注记录
+
 }

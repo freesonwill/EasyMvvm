@@ -14,9 +14,10 @@
         <argument
             android:name="matchId"
             app:argType="long" />
-
-        <deepLink app:uri="walisport://module_live/liveFragment?matchId={matchId}" />
-
+        <argument
+            android:name="sportId"
+            app:argType="integer" />
+        <deepLink app:uri="walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}" />
         <action
             android:id="@+id/action_liveMainFragment_to_leagueFragment"
             app:destination="@id/leagueFragment" />

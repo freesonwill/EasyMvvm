@@ -28,6 +28,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
+import com.walisport.module.live.data.LiveBetRepository
 
 
 class LiveModuleInitializer : Initializer<String> {
@@ -67,7 +68,7 @@ class LiveModuleInitializer : Initializer<String> {
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
-
+        factoryOf(::LiveBetRepository)
         singleOf(::MuteManager)
     }
 

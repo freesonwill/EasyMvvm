@@ -52,7 +52,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         loadFragment()
 
         val matchId = args.matchId
-
+        val sportId = args.sportId
+        mViewModel.matchId = matchId
+        mViewModel.sportId = sportId
         "matchId:$matchId".logd("LiveMainFragment")
     }
 
