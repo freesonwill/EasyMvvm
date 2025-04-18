@@ -3,16 +3,12 @@ package com.walisport.module.setting.fragment
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentNoticeBinding
 import com.walisport.module.setting.data.NoticeViewModel
-import com.walisport.module.setting.data.SettingViewModel
-import com.walisport.module.setting.databinding.FragmentSettingBinding
 import com.walisport.module.setting.dialog.MatchNoticeDialog
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 /**
@@ -30,7 +26,9 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_notice_set.getString(),{findNavController().navigateUp()})
+        mBinding.titleBar.loadGeneralTitleBar(
+            R.string.menu_notice_set.getString(),
+            { findNavController().navigateUp() })
     }
 
     override fun initListener() {

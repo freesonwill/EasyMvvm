@@ -11,9 +11,7 @@ import arch.cayenne.lib.common.databinding.TittleBarSearchBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 class TitleBarView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
 
     /**
@@ -21,16 +19,24 @@ class TitleBarView @JvmOverloads constructor(
      * @param titleName 标题名称
      * @param callback 返回
      */
-    fun loadGeneralTitleBar(titleName: String, callback: () -> Unit, callbackRight: (() -> Unit)? = null) {
+    fun loadGeneralTitleBar(
+        titleName: String,
+        callback: () -> Unit,
+        callbackRight: (() -> Unit)? = null,
+        rightName: String? = null
+    ) {
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
             tvTitleName.text = titleName
             ivBack.clickNoRepeat {
                 callback()
             }
-            if (callbackRight!=null){
+            if (callbackRight != null) {
                 tvTitleRight.visibility = VISIBLE
-                tvTitleRight.clickNoRepeat { callbackRight() }
+                tvTitleRight.text = rightName ?: ""
+                tvTitleRight.clickNoRepeat {
+                    callbackRight()
+                }
             }
         }
     }
@@ -43,9 +49,7 @@ class TitleBarView @JvmOverloads constructor(
      * @param callbackSearch 搜索
      */
     fun loadSearchTitleBar(
-        hintText: String,
-        callback: () -> Unit,
-        callbackSearch: (String) -> Unit
+        hintText: String, callback: () -> Unit, callbackSearch: (String) -> Unit
     ) {
         val binding = TittleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
@@ -64,12 +68,13 @@ class TitleBarView @JvmOverloads constructor(
             }
         }
     }
+
     /**
      * 动态标题
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack
      */
-    fun loadDynamicsTitleBar(view: ViewGroup, callback: (() -> Unit)? =null ) {
+    fun loadDynamicsTitleBar(view: ViewGroup, callback: (() -> Unit)? = null) {
         val binding = TittleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
         if (callback != null) {
             binding.ivBack.visibility = VISIBLE

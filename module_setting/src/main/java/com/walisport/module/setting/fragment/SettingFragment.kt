@@ -28,9 +28,14 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         //加载语言类型，后面需要转移到Splash启动界面
         val languageType = mViewModel.getLanguageType()
         when (languageType) {
-            LanguageType.LANGUAGE_SIMPLE.value -> mBinding.tvLanguageType.text = getString(R.string.menu_language_simple)
-            LanguageType.LANGUAGE_TRADITION.value -> mBinding.tvLanguageType.text = getString(R.string.menu_language_traditional)
-            LanguageType.LANGUAGE_ENGLISH.value -> mBinding.tvLanguageType.text = getString(R.string.menu_language_english)
+            LanguageType.LANGUAGE_SIMPLE.value -> mBinding.tvLanguageType.text =
+                getString(R.string.menu_language_simple)
+
+            LanguageType.LANGUAGE_TRADITION.value -> mBinding.tvLanguageType.text =
+                getString(R.string.menu_language_traditional)
+
+            LanguageType.LANGUAGE_ENGLISH.value -> mBinding.tvLanguageType.text =
+                getString(R.string.menu_language_english)
         }
         //加载赔率显示方式设置
         val displayType = mViewModel.getDisplayType()
