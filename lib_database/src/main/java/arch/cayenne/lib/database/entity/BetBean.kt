@@ -2,6 +2,7 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 
 /***
  * @param matchId 赛事ID
@@ -54,4 +55,28 @@ enum class BetStatusEnum {
     FAIL, // 下注失敗
     BETTING, // 下注中
     COMPLETE // 下注完成
+}
+
+class BetTypeConverter {
+    @TypeConverter
+    fun fromBetTypeEnum(value: BetTypeEnum): Int = value.ordinal
+
+    @TypeConverter
+    fun toBetTypeEnum(value: Int): BetTypeEnum = BetTypeEnum.entries[value]
+
+    @TypeConverter
+    fun fromSelection(value: String): Selection {
+        return value.split(",").let {
+            Selection(
+                marketName = it[0],
+                id = it[1].toInt(),
+                name = it[2],
+                odds = it[3].toInt()
+            )
+        }
+    }
+    @TypeConverter
+    fun toSelection(value: Selection): String {
+        return "${value.marketName},${value.id},${value.name},${value.odds}"
+    }
 }
