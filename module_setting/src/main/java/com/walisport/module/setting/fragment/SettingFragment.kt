@@ -47,7 +47,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun initListener() {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), "", {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), null, {
             findNavController().navigateUp()
         })
         mBinding.settingOdds.clickNoRepeat {

@@ -21,7 +21,7 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     override val vmClass: KClass<LanguageViewModel> = LanguageViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString(), "", {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString(), null, {
             findNavController().navigateUp()
         })
         val languageType = mViewModel.getLanguageType()

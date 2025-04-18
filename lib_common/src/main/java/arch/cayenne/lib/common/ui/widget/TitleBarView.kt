@@ -23,7 +23,7 @@ class TitleBarView @JvmOverloads constructor(
      */
     fun loadGeneralTitleBar(
         titleName: String,
-        rightName: String,
+        rightName: String? = null,
         callback: () -> Unit,
         callbackRight: (() -> Unit)? = null
     ) {

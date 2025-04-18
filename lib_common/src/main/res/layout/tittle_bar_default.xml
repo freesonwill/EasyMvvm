@@ -14,7 +14,6 @@
     <arch.cayenne.lib.skin.widget.SportTextView
         android:id="@+id/tv_title_name"
         style="@style/CustomToolbarTvStyle"
-        android:text="2"
         android:textColor="@color/title_bar"
         tools:ignore="MissingConstraints" />
 
@@ -22,7 +21,6 @@
         android:id="@+id/tv_title_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="模拟投注"
         android:textColor="@color/title_bar"
         android:textSize="15sp"
         android:visibility="gone"
