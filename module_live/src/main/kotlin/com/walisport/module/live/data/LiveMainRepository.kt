@@ -16,29 +16,36 @@ class LiveMainRepository(
 
     fun observeLiveVideoBean() = liveVideoDao.observeLiveVideoBean()
 
-    fun setPlayingVideoUrl(url: String) {
+    fun setPlayingVideoId(id: Int) {
         scope.launch {
-            liveVideoDao.updateUrl(url)
+            liveVideoDao.updatePlayingId(id)
         }
     }
 
-    fun addMockData() {
+    fun queryLiveStream(matchId: Int) {
         scope.launch {
-            if (liveVideoDao.queryCount() < 1) {
-                liveVideoDao.insert(
-                    LiveVideoBean(
-                        1,
-                        "http://thinkingform.com/wp-content/uploads/2017/09/video-sample-mp4.mp4?_=1"
-                    )
+            val resp = remoteManager.queryLiveStream(scope, matchId)
+            liveVideoDao.deleteAll()
+            val data = resp?.map {
+                LiveVideoBean(
+                    id = 0,
+                    name = it.name,
+                    urlSource = it.sources,
+                    streamType = it.streamType,
+                    rtmpUrl = it.rtmpUrl,
+                    m3U8Url = it.m3U8Url,
+                    flvUrl = it.flvUrl,
+                    language = it.language,
+                    sources = "",
+                    thumb = "",
+                    title = "",
+                    subTitle = "",
+                    isPlaying = false,
                 )
-            }
-        }
-    }
-
-    fun liveStream(matchId: Int) {
-        scope.launch {
-            val resp = remoteManager.liveStream(scope, matchId)
-
+            } ?: emptyList()
+            //默认自动播放第一条
+            data.firstOrNull()?.isPlaying = true
+            liveVideoDao.insert(data)
         }
 
     }

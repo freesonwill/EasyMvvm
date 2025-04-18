@@ -331,7 +331,7 @@ class LiveVideoLandscapeFragment :
     override fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
-                mBinding.videoView.setVideoURI(Uri.parse(it.url))
+                mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
                 mBinding.videoView.start()
             }
         }

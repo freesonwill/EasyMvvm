@@ -1,17 +1,16 @@
 package com.walisport.module.live
 
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import com.walisport.module.live.data.model.VideoSourceBean
+import com.walisport.module.live.data.model.MatchLiveStreamBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
-    suspend fun liveStream(scope: CoroutineScope, matchId: Int): List<VideoSourceBean>? {
+    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Int): List<MatchLiveStreamBean>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveStreamResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -27,8 +26,16 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
 
             data.streamsList.map {
-                "$it".logd("LiveRemoteManager")
-                VideoSourceBean() }
+                MatchLiveStreamBean(
+                    name = it.name,
+                    urlSource = it.urlSource,
+                    streamType = it.streamType,
+                    rtmpUrl = it.rtmpUrl,
+                    m3U8Url = it.m3U8Url,
+                    flvUrl = it.flvUrl,
+                    language = it.language
+                )
+            }
         } else {
             null
         }
