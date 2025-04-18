@@ -3,14 +3,14 @@ package com.walisport.module.live
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import com.walisport.module.live.data.model.MatchLiveStreamBean
 import galaxy.client.proto.Client
+import galaxy.client.proto.Sloth
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
-    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Int): List<MatchLiveStreamBean>? {
+    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Int): List<Sloth.MatchLiveStream>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveStreamResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -24,18 +24,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return if (res.error == null && res.data != null) {
             val data = res.data!!
 
-
-            data.streamsList.map {
-                MatchLiveStreamBean(
-                    name = it.name,
-                    urlSource = it.urlSource,
-                    streamType = it.streamType,
-                    rtmpUrl = it.rtmpUrl,
-                    m3U8Url = it.m3U8Url,
-                    flvUrl = it.flvUrl,
-                    language = it.language
-                )
-            }
+            data.streamsList
         } else {
             null
         }

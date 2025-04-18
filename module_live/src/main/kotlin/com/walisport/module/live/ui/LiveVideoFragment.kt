@@ -65,7 +65,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
-                if (it != null) {
+                it?.let {
                     mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
                     mBinding.videoView.start()
                 }

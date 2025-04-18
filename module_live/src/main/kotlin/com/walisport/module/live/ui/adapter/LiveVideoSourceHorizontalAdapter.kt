@@ -14,7 +14,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
-import com.walisport.module.live.data.model.MatchLiveStreamBean
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
 
 

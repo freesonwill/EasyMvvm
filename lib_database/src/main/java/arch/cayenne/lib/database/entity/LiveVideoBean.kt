@@ -16,7 +16,6 @@ data class LiveVideoBean(
     val flvUrl: String = "",
     val language: String = "",
 
-    val sources: String = "",
     val thumb: String = "",
     val title: String = "",
     val subTitle: String = "",
@@ -25,8 +24,8 @@ data class LiveVideoBean(
     ) {
 
     fun playUrl(): String {
-        return rtmpUrl.takeIf { it.isNotEmpty() }
-            ?: m3U8Url.takeIf { it.isNotEmpty() }
+        return m3U8Url.takeIf { it.isNotEmpty() }
+            ?: rtmpUrl.takeIf { it.isNotEmpty() }
             ?: flvUrl.takeIf { it.isNotEmpty() }
             ?: ""
     }

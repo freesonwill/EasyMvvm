@@ -30,13 +30,13 @@ class LiveMainRepository(
                 LiveVideoBean(
                     id = 0,
                     name = it.name,
-                    urlSource = it.sources,
+                    urlSource = it.urlSource,
                     streamType = it.streamType,
                     rtmpUrl = it.rtmpUrl,
                     m3U8Url = it.m3U8Url,
                     flvUrl = it.flvUrl,
                     language = it.language,
-                    sources = "",
+
                     thumb = "",
                     title = "",
                     subTitle = "",
