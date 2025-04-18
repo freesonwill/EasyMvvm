@@ -76,10 +76,6 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         mBinding.tv7.clickNoRepeat{
            navigate(Uri.parse("walisport://module_setting/settingFragment"))
         }
-
-        mBinding.tv8.clickNoRepeat{
-            navigate(Uri.parse("walisport://module_live/liveFragment?matchId=123"))
-        }
         mBinding.tv10.setOnClickListener {
             BetSheetFragment.addMockData()
         }
