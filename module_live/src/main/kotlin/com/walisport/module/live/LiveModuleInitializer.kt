@@ -67,9 +67,12 @@ class LiveModuleInitializer : Initializer<String> {
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
+    }
 
+    private val managerModule = module {
+        factoryOf(::LiveRemoteManager)
         singleOf(::MuteManager)
     }
 
-    private val moduleList: List<Module> = listOf(viewModules, repoModules)
+    private val moduleList: List<Module> = listOf(viewModules, repoModules, managerModule)
 }

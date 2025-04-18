@@ -3,11 +3,14 @@ package com.walisport.module.live.data
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import com.walisport.module.live.LiveRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class LiveMainRepository(private val liveVideoDao: LiveVideoDao) : BaseRepository() {
+class LiveMainRepository(
+    private val liveVideoDao: LiveVideoDao, private val remoteManager: LiveRemoteManager
+) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -30,6 +33,14 @@ class LiveMainRepository(private val liveVideoDao: LiveVideoDao) : BaseRepositor
                 )
             }
         }
+    }
+
+    fun liveStream(matchId: Int) {
+        scope.launch {
+            val resp = remoteManager.liveStream(scope, matchId)
+
+        }
+
     }
 
 
