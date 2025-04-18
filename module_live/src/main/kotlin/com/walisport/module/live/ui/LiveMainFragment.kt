@@ -51,10 +51,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
 
-        val matchId = args.matchId
-
-        "matchId:$matchId".logd("LiveMainFragment")
-        mViewModel.liveStream(matchId)
     }
 
     override fun initListener() {
@@ -66,6 +62,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)
                 as? LiveVideoFragment ?: LiveVideoFragment().also {
+                    arguments?.putInt("matchId", args.matchId)
             childFragmentManager.beginTransaction()
                 .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG)
                 .commitNow()
