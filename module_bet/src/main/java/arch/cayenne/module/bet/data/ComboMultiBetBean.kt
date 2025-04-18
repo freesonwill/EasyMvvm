@@ -1,6 +1,6 @@
 package arch.cayenne.module.bet.data
 
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 
 /***

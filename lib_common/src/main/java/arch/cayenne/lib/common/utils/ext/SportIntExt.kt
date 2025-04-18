@@ -5,8 +5,7 @@ import java.math.RoundingMode
 import java.text.NumberFormat
 import java.util.Locale
 
-object IntExt {
-
+object SportIntExt {
     /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10
      */

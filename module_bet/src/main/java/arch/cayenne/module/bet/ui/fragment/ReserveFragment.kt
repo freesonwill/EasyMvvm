@@ -6,10 +6,10 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
-import arch.cayenne.lib.common.utils.ext.IntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding

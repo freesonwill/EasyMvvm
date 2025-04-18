@@ -1,6 +1,5 @@
 package arch.cayenne.module.bet.viewmodel
 
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.repo.ReserveRepository
 

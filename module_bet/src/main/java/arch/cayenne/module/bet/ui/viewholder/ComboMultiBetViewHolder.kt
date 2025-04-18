@@ -2,8 +2,8 @@ package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding

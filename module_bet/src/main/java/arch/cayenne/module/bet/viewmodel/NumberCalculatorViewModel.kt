@@ -3,7 +3,7 @@ package arch.cayenne.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.data.NumberOverEnum
 

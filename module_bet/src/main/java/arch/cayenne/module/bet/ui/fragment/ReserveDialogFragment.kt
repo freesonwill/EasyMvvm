@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
