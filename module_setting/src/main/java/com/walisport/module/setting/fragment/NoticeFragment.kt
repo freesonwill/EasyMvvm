@@ -28,7 +28,6 @@ class NoticeFragment : BaseFragment<NoticeViewModel, FragmentNoticeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(
             R.string.menu_notice_set.getString(),
-            null,
             { findNavController().navigateUp() })
     }
 

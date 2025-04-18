@@ -19,7 +19,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
     override val vmClass: KClass<SimulateViewModel> = SimulateViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.simulate_bet.getString(), null, {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.simulate_bet.getString(), {
             findNavController().navigateUp()
         })
     }

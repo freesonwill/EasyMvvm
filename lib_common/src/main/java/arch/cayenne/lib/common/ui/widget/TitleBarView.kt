@@ -11,9 +11,7 @@ import arch.cayenne.lib.common.databinding.TittleBarSearchBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 
 class TitleBarView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
 
     /**
@@ -23,9 +21,9 @@ class TitleBarView @JvmOverloads constructor(
      */
     fun loadGeneralTitleBar(
         titleName: String,
-        rightName: String? = null,
         callback: () -> Unit,
-        callbackRight: (() -> Unit)? = null
+        callbackRight: (() -> Unit)? = null,
+        rightName: String? = null
     ) {
         val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
@@ -35,7 +33,7 @@ class TitleBarView @JvmOverloads constructor(
             }
             if (callbackRight != null) {
                 tvTitleRight.visibility = VISIBLE
-                tvTitleRight.text = rightName
+                tvTitleRight.text = rightName ?: ""
                 tvTitleRight.clickNoRepeat {
                     callbackRight()
                 }
@@ -51,9 +49,7 @@ class TitleBarView @JvmOverloads constructor(
      * @param callbackSearch 搜索
      */
     fun loadSearchTitleBar(
-        hintText: String,
-        callback: () -> Unit,
-        callbackSearch: (String) -> Unit
+        hintText: String, callback: () -> Unit, callbackSearch: (String) -> Unit
     ) {
         val binding = TittleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {

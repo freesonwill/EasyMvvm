@@ -22,9 +22,10 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(
             R.string.handicap_lesson.getString(),
-            R.string.simulate_bet.getString(),
             { findNavController().navigateUp() },
-            { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment()) })
+            { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment()) },
+            R.string.simulate_bet.getString()
+        )
     }
 
     override fun initListener() {
