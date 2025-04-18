@@ -5,7 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.startup.Initializer
-import arch.cayenne.lib.base.ApplicationModuleInitializer
+import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
@@ -28,7 +28,7 @@ import org.koin.dsl.module
  * @date: 2025/3/14 17:17
  * @description:
  */
-class ModuleInitializer : Initializer<String> {
+class ModuleInitializer : DefaultInitializer<String> {
     private val TAG = "ModuleInitializer"
     private var activityCount = 0
     private val activityLifecycleCallback by lazy {
@@ -70,7 +70,7 @@ class ModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return listOf(ApplicationModuleInitializer::class.java, SocketModuleInitializer::class.java, CommonModuleInitializer::class.java, HomeModuleInitializer::class.java)
+        return super.dependencies() + listOf(SocketModuleInitializer::class.java, CommonModuleInitializer::class.java, HomeModuleInitializer::class.java)
     }
 
     private val viewModules = module {

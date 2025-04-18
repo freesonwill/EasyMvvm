@@ -1,0 +1,9 @@
+<resources>
+    <string name="handicap_lesson">Handicap Lesson</string>
+    <string name="simulate_bet">Simulate Bet</string>
+    <string-array name="handicap_tabs">
+        <item>Let The Ball</item>
+        <item>Big Or Small</item>
+        <item>Corner Kick</item>
+    </string-array>
+</resources>

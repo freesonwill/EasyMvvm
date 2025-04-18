@@ -3,7 +3,12 @@ package com.walisport.module.live.viewmodel
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import com.walisport.module.live.data.LiveMainRepository
 
-class LiveMainViewModel (private val repo: LiveMainRepository): BaseViewModel() {
+class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
     var matchId:Long = 0
     var sportId:Int = 0
+
+    fun queryLiveStream(matchId: Int) {
+        repo.queryLiveStream(matchId)
+    }
+
 }

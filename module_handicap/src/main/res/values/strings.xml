@@ -1,0 +1,9 @@
+<resources>
+    <string name="handicap_lesson">盘口教程</string>
+    <string name="simulate_bet">模拟投注</string>
+    <string-array name="handicap_tabs">
+        <item>让球</item>
+        <item>大小</item>
+        <item>角球</item>
+    </string-array>
+</resources>

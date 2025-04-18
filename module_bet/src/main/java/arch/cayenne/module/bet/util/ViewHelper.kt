@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.util
 
 import androidx.core.view.isVisible
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum

@@ -64,6 +64,7 @@ dependencies {
     implementation(project(":module_setting"))
     implementation(project(":lib_videoplayer"))
     implementation(project(":module_live"))
+    implementation(project(":module_handicap"))
     implementation(project(":lib_base"))
     implementation(project(":module_search"))
     implementation(libs.androidx.core.ktx)

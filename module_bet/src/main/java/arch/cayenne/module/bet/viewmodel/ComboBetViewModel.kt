@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.utils.ext.IntExt.getMoney
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -18,6 +17,16 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
+
+    private val _onBalanceListener = MutableLiveData(123456)
+    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+
+    val remainingBalance: Int
+        get() = onBalanceListener.value?.let { balance ->
+            onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
+                balance - betAmount
+            } ?: balance
+        } ?: 0
 
     init {
         viewModelScope.launch {
@@ -39,8 +48,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         val result = mutableListOf<ComboMultiBetBean>()
         val n = data.size
 
-        val minAmount = data.maxOf { it.minAmount }.getMoney().toInt()
-        val maxAmount = data.minOf { it.maxAmount }.getMoney().toInt()
+        val minAmount = data.maxOf { it.minAmount }
+        val maxAmount = data.minOf { it.maxAmount }
 
         for (k in n downTo 1) {
             val combinations = data.combinations(k)
@@ -83,16 +92,14 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
 
     fun updateMultiBetMoney(combo: Int, money: Int) {
         _onComboMultiBetBeanListener.value?.let {
-            _onComboMultiBetBeanListener.value?.let { list ->
-                val updatedList = it.map { rate ->
-                    if (rate.combo == combo) {
-                        rate.copy(inputMoney = money)
-                    } else {
-                        rate
-                    }
+            val updatedList = it.map { rate ->
+                if (rate.combo == combo) {
+                    rate.copy(inputMoney = money)
+                } else {
+                    rate
                 }
-                setMultiBetBean(updatedList)
             }
+            setMultiBetBean(updatedList)
         }
     }
 

@@ -7,7 +7,7 @@
     <string name="btn_max">最高</string>
     <string name="btn_collusion">＋串关</string>
     <string name="btn_bet">投注</string>
-    <string name="et_money_hint">限额%d&#8211;%d</string>
+    <string name="et_money_hint">限额%s&#8211;%s</string>
     <string name="bet_sheet_stop">盘口失效</string>
     <string name="btn_bet_hint">投注</string>
     <string name="btn_bet_win_money">可赢$%s</string>
@@ -38,4 +38,7 @@
     <string name="title_result_win_single_bet">可赢</string>
     <string name="title_result_win_combo_bet">最高可赢</string>
     <string name="btn_result_continue_bet">续投</string>
+
+    <string name="toast_over_remaining">余额不足</string>
+    <string name="toast_over_max">投注超限</string>
 </resources>

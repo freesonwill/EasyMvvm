@@ -41,7 +41,7 @@ class LiveVideoSourcePortraitFragment :
                     }
 
                     setOnClickListener {
-                        mViewModel.setPlayingVideoUrl(it)
+                        mViewModel.setPlayingVideoId(it)
                     }
                 }
             }

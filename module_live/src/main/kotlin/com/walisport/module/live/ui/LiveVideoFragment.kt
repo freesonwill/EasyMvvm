@@ -11,9 +11,6 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import tv.danmaku.ijk.media.example.widget.media.IMediaController
-import tv.danmaku.ijk.media.example.widget.media.IjkVideoView
-import tv.danmaku.ijk.media.player.IMediaPlayer
 import kotlin.reflect.KClass
 
 
@@ -25,7 +22,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.addMockData()
+        val matchId = arguments?.getInt("matchId") ?: 0
+        mViewModel.queryLiveStream(matchId)
     }
 
     override fun initListener() {
@@ -67,8 +65,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
-                mBinding.videoView.setVideoURI(Uri.parse(it.url))
-                mBinding.videoView.start()
+                it?.let {
+                    mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
+                    mBinding.videoView.start()
+                }
             }
 
             mutedData().observe(viewLifecycleOwner) {

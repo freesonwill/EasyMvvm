@@ -12,6 +12,8 @@ import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
@@ -29,8 +31,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         private const val CURRENT_MONEY_NUMBER = "currentMoneyNumber"
         private const val MIN_NUMBER = "minNumber"
         private const val MAX_NUMBER = "maxNumber"
+        private const val REMAINING_MONEY_Number = "remainingMoney"
 
-        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: String, minNumber: Int, maxNumber: Int): ComboBetMoneyKeyboardDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, currentMoney: Int?, minNumber: Int, maxNumber: Int, remainingMoney: Int): ComboBetMoneyKeyboardDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -38,9 +41,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putString(CURRENT_MONEY_NUMBER, currentMoney)
+            currentMoney?.let {
+                b.putInt(CURRENT_MONEY_NUMBER, it)
+            }
             b.putInt(MIN_NUMBER, minNumber)
             b.putInt(MAX_NUMBER, maxNumber)
+            b.putInt(REMAINING_MONEY_Number, remainingMoney)
             return ComboBetMoneyKeyboardDialogFragment().apply {
                 arguments = b
             }
@@ -100,19 +106,19 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
         // TODO 有時間改成adapter
         mBinding.btn100.setOnClickListener {
-            mViewModel.setNumber(100)
+            mViewModel.setNumber(10000)
         }
         mBinding.btn500.setOnClickListener {
-            mViewModel.setNumber(500)
+            mViewModel.setNumber(50000)
         }
         mBinding.btn1000.setOnClickListener {
-            mViewModel.setNumber(1000)
+            mViewModel.setNumber(100000)
         }
         mBinding.btn2000.setOnClickListener {
-            mViewModel.setNumber(2000)
+            mViewModel.setNumber(200000)
         }
         mBinding.btn5000.setOnClickListener {
-            mViewModel.setNumber(5000)
+            mViewModel.setNumber(500000)
         }
     }
 
@@ -123,22 +129,28 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first, it.second)
+            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+        }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
+            // TODO show toast
         }
     }
 
     private fun initKeyboard() {
-        requireArguments().getString(CURRENT_MONEY_NUMBER)?.let {
-            if (it.contains('.')) {
-                mViewModel.setNumber(it.toFloat())
-            } else if (it.isNotEmpty()){
-                mViewModel.setNumber(it.toInt())
-            }
+        val currentMoney = requireArguments().getInt(CURRENT_MONEY_NUMBER, -1)
+        if (currentMoney != -1) {
+            mViewModel.setNumber(currentMoney)
         }
+
         val minNumber = requireArguments().getInt(MIN_NUMBER, -1)
         val maxNumber = requireArguments().getInt(MAX_NUMBER, -1)
         if (minNumber != -1 && maxNumber != -1) {
             mViewModel.setNumberLimit(minNumber, maxNumber)
+        }
+
+        val remainingMoney = requireArguments().getInt(REMAINING_MONEY_Number, -1)
+        if (remainingMoney != -1) {
+            mViewModel.setRemainingNumber(remainingMoney)
         }
     }
 
@@ -182,9 +194,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override fun dismiss() {
         super.dismiss()
-        val money = mBinding.etMoney.text.toString()
-        val bundle = Bundle().apply {
-            putString(VALUE_MONEY_INPUT, money)
+        val bundle = Bundle()
+        mViewModel.onEditNumber.value?.let {
+            if (it.isNotEmpty()) {
+                val money = it.toValue()
+                bundle.putInt(VALUE_MONEY_INPUT, money)
+            }
         }
         setFragmentResult(KEY_RESULT, bundle)
     }

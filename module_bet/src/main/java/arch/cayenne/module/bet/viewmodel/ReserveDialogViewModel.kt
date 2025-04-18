@@ -5,27 +5,26 @@ import arch.cayenne.module.bet.repo.ReserveRepository
 
 class ReserveDialogViewModel(private val repository: ReserveRepository) : NumberCalculatorViewModel() {
 
-    val mixRate = 0.01f
+    val minOdds = 1
 
     fun addMixRate() {
-        _onEditNumber.value = _onEditNumber.value?.let {
+        val odds = onEditNumber.value?.let {
             if (it.isEmpty()) {
-                mixRate.toString()
+                minOdds
             } else {
                 val rate = if (it.last() == '.') {
                     it.substring(0, it.length - 1)
                 } else {
                     it
                 }
-                val doubledValue = rate.toFloat()
-                val value = doubledValue + mixRate
-                "%.2f".format(value)
+                (it.toValue() + minOdds)
             }
-        } ?: mixRate.toString()
+        } ?: minOdds
+        setEditNumber(odds)
     }
 
     fun reserve(id: Int) {
-        val odds = _onEditNumber.value?.toValue() ?: 0
+        val odds = onEditNumber.value?.toValue() ?: 0
         repository.setSingleToReserve(id, odds)
     }
 }

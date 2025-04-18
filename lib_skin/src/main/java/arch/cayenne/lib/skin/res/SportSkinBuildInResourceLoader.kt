@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.StateListDrawable
+import android.util.Log
 import androidx.appcompat.graphics.drawable.StateListDrawableCompat
 import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.skin.util.ResUtils
@@ -44,6 +45,7 @@ class SportSkinBuildInResourceLoader(val skinName: String) : SportSkinResourceLo
 
     override fun getTargetResourceId(context: Context, resId: Int): Int {
         return try {
+            Log.i("aaa","skinName $skinName")
             if(skinName.isEmpty()){
                 return resId
             }
