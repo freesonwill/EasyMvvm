@@ -33,7 +33,6 @@ class LiveBetSlipViewModel : BaseViewModel() {
     fun getOrders(status: LiveBetSlipEnum) {
         viewModelScope.launch {
             val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)
-            Log.i("aaa","list  $result")
             _orderLiveData.value = result
         }
     }
