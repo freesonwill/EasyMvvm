@@ -83,7 +83,7 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
 
     fun mutedData() = muteManager.mutedLiveData
 
-    fun queryLiveStream(matchId:Int) {
+    fun queryLiveStream(matchId:Long) {
        repo.queryLiveStream(matchId)
     }
 
