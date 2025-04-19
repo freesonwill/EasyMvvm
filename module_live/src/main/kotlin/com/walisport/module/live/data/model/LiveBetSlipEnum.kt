@@ -1,9 +1,9 @@
 package com.walisport.module.live.data.model
 
 enum class LiveBetSlipEnum(val value: Int) {
-    UnSettled(value = 0),
+    UnSettled(value = 3),
     Confirming(value = 1),
-    Settled(value = 2),
-    Reserve(value = 3),
-    Invalid(value = 4);
+    Settled(value = 4),
+    Reserve(value = 5),
+    Invalid(value = 2);
 }

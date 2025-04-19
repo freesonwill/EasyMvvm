@@ -51,6 +51,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
 
+        val matchId = args.matchId
+        val sportId = args.sportId
+        mViewModel.matchId = matchId
+        mViewModel.sportId = sportId
     }
 
     override fun initListener() {

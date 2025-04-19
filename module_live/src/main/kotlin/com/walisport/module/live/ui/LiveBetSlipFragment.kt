@@ -7,11 +7,14 @@ import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.lib.base.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
+import com.walisport.module.live.viewmodel.LiveMainViewModel
+import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
 /**
@@ -21,6 +24,7 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
     override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> =
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
@@ -36,13 +40,13 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                 PagerBean(array[3]) { LiveBetSlipReserveFragment() },
                 PagerBean(array[4]) { LiveBetSlipExpiredFragment() },
             )
-
             viewpager.adapter = null
             viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
 
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
+
             tabLayout.removeAllTips()
             reflexPadding(tabLayout)
         }

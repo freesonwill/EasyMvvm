@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel" />
+            type="com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel" />
     </data>
 
 
