@@ -27,7 +27,7 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
         mBinding.apply {
             matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: Match) {
-                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.matchId}"))
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.matchId}&sportId=${item.basicInfo.sportId}"))
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)

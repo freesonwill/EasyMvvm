@@ -45,7 +45,6 @@ class SportSkinBuildInResourceLoader(val skinName: String) : SportSkinResourceLo
 
     override fun getTargetResourceId(context: Context, resId: Int): Int {
         return try {
-            Log.i("aaa","skinName $skinName")
             if(skinName.isEmpty()){
                 return resId
             }
