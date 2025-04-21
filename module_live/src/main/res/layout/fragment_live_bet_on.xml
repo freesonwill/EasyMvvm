@@ -19,7 +19,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
-            app:tabBackground="@drawable/tab_selected_background"
+            app:sportTabBackground="@drawable/tab_selected_background"
             app:tabMode="auto"
             app:tabGravity="center"
             app:tabRippleColor="@null"
