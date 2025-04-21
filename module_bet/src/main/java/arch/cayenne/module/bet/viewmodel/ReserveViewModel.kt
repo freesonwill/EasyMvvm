@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
@@ -16,8 +16,8 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     private val _onReserveSheetListener = MutableLiveData<BetBean>()
     val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
 
-    private val _onBalanceListener = MutableLiveData(123456)
-    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData(123456L)
+    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
@@ -35,13 +35,13 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                money.toValue().getOdds(odds)
+                money.toMoney().getMoney(odds)
             }
         }
     }
     val onReserveWinMoney: LiveData<String> get() = _onReserveWinMoney
 
-    fun setReserveBet(id: Int) {
+    fun setReserveBet(id: Long) {
         viewModelScope.launch {
             repo.getReverseById(id)?.let {
                 _onReserveSheetListener.value = it
@@ -50,7 +50,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         }
     }
 
-    fun removeReserve(id: Int) {
+    fun removeReserve(id: Long) {
         repo.removeReserve(id)
     }
 
@@ -69,7 +69,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun sendReserve() {
         val id = _onReserveSheetListener.value?.matchId ?: return
-        val money = onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toMoney() ?: return
         repo.sendReserve(id, money)
     }
 }

@@ -28,9 +28,9 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<EmptyViewM
          * 調起前需先將注單加入到資料庫 (BetBean)
          * @param matchId 單注下注需帶入注單id，不帶入則默串關下注; 或資料庫中只剩一筆串關資料，不帶入id也會調起單注下注
          */
-        fun newInstance(matchId: Int? = null): BetSheetFragment {
+        fun newInstance(matchId: Long? = null): BetSheetFragment {
             val b = Bundle().apply {
-                putInt(MATCH_ID, matchId ?: -1)
+                putLong(MATCH_ID, matchId ?: -1L)
             }
             return BetSheetFragment().apply {
                 arguments = b
@@ -88,8 +88,8 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<EmptyViewM
 
         val bundle = requireArguments()
 
-        val matchId = requireArguments().getInt(MATCH_ID)
-        if (matchId == -1) {
+        val matchId = requireArguments().getLong(MATCH_ID, -1L)
+        if (matchId == -1L) {
             navGraph.setStartDestination(R.id.comboBetFragment)
         } else {
             navGraph.setStartDestination(R.id.singleBetFragment)

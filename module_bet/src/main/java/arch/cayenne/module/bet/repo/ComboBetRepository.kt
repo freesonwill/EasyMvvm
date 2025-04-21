@@ -18,7 +18,7 @@ class ComboBetRepository(
 
     fun observeComboBet() = betDao.observeComboBet()
 
-    fun removeBet(id: Int) {
+    fun removeBet(id: Long) {
         scope.launch {
             betDao.removeBet(id)
         }
@@ -30,7 +30,7 @@ class ComboBetRepository(
         }
     }
 
-    fun saveToSingleBet(id: Int) {
+    fun saveToSingleBet(id: Long) {
         scope.launch {
             betDao.updateBetType(id, BetTypeEnum.SINGLE)
         }

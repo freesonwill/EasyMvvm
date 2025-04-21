@@ -18,7 +18,7 @@ class GameTypeConverter {
         return value.split(",").let {
             Selection(
                 marketName = it[0],
-                id = it[1].toInt(),
+                id = it[1].toLong(),
                 name = it[2],
                 odds = it[3].toInt()
             )

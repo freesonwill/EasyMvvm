@@ -18,10 +18,10 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData(123456)
-    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData(123456L)
+    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
-    val remainingBalance: Int
+    val remainingBalance: Long
         get() = onBalanceListener.value?.let { balance ->
             onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
                 balance - betAmount
@@ -80,7 +80,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         return withHead + withoutHead
     }
 
-    fun removeBet(id: Int) {
+    fun removeBet(id: Long) {
         viewModelScope.launch {
             repo.removeBet(id)
         }
@@ -90,7 +90,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(combo: Int, money: Int) {
+    fun updateMultiBetMoney(combo: Int, money: Long) {
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.combo == combo) {

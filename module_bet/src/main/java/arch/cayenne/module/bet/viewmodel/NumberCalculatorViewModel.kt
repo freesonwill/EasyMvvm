@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.module.bet.data.NumberOverEnum
 
 open class NumberCalculatorViewModel : BaseViewModel() {
@@ -13,19 +13,19 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     val onEditNumber: LiveData<String> get() =  _onEditNumber
 
 
-    private val _onNumberLimit = MutableLiveData<Pair<Int, Int>>()
+    private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>()
     /***
      * @param first min number
      * @param second max number
      */
-    val onNumberLimit: LiveData<Pair<Int, Int>> get() =  _onNumberLimit
+    val onNumberLimit: LiveData<Pair<Long, Long>> get() =  _onNumberLimit
 
     private val _onOverNumberListener = MutableLiveData(NumberOverEnum.DEFAULT)
     val onOverNumberListener: LiveData<NumberOverEnum> get() = _onOverNumberListener
 
-    private val mixMoney: Int get() = onNumberLimit.value?.first ?: 0
-    private val maxMoney: Int get() = onNumberLimit.value?.second ?: Int.MAX_VALUE
-    private var remainingNumber: Int = Int.MAX_VALUE
+    private val mixMoney: Long get() = onNumberLimit.value?.first ?: 0
+    private val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
+    private var remainingNumber: Long = Long.MAX_VALUE
 
     fun addNumber(number: Int) {
         val current = onEditNumber.value.orEmpty()
@@ -38,7 +38,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
             current + number
         }
 
-        setEditNumber(newValue.toValue())
+        setEditNumber(newValue.toMoney())
     }
 
     fun setDot() {
@@ -55,7 +55,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         setEditNumber(maxMoney)
     }
 
-    fun setNumber(number: Int) {
+    fun setNumber(number: Long) {
         setEditNumber(number)
     }
 
@@ -73,7 +73,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                 } else {
                     it
                 }
-                setEditNumber(money.toValue() * 2)
+                setEditNumber(money.toMoney() * 2)
             }
         } ?: ""
     }
@@ -88,7 +88,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         }
     }
 
-    protected fun setEditNumber(value: Int) {
+    protected fun setEditNumber(value: Long) {
         _onEditNumber.value = if (value > remainingNumber) {
             _onOverNumberListener.value = NumberOverEnum.OVER_REMAINING
             remainingNumber.getMoney()
@@ -101,11 +101,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         _onOverNumberListener.value = NumberOverEnum.DEFAULT
     }
 
-    fun setNumberLimit(min: Int, max: Int) {
+    fun setNumberLimit(min: Long, max: Long) {
         _onNumberLimit.value = Pair(min, max)
     }
 
-    fun setRemainingNumber(number: Int) {
+    fun setRemainingNumber(number: Long) {
         remainingNumber = number
     }
 }
