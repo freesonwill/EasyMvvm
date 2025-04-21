@@ -70,9 +70,9 @@ class BetRepository(private val betDao: BetDao): BaseRepository() {
     }
 
     /***
-     * 關閉對戰（即比賽結束，刪除投注資料）
+     * 刪除投注資料
      */
-    fun closeMatch(id: Long) {
+    fun remove(id: Long) {
         scope.launch {
             betDao.removeBet(id)
         }
