@@ -3,6 +3,7 @@ package arch.cayenne.module.home.repository
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportCategory
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -11,16 +12,9 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.home.data.Market
-import arch.cayenne.module.home.data.MarketDetail
-import arch.cayenne.module.home.data.Match
-import arch.cayenne.module.home.data.MatchBasicInfo
-import arch.cayenne.module.home.data.MatchLiveInfo
-import arch.cayenne.module.home.data.Selection
 import arch.cayenne.module.home.data.toRoomData
 import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
-import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -133,7 +127,7 @@ class HomeRepository(
         return tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
     }
 
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<Match> {
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -148,7 +142,6 @@ class HomeRepository(
             }.build()
         }
 
-        //-----------------------------
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
             database.matchDao().insertFullMatch(
@@ -158,90 +151,8 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            database.matchDao().getFullMatch()
-        //-----------------------------
-            return resp.data!!.matchList.map { match ->
-                Match(
-                    matchId = match.matchId,
-                    collect = match.collect,
-                    basicInfo = transformMatchBasicInfo(match.basicInfo),
-                    market = transformMarket(match.marketList)
-                )
-            }.toList()
+            return database.matchDao().getFullMatch()
         }
         return arrayListOf()
-    }
-
-    private fun transformMatchBasicInfo(originalData: Common.MatchBasicInfo) : MatchBasicInfo {
-        return MatchBasicInfo(
-            matchId = originalData.matchId,
-            matchName = originalData.matchName,
-            homeTeam = originalData.homeTeam,
-            homeTeamId = originalData.homeTeamId,
-            homeTeamIcon = originalData.homeTeamIcon,
-            awayTeam = originalData.awayTeam,
-            awayTeamId = originalData.awayTeamId,
-            awayTeamIcon = originalData.awayTeamIcon,
-            startTime = originalData.startTime,
-            status = originalData.status,
-            tournamentId = originalData.tournamentId,
-            tournamentName = originalData.tournamentName,
-            tournamentShortName = originalData.tournamentShortName,
-            tournamentIcon = originalData.tournamentIcon,
-            sportId = originalData.sportId,
-            sportName = originalData.sportName,
-            liveInfo = transformLiveInfo(originalData.liveInfo),
-            betStop = originalData.betStop,
-            tournamentHot = originalData.tournamentHot,
-            tournamentWeight = originalData.tournamentWeight
-        )
-    }
-
-    private fun transformLiveInfo(originalData: Common.MatchLiveInfo) : MatchLiveInfo {
-        return MatchLiveInfo(
-            clock = originalData.clock,
-            rollClock = originalData.rollClock,
-            period = originalData.period,
-            score = originalData.score,
-            liveVideo = originalData.liveVideo,
-            charRoom = originalData.chatRoom,
-            viewerCount = originalData.viewerCount,
-            clockModified = originalData.clockModified
-        )
-    }
-
-    private fun transformMarket(originalData: List<Common.Market>) : List<Market> {
-        return originalData.map { market ->
-            Market(
-                marketId = market.marketId,
-                marketName = market.marketName,
-                marketDetail = transformMarketDetail(market.marketDetailList),
-                status = market.status
-            )
-        }.toList()
-    }
-
-    private fun transformMarketDetail(originalData: List<Common.MarketDetail>) : List<MarketDetail> {
-        return originalData.map { marketDetail ->
-            MarketDetail(
-                specifier = marketDetail.specifier,
-                selection = transformSelection(marketDetail.selectionList),
-                active = marketDetail.active,
-                parlay = marketDetail.parlay
-            )
-        }.toList()
-    }
-
-    private fun transformSelection(originalData: List<Common.Selection>) : List<Selection> {
-        return originalData.map { selection ->
-            Selection(
-                selectionId = selection.selectionId,
-                name = selection.name,
-                shortName = selection.shortName,
-                odds = selection.odds,
-                active = selection.active,
-                parlay = selection.parlay
-            )
-        }.toList()
     }
 }

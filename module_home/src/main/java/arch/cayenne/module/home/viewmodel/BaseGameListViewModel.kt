@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.module.home.data.Match
+import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
@@ -17,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 
 abstract class BaseGameListViewModel: BaseViewModel() {
     companion object {
-        const val DEFAULT_MATCH_SIZE = 3
+        const val DEFAULT_MATCH_SIZE = 10
     }
 
     protected var currentSportId = SportType.Init.id
@@ -25,7 +25,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     protected var tournamentId: Int = TOURNAMENT_ALL_ID
     val repository: HomeRepository by inject { parametersOf(viewModelScope) }
 
-    val matchListChange by lazy { MutableLiveData<List<Match>>() }
+    val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
 
     fun setCurrentSport(id: Int) {
         currentSportId = id
