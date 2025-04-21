@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.lib.database.entity.TournamentCategory
+import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.module.home.data.SportDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
@@ -23,7 +23,6 @@ class HomeViewModel : BaseViewModel() {
     var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
-    val tournaments by lazy { MutableLiveData<List<TournamentCategory>>() }
 
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
@@ -57,33 +56,5 @@ class HomeViewModel : BaseViewModel() {
     fun setCurrentSport(sportId: Int) {
         currentSportChange.value = sportId
     }
-
-    //取得聯賽資料
-//    fun getCurrentTournament() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list = repository.getAllTournaments(currentPlayType.id, currentSport!!)
-//            if (list.isNullOrEmpty()) {
-//                //TODO 拿取聯賽錯誤
-//                "Get Tournament List failed!!".loge(this@HomeViewModel::class.java.simpleName)
-//            } else {
-//                withContext(Dispatchers.Main) {
-//                    tournaments.value = list
-//                }
-//            }
-//        }
-//    }
-
-    //取得比賽列表
-//    fun getCurrentMatch() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list = repository.getAllMatch(currentPlayType.id, currentSport!!, currentTournament[currentSport]!!)
-//
-//        }
-//    }
-
-    //切換當前的三級選項(各項聯賽)
-//    fun setCurrentTournament(sportId: Int, tournamentId: Int) {
-//        currentTournament[sportId] = tournamentId
-//    }
 
 }

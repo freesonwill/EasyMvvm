@@ -2,12 +2,11 @@ package arch.cayenne.module.home.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
-import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportCategory
 import arch.cayenne.lib.database.entity.TournamentBean
-import arch.cayenne.lib.database.entity.TournamentCategory
+import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -25,7 +24,6 @@ class HomeRepository(
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
     private val sportCategoryDao = database.sportCategoryDao()
-    private val tournamentCategoryDao = database.tournamentCategoryDao()
     private val tournamentDao = database.tournamentDao()
 
     suspend fun getSportStatistical(playType: Int): List<SportCategory>? {
@@ -77,7 +75,7 @@ class HomeRepository(
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
-        val queryResult = tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
+        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
         if (queryResult.isNotEmpty()) {
             return queryResult
         }
@@ -102,7 +100,7 @@ class HomeRepository(
 
     private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
-        val tournamentCategoryList = arrayListOf<TournamentCategory>()
+        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
         data.tournamentList.forEach { tournament ->
             tournamentList.add(
                 TournamentBean(
@@ -112,8 +110,8 @@ class HomeRepository(
                     icon = tournament.icon,
                 )
             )
-            tournamentCategoryList.add(
-                TournamentCategory(
+            sportTournamentCrossRefList.add(
+                SportTournamentCrossRef(
                     tournamentId = tournament.id,
                     sportId = sportId,
                     playType = playType,
@@ -123,8 +121,8 @@ class HomeRepository(
             )
         }
         tournamentDao.insert(tournamentList)
-        tournamentCategoryDao.insert(tournamentCategoryList)
-        return tournamentCategoryDao.queryTournamentWithLimit(playType, sportId, 10)
+        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
+        return tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
