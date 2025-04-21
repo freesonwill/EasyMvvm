@@ -5,9 +5,12 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import androidx.room.Relation
 
-@Entity(tableName = "MatchBean")
+/*
+* Basic Bean
+* */
+
+@Entity
 data class MatchBean(
     @PrimaryKey val matchId: Long,
     val collect: Boolean,
@@ -15,60 +18,17 @@ data class MatchBean(
     @Embedded(prefix = "live_") val liveInfo: MatchLiveInfoBean,
 )
 
-@Entity(
-    tableName = "MarketBean",
-    foreignKeys = [
-        ForeignKey(
-            entity = MatchBean::class,
-            parentColumns = ["matchId"],
-            childColumns  = ["matchId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("matchId")]
-)
+@Entity
 data class MarketBean(
     @PrimaryKey val marketId: Long,
-    val matchId: Long,
     val marketName: String,
     val status: Int
 )
 
-@Entity(
-    tableName = "MarketDetailBean",
-    foreignKeys = [
-        ForeignKey(
-            entity = MarketBean::class,
-            parentColumns = ["marketId"],
-            childColumns  = ["marketId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("marketId")]
-)
-data class MarketDetailBean(
-    @PrimaryKey val detailId: Long,
-    val marketId: Long,
-    val specifier: String?,
-    val active: Boolean,
-    val parlay: Boolean
-)
-
-@Entity(
-    tableName = "SelectionBean",
-    foreignKeys = [
-        ForeignKey(
-            entity = MarketDetailBean::class,
-            parentColumns = ["detailId"],
-            childColumns  = ["detailId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index("detailId")]
-)
+@Entity
 data class SelectionBean(
     @PrimaryKey val selectionId: Long,
-    val detailId: Long,
+    @Embedded(prefix = "detail_") val detail: MarketDetailBean,
     val name: String,
     val shortName: String?,
     val odds: String,
@@ -76,35 +36,74 @@ data class SelectionBean(
     val parlay: Boolean
 )
 
-// 巢狀關聯：Match -> Markets -> MarketDetail -> Selection
-data class MarketDetailWithSelections(
-    @Embedded val detail: MarketDetailBean,
-    @Relation(
-        parentColumn = "detailId",
-        entityColumn = "detailId"
-    )
-    val selections: List<SelectionBean>
+/*
+* Cross Reference Entity
+* */
+
+@Entity(
+    primaryKeys = ["matchId", "marketId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = MatchBean::class,
+            parentColumns = ["matchId"],
+            childColumns = ["matchId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = MarketBean::class,
+            parentColumns = ["marketId"],
+            childColumns = ["marketId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
+    indices = [
+        Index("matchId"),
+        Index("marketId")
+    ]
+)
+data class MatchMarketCrossRef(
+    val matchId: Long,
+    val marketId: Long
 )
 
-data class MarketWithMarketDetails(
-    @Embedded val market: MarketBean,
-    @Relation(
-        parentColumn = "marketId",
-        entityColumn = "marketId"
-    )
-    val details: List<MarketDetailBean>
+@Entity(
+    primaryKeys = ["matchId", "marketId", "selectionId"],
+    foreignKeys = [
+        ForeignKey(
+            entity = MatchBean::class,
+            parentColumns = ["matchId"],
+            childColumns = ["matchId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = MarketBean::class,
+            parentColumns = ["marketId"],
+            childColumns = ["marketId"],
+            onDelete = ForeignKey.CASCADE
+        ),
+        ForeignKey(
+            entity = SelectionBean::class,
+            parentColumns = ["selectionId"],
+            childColumns = ["selectionId"],
+            onDelete = ForeignKey.CASCADE
+        )
+
+    ],
+    indices = [
+        Index("matchId"),
+        Index("marketId"),
+        Index("selectionId"),
+    ]
+)
+data class MarketSelectCrossRef(
+    val matchId: Long,
+    val marketId: Long,
+    val selectionId: Long,
 )
 
-data class MatchWithMarkets(
-    @Embedded val match: MatchBean,
-    @Relation(
-        parentColumn = "matchId",
-        entityColumn = "matchId"
-    )
-    val markets: List<MarketBean>
-)
-
-
+/*
+* Embedded Class
+* */
 
 data class MatchBasicInfoBean(
     val matchId: Long,
@@ -137,4 +136,21 @@ data class MatchLiveInfoBean(
     val charRoom: Boolean,//是否开启了聊天室
     val viewerCount: Int,//观看数量
     val clockModified: Long,//走表修改时间
+)
+
+data class MarketDetailBean(
+    val detailId: Int,
+    val specifier: String?,
+    val active: Boolean,
+    val parlay: Boolean
+)
+
+data class MarketWithSelections(
+    val market: MarketBean,
+    val selections: List<SelectionBean>
+)
+
+data class MatchWithMarkets(
+    val match: MatchBean,
+    val markets: List<MarketWithSelections>
 )

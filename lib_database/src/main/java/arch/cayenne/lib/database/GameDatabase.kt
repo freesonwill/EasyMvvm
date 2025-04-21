@@ -19,8 +19,9 @@ import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MarketBean
-import arch.cayenne.lib.database.entity.MarketDetailBean
+import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.SelectionBean
 
 @Database(
@@ -33,8 +34,9 @@ import arch.cayenne.lib.database.entity.SelectionBean
         TournamentCategory::class,
         MatchBean::class,
         MarketBean::class,
-        MarketDetailBean::class,
         SelectionBean::class,
+        MatchMarketCrossRef::class,
+        MarketSelectCrossRef::class,
     ],
     version = 1,
     exportSchema = false

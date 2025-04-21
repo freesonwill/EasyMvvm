@@ -1,11 +1,12 @@
 package arch.cayenne.module.home.data
 
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketDetailBean
+import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MatchBasicInfoBean
 import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
+import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.SelectionBean
 import galaxy.common.proto.Common
 
@@ -71,19 +72,14 @@ data class Selection(
     val parlay: Boolean,
 )
 
-data class MatchFullData(
-    val match: List<MatchBean>,
-    val markets: List<MarketBean>,
-    val details: List<MarketDetailBean>,
-    val selections: List<SelectionBean>
-)
-
-fun List<Common.Match>.toRoomData(): MatchFullData {
+fun List<Common.Match>.toRoomData() : MatchFullData {
     val matches = mutableListOf<MatchBean>()
     val markets = mutableListOf<MarketBean>()
-    val details = mutableListOf<MarketDetailBean>()
     val selections = mutableListOf<SelectionBean>()
-    for(match in this) {
+    val matchMarketCrossRefs = mutableListOf<MatchMarketCrossRef>()
+    val marketSelectCrossRef = mutableListOf<MarketSelectCrossRef>()
+    this.forEach { match ->
+        val matchId = match.matchId
         matches.add(
             MatchBean(
                 matchId = match.matchId,
@@ -121,51 +117,55 @@ fun List<Common.Match>.toRoomData(): MatchFullData {
                 )
             )
         )
-
-        for (market in match.marketList) {
+        match.marketList.forEach { market ->
+            val marketId = market.marketId
             markets.add(
                 MarketBean(
                     marketId = market.marketId,
-                    matchId = match.matchId,
                     marketName = market.marketName,
                     status = market.status
                 )
             )
-
+            matchMarketCrossRefs.add(
+                MatchMarketCrossRef(matchId,marketId)
+            )
             market.marketDetailList.forEachIndexed { index, detail ->
-                "KC_ detailId = ${market.marketId * 100 + index}".logi("KC_KC_")
-                details.add(
-                    MarketDetailBean(
-                        detailId = market.marketId * 100 + index,
-                        marketId = market.marketId,
-                        specifier = detail.specifier,
-                        active = detail.active,
-                        parlay = detail.parlay
-                    )
-                )
-
-                for (selection in detail.selectionList) {
+                detail.selectionList.forEach { selection ->
+                    val selectionId = selection.selectionId
                     selections.add(
                         SelectionBean(
                             selectionId = selection.selectionId,
-                            detailId = market.marketId * 100 + index,
+                            detail = MarketDetailBean(
+                                detailId = index,
+                                specifier = detail.specifier,
+                                active = detail.active,
+                                parlay = detail.parlay,
+                            ),
                             name = selection.name,
                             shortName = selection.shortName,
                             odds = selection.odds,
                             active = selection.active,
-                            parlay = selection.parlay
+                            parlay = selection.parlay,
                         )
                     )
+                    marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
                 }
             }
         }
     }
-
-
     return MatchFullData(
-        match = matches,
-        markets = markets,
-        details = details,
-        selections = selections
+        matches,
+        markets,
+        selections,
+        matchMarketCrossRefs,
+        marketSelectCrossRef,
     )
 }
+
+data class MatchFullData(
+    val match: List<MatchBean>,
+    val markets: List<MarketBean>,
+    val selections: List<SelectionBean>,
+    val matchMarketCrossRefs: List<MatchMarketCrossRef>,
+    val marketSelectCrossRefs: List<MarketSelectCrossRef>,
+)

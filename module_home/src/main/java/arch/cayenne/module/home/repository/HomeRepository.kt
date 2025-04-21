@@ -147,14 +147,19 @@ class HomeRepository(
                 this.size = DEFAULT_MATCH_SIZE
             }.build()
         }
+
+        //-----------------------------
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
             database.matchDao().insertFullMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
-                marketDetails = matchFullData.details,
-                selections = matchFullData.selections
+                selections = matchFullData.selections,
+                marketCrossRef = matchFullData.matchMarketCrossRefs,
+                marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
+            database.matchDao().getFullMatch()
+        //-----------------------------
             return resp.data!!.matchList.map { match ->
                 Match(
                     matchId = match.matchId,

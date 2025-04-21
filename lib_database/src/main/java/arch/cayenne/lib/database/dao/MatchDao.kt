@@ -5,11 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.MarketBean
-import arch.cayenne.lib.database.entity.MarketDetailBean
-import arch.cayenne.lib.database.entity.MarketDetailWithSelections
-import arch.cayenne.lib.database.entity.MarketWithMarketDetails
+import arch.cayenne.lib.database.entity.MarketSelectCrossRef
+import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 
@@ -23,43 +24,56 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun insertMarkets(markets: List<MarketBean>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertMarketDetails(details: List<MarketDetailBean>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelections(selections: List<SelectionBean>)
 
-    // 事務性插入 （先後插入主表和子表）
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertMatchMarketCrossRef(crossRef: List<MatchMarketCrossRef>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertMarketSelectionCrossRef(crossRef: List<MarketSelectCrossRef>)
+
+    @Transaction
+    @Query("SELECT * FROM MatchBean ")
+    abstract suspend fun getAllMatch() : List<MatchBean>
+
+    @Transaction
+    @Query("SELECT * " +
+            "FROM MarketBean market " +
+            "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
+            "WHERE market.marketId = ref.marketId ")
+    abstract suspend fun geMarkets(matchId: Long): List<MarketBean>
+
+    @Transaction
+    @Query("SELECT * " +
+            "FROM SelectionBean sel " +
+            "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
+            "WHERE sel.selectionId = ref.selectionId ")
+    abstract suspend fun getSelections(matchId: Long, marketId: Long): List<SelectionBean>
+
     @Transaction
     open suspend fun insertFullMatch(
         matches: List<MatchBean>,
         markets: List<MarketBean>,
-        marketDetails: List<MarketDetailBean>,
-        selections: List<SelectionBean>
-    ) {
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+        ) {
         insertMatch(matches)
         insertMarkets(markets)
-        insertMarketDetails(marketDetails)
         insertSelections(selections)
+        insertMatchMarketCrossRef(marketCrossRef)
+        insertMarketSelectionCrossRef(marketSelectCrossRefs)
     }
 
-
-    // 取得 Match + 他的 Markets
     @Transaction
-    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
-    abstract suspend fun getMatchWithMarkets(matchId: Int): MatchWithMarkets
-
-    // 取得 Market + 它的 Details
-    @Transaction
-    @Query("SELECT * FROM MarketBean WHERE marketId IN (:marketIds)")
-    abstract suspend fun getMarketsWithDetails(marketIds: List<Int>): List<MarketWithMarketDetails>
-
-    // 取得 Detail + 它的 Selections
-    @Transaction
-    @Query("SELECT * FROM MarketDetailBean WHERE detailId IN (:detailIds)")
-    abstract suspend fun getDetailsWithSelections(detailIds: List<Int>): List<MarketDetailWithSelections>
-
-    // 查整筆 Match + 所有 Market -> Detail -> Selection
-    @Transaction
-    @Query("SELECT * FROM MatchBean WHERE matchId = :id")
-    abstract suspend fun getFullMatchById(id: Long): MatchWithMarkets?
+    open suspend fun getFullMatch(): List<MatchWithMarkets> {
+        return getAllMatch().map { matchBean ->
+            val markets = geMarkets(matchBean.matchId).map { marketBean ->
+                val selections = getSelections(matchBean.matchId, marketBean.marketId)
+                "KC_ matchId = ${matchBean.matchId}  marketId = ${marketBean.marketId} selection size = ${selections.size}".loge("KC_")
+                MarketWithSelections(marketBean, selections)
+            }
+            MatchWithMarkets(matchBean, markets)
+        }
+    }
 }
