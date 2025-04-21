@@ -19,7 +19,7 @@ class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao):
 
     /***
      * 新增投注資料
-     * @return matchId 若返回參數，則為單注
+     * @return type 返回單注or串關
      */
     suspend fun setSelection(matchId: Long, selectionId: Long) = withContext(scope.coroutineContext) {
         val isSingle = betDao.getBetSheet().isEmpty()
