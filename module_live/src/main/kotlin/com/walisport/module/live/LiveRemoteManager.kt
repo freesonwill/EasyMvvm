@@ -30,5 +30,23 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
     }
 
+    //获取阵容实时数据
+    suspend fun getMatchLiveReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchLineupDetail? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLineupResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_LINEUP
+        ) {
+            Client.MatchLineupReq.newBuilder().apply {
+                this.matchId = matchId.toInt()
+            }.build()
+        }
+        if(result.error != null && result.data != null){
+            return result.data!!.matchLineupDetail
+        }
+        return null
+    }
+
+
 
 }
