@@ -2,19 +2,22 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeGameListBinding>() {
@@ -49,7 +52,16 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
         }
         mViewModel.matchListChange.observe(this) { matchList ->
             //TODO 處理賽事卡片UI
-            matchAdapter.submitList(matchList)
+            matchAdapter.submitList(matchList).apply {
+                // TODO 測試代碼
+                lifecycleScope.launch {
+                    val item = matchList.first()
+                    val id = homeViewModel.setSelection(item.match.matchId, item.markets.first().selections.first().selectionId)
+                    if (id == BetTypeEnum.SINGLE) {
+                        BetSheetFragment.newInstance(item.match.matchId).show(childFragmentManager)
+                    }
+                }
+            }
         }
     }
 

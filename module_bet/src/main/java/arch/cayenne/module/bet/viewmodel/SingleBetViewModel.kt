@@ -4,8 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
@@ -15,13 +16,13 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     private val _onBetSheetListener = MutableLiveData<BetBean>()
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
-    private val _onBalanceListener = MutableLiveData(123456)
-    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData(123456L)
+    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds *= data.selection.odds
+            odds *= data.selectionLiteBean.odds.toOdds()
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -34,7 +35,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-               money.toValue().getOdds(odds)
+               money.toMoney().getMoney(odds)
             }
         }
     }
@@ -53,7 +54,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
 
     fun sendBet() {
         val id = _onBetSheetListener.value?.matchId ?: return
-        val money = onEditNumber.value?.toValue() ?: return
+        val money = onEditNumber.value?.toMoney() ?: return
         betRepo.sendBet(id, money)
     }
 

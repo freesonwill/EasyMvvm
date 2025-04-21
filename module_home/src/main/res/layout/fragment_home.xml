@@ -67,26 +67,6 @@
             android:layout_marginTop="30dp"
             android:text="到设置页" />
 
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
-
-            <TextView
-                android:id="@+id/tv10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:padding="10dp"
-                android:text="添加注單" />
-
-        </LinearLayout>
-
         <TextView
             android:id="@+id/tv11"
             android:layout_width="wrap_content"
