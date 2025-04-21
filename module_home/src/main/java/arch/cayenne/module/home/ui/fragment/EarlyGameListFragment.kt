@@ -2,11 +2,9 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import arch.cayenne.lib.common.extension.sharedViewModel
-import arch.cayenne.module.home.R
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel
 import arch.cayenne.module.home.viewmodel.EarlyGameListViewModel

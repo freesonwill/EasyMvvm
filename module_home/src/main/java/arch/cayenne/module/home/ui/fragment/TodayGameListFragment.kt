@@ -6,6 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetTypeEnum

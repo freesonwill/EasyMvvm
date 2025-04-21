@@ -3,7 +3,7 @@ package com.walisport.module.setting.data
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
-import arch.cayenne.lib.common.enums.SkinType
+import arch.cayenne.lib.common.data.SkinType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

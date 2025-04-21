@@ -3,7 +3,7 @@ package com.walisport.app.data
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
-import arch.cayenne.lib.common.enums.SkinType
+import arch.cayenne.lib.common.data.SkinType
 import arch.cayenne.lib.common.helper.CountDownHelper
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -15,7 +15,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
-import org.koin.java.KoinJavaComponent.inject
 
 class SplashRepository(
     override val scope: CoroutineScope,
