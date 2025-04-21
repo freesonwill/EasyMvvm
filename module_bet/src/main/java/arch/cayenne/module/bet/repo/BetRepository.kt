@@ -27,6 +27,7 @@ class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao):
         val match = matchDao.getOneMatchById(matchId)
         val selections = matchDao.getSelectionById(selectionId)
 
+        // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
         if (betBean == null) {
             scope.launch {
                 getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
