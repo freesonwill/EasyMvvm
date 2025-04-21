@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.viewBind
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.extension.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
+import galaxy.client.proto.Sloth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -23,15 +26,27 @@ import kotlin.reflect.KClass
 class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupBinding>() {
     override val vbClass: KClass<FragmentLiveLineupBinding> = FragmentLiveLineupBinding::class
     override val vmClass: KClass<LiveLineupViewModel> = LiveLineupViewModel::class
-
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewModel.geMatchLineupDetail(mainViewModel.matchId)
     }
 
     override fun initListener() {
+
     }
 
     override fun createObserver() {
+        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
+            it?.let {
+                upData(it)
+            }?:run {
+
+            }
+        }
     }
 
+    private fun upData(data: Sloth.MatchLineupDetail) {
+        LogUtils.dTag(TAG,"MatchLineupDetail----->${data}")
+    }
 }
