@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.extension
+package arch.cayenne.lib.common.utils.ext
 
 fun String.getHomeScore(): String {
     return if (this.contains(":")) this.substringBefore(":").trim() else ""

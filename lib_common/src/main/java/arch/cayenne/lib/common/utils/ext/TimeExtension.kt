@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.extension
+package arch.cayenne.lib.common.utils.ext
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -13,7 +13,7 @@ fun Int.toMinuteSecondFormat(): String {
 
 fun Long.toLocalDateTimeString(): String {
     val date = Date(this) // this = timestamp in milliseconds
-    val sdf = SimpleDateFormat("MM月dd日 HH时mm分ss秒", Locale.getDefault())
+    val sdf = SimpleDateFormat("MMdd HHmmss", Locale.getDefault())
     sdf.timeZone = TimeZone.getDefault()
     return sdf.format(date)
 }
