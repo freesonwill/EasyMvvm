@@ -11,7 +11,7 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 @Dao
 abstract class TournamentDao: BaseDao<TournamentBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertTournamentRef(data: List<SportTournamentCrossRef>)
+    abstract fun insertTournamentRef(data: List<SportTournamentCrossRef>): List<Long>
     @Query("SELECT tb.id as id , tb.name as name, tb.simpleName as simpleName, tb.icon as icon, weight as weight " +
             "FROM SportTournamentCrossRef " +
             "INNER JOIN TournamentBean tb ON tb.id = tournamentId " +

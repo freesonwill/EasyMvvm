@@ -4,7 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SportBean
-import arch.cayenne.lib.database.entity.SportCategory
+import arch.cayenne.lib.database.entity.PlayTypeSportCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -23,12 +23,11 @@ class HomeRepository(
     private val database: GameDatabase
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
-    private val sportCategoryDao = database.sportCategoryDao()
     private val tournamentDao = database.tournamentDao()
 
-    suspend fun getSportStatistical(playType: Int): List<SportCategory>? {
+    suspend fun getSportStatistical(playType: Int): List<PlayTypeSportCrossRef>? {
         //先從DB拿取
-        val queryResult = sportCategoryDao.querySportsMatchCount(playType)
+        val queryResult = sportDao.querySportsMatchCount(playType)
         if (queryResult.isNotEmpty()) {
             return queryResult
         }
@@ -48,9 +47,9 @@ class HomeRepository(
         }
 
     }
-    private fun saveSports(playType: Int, data: Client.StatisticalResp): List<SportCategory> {
+    private fun saveSports(playType: Int, data: Client.StatisticalResp): List<PlayTypeSportCrossRef> {
         val sportMap = hashMapOf<Int, SportBean>()
-        val categoryList = arrayListOf<SportCategory>()
+        val categoryList = arrayListOf<PlayTypeSportCrossRef>()
         data.statisticalList.forEach { play ->
             play.sportStatisticalList.forEachIndexed { index, sport ->
                 val bean = SportBean(
@@ -58,7 +57,7 @@ class HomeRepository(
                     sportName = sport.sportName,
                 )
                 sportMap[bean.sportId] = bean
-                val category = SportCategory(
+                val category = PlayTypeSportCrossRef(
                     sportId = sport.sportId,
                     playType = play.playType,
                     matchCount = sport.matchCount,
@@ -68,8 +67,8 @@ class HomeRepository(
             }
         }
         sportDao.insert(sportMap.map{ it.value }.toList())
-        sportCategoryDao.insert(categoryList)
-        return sportCategoryDao.querySportsMatchCount(playType)
+        sportDao.insertSportCrossRef(categoryList)
+        return sportDao.querySportsMatchCount(playType)
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
