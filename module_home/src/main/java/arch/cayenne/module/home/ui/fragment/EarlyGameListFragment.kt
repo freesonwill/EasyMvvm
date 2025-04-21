@@ -49,7 +49,7 @@ class EarlyGameListFragment : BaseFragment<EarlyGameListViewModel, FragmentHomeG
         }
         mViewModel.matchListChange.observe(this) {
             //TODO 處理賽事卡片UI
-            "賽事size: ${it.map { "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}" }.toList()}".logi(this::class.java.simpleName)
+
         }
     }
 
