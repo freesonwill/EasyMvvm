@@ -3,13 +3,13 @@ package arch.cayenne.module.home.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.module.home.data.Match
+import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.compare.MatchItemCompare
 import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
-    BaseAdapter<Match, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
+    BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
     override fun convertPlus(
         holder: MatchItemViewHolder,
         binding: ItemMatchCardBinding,
@@ -38,6 +38,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     }
 
     interface OnMatchItemClickListener {
-        fun onLiveEntryClick(item: Match)
+        fun onLiveEntryClick(item: MatchWithMarkets)
     }
 }

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_120"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SportImageView
+            android:id="@+id/iv_home_cloth"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:layout_marginStart="@dimen/dp_31"
+            android:layout_marginTop="@dimen/dp_27"
+            android:background="@drawable/icon_home_cloth"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/tv_home_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/bg_shape_win"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_3"
+            android:textColor="@color/color_52AF6B"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintEnd_toEndOf="@+id/iv_home_cloth"
+            app:layout_constraintStart_toStartOf="@+id/iv_home_cloth"
+            app:layout_constraintTop_toBottomOf="@+id/iv_home_cloth" />
+
+        <arch.cayenne.lib.skin.widget.SportImageView
+            android:id="@+id/iv_away_cloth"
+            android:layout_width="@dimen/dp_36"
+            android:layout_height="@dimen/dp_36"
+            android:layout_marginEnd="@dimen/dp_31"
+            android:layout_marginTop="@dimen/dp_27"
+            android:background="@drawable/icon_away_cloth"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/tv_away_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@drawable/bg_shape_lose"
+            android:gravity="center"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingTop="@dimen/dp_3"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_3"
+            android:textColor="@color/color_EA4A69"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintEnd_toEndOf="@+id/iv_away_cloth"
+            app:layout_constraintStart_toStartOf="@+id/iv_away_cloth"
+            app:layout_constraintTop_toBottomOf="@+id/iv_away_cloth" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/tv_game_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_30"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_22"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/tv_let_ball_msg"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:gravity="center"
+            android:lines="2"
+            android:textColor="@color/color_929298"
+            android:textSize="@dimen/sp_12"
+            app:layout_constraintTop_toBottomOf="@+id/tv_game_score"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <arch.cayenne.lib.skin.widget.SportView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="@color/color_23252F"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
