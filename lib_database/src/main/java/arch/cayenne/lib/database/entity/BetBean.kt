@@ -29,7 +29,7 @@ data class BetBean(
     var minAmount: Long, // 最小下注金额
     var maxAmount: Long, // 最大下注金额
     var isBetStop: Boolean = false, // 是否停止下注
-    val isPlaying: Boolean = false, // 是否滾球
+    var isPlaying: Boolean = false, // 是否滾球
 )
 
 /***
