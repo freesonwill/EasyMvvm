@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.TournamentCategory
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.SportDataModel
@@ -12,6 +13,7 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -89,8 +91,10 @@ class HomeViewModel : BaseViewModel() {
 //        currentTournament[sportId] = tournamentId
 //    }
 
-    suspend fun setSelection(matchId: Long, selectionId: Long): Long? {
-        return viewModelScope.async {
+    suspend fun setSelection(matchId: Long, selectionId: Long): BetTypeEnum {
+        return viewModelScope.async(Dispatchers.IO) {
+            // TODO 測試代碼
+            delay(5_000L)
             betRepository.setSelection(matchId, selectionId)
         }.await()
     }

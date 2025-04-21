@@ -56,9 +56,9 @@ class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao):
             }
         }
         if (isSingle) {
-            matchId
+            BetTypeEnum.SINGLE
         } else {
-            null
+            BetTypeEnum.COMBO
         }
     }
 
