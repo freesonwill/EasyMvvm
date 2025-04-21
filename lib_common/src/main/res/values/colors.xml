@@ -10,6 +10,8 @@
     <color name="search_text">#ffffff</color>
     <color name="tran_0">#00000000</color>
 
+    <color name="color_80000000">#80000000</color>
+
     <color name="title_bg">#0e0f19</color>
     <color name="title_bar">#e6e6e6</color>
 
@@ -17,4 +19,5 @@
     <color name="dialog_title">#00D271</color>
     <color name="secondary_text">#929298</color>
     <color name="district_line">#f7f7f7</color>
+
 </resources>
