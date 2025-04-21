@@ -2,8 +2,8 @@ package arch.cayenne.module.home.ui.viewholder
 
 import android.widget.TextView
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.getAwayScore
-import arch.cayenne.lib.common.utils.ext.getHomeScore
+import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
+import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
