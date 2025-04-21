@@ -23,7 +23,7 @@
     <string name="standings_red">红牌</string>
     <string name="standings_up">换上</string>
     <string name="standings_down">换下</string>
-
+    <string name="standings_out_line">出线区</string>
     <string name="technical_statistics">技术统计</string>
 
     <string-array name="bet_slip_menus">

@@ -1,14 +1,20 @@
 package arch.cayenne.module.bet.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.module.bet.data.ComboRateBean
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 
-class ComboRateCompare: DiffUtil.ItemCallback<ComboRateBean>() {
-    override fun areItemsTheSame(oldItem: ComboRateBean, newItem: ComboRateBean): Boolean {
-        return oldItem.combo == newItem.combo && oldItem.money == newItem.money
+class ComboRateCompare: DiffUtil.ItemCallback<ComboMultiBetBean>() {
+    override fun areItemsTheSame(oldItem: ComboMultiBetBean, newItem: ComboMultiBetBean): Boolean {
+        return oldItem.combo == newItem.combo // 判斷唯一 ID
     }
 
-    override fun areContentsTheSame(oldItem: ComboRateBean, newItem: ComboRateBean): Boolean {
-        return oldItem == newItem
+    override fun areContentsTheSame(oldItem: ComboMultiBetBean, newItem: ComboMultiBetBean): Boolean {
+        return oldItem == newItem // 這裡要小心，可能會導致畫面不刷新
+    }
+
+    override fun getChangePayload(oldItem: ComboMultiBetBean, newItem: ComboMultiBetBean): Any? {
+        return if (oldItem.inputMoney != newItem.inputMoney) {
+            "MONEY_CHANGED"
+        } else null
     }
 }

@@ -8,18 +8,17 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
-import com.walisport.module.live.data.model.VideoSourceBean
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
-import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemLayoutBinding
 
 
-class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
-    BaseAdapter<VideoSourceBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
+class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<LiveVideoBean>) :
+    BaseAdapter<LiveVideoBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare
     ) {
 
@@ -46,15 +45,15 @@ class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourc
                 .into(viewBinding.ivThumb)
 
             viewBinding.root.setOnClickListener{
-                listener(item.sources)
+                listener(item.id)
             }
 
         }
     }
 
-    private lateinit var listener: (String) -> Unit
+    private lateinit var listener: (Int) -> Unit
 
-    fun setOnClickListener(listener: (String) -> Unit) {
+    fun setOnClickListener(listener: (Int) -> Unit) {
         this.listener = listener
     }
 

@@ -68,12 +68,6 @@
             android:text="到设置页" />
 
 
-        <TextView
-            android:id="@+id/tv8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="直播页" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -84,21 +78,12 @@
             android:gravity="center_horizontal">
 
             <TextView
-                android:id="@+id/tv9"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:text="下注彈窗" />
-
-            <TextView
                 android:id="@+id/tv10"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:padding="10dp"
                 android:text="添加注單" />
-
-
 
         </LinearLayout>
 
@@ -108,6 +93,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="搜索页" />
+
+        <TextView
+            android:id="@+id/tv12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="盘口教程页" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

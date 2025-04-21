@@ -68,24 +68,26 @@
             tools:listitem="@layout/item_bet_sheet" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/cl_rate"
+            android:id="@+id/cl_multi_bet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="10dp"
             android:background="@drawable/bg_bet_sheet"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cl_rate_title"
+                android:id="@+id/cl_multi_bet_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_combo_bet_rate"
+                android:background="@drawable/bg_combo_multi_bet"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <LinearLayout
-                    android:id="@+id/ll_rate_collapse"
+                    android:id="@+id/ll_multi_bet_collapse"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:gravity="center"
@@ -98,10 +100,10 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/icom_combo_bet_ham"/>
+                        android:src="@mipmap/icom_combo_bet_ham" />
 
                     <TextView
-                        android:id="@+id/tv_rate_expand"
+                        android:id="@+id/tv_multi_bet_expand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -111,19 +113,19 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_rate_bet_title"
+                    android:id="@+id/tv_sum_bet_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="10dp"
+                    android:layout_marginEnd="5dp"
                     android:text="@string/title_combo_bet_money"
                     android:textColor="@color/color_bet_sheet_text_second"
                     android:textSize="13sp"
-                    app:layout_constraintBottom_toBottomOf="@id/tv_rate_bet_money"
-                    app:layout_constraintEnd_toStartOf="@id/tv_rate_bet_money"
-                    app:layout_constraintTop_toTopOf="@id/tv_rate_bet_money" />
+                    app:layout_constraintBottom_toBottomOf="@id/tv_sum_bet_money"
+                    app:layout_constraintEnd_toStartOf="@id/tv_sum_bet_money"
+                    app:layout_constraintTop_toTopOf="@id/tv_sum_bet_money" />
 
                 <TextView
-                    android:id="@+id/tv_rate_bet_money"
+                    android:id="@+id/tv_sum_bet_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
@@ -135,15 +137,15 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_rate"
+                android:id="@+id/rv_multi_bet"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingHorizontal="12dp"
                 android:paddingBottom="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toBottomOf="@id/cl_rate_title"
+                app:layout_constraintTop_toBottomOf="@id/cl_multi_bet_title"
                 tools:itemCount="1"
-                tools:listitem="@layout/item_combo_rate" />
+                tools:listitem="@layout/item_combo_multi_bet" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

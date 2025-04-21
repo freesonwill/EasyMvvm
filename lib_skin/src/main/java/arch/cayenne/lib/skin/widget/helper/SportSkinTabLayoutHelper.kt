@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget.helper
 import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
+import android.util.Log
 import com.google.android.material.R
 import com.google.android.material.tabs.TabLayout
 
@@ -57,9 +58,9 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
         if (checkResourceIdValid(tabBackground)) {
                 for (i in 0 until mView.tabCount) {
                     val tab = mView.getTabAt(i)
-                    if(tab?.view?.isAttachedToWindow == true){
-                        tab?.view?.setBackgroundResource(tabBackground)
-                    }
+//                    if(tab?.view?.isAttachedToWindow == true){
+                        tab?.view?.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context,tabBackground))
+//                    }
             }
         }
     }

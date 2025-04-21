@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel" />
@@ -101,12 +100,16 @@
             android:id="@+id/keyboard_tb"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
+            android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_11"
             android:background="@color/card_solid"
             app:layout_constraintTop_toBottomOf="@id/live_chat_ll_search"
             app:tabIndicatorFullWidth="false"
+            app:tabMaxWidth="@dimen/dp_42"
+            app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
             app:tabIndicatorHeight="0dp"
-            app:tabMode="auto" />
+            app:tabMode="scrollable" />
 
         <View
             android:id="@+id/line"

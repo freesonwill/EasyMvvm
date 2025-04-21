@@ -7,6 +7,8 @@ import android.view.Gravity
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
@@ -77,7 +79,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
         val rate = requireArguments().getString(ODDS_NUMBER)
         if (!rate.isNullOrEmpty()) {
-            mViewModel.setNumber(rate.toFloat())
+            mViewModel.setNumber(rate.toValue())
         }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
@@ -94,7 +96,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             }
 
             override fun getOtherText(): String {
-                return "+${mViewModel.mixRate}"
+                return "+${mViewModel.minOdds.getOdds()}"
             }
 
         })

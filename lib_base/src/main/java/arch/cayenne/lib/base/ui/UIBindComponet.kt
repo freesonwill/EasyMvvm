@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
@@ -21,7 +22,7 @@ class UIBindComponent<UIOwner, VM, VB>(
     private val uiOwner: UIOwner,
     private val vmProvider: () -> VM,
     private val vbProvider: (container: ViewGroup?) -> VB,
-) where UIOwner : LifecycleOwner, UIOwner : IView,
+) where UIOwner : IView, UIOwner : LifecycleOwner,
         VM : BaseViewModel,
         VB : ViewBinding {
 
@@ -34,8 +35,8 @@ class UIBindComponent<UIOwner, VM, VB>(
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) {
         _binding = vbProvider(container)
         _viewModel = vmProvider()
-        if (binding is ViewDataBinding) {
-            (binding as ViewDataBinding).lifecycleOwner = uiOwner
+        (binding as? ViewDataBinding)?.let {
+            it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
         }
     }
 

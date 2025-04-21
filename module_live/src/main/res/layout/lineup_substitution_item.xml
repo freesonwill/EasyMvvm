@@ -47,13 +47,13 @@
     android:layout_weight="1"
       android:orientation="vertical"
       android:layout_height="wrap_content">
-    <androidx.appcompat.widget.AppCompatTextView
+    <arch.cayenne.lib.skin.widget.SportTextView
         android:layout_marginStart="7dp"
         android:layout_width="wrap_content"
         android:text="meixi"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:textColor="@color/substitution_text_color"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
     <androidx.appcompat.widget.AppCompatTextView
@@ -66,14 +66,14 @@
         tools:ignore="MissingConstraints" />
 
   </androidx.appcompat.widget.LinearLayoutCompat>
-  <androidx.appcompat.widget.AppCompatTextView
+  <arch.cayenne.lib.skin.widget.SportTextView
       android:gravity="center_vertical"
       android:layout_width="wrap_content"
       android:text="79 '"
       android:drawablePadding="7dp"
       android:textSize="@dimen/sp_14"
       android:textStyle="bold"
-      android:textColor="@color/white"
+      android:textColor="@color/substitution_text_color"
       android:drawableStart="@drawable/lineup_substitution_top"
       android:drawableEnd="@drawable/lineup_substitution_dow"
       android:layout_height="match_parent"
@@ -86,13 +86,13 @@
       android:gravity="right"
       android:orientation="vertical"
       android:layout_height="wrap_content">
-    <androidx.appcompat.widget.AppCompatTextView
+    <arch.cayenne.lib.skin.widget.SportTextView
         android:layout_marginEnd="7dp"
         android:layout_width="wrap_content"
         android:text="meixi"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
-        android:textColor="@color/white"
+        android:textColor="@color/substitution_text_color"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
     <androidx.appcompat.widget.AppCompatTextView

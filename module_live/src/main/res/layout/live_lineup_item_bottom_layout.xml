@@ -172,7 +172,7 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:layout_width="wrap_content"
             android:padding="5dp"
             android:background="@drawable/lineup_compare_bg"
@@ -199,7 +199,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

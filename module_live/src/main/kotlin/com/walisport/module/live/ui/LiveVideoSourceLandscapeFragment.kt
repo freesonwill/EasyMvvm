@@ -33,7 +33,7 @@ class LiveVideoSourceLandscapeFragment :
                 }
 
                 setOnClickListener {
-                    mViewModel.setPlayingVideoUrl(it)
+                    mViewModel.setPlayingVideoId(it)
                 }
             }
         }

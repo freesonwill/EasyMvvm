@@ -1,10 +1,14 @@
 package arch.cayenne.module.bet
 
-import arch.cayenne.lib.common.utils.ext.IntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.remote.ComboBetDataModel
+import arch.cayenne.module.bet.data.remote.ComboMultiBetInfo
 import arch.cayenne.module.bet.data.remote.ReserveBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleBetDataModel
 import galaxy.client.proto.Client
@@ -62,6 +66,57 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
             ReserveBetDataModel(
                 data.success,
                 data.message
+            )
+        } else {
+            null
+        }
+    }
+
+    suspend fun comboBet(
+        scope: CoroutineScope,
+        beans: List<BetBean>,
+        multi: List<ComboMultiBetBean>
+    ): ComboBetDataModel? {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.MultipleBetResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.COMBO_BET,
+        ) {
+            Client.MultipleBetReq.newBuilder().apply {
+                this.addAllBet(
+                    beans.map {
+                        Common.BetOption.newBuilder().apply {
+                            this.matchId = it.matchId.toLong()
+                            this.selectionId = it.selection.id.toLong()
+                            this.odds = it.selection.odds.getOdds()
+                        }.build()
+                    }
+                )
+                this.addAllCombo(
+                    multi.map {
+                        Common.BetCombo.newBuilder().apply {
+                            this.serialValue = if (it.combo == 1) 0 else it.combo
+                            this.betAmount = it.inputMoney.getMoney()
+                            this.oddsChange = 2
+                        }.build()
+                    }
+                )
+            }.build()
+        }
+        return if (res.error == null && res.data != null) {
+            val data = res.data!!
+            val placeBetInfo = data.placeBetInfoList.map {
+                ComboMultiBetInfo(
+                    orderId = it.orderId,
+                    comboValue = it.serialValue,
+                    orderStatus = it.orderStatus,
+                    orderStatusMsg = it.orderStatusMsg
+                )
+            }
+            ComboBetDataModel(
+                data.success,
+                data.message,
+                placeBetInfo
             )
         } else {
             null

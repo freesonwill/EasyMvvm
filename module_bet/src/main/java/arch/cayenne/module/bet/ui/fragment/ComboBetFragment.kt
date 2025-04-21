@@ -7,13 +7,17 @@ import arch.cayenne.lib.base.ui.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
 import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
-import arch.cayenne.module.bet.ui.adapter.ComboRateAdapter
+import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import kotlin.reflect.KClass
@@ -41,25 +45,29 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         })
     }
 
-    private val comboRateAdapter by lazy {
-        ComboRateAdapter(object : ComboRateAdapter.OnComboRateClickListener {
-            override fun onEditRateClick(id: Int, locationX: Int, locationY: Int, rate: String) {
-                childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == KEY_RESULT) {
-                        parentFragmentManager.clearFragmentResultListener(
-                            KEY_RESULT
-                        )
-                        val money = bundle.getString(VALUE_MONEY_INPUT, "")
-                        mViewModel.updateRateMoney(id, money)
+    private val comboMultiBetAdapter by lazy {
+        ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
+            override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
+                mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
+                    childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
+                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
+                        if (resultKey == KEY_RESULT) {
+                            val money = bundle.getInt(VALUE_MONEY_INPUT, 0)
+                            mViewModel.updateMultiBetMoney(id, money)
+                        }
                     }
+                    val currentMoney = if (it.inputMoney == 0) null else it.inputMoney
+                    val minAmount = it.minAmount
+                    val maxAmount = it.maxAmount
+                    val remainingMoney = mViewModel.remainingBalance / it.count
+                    ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount, remainingMoney).show(childFragmentManager)
                 }
-                ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, rate).show(childFragmentManager)
             }
         })
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        (mBinding.rvRate.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
         mBinding.rvBet.adapter = betSheetAdapter
@@ -67,7 +75,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         val decoration = BetSheetDecoration(6.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
 
-        mBinding.rvRate.adapter = comboRateAdapter
+        mBinding.rvMultiBet.adapter = comboMultiBetAdapter
     }
 
     override fun initListener() {
@@ -77,12 +85,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.btnDelete.setOnClickListener {
             mViewModel.removeAll()
         }
-        mBinding.llRateCollapse.setOnClickListener {
-            comboRateAdapter.toggleExpand()
-            if (comboRateAdapter.isExpanded) {
-                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_collapse)
+        mBinding.llMultiBetCollapse.setOnClickListener {
+            comboMultiBetAdapter.toggleExpand()
+            if (comboMultiBetAdapter.isExpanded) {
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
             } else {
-                mBinding.tvRateExpand.text = getString(R.string.title_combo_bet_odds_expand)
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
             }
         }
         mBinding.clBet.setOnClickListener {
@@ -105,19 +113,34 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         var hasLockBetSheetView = false
-        mViewModel.onComboRateListener.observe(viewLifecycleOwner) {
-            comboRateAdapter.submitList(it) {
+        mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
+            comboMultiBetAdapter.submitList(it) {
                 if (!hasLockBetSheetView) {
                     hasLockBetSheetView = true
                     setBetSheetView()
                 }
             }
+            setSumBetMoney(it)
         }
+        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
+            val money = "\$ ${it.getFormalMoney()}"
+            mBinding.tvBalance.text = money
+        }
+    }
+
+    private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
+        val sumMoney = data.sumOf { it.amount }
+        val money = "\$${sumMoney.getMoney()}"
+        mBinding.tvSumBetMoney.text = money
+
+        val winMoney = data.sumOf { it.maxWinMoney }
+        val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getOdds())
+        mBinding.tvBetMoney.text = sumWinMoney
     }
 
     private fun setBetSheetView() {
         mBinding.root.post {
-            val paddingBottom = mBinding.clRate.height + 22.dp2px
+            val paddingBottom = mBinding.clMultiBet.height + 22.dp2px
             mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
         }
     }
