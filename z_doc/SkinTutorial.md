@@ -65,3 +65,4 @@ override fun onAttachedToWindow() {
 private val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
 sportSkinManager.changeLanguage(Locale.SIMPLIFIED_CHINESE)
 ```
+注:  - Tablayout的 tabBackground 属性因为换肤后阴影问题修改，SportTablayout使用sportTabBackground替换tabBackground

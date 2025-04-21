@@ -3,7 +3,7 @@ package arch.cayenne.lib.skin.widget.helper
 import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import com.google.android.material.R
+import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
 
 class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
@@ -19,12 +19,14 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         var a: TypedArray? = null
         try {
-            a = mView.context.obtainStyledAttributes(attrs, R.styleable.TabLayout)
-            indicatorColor = a!!.getResourceId(R.styleable.TabLayout_tabIndicator, INVALID_ID)
-            tabBackground = a!!.getResourceId(R.styleable.TabLayout_tabBackground, INVALID_ID)
-            textColor = a!!.getResourceId(R.styleable.TabLayout_tabTextColor, INVALID_ID)
+            a = mView.context.obtainStyledAttributes(attrs, R.styleable.SportTabLayoutHelper)
+            indicatorColor =
+                a!!.getResourceId(R.styleable.SportTabLayoutHelper_tabIndicatorColor, INVALID_ID)
+            tabBackground =
+                a!!.getResourceId(R.styleable.SportTabLayoutHelper_sportTabBackground, INVALID_ID)
+            textColor = a!!.getResourceId(R.styleable.SportTabLayoutHelper_tabTextColor, INVALID_ID)
             textSelectedColor =
-                a!!.getResourceId(R.styleable.TabLayout_tabSelectedTextColor, INVALID_ID)
+                a!!.getResourceId(R.styleable.SportTabLayoutHelper_tabSelectedTextColor, INVALID_ID)
         } finally {
             a?.recycle()
         }
@@ -44,23 +46,23 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
         if (checkResourceIdValid(textColor)) {
             val normal = resourcesManager.getColor(context, textColor)
             val selectd = resourcesManager.getColor(context, textSelectedColor)
-
             if (checkResourceIdValid(normal) && checkResourceIdValid(selectd)) {
                 mView.setTabTextColors(normal, selectd)
             }
         }
-        updateTabItemBack()
+        updateTabBackground()
     }
 
 
-    private fun updateTabItemBack() {
-        if (checkResourceIdValid(tabBackground)) {
-                for (i in 0 until mView.tabCount) {
-                    val tab = mView.getTabAt(i)
-//                    if(tab?.view?.isAttachedToWindow == true){
-                        tab?.view?.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context,tabBackground))
-//                    }
-            }
+    private fun updateTabBackground() {
+        for (i in 0 until mView.tabCount) {
+            val tab = mView.getTabAt(i)
+            tab?.view?.setBackgroundResource(
+                resourcesManager.getTargetResourceId(
+                    mView.context,
+                    tabBackground
+                )
+            )
         }
     }
 

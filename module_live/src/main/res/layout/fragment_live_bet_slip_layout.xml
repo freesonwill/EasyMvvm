@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:background="@color/color_0E0F1A"
             app:layout_constraintTop_toTopOf="parent"
-            app:tabBackground="@drawable/selector_betslip_tab"
+            app:sportTabBackground="@drawable/tab_selected_background"
             app:tabGravity="fill"
             app:tabIndicatorAnimationMode="elastic"
             app:tabIndicatorColor="@android:color/transparent"
@@ -35,7 +35,6 @@
             app:tabTextAppearance="@style/betSlipTabText"
             app:tabTextColor="@color/secondary_text"
             tools:ignore="SpeakableTextPresentCheck" />
-
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
