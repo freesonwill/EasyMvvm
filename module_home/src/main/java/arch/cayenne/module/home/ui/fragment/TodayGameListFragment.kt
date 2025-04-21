@@ -8,7 +8,7 @@ import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.module.home.data.Match
+import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
@@ -26,8 +26,8 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
-                override fun onLiveEntryClick(item: Match) {
-                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.matchId}&sportId=${item.basicInfo.sportId}"))
+                override fun onLiveEntryClick(item: MatchWithMarkets) {
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
@@ -50,9 +50,6 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
         mViewModel.matchListChange.observe(this) { matchList ->
             //TODO 處理賽事卡片UI
             matchAdapter.submitList(matchList)
-            "joseph 賽事size: ${
-                matchList.map { "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}" }.toList()
-            }".logi(this::class.java.simpleName)
         }
     }
 
