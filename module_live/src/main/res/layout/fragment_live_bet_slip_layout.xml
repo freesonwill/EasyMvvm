@@ -23,13 +23,11 @@
             android:background="@color/color_0E0F1A"
             app:layout_constraintTop_toTopOf="parent"
             app:tabBackground="@drawable/selector_betslip_tab"
-            app:tabGravity="fill"
             app:tabIndicatorAnimationMode="elastic"
             app:tabIndicatorColor="@android:color/transparent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="0dp"
-            app:tabPaddingStart="@dimen/dp_16"
-            app:tabMode="auto"
+            app:tabMode="scrollable"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/theme_text"
             app:tabTextAppearance="@style/betSlipTabText"
@@ -37,17 +35,17 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
 
-        <androidx.viewpager2.widget.ViewPager2
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/dp_8"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/tabLayout"
-            android:layout_marginHorizontal="@dimen/dp_8"
-            app:layout_constraintBottom_toBottomOf="parent"
-            />
+            app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

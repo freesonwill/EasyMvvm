@@ -1,20 +1,22 @@
 package com.walisport.module.live.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import arch.cayenne.lib.base.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
+import com.walisport.module.live.ui.adapter.LiveBetSlipTabAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import org.koin.android.ext.android.inject
+import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 /**
@@ -28,25 +30,17 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
+        initRecycler()
     }
 
     private fun initMenu() {
         with(mBinding) {
             val array = resources.getStringArray(R.array.bet_slip_menus)
-            val list = listOf(
-                PagerBean(array[0]) { LiveBetSlipUnsettledFragment() },
-                PagerBean(array[1]) { LiveBetSlipConfirmFragment() },
-                PagerBean(array[2]) { LiveBetSlipSettledFragment() },
-                PagerBean(array[3]) { LiveBetSlipReserveFragment() },
-                PagerBean(array[4]) { LiveBetSlipExpiredFragment() },
-            )
-            viewpager.adapter = null
-            viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-
-            TabLayoutMediator(tabLayout, viewpager) { tab, position ->
-                tab.text = list[position].title
-            }.attach()
-
+            array.forEach {
+                val tab = mBinding.tabLayout.newTab()
+                tab.text = it
+                mBinding.tabLayout.addTab(tab)
+            }
             tabLayout.removeAllTips()
             reflexPadding(tabLayout)
         }
@@ -69,8 +63,9 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                             params.width = 74.dp2px
                             params.rightMargin = marginStart
                         }
+
                         else -> {
-                           params.width = 60.dp2px
+                            params.width = 60.dp2px
                         }
                     }
                     tabView.layoutParams = params
@@ -80,6 +75,52 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                 e.printStackTrace()
             }
         }
+    }
+
+    inner class HorizontalLayoutManager(
+        context: Context, @RecyclerView.Orientation orientation: Int,
+        reverseLayout: Boolean
+    ) : LinearLayoutManager(context, orientation, reverseLayout) {
+        override fun canScrollVertically(): Boolean {
+            return false
+        }
+    }
+
+    private fun initRecycler() {
+
+        val list: MutableList<List<Common.Order>> = mutableListOf()
+        val array = resources.getStringArray(R.array.bet_slip_menus)
+        array.forEach {
+            val order = Common.Order.newBuilder().build()
+            val tmpList = arrayListOf(order)
+            list.add(tmpList)
+        }
+        val adapter = LiveBetSlipTabAdapter(object :
+            DiffUtil.ItemCallback<List<Common.Order>>() {
+            override fun areItemsTheSame(
+                oldItem: List<Common.Order>,
+                newItem: List<Common.Order>
+            ): Boolean {
+                return oldItem.size == newItem.size
+            }
+
+            override fun areContentsTheSame(
+                oldItem: List<Common.Order>,
+                newItem: List<Common.Order>
+            ): Boolean {
+                return oldItem.size == newItem.size
+            }
+        })
+        adapter.submitList(list)
+
+        mBinding.viewpager.also {
+            it.isNestedScrollingEnabled = false
+            it.setHasFixedSize(true)
+            it.layoutManager =
+                HorizontalLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            it.adapter = adapter
+        }
+
     }
 
     override fun initListener() {
