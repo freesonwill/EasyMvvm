@@ -49,7 +49,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
                 mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
                     childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
+                        childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
                             val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
                             mViewModel.updateMultiBetMoney(id, money)

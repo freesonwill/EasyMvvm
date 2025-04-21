@@ -36,12 +36,6 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<EmptyViewM
                 arguments = b
             }
         }
-
-        // TODO 此為測試用！！之後會刪除  此為測試用！！之後會刪除  此為測試用！！之後會刪除
-        fun addMockData() {
-            val repo: SingleBetRepository by inject(SingleBetRepository::class.java)
-            repo.addMockData()
-        }
     }
 
     override val vbClass: KClass<FragmentBetSheetBinding>

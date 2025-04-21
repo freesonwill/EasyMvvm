@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.TournamentCategory
+import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.SportDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -17,6 +19,7 @@ import org.koin.core.parameter.parametersOf
 
 class HomeViewModel : BaseViewModel() {
     private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
+    private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
     val currentSportChange by lazy { MutableLiveData<Int>() }
 
@@ -86,4 +89,9 @@ class HomeViewModel : BaseViewModel() {
 //        currentTournament[sportId] = tournamentId
 //    }
 
+    suspend fun setSelection(matchId: Long, selectionId: Long): Long? {
+        return viewModelScope.async {
+            betRepository.setSelection(matchId, selectionId)
+        }.await()
+    }
 }

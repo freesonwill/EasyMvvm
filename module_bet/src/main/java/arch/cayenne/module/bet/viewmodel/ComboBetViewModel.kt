@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -55,7 +56,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             val combinations = data.combinations(k)
 
             val totalRate = combinations.fold(0L) { acc, combo ->
-                acc + combo.fold(1L) { prod, bet -> prod * bet.selection.odds }
+                acc + combo.fold(1L) { prod, bet -> prod * bet.selectionLiteBean.odds.toOdds() }
             }
 
             // 將 totalRate 無條件捨去為倍率的前兩位，例如：39204 -> 392

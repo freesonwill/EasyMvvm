@@ -26,8 +26,8 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         ) {
             Client.SingleBetReq.newBuilder().apply {
                 this.matchId = bean.matchId
-                this.selectionId = bean.selection.id
-                this.odds = bean.selection.odds.getOdds()
+                this.selectionId = bean.selectionLiteBean.id
+                this.odds = bean.selectionLiteBean.odds
                 this.betAmount = money.getMoney()
                 this.oddsChange = 2
             }.build()
@@ -55,8 +55,8 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
             Client.ReserveBetReq.newBuilder().apply {
                 this.setBet(Common.BetOption.newBuilder().apply {
                     this.matchId = bean.matchId
-                    this.selectionId = bean.selection.id
-                    this.odds = bean.selection.odds.getOdds()
+                    this.selectionId = bean.selectionLiteBean.id
+                    this.odds = bean.selectionLiteBean.odds
                 })
                 this.betAmount = money.getMoney()
             }.build()
@@ -87,8 +87,8 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
                     beans.map {
                         Common.BetOption.newBuilder().apply {
                             this.matchId = it.matchId
-                            this.selectionId = it.selection.id
-                            this.odds = it.selection.odds.getOdds()
+                            this.selectionId = it.selectionLiteBean.id
+                            this.odds = it.selectionLiteBean.odds
                         }.build()
                     }
                 )

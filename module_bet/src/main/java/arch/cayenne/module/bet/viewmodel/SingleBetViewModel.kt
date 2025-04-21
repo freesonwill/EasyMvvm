@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds *= data.selection.odds
+            odds *= data.selectionLiteBean.odds.toOdds()
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {

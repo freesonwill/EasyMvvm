@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 /***
  * @param matchId 赛事ID
- * @param selection 选择的盘口
+ * @param selectionLiteBean 选择的盘口
  * @param reverseOdds 預約赔率
  * @param betType 0: 單注 1: 串關 2: 預約
  * @param status 下注狀態
@@ -20,7 +20,7 @@ import androidx.room.PrimaryKey
 data class BetBean(
     @PrimaryKey
     val matchId: Long, // 赛事ID
-    var selection: Selection, // 选择的盘口
+    var selectionLiteBean: SelectionLiteBean, // 选择的盘口
     var reverseOdds: Int? = null, // 預約赔率
     var betType: BetTypeEnum, // 0: 單注 1: 串關 2: 預約
     var status: BetStatusEnum = BetStatusEnum.PENDING_BET, // 下注狀態
@@ -38,11 +38,11 @@ data class BetBean(
  * @param name 盘口名称 ex. 中國 (+1.5)
  * @param odds 盘口赔率 ex. 1.9
  */
-data class Selection(
+data class SelectionLiteBean(
     val marketName: String, // 盘口名称 ex. 讓分盤
     val id: Long, // 盘口ID
     var name: String, // 盘口名称 ex. 中國 (+1.5)
-    var odds: Int // 盘口赔率 ex. 1.9
+    var odds: String // 盘口赔率 ex. 1.9
 )
 
 enum class BetTypeEnum {

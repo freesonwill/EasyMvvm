@@ -2,7 +2,7 @@ package arch.cayenne.lib.database
 
 import androidx.room.TypeConverter
 import arch.cayenne.lib.database.entity.BetTypeEnum
-import arch.cayenne.lib.database.entity.Selection
+import arch.cayenne.lib.database.entity.SelectionLiteBean
 
 class GameTypeConverter {
 
@@ -14,19 +14,19 @@ class GameTypeConverter {
     fun toBetTypeEnum(value: Int): BetTypeEnum = BetTypeEnum.entries[value]
 
     @TypeConverter
-    fun fromSelection(value: String): Selection {
+    fun fromSelection(value: String): SelectionLiteBean {
         return value.split(",").let {
-            Selection(
+            SelectionLiteBean(
                 marketName = it[0],
                 id = it[1].toLong(),
                 name = it[2],
-                odds = it[3].toInt()
+                odds = it[3]
             )
         }
     }
 
     @TypeConverter
-    fun toSelection(value: Selection): String {
+    fun toSelection(value: SelectionLiteBean): String {
         return "${value.marketName},${value.id},${value.name},${value.odds}"
     }
 
