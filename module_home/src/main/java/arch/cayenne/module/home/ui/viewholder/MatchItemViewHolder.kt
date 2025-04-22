@@ -17,9 +17,13 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
+import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import com.bumptech.glide.Glide
 
-class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseViewHolder(mBinding) {
+class MatchItemViewHolder(
+    private val mBinding: ItemMatchCardBinding,
+    private val onMatchItemClickListener: MatchItemAdapter.OnMatchItemClickListener?
+) : BaseViewHolder(mBinding) {
 
     fun init(data: MatchWithMarkets) {
         with(mBinding) {
@@ -101,7 +105,8 @@ class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseView
                             oddsCellBinding.tvOdds.visibility = View.VISIBLE
                             oddsCellBinding.llOddsCell.isEnabled = true
                             oddsCellBinding.llOddsCell.setOnClickListener {
-//                                onOddsClick?.invoke(selection)
+                                updateSelectedOddsCell(layoutOddsGrid, it)
+                                onMatchItemClickListener?.onOddsCellClick(data, selection)
                             }
                         }
                     } else {
@@ -125,4 +130,14 @@ class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseView
             }
         }
     }
+
+    private fun updateSelectedOddsCell(container: ViewGroup, selectedView: View) {
+        for (i in 0 until container.childCount) {
+            val child = container.getChildAt(i)
+            val cell = child.findViewById<View>(R.id.ll_odds_cell)
+            cell?.isSelected = false
+        }
+        selectedView.isSelected = true
+    }
+
 }

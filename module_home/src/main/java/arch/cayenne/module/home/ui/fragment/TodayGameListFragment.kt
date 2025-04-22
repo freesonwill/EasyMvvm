@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -35,6 +36,18 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
                 override fun onFavoriteClick(item: MatchWithMarkets) {
                 }
+
+                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
+                    lifecycleScope.launch {
+                        val id =
+                            homeViewModel.setSelection(item.match.matchId, selection.selectionId)
+                        if (id == BetTypeEnum.SINGLE) {
+                            "joseph odds matchId:${item.match.matchId}, selection:${selection.selectionId}"
+                            BetSheetFragment.newInstance(item.match.matchId)
+                                .show(childFragmentManager)
+                        }
+                    }
+                }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
@@ -54,7 +67,6 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
             mViewModel.getCurrentMatch()
         }
         mViewModel.matchListChange.observe(this) { matchList ->
-            //TODO 處理賽事卡片UI
             matchAdapter.submitList(matchList)
         }
     }
