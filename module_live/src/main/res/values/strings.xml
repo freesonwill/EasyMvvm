@@ -63,4 +63,5 @@
     <string name="live_starting_lineup">首发阵容</string>
     <string name="live_substitution_lineup">本场换人</string>
     <string name="live_repair_lineup">替补队员</string>
+    <string name="lineup_empty">阵容数据为空</string>
 </resources>

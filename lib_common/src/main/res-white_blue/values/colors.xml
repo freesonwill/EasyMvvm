@@ -7,4 +7,5 @@
     <color name="search_hint_white_blue">#929298</color>
     <color name="search_text_white_blue">#000000</color>
     <color name="app_bg_white_blue">#F3F3F4</color>
+    <color name="dynamic_text_white_blue">#666666</color>
 </resources>
