@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
@@ -81,7 +80,6 @@ class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseView
                 markets.forEachIndexed { columnIndex, market ->
                     val selections = market.selections
                     val selection = selections.getOrNull(rowIndex)
-                    "joseph row:$rowIndex column:$columnIndex selection:$selection".logd()
 
                     val view = LayoutInflater.from(binding.root.context)
                         .inflate(R.layout.item_odds_cell, layoutOddsGrid, false)
