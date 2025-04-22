@@ -14,9 +14,11 @@ import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentCategory
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -26,6 +28,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
 
 @Database(
     entities = [
+        InfoBean::class,
         BetBean::class,
         LiveVideoBean::class,
         SportBean::class,
@@ -77,4 +80,6 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun liveVideoDao(): LiveVideoDao
 
     abstract fun matchDao(): MatchDao
+
+    abstract fun infoDao(): InfoDao
 }
