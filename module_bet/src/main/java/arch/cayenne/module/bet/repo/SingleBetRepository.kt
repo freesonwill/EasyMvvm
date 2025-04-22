@@ -15,6 +15,21 @@ class SingleBetRepository(
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
+    init {
+        scope.launch {
+            betDao.getSingleBet()?.let { bet ->
+                remoteManager.getSingleRisk(scope, bet.matchId, bet.selectionLiteBean.id)
+                    ?.let { risk ->
+                        if (risk.matchId == bet.matchId && risk.selectionId == bet.selectionLiteBean.id) {
+                            bet.minAmount = risk.minAmount
+                            bet.maxAmount = risk.maxAmount
+                            betDao.update(bet)
+                        }
+                    }
+            }
+        }
+    }
+
     fun observeSingleBet() = betDao.observeSingleBet()
 
     fun removeBet(id: Long) {

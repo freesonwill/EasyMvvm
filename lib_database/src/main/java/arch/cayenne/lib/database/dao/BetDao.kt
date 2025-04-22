@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class BetDao: BaseDao<BetBean>() {
 
-    @Query("SELECT * FROM BetBean WHERE betType = :type LIMIT 1")
-    abstract fun observeSingleBet(type: Int = BetTypeEnum.SINGLE.ordinal): Flow<BetBean?>
+    @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
+    abstract fun observeSingleBet(type: Int = BetTypeEnum.SINGLE.ordinal, status: Int = BetStatusEnum.PENDING_BET.ordinal): Flow<BetBean?>
+
+    @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
+    abstract fun getSingleBet(type: Int = BetTypeEnum.SINGLE.ordinal, status: Int = BetStatusEnum.PENDING_BET.ordinal): BetBean?
 
     @Query("SELECT * FROM BetBean WHERE matchId = :id LIMIT 1")
     abstract fun observeBetById(id: Long): Flow<BetBean?>
