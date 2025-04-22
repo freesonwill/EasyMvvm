@@ -200,14 +200,16 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 when (it) {
                     PlayStatus.Playing -> {
                         loadingAnim?.cancel()
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.GONE
+
+                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Loading -> {
+                        val v=mBinding.includedCtLoading
                         // 创建旋转动画
                         loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.ivVideoLoading,  // 目标 View
+                            v.ivVideoLoading,  // 目标 View
                             "rotation",  // 属性名称
                             0f, 360f // 从 0 度旋转到 360 度
                         ).run {
@@ -221,13 +223,13 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             this
                         }
 
-                        mBinding.ctLoading.visibility = View.VISIBLE
-                        mBinding.ctError.visibility = View.GONE
+                        mBinding.includedCtLoading.ctLoading.visibility = View.VISIBLE
+                        mBinding.includedCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Error -> {
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.VISIBLE
+                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedCtError.ctError.visibility = View.VISIBLE
                     }
                 }
             }
