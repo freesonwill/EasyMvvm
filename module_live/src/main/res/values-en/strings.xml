@@ -31,6 +31,8 @@
     <string name="statistics">Statistics</string>
     <string name="choose_source">Choose source</string>
     <string name="live_video_loading">Loading...</string>
+    <string name="live_video_error">Loading failed</string>
+
 
 
 

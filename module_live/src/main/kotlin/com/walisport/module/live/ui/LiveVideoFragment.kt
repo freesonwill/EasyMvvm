@@ -9,6 +9,7 @@ import android.view.animation.LinearInterpolator
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -17,6 +18,7 @@ import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import tv.danmaku.ijk.media.player.IMediaPlayer
+import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import kotlin.reflect.KClass
 
 
@@ -28,7 +30,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
     private val playingStatusLiveData: MutableLiveData<PlayStatus> =
-        MutableLiveData(PlayStatus.Playing)
+        MutableLiveData(PlayStatus.Loading)
 
     private var loadingAnim: ObjectAnimator? = null
 
@@ -60,8 +62,49 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     // 音频开始渲染
                     //  LogUtils.i(TAG, "Audio rendering started")
                 }
+
+                else -> {
+                    LogUtils.i(TAG, "player info. what:${what}")
+                }
             }
 
+            true
+        }
+
+        mBinding.videoView.setOnErrorListener { mp, what, extra ->
+            when (what) {
+                IjkMediaPlayer.MEDIA_ERROR_IO -> {
+                    LogUtils.i(TAG, "Error: Network I/O error (MEDIA_ERROR_IO), extra: $extra")
+                    playingStatusLiveData.postValue(PlayStatus.Error)
+                }
+
+                IjkMediaPlayer.MEDIA_ERROR_MALFORMED -> {
+                    LogUtils.i(
+                        TAG,
+                        "Error: Malformed stream (MEDIA_ERROR_MALFORMED), extra: $extra"
+                    )
+                    playingStatusLiveData.postValue(PlayStatus.Error)
+                }
+
+                IjkMediaPlayer.MEDIA_ERROR_UNSUPPORTED -> {
+                    LogUtils.i(
+                        TAG,
+                        "Error: Unsupported format (MEDIA_ERROR_UNSUPPORTED), extra: $extra"
+                    )
+                    playingStatusLiveData.postValue(PlayStatus.Error)
+                }
+
+                IjkMediaPlayer.MEDIA_ERROR_TIMED_OUT -> {
+                    LogUtils.i(TAG, "Error: Timeout (MEDIA_ERROR_TIMED_OUT), extra: $extra")
+                    playingStatusLiveData.postValue(PlayStatus.Error)
+                }
+
+                else -> {
+                    LogUtils.i(TAG, "Unknown error, what: $what, extra: $extra")
+                    playingStatusLiveData.postValue(PlayStatus.Error)
+                }
+            }
+            // 返回 true 表示错误已处理，false 表示未处理
             true
         }
     }
@@ -128,6 +171,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     PlayStatus.Playing -> {
                         loadingAnim?.cancel()
                         mBinding.ctLoading.visibility = View.GONE
+                        mBinding.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Loading -> {
@@ -148,9 +192,13 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         }
 
                         mBinding.ctLoading.visibility = View.VISIBLE
+                        mBinding.ctError.visibility = View.GONE
                     }
 
-                    PlayStatus.Error -> {}
+                    PlayStatus.Error -> {
+                        mBinding.ctLoading.visibility = View.GONE
+                        mBinding.ctError.visibility = View.VISIBLE
+                    }
                 }
             }
 
