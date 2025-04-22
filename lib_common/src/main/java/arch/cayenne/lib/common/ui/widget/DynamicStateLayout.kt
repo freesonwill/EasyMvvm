@@ -49,6 +49,7 @@ class DynamicStateLayout @JvmOverloads constructor(
 
     fun setVisibilityGone(){
         if (currentState!=States.NULL){
+            currentState = States.NULL
             emptyView.visibility = GONE
         }
     }
