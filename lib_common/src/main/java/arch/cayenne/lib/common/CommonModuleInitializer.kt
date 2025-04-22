@@ -7,7 +7,6 @@ import com.tencent.mmkv.MMKV
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
-import java.util.Collections.singleton
 
 class CommonModuleInitializer : DefaultInitializer<String> {
 
@@ -20,6 +19,6 @@ class CommonModuleInitializer : DefaultInitializer<String> {
     }
 
     private val moduleList: List<Module> = listOf(module {
-        singleton { UserDataManager() }
+        single { UserDataManager() }
     })
 }
