@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
@@ -56,7 +57,7 @@ class MatchItemViewHolder(
             val columnCount = markets.size
             layoutOddsTitle.columnCount = columnCount
             layoutOddsGrid.columnCount = columnCount
-
+            //TODO 獨贏的主客和要改
             markets.forEachIndexed { index, bean ->
                 val titleView = TextView(binding.root.context).apply {
                     text = bean.market.marketName
@@ -86,7 +87,7 @@ class MatchItemViewHolder(
                 markets.forEachIndexed { columnIndex, market ->
                     val selections = market.selections
                     val selection = selections.getOrNull(rowIndex)
-
+                    "joseph row:$rowIndex column:$columnIndex, selections:$selections".logd()
                     val view = LayoutInflater.from(binding.root.context)
                         .inflate(R.layout.item_odds_cell, layoutOddsGrid, false)
                     val oddsCellBinding = ItemOddsCellBinding.bind(view)
@@ -106,7 +107,8 @@ class MatchItemViewHolder(
                             oddsCellBinding.tvOdds.visibility = View.VISIBLE
                             oddsCellBinding.llOddsCell.isEnabled = true
                             oddsCellBinding.llOddsCell.setOnClickListener {
-                                updateSelectedOddsCell(layoutOddsGrid, it)
+                                //TODO 點擊狀態顯示規則待處理
+//                                updateSelectedOddsCell(layoutOddsGrid, it)
                                 onMatchItemClickListener?.onOddsCellClick(data, selection)
                             }
                         }
@@ -129,13 +131,13 @@ class MatchItemViewHolder(
         }
     }
 
-    private fun updateSelectedOddsCell(container: ViewGroup, selectedView: View) {
-        for (i in 0 until container.childCount) {
-            val child = container.getChildAt(i)
-            val cell = child.findViewById<View>(R.id.ll_odds_cell)
-            cell?.isSelected = false
-        }
-        selectedView.isSelected = true
-    }
+//    private fun updateSelectedOddsCell(container: ViewGroup, selectedView: View) {
+//        for (i in 0 until container.childCount) {
+//            val child = container.getChildAt(i)
+//            val cell = child.findViewById<View>(R.id.ll_odds_cell)
+//            cell?.isSelected = false
+//        }
+//        selectedView.isSelected = true
+//    }
 
 }

@@ -20,11 +20,9 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding.layoutOddsGrid.removeAllViews()
         holder.init(getItem(position))
         binding.layoutLiveEntry.setOnClickListener {
-            // 直播入口
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
         binding.ivFavorite.setOnClickListener {
-            // 收藏
             onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
         }
     }

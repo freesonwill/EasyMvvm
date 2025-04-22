@@ -38,11 +38,11 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
                 }
 
                 override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
+                    //TODO 投注點擊狀態顯示規則待處理
                     lifecycleScope.launch {
                         val id =
                             homeViewModel.setSelection(item.match.matchId, selection.selectionId)
                         if (id == BetTypeEnum.SINGLE) {
-                            "joseph odds matchId:${item.match.matchId}, selection:${selection.selectionId}"
                             BetSheetFragment.newInstance(item.match.matchId)
                                 .show(childFragmentManager)
                         }
