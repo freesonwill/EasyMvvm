@@ -8,4 +8,5 @@
     <color name="search_text_white_green">#000000</color>
 
     <color name="app_bg_white_green">#F3F3F4</color>
+    <color name="dynamic_text_white_green">#666666</color>
 </resources>

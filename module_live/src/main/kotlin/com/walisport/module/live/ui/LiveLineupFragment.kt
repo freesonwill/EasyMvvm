@@ -10,6 +10,8 @@ import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.viewBind
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.ui.widget.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
@@ -39,14 +41,15 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override fun createObserver() {
         mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
             it?.let {
+                mBinding.main.setVisibilityGone()
                 upData(it)
-            }?:run {
-
+            } ?: run {
+                mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
             }
         }
     }
 
     private fun upData(data: Sloth.MatchLineupDetail) {
-        LogUtils.dTag(TAG,"MatchLineupDetail----->${data}")
+        LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
     }
 }

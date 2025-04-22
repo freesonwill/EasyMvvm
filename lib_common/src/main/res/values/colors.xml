@@ -17,4 +17,6 @@
     <color name="dialog_title">#00D271</color>
     <color name="secondary_text">#929298</color>
     <color name="district_line">#f7f7f7</color>
+    <color name="dynamic_text">#929298</color>
+
 </resources>
