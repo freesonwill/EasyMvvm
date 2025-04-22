@@ -1,10 +1,8 @@
 package arch.cayenne.lib.base.utils
 
-import arch.cayenne.lib.base.BuildConfig
 import arch.cayenne.lib.base.utils.StringExt.safeSubstring
 
 object LogUtilsExt {
-    const val TAG = BuildConfig.TAG_DEFAULT
 
     fun String.logd(tag: String = "",start:Int=0,len:Int=length) =
         LogUtils.dTag(tag, this.safeSubstring(start, len))

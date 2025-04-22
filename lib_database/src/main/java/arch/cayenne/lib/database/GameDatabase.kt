@@ -19,7 +19,6 @@ import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.InfoBean
-import arch.cayenne.lib.database.entity.BetTypeConverter
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -45,7 +44,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
     version = 1,
     exportSchema = false
 )
-@TypeConverters(BetTypeConverter::class)
+@TypeConverters(GameTypeConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
