@@ -7,9 +7,27 @@
         <item>角球</item>
     </string-array>
 
+    <string name="left_two">大2.5</string>
+    <string name="right_two">小2.5</string>
+    <string name="left_three">大13/13.5</string>
+    <string name="right_three">大13.5</string>
+
+    <string name="team_home">皇马</string>
+    <string name="next_one">下一题(1/3)</string>
+    <string name="next_two">下一题(2/3)</string>
+    <string name="next_three">去投注</string>
+    <string name="team_away">利物浦</string>
+    <string name="tip_right">恭喜猜中</string>
+    <string name="tip_error">很遗憾，猜错了</string>
     <string name="let_ball">让球</string>
     <string name="big_small">大小球</string>
     <string name="question_1">1、如果出现该比赛结果，哪个选项主队能赢一半？</string>
     <string name="question_2">2、如果出现该比赛结果，哪个选项能全赢？</string>
     <string name="question_3">3、如果出现该比赛结果，哪个选项输一半？</string>
+    <string name="msg_one_left">“-”表示让球，“+”表示受让，根据以上赛果，利物浦获得受让分后，让分结果为：1-0.5或1-1；1-0.5时，皇马获胜；1-1时为和局；一半赛果为皇马获胜，故投注皇马（-0.5/1）为赢一半</string>
+    <string name="msg_one_right">“-”表示让球，“+”表示受让，根据以上赛果，若进球数为1时，双方结果则为1-1，故为和局；故投注皇马（-1）为退回本金</string>
+    <string name="msg_two_left">根据以上赛果，进球数之后3，大于2.5，故投注（大于2.5）能全赢</string>
+    <string name="msg_two_right">根据以上赛果，进球数之后3，大于2.5，故投注（小于2.5）能全赢</string>
+    <string name="msg_three_left">根据以上赛果，角球数之和13，大于13时则和局，大于13.5时全输，一半赛果为输一半，故投注（大于13/13.5）为输一半</string>
+    <string name="msg_three_right">根据以上赛果，角球数之和13，大于13时则和局；大于13.5时全输；一半赛果为输一半，故投注（大于13）为全输；投注（大于13/13.5）为输一半</string>
 </resources>
