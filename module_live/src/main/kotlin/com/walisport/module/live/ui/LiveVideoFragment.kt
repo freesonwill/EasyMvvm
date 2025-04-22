@@ -17,6 +17,11 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import tv.danmaku.ijk.media.player.IMediaPlayer
 import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import kotlin.reflect.KClass
@@ -33,6 +38,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         MutableLiveData(PlayStatus.Loading)
 
     private var loadingAnim: ObjectAnimator? = null
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var bufferingTimeoutJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
@@ -59,20 +67,30 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             when (what) {
                 IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
                     // 视频开始缓冲（加载中）
-                    //  LogUtils.i(TAG, "Buffering started")
+//                    "Buffering started".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Loading)
+
+                    // 启动协程，10秒超时
+                    bufferingTimeoutJob = coroutineScope.launch {
+                        delay(10000)
+                        playingStatusLiveData.postValue(PlayStatus.Error)
+                    }
+
                 }
 
                 IMediaPlayer.MEDIA_INFO_BUFFERING_END -> {
                     // 视频缓冲结束（加载完成，可以播放）
-                    //  LogUtils.i(TAG, "Buffering ended")
+//                    "Buffering ended".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Playing)
+                    bufferingTimeoutJob?.cancel()
+
                 }
 
                 IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
                     // 视频开始渲染（第一帧显示）
-                    //  LogUtils.i(TAG, "Video rendering started")
+//                    "Video rendering started".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Playing)
+                    bufferingTimeoutJob?.cancel()
                 }
 
                 IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START -> {
