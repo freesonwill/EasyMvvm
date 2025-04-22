@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket.repository
+package arch.cayenne.lib.common.ui.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.UserDataKey
@@ -12,10 +12,11 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class ConnectingRepository(
+class CommonRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val userDataManager: UserDataManager
+    private val userDataManager: UserDataManager,
+    private val 
 ) : BaseRepository() {
 
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()

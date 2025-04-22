@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket.viewmodel
+package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.SocketResponseError
-import arch.cayenne.lib.socket.repository.ConnectingRepository
+import arch.cayenne.lib.common.ui.repo.CommonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -19,14 +19,14 @@ import org.koin.core.parameter.parametersOf
  * 現在需要做全背景監聽的只有SplashActivity和AppNavActivity
  * */
 abstract class BaseActivityViewModel : BaseViewModel() {
-    private val connectingRepository: ConnectingRepository by inject { parametersOf(viewModelScope) }
+    private val commonRepository: CommonRepository by inject { parametersOf(viewModelScope) }
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
     val loginIsSuccess = MutableLiveData<Boolean>()
     val connectingError = MutableLiveData<SocketResponseError>()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            connectingRepository.getConnectStateFlow().collect { connectState ->
+            commonRepository.getConnectStateFlow().collect { connectState ->
                 when(connectState) {
                     is ConnectState.ConnectSuccess -> {
                         "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
@@ -43,7 +43,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     //當連線成功時，自動地去做補登入
     private fun login() {
         viewModelScope.launch(Dispatchers.IO) {
-            val result = connectingRepository.sendLogin()
+            val result = commonRepository.sendLogin()
             withContext(Dispatchers.Main) {
                 when(result.error) {
                     null -> {
@@ -58,6 +58,6 @@ abstract class BaseActivityViewModel : BaseViewModel() {
         }
     }
     override fun reset() {
-        connectingRepository.reset()
+        commonRepository.reset()
     }
 }

@@ -48,6 +48,7 @@ android {
 dependencies {
     api(project(":lib_base"))
     api(project(":lib_skin"))
+    api(project(":lib_socket"))
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)
