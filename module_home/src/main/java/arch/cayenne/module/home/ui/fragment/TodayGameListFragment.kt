@@ -32,6 +32,9 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
+
+                override fun onFavoriteClick(item: MatchWithMarkets) {
+                }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {
@@ -52,16 +55,7 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
         }
         mViewModel.matchListChange.observe(this) { matchList ->
             //TODO 處理賽事卡片UI
-            matchAdapter.submitList(matchList).apply {
-                // TODO 測試代碼
-                lifecycleScope.launch {
-                    val item = matchList.first()
-                    val id = homeViewModel.setSelection(item.match.matchId, item.markets.first().selections.first().selectionId)
-                    if (id == BetTypeEnum.SINGLE) {
-                        BetSheetFragment.newInstance(item.match.matchId).show(childFragmentManager)
-                    }
-                }
-            }
+            matchAdapter.submitList(matchList)
         }
     }
 
