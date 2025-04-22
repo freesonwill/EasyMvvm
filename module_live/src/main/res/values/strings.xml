@@ -65,5 +65,5 @@
     <string name="live_repair_lineup">替补队员</string>
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
-
+    <string name="lineup_empty">阵容数据为空</string>
 </resources>

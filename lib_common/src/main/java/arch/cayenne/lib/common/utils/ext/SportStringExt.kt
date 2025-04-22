@@ -42,4 +42,13 @@ object SportStringExt {
             0 // 或依需求處理錯誤情況
         }
     }
+
+    fun String.getHomeScore(): String {
+        return if (this.contains(":")) this.substringBefore(":").trim() else ""
+    }
+
+    fun String.getAwayScore(): String {
+        return if (this.contains(":")) this.substringAfter(":").trim() else ""
+    }
+
 }

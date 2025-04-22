@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.widget.DynamicStateLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/app_bg"
+    android:id="@+id/main"
     tools:context=".ui.LiveLineupFragment">
 
   <ScrollView
@@ -180,11 +181,4 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
   </ScrollView>
-
-
-
-
-
-
-
-</arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</arch.cayenne.lib.common.ui.widget.DynamicStateLayout>

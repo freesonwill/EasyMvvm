@@ -32,6 +32,9 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }
+
+                override fun onFavoriteClick(item: MatchWithMarkets) {
+                }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
             mBinding.rvHomeGameList.apply {

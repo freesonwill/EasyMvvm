@@ -73,7 +73,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:src="@drawable/ic_baseball_active" />
-
+        <!-- TODO改隊名縮排限制長度 -->
         <TextView
             android:id="@+id/tv_away_name"
             android:layout_width="wrap_content"
@@ -184,21 +184,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.52" />
+        app:layout_constraintGuide_percent="0.44" />
 
-    <!-- 賠率標題 -->
+    <!-- 賠率標題
+    TODO 換成GridLayout生成, 鎖盤實作-->
     <LinearLayout
         android:id="@+id/layout_odds_titles"
-        android:layout_width="0dp"
+        android:layout_width="184dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="43dp"
-        android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_vertical"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/tv_win_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -208,6 +208,7 @@
             android:textSize="13sp" />
 
         <TextView
+            android:id="@+id/tv_handicap_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -217,6 +218,7 @@
             android:textSize="13sp" />
 
         <TextView
+            android:id="@+id/tv_over_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -235,63 +237,173 @@
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/layout_odds_titles"
-        app:layout_constraintStart_toStartOf="@id/layout_odds_titles"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
         app:layout_constraintTop_toBottomOf="@id/layout_odds_titles">
 
         <!-- 賠率一 row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_2"
-            android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_home_win_odds"
-                style="@style/OddsCellStyle"
-                android:text="4.35" />
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_handicap_home"
-                style="@style/OddsCellStyle"
-                android:text="7.67" />
+                <TextView
+                    android:id="@+id/tv_home_win_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="主" />
 
-            <TextView
-                android:id="@+id/tv_over"
-                style="@style/OddsCellStyle"
-                android:text="1.03" />
+                <TextView
+                    android:id="@+id/tv_home_win_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="4.35" />
+
+                <ImageView
+                    android:id="@+id/iv_market_lock"
+                    android:layout_width="@dimen/dp_17"
+                    android:layout_height="@dimen/dp_17"
+                    android:src="@drawable/ic_market_lock"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_handicap_home_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="+0" />
+
+                <TextView
+                    android:id="@+id/tv_handicap_home_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="7.67" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_over_odds_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="大" />
+
+                <TextView
+                    android:id="@+id/tv_over_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="1.03" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- 賠率二 row -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tv_away_win_odds"
-                style="@style/OddsCellStyle"
-                android:text="1.33" />
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_handicap_away"
-                style="@style/OddsCellStyle"
-                android:text="7.67" />
+                <TextView
+                    android:id="@+id/tv_away_win_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="客" />
 
-            <TextView
-                android:id="@+id/tv_under"
-                style="@style/OddsCellStyle"
-                android:text="9.15" />
+                <TextView
+                    android:id="@+id/tv_away_win_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="1.33" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:layout_marginEnd="@dimen/dp_2"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_handicap_away_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="-0" />
+
+                <TextView
+                    android:id="@+id/tv_handicap_away_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="7.67" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="43dp"
+                android:background="@drawable/selector_match_odds_cell"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_under_odds_title"
+                    style="@style/OddsShortNameStyle"
+                    android:text="小" />
+
+                <TextView
+                    android:id="@+id/tv_under_odds"
+                    style="@style/OddsTextStyle"
+                    android:text="9.15" />
+            </LinearLayout>
         </LinearLayout>
 
         <!-- 平局 -->
-        <TextView
-            android:id="@+id/tv_draw"
-            style="@style/OddsCellStyle"
+        <LinearLayout
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="43dp"
             android:layout_gravity="start"
             android:layout_marginTop="@dimen/dp_2"
-            android:text="3.15" />
+            android:background="@drawable/selector_match_odds_cell"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_draw_title"
+                style="@style/OddsShortNameStyle"
+                android:text="和" />
+
+            <TextView
+                android:id="@+id/tv_draw_odds"
+                style="@style/OddsTextStyle"
+                android:text="3.15" />
+        </LinearLayout>
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_favorite"
+        android:layout_width="@dimen/dp_34"
+        android:layout_height="@dimen/dp_30"
+        android:paddingEnd="@dimen/dp_2"
+        android:paddingBottom="@dimen/dp_10"
+        android:src="@drawable/selector_favorite_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </arch.cayenne.lib.skin.widget.SportConstraintLayout>

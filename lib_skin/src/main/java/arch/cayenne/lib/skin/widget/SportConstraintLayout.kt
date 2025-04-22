@@ -10,7 +10,7 @@ import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class SportConstraintLayout : ConstraintLayout {
+open class SportConstraintLayout : ConstraintLayout {
     private val backGroundHelper: SportSkinBackGroundHelper = SportSkinBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
