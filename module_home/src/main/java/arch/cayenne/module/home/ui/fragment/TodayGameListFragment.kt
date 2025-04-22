@@ -64,11 +64,12 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(this) {
+        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentMatch()
         }
-        mViewModel.matchListChange.observe(this) { matchList ->
+        mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            //TODO 處理賽事卡片UI
             matchAdapter.submitList(matchList)
         }
     }
