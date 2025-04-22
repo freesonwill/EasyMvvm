@@ -13,7 +13,6 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -93,8 +92,6 @@ class HomeViewModel : BaseViewModel() {
 
     suspend fun setSelection(matchId: Long, selectionId: Long): BetTypeEnum {
         return viewModelScope.async(Dispatchers.IO) {
-            // TODO 測試代碼
-            delay(5_000L)
             betRepository.setSelection(matchId, selectionId)
         }.await()
     }
