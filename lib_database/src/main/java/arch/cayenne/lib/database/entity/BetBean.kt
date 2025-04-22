@@ -32,6 +32,14 @@ data class BetBean(
     var isPlaying: Boolean = false, // 是否滾球
 )
 
+/**
+ * 首頁盤口監聽投注項用
+ */
+data class BetLiteBean(
+    val matchId: Long, // 赛事ID
+    val selectionId: Long, // 盘口ID
+)
+
 /***
  * @param marketName 盘口名称 ex. 讓分盤
  * @param id 盘口ID
