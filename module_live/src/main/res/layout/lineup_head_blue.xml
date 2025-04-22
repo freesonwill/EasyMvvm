@@ -5,6 +5,7 @@
     android:layout_width="32dp"
     android:layout_height="44dp"
     android:background="@color/tran_0"
+    android:id="@+id/clLineupHead"
    >
 
   <androidx.constraintlayout.widget.ConstraintLayout

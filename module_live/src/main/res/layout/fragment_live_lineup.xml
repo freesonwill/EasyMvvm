@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_bg"
     tools:context=".ui.LiveLineupFragment">
 
@@ -26,12 +27,110 @@
         android:orientation="vertical"
         android:background="@drawable/live_lineup_top_bbg"
         >
-    <include layout="@layout/live_lineup_item_layout"
-        android:id="@+id/lineup_item_top"
-        />
-    <include layout="@layout/live_lineup_item_bottom_layout"
-        android:id="@+id/lineup_item_bottom"
-        />
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="277dp"
+          android:id="@+id/sclLineupItemTop"
+          >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clBetTitleTop"
+            android:layout_marginStart="6dp"
+            android:paddingTop="6dp"
+            android:layout_marginEnd="6dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
+          <arch.cayenne.lib.skin.widget.SportConstraintLayout
+              android:layout_width="wrap_content"
+              android:padding="5dp"
+              android:background="@drawable/lineup_compare_bg"
+              android:layout_height="wrap_content"
+              tools:ignore="MissingConstraints">
+            <ImageView
+                android:id="@+id/ivNationalFlagTop"
+                android:layout_width="21dp"
+                android:layout_height="14dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/live_bet_country_icon"
+                tools:ignore="MissingConstraints" />
+            <androidx.appcompat.widget.AppCompatTextView
+                app:layout_constraintStart_toEndOf="@id/ivNationalFlagTop"
+                android:id="@+id/tvNationalNameTop"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:text="2-3-4"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/white"
+                android:drawablePadding="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+          </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+          <arch.cayenne.lib.skin.widget.SportConstraintLayout
+              android:layout_marginTop="19dp"
+              android:layout_width="wrap_content"
+              android:padding="5dp"
+              app:layout_constraintRight_toRightOf="parent"
+              android:background="@drawable/lineup_compare_bg"
+              android:layout_height="wrap_content"
+              tools:ignore="MissingConstraints">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:text="@string/live_starting_lineup"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/white"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+          </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+      </RelativeLayout>
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="277dp"
+          android:id="@+id/sclLineupItemBottom"
+          >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/clBetTitleBottom"
+            android:layout_margin="@dimen/dp_6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints">
+
+          <arch.cayenne.lib.skin.widget.SportConstraintLayout
+              android:layout_width="wrap_content"
+              android:padding="5dp"
+              android:background="@drawable/lineup_compare_bg"
+              android:layout_height="wrap_content"
+              tools:ignore="MissingConstraints">
+            <ImageView
+                android:id="@+id/ivNationalFlagBottom"
+                android:layout_width="21dp"
+                android:layout_height="14dp"
+                app:cornerRadius="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/live_bet_country_icon"
+                tools:ignore="MissingConstraints" />
+            <androidx.appcompat.widget.AppCompatTextView
+                app:layout_constraintStart_toEndOf="@id/ivNationalFlagBottom"
+                android:id="@+id/tvNationalNameBottom"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:text="2-3-4"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/white"
+                android:drawablePadding="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+          </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+      </RelativeLayout>
     </arch.cayenne.lib.skin.widget.SportLinearLayout>
 
     <arch.cayenne.lib.skin.widget.SportLinearLayout

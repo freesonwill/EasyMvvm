@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="32dp"
-    android:layout_height="44dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:background="@color/tran_0"
+    android:gravity="center"
+    android:id="@+id/clLineupHead"
    >
 
   <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="match_parent"
+      android:layout_width="32dp"
       android:layout_height="wrap_content"
       tools:ignore="MissingConstraints">
-
     <!-- 红点和数字 -->
     <ImageView
         android:id="@+id/profile_image"
@@ -37,12 +39,13 @@
   </androidx.constraintlayout.widget.ConstraintLayout>
 
   <TextView
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="@dimen/dp_14"
       android:gravity="center"
-      android:text="mei_xi"
-      android:textColor="#FFFFFF"
+      android:text="mei_xi2222222333322222"
+      android:textColor="#000000"
+      android:lines="1"
       android:textSize="10sp"
       app:layout_constraintBottom_toBottomOf="parent"
       tools:ignore="MissingConstraints" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
