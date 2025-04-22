@@ -9,7 +9,7 @@ import android.view.animation.LinearInterpolator
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -38,6 +38,23 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.queryLiveStream(matchId)
 
+        val mediaPlayer = mBinding.videoView.mediaPlayer
+        if (mediaPlayer is IjkMediaPlayer) {
+            mediaPlayer.setOption(
+                IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+                "timeout",
+                10000000
+            ); // 10秒总超时（微秒）
+            mediaPlayer
+                .setOption(
+                    IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+                    "connect_timeout",
+                    5000
+                ); // 5秒连接超时（毫秒）
+            mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 0); // 禁用自动重连
+        }
+
+
         mBinding.videoView.setOnInfoListener { mp, what, extra ->
             when (what) {
                 IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
@@ -64,7 +81,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
 
                 else -> {
-                    LogUtils.i(TAG, "player info. what:${what}")
+                    "player info. what:${what}".logd(TAG)
                 }
             }
 
@@ -74,33 +91,27 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mBinding.videoView.setOnErrorListener { mp, what, extra ->
             when (what) {
                 IjkMediaPlayer.MEDIA_ERROR_IO -> {
-                    LogUtils.i(TAG, "Error: Network I/O error (MEDIA_ERROR_IO), extra: $extra")
+                    "Error: Network I/O error (MEDIA_ERROR_IO), extra: $extra".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Error)
                 }
 
                 IjkMediaPlayer.MEDIA_ERROR_MALFORMED -> {
-                    LogUtils.i(
-                        TAG,
-                        "Error: Malformed stream (MEDIA_ERROR_MALFORMED), extra: $extra"
-                    )
+                    "Error: Malformed stream (MEDIA_ERROR_MALFORMED), extra: $extra".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Error)
                 }
 
                 IjkMediaPlayer.MEDIA_ERROR_UNSUPPORTED -> {
-                    LogUtils.i(
-                        TAG,
-                        "Error: Unsupported format (MEDIA_ERROR_UNSUPPORTED), extra: $extra"
-                    )
+                    "Error: Unsupported format (MEDIA_ERROR_UNSUPPORTED), extra: $extra".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Error)
                 }
 
                 IjkMediaPlayer.MEDIA_ERROR_TIMED_OUT -> {
-                    LogUtils.i(TAG, "Error: Timeout (MEDIA_ERROR_TIMED_OUT), extra: $extra")
+                    "Error: Timeout (MEDIA_ERROR_TIMED_OUT), extra: $extra".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Error)
                 }
 
                 else -> {
-                    LogUtils.i(TAG, "Unknown error, what: $what, extra: $extra")
+                    "Unknown error, what: $what, extra: $extra".logd(TAG)
                     playingStatusLiveData.postValue(PlayStatus.Error)
                 }
             }
@@ -135,6 +146,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
 
             }
+
             ivToFullscreen.clickNoRepeat {
                 destroyPlayer()
                 navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
