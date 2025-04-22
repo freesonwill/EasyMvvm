@@ -25,7 +25,6 @@ class SocketModuleInitializer : DefaultInitializer<String> {
         factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext() as Application), get()) }
         factory<ISecurity<*, *, *>> { NativeLib() }
         single { WebSocketManager(get()) }
-//        factory { (scope: CoroutineScope) -> ConnectingRepository(scope, get(), get()) }
     }
 
     private val moduleList:List<Module> = listOf(socketModules)

@@ -47,7 +47,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             withContext(Dispatchers.Main) {
                 when(result.error) {
                     null -> {
-                        "Login  Is Success = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
+                        "Login  Is Success? = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
                         loginIsSuccess.value = result.data?.success == true
                     }
                     else -> {   //其餘錯誤
