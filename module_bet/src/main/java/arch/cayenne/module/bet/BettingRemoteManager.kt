@@ -166,7 +166,7 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetComboRiskResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SINGLE_BET,
+            apiCode = ApiCode.GET_COMBO_RISK,
         ) {
             Client.GetComboRiskReq.newBuilder().apply {
                 val risk = beans.map { bean ->
