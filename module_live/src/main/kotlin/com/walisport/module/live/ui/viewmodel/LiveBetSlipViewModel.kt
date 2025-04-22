@@ -46,4 +46,11 @@ class LiveBetSlipViewModel : BaseViewModel() {
     }
 
 
+    fun getTestList(): List<Common.Order> {
+        val order = Common.Order.newBuilder().setBetId("0").build()
+        val order1 = Common.Order.newBuilder().setBetId("1").build()
+        val tmpList = arrayListOf(order, order1)
+        return tmpList
+    }
+
 }
