@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.fragment.SimulateFragment">
 
@@ -9,7 +10,7 @@
             type="arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_0E0F19">
@@ -18,7 +19,448 @@
             android:id="@+id/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ViewFlipper
+            android:id="@+id/view_flipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SportLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SportConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_251"
+                    android:background="@drawable/shape_bg_item">
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_45"
+                        android:layout_margin="@dimen/dp_1"
+                        android:background="@drawable/bg_shape_item_title"
+                        android:gravity="center"
+                        android:text="@string/let_ball"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_65"
+                        android:gravity="center"
+                        android:text="@string/question_1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_home"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginStart="@dimen/dp_47"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:background="@drawable/icon_home_cloth"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:id="@+id/tv_home_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="皇马"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_home"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_home"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_home" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_away"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:layout_marginEnd="@dimen/dp_47"
+                        android:background="@drawable/icon_away_cloth"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:id="@+id/tv_away_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="利物浦"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_away"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_away"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_away" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_128"
+                        android:text="1-0"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_22"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportLinearLayout
+                        android:layout_width="@dimen/dp_86"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_home_team">
+
+                        <arch.cayenne.lib.skin.widget.SportTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-0.5/1"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_15" />
+
+                        <arch.cayenne.lib.skin.widget.SportImageView
+                            android:layout_width="@dimen/dp_14"
+                            android:layout_height="@dimen/dp_14"
+                            android:layout_marginStart="@dimen/dp_5"
+                            android:background="@drawable/icon_answer_right"
+                            android:visibility="gone" />
+                    </arch.cayenne.lib.skin.widget.SportLinearLayout>
+
+                    <arch.cayenne.lib.skin.widget.SportLinearLayout
+                        android:layout_width="@dimen/dp_86"
+                        android:layout_height="@dimen/dp_30"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_away_team">
+
+                        <arch.cayenne.lib.skin.widget.SportTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="-1"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/sp_15" />
+
+                        <arch.cayenne.lib.skin.widget.SportImageView
+                            android:layout_width="@dimen/dp_14"
+                            android:layout_height="@dimen/dp_14"
+                            android:layout_marginStart="@dimen/dp_5"
+                            android:background="@drawable/icon_answer_error"
+                            android:visibility="gone" />
+                    </arch.cayenne.lib.skin.widget.SportLinearLayout>
+                </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
+                <arch.cayenne.lib.skin.widget.SportImageView
+                    android:id="@+id/iv_tip"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/icon_right" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:id="@+id/tv_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="恭喜猜中"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:text="“-”表示让球，“+”表示受让，根据以上赛果，利物浦获得受让分后，让分结果为：1-0.5或1-1；1-0.5时，皇马获胜；1-1时为和局；一半赛果为皇马获胜，故投注皇马（-0.5/1）为赢一半"
+                    android:textColor="@color/color_929298"
+                    android:textSize="@dimen/sp_14" />
+
+                <arch.cayenne.lib.skin.widget.SportButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="@dimen/dp_207"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:background="@drawable/bg_shape_simulate_button"
+                    android:gravity="center"
+                    android:text="下一题(1/3)"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+            </arch.cayenne.lib.skin.widget.SportLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SportLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SportConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_251"
+                    android:background="@drawable/shape_bg_item">
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_45"
+                        android:layout_margin="@dimen/dp_1"
+                        android:background="@drawable/bg_shape_item_title"
+                        android:gravity="center"
+                        android:text="@string/big_small"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_65"
+                        android:gravity="center"
+                        android:text="@string/question_2"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_home_2"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginStart="@dimen/dp_47"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:background="@drawable/icon_home_cloth"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="皇马"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_home_2"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_home_2"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_home_2" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_away_2"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:layout_marginEnd="@dimen/dp_47"
+                        android:background="@drawable/icon_away_cloth"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="利物浦"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_away_2"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_away_2"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_away_2" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_128"
+                        android:text="1-0"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_22"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
+                <arch.cayenne.lib.skin.widget.SportImageView
+                    android:id="@+id/iv_tip_2"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/icon_right" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:id="@+id/tv_tip_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="恭喜猜中"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:text="根据以上赛果，进球数之后3，大于2.5，故投注（大于2.5）能全赢"
+                    android:textColor="@color/color_929298"
+                    android:textSize="@dimen/sp_14" />
+
+                <arch.cayenne.lib.skin.widget.SportButton
+                    android:id="@+id/btn_next_2"
+                    android:layout_width="@dimen/dp_207"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:background="@drawable/bg_shape_simulate_button"
+                    android:gravity="center"
+                    android:text="下一题(2/3)"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+            </arch.cayenne.lib.skin.widget.SportLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SportLinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SportConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_251"
+                    android:background="@drawable/shape_bg_item">
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/dp_45"
+                        android:layout_margin="@dimen/dp_1"
+                        android:background="@drawable/bg_shape_item_title"
+                        android:gravity="center"
+                        android:text="@string/let_ball"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dp_8"
+                        android:layout_marginTop="@dimen/dp_65"
+                        android:gravity="center"
+                        android:text="@string/question_3"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_15"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_home_3"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginStart="@dimen/dp_47"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:background="@drawable/icon_home_cloth"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="皇马"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_home_3"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_home_3"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_home_3" />
+
+                    <arch.cayenne.lib.skin.widget.SportImageView
+                        android:id="@+id/iv_question_away_3"
+                        android:layout_width="@dimen/dp_36"
+                        android:layout_height="@dimen/dp_36"
+                        android:layout_marginTop="@dimen/dp_112"
+                        android:layout_marginEnd="@dimen/dp_47"
+                        android:background="@drawable/icon_away_cloth"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:text="利物浦"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_14"
+                        app:layout_constraintEnd_toEndOf="@+id/iv_question_away_3"
+                        app:layout_constraintStart_toStartOf="@+id/iv_question_away_3"
+                        app:layout_constraintTop_toBottomOf="@+id/iv_question_away_3" />
+
+                    <arch.cayenne.lib.skin.widget.SportTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_128"
+                        android:text="1-0"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_22"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
+                <arch.cayenne.lib.skin.widget.SportImageView
+                    android:id="@+id/iv_tip_3"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:layout_marginTop="@dimen/dp_20"
+                    android:background="@drawable/icon_right" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:id="@+id/tv_tip_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="恭喜猜中"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+
+                <arch.cayenne.lib.skin.widget.SportTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_20"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_20"
+                    android:text="根据以上赛果，角球数之和13，大于13时则和局；大于13.5时全输；一半赛果为输一半，故投注（大于13）为全输；投注（大于13/13.5）为输一半"
+                    android:textColor="@color/color_929298"
+                    android:textSize="@dimen/sp_14" />
+
+                <arch.cayenne.lib.skin.widget.SportButton
+                    android:id="@+id/btn_next_3"
+                    android:layout_width="@dimen/dp_207"
+                    android:layout_height="@dimen/dp_48"
+                    android:layout_marginTop="@dimen/dp_32"
+                    android:background="@drawable/bg_shape_simulate_button"
+                    android:gravity="center"
+                    android:text="去投注"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_15" />
+            </arch.cayenne.lib.skin.widget.SportLinearLayout>
+        </ViewFlipper>
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 </layout>

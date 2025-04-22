@@ -6,4 +6,10 @@
         <item>大小</item>
         <item>角球</item>
     </string-array>
+
+    <string name="let_ball">让球</string>
+    <string name="big_small">大小球</string>
+    <string name="question_1">1、如果出现该比赛结果，哪个选项主队能赢一半？</string>
+    <string name="question_2">2、如果出现该比赛结果，哪个选项能全赢？</string>
+    <string name="question_3">3、如果出现该比赛结果，哪个选项输一半？</string>
 </resources>

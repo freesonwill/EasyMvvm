@@ -22,6 +22,15 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
         mBinding.titleBar.loadGeneralTitleBar(R.string.simulate_bet.getString(), {
             findNavController().navigateUp()
         })
+        mBinding.btnNext.setOnClickListener {
+            mBinding.viewFlipper.showNext()
+        }
+        mBinding.btnNext2.setOnClickListener {
+            mBinding.viewFlipper.showNext()
+        }
+        mBinding.btnNext3.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     override fun initListener() {
