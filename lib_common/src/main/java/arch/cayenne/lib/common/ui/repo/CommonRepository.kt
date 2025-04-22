@@ -9,12 +9,11 @@ import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.data.LoginTokenFailedError
 import arch.cayenne.lib.socket.data.SocketResponseData
+import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlin.math.log
 
 class CommonRepository(
     override val scope: CoroutineScope,
@@ -51,7 +50,7 @@ class CommonRepository(
             }.build()
         }
 
-        if (loginResp.data != null) {
+        if (loginResp.data != null && loginResp.data!!.success) {
             val balance = getBalance()
             infoDao.insert(InfoBean(uid, balance, loginResp.data!!.success))
         }
@@ -59,9 +58,8 @@ class CommonRepository(
         return loginResp
     }
 
-    //登入成功後取得餘額
+    //登入成功後主動取得餘額
     private suspend fun getBalance(): String {
-        delay(3000)
         val balanceResp = socketManager.sendAndWaitProtoMessageResponse<Client.BalanceResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -73,6 +71,18 @@ class CommonRepository(
             balanceResp.data!!.balance
         } else {
             ""
+        }
+    }
+
+    //觀察從API來的餘額變化並塞進資料庫
+    suspend fun observeBalanceChange() {
+        socketManager.observeProtoMessage<Client.BalanceNotify>(ApiCode.BALANCE_NOTIFY).collect {
+            //TODO 待驗證，不知道能不能收得到
+            if (it.data == null || it.data!!.balance.isNullOrEmpty())
+                return@collect
+            infoDao.queryInfo()?.apply {
+                infoDao.update(InfoBean(this.uid, it.data!!.balance, this.login))
+            }
         }
     }
 

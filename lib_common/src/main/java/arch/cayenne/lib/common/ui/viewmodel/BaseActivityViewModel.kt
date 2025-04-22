@@ -24,7 +24,8 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     val loginIsSuccess = MutableLiveData<Boolean>()
     val connectingError = MutableLiveData<SocketResponseError>()
 
-    init {
+    override fun initViewModel() {
+        super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
             commonRepository.getConnectStateFlow().collect { connectState ->
                 when(connectState) {
@@ -38,8 +39,11 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 }
             }
         }
-
+        viewModelScope.launch(Dispatchers.IO) {
+            commonRepository.observeBalanceChange()
+        }
     }
+
     //當連線成功時，自動地去做補登入
     private fun login() {
         viewModelScope.launch(Dispatchers.IO) {

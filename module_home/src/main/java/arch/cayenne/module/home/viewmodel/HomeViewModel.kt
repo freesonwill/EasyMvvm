@@ -24,11 +24,25 @@ class HomeViewModel : BaseViewModel() {
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
     val currentSportChange by lazy { MutableLiveData<Int>() }
+    val currentBalanceChange by lazy { MutableLiveData<String>() }
 
     var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
     val tournaments by lazy { MutableLiveData<List<TournamentCategory>>() }
+
+    override fun initViewModel() {
+        super.initViewModel()
+        //觀察餘額變化
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeBalance().collect {
+                withContext(Dispatchers.Main) {
+                    currentBalanceChange.value = it
+                }
+            }
+        }
+
+    }
 
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
