@@ -8,7 +8,7 @@ import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
@@ -24,7 +24,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         private const val MATCH_ID = "matchId"
         private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, id: Int, odds: String): ReserveDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, id: Long, odds: String): ReserveDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -32,7 +32,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putInt(MATCH_ID, id)
+            b.putLong(MATCH_ID, id)
             b.putString(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
@@ -77,9 +77,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.etRate.requestFocus()
 
-        val rate = requireArguments().getString(ODDS_NUMBER)
-        if (!rate.isNullOrEmpty()) {
-            mViewModel.setNumber(rate.toValue())
+        val odds = requireArguments().getString(ODDS_NUMBER)
+        if (!odds.isNullOrEmpty()) {
+            mViewModel.setNumber(odds.toOdds().toLong())
         }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
@@ -110,8 +110,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             mViewModel.clearNumber()
         }
         mBinding.btnConfirm.setOnClickListener {
-            val id = requireArguments().getInt(MATCH_ID, -1)
-            if (id != -1) {
+            val id = requireArguments().getLong(MATCH_ID, -1L)
+            if (id != -1L) {
                 mViewModel.reserve(id)
                 arguments = Bundle().apply {
                     putString(KEY_RESULT, VALUE_RESERVE_COMPLETE)

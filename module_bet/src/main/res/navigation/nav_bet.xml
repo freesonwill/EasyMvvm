@@ -48,8 +48,8 @@
 
         <argument
             android:name="id"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            app:argType="long"
+            android:defaultValue="-1L" />
     </fragment>
 
     <fragment
@@ -65,7 +65,7 @@
 
         <argument
             android:name="id"
-            app:argType="integer"
+            app:argType="long"
             app:nullable="false" />
         <action
             android:id="@+id/action_reserveFragment_to_betResultFragment"

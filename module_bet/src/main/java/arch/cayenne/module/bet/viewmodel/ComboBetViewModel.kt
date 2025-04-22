@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
@@ -18,10 +19,10 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData(123456)
-    val onBalanceListener: LiveData<Int> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData(123456L)
+    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
-    val remainingBalance: Int
+    val remainingBalance: Long
         get() = onBalanceListener.value?.let { balance ->
             onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
                 balance - betAmount
@@ -55,7 +56,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             val combinations = data.combinations(k)
 
             val totalRate = combinations.fold(0L) { acc, combo ->
-                acc + combo.fold(1L) { prod, bet -> prod * bet.selection.odds }
+                acc + combo.fold(1L) { prod, bet -> prod * bet.selectionLiteBean.odds.toOdds() }
             }
 
             // 將 totalRate 無條件捨去為倍率的前兩位，例如：39204 -> 392
@@ -80,7 +81,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         return withHead + withoutHead
     }
 
-    fun removeBet(id: Int) {
+    fun removeBet(id: Long) {
         viewModelScope.launch {
             repo.removeBet(id)
         }
@@ -90,7 +91,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(combo: Int, money: Int) {
+    fun updateMultiBetMoney(combo: Int, money: Long) {
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
                 if (rate.combo == combo) {

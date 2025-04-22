@@ -1,6 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.module.bet.repo.ReserveRepository
 
 class ReserveDialogViewModel(private val repository: ReserveRepository) : NumberCalculatorViewModel() {
@@ -17,14 +17,14 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
                 } else {
                     it
                 }
-                (it.toValue() + minOdds)
+                (it.toOdds() + minOdds)
             }
         } ?: minOdds
-        setEditNumber(odds)
+        setEditNumber(odds.toLong())
     }
 
-    fun reserve(id: Int) {
-        val odds = onEditNumber.value?.toValue() ?: 0
+    fun reserve(id: Long) {
+        val odds = onEditNumber.value?.toOdds() ?: 0
         repository.setSingleToReserve(id, odds)
     }
 }

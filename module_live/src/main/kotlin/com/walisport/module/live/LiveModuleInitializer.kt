@@ -1,9 +1,9 @@
 package com.walisport.module.live
 
 import android.content.Context
-import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
@@ -47,14 +47,13 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveStandingsViewModel)
         viewModelOf(::LiveSoftKeyboardViewModel)
         viewModelOf(::EmojiViewModel)
-
         viewModelOf(::LiveBetOnMenuViewModel)
 
     }
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
         factoryOf(::LiveBetRepository)
-
+        factoryOf(::LiveLineupRepository)
     }
 
     private val managerModule = module {

@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 class ReserveRepository(private val betDao: BetDao, private val remoteManager: BettingRemoteManager): BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    suspend fun getReverseById(id: Int) = withContext(scope.coroutineContext) {
+    suspend fun getReverseById(id: Long) = withContext(scope.coroutineContext) {
         val bet = betDao.getBetById(id)
         if (bet != null && bet.betType == BetTypeEnum.RESERVE) {
             bet
@@ -22,27 +22,27 @@ class ReserveRepository(private val betDao: BetDao, private val remoteManager: B
         }
     }
 
-    fun setSingleToReserve(id: Int, odds: Int) {
+    fun setSingleToReserve(id: Long, odds: Int) {
         scope.launch {
             betDao.setReserveOdds(id, odds)
             betDao.updateBetType(id, BetTypeEnum.RESERVE)
         }
     }
 
-    fun removeReserve(id: Int) {
+    fun removeReserve(id: Long) {
         scope.launch {
             betDao.setReserveOdds(id, null)
             betDao.updateBetType(id, BetTypeEnum.SINGLE)
         }
     }
 
-    fun updateReserveOdds(id: Int, odds: Int?) {
+    fun updateReserveOdds(id: Long, odds: Int?) {
         scope.launch {
             betDao.setReserveOdds(id, odds)
         }
     }
 
-    fun sendReserve(id: Int, money: Int) {
+    fun sendReserve(id: Long, money: Long) {
         scope.launch {
             betDao.getBetById(id)?.let {
                 if (it.betType == BetTypeEnum.RESERVE) {

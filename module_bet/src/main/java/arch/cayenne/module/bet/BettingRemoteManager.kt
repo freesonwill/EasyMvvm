@@ -18,17 +18,17 @@ import kotlinx.coroutines.Dispatchers
 
 class BettingRemoteManager(private val socketManager: WebSocketManager) {
 
-    suspend fun singleBet(scope: CoroutineScope, bean: BetBean, money: Int): SingleBetDataModel? {
+    suspend fun singleBet(scope: CoroutineScope, bean: BetBean, money: Long): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SINGLE_BET,
         ) {
             Client.SingleBetReq.newBuilder().apply {
-                this.matchId = bean.matchId.toLong()
-                this.selectionId = bean.selection.id.toLong()
-                this.odds = bean.selection.odds.getOdds()
-                this.betAmount = money.getOdds()
+                this.matchId = bean.matchId
+                this.selectionId = bean.selectionLiteBean.id
+                this.odds = bean.selectionLiteBean.odds
+                this.betAmount = money.getMoney()
                 this.oddsChange = 2
             }.build()
         }
@@ -46,7 +46,7 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         }
     }
 
-    suspend fun reserveBet(scope: CoroutineScope, bean: BetBean, money: Int): ReserveBetDataModel? {
+    suspend fun reserveBet(scope: CoroutineScope, bean: BetBean, money: Long): ReserveBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ReserveBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -54,11 +54,11 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         ) {
             Client.ReserveBetReq.newBuilder().apply {
                 this.setBet(Common.BetOption.newBuilder().apply {
-                    this.matchId = bean.matchId.toLong()
-                    this.selectionId = bean.selection.id.toLong()
-                    this.odds = bean.selection.odds.getOdds()
+                    this.matchId = bean.matchId
+                    this.selectionId = bean.selectionLiteBean.id
+                    this.odds = bean.selectionLiteBean.odds
                 })
-                this.betAmount = money.getOdds()
+                this.betAmount = money.getMoney()
             }.build()
         }
         return if (res.error == null && res.data != null) {
@@ -86,9 +86,9 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
                 this.addAllBet(
                     beans.map {
                         Common.BetOption.newBuilder().apply {
-                            this.matchId = it.matchId.toLong()
-                            this.selectionId = it.selection.id.toLong()
-                            this.odds = it.selection.odds.getOdds()
+                            this.matchId = it.matchId
+                            this.selectionId = it.selectionLiteBean.id
+                            this.odds = it.selectionLiteBean.odds
                         }.build()
                     }
                 )
