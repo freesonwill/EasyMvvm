@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.contains
 import arch.cayenne.lib.skin.widget.SportConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -44,7 +45,9 @@ class DynamicStateLayout @JvmOverloads constructor(
             States.NULL ->{}
         }
         emptyView.findViewById<TextView>(R.id.tv_message).text=msg
-        addView(emptyView)
+        if(!this.contains(emptyView)){
+            addView(emptyView)
+        }
     }
 
     fun setVisibilityGone(){
