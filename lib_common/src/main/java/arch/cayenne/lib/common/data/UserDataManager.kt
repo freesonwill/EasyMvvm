@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 class UserDataManager {
 
     private val mmkv = MMKV.defaultMMKV()
-    private val flows = mutableMapOf<UserDataKey, MutableSharedFlow<Pair<UserDataKey, Any?>>>()
+    private val flows = mutableMapOf<UserDataKey, MutableSharedFlow<Any?>>()
 
     fun <T> setKeyValue(key: UserDataKey, value: T) {
         when (value) {
@@ -43,11 +43,12 @@ class UserDataManager {
     }
 
     private fun notifyChanged(key: UserDataKey, value: Any?) {
-        flows[key]?.tryEmit(key to value)
+        val flow = flows.getOrPut(key) { MutableSharedFlow(replay = 1) }
+        flow.tryEmit(value)
     }
 
-    fun <T> observe(key: UserDataKey): Flow<Pair<UserDataKey, T>> {
+    fun observe(key: UserDataKey): Flow<Any?> {
         val flow = flows.getOrPut(key) { MutableSharedFlow(replay = 1) }
-        return flow as Flow<Pair<UserDataKey, T>>
+        return flow
     }
 }
