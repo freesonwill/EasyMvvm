@@ -37,7 +37,7 @@
     </declare-styleable>
 
     <declare-styleable name="SportTabLayoutHelper">
-        <attr format="reference" name="tabBackground"/>
+        <attr format="reference" name="sportTabBackground"/>
         <attr format="color" name="tabIndicatorColor"/>
         <attr format="color" name="tabTextColor"/>
         <attr format="color" name="tabSelectedTextColor"/>

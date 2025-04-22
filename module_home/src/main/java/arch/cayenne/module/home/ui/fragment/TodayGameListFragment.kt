@@ -2,19 +2,22 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeGameListBinding>() {
@@ -28,6 +31,9 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
             matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
+                }
+
+                override fun onFavoriteClick(item: MatchWithMarkets) {
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)

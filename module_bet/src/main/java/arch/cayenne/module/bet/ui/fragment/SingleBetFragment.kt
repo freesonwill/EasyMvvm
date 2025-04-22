@@ -101,7 +101,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     location.first() + mBinding.btnReserve.width / 2,
                     location.last() + mBinding.btnReserve.height,
                     it.matchId,
-                    odds = it.selection.odds.getOdds()
+                    odds = it.selectionLiteBean.odds
                 ).show(childFragmentManager)
             }
 

@@ -10,11 +10,11 @@ import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 internal object ViewHelper {
 
     fun bindBetSheet(bean: BetBean, binding: ItemBetSheetBinding) {
-        val odds = "@${bean.selection.odds.getOdds()}"
+        val odds = "@${bean.selectionLiteBean.odds}"
         binding.tvOdds.text = odds
 
-        binding.tvSelectionName.text = bean.selection.name
-        binding.tvMarket.text = bean.selection.marketName
+        binding.tvSelectionName.text = bean.selectionLiteBean.name
+        binding.tvMarket.text = bean.selectionLiteBean.marketName
         binding.tvMatchName.text = bean.matchName
         binding.tvLeagueName.text = bean.leagueName
 
