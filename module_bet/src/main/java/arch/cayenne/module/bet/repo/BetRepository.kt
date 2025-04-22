@@ -9,61 +9,62 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionLiteBean
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao): BaseRepository() {
-
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+class BetRepository(
+    override val scope: CoroutineScope,
+    private val betDao: BetDao, private val matchDao: MatchDao
+) : BaseRepository() {
 
     /***
      * 新增投注資料
      * @return type 返回單注or串關
      */
-    suspend fun setSelection(matchId: Long, selectionId: Long) = withContext(scope.coroutineContext) {
-        val isSingle = betDao.getBetSheet().isEmpty()
-        val betBean = betDao.getBetById(matchId)
-        val match = matchDao.getOneMatchById(matchId)
-        val selections = matchDao.getSelectionById(selectionId)
+    suspend fun setSelection(matchId: Long, selectionId: Long) =
+        withContext(scope.coroutineContext) {
+            val isSingle = betDao.getBetSheet().isEmpty()
+            val betBean = betDao.getBetById(matchId)
+            val match = matchDao.getOneMatchById(matchId)
+            val selections = matchDao.getSelectionById(selectionId)
 
-        // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
-        if (betBean == null) {
-            scope.launch {
-                getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
-                    val bean = BetBean(
-                        matchId = matchId,
-                        selectionLiteBean = selectionLiteBean,
-                        betType = if (isSingle) BetTypeEnum.SINGLE else BetTypeEnum.COMBO,
-                        leagueName = match.match.basicInfo.tournamentName,
-                        matchName = match.match.basicInfo.matchName,
-                        // TODO : 這邊的最小金額跟最大金額需討論是否添加時取得
-                        minAmount = 1000,
-                        maxAmount = 100000,
-                        isBetStop = match.match.basicInfo.betStop,
-                        isPlaying = match.match.basicInfo.status == 5,
-                    )
-                    betDao.insert(bean)
+            // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
+            if (betBean == null) {
+                scope.launch {
+                    getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
+                        val bean = BetBean(
+                            matchId = matchId,
+                            selectionLiteBean = selectionLiteBean,
+                            betType = if (isSingle) BetTypeEnum.SINGLE else BetTypeEnum.COMBO,
+                            leagueName = match.match.basicInfo.tournamentName,
+                            matchName = match.match.basicInfo.matchName,
+                            isBetStop = match.match.basicInfo.betStop,
+                            isPlaying = match.match.basicInfo.status == 5,
+                        )
+                        betDao.insert(bean)
+                    }
                 }
-            }
-        } else {
-            if (betBean.selectionLiteBean.id == selectionId) {
-                remove(matchId)
             } else {
-                getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
-                    betBean.selectionLiteBean = selectionLiteBean
-                    betDao.update(betBean)
+                if (betBean.selectionLiteBean.id == selectionId) {
+                    remove(matchId)
+                } else {
+                    getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
+                        betBean.selectionLiteBean = selectionLiteBean
+                        betDao.update(betBean)
+                    }
                 }
             }
+            if (isSingle) {
+                BetTypeEnum.SINGLE
+            } else {
+                BetTypeEnum.COMBO
+            }
         }
-        if (isSingle) {
-            BetTypeEnum.SINGLE
-        } else {
-            BetTypeEnum.COMBO
-        }
-    }
 
-    private fun getSelectionLiteBean(match: MatchWithMarkets, selectionBean: SelectionBean): SelectionLiteBean? {
+    private fun getSelectionLiteBean(
+        match: MatchWithMarkets,
+        selectionBean: SelectionBean
+    ): SelectionLiteBean? {
         match.markets.find { market ->
             market.selections.find { it.selectionId == selectionBean.selectionId } != null
         }?.let { market ->
@@ -76,19 +77,6 @@ class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao):
             )
         }
         return null
-    }
-
-    /***
-     * 更新盤口投注限額
-     */
-    fun updateLimitAmount(matchId: Long, min: Long, max: Long) {
-        scope.launch {
-            betDao.getBetById(matchId)?.let { bet ->
-                bet.minAmount = min
-                bet.maxAmount = max
-                betDao.update(bet)
-            }
-        }
     }
 
     /***
@@ -118,7 +106,7 @@ class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao):
     /***
      * 刪除投注資料
      */
-    fun remove(matchId: Long) {
+    private fun remove(matchId: Long) {
         scope.launch {
             betDao.removeBet(matchId)
         }

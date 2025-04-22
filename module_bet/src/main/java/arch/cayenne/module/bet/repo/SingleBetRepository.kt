@@ -6,14 +6,13 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SingleBetRepository(
+    override val scope: CoroutineScope,
     private val betDao: BetDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     init {
         scope.launch {

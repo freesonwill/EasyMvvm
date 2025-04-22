@@ -10,17 +10,16 @@ import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlin.math.pow
 
 class ComboBetRepository(
+    override val scope: CoroutineScope,
     private val betDao: BetDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     private val comboMultiBetFlow = MutableSharedFlow<List<ComboMultiBetBean>>()
 
