@@ -48,6 +48,7 @@ class MatchItemViewHolder(
             Glide.with(binding.root).load(basicInfo.homeTeamIcon).into(ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
+            tvWatchCount.text = liveInfo.viewerCount.toString()
 
             val markets = data.markets
                 .filter { it.selections.isNotEmpty() }
