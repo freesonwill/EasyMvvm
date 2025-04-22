@@ -41,6 +41,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override fun createObserver() {
         mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
             it?.let {
+                mBinding.main.setVisibilityGone()
                 upData(it)
             } ?: run {
                 mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
