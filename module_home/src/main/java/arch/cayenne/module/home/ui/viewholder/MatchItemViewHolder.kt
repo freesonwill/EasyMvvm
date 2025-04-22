@@ -110,11 +110,8 @@ class MatchItemViewHolder(
                             }
                         }
                     } else {
-                        // 無此 row 資料，顯示空白佔位
-                        oddsCellBinding.tvShortName.visibility = View.INVISIBLE
-                        oddsCellBinding.tvOdds.visibility = View.INVISIBLE
-                        oddsCellBinding.ivLock.visibility = View.INVISIBLE
-                        oddsCellBinding.llOddsCell.isEnabled = false
+                        // 無資料
+                        oddsCellBinding.root.visibility = View.GONE
                     }
 
                     val cellParams = GridLayout.LayoutParams().apply {
