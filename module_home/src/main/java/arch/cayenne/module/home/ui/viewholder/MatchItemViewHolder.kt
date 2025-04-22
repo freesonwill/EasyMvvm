@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
+import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -37,11 +38,11 @@ class MatchItemViewHolder(private val mBinding: ItemMatchCardBinding) : BaseView
             }
 
             Glide.with(binding.root).load(basicInfo.awayTeamIcon).into(ivAwayIcon)
-            tvAwayName.text = basicInfo.awayTeam
+            tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
             tvAwayScore.text = liveInfo.score.getAwayScore()
 
             Glide.with(binding.root).load(basicInfo.homeTeamIcon).into(ivHomeIcon)
-            tvHomeName.text = basicInfo.homeTeam
+            tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
 
             val markets = data.markets

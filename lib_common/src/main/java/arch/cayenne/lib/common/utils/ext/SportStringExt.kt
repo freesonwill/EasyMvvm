@@ -51,4 +51,17 @@ object SportStringExt {
         return if (this.contains(":")) this.substringAfter(":").trim() else ""
     }
 
+    fun String.limitTitleLength(maxUnits: Int = 5): String {
+        var units = 0.0
+        val builder = StringBuilder()
+        for (char in this) {
+            val unit = if (char.code in 0..127) 0.5 else 1.0
+            if (units + unit > maxUnits) break
+            builder.append(char)
+            units += unit
+        }
+        return if (builder.length < this.length) builder.toString() + "…" else builder.toString()
+    }
+
+
 }
