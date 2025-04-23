@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toDecimalNumber
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
@@ -95,7 +96,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             //TODO 等轉換long, 換成getMoney()
-            mBinding.tvWalletBalance.text = it.toDecimalNumber()
+            mBinding.tvWalletBalance.text = it.getMoney()
         }
 
 //        mViewModel.tournaments.observe(this) {
