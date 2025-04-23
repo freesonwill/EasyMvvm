@@ -132,6 +132,7 @@
 
 
     <arch.cayenne.lib.skin.widget.SportLinearLayout
+        android:id="@+id/sllIncidentsMain"
         android:layout_marginTop="10dp"
         android:paddingBottom="@dimen/dp_10"
         android:layout_width="match_parent"
@@ -225,6 +226,7 @@
     </arch.cayenne.lib.skin.widget.SportLinearLayout>
 
       <arch.cayenne.lib.skin.widget.SportLinearLayout
+          android:id="@+id/sllSubstituteMain"
           android:layout_marginTop="10dp"
           android:paddingBottom="@dimen/dp_10"
           android:layout_width="match_parent"

@@ -36,6 +36,9 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     private val allPlayerInfo = mutableListOf<LineupPlayerInfo>()
     private val headHeightViewNumber = 44.dp2px
     private val headWidthViewNumber = 100.dp2px
+    //用于隐藏布局
+    private var isIncidents :Boolean= false
+    private var isSubstitutes :Boolean= false
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.geMatchLineupDetail(mainViewModel.matchId)
@@ -99,6 +102,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 //主队换人
                 incidents(i.incidentsList,i.position,true)
             }else{
+                isSubstitutes = true
                 substituteHome(i)
             }
         }
@@ -128,9 +132,12 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 //客队换人
                 incidents(i.incidentsList,i.position,false)
             }else{
+                isSubstitutes = true
                 substituteAway(i)
             }
         }
+        mBinding.sllIncidentsMain.visibility = if (isIncidents) View.VISIBLE else View.GONE
+        mBinding.sllSubstituteMain.visibility = if (isSubstitutes) View.VISIBLE else View.GONE
     }
     //通过first判断球员是不是替补
     private fun substituteHome(data: Sloth.PlayerOrBuilder){
@@ -159,6 +166,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         @SuppressLint("SetTextI18n")
         private fun incidents(list:List<Sloth.PlayerIncident>, positionName:String,isHome:Boolean){
             list.forEach{itData->
+                isIncidents = true
                 LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
                 if (itData.inPlayer.name.isNotEmpty()){
                 val binding = LineupSubstitutionItemBinding.inflate(LayoutInflater.from(context), if (isHome)mBinding.llcHome else mBinding.llcAway, false)
