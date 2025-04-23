@@ -50,8 +50,8 @@
               tools:ignore="MissingConstraints">
             <ImageView
                 android:id="@+id/ivNationalFlagTop"
-                android:layout_width="21dp"
-                android:layout_height="14dp"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 tools:ignore="MissingConstraints" />
@@ -60,7 +60,6 @@
                 android:id="@+id/tvNationalNameTop"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
-                android:text="2-3-4"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/white"
                 android:drawablePadding="8dp"
@@ -108,8 +107,8 @@
               tools:ignore="MissingConstraints">
             <ImageView
                 android:id="@+id/ivNationalFlagBottom"
-                android:layout_width="21dp"
-                android:layout_height="14dp"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
                 app:cornerRadius="4dp"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -119,7 +118,6 @@
                 android:id="@+id/tvNationalNameBottom"
                 android:layout_marginStart="5dp"
                 android:layout_width="wrap_content"
-                android:text="2-3-4"
                 android:textSize="@dimen/sp_14"
                 android:textColor="@color/white"
                 android:drawablePadding="8dp"
@@ -132,7 +130,9 @@
       </RelativeLayout>
     </arch.cayenne.lib.skin.widget.SportLinearLayout>
 
+
     <arch.cayenne.lib.skin.widget.SportLinearLayout
+        android:id="@+id/sllIncidentsMain"
         android:layout_marginTop="10dp"
         android:paddingBottom="@dimen/dp_10"
         android:layout_width="match_parent"
@@ -154,60 +154,79 @@
 
 
       <androidx.appcompat.widget.LinearLayoutCompat
+          android:id="@+id/llcHome"
           android:layout_width="match_parent"
           android:orientation="vertical"
           android:layout_height="wrap_content">
-
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_6"
-            android:layout_width="wrap_content"
-            android:text="法国"
-            android:gravity="center_vertical"
-            android:drawableStart="@drawable/live_bet_country_icon"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/substitution_text_color"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
-            tools:ignore="MissingConstraints" />
-
-        <include layout="@layout/lineup_substitution_item"/>
-        <include layout="@layout/lineup_substitution_item"/>
-        <include layout="@layout/lineup_substitution_item"/>
+            tools:ignore="MissingConstraints">
+          <ImageView
+              android:id="@+id/homeIncidentsLogo"
+              android:layout_width="30dp"
+              android:layout_height="20dp"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintBottom_toBottomOf="parent"
+              tools:ignore="MissingConstraints" />
+          <arch.cayenne.lib.skin.widget.SportTextView
+              android:id="@+id/homeIncidentsName"
+              android:layout_marginStart="@dimen/dp_12"
+              android:layout_width="wrap_content"
+              app:layout_constraintStart_toEndOf="@id/homeIncidentsLogo"
+              android:gravity="center_vertical"
+              android:textSize="@dimen/sp_14"
+              android:textColor="@color/substitution_text_color"
+              android:drawablePadding="8dp"
+              android:layout_height="wrap_content"
+              tools:ignore="MissingConstraints" />
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
       </androidx.appcompat.widget.LinearLayoutCompat>
 
       <androidx.appcompat.widget.LinearLayoutCompat
+          android:id="@+id/llcAway"
           android:layout_marginTop="@dimen/dp_30"
           android:layout_width="match_parent"
           android:orientation="vertical"
           android:layout_height="wrap_content">
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+            android:layout_width="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_6"
-            android:layout_width="wrap_content"
-            android:text="法国"
-            android:gravity="center_vertical"
-            android:drawableStart="@drawable/live_bet_country_icon"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/substitution_text_color"
-            android:drawablePadding="8dp"
             android:layout_height="wrap_content"
-            tools:ignore="MissingConstraints" />
-
-        <include
-            layout="@layout/lineup_substitution_item_blue"/>
-        <include layout="@layout/lineup_substitution_item_blue"/>
-        <include layout="@layout/lineup_substitution_item_blue"/>
+            tools:ignore="MissingConstraints">
+          <ImageView
+              android:id="@+id/awayIncidentsLogo"
+              android:layout_width="30dp"
+              android:layout_height="20dp"
+              app:layout_constraintTop_toTopOf="parent"
+              app:layout_constraintBottom_toBottomOf="parent"
+              tools:ignore="MissingConstraints" />
+          <arch.cayenne.lib.skin.widget.SportTextView
+              android:id="@+id/awayIncidentsName"
+              android:layout_marginStart="@dimen/dp_12"
+              android:layout_width="wrap_content"
+              app:layout_constraintStart_toEndOf="@id/awayIncidentsLogo"
+              android:gravity="center_vertical"
+              android:textSize="@dimen/sp_14"
+              android:textColor="@color/substitution_text_color"
+              android:drawablePadding="8dp"
+              android:layout_height="wrap_content"
+              tools:ignore="MissingConstraints" />
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
       </androidx.appcompat.widget.LinearLayoutCompat>
 
     </arch.cayenne.lib.skin.widget.SportLinearLayout>
 
       <arch.cayenne.lib.skin.widget.SportLinearLayout
+          android:id="@+id/sllSubstituteMain"
           android:layout_marginTop="10dp"
           android:paddingBottom="@dimen/dp_10"
           android:layout_width="match_parent"
@@ -230,48 +249,76 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_height="wrap_content">
 
           <androidx.appcompat.widget.LinearLayoutCompat
-              android:layout_width="match_parent"
-              android:orientation="horizontal"
+              android:id="@+id/llcHomeSubstitute"
+              android:layout_width="0dp"
+              android:layout_weight="1"
+              android:orientation="vertical"
               android:layout_height="wrap_content">
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
                 android:layout_marginStart="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_6"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:text="法国"
-                android:gravity="center_vertical"
-                android:drawableStart="@drawable/live_bet_country_icon"
-                android:textSize="@dimen/sp_14"
-                android:textColor="@color/substitution_text_color"
-                android:drawablePadding="8dp"
                 android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints" />
-            <arch.cayenne.lib.skin.widget.SportTextView
+                tools:ignore="MissingConstraints">
+              <ImageView
+                  android:id="@+id/homeSubstituteLogo"
+                  android:layout_width="30dp"
+                  android:layout_height="20dp"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  tools:ignore="MissingConstraints" />
+              <arch.cayenne.lib.skin.widget.SportTextView
+                  android:id="@+id/homeSubstituteName"
+                  android:layout_marginStart="@dimen/dp_12"
+                  android:layout_width="wrap_content"
+                  android:gravity="center_vertical"
+                  android:textSize="@dimen/sp_14"
+                  android:textColor="@color/substitution_text_color"
+                  android:drawablePadding="8dp"
+                  android:layout_height="wrap_content"
+                  tools:ignore="MissingConstraints" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+          </androidx.appcompat.widget.LinearLayoutCompat>
+          <androidx.appcompat.widget.LinearLayoutCompat
+              android:id="@+id/llcAwaySubstitute"
+              android:layout_width="0dp"
+              android:layout_weight="1"
+              android:orientation="vertical"
+              android:layout_height="wrap_content">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
                 android:layout_marginEnd="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_6"
-                android:layout_width="wrap_content"
-                android:text="阿根廷 "
-                android:gravity="center_vertical"
-                android:drawableEnd="@drawable/live_bet_country_icon"
-                android:textSize="@dimen/sp_14"
-                android:textColor="@color/substitution_text_color"
-                android:drawablePadding="8dp"
                 android:layout_height="wrap_content"
-                tools:ignore="MissingConstraints" />
+                android:layout_gravity="right"
+                tools:ignore="MissingConstraints">
+              <arch.cayenne.lib.skin.widget.SportTextView
+                  android:id="@+id/awaySubstituteName"
+                  android:layout_marginEnd="@dimen/dp_12"
+                  android:layout_width="wrap_content"
+                  android:gravity="center_vertical"
+                  android:textSize="@dimen/sp_14"
+                  android:textColor="@color/substitution_text_color"
+                  android:drawablePadding="8dp"
+                  android:layout_height="wrap_content"
+                  tools:ignore="MissingConstraints" />
+              <ImageView
+                  android:id="@+id/awaySubstituteLogo"
+                  android:layout_width="30dp"
+                  android:layout_height="20dp"
+                  app:layout_constraintTop_toTopOf="parent"
+                  app:layout_constraintBottom_toBottomOf="parent"
+                  tools:ignore="MissingConstraints" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
           </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-          <include layout="@layout/lineup_repair_item"/>
-          <include layout="@layout/lineup_repair_item"/>
-          <include layout="@layout/lineup_repair_item"/>
-
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
