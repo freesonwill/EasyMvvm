@@ -27,7 +27,7 @@ class ComboBetRepository(
         scope.launch {
             betDao.observeComboBet().collect { bets ->
                 if (bets.isNotEmpty()) {
-                    remoteManager.getComboRisk(scope, bets)?.let { riskList ->
+                    remoteManager.getComboRisk(bets)?.let { riskList ->
                         val multiBet = calculateMultiBetSums(bets, riskList)
                         comboMultiBetFlow.emit(multiBet)
                     }
@@ -63,7 +63,7 @@ class ComboBetRepository(
             val ids = betBeans.map { it.matchId }
             betDao.updateBetListStatus(ids, BetStatusEnum.BETTING)
             // TODO 等接入實際盤口資料後再測試
-            val resp = remoteManager.comboBet(scope, betBeans, multiBet)
+            val resp = remoteManager.comboBet(betBeans, multiBet)
             if (resp == null || !resp.isSuccessful) {
                 betDao.updateBetListStatus(ids, BetStatusEnum.FAIL)
             } else {

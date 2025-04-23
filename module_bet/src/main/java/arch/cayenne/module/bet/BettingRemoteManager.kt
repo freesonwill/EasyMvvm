@@ -17,9 +17,9 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class BettingRemoteManager(private val socketManager: WebSocketManager) {
+class BettingRemoteManager(private val scope: CoroutineScope, private val socketManager: WebSocketManager) {
 
-    suspend fun singleBet(scope: CoroutineScope, bean: BetBean, money: Long): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetBean, money: Long): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -48,7 +48,6 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     suspend fun reserveBet(
-        scope: CoroutineScope,
         bean: BetBean,
         money: Long
     ): ReserveBetDataModel? {
@@ -78,7 +77,6 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     suspend fun comboBet(
-        scope: CoroutineScope,
         beans: List<BetBean>,
         multi: List<ComboMultiBetBean>
     ): ComboBetDataModel? {
@@ -129,7 +127,6 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     suspend fun getSingleRisk(
-        scope: CoroutineScope,
         matchId: Long,
         selectionId: Long
     ): SingleRiskDataModel? {
@@ -160,7 +157,6 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     suspend fun getComboRisk(
-        scope: CoroutineScope,
         beans: List<BetBean>
     ): List<ComboRiskDataModel>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetComboRiskResp>(

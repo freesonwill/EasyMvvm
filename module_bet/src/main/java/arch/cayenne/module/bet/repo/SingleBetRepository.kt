@@ -17,7 +17,7 @@ class SingleBetRepository(
     init {
         scope.launch {
             betDao.getSingleBet()?.let { bet ->
-                remoteManager.getSingleRisk(scope, bet.matchId, bet.selectionLiteBean.id)
+                remoteManager.getSingleRisk(bet.matchId, bet.selectionLiteBean.id)
                     ?.let { risk ->
                         if (risk.matchId == bet.matchId && risk.selectionId == bet.selectionLiteBean.id) {
                             bet.minAmount = risk.minAmount
@@ -49,7 +49,7 @@ class SingleBetRepository(
                 if (it.betType == BetTypeEnum.SINGLE) {
                     betDao.updateBetStatus(id, BetStatusEnum.BETTING)
                     // TODO 等接入實際盤口資料後再測試
-                    val resp = remoteManager.singleBet(scope, it, money)
+                    val resp = remoteManager.singleBet(it, money)
                     if (resp == null || !resp.isSuccessful) {
                         betDao.updateBetStatus(id, BetStatusEnum.FAIL)
                     } else {

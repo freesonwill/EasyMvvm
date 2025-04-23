@@ -49,7 +49,7 @@ class ReserveRepository(
             betDao.getBetById(id)?.let {
                 if (it.betType == BetTypeEnum.RESERVE) {
                     // TODO 等接入實際盤口資料後再測試
-                    val resp = remoteManager.reserveBet(scope, it, money)
+                    val resp = remoteManager.reserveBet(it, money)
                     if (resp == null || !resp.isSuccessful) {
                         betDao.updateBetStatus(id, BetStatusEnum.FAIL)
                     } else {
