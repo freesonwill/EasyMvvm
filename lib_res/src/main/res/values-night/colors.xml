@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="main_text">#FFFFFF</color>
+    <color name="secondary_text">#929298</color>
+    <color name="text_on_theme_color">#000000</color>
+    <color name="card_outline">#282A34</color>
+    <color name="brand_color">#24EE8A</color>
+    <color name="main_background">#0E0F1A</color>
+    <color name="money_color">#FFCA57</color>
+    <color name="money_background">#F6EFE5</color>
+    <color name="card_odds_background">#F3F3F4</color>
+    <color name="card_background">#161823</color>
+
+    <color name="keyboard_number">#D3D3D6</color>
+    <color name="keyboard_1">#3D3E4B</color>
+
+    <color name="input_box_2">#232530</color>
+    <color name="input_word">#4B4C55</color>
+
+    <color name="list_separator">#1D1F2A</color>
+</resources>
