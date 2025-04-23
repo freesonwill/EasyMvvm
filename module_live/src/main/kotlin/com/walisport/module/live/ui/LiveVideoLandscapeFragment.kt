@@ -68,6 +68,8 @@ class LiveVideoLandscapeFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
 //        mViewModel.addMockData()
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
