@@ -138,11 +138,11 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(this) {
+        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentTournament(it)
         }
-        mViewModel.tournaments.observe(this) {
+        mViewModel.tournaments.observe(viewLifecycleOwner) {
             initLeaguesLayout(it)
         }
     }

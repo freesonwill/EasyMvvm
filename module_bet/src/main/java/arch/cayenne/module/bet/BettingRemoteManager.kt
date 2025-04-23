@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -9,16 +8,18 @@ import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.remote.ComboBetDataModel
 import arch.cayenne.module.bet.data.remote.ComboMultiBetInfo
+import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import arch.cayenne.module.bet.data.remote.ReserveBetDataModel
 import arch.cayenne.module.bet.data.remote.SingleBetDataModel
+import arch.cayenne.module.bet.data.remote.SingleRiskDataModel
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
-class BettingRemoteManager(private val socketManager: WebSocketManager) {
+class BettingRemoteManager(private val scope: CoroutineScope, private val socketManager: WebSocketManager) {
 
-    suspend fun singleBet(scope: CoroutineScope, bean: BetBean, money: Long): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetBean, money: Long): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -46,7 +47,10 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         }
     }
 
-    suspend fun reserveBet(scope: CoroutineScope, bean: BetBean, money: Long): ReserveBetDataModel? {
+    suspend fun reserveBet(
+        bean: BetBean,
+        money: Long
+    ): ReserveBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ReserveBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -73,7 +77,6 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     suspend fun comboBet(
-        scope: CoroutineScope,
         beans: List<BetBean>,
         multi: List<ComboMultiBetBean>
     ): ComboBetDataModel? {
@@ -118,6 +121,68 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
                 data.message,
                 placeBetInfo
             )
+        } else {
+            null
+        }
+    }
+
+    suspend fun getSingleRisk(
+        matchId: Long,
+        selectionId: Long
+    ): SingleRiskDataModel? {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetSingleRiskResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_SINGLE_RISK,
+        ) {
+            Client.GetSingleRiskReq.newBuilder().apply {
+                val risk = Common.RiskSelection.newBuilder().apply {
+                    this.matchId = matchId
+                    this.selectionId = selectionId
+                }.build()
+                this.addSelection(risk)
+            }.build()
+        }
+        return if (res.error == null && res.data != null) {
+            val data = res.data!!.riskList.first()
+            SingleRiskDataModel(
+                matchId = data.matchId,
+                selectionId = data.selectionId,
+                minAmount = data.min,
+                maxAmount = data.max
+            )
+        } else {
+            null
+        }
+    }
+
+    suspend fun getComboRisk(
+        beans: List<BetBean>
+    ): List<ComboRiskDataModel>? {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetComboRiskResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_COMBO_RISK,
+        ) {
+            Client.GetComboRiskReq.newBuilder().apply {
+                val risk = beans.map { bean ->
+                    Common.RiskSelection.newBuilder().apply {
+                        this.matchId = bean.matchId
+                        this.selectionId = bean.selectionLiteBean.id
+                    }.build()
+                }
+                this.addAllSelection(risk)
+            }.build()
+        }
+        return if (res.error == null && res.data != null) {
+            val data = res.data!!
+            data.riskList.map {
+                ComboRiskDataModel(
+                    count =  if (it.serialValue == 0) 1 else it.serialValue,
+                    minAmount = it.min,
+                    maxAmount = it.max
+                )
+            }
         } else {
             null
         }

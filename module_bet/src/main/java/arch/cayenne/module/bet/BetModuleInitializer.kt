@@ -15,6 +15,8 @@ import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -31,6 +33,9 @@ class BetModuleInitializer: DefaultInitializer<String> {
     }
 
     private val managerModule = module {
+        factory {
+            CoroutineScope(Dispatchers.IO)
+        }
         factoryOf(::BettingRemoteManager)
     }
 
