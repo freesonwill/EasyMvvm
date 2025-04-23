@@ -44,7 +44,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
-        mViewModel.matchId = matchId
+        mViewModel.setMatchId(matchId)
         mViewModel.queryLiveStream()
 
         val mediaPlayer = mBinding.videoView.mediaPlayer

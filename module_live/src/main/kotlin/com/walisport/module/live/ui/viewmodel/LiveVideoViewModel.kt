@@ -6,15 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveVideoBean
-import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.repository.LiveVideoRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
-class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
-
-    var matchId = 0L
+class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel() {
 
     val videoPlayVisible = MutableLiveData(View.VISIBLE)
 
@@ -52,19 +50,13 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     private val muteManager: MuteManager by inject { parametersOf() }
 
     init {
-        viewModelScope.launch {
-            repo.observeLiveVideoBean(matchId).collect {
-                if (it != null) {
-                    _liveVideoBean.value = it
-                }
-            }
 
-        }
     }
+
 
     fun setPlayingVideoId(id: Int) {
         _liveVideoBean.value?.source?.firstOrNull { it.id == id }?.isPlaying = true
-        repo.setPlayingVideoId(_liveVideoBean.value?.source ?: emptyList(), matchId)
+        repo.setPlayingVideoId(_liveVideoBean.value?.source ?: emptyList())
     }
 
     fun changeMuteStatus() {
@@ -75,8 +67,22 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
 
     fun mutedData() = muteManager.mutedLiveData
 
+    fun setMatchId(matchId: Long) {
+        repo.matchId = matchId
+
+        viewModelScope.launch {
+            repo.observeLiveVideoBean(repo.matchId).collect {
+                if (it != null) {
+                    _liveVideoBean.value = it
+                }
+            }
+
+        }
+    }
+
+
     fun queryLiveStream() {
-        repo.queryLiveStream(matchId)
+        repo.queryLiveStream()
     }
 
 }
