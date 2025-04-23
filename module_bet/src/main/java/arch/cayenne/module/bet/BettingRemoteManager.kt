@@ -182,7 +182,7 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
             val data = res.data!!
             data.riskList.map {
                 ComboRiskDataModel(
-                    count =  it.serialValue,
+                    count =  if (it.serialValue == 0) 1 else it.serialValue,
                     minAmount = it.min,
                     maxAmount = it.max
                 )

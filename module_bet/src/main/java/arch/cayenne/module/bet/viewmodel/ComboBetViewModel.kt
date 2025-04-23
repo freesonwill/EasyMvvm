@@ -40,8 +40,8 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                 }
             }
             launch {
-                repo.observeComboMultiBet().collect {
-                    setMultiBetBean(it)
+                repo.observeComboMultiBet().collect { beans ->
+                    setMultiBetBean(beans)
                 }
             }
         }

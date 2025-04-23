@@ -22,7 +22,7 @@ class ComboMultiBetAdapter(
 
     override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
         val item = getItem(holder.adapterPosition)
-        holder.bind(currentList.size, item)
+        holder.bind(item)
     }
 
     override fun createViewBinding(
@@ -78,5 +78,6 @@ class ComboMultiBetAdapter(
 
     interface OnComboMultiBetClickListener {
         fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int)
+        fun getSize(): Int
     }
 }
