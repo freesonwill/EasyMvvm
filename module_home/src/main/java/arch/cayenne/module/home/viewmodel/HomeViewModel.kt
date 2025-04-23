@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
+import arch.cayenne.module.home.data.MatchUpdatePayload
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
@@ -27,6 +28,9 @@ class HomeViewModel : BaseViewModel() {
     private var currentPlayType : PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val currentSportChange by lazy { MutableLiveData<Int>() }
+
+    var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
@@ -34,6 +38,13 @@ class HomeViewModel : BaseViewModel() {
 
     private val _selectedDate = MutableLiveData<String>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<String> = _selectedDate
+    private val _matchUpdates = MutableLiveData<MatchUpdatePayload>()
+    val matchUpdates: MutableLiveData<MatchUpdatePayload> = _matchUpdates
+
+    fun onMatchPayloadReceived(payload: MatchUpdatePayload) {
+        _matchUpdates.value = payload
+    }
+
     override fun initViewModel() {
         super.initViewModel()
         //觀察餘額變化

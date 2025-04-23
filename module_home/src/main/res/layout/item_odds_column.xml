@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llOddsRow"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/dp_2"
+    android:orientation="vertical">
+
+    <!-- 單格 odds cell（重複三次）-->
+    <include
+        android:id="@+id/item_odds_cell1"
+        layout="@layout/item_odds_cell" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2" />
+
+    <include
+        android:id="@+id/item_odds_cell2"
+        layout="@layout/item_odds_cell" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_2" />
+
+    <include
+        android:id="@+id/item_odds_cell3"
+        layout="@layout/item_odds_cell" />
+
+</LinearLayout>
