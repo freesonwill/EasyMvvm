@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -178,7 +178,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
                 tab.view.setPadding(
                     0,
                     0,
-                    ViewUtils.dpToPx(10f).toInt(),
+                    10f.dp2px,
                     0
                 )
                 tab.view.setOnClickListener {

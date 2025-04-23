@@ -7,14 +7,13 @@ import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.lib.base.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.PagerBean
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
 /**

@@ -1,18 +1,13 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.viewBind
-import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.model.LiveBetSlipEnum
-import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 //注单未结算

@@ -19,6 +19,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT * FROM BetBean WHERE matchId = :id LIMIT 1")
     abstract fun observeBetById(id: Long): Flow<BetBean?>
 
+    @Query("SELECT * FROM BetBean WHERE status = :status")
+    abstract fun observeAllBet(status: Int = BetStatusEnum.PENDING_BET.ordinal): Flow<List<BetBean>>
+
     @Query("SELECT * FROM BetBean")
     abstract suspend fun getBetSheet(): List<BetBean>
 
