@@ -30,19 +30,17 @@ class BetRepository(
 
             // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
             if (betBean == null) {
-                scope.launch {
-                    getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
-                        val bean = BetBean(
-                            matchId = matchId,
-                            selectionLiteBean = selectionLiteBean,
-                            betType = if (isSingle) BetTypeEnum.SINGLE else BetTypeEnum.COMBO,
-                            leagueName = match.match.basicInfo.tournamentName,
-                            matchName = match.match.basicInfo.matchName,
-                            isBetStop = match.match.basicInfo.betStop,
-                            isPlaying = match.match.basicInfo.status == 5,
-                        )
-                        betDao.insert(bean)
-                    }
+                getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
+                    val bean = BetBean(
+                        matchId = matchId,
+                        selectionLiteBean = selectionLiteBean,
+                        betType = if (isSingle) BetTypeEnum.SINGLE else BetTypeEnum.COMBO,
+                        leagueName = match.match.basicInfo.tournamentName,
+                        matchName = match.match.basicInfo.matchName,
+                        isBetStop = match.match.basicInfo.betStop,
+                        isPlaying = match.match.basicInfo.status == 5,
+                    )
+                    betDao.insert(bean)
                 }
             } else {
                 if (betBean.selectionLiteBean.id == selectionId) {

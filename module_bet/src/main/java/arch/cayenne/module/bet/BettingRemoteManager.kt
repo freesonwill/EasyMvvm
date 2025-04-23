@@ -136,7 +136,7 @@ class BettingRemoteManager(private val socketManager: WebSocketManager) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetSingleRiskResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SINGLE_BET,
+            apiCode = ApiCode.GET_SINGLE_RISK,
         ) {
             Client.GetSingleRiskReq.newBuilder().apply {
                 val risk = Common.RiskSelection.newBuilder().apply {
