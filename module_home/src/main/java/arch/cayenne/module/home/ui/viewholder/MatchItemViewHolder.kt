@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
@@ -94,7 +95,7 @@ class MatchItemViewHolder(
 
                     if (selection != null) {
                         oddsCellBinding.tvShortName.text = selection.shortName
-                        oddsCellBinding.tvOdds.text = selection.odds
+                        oddsCellBinding.tvOdds.text = selection.odds.getOdds()
 
                         if (!selection.active) {
                             oddsCellBinding.tvShortName.visibility = View.GONE

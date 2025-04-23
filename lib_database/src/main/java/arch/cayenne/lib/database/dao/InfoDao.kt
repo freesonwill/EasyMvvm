@@ -16,6 +16,6 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     abstract fun queryInfo(): InfoBean?
 
     @Query("SELECT balance FROM InfoBean limit 1")
-    abstract fun observeBalance(): Flow<String>
+    abstract fun observeBalance(): Flow<Long>
 
 }

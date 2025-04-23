@@ -1,5 +1,6 @@
 package arch.cayenne.module.handicap.ui.fragment
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
 
     private fun initFlipper() {
         val list = mViewModel.getFlipperData()
+        val size = list.size
         for (item in list) {
             val layout = LayoutInflater.from(context)
                 .inflate(R.layout.item_flipper, null) as SportLinearLayout
@@ -66,16 +68,18 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
             tvAway.text = item.awayName
             tvLeft.text = item.left
             tvRight.text = item.right
-            btnNext.text = item.btnText
+            layLeft.background = getLayoutBackground(item.isRight)
+            layRight.background = getLayoutBackground(!item.isRight)
+            ivLeft.background = getImageBackground(item.isRight)
+            ivRight.background = getImageBackground(!item.isRight)
             layLeft.setOnClickListener {
                 layLeft.isSelected = true
                 layRight.isSelected = false
                 ivLeft.visibility = View.VISIBLE
                 ivRight.visibility = View.GONE
-                tvTip.text = getString(R.string.tip_right)
+                tvTip.text = getTipText(item.isRight)
+                ivTip.background = getTipBackground(item.isRight)
                 tvMsg.text = item.leftMsg
-                ivTip.background =
-                    AppCompatResources.getDrawable(mBinding.root.context, R.drawable.icon_right)
                 layContent.visibility = View.VISIBLE
             }
             layRight.setOnClickListener {
@@ -83,14 +87,19 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
                 layRight.isSelected = true
                 ivLeft.visibility = View.GONE
                 ivRight.visibility = View.VISIBLE
-                tvTip.text = getString(R.string.tip_error)
+                tvTip.text = getTipText(!item.isRight)
+                ivTip.background = getTipBackground(!item.isRight)
                 tvMsg.text = item.rightMsg
-                ivTip.background =
-                    AppCompatResources.getDrawable(mBinding.root.context, R.drawable.icon_error)
                 layContent.visibility = View.VISIBLE
             }
+            if (item.id < size) {
+                val tip = getString(R.string.next_question)
+                btnNext.text = String.format("%s(%s/%s)", tip, item.id, list.size)
+            } else {
+                btnNext.text = getString(R.string.go_to_bet)
+            }
             btnNext.setOnClickListener {
-                if (item.id < 3) {
+                if (item.id < size) {
                     layLeft.isSelected = false
                     layRight.isSelected = false
                     ivLeft.visibility = View.GONE
@@ -98,12 +107,60 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
                     layContent.visibility = View.GONE
                     mBinding.viewFlipper.showNext()
                 } else {
-                    //第三个页面的按钮后面需要修改为点击跳转投注页
+                    //后面需要修改为点击跳转投注页
                     findNavController().navigateUp()
                 }
-
             }
             mBinding.viewFlipper.addView(layout)
         }
+    }
+
+    private fun getImageBackground(
+        isRight: Boolean
+    ): Drawable? {
+        return if (isRight)
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.icon_answer_right
+            )
+        else
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.icon_answer_error
+            )
+    }
+
+    private fun getLayoutBackground(
+        isRight: Boolean
+    ): Drawable? {
+        return if (isRight)
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.selector_submit_right
+            )
+        else
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.selector_submit_wrong
+            )
+    }
+
+    private fun getTipBackground(
+        isRight: Boolean
+    ): Drawable? {
+        return if (isRight)
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.icon_right
+            )
+        else
+            AppCompatResources.getDrawable(
+                mBinding.root.context,
+                R.drawable.icon_error
+            )
+    }
+
+    private fun getTipText(isRight: Boolean): String {
+        return if (isRight) getString(R.string.tip_right) else getString(R.string.tip_error)
     }
 }
