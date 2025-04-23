@@ -52,17 +52,6 @@ object SportStringExt {
         return if (this.contains(":")) this.substringAfter(":").trim() else ""
     }
 
-    fun String.toDecimalNumber(decimalPlaces: Int = 2): String? {
-        return try {
-            val value = this.toDouble()
-            val pattern = "#,##0." + "0".repeat(decimalPlaces)  // e.g., "#,##0.00"
-            val decimalFormat = DecimalFormat(pattern)
-            decimalFormat.format(value)
-        } catch (e: NumberFormatException) {
-            null
-        }
-    }
-
     fun String.limitTitleLength(maxUnits: Int = 5): String {
         var units = 0.0
         val builder = StringBuilder()
