@@ -82,7 +82,7 @@ protobuf {
 }
 
 dependencies {
-    implementation(project(":lib_common"))
+    implementation(project(":lib_base"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)

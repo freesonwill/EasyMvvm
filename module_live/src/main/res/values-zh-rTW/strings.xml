@@ -30,6 +30,10 @@
     <string name="choose_commentary">選解說</string>
     <string name="statistics">技術統計</string>
     <string name="choose_source">選直播源</string>
+    <string name="live_video_loading">載入中...</string>
+    <string name="live_video_error">載入失敗</string>
+
+
 
 
 

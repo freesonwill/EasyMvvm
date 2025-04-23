@@ -45,20 +45,4 @@ class SplashRepository(
     suspend fun startSocket() : ConnectState {
         return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
     }
-
-    suspend fun sendLogin(uid: Int, token: String): SocketResponseData<Client.LoginResp> {
-        return socketManager.sendAndWaitProtoMessageResponse<Client.LoginResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.LOGIN
-        ) {
-            Client.LoginReq.newBuilder().apply {
-                this.uid = uid.toLong()
-                this.token = token
-                this.lang = "zh-CN"
-                this.platform = 5
-                this.oddType = 0
-            }.build()
-        }
-    }
 }

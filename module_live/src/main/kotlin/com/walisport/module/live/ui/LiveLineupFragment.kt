@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.annotation.SuppressLint
 import androidx.fragment.app.viewModels
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -50,9 +51,10 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override fun createObserver() {
         mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
             it?.let {
+                mBinding.main.setVisibilityGone()
                 upData(it)
             } ?: run {
-
+                mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
             }
         }
     }
@@ -131,5 +133,12 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 mBinding.sclLineupItemBottom.addView(newView)
             }
 
-    }}
+        }}
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
+import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
+import okio.ByteString.Companion.encodeUtf8
 }
