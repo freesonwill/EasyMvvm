@@ -6,4 +6,7 @@
         <item>Big Or Small</item>
         <item>Corner Kick</item>
     </string-array>
+
+    <string name="tip_right">Congratulations on guessing it right</string>
+    <string name="tip_error">Sorry, You guessed wrong.</string>
 </resources>
