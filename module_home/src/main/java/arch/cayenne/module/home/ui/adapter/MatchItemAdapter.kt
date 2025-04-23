@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.compare.MatchItemCompare
 import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
@@ -15,13 +16,13 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         position: Int
     ) {
+        binding.layoutOddsTitle.removeAllViews()
+        binding.layoutOddsGrid.removeAllViews()
         holder.init(getItem(position))
         binding.layoutLiveEntry.setOnClickListener {
-            // 直播入口
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
         binding.ivFavorite.setOnClickListener {
-            // 收藏
             onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
         }
     }
@@ -38,11 +39,12 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         viewType: Int
     ): MatchItemViewHolder {
-        return MatchItemViewHolder(binding)
+        return MatchItemViewHolder(binding, onMatchItemClickListener)
     }
 
     interface OnMatchItemClickListener {
         fun onLiveEntryClick(item: MatchWithMarkets)
         fun onFavoriteClick(item: MatchWithMarkets)
+        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean)
     }
 }

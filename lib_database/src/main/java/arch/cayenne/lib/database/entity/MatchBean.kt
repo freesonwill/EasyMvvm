@@ -154,3 +154,6 @@ data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
 )
+
+//MatchWithMarkets -> List<MarketWithSelections> ->
+//    MarketBean + List<SelectionBean>

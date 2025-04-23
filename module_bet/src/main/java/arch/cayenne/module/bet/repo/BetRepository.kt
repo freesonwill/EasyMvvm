@@ -4,18 +4,33 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetLiteBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionLiteBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BetRepository(private val betDao: BetDao, private val matchDao: MatchDao): BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    val observerAllBet: Flow<List<BetLiteBean>> = flow {
+        betDao.observeAllBet().collect {
+            val data = it.map { bean ->
+                BetLiteBean(
+                    matchId = bean.matchId,
+                    selectionId = bean.selectionLiteBean.id,
+                )
+            }
+            emit(data)
+        }
+    }
 
     /***
      * 新增投注資料
