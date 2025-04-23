@@ -12,8 +12,8 @@ import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, private val onComboMultiBetClickListener: ComboMultiBetAdapter.OnComboMultiBetClickListener): BaseViewHolder(mBinding) {
 
     @SuppressLint("ClickableViewAccessibility")
-    fun bind(size: Int, item: ComboMultiBetBean) {
-        val combo = getString(R.string.title_combo_bet_odds).format(size, item.combo)
+    fun bind(item: ComboMultiBetBean) {
+        val combo = getString(R.string.title_combo_bet_odds).format(onComboMultiBetClickListener.getSize(), item.combo)
         val title = "$combo @${item.sumOdds.getOdds()}"
         mBinding.tvTitleCombo.text = title
 

@@ -62,6 +62,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount, remainingMoney).show(childFragmentManager)
                 }
             }
+
+            override fun getSize(): Int {
+                return betSheetAdapter.currentList.size
+            }
         })
     }
 
