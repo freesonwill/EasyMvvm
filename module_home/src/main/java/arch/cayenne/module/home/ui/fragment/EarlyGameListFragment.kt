@@ -3,7 +3,6 @@ package arch.cayenne.module.home.ui.fragment
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel
@@ -41,11 +40,11 @@ class EarlyGameListFragment : BaseFragment<EarlyGameListViewModel, FragmentHomeG
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(this) {
+        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentMatch()
         }
-        mViewModel.matchListChange.observe(this) {
+        mViewModel.matchListChange.observe(viewLifecycleOwner) {
             //TODO 處理賽事卡片UI
 
         }
