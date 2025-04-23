@@ -22,7 +22,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:background="@color/color_0E0F1A"
             app:layout_constraintTop_toTopOf="parent"
-            app:sportTabBackground="@drawable/tab_selected_background"
+            app:sportTabBackground="@drawable/selector_betslip_tab"
             app:tabGravity="fill"
             app:tabIndicatorAnimationMode="elastic"
             app:tabIndicatorColor="@android:color/transparent"

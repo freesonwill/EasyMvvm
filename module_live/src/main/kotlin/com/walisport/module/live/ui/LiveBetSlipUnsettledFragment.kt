@@ -28,7 +28,6 @@ class LiveBetSlipUnsettledFragment :
     }
 
     override fun createObserver() {
-
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 updateData(it.first())
@@ -48,5 +47,11 @@ class LiveBetSlipUnsettledFragment :
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = adapter
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
+        mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
     }
 }

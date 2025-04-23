@@ -1,10 +1,13 @@
 package com.walisport.module.live
 
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Sloth
+import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -47,6 +50,70 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return null
     }
 
+
+    suspend fun getOrderReq(
+        scope: CoroutineScope,
+        status: Int,
+        page: Int,
+        pageSize: Int,
+        sportId: Int,
+        matchId: Long,
+        startTime: Long? = null,
+        endTime: Long? = null,
+    ): List<Common.Order>? {
+        LogUtils.dTag("aaa","getOrderReq status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId")
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_ORDER
+        ) {
+            Client.GetOrderReq.newBuilder().apply {
+                this.status = status
+                this.page = page
+                this.pageSize = pageSize
+//                this.addSportId(sportId)
+//                this.matchId = matchId
+                startTime?.let { this.startTime = startTime }
+                endTime?.let { this.endTime = endTime }
+            }.build()
+        }
+        LogUtils.dTag("aaa", "result ${Gson().toJson(result.data)}")
+        if(result.error != null && result.data != null){
+            return result.data!!.orderList
+        }
+        LogUtils.dTag("aaa","error  ${result.error?.msg}")
+
+        return null
+    }
+
+
+    suspend fun getReserveOrder(
+        scope: CoroutineScope,
+        sportId: Int,
+        matchId: Long,
+        startTime: Long? = null,
+        endTime: Long? = null
+    ): List<Common.ReserveOrder>? {
+        LogUtils.dTag("aaa","getReserveOrder matchId $matchId sportId $sportId")
+
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GER_RESERVE_ORDER
+        ) {
+            Client.GetReserveOrderReq.newBuilder().apply {
+                this.matchId = matchId
+                startTime?.let { this.startTime = it }
+                endTime?.let { this.endTime = it }
+                this.addSportId(sportId)
+            }.build()
+        }
+        LogUtils.dTag("aaa", " getReserveOrder  result ${Gson().toJson(result.data)}")
+        if (result.error != null && result.data != null) {
+            return result.data!!.orderList
+        }
+        return null
+    }
 
 
 }

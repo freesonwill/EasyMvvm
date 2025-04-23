@@ -24,90 +24,12 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_top"
         app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_top" />
 
-    <ImageView
-        android:id="@+id/bet_reserve_iv_ball"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_16"
-        android:scaleType="fitXY"
-        android:src="@drawable/icon_football"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_top" />
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_race"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_6"
-        android:text="中国 vs 巴西"
-        android:textColor="@color/main_text"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_reserve_iv_ball"
-        app:layout_constraintLeft_toRightOf="@id/bet_reserve_iv_ball"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_ball" />
-
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_introduce"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_12"
-        android:text="中国 +0.5"
-        android:textColor="@color/main_text"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_ball" />
-
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_aodds"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:text="\@1.85"
-        android:textColor="@color/main_text"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_reserve_tv_introduce"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_introduce" />
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_status"
-        android:layout_width="@dimen/dp_42"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_12"
-        android:background="@drawable/shape_betslip_match_status"
-        android:gravity="center"
-        android:text="@string/live_bet_grounder"
-        android:textColor="@color/color_15b264"
-        android:textSize="@dimen/sp_13"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_introduce" />
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_score"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:text="@string/live_bet_full_handicap"
-        android:textColor="@color/secondary_text"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_reserve_tv_status"
-        app:layout_constraintLeft_toRightOf="@id/bet_reserve_tv_status"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_status" />
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_reserve_tv_start"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_12"
-        android:text="11月14日 15:00"
-        android:textColor="@color/secondary_text"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_status"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_status" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_date"
+        />
 
     <arch.cayenne.lib.skin.widget.SportImageView
         android:id="@+id/bet_reserve_iv_avava"
@@ -118,7 +40,7 @@
         android:src="@drawable/live_betslip_avava"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_start" />
+        app:layout_constraintTop_toBottomOf="@id/recycler_selection" />
 
     <arch.cayenne.lib.skin.widget.SportView
         android:layout_width="0dp"
@@ -149,7 +71,7 @@
         android:text="@string/live_bet_reserve_odds"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
+        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_avava" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
@@ -171,7 +93,7 @@
         android:text="@string/live_bet_reserve_bet"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
+        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_odds" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
@@ -193,7 +115,7 @@
         android:text="@string/live_bet_except_max_win"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
+        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_betting" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
@@ -219,7 +141,7 @@
         android:textSize="@dimen/sp_15"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_except"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
+        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
         />
 
     <arch.cayenne.lib.skin.widget.SportTextView
@@ -235,8 +157,6 @@
         app:layout_constraintLeft_toRightOf="@id/bet_reserve_bt_cancel"
         android:layout_marginStart="@dimen/dp_8"
         />
-
-
 
     <View
         android:layout_width="match_parent"
