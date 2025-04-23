@@ -28,10 +28,10 @@ class HomeRepository(
 
     suspend fun getSportStatistical(playType: Int): List<PlayTypeSportCrossRef>? {
         //先從DB拿取
-        val queryResult = sportDao.querySportsMatchCount(playType)
-        if (queryResult.isNotEmpty()) {
-            return queryResult
-        }
+//        val queryResult = sportDao.querySportsMatchCount(playType)
+//        if (queryResult.isNotEmpty()) {
+//            return queryResult
+//        }
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.StatisticalResp>(
             scope = scope,
@@ -75,10 +75,10 @@ class HomeRepository(
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
-        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
-        if (queryResult.isNotEmpty()) {
-            return queryResult
-        }
+//        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
+//        if (queryResult.isNotEmpty()) {
+//            return queryResult
+//        }
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListTournamentResp>(
             scope = scope,

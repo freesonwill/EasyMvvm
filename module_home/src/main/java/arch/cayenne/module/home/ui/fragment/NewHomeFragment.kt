@@ -85,21 +85,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun createObserver() {
         mViewModel.sportsStatistical.observe(this) {
+            mViewModel.setCurrentSport(it[0].id)
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
-            if (mViewModel.currentSportChange.value == null) {
-                mViewModel.setCurrentSport(it[0].id)
-            }
-//            mViewModel.getCurrentTournament()
-        }
 
-//        mViewModel.tournaments.observe(this) {
-//            //TODO 聯賽那一塊的UI
-//            if (!mViewModel.currentTournament.containsKey(mViewModel.currentSport)) {
-//                mViewModel.setCurrentTournament(mViewModel.currentSport!!, it[0].tournamentId)
-//            }
-//            mViewModel.getCurrentMatch()
-//        }
+        }
     }
 
     override fun onDestroyView() {

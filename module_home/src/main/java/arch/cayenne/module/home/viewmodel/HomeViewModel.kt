@@ -25,8 +25,6 @@ class HomeViewModel : BaseViewModel() {
     val currentSportChange by lazy { MutableLiveData<Int>() }
     val currentBalanceChange by lazy { MutableLiveData<String>() }
 
-    var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
-
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
     override fun initViewModel() {
@@ -48,7 +46,7 @@ class HomeViewModel : BaseViewModel() {
         getCurrentSportStatistical()
     }
 
-    fun getCurrentSportStatistical() {
+    private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getSportStatistical(currentPlayType.id)?.filter {
                 SportType.fromId(it.sportId) != null
