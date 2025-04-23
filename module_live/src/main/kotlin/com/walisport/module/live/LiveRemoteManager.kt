@@ -44,7 +44,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId.toInt()
             }.build()
         }
-        if(result.error != null && result.data != null){
+        if(result.error == null && result.data != null){
             return result.data!!.matchLineupDetail
         }
         return null

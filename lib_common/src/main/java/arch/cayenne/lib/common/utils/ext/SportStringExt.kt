@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.utils.ext
 
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 object SportStringExt {
 
@@ -50,5 +51,29 @@ object SportStringExt {
     fun String.getAwayScore(): String {
         return if (this.contains(":")) this.substringAfter(":").trim() else ""
     }
+
+    fun String.toDecimalNumber(decimalPlaces: Int = 2): String? {
+        return try {
+            val value = this.toDouble()
+            val pattern = "#,##0." + "0".repeat(decimalPlaces)  // e.g., "#,##0.00"
+            val decimalFormat = DecimalFormat(pattern)
+            decimalFormat.format(value)
+        } catch (e: NumberFormatException) {
+            null
+        }
+    }
+
+    fun String.limitTitleLength(maxUnits: Int = 5): String {
+        var units = 0.0
+        val builder = StringBuilder()
+        for (char in this) {
+            val unit = if (char.code in 0..127) 0.5 else 1.0
+            if (units + unit > maxUnits) break
+            builder.append(char)
+            units += unit
+        }
+        return if (builder.length < this.length) builder.toString() + "…" else builder.toString()
+    }
+
 
 }

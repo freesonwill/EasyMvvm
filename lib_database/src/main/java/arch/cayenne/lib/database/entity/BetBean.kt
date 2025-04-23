@@ -2,6 +2,7 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 
 /***
  * @param matchId 赛事ID
@@ -26,10 +27,18 @@ data class BetBean(
     var status: BetStatusEnum = BetStatusEnum.PENDING_BET, // 下注狀態
     val leagueName: String, // 联赛名称 ex. 世界盃
     val matchName: String, // 赛事名称 ex. 中國 vs 日本
-    var minAmount: Long, // 最小下注金额
-    var maxAmount: Long, // 最大下注金额
+    var minAmount: Long = 10_000L, // 最小下注金额
+    var maxAmount: Long = 10_000L, // 最大下注金额
     var isBetStop: Boolean = false, // 是否停止下注
     var isPlaying: Boolean = false, // 是否滾球
+)
+
+/**
+ * 首頁盤口監聽投注項用
+ */
+data class BetLiteBean(
+    val matchId: Long, // 赛事ID
+    val selectionId: Long, // 盘口ID
 )
 
 /***

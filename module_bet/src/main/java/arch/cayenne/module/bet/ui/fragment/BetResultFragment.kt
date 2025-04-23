@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.sendResult
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R

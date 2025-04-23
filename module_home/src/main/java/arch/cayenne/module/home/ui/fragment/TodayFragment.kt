@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.extension.sharedViewModel
-import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SportSkinResourceManager.getColorStateList
 import arch.cayenne.module.home.R
@@ -60,11 +60,11 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(this) {
+        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentTournament(it)
         }
-        mViewModel.tournaments.observe(this) {
+        mViewModel.tournaments.observe(viewLifecycleOwner) {
             initLeaguesLayout(it)
         }
     }
@@ -98,7 +98,7 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
                 tab.view.setPadding(
                     0,
                     0,
-                    ViewUtils.dpToPx(10f).toInt(),
+                    10f.dp2px,
                     0
                 )
 //                tab.view.setOnClickListener {

@@ -6,20 +6,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toDecimalNumber
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.ui.adapter.HomePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
-import com.google.android.material.tabs.TabLayoutMediator
 import arch.cayenne.module.home.viewmodel.HomeViewModel
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-    // TODO viewmodel待實作, 串接資料後再依據mvvm架構重構
 
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
@@ -84,13 +84,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun createObserver() {
-        mViewModel.sportsStatistical.observe(this) {
+        mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
             if (mViewModel.currentSportChange.value == null) {
                 mViewModel.setCurrentSport(it[0].id)
             }
 //            mViewModel.getCurrentTournament()
+        }
+
+        mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
+            //TODO 等轉換long, 換成getMoney()
+            mBinding.tvWalletBalance.text = it.toDecimalNumber()
         }
 
 //        mViewModel.tournaments.observe(this) {

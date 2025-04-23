@@ -3,9 +3,8 @@ package com.walisport.app.data
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.enums.SkinType
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.socket.viewmodel.BaseActivityViewModel
+import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject

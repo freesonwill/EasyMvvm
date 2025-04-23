@@ -78,7 +78,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         return getAllMatch().map { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelections(matchBean.matchId, marketBean.marketId)
-                "KC_ matchId = ${matchBean.matchId}  marketId = ${marketBean.marketId} selection size = ${selections.size}".loge("KC_")
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)
@@ -90,7 +89,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelections(matchBean.matchId, marketBean.marketId)
-                "KC_ matchId = ${matchBean.matchId}  marketId = ${marketBean.marketId} selection size = ${selections.size}".loge("KC_")
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)
