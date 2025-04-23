@@ -49,10 +49,6 @@ class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel(
 
     private val muteManager: MuteManager by inject { parametersOf() }
 
-    init {
-
-    }
-
 
     fun setPlayingVideoId(id: Int) {
         _liveVideoBean.value?.source?.firstOrNull { it.id == id }?.isPlaying = true
