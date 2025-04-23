@@ -9,4 +9,6 @@
 
     <string name="tip_right">恭喜猜中</string>
     <string name="tip_error">很遺憾，猜錯了</string>
+    <string name="go_to_bet">去投注</string>
+    <string name="next_question">下壹題</string>
 </resources>
