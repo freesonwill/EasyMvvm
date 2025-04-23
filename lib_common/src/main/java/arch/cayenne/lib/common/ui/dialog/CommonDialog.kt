@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.common.databinding.DialogCommonBinding
-import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.reflect.KClass
 
 class CommonDialog : BaseDialogFragment<EmptyViewModel,DialogCommonBinding>() {
@@ -65,7 +65,7 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel,DialogCommonBinding>() {
     override fun onStart() {
         super.onStart()
         dialog?.window?.apply {
-            setLayout(ViewUtils.dpToPx(280f).toInt(), ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout(280f.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 

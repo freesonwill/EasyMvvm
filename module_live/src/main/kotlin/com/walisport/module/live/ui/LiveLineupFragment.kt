@@ -8,11 +8,11 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.ui.widget.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.bumptech.glide.Glide
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel

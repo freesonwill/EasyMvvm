@@ -2,6 +2,7 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 
 /***
  * @param matchId 赛事ID

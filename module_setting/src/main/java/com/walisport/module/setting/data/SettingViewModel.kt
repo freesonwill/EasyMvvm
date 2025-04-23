@@ -2,7 +2,6 @@ package com.walisport.module.setting.data
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.enums.SkinType
 import arch.cayenne.lib.skin.SportSkinManager
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject

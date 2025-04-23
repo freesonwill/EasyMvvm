@@ -66,6 +66,13 @@ object NavigationExt {
         startActivity(intent,options.toBundle())
     }
 
+    fun Activity.navigateUp(@IdRes viewId: Int = R.id.nav_host):Boolean {
+        return findNavController(viewId).navigateUp()
+    }
+
+    fun Activity.popBackStack(@IdRes viewId: Int = R.id.nav_host):Boolean {
+        return findNavController(viewId).popBackStack()
+    }
 
     /** Fragment的默认跳转 **/
     fun Fragment.navigate(
@@ -93,4 +100,11 @@ object NavigationExt {
         findNavController().navigate(resId, args, navOptions, navigatorExtras)
     }
 
+    fun Fragment.navigateUp():Boolean {
+        return findNavController().navigateUp()
+    }
+
+    fun Fragment.popBackStack():Boolean {
+        return findNavController().popBackStack()
+    }
 }
