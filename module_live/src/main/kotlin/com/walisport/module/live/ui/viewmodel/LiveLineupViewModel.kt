@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.live.data.LiveLineupRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.launch
@@ -38,17 +39,18 @@ class LiveLineupViewModel : BaseViewModel() {
      * x = screenX*screenX-viewHeight
      * y = screenY*screenY-viewWidth
      */
-    fun lineupArrangementX(headViewNumber: Int, viewNumber: Int, serviceNumber: Int): Int {
-        val max = 100//最大份数
-        val oneViewNumber = viewNumber / max//每一份的像素
-        val headNumber = headViewNumber / 2//队员头像名字控件高度
-        return oneViewNumber * serviceNumber - headNumber-headNumber
-    }
 
-    fun lineupArrangementY(headViewNumber: Int, viewNumber: Int, serviceNumber: Int): Int {
-        val max = 100//最大份数
-        val oneViewNumber = viewNumber / max//每一份的像素
-        val headNumber = headViewNumber / 2//队员头像名字控件高度
-        return oneViewNumber * serviceNumber - headNumber
+    //isBottom false 正常排列。 true为倒序排列
+    fun lineupArrangementXY(headViewNumber: Int, viewNumber: Int, serviceNumber: Int,isBottom:Boolean = false): Int {
+        val max = 100.0//最大份数
+        val oneViewNumber = (viewNumber.toFloat() / max)//每一份的像素
+        val headNumber = headViewNumber.toFloat() / 2.0//队员头像名字控件高度
+        LogUtils.d("lineupArrangementX-----headViewNumber-${headViewNumber},viewNumber-${viewNumber},serviceNumber-${serviceNumber}")
+        LogUtils.d("lineupArrangementX-----oneViewNumber-${oneViewNumber},headNumber-${headNumber},return-${oneViewNumber * serviceNumber - headNumber}")
+        return if (isBottom){
+            (oneViewNumber * (max-serviceNumber.toFloat()) - headNumber).toInt()
+        }else{
+            (oneViewNumber * serviceNumber.toFloat() - headNumber).toInt()
+        }
     }
 }
