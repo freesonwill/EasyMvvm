@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.module.live.compare.VideoSourceCompare
+import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourceLandscapeBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceVerticalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
@@ -26,10 +26,10 @@ class LiveVideoSourceLandscapeFragment :
             itemAnimator = null
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            adapter = LiveVideoSourceVerticalAdapter(VideoSourceCompare()).apply {
+            adapter = LiveVideoSourceVerticalAdapter(VideoSourceBeanCompare()).apply {
                 post {
                     addItemDecoration(LinearSpacingItemDecoration(16.dp2px, 8.dp2px))
-                    submitList(mViewModel.sources.value)
+                    submitList(mViewModel.liveVideoBean.value?.source)
                 }
 
                 setOnClickListener {
@@ -51,12 +51,12 @@ class LiveVideoSourceLandscapeFragment :
 
             }
 
-            sources.observe(viewLifecycleOwner) {
+            liveVideoBean.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
                     (adapter as LiveVideoSourceVerticalAdapter).apply {
-                        val list = mViewModel.sources.value
-                        val size = list?.size?:0
-                        submitList(list)
+                        val list = mViewModel.liveVideoBean.value
+                        val size = list?.source?.size ?: 0
+                        submitList(list?.source)
 
                         notifyItemRangeChanged(0, size)
                     }

@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.compare.VideoSourceCompare
+import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
@@ -34,10 +34,10 @@ class LiveVideoSourcePortraitFragment :
                 itemAnimator = null
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                adapter = LiveVideoSourceHorizontalAdapter(VideoSourceCompare()).apply {
+                adapter = LiveVideoSourceHorizontalAdapter(VideoSourceBeanCompare()).apply {
                     post {
                         addItemDecoration( HorizontalItemDecoration())
-                        submitList(mViewModel.sources.value)
+                        submitList(mViewModel.liveVideoBean.value?.source)
                     }
 
                     setOnClickListener {
@@ -61,12 +61,12 @@ class LiveVideoSourcePortraitFragment :
 
         with(mViewModel) {
 
-            sources.observe(viewLifecycleOwner) {
+            liveVideoBean.observe(viewLifecycleOwner) {
                 mBinding.rvSource.apply {
                     (adapter as LiveVideoSourceHorizontalAdapter).apply {
-                        val list = mViewModel.sources.value
-                        val size = list?.size ?: 0
-                        submitList(list)
+                        val list = mViewModel.liveVideoBean.value
+                        val size = list?.source?.size ?: 0
+                        submitList(list?.source)
 
                         notifyItemRangeChanged(0, size)
                     }

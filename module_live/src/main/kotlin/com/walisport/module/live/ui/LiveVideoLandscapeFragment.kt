@@ -442,8 +442,12 @@ class LiveVideoLandscapeFragment :
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
-                    mBinding.videoView.start()
+
+                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                    playUrl?.takeIf { url -> url.isNotEmpty() }.let { url ->
+                        mBinding.videoView.setVideoURI(Uri.parse(url))
+                        mBinding.videoView.start()
+                    }
                 }
             }
         }

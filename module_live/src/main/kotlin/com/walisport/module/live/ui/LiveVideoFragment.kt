@@ -44,7 +44,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
-        mViewModel.queryLiveStream(matchId)
+        mViewModel.matchId = matchId
+        mViewModel.queryLiveStream()
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
@@ -179,8 +180,12 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
-                    mBinding.videoView.start()
+
+                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                    playUrl?.takeIf { url -> url.isNotEmpty() }.let { url ->
+                        mBinding.videoView.setVideoURI(Uri.parse(url))
+                        mBinding.videoView.start()
+                    }
                 }
             }
 

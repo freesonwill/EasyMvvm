@@ -35,6 +35,7 @@ android {
 
 dependencies {
     implementation(project(":lib_base"))
+    implementation(libs.firebase.crashlytics.buildtools)
     testImplementation(libs.androidx.junit.ktx)
     testImplementation(libs.androidx.runner)
     testImplementation(libs.junit)
@@ -47,4 +48,5 @@ dependencies {
 
     implementation(libs.koin)
     implementation(libs.startup)
+    implementation(libs.gson)
 }

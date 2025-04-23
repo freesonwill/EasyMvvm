@@ -14,6 +14,8 @@ import org.koin.core.parameter.parametersOf
 
 class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
+    var matchId = 0L
+
     val videoPlayVisible = MutableLiveData(View.VISIBLE)
 
     val statusVisible = MutableLiveData(View.INVISIBLE)
@@ -41,30 +43,19 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     private val _playerBName = MutableLiveData("阿根廷")
     val playerBName: LiveData<String> = _playerBName
 
-    private val _sources = MutableLiveData<List<LiveVideoBean>>(emptyList<LiveVideoBean>())
-
-    val sources: LiveData<List<LiveVideoBean>> = _sources
-
-
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
 
-
     private val _muted = MutableLiveData(false)
     val muted: LiveData<Boolean> = _muted
-
 
     private val muteManager: MuteManager by inject { parametersOf() }
 
     init {
         viewModelScope.launch {
-            repo.observeLiveVideoBean().collect {
+            repo.observeLiveVideoBean(matchId).collect {
                 if (it != null) {
-                    _liveVideoBean.value = it.firstOrNull { ele ->
-                        ele.isPlaying
-                    }
-
-                    _sources.value =it
+                    _liveVideoBean.value = it
                 }
             }
 
@@ -72,7 +63,8 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     }
 
     fun setPlayingVideoId(id: Int) {
-        repo.setPlayingVideoId(id)
+        _liveVideoBean.value?.source?.firstOrNull { it.id == id }?.isPlaying = true
+        repo.setPlayingVideoId(_liveVideoBean.value?.source ?: emptyList(), matchId)
     }
 
     fun changeMuteStatus() {
@@ -83,8 +75,8 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
 
     fun mutedData() = muteManager.mutedLiveData
 
-    fun queryLiveStream(matchId:Long) {
-       repo.queryLiveStream(matchId)
+    fun queryLiveStream() {
+        repo.queryLiveStream(matchId)
     }
 
 }

@@ -1,6 +1,7 @@
 [versions]
 agp = "8.1.1"
 coreSplashscreen = "1.0.1"
+gson = "2.10.1"
 kotlin = "1.9.0"
 coreKtx = "1.9.0"
 junit = "4.13.2"
@@ -39,9 +40,11 @@ immersionbar = "3.2.2"
 legacySupportV4 = "1.0.0"
 fragmentKtx = "1.5.6"
 startupRuntime = "1.2.0"
+firebaseCrashlyticsBuildtools = "3.0.3"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -91,6 +94,7 @@ autosize = {group = "me.jessyan", name = "autosize", version.ref = "autoSize"}
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startupRuntime" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
