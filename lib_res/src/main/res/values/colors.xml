@@ -28,10 +28,10 @@
     <color name="color_71e993">#FF71e993</color>
     <color name="color_0f1016">#FF0f1016</color>
     <color name="color_E6E6E6">#FFE6E6E6</color>
+    <color name="color_EA4A69">#FFEA4A69</color>
+    <color name="color_52AF6B">#FF52AF6B</color>
+    <color name="color_23252F">#FF23252F</color>
 
     <color name="tran_75_white">#BFFFFFFF</color>
     <color name="tran_20_white">#33E6E6E6</color>
-<!--    <color name="tran_0">#00000000</color>-->
-
-
 </resources>

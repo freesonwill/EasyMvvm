@@ -37,6 +37,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun getAllMatch() : List<MatchBean>
 
     @Transaction
+    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    abstract suspend fun getMatchById(matchId: Long) : MatchBean
+
+    @Transaction
     @Query("SELECT * " +
             "FROM MarketBean market " +
             "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
@@ -49,6 +53,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
             "WHERE sel.selectionId = ref.selectionId ")
     abstract suspend fun getSelections(matchId: Long, marketId: Long): List<SelectionBean>
+
+    @Transaction
+    @Query("SELECT * FROM SelectionBean WHERE selectionId = :selectionId")
+    abstract suspend fun getSelectionById(selectionId: Long): SelectionBean
 
     @Transaction
     open suspend fun insertFullMatch(
@@ -70,7 +78,17 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         return getAllMatch().map { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelections(matchBean.matchId, marketBean.marketId)
-                "KC_ matchId = ${matchBean.matchId}  marketId = ${marketBean.marketId} selection size = ${selections.size}".loge("KC_")
+                MarketWithSelections(marketBean, selections)
+            }
+            MatchWithMarkets(matchBean, markets)
+        }
+    }
+
+    @Transaction
+    open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
+        return getMatchById(matchId).let { matchBean ->
+            val markets = geMarkets(matchBean.matchId).map { marketBean ->
+                val selections = getSelections(matchBean.matchId, marketBean.marketId)
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)

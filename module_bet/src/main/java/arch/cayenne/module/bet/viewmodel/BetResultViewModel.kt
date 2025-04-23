@@ -22,7 +22,7 @@ class BetResultViewModel(private val repo: BetResultRepository): BaseViewModel()
         _onBetModeListener.value = Pair(type, status)
     }
 
-    fun setBetSheet(id: Int?) {
+    fun setBetSheet(id: Long?) {
         viewModelScope.launch {
             if (id == null) {
                 launch {

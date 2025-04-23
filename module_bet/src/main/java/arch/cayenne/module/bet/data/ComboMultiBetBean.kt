@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.data
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 
 /***
  * 有三場比賽欲串關，則有3串1、3串2、3串3，共三個串關方式
@@ -17,13 +17,13 @@ data class ComboMultiBetBean(
     val combo: Int, // 串關次數
     val sumOdds: Int, // 串關後賠率加總
     val count: Int, // 場次組合數量
-    var inputMoney: Int = 0,
-    val minAmount: Int,
-    val maxAmount: Int
+    var inputMoney: Long = 0,
+    val minAmount: Long,
+    val maxAmount: Long
 ) {
-    val amount: Int
+    val amount: Long
         get() = inputMoney * count
 
-    val maxWinMoney: Int
-        get() = inputMoney.getMoney(sumOdds).toValue()
+    val maxWinMoney: Long
+        get() = inputMoney.getMoney(sumOdds).toMoney()
 }

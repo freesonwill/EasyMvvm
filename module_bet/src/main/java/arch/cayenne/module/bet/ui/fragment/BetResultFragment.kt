@@ -23,7 +23,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun initView(savedInstanceState: Bundle?) {
         val id = args.id
-        mViewModel.setBetSheet(if (id == -1) null else id)
+        mViewModel.setBetSheet(if (id == -1L) null else id)
 
         mBinding.rvBet.adapter = betSheetAdapter
     }

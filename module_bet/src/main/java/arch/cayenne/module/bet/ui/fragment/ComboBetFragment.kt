@@ -9,7 +9,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
@@ -50,13 +49,13 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
                 mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
                     childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
+                        childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
-                            val money = bundle.getInt(VALUE_MONEY_INPUT, 0)
+                            val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
                             mViewModel.updateMultiBetMoney(id, money)
                         }
                     }
-                    val currentMoney = if (it.inputMoney == 0) null else it.inputMoney
+                    val currentMoney = if (it.inputMoney == 0L) null else it.inputMoney
                     val minAmount = it.minAmount
                     val maxAmount = it.maxAmount
                     val remainingMoney = mViewModel.remainingBalance / it.count
@@ -134,7 +133,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getOdds())
+        val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getMoney())
         mBinding.tvBetMoney.text = sumWinMoney
     }
 

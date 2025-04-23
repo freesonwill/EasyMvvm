@@ -1,8 +1,6 @@
 package arch.cayenne.lib.database
 
 import android.content.Context
-import androidx.startup.Initializer
-import arch.cayenne.lib.base.ApplicationModuleInitializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -18,7 +16,9 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
     }
 
     private val daoModule = module {
+        factory { get<GameDatabase>().infoDao() }
         factory { get<GameDatabase>().betDao() }
+        factory { get<GameDatabase>().matchDao() }
         factory { get<GameDatabase>().liveVideoDao() }
     }
 

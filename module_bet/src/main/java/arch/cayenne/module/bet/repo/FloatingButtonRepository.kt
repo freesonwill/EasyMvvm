@@ -18,7 +18,7 @@ class FloatingButtonRepository(private val betDao: BetDao): BaseRepository() {
         betDao.getBetSheet().first().matchId
     }
 
-    fun saveToSingleBet(id: Int) {
+    fun saveToSingleBet(id: Long) {
         scope.launch {
             betDao.updateBetType(id, BetTypeEnum.SINGLE)
         }

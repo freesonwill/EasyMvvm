@@ -14,13 +14,13 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract fun observeSingleBet(type: Int = BetTypeEnum.SINGLE.ordinal): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean WHERE matchId = :id LIMIT 1")
-    abstract fun observeBetById(id: Int): Flow<BetBean?>
+    abstract fun observeBetById(id: Long): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean")
     abstract suspend fun getBetSheet(): List<BetBean>
 
     @Query("SELECT * FROM BetBean WHERE matchId = :id")
-    abstract suspend fun getBetById(id: Int): BetBean?
+    abstract suspend fun getBetById(id: Long): BetBean?
 
     @Query("SELECT COUNT(*) FROM BetBean WHERE betType = :type")
     abstract fun observeComboBetCount(type: Int = BetTypeEnum.COMBO.ordinal): Flow<Int>
@@ -32,16 +32,16 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract fun observeComboBet(type: Int = BetTypeEnum.COMBO.ordinal): Flow<List<BetBean>>
 
     @Query("UPDATE BetBean SET betType = :type WHERE matchId = :id")
-    abstract suspend fun updateBetType(id: Int, type: BetTypeEnum)
+    abstract suspend fun updateBetType(id: Long, type: BetTypeEnum)
 
     @Query("UPDATE BetBean SET status = :status WHERE matchId = :id")
-    abstract suspend fun updateBetStatus(id: Int, status: BetStatusEnum)
+    abstract suspend fun updateBetStatus(id: Long, status: BetStatusEnum)
 
     @Query("UPDATE BetBean SET status = :status WHERE matchId IN (:ids)")
-    abstract suspend fun updateBetListStatus(ids: List<Int>, status: BetStatusEnum)
+    abstract suspend fun updateBetListStatus(ids: List<Long>, status: BetStatusEnum)
 
     @Query("UPDATE BetBean SET reverseOdds = :reserveOdds WHERE matchId = :id")
-    abstract suspend fun setReserveOdds(id: Int, reserveOdds: Int?)
+    abstract suspend fun setReserveOdds(id: Long, reserveOdds: Int?)
     /**
      * 移除非roundId的投注記錄
      */
@@ -49,6 +49,6 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract suspend fun deleteAll()
 
     @Query("DELETE FROM BetBean WHERE matchId = :id")
-    abstract suspend fun removeBet(id: Int)
+    abstract suspend fun removeBet(id: Long)
 
 }
