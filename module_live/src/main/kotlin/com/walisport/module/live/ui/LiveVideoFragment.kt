@@ -193,6 +193,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     mBinding.videoView.mediaPlayer.setVolume(if (it) 0f else 1f, if (it) 0f else 1f)
                 }
             }
+
+
         }
 
         playingStatusLiveData.observe(viewLifecycleOwner) {
@@ -206,10 +208,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     }
 
                     PlayStatus.Loading -> {
-                        val v=mBinding.includedCtLoading
                         // 创建旋转动画
                         loadingAnim = ObjectAnimator.ofFloat(
-                            v.ivVideoLoading,  // 目标 View
+                            mBinding.includedCtLoading.ivVideoLoading,  // 目标 View
                             "rotation",  // 属性名称
                             0f, 360f // 从 0 度旋转到 360 度
                         ).run {

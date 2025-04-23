@@ -50,7 +50,7 @@ class LiveVideoViewModel(private val repo: LiveMainRepository) : BaseViewModel()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
 
 
-    private val _muted = MutableLiveData<Boolean>()
+    private val _muted = MutableLiveData(false)
     val muted: LiveData<Boolean> = _muted
 
 

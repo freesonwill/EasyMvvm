@@ -74,92 +74,9 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{model.statusVisible}">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_player_a"
-                android:layout_width="@dimen/dp_66"
-                android:layout_height="@dimen/dp_46"
-                android:layout_marginStart="@dimen/dp_46"
-                android:layout_marginTop="@dimen/dp_57"
-                android:src="@{model.playerAUrl}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_player_a"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_15"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@{model.playerAName}"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintEnd_toEndOf="@id/iv_player_a"
-                app:layout_constraintStart_toStartOf="@id/iv_player_a"
-                app:layout_constraintTop_toBottomOf="@id/iv_player_a" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_58"
-                android:gravity="center_horizontal"
-                android:orientation="vertical"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@{model.titleText}"
-                    android:textColor="@{model.titleTextColor}"
-                    android:textSize="@{model.titleTextSize}" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_subtitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_2"
-                    android:text="@{model.subTitleText}"
-                    android:textColor="@{model.subTitleTextColor}"
-                    android:textSize="@{model.subTitleTextSize}" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_player_b"
-                android:layout_width="@dimen/dp_66"
-                android:layout_height="@dimen/dp_46"
-                android:layout_marginTop="@dimen/dp_57"
-                android:layout_marginEnd="@dimen/dp_46"
-                android:src="@{model.playerBUrl}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_player_b"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_15"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@{model.playerBName}"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                app:layout_constraintEnd_toEndOf="@id/iv_player_b"
-                app:layout_constraintStart_toStartOf="@id/iv_player_b"
-                app:layout_constraintTop_toBottomOf="@id/iv_player_b" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <include layout="@layout/layout_match_not_started"
+            android:id="@+id/included_match_not_started"/>
 
     </LinearLayout>
 </layout>
