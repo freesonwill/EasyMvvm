@@ -3,7 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.sendResult
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate

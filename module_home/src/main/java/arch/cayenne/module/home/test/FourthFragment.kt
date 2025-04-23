@@ -5,13 +5,12 @@ import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
-import arch.cayenne.module.home.databinding.FragmentTestThirdBinding
+import arch.cayenne.module.home.R
+import arch.cayenne.module.home.databinding.FragmentTestFourthBinding
 import kotlin.reflect.KClass
 
-
-class ThirdFragment : BaseFragment<EmptyViewModel, FragmentTestThirdBinding>() {
-    override val vbClass: KClass<FragmentTestThirdBinding> = FragmentTestThirdBinding::class
+class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>() {
+    override val vbClass: KClass<FragmentTestFourthBinding> = FragmentTestFourthBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -20,9 +19,8 @@ class ThirdFragment : BaseFragment<EmptyViewModel, FragmentTestThirdBinding>() {
 
     override fun initListener() {
         mBinding.root.setOnClickListener {
-            sendResult("hello","ThirdFragment:${System.currentTimeMillis()}")
-            navigateUp()
-            //navigate(ThirdFragmentDirections.actionThirdFragmentToFourthFragment())
+            sendResult("hello","FourthFragment:${System.currentTimeMillis()}",R.id.secondFragment)
+            //navigate(FourthFragmentDirections.actionFourthFragmentToHomeFragment())
         }
     }
 

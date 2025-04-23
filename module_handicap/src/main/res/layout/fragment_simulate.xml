@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.fragment.SimulateFragment">
 
@@ -9,7 +10,7 @@
             type="arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/color_0E0F19">
@@ -18,7 +19,22 @@
             android:id="@+id/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:ignore="MissingConstraints" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <ViewFlipper
+            android:id="@+id/view_flipper"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:inAnimation="@anim/slide_out_left"
+            android:outAnimation="@anim/slide_in_right"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 </layout>

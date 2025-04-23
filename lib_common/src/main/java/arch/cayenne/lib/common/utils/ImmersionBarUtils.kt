@@ -1,7 +1,7 @@
 package arch.cayenne.lib.common.utils
 
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.enums.SkinType
+import arch.cayenne.lib.common.data.SkinType
 object ImmersionBarUtils {
     fun immersionBarColorExt(type: String):Int{
         return when (type){

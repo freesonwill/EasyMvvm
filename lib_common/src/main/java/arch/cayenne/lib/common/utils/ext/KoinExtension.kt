@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.extension
+package arch.cayenne.lib.common.utils.ext
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel

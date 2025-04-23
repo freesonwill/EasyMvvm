@@ -28,7 +28,7 @@ class ApplicationModuleInitializer : Initializer<String> {
         //LogUtils init
         LogUtils.getConfig()
             .setConsoleFilter(if (BuildConfig.DEBUG) LogUtils.V else LogUtils.V)
-            .setTagPrefix(LogUtilsExt.TAG)
+            .setTagPrefix(BuildConfig.TAG_DEFAULT)
             .setBorderSwitch(false)
             .setLog2FileSwitch(true)
             .setStackOffset(3)

@@ -6,4 +6,7 @@
         <item>大小</item>
         <item>角球</item>
     </string-array>
+
+    <string name="tip_right">恭喜猜中</string>
+    <string name="tip_error">很遗憾，猜错了</string>
 </resources>
