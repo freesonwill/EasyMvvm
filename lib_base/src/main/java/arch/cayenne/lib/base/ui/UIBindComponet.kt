@@ -46,6 +46,7 @@ class UIBindComponent<UIOwner, VM, VB>(
         uiOwner.initListener()
         uiOwner.initData()
         uiOwner.createObserver()
+        viewModel.initViewModel()
         trackLoadingTime()
     }
 

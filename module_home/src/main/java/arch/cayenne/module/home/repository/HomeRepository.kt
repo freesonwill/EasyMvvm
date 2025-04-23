@@ -17,6 +17,7 @@ import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAUL
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 
 class HomeRepository(
     override val scope: CoroutineScope,
@@ -155,4 +156,6 @@ class HomeRepository(
         }
         return arrayListOf()
     }
+
+    suspend fun observeBalance(): Flow<String> = database.infoDao().observeBalance()
 }
