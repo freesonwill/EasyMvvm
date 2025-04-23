@@ -94,6 +94,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
+            //TODO 等轉換long, 換成getMoney()
             mBinding.tvWalletBalance.text = it.toDecimalNumber()
         }
 
