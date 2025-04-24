@@ -1,8 +1,11 @@
 package arch.cayenne.lib.common.ui.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
+import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.socket.WebSocketManager
@@ -52,7 +55,7 @@ class CommonRepository(
 
         if (loginResp.data != null && loginResp.data!!.success) {
             val balance = getBalance()
-            infoDao.insert(InfoBean(uid, balance, loginResp.data!!.success))
+            infoDao.insert(InfoBean(uid, balance.balanceStringToLong(), loginResp.data!!.success))
         }
 
         return loginResp
@@ -81,7 +84,7 @@ class CommonRepository(
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {
-                infoDao.update(InfoBean(this.uid, it.data!!.balance, this.login))
+                infoDao.update(InfoBean(this.uid, it.data!!.balance.balanceStringToLong(), this.login))
             }
         }
     }

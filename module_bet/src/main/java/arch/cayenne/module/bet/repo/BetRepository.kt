@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
@@ -86,7 +87,7 @@ class BetRepository(
                 marketName = marketName,
                 id = selectionBean.selectionId,
                 name = selectionBean.name,
-                odds = selectionBean.odds,
+                odds = selectionBean.odds.getOdds(),
             )
         }
         return null

@@ -52,17 +52,6 @@ object SportStringExt {
         return if (this.contains(":")) this.substringAfter(":").trim() else ""
     }
 
-    fun String.toDecimalNumber(decimalPlaces: Int = 2): String? {
-        return try {
-            val value = this.toDouble()
-            val pattern = "#,##0." + "0".repeat(decimalPlaces)  // e.g., "#,##0.00"
-            val decimalFormat = DecimalFormat(pattern)
-            decimalFormat.format(value)
-        } catch (e: NumberFormatException) {
-            null
-        }
-    }
-
     fun String.limitTitleLength(maxUnits: Int = 5): String {
         var units = 0.0
         val builder = StringBuilder()
@@ -73,6 +62,20 @@ object SportStringExt {
             units += unit
         }
         return if (builder.length < this.length) builder.toString() + "…" else builder.toString()
+    }
+
+    /**
+     * @return 轉換後的整數值，若轉換失敗則返回 0, ex "123" -> 123L -> 實際上餘額為1.23元, "1.0E7" -> 10000000L -> 實際上餘額為100000元
+     */
+    fun String.balanceStringToLong(): Long {
+        if (this == "0L") return 0 // 明確處理 0
+        return try {
+            BigDecimal(this)
+                .setScale(2, RoundingMode.DOWN)
+                .toLong()
+        } catch (e: NumberFormatException) {
+            0 // 或依需求處理錯誤情況
+        }
     }
 
 
