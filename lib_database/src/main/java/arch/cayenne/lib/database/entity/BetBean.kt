@@ -21,7 +21,6 @@ data class BetBean(
     @PrimaryKey
     val matchId: Long, // 赛事ID
     var selectionLiteBean: SelectionLiteBean, // 选择的盘口
-    var reverseOdds: Int? = null, // 預約赔率
     var betType: BetTypeEnum, // 0: 單注 1: 串關 2: 預約
     var status: BetStatusEnum = BetStatusEnum.PENDING, // 下注狀態
     val leagueName: String, // 联赛名称 ex. 世界盃
@@ -29,7 +28,7 @@ data class BetBean(
     var minAmount: Long = 10_000L, // 最小下注金额
     var maxAmount: Long = 10_000L, // 最大下注金额
     var isBetStop: Boolean = false, // 是否停止下注
-    var isPlaying: Boolean = false, // 是否滾球
+    var isPlaying: Boolean = false // 是否滾球
 )
 
 /**

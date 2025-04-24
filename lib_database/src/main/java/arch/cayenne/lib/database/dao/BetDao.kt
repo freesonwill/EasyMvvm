@@ -14,6 +14,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract fun observeSingleBet(type: BetTypeEnum = BetTypeEnum.SINGLE, status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetBean?>
 
     @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
+    abstract fun observeReserveBet(type: BetTypeEnum = BetTypeEnum.RESERVE, status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetBean?>
+
+    @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
     abstract fun getSingleBet(type: BetTypeEnum = BetTypeEnum.SINGLE, status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
 
     @Query("SELECT * FROM BetBean WHERE matchId = :id LIMIT 1")
@@ -46,8 +49,6 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("UPDATE BetBean SET status = :status WHERE matchId IN (:ids)")
     abstract suspend fun updateBetListStatus(ids: List<Long>, status: BetStatusEnum)
 
-    @Query("UPDATE BetBean SET reverseOdds = :reserveOdds WHERE matchId = :id")
-    abstract suspend fun setReserveOdds(id: Long, reserveOdds: Int?)
     /**
      * 移除非roundId的投注記錄
      */

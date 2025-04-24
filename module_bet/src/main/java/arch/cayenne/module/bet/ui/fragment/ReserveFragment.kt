@@ -49,12 +49,12 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
 
         })
 
-        mViewModel.setReserveBet(args.id)
+        mViewModel.setOdds(args.odds)
     }
 
     override fun initListener() {
         mBinding.ivCancelReserve.setOnClickListener {
-            mViewModel.removeReserve(args.id)
+            mViewModel.removeReserve()
             navigate(ReserveFragmentDirections.actionReserveFragmentToSingleBetFragment())
         }
 
@@ -121,6 +121,10 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             mBinding.tvBalance.text = money
             mViewModel.setRemainingNumber(it)
         }
+        mViewModel.onOddsListener.observe(viewLifecycleOwner) {
+            val odds = "@${it.getOdds()}"
+            mBinding.tvCancelReserve.text = odds
+        }
     }
 
     private fun setBetData(data: BetBean) {
@@ -128,8 +132,6 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
 
         mBinding.btnReserve.isVisible = false
         mBinding.clCancelReserve.isVisible = true
-        val odds = "@${data.reverseOdds?.getOdds()}"
-        mBinding.tvCancelReserve.text = odds
     }
 
     override fun dismiss(key: String, value: String) {

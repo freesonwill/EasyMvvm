@@ -9,6 +9,7 @@ import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
+import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
@@ -111,10 +112,12 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         }
         mBinding.btnConfirm.setOnClickListener {
             val id = requireArguments().getLong(MATCH_ID, -1L)
-            if (id != -1L) {
+            val odds = mViewModel.onEditNumber.value?.toOdds() ?: -1
+            if (id != -1L && odds != -1) {
                 mViewModel.reserve(id)
                 arguments = Bundle().apply {
                     putString(KEY_RESULT, VALUE_RESERVE_COMPLETE)
+                    putInt(KEY_ODDS_RESULT, odds)
                 }
             }
             dismiss()

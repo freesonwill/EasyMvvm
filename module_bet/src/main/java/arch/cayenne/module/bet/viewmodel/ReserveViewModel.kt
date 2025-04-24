@@ -17,14 +17,15 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     private val _onReserveSheetListener = MutableLiveData<BetBean>()
     val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
 
+    private val _onOddsListener = MutableLiveData<Int>()
+    val onOddsListener: LiveData<Int> get() = _onOddsListener
+
     private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
+    private val odds: Int get() = _onOddsListener.value ?: 1
+
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1
-        addSource(_onReserveSheetListener) { data ->
-            odds *= data.reverseOdds ?: 1
-        }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
@@ -44,23 +45,31 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     init {
         viewModelScope.launch {
-            balanceRepo.observeBalance().collect {
-                _onBalanceListener.value = it
+            launch {
+                balanceRepo.observeBalance().collect {
+                    _onBalanceListener.value = it
+                }
+            }
+            launch {
+                repo.observeReserveBet().collect {
+                    if (it != null) {
+                        _onReserveSheetListener.value = it
+                        setNumberLimit(it.minAmount, it.maxAmount)
+                    }
+                }
             }
         }
     }
 
-    fun setReserveBet(id: Long) {
-        viewModelScope.launch {
-            repo.getReverseById(id)?.let {
-                _onReserveSheetListener.value = it
-                setNumberLimit(it.minAmount, it.maxAmount)
-            }
-        }
+    fun setOdds(odds: Int) {
+        _onOddsListener.value = odds
     }
 
-    fun removeReserve(id: Long) {
-        repo.removeReserve(id)
+    fun removeReserve() {
+        _onReserveSheetListener.value?.let {
+            repo.removeReserve(it.matchId)
+        }
+
     }
 
     fun removeBet() {
@@ -71,7 +80,6 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
 
     fun saveToCombo() {
         _onReserveSheetListener.value?.let {
-            repo.updateReserveOdds(it.matchId, null)
             betRepo.saveToCombo(it.matchId)
         }
     }

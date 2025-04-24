@@ -64,8 +64,8 @@
             app:popUpTo="@id/reserveFragment" />
 
         <argument
-            android:name="id"
-            app:argType="long"
+            android:name="odds"
+            app:argType="integer"
             app:nullable="false" />
         <action
             android:id="@+id/action_reserveFragment_to_betResultFragment"

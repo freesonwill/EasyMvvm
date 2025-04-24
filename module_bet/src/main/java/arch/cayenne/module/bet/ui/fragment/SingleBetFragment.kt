@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
@@ -91,7 +92,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(it.matchId))
+                        val odds = bundle.getInt(KEY_ODDS_RESULT)
+                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(odds))
                     }
                 }
                 val location = IntArray(2)

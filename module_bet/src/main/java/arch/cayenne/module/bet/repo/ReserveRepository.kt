@@ -15,6 +15,8 @@ class ReserveRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
+    fun observeReserveBet() = betDao.observeReserveBet()
+
     suspend fun getReverseById(id: Long) = withContext(scope.coroutineContext) {
         val bet = betDao.getBetById(id)
         if (bet != null && bet.betType == BetTypeEnum.RESERVE) {
@@ -24,23 +26,15 @@ class ReserveRepository(
         }
     }
 
-    fun setSingleToReserve(id: Long, odds: Int) {
+    fun setSingleToReserve(id: Long) {
         scope.launch {
-            betDao.setReserveOdds(id, odds)
             betDao.updateBetType(id, BetTypeEnum.RESERVE)
         }
     }
 
     fun removeReserve(id: Long) {
         scope.launch {
-            betDao.setReserveOdds(id, null)
             betDao.updateBetType(id, BetTypeEnum.SINGLE)
-        }
-    }
-
-    fun updateReserveOdds(id: Long, odds: Int?) {
-        scope.launch {
-            betDao.setReserveOdds(id, odds)
         }
     }
 

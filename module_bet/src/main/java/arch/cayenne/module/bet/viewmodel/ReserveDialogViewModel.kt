@@ -24,7 +24,6 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
     }
 
     fun reserve(id: Long) {
-        val odds = onEditNumber.value?.toOdds() ?: 0
-        repository.setSingleToReserve(id, odds)
+        repository.setSingleToReserve(id)
     }
 }
