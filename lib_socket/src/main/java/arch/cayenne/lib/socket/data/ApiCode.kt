@@ -21,4 +21,6 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额
     GET_COMBO_RISK(500,1014),    //500-1013: 获取串关下注限额
+
+    MATCH_TREND(700, 2004),//700-2004: 比赛趋势数据
 }

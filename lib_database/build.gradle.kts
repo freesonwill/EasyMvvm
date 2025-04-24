@@ -47,4 +47,5 @@ dependencies {
 
     implementation(libs.koin)
     implementation(libs.startup)
+    implementation(libs.gson)
 }

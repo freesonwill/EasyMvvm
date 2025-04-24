@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -17,8 +18,8 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
 
 
-class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<LiveVideoBean>) :
-    BaseAdapter<LiveVideoBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
+class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
+    BaseAdapter<VideoSourceBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare
     ) {
 

@@ -122,7 +122,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)
                 as? LiveVideoFragment ?: LiveVideoFragment().also {
-                    arguments?.putLong("matchId", args.matchId)
+            it.arguments = Bundle().apply { putLong("matchId", args.matchId) }
+
             childFragmentManager.beginTransaction()
                 .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG)
                 .commitNow()
