@@ -21,9 +21,12 @@ class LiveVideoRepository(
 
     fun observeLiveVideoBean(observeMatchId:Long) = liveVideoDao.observeLiveVideoBean(observeMatchId)
 
-    fun setPlayingVideoId(sources: List<VideoSourceBean>) {
+    fun setPlayingVideoId(id:Int) {
         scope.launch {
-            liveVideoDao.updatePlayingId(sources, matchId)
+
+            val liveVideoBean = liveVideoDao.queryLiveVideoBean(matchId)
+            liveVideoBean?.source?.forEach { it.isPlaying = it.id == id }
+            liveVideoDao.updatePlayingId(liveVideoBean?.source?: emptyList(), matchId)
         }
     }
 

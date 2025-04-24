@@ -12,6 +12,9 @@ abstract class LiveVideoDao : BaseDao<LiveVideoBean>() {
     @Query("SELECT * FROM LiveVideoBean where matchId = :matchId")
     abstract fun observeLiveVideoBean(matchId: Long): Flow<LiveVideoBean?>
 
+    @Query("SELECT * FROM LiveVideoBean where matchId = :matchId")
+    abstract fun queryLiveVideoBean(matchId: Long): LiveVideoBean?
+
     @Query("UPDATE LiveVideoBean set source = :source where  matchId = :matchId")
     abstract fun updatePlayingId(source: List<VideoSourceBean>, matchId: Long)
 

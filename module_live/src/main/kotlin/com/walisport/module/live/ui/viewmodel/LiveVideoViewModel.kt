@@ -51,8 +51,7 @@ class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel(
 
 
     fun setPlayingVideoId(id: Int) {
-        _liveVideoBean.value?.source?.firstOrNull { it.id == id }?.isPlaying = true
-        repo.setPlayingVideoId(_liveVideoBean.value?.source ?: emptyList())
+        repo.setPlayingVideoId(id)
     }
 
     fun changeMuteStatus() {
