@@ -446,7 +446,7 @@ class LiveVideoLandscapeFragment :
                 it?.let {
 
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
-                    playUrl?.takeIf { url -> url.isNotEmpty() }.let { url ->
+                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         mBinding.videoView.setVideoURI(Uri.parse(url))
                         mBinding.videoView.start()
                     }
