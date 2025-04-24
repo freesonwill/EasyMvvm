@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources translatable="false">
+    <!--  项目中navigation组件路由地址start  -->
+
+    <string name="deeplink_single_web_fragment">walisport://lib_common/singleWebFragment?url={url}&amp;title={title}</string>
+    <!--  项目中navigation组件路由地址end  -->
+</resources>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_common"
+    app:startDestination="@id/singleWebFragment">
+
+    <fragment
+        android:id="@+id/singleWebFragment"
+        android:name="arch.cayenne.lib.common.ui.fragment.SingleWebFragment"
+        android:label="fragment_single_web"
+        tools:layout="@layout/fragment_single_web">
+
+        <argument
+            android:name="url"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="title"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+
+
+        <deepLink app:uri="@string/deeplink_single_web_fragment" />
+    </fragment>
+
+</navigation>
