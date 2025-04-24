@@ -1,11 +1,13 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import arch.cayenne.lib.common.R
 
 
@@ -43,7 +45,11 @@ fun View.toBitmap(scale: Float = 1f, config: Bitmap.Config = Bitmap.Config.ARGB_
  * @param interval 时间间隔 默认0.5秒
  * @param action 执行方法
  */
-fun View.clickNoRepeat(playSound: Boolean = true, interval: Long = 500, action: (view: View) -> Unit) {
+fun View.clickNoRepeat(
+    playSound: Boolean = true,
+    interval: Long = 500,
+    action: (view: View) -> Unit
+) {
     setOnClickListener {
         val lastTime = getTag(R.id.tag_last_click_time) as? Long ?: 0L
         val currentTime = System.currentTimeMillis()
@@ -66,4 +72,20 @@ fun createBitmapSafely(width: Int, height: Int, config: Bitmap.Config, retryCoun
         }
         return null
     }
+}
+
+
+/**
+ * 获取view所在Activity
+ * @return
+ */
+fun View.requireActivity(): AppCompatActivity {
+    var context = this.context
+    while (context is ContextWrapper) {
+        if (context is AppCompatActivity) {
+            return context
+        }
+        context = context.baseContext
+    }
+    throw IllegalStateException("View $this not attached to an activity.")
 }

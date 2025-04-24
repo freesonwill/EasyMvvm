@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.SocketResponseError
-import arch.cayenne.lib.common.ui.repo.CommonRepository
+import arch.cayenne.lib.common.data.repo.CommonRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

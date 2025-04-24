@@ -3,7 +3,7 @@ package arch.cayenne.lib.common
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.common.data.UserDataManager
-import arch.cayenne.lib.common.ui.repo.CommonRepository
+import arch.cayenne.lib.common.data.repo.CommonRepository
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules
