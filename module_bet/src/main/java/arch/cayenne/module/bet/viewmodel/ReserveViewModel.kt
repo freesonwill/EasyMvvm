@@ -7,16 +7,17 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class ReserveViewModel(private val repo: ReserveRepository, private val betRepo: SingleBetRepository) : NumberCalculatorViewModel() {
+class ReserveViewModel(private val repo: ReserveRepository, private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
     private val _onReserveSheetListener = MutableLiveData<BetBean>()
     val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
 
-    private val _onBalanceListener = MutableLiveData(123456L)
+    private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
@@ -40,6 +41,14 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         }
     }
     val onReserveWinMoney: LiveData<String> get() = _onReserveWinMoney
+
+    init {
+        viewModelScope.launch {
+            balanceRepo.observeBalance().collect {
+                _onBalanceListener.value = it
+            }
+        }
+    }
 
     fun setReserveBet(id: Long) {
         viewModelScope.launch {

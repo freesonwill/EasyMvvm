@@ -6,10 +6,11 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
-class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() {
+class ComboBetViewModel(private val repo: ComboBetRepository, private val balanceRepo: BalanceRepository) : BaseViewModel() {
 
     private val _onBetListListener = MutableLiveData<List<BetBean>>()
     val onBetListListener: LiveData<List<BetBean>> get() = _onBetListListener
@@ -17,7 +18,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData(123456L)
+    private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     val remainingBalance: Long
@@ -42,6 +43,11 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
             launch {
                 repo.observeComboMultiBet().collect { beans ->
                     setMultiBetBean(beans)
+                }
+            }
+            launch {
+                balanceRepo.observeBalance().collect {
+                    _onBalanceListener.value = it
                 }
             }
         }

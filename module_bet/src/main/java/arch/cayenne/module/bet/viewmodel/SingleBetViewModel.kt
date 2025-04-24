@@ -8,15 +8,16 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalculatorViewModel() {
+class SingleBetViewModel(private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
     private val _onBetSheetListener = MutableLiveData<BetBean>()
     val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
 
-    private val _onBalanceListener = MutableLiveData(123456L)
+    private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
@@ -43,10 +44,18 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository) : NumberCalcu
 
     init {
         viewModelScope.launch {
-            betRepo.observeSingleBet().collect {
-                if (it != null) {
-                    _onBetSheetListener.value = it
-                    setNumberLimit(it.minAmount, it.maxAmount)
+            launch {
+                betRepo.observeSingleBet().collect {
+                    if (it != null) {
+                        _onBetSheetListener.value = it
+                        setNumberLimit(it.minAmount, it.maxAmount)
+                    }
+                }
+            }
+            launch {
+                balanceRepo.observeBalance().collect {
+                    _onBalanceListener.value = it
+                    setRemainingNumber(it)
                 }
             }
         }

@@ -2,6 +2,7 @@ package arch.cayenne.module.bet
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.bet.repo.BetResultRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
@@ -55,6 +56,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         factoryOf(::ReserveRepository)
         factoryOf(::BetResultRepository)
         factoryOf(::BetRepository)
+        factoryOf(::BalanceRepository)
     }
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
 }
