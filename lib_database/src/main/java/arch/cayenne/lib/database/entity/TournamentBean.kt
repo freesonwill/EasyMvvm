@@ -9,16 +9,18 @@ data class TournamentBean(
     val name: String,
     val simpleName: String,
     val icon: String,
-)
-
-@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
-data class SportTournamentCrossRef(
-    val tournamentId: Int,
-    val sportId: Int,
-    val playType: Int,
     val hot: Boolean,
     val weight: Int,
 )
+
+//@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
+//data class SportTournamentCrossRef(
+//    val tournamentId: Int,
+//    val sportId: Int,
+//    val playType: Int,
+//    val hot: Boolean,
+//    val weight: Int,
+//)
 
 data class TournamentDataModel(
     val id: Int,

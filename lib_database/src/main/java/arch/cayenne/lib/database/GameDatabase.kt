@@ -7,9 +7,7 @@ import androidx.room.RoomDatabase
 import arch.cayenne.lib.database.dao.SportDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.entity.SportBean
-import arch.cayenne.lib.database.entity.PlayTypeSportCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
-import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
@@ -30,9 +28,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
         BetBean::class,
         LiveVideoBean::class,
         SportBean::class,
-        PlayTypeSportCrossRef::class,
         TournamentBean::class,
-        SportTournamentCrossRef::class,
         MatchBean::class,
         MarketBean::class,
         SelectionBean::class,

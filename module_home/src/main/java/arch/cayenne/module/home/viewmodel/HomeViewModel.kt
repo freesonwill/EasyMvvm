@@ -4,10 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.bet.repo.BetRepository
-import arch.cayenne.module.home.data.SportDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
@@ -48,14 +47,8 @@ class HomeViewModel : BaseViewModel() {
 
     private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getSportStatistical(currentPlayType.id)?.filter {
-                SportType.fromId(it.sportId) != null
-            }?.map {
-                SportDataModel(
-                    id = it.sportId,
-                    matchCount = it.matchCount,
-                    order = it.sportOrder
-                )
+            val list = repository.getSportStatistical()?.filter {
+                SportType.fromId(it.id) != null  //去除目前沒有在code預設內的運動
             }
             if (list.isNullOrEmpty()) {
                 //TODO 拿取sport錯誤

@@ -4,9 +4,8 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SportBean
-import arch.cayenne.lib.database.entity.PlayTypeSportCrossRef
+import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
-import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -26,7 +25,7 @@ class HomeRepository(
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
 
-    suspend fun getSportStatistical(playType: Int): List<PlayTypeSportCrossRef>? {
+    suspend fun getSportStatistical(): List<SportDataModel>? {
         //先從DB拿取
 //        val queryResult = sportDao.querySportsMatchCount(playType)
 //        if (queryResult.isNotEmpty()) {
@@ -41,35 +40,37 @@ class HomeRepository(
             Client.StatisticalReq.newBuilder().build()
         }
         return if (res.error == null && res.data != null) {
-            return saveSports(playType, res.data!!)
+            return saveSports(res.data!!)
         } else {
             res.error
             null
         }
 
     }
-    private fun saveSports(playType: Int, data: Client.StatisticalResp): List<PlayTypeSportCrossRef> {
+    private fun saveSports(data: Client.StatisticalResp): List<SportDataModel> {
         val sportMap = hashMapOf<Int, SportBean>()
-        val categoryList = arrayListOf<PlayTypeSportCrossRef>()
+//        val categoryList = arrayListOf<PlayTypeSportCrossRef>()
         data.statisticalList.forEach { play ->
             play.sportStatisticalList.forEachIndexed { index, sport ->
                 val bean = SportBean(
                     sportId = sport.sportId,
                     sportName = sport.sportName,
-                )
-                sportMap[bean.sportId] = bean
-                val category = PlayTypeSportCrossRef(
-                    sportId = sport.sportId,
-                    playType = play.playType,
                     matchCount = sport.matchCount,
                     sportOrder = index
                 )
-                categoryList.add(category)
+                sportMap[bean.sportId] = bean
+//                val category = PlayTypeSportCrossRef(
+//                    sportId = sport.sportId,
+//                    playType = play.playType,
+//                    matchCount = sport.matchCount,
+//                    sportOrder = index
+//                )
+//                categoryList.add(category)
             }
         }
         sportDao.insert(sportMap.map{ it.value }.toList())
-        sportDao.insertSportCrossRef(categoryList)
-        return sportDao.querySportsMatchCount(playType)
+//        sportDao.insertSportCrossRef(categoryList)
+        return sportDao.querySportsMatchCount()
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
@@ -100,7 +101,7 @@ class HomeRepository(
 
     private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
-        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
+//        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
         data.tournamentList.forEach { tournament ->
             tournamentList.add(
                 TournamentBean(
@@ -108,21 +109,23 @@ class HomeRepository(
                     name = tournament.name,
                     simpleName = tournament.simpleName,
                     icon = tournament.icon,
-                )
-            )
-            sportTournamentCrossRefList.add(
-                SportTournamentCrossRef(
-                    tournamentId = tournament.id,
-                    sportId = sportId,
-                    playType = playType,
                     hot = tournament.hot,
-                    weight = tournament.weight
+                    weight = tournament.weight,
                 )
             )
+//            sportTournamentCrossRefList.add(
+//                SportTournamentCrossRef(
+//                    tournamentId = tournament.id,
+//                    sportId = sportId,
+//                    playType = playType,
+//                    hot = tournament.hot,
+//                    weight = tournament.weight
+//                )
+//            )
         }
         tournamentDao.insert(tournamentList)
-        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
-        return tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
+//        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
+        return tournamentDao.queryTournamentWithLimit(10)
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
