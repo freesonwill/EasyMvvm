@@ -53,4 +53,6 @@
     <color name="input_word">#929298</color>
 
     <color name="list_separator">#F6F6F6</color>
+
+    <color name="message_fill_color">#F3F3F4</color>
 </resources>
