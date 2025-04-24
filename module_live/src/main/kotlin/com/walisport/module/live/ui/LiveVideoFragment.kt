@@ -44,6 +44,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
+
         mViewModel.setMatchId(matchId)
         mViewModel.queryLiveStream()
 
@@ -169,7 +170,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             ivToFullscreen.clickNoRepeat {
                 destroyPlayer()
-                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
+                navigate(
+                    LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment()
+                        .apply { arguments.putLong("matchId", mViewModel.matchId()) })
             }
 
             ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }

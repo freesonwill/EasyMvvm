@@ -627,7 +627,7 @@ class LiveVideoLandscapeFragment :
     private fun setChooseSourceView() {
         childFragmentManager.findFragmentByTag(LiveVideoSourceLandscapeFragment.TAG)
                 as? LiveVideoSourceLandscapeFragment ?: LiveVideoSourceLandscapeFragment().also {
-            arguments = Bundle().apply {
+            it.arguments = Bundle().apply {
                 putLong("matchId", mViewModel.matchId())
             }
             childFragmentManager.beginTransaction()
