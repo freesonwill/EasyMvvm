@@ -5,9 +5,13 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "LiveVideoBean")
 data class LiveVideoBean(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int,
+    @PrimaryKey
+    val matchId: Long,//比赛ID
+    val source: List<VideoSourceBean>, //视频源列表
+)
 
+data class VideoSourceBean(
+    val id: Int = 0,
     val name: String = "",
     val urlSource: String = "",
     val streamType: String = "",
@@ -20,8 +24,7 @@ data class LiveVideoBean(
     val title: String = "",
     val subTitle: String = "",
     var isPlaying: Boolean = false,
-
-    ) {
+) {
 
     fun playUrl(): String {
         return m3U8Url.takeIf { it.isNotEmpty() }
@@ -29,4 +32,6 @@ data class LiveVideoBean(
             ?: flvUrl.takeIf { it.isNotEmpty() }
             ?: ""
     }
+
 }
+

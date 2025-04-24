@@ -44,7 +44,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
     version = 1,
     exportSchema = false
 )
-@TypeConverters(GameTypeConverter::class)
+@TypeConverters(GameTypeConverter::class, VideoSourceBeanConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
