@@ -47,12 +47,15 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override fun initListener() {
     }
     override fun createObserver() {
-        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
+        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {it->
             it?.let {
                 mBinding.main.setVisibilityGone()
                 upData(it)
+                if(it.awayOrBuilderList.isEmpty()){
+                    mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
+                }
             } ?: run {
-                mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
+                    mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
             }
         }
     }

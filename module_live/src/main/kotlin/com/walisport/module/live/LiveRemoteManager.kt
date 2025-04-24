@@ -1,13 +1,11 @@
 package com.walisport.module.live
 
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import galaxy.client.proto.Sloth
-import galaxy.common.proto.Common
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
