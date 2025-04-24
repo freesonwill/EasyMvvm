@@ -3,7 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipInvalidBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
@@ -23,7 +23,7 @@ class LiveBetSlipInvalidFragment:
     }
 
     private fun initRecycler() {
-        val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.UnSettled)
+        val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.Invalid)
         adapter.submitList(mViewModel.getTestList())
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())

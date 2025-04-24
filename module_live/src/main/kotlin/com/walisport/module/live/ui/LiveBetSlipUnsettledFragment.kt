@@ -3,7 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.extension.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter

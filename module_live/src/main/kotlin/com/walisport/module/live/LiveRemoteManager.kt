@@ -71,14 +71,14 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.status = status
                 this.page = page
                 this.pageSize = pageSize
-//                this.addSportId(sportId)
-//                this.matchId = matchId
+                this.addSportId(sportId)
+                this.matchId = matchId
                 startTime?.let { this.startTime = startTime }
                 endTime?.let { this.endTime = endTime }
             }.build()
         }
         LogUtils.dTag("aaa", "result ${Gson().toJson(result.data)}")
-        if(result.error != null && result.data != null){
+        if(result.error == null && result.data != null){
             return result.data!!.orderList
         }
         LogUtils.dTag("aaa","error  ${result.error?.msg}")
@@ -108,8 +108,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.addSportId(sportId)
             }.build()
         }
-        LogUtils.dTag("aaa", " getReserveOrder  result ${Gson().toJson(result.data)}")
-        if (result.error != null && result.data != null) {
+        LogUtils.dTag("aaa", " getReserveOrder  result ${result.data?.orderList?.size} ${Gson().toJson(result.error)}  ${result.error != null} ${result?.data != null}")
+        if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
         return null
