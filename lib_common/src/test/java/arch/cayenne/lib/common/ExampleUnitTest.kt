@@ -1,10 +1,8 @@
 package arch.cayenne.lib.common
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.StringExt.toValue
 import org.junit.Test
 
-import org.junit.Assert.*
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +10,7 @@ import org.junit.Assert.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
     @Test
     fun addition_isCorrect() {
 //        println("get money from int: ")
@@ -23,11 +22,6 @@ class ExampleUnitTest {
 //        println(100.getMoney())   // 1
 
         println("get int from string: ")
-        println("0.101".toValue())    // 10
-        println("0.10".toValue())   // 10
-        println("10".toValue())     // 1000
-        println("12.34".toValue())  // 1234
-        println("0.01".toValue())   // 1
 
         println("int multiply int")  // 0
         println(198.getOdds(1))    // 1.98
