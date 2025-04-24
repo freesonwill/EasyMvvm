@@ -6,8 +6,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -65,6 +63,8 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
     override fun createObserver() {
         homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
+            //TODO 賽事還沒跟上方聯賽、球類做關聯，所以目前只要不是全部聯賽的都不要拿資料，避免多個分頁同時拿取賽事導致混亂
+            if (homeViewModel.getCurrentPlayType() != mViewModel.playType || mViewModel.getTournamentId() != TOURNAMENT_ALL_ID ) return@observe
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentMatch()
         }
@@ -76,7 +76,7 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setCurrentTournamentId(this.getInt(ARG_LEAGUE_ID, TOURNAMENT_ALL_ID))
+            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID, TOURNAMENT_ALL_ID))
         }
     }
 

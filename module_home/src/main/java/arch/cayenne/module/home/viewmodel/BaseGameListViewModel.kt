@@ -3,7 +3,6 @@ package arch.cayenne.module.home.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
@@ -31,9 +30,11 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         currentSportId = id
     }
 
-    fun setCurrentTournamentId(id: Int) {
+    fun setTournamentId(id: Int) {
         tournamentId = id
     }
+
+    fun getTournamentId() = tournamentId
 
     //取得比賽列表
     fun getCurrentMatch() {
