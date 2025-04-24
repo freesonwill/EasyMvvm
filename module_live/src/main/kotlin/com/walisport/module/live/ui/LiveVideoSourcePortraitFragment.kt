@@ -27,6 +27,8 @@ class LiveVideoSourcePortraitFragment :
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
 
         with(mBinding) {
 

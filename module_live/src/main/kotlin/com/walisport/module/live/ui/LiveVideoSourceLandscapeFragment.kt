@@ -22,6 +22,9 @@ class LiveVideoSourceLandscapeFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
 
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
+
         mBinding.rvSource.apply {
             itemAnimator = null
             layoutManager =

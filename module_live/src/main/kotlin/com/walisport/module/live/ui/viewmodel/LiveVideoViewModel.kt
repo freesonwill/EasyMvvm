@@ -63,6 +63,8 @@ class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel(
 
     fun mutedData() = muteManager.mutedLiveData
 
+    fun matchId() = repo.matchId
+
     fun setMatchId(matchId: Long) {
         repo.matchId = matchId
 
