@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -49,18 +50,19 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
 
     suspend fun reserveBet(
         bean: BetBean,
+        reserveOdds: Int,
         money: Long
     ): ReserveBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ReserveBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SINGLE_BET,
+            apiCode = ApiCode.RESERVE_BET,
         ) {
             Client.ReserveBetReq.newBuilder().apply {
                 this.setBet(Common.BetOption.newBuilder().apply {
                     this.matchId = bean.matchId
                     this.selectionId = bean.selectionLiteBean.id
-                    this.odds = bean.selectionLiteBean.odds
+                    this.odds = reserveOdds.getOdds()
                 })
                 this.betAmount = money.getMoney()
             }.build()

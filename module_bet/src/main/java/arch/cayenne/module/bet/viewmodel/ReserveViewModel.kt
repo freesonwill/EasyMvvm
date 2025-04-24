@@ -85,8 +85,9 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     }
 
     fun sendReserve() {
-        val id = _onReserveSheetListener.value?.matchId ?: return
+        val id = onReserveSheetListener.value?.matchId ?: return
+        val odds = onOddsListener.value ?: return
         val money = onEditNumber.value?.toMoney() ?: return
-        repo.sendReserve(id, money)
+        repo.sendReserve(id, odds, money)
     }
 }
