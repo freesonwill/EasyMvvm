@@ -68,6 +68,8 @@ class LiveVideoLandscapeFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
 //        mViewModel.addMockData()
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
@@ -442,8 +444,12 @@ class LiveVideoLandscapeFragment :
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
-                    mBinding.videoView.start()
+
+                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                        mBinding.videoView.setVideoURI(Uri.parse(url))
+                        mBinding.videoView.start()
+                    }
                 }
             }
         }
@@ -465,14 +471,14 @@ class LiveVideoLandscapeFragment :
                 when (it) {
                     PlayStatus.Playing -> {
                         loadingAnim?.cancel()
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.GONE
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Loading -> {
                         // 创建旋转动画
                         loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.ivVideoLoading,  // 目标 View
+                            mBinding.includedLandscapeCtLoading.ivVideoLoading,  // 目标 View
                             "rotation",  // 属性名称
                             0f, 360f // 从 0 度旋转到 360 度
                         ).run {
@@ -486,13 +492,13 @@ class LiveVideoLandscapeFragment :
                             this
                         }
 
-                        mBinding.ctLoading.visibility = View.VISIBLE
-                        mBinding.ctError.visibility = View.GONE
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.VISIBLE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Error -> {
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.VISIBLE
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.VISIBLE
                     }
                 }
             }
@@ -621,6 +627,9 @@ class LiveVideoLandscapeFragment :
     private fun setChooseSourceView() {
         childFragmentManager.findFragmentByTag(LiveVideoSourceLandscapeFragment.TAG)
                 as? LiveVideoSourceLandscapeFragment ?: LiveVideoSourceLandscapeFragment().also {
+            it.arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
+            }
             childFragmentManager.beginTransaction()
                 .replace(mBinding.fragmentChooseSource.id, it, LiveVideoSourceLandscapeFragment.TAG)
                 .commitNow()

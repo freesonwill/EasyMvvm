@@ -3,16 +3,20 @@ package arch.cayenne.lib.database.dao
 import androidx.room.Dao
 import androidx.room.Query
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import arch.cayenne.lib.database.entity.VideoSourceBean
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 abstract class LiveVideoDao : BaseDao<LiveVideoBean>() {
 
-    @Query("SELECT * FROM LiveVideoBean")
-    abstract fun observeLiveVideoBean(): Flow<List<LiveVideoBean>?>
+    @Query("SELECT * FROM LiveVideoBean where matchId = :matchId")
+    abstract fun observeLiveVideoBean(matchId: Long): Flow<LiveVideoBean?>
 
-    @Query("UPDATE LiveVideoBean SET isPlaying = CASE WHEN id = :id THEN 1 ELSE 0 END ")
-    abstract fun updatePlayingId(id: Int)
+    @Query("SELECT * FROM LiveVideoBean where matchId = :matchId")
+    abstract fun queryLiveVideoBean(matchId: Long): LiveVideoBean?
+
+    @Query("UPDATE LiveVideoBean set source = :source where  matchId = :matchId")
+    abstract fun updatePlayingId(source: List<VideoSourceBean>, matchId: Long)
 
     @Query("SELECT COUNT(*) FROM LiveVideoBean ")
     abstract suspend fun queryCount(): Int

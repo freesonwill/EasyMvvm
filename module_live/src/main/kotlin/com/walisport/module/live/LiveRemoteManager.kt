@@ -20,7 +20,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.MATCH_LIVE_STREAM,
         ) {
             Client.MatchLiveStreamReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
 
@@ -41,7 +41,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_LINEUP
         ) {
             Client.MatchLineupReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
         if(result.error == null && result.data != null){
@@ -116,4 +116,20 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
 
+    //获取比赛趋势的实时数据
+    suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchTrendData? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchTrendResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_TREND
+        ) {
+            Client.MatchTrendReq.newBuilder().apply {
+                this.matchId = matchId
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.matchTrendData
+        }
+        return null
+    }
 }

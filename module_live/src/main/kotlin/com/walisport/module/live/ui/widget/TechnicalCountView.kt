@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.walisport.module.live.R
-import com.walisport.module.live.data.model.GoalTrendBean
 import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
+import galaxy.client.proto.Sloth
 
 /**
  * 赛况页技术统计布局控件
@@ -36,8 +36,8 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.tvScore.text = sore
     }
 
-    fun setData(array: ArrayList<GoalTrendBean>) {
-        mBinding.viewGoalTrend.setData(array)
+    fun setTrendData(data: Sloth.MatchTrendData) {
+        mBinding.viewGoalTrend.setData(data)
     }
 
     //设置进攻数据

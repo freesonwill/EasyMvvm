@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -29,7 +30,7 @@ object SportStringExt {
      * @return 轉換後的整數值，若轉換失敗則返回 0, ex "1.23" -> 123, "0.5" -> 50
      */
     fun String.toOdds(): Int {
-        if (this == "0") return 0 // 明確處理 0
+        if (this == "0" || this.isEmpty()) return 0 // 明確處理 0
 
         val value = if (this.last() == '.') {
             this.substring(0, this.length - 1)
@@ -78,5 +79,12 @@ object SportStringExt {
         }
     }
 
-
+    fun String.timeStringToInt(): Int {
+        if (this == "0") return 0
+        return try {
+            this.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
+    }
 }

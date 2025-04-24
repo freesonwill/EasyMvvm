@@ -2,8 +2,11 @@ package com.walisport.module.live
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
+import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.LiveOutsRepository
+import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
@@ -23,8 +26,6 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
-import com.walisport.module.live.data.LiveBetRepository
-
 
 class LiveModuleInitializer : DefaultInitializer<String> {
 
@@ -54,6 +55,8 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         factoryOf(::LiveMainRepository)
         factoryOf(::LiveBetRepository)
         factoryOf(::LiveLineupRepository)
+        factoryOf(::LiveOutsRepository)
+        factoryOf(::LiveVideoRepository)
     }
 
     private val managerModule = module {
