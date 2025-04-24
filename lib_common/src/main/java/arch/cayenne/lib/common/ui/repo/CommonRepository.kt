@@ -80,7 +80,6 @@ class CommonRepository(
     //觀察從API來的餘額變化並塞進資料庫
     suspend fun observeBalanceChange() {
         socketManager.observeProtoMessage<Client.BalanceNotify>(ApiCode.BALANCE_NOTIFY).collect {
-            //TODO 待驗證，不知道能不能收得到
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {

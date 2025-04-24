@@ -2,7 +2,6 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 
 /***
  * @param matchId 赛事ID
@@ -24,7 +23,7 @@ data class BetBean(
     var selectionLiteBean: SelectionLiteBean, // 选择的盘口
     var reverseOdds: Int? = null, // 預約赔率
     var betType: BetTypeEnum, // 0: 單注 1: 串關 2: 預約
-    var status: BetStatusEnum = BetStatusEnum.PENDING_BET, // 下注狀態
+    var status: BetStatusEnum = BetStatusEnum.PENDING, // 下注狀態
     val leagueName: String, // 联赛名称 ex. 世界盃
     val matchName: String, // 赛事名称 ex. 中國 vs 日本
     var minAmount: Long = 10_000L, // 最小下注金额
@@ -59,8 +58,9 @@ enum class BetTypeEnum {
 }
 
 enum class BetStatusEnum {
-    PENDING_BET, // 待下注
+    PENDING, // 待下注
     FAIL, // 下注失敗
     BETTING, // 下注中
+    CONFIRMING, // 下注確認中
     COMPLETE // 下注完成
 }
