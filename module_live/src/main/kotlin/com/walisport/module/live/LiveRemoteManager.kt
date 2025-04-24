@@ -47,4 +47,20 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return null
     }
 
+    //获取比赛趋势的实时数据
+    suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchTrendData? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchTrendResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_TREND
+        ) {
+            Client.MatchTrendReq.newBuilder().apply {
+                this.matchId = matchId.toInt()
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.matchTrendData
+        }
+        return null
+    }
 }
