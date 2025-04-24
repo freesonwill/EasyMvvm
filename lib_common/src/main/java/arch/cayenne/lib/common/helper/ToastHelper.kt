@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.helper
 
+import android.app.Activity
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -7,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import arch.cayenne.lib.common.databinding.ToastLayoutBinding
 
 class ToastHelper private constructor() {
@@ -17,6 +19,11 @@ class ToastHelper private constructor() {
 
     private var toast: Toast? = null
 
+    /***
+     * 預設toast
+     * @param context
+     * @param msg
+     */
     fun showDefaultToast(context: Context, msg: String) {
         if (toast != null) {
             toast?.cancel()
@@ -28,6 +35,10 @@ class ToastHelper private constructor() {
         showToast(layout.root)
     }
 
+    /***
+     * 自定義toast
+     * @param view 需先自行實作view
+     */
     fun showCustomToast(view: View) {
         if (toast != null) {
             toast?.cancel()
@@ -48,4 +59,20 @@ class ToastHelper private constructor() {
         }
     }
 
+}
+
+fun Fragment.showToast(msg: String) {
+    ToastHelper.instance.showDefaultToast(requireContext(), msg)
+}
+
+fun Fragment.showToast(view: View) {
+    ToastHelper.instance.showCustomToast(view)
+}
+
+fun Activity.showToast(msg: String) {
+    ToastHelper.instance.showDefaultToast(this, msg)
+}
+
+fun Activity.showToast(view: View) {
+    ToastHelper.instance.showCustomToast(view)
 }
