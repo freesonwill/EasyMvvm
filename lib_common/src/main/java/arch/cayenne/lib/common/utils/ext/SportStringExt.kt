@@ -2,7 +2,6 @@ package arch.cayenne.lib.common.utils.ext
 
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
 
 object SportStringExt {
 

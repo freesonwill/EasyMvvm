@@ -23,7 +23,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds *= data.selectionLiteBean.odds.toOdds()
+            odds = data.selectionLiteBean.odds.toOdds()
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
