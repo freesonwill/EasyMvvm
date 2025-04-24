@@ -182,7 +182,7 @@
             android:textSize="@dimen/sp_13" />
     </LinearLayout>
 
-    <com.walisport.module.live.widget.GoalTrendView
+    <com.walisport.module.live.ui.widget.GoalTrendView
         android:id="@+id/view_goal_trend"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_110"

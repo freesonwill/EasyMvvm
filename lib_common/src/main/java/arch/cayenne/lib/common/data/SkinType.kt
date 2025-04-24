@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.enums
+package arch.cayenne.lib.common.data
 
 enum class SkinType(val value: String) {
 

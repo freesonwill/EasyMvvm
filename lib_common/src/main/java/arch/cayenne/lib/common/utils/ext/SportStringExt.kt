@@ -1,7 +1,9 @@
 package arch.cayenne.lib.common.utils.ext
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import java.math.BigDecimal
 import java.math.RoundingMode
+import java.text.DecimalFormat
 
 object SportStringExt {
 
@@ -51,4 +53,38 @@ object SportStringExt {
         return if (this.contains(":")) this.substringAfter(":").trim() else ""
     }
 
+    fun String.limitTitleLength(maxUnits: Int = 5): String {
+        var units = 0.0
+        val builder = StringBuilder()
+        for (char in this) {
+            val unit = if (char.code in 0..127) 0.5 else 1.0
+            if (units + unit > maxUnits) break
+            builder.append(char)
+            units += unit
+        }
+        return if (builder.length < this.length) builder.toString() + "…" else builder.toString()
+    }
+
+    /**
+     * @return 轉換後的整數值，若轉換失敗則返回 0, ex "123" -> 123L -> 實際上餘額為1.23元, "1.0E7" -> 10000000L -> 實際上餘額為100000元
+     */
+    fun String.balanceStringToLong(): Long {
+        if (this == "0L") return 0 // 明確處理 0
+        return try {
+            BigDecimal(this)
+                .setScale(2, RoundingMode.DOWN)
+                .toLong()
+        } catch (e: NumberFormatException) {
+            0 // 或依需求處理錯誤情況
+        }
+    }
+
+    fun String.timeStringToInt(): Int {
+        if (this == "0") return 0
+        return try {
+            this.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
+    }
 }

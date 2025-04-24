@@ -44,7 +44,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
-        mViewModel.queryLiveStream(matchId)
+
+        mViewModel.setMatchId(matchId)
+        mViewModel.queryLiveStream()
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
@@ -149,6 +151,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     location[1] + videoView.measuredHeight - getStatusBarHeight(requireContext())
                 LiveVideoSourcePortraitFragment().apply {
                     arguments = Bundle().apply {
+                        putLong("matchId", mViewModel.matchId())
                         putInt(LocationFixedDialogFragment.POSITION_X, x)
                         putInt(LocationFixedDialogFragment.POSITION_Y, y)
                         putInt(
@@ -167,7 +170,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             ivToFullscreen.clickNoRepeat {
                 destroyPlayer()
-                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment())
+                navigate(
+                    LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment()
+                        .apply { arguments.putLong("matchId", mViewModel.matchId()) })
             }
 
             ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }
@@ -179,8 +184,13 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.videoView.setVideoURI(Uri.parse(it.playUrl()))
-                    mBinding.videoView.start()
+
+                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                        mBinding.videoView.setVideoURI(Uri.parse(url))
+                        mBinding.videoView.start()
+                    }
+
                 }
             }
 
@@ -193,6 +203,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     mBinding.videoView.mediaPlayer.setVolume(if (it) 0f else 1f, if (it) 0f else 1f)
                 }
             }
+
+
         }
 
         playingStatusLiveData.observe(viewLifecycleOwner) {
@@ -200,14 +212,15 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 when (it) {
                     PlayStatus.Playing -> {
                         loadingAnim?.cancel()
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.GONE
+
+                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Loading -> {
                         // 创建旋转动画
                         loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.ivVideoLoading,  // 目标 View
+                            mBinding.includedCtLoading.ivVideoLoading,  // 目标 View
                             "rotation",  // 属性名称
                             0f, 360f // 从 0 度旋转到 360 度
                         ).run {
@@ -221,13 +234,13 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             this
                         }
 
-                        mBinding.ctLoading.visibility = View.VISIBLE
-                        mBinding.ctError.visibility = View.GONE
+                        mBinding.includedCtLoading.ctLoading.visibility = View.VISIBLE
+                        mBinding.includedCtError.ctError.visibility = View.GONE
                     }
 
                     PlayStatus.Error -> {
-                        mBinding.ctLoading.visibility = View.GONE
-                        mBinding.ctError.visibility = View.VISIBLE
+                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedCtError.ctError.visibility = View.VISIBLE
                     }
                 }
             }

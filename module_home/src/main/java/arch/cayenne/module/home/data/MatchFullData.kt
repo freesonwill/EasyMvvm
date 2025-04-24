@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.data
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketDetailBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -89,7 +90,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                             ),
                             name = selection.name,
                             shortName = selection.shortName,
-                            odds = selection.odds,
+                            odds = selection.odds.toOdds(),
                             active = selection.active,
                             parlay = selection.parlay,
                         )

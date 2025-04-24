@@ -172,5 +172,5 @@ class HomeRepository(
         return arrayListOf()
     }
 
-    suspend fun observeBalance(): Flow<String> = database.infoDao().observeBalance()
+    suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
 }

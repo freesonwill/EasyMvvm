@@ -31,7 +31,7 @@ data class SelectionBean(
     @Embedded(prefix = "detail_") val detail: MarketDetailBean,
     val name: String,
     val shortName: String?,
-    val odds: String,
+    val odds: Int,
     val active: Boolean,
     val parlay: Boolean
 )
@@ -154,3 +154,6 @@ data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
 )
+
+//MatchWithMarkets -> List<MarketWithSelections> ->
+//    MarketBean + List<SelectionBean>

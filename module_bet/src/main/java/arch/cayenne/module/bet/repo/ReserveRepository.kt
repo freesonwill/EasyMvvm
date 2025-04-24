@@ -6,12 +6,14 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ReserveRepository(private val betDao: BetDao, private val remoteManager: BettingRemoteManager): BaseRepository() {
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+class ReserveRepository(
+    override val scope: CoroutineScope,
+    private val betDao: BetDao,
+    private val remoteManager: BettingRemoteManager
+) : BaseRepository() {
 
     suspend fun getReverseById(id: Long) = withContext(scope.coroutineContext) {
         val bet = betDao.getBetById(id)
@@ -47,7 +49,7 @@ class ReserveRepository(private val betDao: BetDao, private val remoteManager: B
             betDao.getBetById(id)?.let {
                 if (it.betType == BetTypeEnum.RESERVE) {
                     // TODO 等接入實際盤口資料後再測試
-                    val resp = remoteManager.reserveBet(scope, it, money)
+                    val resp = remoteManager.reserveBet(it, money)
                     if (resp == null || !resp.isSuccessful) {
                         betDao.updateBetStatus(id, BetStatusEnum.FAIL)
                     } else {

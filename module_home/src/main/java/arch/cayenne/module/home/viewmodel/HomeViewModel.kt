@@ -22,7 +22,7 @@ class HomeViewModel : BaseViewModel() {
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
     val currentSportChange by lazy { MutableLiveData<Int>() }
-    val currentBalanceChange by lazy { MutableLiveData<String>() }
+    val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 

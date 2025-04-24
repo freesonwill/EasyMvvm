@@ -6,13 +6,6 @@ import arch.cayenne.lib.database.entity.SelectionLiteBean
 
 class GameTypeConverter {
 
-
-    @TypeConverter
-    fun fromBetTypeEnum(value: BetTypeEnum): Int = value.ordinal
-
-    @TypeConverter
-    fun toBetTypeEnum(value: Int): BetTypeEnum = BetTypeEnum.entries[value]
-
     @TypeConverter
     fun fromSelection(value: String): SelectionLiteBean {
         return value.split(",").let {

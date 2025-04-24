@@ -6,14 +6,28 @@ import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SingleBetRepository(
+    override val scope: CoroutineScope,
     private val betDao: BetDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
-    override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+
+    init {
+        scope.launch {
+            betDao.getSingleBet()?.let { bet ->
+                remoteManager.getSingleRisk(bet.matchId, bet.selectionLiteBean.id)
+                    ?.let { risk ->
+                        if (risk.matchId == bet.matchId && risk.selectionId == bet.selectionLiteBean.id) {
+                            bet.minAmount = risk.minAmount
+                            bet.maxAmount = risk.maxAmount
+                            betDao.update(bet)
+                        }
+                    }
+            }
+        }
+    }
 
     fun observeSingleBet() = betDao.observeSingleBet()
 
@@ -35,7 +49,7 @@ class SingleBetRepository(
                 if (it.betType == BetTypeEnum.SINGLE) {
                     betDao.updateBetStatus(id, BetStatusEnum.BETTING)
                     // TODO 等接入實際盤口資料後再測試
-                    val resp = remoteManager.singleBet(scope, it, money)
+                    val resp = remoteManager.singleBet(it, money)
                     if (resp == null || !resp.isSuccessful) {
                         betDao.updateBetStatus(id, BetStatusEnum.FAIL)
                     } else {

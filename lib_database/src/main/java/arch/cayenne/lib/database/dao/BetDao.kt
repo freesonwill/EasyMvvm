@@ -10,11 +10,17 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class BetDao: BaseDao<BetBean>() {
 
-    @Query("SELECT * FROM BetBean WHERE betType = :type LIMIT 1")
-    abstract fun observeSingleBet(type: Int = BetTypeEnum.SINGLE.ordinal): Flow<BetBean?>
+    @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
+    abstract fun observeSingleBet(type: BetTypeEnum = BetTypeEnum.SINGLE, status: BetStatusEnum = BetStatusEnum.PENDING_BET): Flow<BetBean?>
+
+    @Query("SELECT * FROM BetBean WHERE betType = :type and status = :status LIMIT 1")
+    abstract fun getSingleBet(type: BetTypeEnum = BetTypeEnum.SINGLE, status: BetStatusEnum = BetStatusEnum.PENDING_BET): BetBean?
 
     @Query("SELECT * FROM BetBean WHERE matchId = :id LIMIT 1")
     abstract fun observeBetById(id: Long): Flow<BetBean?>
+
+    @Query("SELECT * FROM BetBean WHERE status = :status")
+    abstract fun observeAllBet(status: Int = BetStatusEnum.PENDING_BET.ordinal): Flow<List<BetBean>>
 
     @Query("SELECT * FROM BetBean")
     abstract suspend fun getBetSheet(): List<BetBean>
@@ -23,13 +29,13 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract suspend fun getBetById(id: Long): BetBean?
 
     @Query("SELECT COUNT(*) FROM BetBean WHERE betType = :type")
-    abstract fun observeComboBetCount(type: Int = BetTypeEnum.COMBO.ordinal): Flow<Int>
+    abstract fun observeComboBetCount(type: BetTypeEnum = BetTypeEnum.COMBO): Flow<Int>
 
     @Query("SELECT * FROM BetBean WHERE betType = :type")
-    abstract fun getComboBet(type: Int = BetTypeEnum.COMBO.ordinal): List<BetBean>
+    abstract fun getComboBet(type: BetTypeEnum = BetTypeEnum.COMBO): List<BetBean>
 
     @Query("SELECT * FROM BetBean WHERE betType = :type")
-    abstract fun observeComboBet(type: Int = BetTypeEnum.COMBO.ordinal): Flow<List<BetBean>>
+    abstract fun observeComboBet(type: BetTypeEnum = BetTypeEnum.COMBO): Flow<List<BetBean>>
 
     @Query("UPDATE BetBean SET betType = :type WHERE matchId = :id")
     abstract suspend fun updateBetType(id: Long, type: BetTypeEnum)
