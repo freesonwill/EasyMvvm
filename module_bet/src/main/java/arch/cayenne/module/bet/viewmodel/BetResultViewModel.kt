@@ -48,13 +48,11 @@ class BetResultViewModel(private val repo: BetResultRepository): BaseViewModel()
             val bean = data.first()
             setBetMode(bean.betType, bean.status)
         } else {
-            val hasBetting = data.any { it.status == BetStatusEnum.BETTING || it.status == BetStatusEnum.CONFIRMING }
-            val hasFail = data.any { it.status == BetStatusEnum.FAIL }
+            val hasBetting = data.any { it.status == BetStatusEnum.BETTING }
             val allComplete = data.all { it.status == BetStatusEnum.COMPLETE }
 
             val status = when {
                 hasBetting -> BetStatusEnum.BETTING
-                hasFail -> BetStatusEnum.FAIL
                 allComplete -> BetStatusEnum.COMPLETE
                 else -> BetStatusEnum.BETTING
             }

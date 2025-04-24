@@ -1,7 +1,12 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.BetResultDao
+import arch.cayenne.lib.database.entity.BetMoneyBean
+import arch.cayenne.lib.database.entity.BetResultBean
+import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
@@ -11,6 +16,7 @@ import kotlinx.coroutines.launch
 class SingleBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    private val betResultDao: BetResultDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
@@ -48,13 +54,22 @@ class SingleBetRepository(
             betDao.getBetById(id)?.let {
                 if (it.betType == BetTypeEnum.SINGLE) {
                     betDao.updateBetStatus(id, BetStatusEnum.BETTING)
-                    // TODO 等接入實際盤口資料後再測試
                     val resp = remoteManager.singleBet(it, money)
-                    if (resp == null || !resp.isSuccessful) {
-                        betDao.updateBetStatus(id, BetStatusEnum.FAIL)
-                    } else {
-                        betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+                    if (resp != null && resp.isSuccessful) {
+                        val moneyBean = BetMoneyBean(
+                            sumOdds = it.selectionLiteBean.odds.toOdds(),
+                            inputMoney = money,
+                            statusEnum = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
+                        )
+                        val result = BetResultBean(
+                            oderId = resp.orderId,
+                            selectionIds = listOf(it.selectionLiteBean.id) ,
+                            moneyBetBean = listOf(moneyBean)
+                        )
+                        betResultDao.insert(result)
                     }
+                    betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+
                 }
 
             }

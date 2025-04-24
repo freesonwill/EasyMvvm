@@ -77,8 +77,10 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
     }
 
     fun sendBet() {
-        _onComboMultiBetBeanListener.value?.let {
-            repo.sendBet(it)
+        _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
+            if (it.isNotEmpty()) {
+                repo.sendBet(it)
+            }
         }
     }
 

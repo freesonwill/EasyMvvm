@@ -50,7 +50,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         mBinding.rvComboOdds.isVisible = type == BetTypeEnum.COMBO
         mBinding.tvHint.isVisible = status == BetStatusEnum.BETTING
         when (status) {
-            BetStatusEnum.FAIL -> setFail(type)
             BetStatusEnum.BETTING -> setPending(type)
             BetStatusEnum.COMPLETE -> setComplete(type)
             else -> {}
