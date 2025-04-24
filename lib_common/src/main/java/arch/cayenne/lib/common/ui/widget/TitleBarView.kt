@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
 import arch.cayenne.lib.common.databinding.TittleBarDynamicsBinding
 import arch.cayenne.lib.common.databinding.TittleBarSearchBinding
@@ -82,7 +83,9 @@ class TitleBarView @JvmOverloads constructor(
                 callback()
             }
         }
-        binding.clDynamics.addView(view)
+        if (!binding.clDynamics.contains(view)){
+            binding.clDynamics.addView(view)
+        }
     }
 }
 
