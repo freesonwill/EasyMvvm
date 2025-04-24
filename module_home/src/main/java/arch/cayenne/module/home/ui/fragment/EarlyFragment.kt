@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.common.extension.sharedViewModel
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -139,6 +140,8 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
 
     override fun createObserver() {
         homeViewModel.currentSportChange.observe(this) {
+            if (homeViewModel.getCurrentPlayType() != PlayType.EARLY) return@observe
+
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentTournament(it)
         }

@@ -83,7 +83,7 @@ class HomeRepository(
     }
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
-//        clearTournamentCache()
+        clearTournamentCache()
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
@@ -116,6 +116,7 @@ class HomeRepository(
             tournamentList.add(
                 TournamentBean(
                     id = tournament.id,
+                    playType = playType,
                     name = tournament.name,
                     simpleName = tournament.simpleName,
                     icon = tournament.icon,

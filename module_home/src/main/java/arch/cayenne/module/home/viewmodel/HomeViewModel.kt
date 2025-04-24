@@ -45,6 +45,8 @@ class HomeViewModel : BaseViewModel() {
         getCurrentSportStatistical()
     }
 
+    fun getCurrentPlayType() = currentPlayType
+
     private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getSportStatistical()?.filter {

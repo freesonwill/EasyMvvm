@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class TournamentBean(
     @PrimaryKey val id: Int,
+    val playType: Int,
     val name: String,
     val simpleName: String,
     val icon: String,

@@ -54,6 +54,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     mViewModel.setCurrentPlayType(PlayType.entries[position])
                 }
             })
+            vpHome.offscreenPageLimit = 3
 
             rvSportsList.apply {
                 layoutManager =
