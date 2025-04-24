@@ -2,7 +2,6 @@ package arch.cayenne.module.home.enums
 
 import android.content.Context
 import androidx.annotation.StringRes
-import androidx.fragment.app.Fragment
 import arch.cayenne.module.home.R
 
 enum class PlayType(val id: Int, @StringRes val titleRes: Int) {
