@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.BetTypeEnum
-import arch.cayenne.lib.database.entity.TournamentCategory
+import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.bet.repo.BetRepository
-import arch.cayenne.module.home.data.SportDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
@@ -25,10 +24,7 @@ class HomeViewModel : BaseViewModel() {
     val currentSportChange by lazy { MutableLiveData<Int>() }
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
-    var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
-
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
-    val tournaments by lazy { MutableLiveData<List<TournamentCategory>>() }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -49,16 +45,12 @@ class HomeViewModel : BaseViewModel() {
         getCurrentSportStatistical()
     }
 
-    fun getCurrentSportStatistical() {
+    fun getCurrentPlayType() = currentPlayType
+
+    private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getSportStatistical(currentPlayType.id)?.filter {
-                SportType.fromId(it.sportId) != null
-            }?.map {
-                SportDataModel(
-                    id = it.sportId,
-                    matchCount = it.matchCount,
-                    order = it.sportOrder
-                )
+            val list = repository.getSportStatistical()?.filter {
+                SportType.fromId(it.id) != null  //去除目前沒有在code預設內的運動
             }
             if (list.isNullOrEmpty()) {
                 //TODO 拿取sport錯誤
@@ -75,34 +67,6 @@ class HomeViewModel : BaseViewModel() {
     fun setCurrentSport(sportId: Int) {
         currentSportChange.value = sportId
     }
-
-    //取得聯賽資料
-//    fun getCurrentTournament() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list = repository.getAllTournaments(currentPlayType.id, currentSport!!)
-//            if (list.isNullOrEmpty()) {
-//                //TODO 拿取聯賽錯誤
-//                "Get Tournament List failed!!".loge(this@HomeViewModel::class.java.simpleName)
-//            } else {
-//                withContext(Dispatchers.Main) {
-//                    tournaments.value = list
-//                }
-//            }
-//        }
-//    }
-
-    //取得比賽列表
-//    fun getCurrentMatch() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list = repository.getAllMatch(currentPlayType.id, currentSport!!, currentTournament[currentSport]!!)
-//
-//        }
-//    }
-
-    //切換當前的三級選項(各項聯賽)
-//    fun setCurrentTournament(sportId: Int, tournamentId: Int) {
-//        currentTournament[sportId] = tournamentId
-//    }
 
     suspend fun setSelection(matchId: Long, selectionId: Long): BetTypeEnum {
         return viewModelScope.async(Dispatchers.IO) {
