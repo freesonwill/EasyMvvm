@@ -77,21 +77,42 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_expired_iv_avava" />
 
-
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_odds"
+        android:id="@+id/tv_unit1"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_12"
+        android:text="@string/live_bet_bet_num"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
+        app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_avava" />
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_unit1_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="2025021112000001"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit1" />
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_unit2"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
         android:text="@string/live_bet_reserve_odds"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
-        app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_avava"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit1"
         />
 
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_odds_value"
+        android:id="@+id/tv_unit2_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
@@ -99,21 +120,21 @@
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_odds" />
+        app:layout_constraintTop_toTopOf="@id/tv_unit2" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_betting"
+        android:id="@+id/tv_unit3"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/live_bet_reserve_bet"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_odds"
-        app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_odds" />
+        app:layout_constraintLeft_toLeftOf="@id/tv_unit2"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit2" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_betting_value"
+        android:id="@+id/tv_unit3_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
@@ -121,21 +142,21 @@
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_betting" />
+        app:layout_constraintTop_toTopOf="@id/tv_unit3" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_except"
+        android:id="@+id/tv_unit4"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
         android:text="@string/live_bet_except_max_win"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_odds"
-        app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_betting" />
+        app:layout_constraintLeft_toLeftOf="@id/tv_unit2"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit3" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/bet_expired_tv_except_value"
+        android:id="@+id/tv_unit4_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
@@ -143,12 +164,12 @@
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_except" />
+        app:layout_constraintTop_toTopOf="@id/tv_unit4" />
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_except"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit4"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>
