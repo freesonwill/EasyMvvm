@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -78,5 +79,12 @@ object SportStringExt {
         }
     }
 
-
+    fun String.timeStringToInt(): Int {
+        if (this == "0") return 0
+        return try {
+            this.toInt()
+        } catch (e: NumberFormatException) {
+            0
+        }
+    }
 }

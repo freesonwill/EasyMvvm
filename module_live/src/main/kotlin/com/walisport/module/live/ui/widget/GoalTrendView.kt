@@ -1,4 +1,4 @@
-package com.walisport.module.live.widget
+package com.walisport.module.live.ui.widget
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,17 +10,16 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportStringExt.timeStringToInt
 import com.walisport.module.live.R
-import com.walisport.module.live.data.model.GoalTrendBean
+import galaxy.client.proto.Sloth
 
 /**
  * 赛况页进球趋势View
  */
 
 class GoalTrendView @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
     private val green = Paint()
@@ -38,19 +37,21 @@ class GoalTrendView @JvmOverloads constructor(
 
     private val football: Drawable? =
         ContextCompat.getDrawable(context, R.mipmap.icon_live_football)
-    private val cornerKick: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_jiao)
+    private val cornerBall: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_jiao)
     private val yellowCard: Drawable? =
         ContextCompat.getDrawable(context, R.mipmap.icon_live_yellow)
     private val changeCard: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_out)
 
-    private var arrayList = ArrayList<GoalTrendBean>() //进攻趋势数据
+    private var eventList = ArrayList<Sloth.MatchTrendData.Incidents>() //进攻事件列表
+    private var trendList = ArrayList<Int>() //进攻趋势列表
+
 
     private val iconY = 93.dp2px //蓝队球赛事件图标y轴位置
     private val rectY = 14.dp2px.toFloat() //矩形背景y轴位置
     private val rectH = 19.dp2px.toFloat() //红矩形背景高度
     private val bgHigh = 38.dp2px.toFloat()//整个背景高度
     private var unitWidth = 3.dp2px.toFloat()//每单元的最大宽度
-    private val lineWidth = 2.dp2px.toFloat()//每根竖线的宽度
+    private var lineWidth = 2.dp2px.toFloat()//每根竖线的宽度
     private var viewWidth = 0f //View控件的宽度
 
     init {
@@ -73,9 +74,20 @@ class GoalTrendView @JvmOverloads constructor(
         tenBlue.style = Paint.Style.FILL
     }
 
-    fun setData(array: ArrayList<GoalTrendBean>) {
-        arrayList.clear()
-        arrayList.addAll(array)
+    fun setData(data: Sloth.MatchTrendData) {
+        //只显示5种事件：1进攻 2角球 3黄牌 4红牌 9换人
+        val array = data.incidentsList.filter {
+            it.type == 1
+                    || it.type == 2 || it.type == 3
+                    || it.type == 4 || it.type == 9
+        }
+        eventList.clear()
+        eventList.addAll(array)
+        trendList.clear()
+        for (item in data.dataList) {
+            trendList.addAll(item.valuesList)
+        }
+        this.invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -95,60 +107,81 @@ class GoalTrendView @JvmOverloads constructor(
         canvas.drawRect(RectF(0f, 2 * rectH + rectY, viewWidth, 3 * rectH + rectY), tenBlue)
         //绘制底部蓝色矩形背景
         canvas.drawRect(RectF(0f, 3 * rectH + rectY, viewWidth, 4 * rectH + rectY), fiveBlue)
-        if (arrayList.size > 0) {
-            var last = 0f
-            for (item in arrayList) {
-                val left = item.minutes * unitWidth
-                last = left + unitWidth
-                val high = bgHigh * (item.rate / 100f)
-                if (item.isHome) {
-                    //绘制红队进攻趋势
-                    val top = rectY + bgHigh - high
-                    canvas.drawRect(RectF(left, top, left + lineWidth, top + high - 2), red)
+        //绘制比赛趋势蜡柱图
+        val trendSize = trendList.size
+        if (trendSize > 0) {
+            for (i in 0..<trendSize) {
+                val left = i * unitWidth
+                val right = left + lineWidth - 3
+                val value = trendList[i]
+                if (value > 0) {
+                    val high = bgHigh * (value / 100f)
+                    val top = rectY + bgHigh - high + 3
+                    val bottom = top + high - 3
+                    canvas.drawRect(RectF(left, top, right, bottom), red)
                 } else {
-                    //绘制蓝队进攻趋势
-                    val bottom = rectY + bgHigh + high
-                    canvas.drawRect(RectF(left, rectY + bgHigh + 2, left + lineWidth, bottom), blue)
+                    val top = rectY + bgHigh + 6
+                    val bottom = rectY + bgHigh - value + 6
+                    canvas.drawRect(RectF(left, top, right, bottom), blue)
                 }
-                //开始绘制球赛事件
-                val lf = left.toInt() - 4.dp2px
-                when(item.type){
+            }
+        }
+        //绘制比赛事件图标
+        val eventSize = eventList.size
+        if (eventSize > 0) {
+            for (i in 0..< eventSize) {
+                val time = eventList[i].time.timeStringToInt()
+                val type = eventList[i].type
+                val pos = eventList[i].position
+                //只显示5种事件：1进攻 2角球 3黄牌 4红牌 9换人
+                val left = (time * unitWidth).toInt()
+                when (type) {
                     1 -> {
-                        if (item.isHome) {
-                            football?.setBounds(lf, 0, lf + 12.dp2px, 12.dp2px)
+                        if (pos == 1) {//1-主队、2-客队
+                            football?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
-                            football?.setBounds(lf, iconY, lf + 12.dp2px, iconY + 12.dp2px)
+                            football?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
                         }
                         football?.draw(canvas)
                     }
+
                     2 -> {
-                        if (item.isHome) {
-                            cornerKick?.setBounds(lf, 0, lf + 12.dp2px, 12.dp2px)
+                        if (pos == 1) {//1-主队、2-客队
+                            cornerBall?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
-                            cornerKick?.setBounds(lf, iconY, lf + 12.dp2px, iconY + 12.dp2px)
+                            cornerBall?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
                         }
-                        cornerKick?.draw(canvas)
+                        cornerBall?.draw(canvas)
                     }
+
                     3 -> {
-                        if (item.isHome) {
-                            yellowCard?.setBounds(lf, 0, lf + 12.dp2px, 12.dp2px)
+                        if (pos == 1) {//1-主队、2-客队
+                            yellowCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
-                            yellowCard?.setBounds(lf, iconY, lf + 12.dp2px, iconY + 12.dp2px)
+                            yellowCard?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
                         }
                         yellowCard?.draw(canvas)
                     }
+
                     4 -> {
-                        if (item.isHome) {
-                            changeCard?.setBounds(lf, 0, lf + 12.dp2px, 12.dp2px)
+                        if (pos == 1) {//1-主队、2-客队
+                            yellowCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
-                            changeCard?.setBounds(lf, iconY, lf + 12.dp2px, iconY + 12.dp2px)
+                            yellowCard?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
+                        }
+                        yellowCard?.draw(canvas)
+                    }
+
+                    5 -> {
+                        if (pos == 1) {//1-主队、2-客队
+                            changeCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
+                        } else {
+                            changeCard?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
                         }
                         changeCard?.draw(canvas)
                     }
                 }
             }
-            //绘制最后一根绿线
-            canvas.drawRect(RectF(last + 2.dp2px, rectY, last + 2.dp2px + lineWidth, rectY + 2 * bgHigh), green)
         }
     }
 }
