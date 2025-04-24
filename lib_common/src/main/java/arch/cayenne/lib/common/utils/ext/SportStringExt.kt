@@ -30,8 +30,8 @@ object SportStringExt {
      * @return 轉換後的整數值，若轉換失敗則返回 0, ex "1.23" -> 123, "0.5" -> 50
      */
     fun String.toOdds(): Int {
+        if(this =="") return 0
         if (this == "0") return 0 // 明確處理 0
-
         val value = if (this.last() == '.') {
             this.substring(0, this.length - 1)
         } else {

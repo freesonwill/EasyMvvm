@@ -63,4 +63,21 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
+    //获取积分榜的实时数据
+    suspend fun getCompetitionReq(scope: CoroutineScope, matchId: Long ): Sloth.CompetitionTables? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.CompetitionTableResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_STANDINGS
+        ) {
+            Client.MatchTrendReq.newBuilder().apply {
+                this.matchId = matchId.toInt()
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.competitionTables
+        }
+        return null
+    }
 }
