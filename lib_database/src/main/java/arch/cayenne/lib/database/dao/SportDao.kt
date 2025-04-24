@@ -19,4 +19,7 @@ abstract class SportDao : BaseDao<SportBean>() {
     @Query("SELECT bean.sportId as id, bean.matchCount as matchCount, bean.sportOrder as `order` " +
             "FROM SportBean bean order by sportOrder")
     abstract fun querySportsMatchCount(): List<SportDataModel>
+
+    @Query("DELETE FROM SportBean")
+    abstract fun clearSports()
 }

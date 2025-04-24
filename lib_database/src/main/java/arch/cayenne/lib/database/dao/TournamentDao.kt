@@ -1,5 +1,6 @@
 package arch.cayenne.lib.database.dao
 
+import android.os.FileObserver.DELETE
 import androidx.room.Dao
 import androidx.room.Query
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -34,4 +35,7 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "order by weight desc"
     )
     abstract fun queryTournament(): List<TournamentDataModel>
+
+    @Query("DELETE FROM TournamentBean")
+    abstract fun clearTournaments()
 }

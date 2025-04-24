@@ -1,6 +1,8 @@
 package arch.cayenne.module.home.repository
 
+import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SportBean
@@ -25,7 +27,10 @@ class HomeRepository(
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
 
+    @Transaction
     suspend fun getSportStatistical(): List<SportDataModel>? {
+        //clear sport table
+        clearSportCache()
         //先從DB拿取
 //        val queryResult = sportDao.querySportsMatchCount(playType)
 //        if (queryResult.isNotEmpty()) {
@@ -73,7 +78,12 @@ class HomeRepository(
         return sportDao.querySportsMatchCount()
     }
 
+    private fun clearSportCache() {
+        sportDao.clearSports()
+    }
+    @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+//        clearTournamentCache()
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
@@ -126,6 +136,10 @@ class HomeRepository(
         tournamentDao.insert(tournamentList)
 //        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
         return tournamentDao.queryTournamentWithLimit(10)
+    }
+
+    private fun clearTournamentCache() {
+        tournamentDao.clearTournaments()
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
