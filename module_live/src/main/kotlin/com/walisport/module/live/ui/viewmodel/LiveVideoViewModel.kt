@@ -6,13 +6,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
-class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel() {
+/**
+ * 竖屏播放视频时， 视频fragment对应的ViewModel
+ */
+class LiveVideoViewModel(
+    private val repo: LiveVideoRepository,
+    private val mainRepo: LiveMainRepository
+) : BaseViewModel() {
 
     val videoPlayVisible = MutableLiveData(View.VISIBLE)
 
@@ -44,23 +51,15 @@ class LiveVideoViewModel(private val repo: LiveVideoRepository) : BaseViewModel(
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
 
-    private val _muted = MutableLiveData(false)
-    val muted: LiveData<Boolean> = _muted
-
     private val muteManager: MuteManager by inject { parametersOf() }
 
-
-    fun setPlayingVideoId(id: Int) {
-        repo.setPlayingVideoId(id)
-    }
+    fun mutedData() = muteManager.mutedLiveData
 
     fun changeMuteStatus() {
         viewModelScope.launch {
             muteManager.changeMuteStatus()
         }
     }
-
-    fun mutedData() = muteManager.mutedLiveData
 
     fun matchId() = repo.matchId
 
