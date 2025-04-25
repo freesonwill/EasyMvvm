@@ -4,14 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import arch.cayenne.lib.database.dao.SportCategoryDao
 import arch.cayenne.lib.database.dao.SportDao
-import arch.cayenne.lib.database.dao.TournamentCategoryDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.entity.SportBean
-import arch.cayenne.lib.database.entity.SportCategory
 import arch.cayenne.lib.database.entity.TournamentBean
-import arch.cayenne.lib.database.entity.TournamentCategory
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.BetResultDao
@@ -34,9 +30,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
         BetBean::class,
         LiveVideoBean::class,
         SportBean::class,
-        SportCategory::class,
         TournamentBean::class,
-        TournamentCategory::class,
         MatchBean::class,
         MarketBean::class,
         SelectionBean::class,
@@ -47,7 +41,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
     version = 1,
     exportSchema = false
 )
-@TypeConverters(GameTypeConverter::class)
+@TypeConverters(GameTypeConverter::class, VideoSourceBeanConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
@@ -74,11 +68,7 @@ abstract class GameDatabase: RoomDatabase() {
 
     abstract fun sportDao(): SportDao
 
-    abstract fun sportCategoryDao(): SportCategoryDao
-
     abstract fun tournamentDao(): TournamentDao
-
-    abstract fun tournamentCategoryDao(): TournamentCategoryDao
 
     abstract fun liveVideoDao(): LiveVideoDao
 

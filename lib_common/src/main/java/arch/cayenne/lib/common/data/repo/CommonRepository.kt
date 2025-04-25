@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.repo
+package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
