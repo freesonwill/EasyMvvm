@@ -4,7 +4,11 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.BetResultDao
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetResultDetailBean
+import arch.cayenne.lib.database.entity.BetResultBean
+import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
@@ -18,6 +22,7 @@ import kotlinx.coroutines.launch
 class ComboBetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
+    private val betResultDao: BetResultDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
@@ -62,13 +67,26 @@ class ComboBetRepository(
             val betBeans = betDao.getComboBet()
             val ids = betBeans.map { it.matchId }
             betDao.updateBetListStatus(ids, BetStatusEnum.BETTING)
-            // TODO 等接入實際盤口資料後再測試
             val resp = remoteManager.comboBet(betBeans, multiBet)
-            if (resp == null || !resp.isSuccessful) {
-                betDao.updateBetListStatus(ids, BetStatusEnum.FAIL)
-            } else {
-                betDao.updateBetListStatus(ids, BetStatusEnum.COMPLETE)
+            if (resp != null && resp.isSuccessful) {
+                val resultBean = multiBet.map { bean ->
+                    val result = resp.data.first { it.comboValue == bean.combo }
+                    BetResultDetailBean(
+                        orderId = result.orderId,
+                        combo = bean.combo,
+                        sumOdds = bean.sumOdds,
+                        count = bean.count,
+                        inputMoney = bean.inputMoney,
+                        statusEnum = BetResultStatusEnum.getStatusByCode(result.orderStatus)
+                    )
+                }
+                val result = BetResultBean(
+                    selectionIds = betBeans.map { it.selectionLiteBean.id } ,
+                    detail = resultBean
+                )
+                betResultDao.insert(result)
             }
+            betDao.updateBetListStatus(ids, BetStatusEnum.COMPLETE)
         }
     }
 

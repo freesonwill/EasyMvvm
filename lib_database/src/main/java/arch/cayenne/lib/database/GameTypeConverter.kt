@@ -1,7 +1,7 @@
 package arch.cayenne.lib.database
 
 import androidx.room.TypeConverter
-import arch.cayenne.lib.database.entity.BetMoneyBean
+import arch.cayenne.lib.database.entity.BetResultDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.SelectionLiteBean
 
@@ -25,23 +25,24 @@ class GameTypeConverter {
     }
 
     @TypeConverter
-    fun fromBetMoneyBean(value: String): List<BetMoneyBean> {
+    fun fromBetMoneyBean(value: String): List<BetResultDetailBean> {
         return value.split(",").map {
             val parts = it.split(":")
-            BetMoneyBean(
-                combo = parts[0].toInt(),
-                sumOdds = parts[1].toInt(),
-                count = parts[2].toInt(),
-                inputMoney = parts[3].toLong(),
-                statusEnum = BetResultStatusEnum.valueOf(parts[4])
+            BetResultDetailBean(
+                orderId = parts[0],
+                combo = parts[1].toInt(),
+                sumOdds = parts[2].toInt(),
+                count = parts[3].toInt(),
+                inputMoney = parts[4].toLong(),
+                statusEnum = BetResultStatusEnum.getStatusByCode(parts[5].toInt())
             )
         }
     }
 
     @TypeConverter
-    fun toBetMoneyBean(value: List<BetMoneyBean>): String {
+    fun toBetMoneyBean(value: List<BetResultDetailBean>): String {
         return value.joinToString(",") {
-            "${it.combo}:${it.sumOdds}:${it.count}:${it.inputMoney}:${it.statusEnum.name}"
+            "${it.orderId}:${it.combo}:${it.sumOdds}:${it.count}:${it.inputMoney}:${it.statusEnum.code}"
         }
     }
 

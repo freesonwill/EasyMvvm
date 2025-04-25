@@ -113,7 +113,7 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
             val placeBetInfo = data.placeBetInfoList.map {
                 ComboMultiBetInfo(
                     orderId = it.orderId,
-                    comboValue = it.serialValue,
+                    comboValue = if (it.serialValue == 0) 1 else it.serialValue,
                     orderStatus = it.orderStatus,
                     orderStatusMsg = it.orderStatusMsg
                 )

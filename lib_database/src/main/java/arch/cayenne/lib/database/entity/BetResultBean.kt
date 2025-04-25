@@ -5,10 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class BetResultBean(
-    @PrimaryKey
-    val oderId: String,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val selectionIds: List<Long>,
-    val moneyBetBean: List<BetMoneyBean>
+    val detail: List<BetResultDetailBean>
 )
 
 enum class BetResultStatusEnum(val code: Int) {
@@ -27,7 +27,8 @@ enum class BetResultStatusEnum(val code: Int) {
 
 }
 
-data class BetMoneyBean(
+data class BetResultDetailBean(
+    val orderId: String,
     val combo: Int = 1, // 串關次數
     val sumOdds: Int, // 串關後賠率加總
     val count: Int = 1, // 場次組合數量
