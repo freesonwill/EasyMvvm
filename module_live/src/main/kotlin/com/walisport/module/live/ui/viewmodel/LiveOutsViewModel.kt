@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import com.walisport.module.live.data.LiveOutsRepository
+import com.walisport.module.live.data.repository.LiveOutsRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject

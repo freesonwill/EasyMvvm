@@ -5,8 +5,9 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.live.data.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
-import com.walisport.module.live.data.LiveOutsRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.repository.LiveOutsRepository
+import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
@@ -62,14 +63,15 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::EmojiViewModel)
         viewModelOf(::LiveBetOnMenuViewModel)
         viewModelOf(::LiveVideoSourceViewModel)
-
     }
+
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
         factoryOf(::LiveBetRepository)
         factoryOf(::LiveLineupRepository)
         factoryOf(::LiveOutsRepository)
         factoryOf(::LiveVideoRepository)
+        factoryOf(::LiveStandingRepository)
     }
 
     private val managerModule = module {
