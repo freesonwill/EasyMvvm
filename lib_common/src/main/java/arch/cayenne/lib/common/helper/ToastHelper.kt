@@ -2,8 +2,6 @@ package arch.cayenne.lib.common.helper
 
 import android.app.Activity
 import android.content.Context
-import android.os.Handler
-import android.os.Looper
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -11,10 +9,10 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.common.databinding.ToastLayoutBinding
 
-class ToastHelper private constructor() {
+internal class ToastHelper private constructor() {
     companion object {
         private const val TAG = "ToastHelper"
-        val instance: ToastHelper by lazy(LazyThreadSafetyMode.SYNCHRONIZED) { ToastHelper() }
+        val instance: ToastHelper by lazy { ToastHelper() }
     }
 
     private var toast: Toast? = null
@@ -53,7 +51,7 @@ class ToastHelper private constructor() {
             setGravity(Gravity.CENTER, 0, 0)
             show()
             // 移除參考以允許下一次顯示（Toast.LENGTH_SHORT 約 2s）
-            Handler(Looper.getMainLooper()).postDelayed({
+            view.postDelayed({
                 toast = null
             }, 2000L)
         }
