@@ -4,7 +4,6 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
@@ -77,7 +76,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 endTime?.let { this.endTime = endTime }
             }.build()
         }
-        LogUtils.dTag("aaa", "result ${Gson().toJson(result.data)}")
+        LogUtils.dTag("aaa", "result ${result?.data?.orderList?.size}")
         if(result.error == null && result.data != null){
             return result.data!!.orderList
         }
@@ -108,7 +107,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.addSportId(sportId)
             }.build()
         }
-        LogUtils.dTag("aaa", " getReserveOrder  result ${result.data?.orderList?.size} ${Gson().toJson(result.error)}  ${result.error != null} ${result?.data != null}")
+        LogUtils.dTag("aaa", " getReserveOrder  result ${result.data?.orderList?.size}   ${result.error != null} ${result?.data != null}")
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }

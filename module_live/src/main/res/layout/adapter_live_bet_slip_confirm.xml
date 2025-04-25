@@ -18,7 +18,7 @@
         android:layout_height="@dimen/dp_21"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@drawable/bet_confirm_status"
+        android:background="@drawable/live_bet_selection_status_normal"
         android:gravity="center"
         android:text="投注确认中"
         android:textColor="@color/color_2c3c3e"

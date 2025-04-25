@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/card_solid"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:background="@color/card_solid">
 
     <ImageView
         android:id="@+id/bet_settled_iv_ball"
@@ -15,8 +15,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/icon_football"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SportTextView
         android:id="@+id/bet_settled_tv_race"
@@ -31,14 +30,35 @@
         app:layout_constraintTop_toTopOf="@id/bet_settled_iv_ball" />
 
 
-    <arch.cayenne.lib.skin.widget.SportImageView
-        android:id="@+id/iv1"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+    <FrameLayout
+        android:id="@+id/fl_stat1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_iv_ball"
-        app:layout_constraintTop_toBottomOf="@id/bet_settled_iv_ball"
-        app:srcCompat="@drawable/icon_betslip_tick" />
+        app:layout_constraintTop_toBottomOf="@id/bet_settled_iv_ball">
+
+        <arch.cayenne.lib.skin.widget.SportImageView
+            android:id="@+id/iv1"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            app:srcCompat="@drawable/icon_betslip_tick" />
+
+        <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/bet_settled_tv_status1"
+            android:layout_width="55dp"
+            android:layout_height="@dimen/dp_20"
+            android:background="@drawable/live_betslip_settled_status"
+            android:gravity="center"
+            android:text="输一半"
+            android:textColor="@color/tab_text"
+            android:textSize="@dimen/sp_13"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="@id/bet_settled_iv_ball"
+            app:layout_constraintTop_toBottomOf="@id/bet_settled_iv_ball" />
+
+    </FrameLayout>
+
 
     <arch.cayenne.lib.skin.widget.SportTextView
         android:id="@+id/bet_settled_tv_introduce"
@@ -48,8 +68,8 @@
         android:text="中国 +0.5"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toRightOf="@id/iv1"
-        app:layout_constraintTop_toTopOf="@id/iv1" />
+        app:layout_constraintLeft_toRightOf="@id/fl_stat1"
+        app:layout_constraintTop_toTopOf="@id/fl_stat1" />
 
 
     <arch.cayenne.lib.skin.widget.SportTextView
@@ -102,6 +122,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_status"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_status"
         tools:targetApi="p" />
+
     <arch.cayenne.lib.skin.widget.SportView
         android:id="@+id/line"
         android:layout_width="0dp"
@@ -117,9 +138,8 @@
         android:id="@+id/group_gradient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="iv_gradient,ll_more"
         android:visibility="gone"
-        />
+        app:constraint_referenced_ids="iv_gradient,ll_more" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_gradient"
@@ -155,8 +175,7 @@
             android:id="@+id/iv_arrow"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
-            android:src="@drawable/icon_cricle_arrrow_down"
-            />
+            android:src="@drawable/icon_cricle_arrrow_down" />
 
     </LinearLayout>
 

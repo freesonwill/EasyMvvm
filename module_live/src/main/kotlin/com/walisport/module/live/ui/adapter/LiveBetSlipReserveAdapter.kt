@@ -42,7 +42,7 @@ class LiveBetSlipReserveAdapter :
                 val selection = getSelections(order)
                 betReserveTvOddsValue.text = selection.odds
                 betReserveTvBettingValue.text = order.betAmount
-//                TODO 没有对应参数
+//                TODO 没有对应参数 //预计最高可赢
                 betReserveTvExceptValue.text = order.betAmount
             }
 
