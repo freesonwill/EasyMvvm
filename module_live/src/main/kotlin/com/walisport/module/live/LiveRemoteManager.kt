@@ -90,7 +90,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_STANDINGS
         ) {
             Client.MatchTrendReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
         if(result.error == null && result.data != null){

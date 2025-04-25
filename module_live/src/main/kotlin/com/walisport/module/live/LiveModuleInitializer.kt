@@ -5,10 +5,10 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.live.data.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
-import com.walisport.module.live.data.repository.LiveOutsRepository
-import com.walisport.module.live.data.repository.LiveVideoRepository
-import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.repository.LiveOutsRepository
+import com.walisport.module.live.data.repository.LiveStandingRepository
+import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
@@ -24,6 +24,7 @@ import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -61,6 +62,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveSoftKeyboardViewModel)
         viewModelOf(::EmojiViewModel)
         viewModelOf(::LiveBetOnMenuViewModel)
+        viewModelOf(::LiveVideoSourceViewModel)
     }
 
     private val repoModules = module {
