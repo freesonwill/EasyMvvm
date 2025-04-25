@@ -20,7 +20,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_MATCH(500,1003),    // 500-1003: 获取比赛详情
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额
-    GET_COMBO_RISK(500,1014),    //500-1013: 获取串关下注限额
+    GET_COMBO_RISK(500,1014),     //500-1014: 获取串关下注限额
 
-    MATCH_TREND(700, 2004),//700-2004: 比赛趋势数据
+    MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
+    GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
 }

@@ -31,7 +31,6 @@ object SportStringExt {
      */
     fun String.toOdds(): Int {
         if (this == "0" || this.isEmpty()) return 0 // 明確處理 0
-
         val value = if (this.last() == '.') {
             this.substring(0, this.length - 1)
         } else {

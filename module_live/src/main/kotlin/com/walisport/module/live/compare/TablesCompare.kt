@@ -1,15 +1,15 @@
 package com.walisport.module.live.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.walisport.module.live.data.model.TableBean
+import galaxy.client.proto.Sloth
 
-class TablesCompare : DiffUtil.ItemCallback<TableBean>() {
+class TablesCompare : DiffUtil.ItemCallback<Sloth.Table>() {
 
-    override fun areItemsTheSame(oldItem: TableBean, newItem: TableBean): Boolean {
+    override fun areItemsTheSame(oldItem: Sloth.Table, newItem: Sloth.Table): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: TableBean, newItem: TableBean): Boolean {
+    override fun areContentsTheSame(oldItem: Sloth.Table, newItem: Sloth.Table): Boolean {
         return oldItem == newItem
     }
 }
