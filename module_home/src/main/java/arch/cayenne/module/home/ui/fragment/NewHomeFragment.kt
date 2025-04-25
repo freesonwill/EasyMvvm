@@ -101,7 +101,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             leagueAdapter = LeaguePagerAdapter(
                 childFragmentManager,
                 viewLifecycleOwner.lifecycle,
-                mViewModel.getCurrentPlayType()
+                mViewModel.getCurrentPlayType(),
             )
             vpGameList.adapter = leagueAdapter
 
@@ -259,10 +259,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mViewModel.setCurrentSport(it[0].id)
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
-        }
-
-        mViewModel.currentSportChange.observe(viewLifecycleOwner) {
-            mViewModel.getCurrentTournament(it)
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {

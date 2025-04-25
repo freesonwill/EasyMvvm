@@ -117,6 +117,7 @@ class HomeRepository(
                 TournamentBean(
                     id = tournament.id,
                     playType = playType,
+                    sportId = sportId,
                     name = tournament.name,
                     simpleName = tournament.simpleName,
                     icon = tournament.icon,

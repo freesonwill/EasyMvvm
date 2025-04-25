@@ -25,7 +25,7 @@ class HomeViewModel : BaseViewModel() {
     private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
-    val currentSportChange by lazy { MutableLiveData<Int>() }  //TODO 不需要是livedata
+    private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
@@ -71,7 +71,7 @@ class HomeViewModel : BaseViewModel() {
     }
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
-        currentSportChange.value = sportId
+        currentSportId = sportId
         getCurrentTournament(sportId)
     }
 
@@ -84,7 +84,7 @@ class HomeViewModel : BaseViewModel() {
             } else {
                 withContext(Dispatchers.Main) {
                     tournaments.value = ArrayList<TournamentDataModel>().apply {
-                        add(TournamentDataModel.createAllItem())
+                        add(TournamentDataModel.createAllItem(sportId))
                         addAll(list)
                     }
                 }

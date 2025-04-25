@@ -62,12 +62,6 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
-            //TODO 賽事還沒跟上方聯賽、球類做關聯，所以目前只要不是全部聯賽的都不要拿資料，避免多個分頁同時拿取賽事導致混亂
-            if (homeViewModel.getCurrentPlayType() != mViewModel.playType || mViewModel.getTournamentId() != TOURNAMENT_ALL_ID ) return@observe
-            mViewModel.setCurrentSport(it)
-            mViewModel.getCurrentMatch()
-        }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             //TODO 處理賽事卡片UI
             matchAdapter.submitList(matchList)
@@ -76,16 +70,20 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID, TOURNAMENT_ALL_ID))
+            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID, HomeViewModel.TOURNAMENT_ALL_ID))
+            mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
         }
+        mViewModel.getCurrentMatch()
     }
 
     companion object {
         private const val ARG_LEAGUE_ID = "league_id"
+        private const val ARG_SPORT_ID = "sport_id"
 
-        fun newInstance(leagueId: Int): TodayGameListFragment {
+        fun newInstance(sportId: Int, leagueId: Int): TodayGameListFragment {
             val fragment = TodayGameListFragment()
             val args = Bundle()
+            args.putInt(ARG_SPORT_ID, sportId)
             args.putInt(ARG_LEAGUE_ID, leagueId)
             fragment.arguments = args
             return fragment
