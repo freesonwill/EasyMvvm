@@ -2,7 +2,7 @@
 
 1. 自定义的ViewGroup不继承自ConstraintLayout
 ```text
-这会导致xml中嵌套层级过深，导致卡顿
+不利于减少层级，导致xml中嵌套层级过深，导致卡顿
 ```
 
 2. 没必要的Fragment/View提前加载了
@@ -25,7 +25,7 @@
 
 4. UI层操作数据   
 - UI层只应该跟ViewModel交互
-   
+  
   ![img.png](img/img_7.png)
   ⚠️ UI層不要有資料層的東西注入，也不應該有資料的業務邏輯
 
@@ -36,5 +36,32 @@
 
 正确的做法是使用liveData/flow的方式解耦：
 textView通过监听liveData/flow来更改，其他操作liveData/flow
+```
+
+5. 泛型擦出引起的as?失效
+```kotlin
+var currentAnimal: Animal = Dog()
+abstract class Animal 
+class Dog:Animal()
+class Cat:Animal()
+fun <T: Animal> toAnimal():T?{
+    return currentAnimal as? T
+}
+
+fun test(){
+    toAnimal<Dog>()
+    toAnimal<Cat>()
+}
+```
+分析
+> toAnimal**没有使用 `inline + reified`，所以 `T` 的类型在运行时其实已经被“擦除”了**（Kotlin 和 Java 一样，运行时无法知道泛型类型）
+> return currentAnimal as? T 等价于`return currentAnimal as? Animal`，这里as?起不到类型强转失败返回null的效果。
+> toAnimal<Cat>()这里会抛异常
+
+解决方案，reified + inline
+```kotlin
+inline fun <reified T: Animal> toAnimal():T?{
+    return currentAnimal as? T
+}
 ```
 

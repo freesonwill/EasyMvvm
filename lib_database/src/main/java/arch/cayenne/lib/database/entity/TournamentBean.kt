@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class TournamentBean(
     @PrimaryKey val id: Int,
     val playType: Int,
+    val sportId: Int,
     val name: String,
     val simpleName: String,
     val icon: String,
@@ -25,15 +26,17 @@ data class TournamentBean(
 
 data class TournamentDataModel(
     val id: Int,
+    val sportId: Int,
     val name: String,
     val simpleName: String,
     val icon: String,
     val weight: Int,
 ) {
     companion object {
-        fun createAllItem(): TournamentDataModel {
+        fun createAllItem(sportId: Int): TournamentDataModel {
             return TournamentDataModel(
                 id = 0,
+                sportId = sportId,
                 name = "ALL",
                 simpleName = "ALL",
                 icon = "",

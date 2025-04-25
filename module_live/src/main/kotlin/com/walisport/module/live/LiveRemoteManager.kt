@@ -49,6 +49,24 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return null
     }
 
+    // 500-1003: 获取比赛详情
+    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long ): List<Common.Match>? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_MATCH
+        ) {
+            Client.GetMatchReq.newBuilder().apply {
+                this.addMatchId(matchId)
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            LogUtils.dTag("result", "matchMainMatchresult----->${result}")
+            return result.data!!.matchList
+        }
+        return null
+    }
+
 
     suspend fun getOrderReq(
         scope: CoroutineScope,
@@ -128,6 +146,23 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         if(result.error == null && result.data != null){
             return result.data!!.matchTrendData
+        }
+        return null
+    }
+
+    //获取积分榜的实时数据
+    suspend fun getCompetitionReq(scope: CoroutineScope, matchId: Long ): Sloth.CompetitionTables? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.CompetitionTableResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_STANDINGS
+        ) {
+            Client.MatchTrendReq.newBuilder().apply {
+                this.matchId = matchId
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.competitionTables
         }
         return null
     }

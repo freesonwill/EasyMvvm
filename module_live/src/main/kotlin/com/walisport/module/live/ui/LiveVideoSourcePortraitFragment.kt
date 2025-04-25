@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
+import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlin.reflect.KClass
 
@@ -19,11 +20,11 @@ import kotlin.reflect.KClass
  * 竖屏播放时的视频源页面
  */
 class LiveVideoSourcePortraitFragment :
-    LocationFixedDialogFragment<LiveVideoViewModel, FragmentLiveSourcePortraitBinding>() {
+    LocationFixedDialogFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
 
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
         FragmentLiveSourcePortraitBinding::class
-    override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
+    override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
 
 
     override fun initView(savedInstanceState: Bundle?) {

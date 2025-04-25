@@ -5,10 +5,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
 import arch.cayenne.lib.common.databinding.TittleBarDynamicsBinding
 import arch.cayenne.lib.common.databinding.TittleBarSearchBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.requireActivity
 
 class TitleBarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -20,8 +22,8 @@ class TitleBarView @JvmOverloads constructor(
      * @param callback 返回
      */
     fun loadGeneralTitleBar(
-        titleName: String,
-        callback: () -> Unit,
+        titleName: String?,
+        callback: () -> Unit = { requireActivity().onBackPressedDispatcher.onBackPressed() },
         callbackRight: (() -> Unit)? = null,
         rightName: String? = null
     ) {
@@ -40,7 +42,6 @@ class TitleBarView @JvmOverloads constructor(
             }
         }
     }
-
 
     /**
      * 搜索标题
@@ -82,7 +83,9 @@ class TitleBarView @JvmOverloads constructor(
                 callback()
             }
         }
-        binding.clDynamics.addView(view)
+        if (!binding.clDynamics.contains(view)){
+            binding.clDynamics.addView(view)
+        }
     }
 }
 

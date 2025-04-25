@@ -33,12 +33,6 @@
     <string name="live_video_loading">載入中...</string>
     <string name="live_video_error">載入失敗</string>
 
-
-
-
-
-
-
     <string-array name="bet_slip_menus">
         <item>未結算</item>
         <item>確認中</item>
@@ -46,4 +40,7 @@
         <item>預約</item>
         <item>失效</item>
     </string-array>
+
+    <string name="standings_empty">積分榜數據爲空</string>
+    <string name="outs_empty">賽況數據爲空</string>
 </resources>

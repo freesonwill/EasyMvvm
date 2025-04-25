@@ -6,8 +6,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -17,7 +15,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
-import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
+import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
 import kotlinx.coroutines.launch
@@ -64,10 +62,6 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
     }
 
     override fun createObserver() {
-        homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
-            mViewModel.setCurrentSport(it)
-            mViewModel.getCurrentMatch()
-        }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             //TODO 處理賽事卡片UI
             matchAdapter.submitList(matchList)
@@ -76,16 +70,20 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setCurrentTournamentId(this.getInt(ARG_LEAGUE_ID, TOURNAMENT_ALL_ID))
+            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID, HomeViewModel.TOURNAMENT_ALL_ID))
+            mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
         }
+        mViewModel.getCurrentMatch()
     }
 
     companion object {
         private const val ARG_LEAGUE_ID = "league_id"
+        private const val ARG_SPORT_ID = "sport_id"
 
-        fun newInstance(leagueId: Int): TodayGameListFragment {
+        fun newInstance(sportId: Int, leagueId: Int): TodayGameListFragment {
             val fragment = TodayGameListFragment()
             val args = Bundle()
+            args.putInt(ARG_SPORT_ID, sportId)
             args.putInt(ARG_LEAGUE_ID, leagueId)
             fragment.arguments = args
             return fragment
