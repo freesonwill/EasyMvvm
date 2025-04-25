@@ -5,14 +5,8 @@ package com.walisport.module.live.data.model
  */
 
 data class MatchTrendData @JvmOverloads constructor(
-    val data: List<Data>,
-    val count: Int,// 半场数
-    val incidents: List<Incidents>,// 事件列表
-    val per: Int,// 半场时长
-)
-
-data class Data @JvmOverloads constructor(
-    val values: List<Int>
+    val incidents: List<Incidents>,
+    val data: List<Int>
 )
 
 data class Incidents @JvmOverloads constructor(

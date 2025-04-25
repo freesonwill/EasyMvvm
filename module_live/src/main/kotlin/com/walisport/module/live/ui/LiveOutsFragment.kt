@@ -16,7 +16,8 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     override val vmClass: KClass<LiveOutsViewModel> = LiveOutsViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.getMatchTrendData(458436)
+        val matchId = arguments?.getLong("matchId") ?: 0L
+        mViewModel.getMatchTrendData(matchId)
     }
 
     override fun initListener() {

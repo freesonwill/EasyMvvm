@@ -44,13 +44,14 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        val matchId = arguments?.getLong("matchId") ?: 0L
         mBinding.recyclerStandings.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = standsAdapter
             addItemDecoration(StandingsItemDecoration())
         }
-        mViewModel.getCompetitionData(458436)
+        mViewModel.getCompetitionData(matchId)
     }
 
     override fun initListener() {
@@ -59,7 +60,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     override fun createObserver() {
         mViewModel.competitionTables.observe(this) {
             if (it != null) {
-                standsAdapter.submitList(it.tablesList)
+                standsAdapter.submitList(it)
             }
         }
     }
