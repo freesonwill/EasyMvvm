@@ -1,5 +1,6 @@
 package arch.cayenne.lib.database.entity
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -20,7 +21,7 @@ import androidx.room.PrimaryKey
 data class BetBean(
     @PrimaryKey
     val matchId: Long, // 赛事ID
-    var selectionLiteBean: SelectionLiteBean, // 选择的盘口
+    @Embedded var selectionLiteBean: SelectionLiteBean, // 选择的盘口
     var betType: BetTypeEnum, // 0: 單注 1: 串關 2: 預約
     var status: BetStatusEnum = BetStatusEnum.PENDING, // 下注狀態
     val leagueName: String, // 联赛名称 ex. 世界盃

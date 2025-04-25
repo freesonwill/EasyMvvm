@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -16,6 +17,7 @@ import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>(), BetSheetListener {
@@ -91,9 +93,11 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
-            mViewModel.sendReserve()
-            val id = mViewModel.onReserveSheetListener.value?.matchId ?: -1
-            navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment(id))
+            lifecycleScope.launch {
+                mViewModel.sendReserve()?.let {
+                    navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment(it))
+                }
+            }
         }
     }
 

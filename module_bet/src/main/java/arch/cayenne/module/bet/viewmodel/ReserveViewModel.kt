@@ -84,10 +84,10 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
         }
     }
 
-    fun sendReserve() {
-        val id = onReserveSheetListener.value?.matchId ?: return
-        val odds = onOddsListener.value ?: return
-        val money = onEditNumber.value?.toMoney() ?: return
-        repo.sendReserve(id, odds, money)
+    suspend fun sendReserve(): Long? {
+        val id = onReserveSheetListener.value?.matchId ?: return null
+        val odds = onOddsListener.value ?: return null
+        val money = onEditNumber.value?.toMoney() ?: return null
+        return repo.sendReserve(id, odds, money)
     }
 }

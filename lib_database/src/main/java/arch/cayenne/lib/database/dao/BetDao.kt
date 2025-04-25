@@ -31,6 +31,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT * FROM BetBean WHERE matchId = :id")
     abstract suspend fun getBetById(id: Long): BetBean?
 
+    @Query("SELECT * FROM BetBean WHERE id = :selectionId")
+    abstract suspend fun getBetBySelectionId(selectionId: Long): BetBean?
+
     @Query("SELECT COUNT(*) FROM BetBean WHERE betType = :type")
     abstract fun observeComboBetCount(type: BetTypeEnum = BetTypeEnum.COMBO): Flow<Int>
 

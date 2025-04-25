@@ -22,41 +22,16 @@ class BetResultViewModel(private val repo: BetResultRepository): BaseViewModel()
         _onBetModeListener.value = Pair(type, status)
     }
 
-    fun setBetSheet(id: Long?) {
-        viewModelScope.launch {
-            if (id == null) {
-                launch {
-                    repo.observeComboBet().collect {
-                        setBetData(it)
-                    }
-                }
-            } else {
-                launch {
-                    repo.observeBetById(id).collect {
-                        if (it != null) {
-                            setBetData(listOf(it))
-                        }
-                    }
-                }
-            }
-        }
+    fun setResultId(id: Long) {
+        setBets(id)
     }
 
-    private fun setBetData(data: List<BetBean>) {
-        _onBetSheetListener.value = data
-        if (data.size == 1) {
-            val bean = data.first()
-            setBetMode(bean.betType, bean.status)
-        } else {
-            val hasBetting = data.any { it.status == BetStatusEnum.BETTING }
-            val allComplete = data.all { it.status == BetStatusEnum.COMPLETE }
-
-            val status = when {
-                hasBetting -> BetStatusEnum.BETTING
-                allComplete -> BetStatusEnum.COMPLETE
-                else -> BetStatusEnum.BETTING
+    private fun setBets(id: Long) {
+        viewModelScope.launch {
+            val bets = repo.getBets(id)
+            if (bets.isNotEmpty()) {
+                _onBetSheetListener.value = bets
             }
-            setBetMode(BetTypeEnum.COMBO, status)
         }
     }
 }

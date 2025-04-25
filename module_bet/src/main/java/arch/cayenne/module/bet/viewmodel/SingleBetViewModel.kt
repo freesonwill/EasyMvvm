@@ -61,10 +61,10 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         }
     }
 
-    fun sendBet() {
-        val id = _onBetSheetListener.value?.matchId ?: return
-        val money = onEditNumber.value?.toMoney() ?: return
-        betRepo.sendBet(id, money)
+    suspend fun sendBet(): Long? {
+        val id = _onBetSheetListener.value?.matchId ?: return null
+        val money = onEditNumber.value?.toMoney() ?: return null
+        return betRepo.sendBet(id, money)
     }
 
     fun removeBet() {

@@ -2,11 +2,12 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlin.random.Random
 
 @Entity
 data class BetResultBean(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey
+    val id: Long = Random.nextLong(),
     val selectionIds: List<Long>,
     val detail: List<BetResultDetailBean>
 )

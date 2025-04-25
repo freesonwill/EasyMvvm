@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -19,6 +20,7 @@ import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding>(),
@@ -97,8 +99,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mBinding.clBet.setOnClickListener {
-            mViewModel.sendBet()
-            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
+            lifecycleScope.launch {
+                mViewModel.sendBet()?.let {
+                    navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(it))
+
+                }
+            }
         }
     }
 
