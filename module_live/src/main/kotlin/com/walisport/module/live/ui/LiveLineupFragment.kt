@@ -47,12 +47,15 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     override fun initListener() {
     }
     override fun createObserver() {
-        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {
+        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) {it->
             it?.let {
                 mBinding.main.setVisibilityGone()
                 upData(it)
+                if(it.awayOrBuilderList.isEmpty()){
+                    mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
+                }
             } ?: run {
-                mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
+                    mBinding.main.setState(DynamicStateLayout.States.DATA_EMPTY, R.string.lineup_empty.getString())
             }
         }
     }
@@ -65,16 +68,17 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         Glide.with(this).load(data.awayLogo).into( mBinding.ivNationalFlagBottom)
         mBinding.tvNationalNameTop.text = data.homeFormation
         mBinding.tvNationalNameBottom.text = data.awayFormation
-
         Glide.with(this).load(data.homeLogo).into( mBinding.homeIncidentsLogo)
         Glide.with(this).load(data.awayLogo).into( mBinding.awayIncidentsLogo)
-        mBinding.homeIncidentsName.text = data.homeFormation
-        mBinding.awayIncidentsName.text = data.awayFormation
-
         Glide.with(this).load(data.homeLogo).into( mBinding.homeSubstituteLogo)
         Glide.with(this).load(data.awayLogo).into( mBinding.awaySubstituteLogo)
-        mBinding.homeSubstituteName.text = data.homeFormation
-        mBinding.awaySubstituteName.text = data.awayFormation
+        mainViewModel.match?.basicInfo.let {
+            mBinding.homeSubstituteName.text =it?.homeTeam
+            mBinding.awaySubstituteName.text = it?.awayTeam
+            mBinding.homeIncidentsName.text =it?.homeTeam
+            mBinding.awayIncidentsName.text = it?.awayTeam
+        }
+
         LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
         data.homeOrBuilderList.forEach { i ->
             //是否是首发
