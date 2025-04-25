@@ -15,7 +15,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
-import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel.Companion.TOURNAMENT_ALL_ID
+import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
 import kotlinx.coroutines.launch

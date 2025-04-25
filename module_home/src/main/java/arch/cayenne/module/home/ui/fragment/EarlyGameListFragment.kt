@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.databinding.FragmentHomeGameListBinding
-import arch.cayenne.module.home.viewmodel.BasePlayTypeViewModel
 import arch.cayenne.module.home.viewmodel.EarlyGameListViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import kotlin.reflect.KClass
@@ -42,7 +41,7 @@ class EarlyGameListFragment : BaseFragment<EarlyGameListViewModel, FragmentHomeG
     override fun createObserver() {
         homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
             //TODO 賽事還沒跟上方聯賽、球類做關聯，所以目前只要不是全部聯賽的都不要拿資料，避免多個分頁同時拿取賽事導致混亂
-            if (homeViewModel.getCurrentPlayType() != mViewModel.playType || mViewModel.getTournamentId() != BasePlayTypeViewModel.TOURNAMENT_ALL_ID) return@observe
+            if (homeViewModel.getCurrentPlayType() != mViewModel.playType || mViewModel.getTournamentId() != HomeViewModel.TOURNAMENT_ALL_ID) return@observe
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentMatch()
         }
@@ -56,7 +55,7 @@ class EarlyGameListFragment : BaseFragment<EarlyGameListViewModel, FragmentHomeG
         arguments?.apply {
             mViewModel.setTournamentId(this.getInt(
                 ARG_LEAGUE_ID,
-                BasePlayTypeViewModel.TOURNAMENT_ALL_ID
+                HomeViewModel.TOURNAMENT_ALL_ID
             ))
         }
     }
