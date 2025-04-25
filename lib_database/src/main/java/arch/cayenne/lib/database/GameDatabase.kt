@@ -16,6 +16,7 @@ import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetResultBean
+import arch.cayenne.lib.database.entity.BetResultDetailBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MarketBean
@@ -36,7 +37,8 @@ import arch.cayenne.lib.database.entity.SelectionBean
         SelectionBean::class,
         MatchMarketCrossRef::class,
         MarketSelectCrossRef::class,
-        BetResultBean::class
+        BetResultBean::class,
+        BetResultDetailBean::class
     ],
     version = 1,
     exportSchema = false

@@ -64,31 +64,52 @@ class ComboBetRepository(
     }
 
     suspend fun sendBet(multiBet: List<ComboMultiBetBean>) = withContext(scope.coroutineContext) {
-        var resultId: Long? = null
         val betBeans = betDao.getComboBet()
+        if (betBeans.isEmpty()) return@withContext null
+
         val ids = betBeans.map { it.matchId }
         betDao.updateBetListStatus(ids, BetStatusEnum.BETTING)
-        val resp = remoteManager.comboBet(betBeans, multiBet)
-        if (resp != null && resp.isSuccessful) {
-            val resultBean = multiBet.map { bean ->
-                val result = resp.data.first { it.comboValue == bean.combo }
-                BetResultDetailBean(
-                    orderId = result.orderId,
-                    combo = bean.combo,
-                    sumOdds = bean.sumOdds,
-                    count = bean.count,
-                    inputMoney = bean.inputMoney,
-                    statusEnum = BetResultStatusEnum.getStatusByCode(result.orderStatus)
-                )
-            }
-            val result = BetResultBean(
-                selectionIds = betBeans.map { it.selectionLiteBean.id },
-                detail = resultBean
+
+        val result = BetResultBean(
+            selectionIds = betBeans.map { it.selectionLiteBean.id }
+        )
+        val resultId = betResultDao.insert(result)
+
+        val resultDetailList = multiBet.map {
+            BetResultDetailBean(
+                betResultId = resultId,
+                combo = it.combo,
+                sumOdds = it.sumOdds,
+                count = it.count,
+                inputMoney = it.inputMoney
             )
-            betResultDao.insert(result)
-            resultId = result.id
         }
-        betDao.updateBetListStatus(ids, BetStatusEnum.COMPLETE)
+        betResultDao.insertDetail(resultDetailList)
+
+        launch {
+            val resp = remoteManager.comboBet(betBeans, multiBet)
+            val updatedDetails = if (resp != null && resp.isSuccessful) {
+                multiBet.map { bean ->
+                    val res = resp.data.first { it.comboValue == bean.combo }
+                    Triple(
+                        bean.combo,
+                        res.orderId,
+                        BetResultStatusEnum.getStatusByCode(res.orderStatus)
+                    )
+                }
+            } else {
+                multiBet.map { bean ->
+                    Triple(bean.combo, "", BetResultStatusEnum.REJECT)
+                }
+            }
+
+            updatedDetails.forEach { (combo, orderId, status) ->
+                betResultDao.updateDetail(resultId, combo, orderId, status)
+            }
+
+            betDao.updateBetListStatus(ids, BetStatusEnum.COMPLETE)
+        }
+
         resultId
     }
 

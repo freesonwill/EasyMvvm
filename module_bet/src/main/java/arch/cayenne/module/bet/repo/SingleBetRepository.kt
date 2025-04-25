@@ -50,29 +50,37 @@ class SingleBetRepository(
         }
     }
 
-    suspend fun sendBet(id: Long, money: Long) = withContext(scope.coroutineContext) {
-        var resultId: Long? = null
-        betDao.getBetById(id)?.let {
-            if (it.betType == BetTypeEnum.SINGLE) {
-                betDao.updateBetStatus(id, BetStatusEnum.BETTING)
-                val resp = remoteManager.singleBet(it, money)
-                if (resp != null) {
-                    val resultBean = BetResultDetailBean(
-                        orderId = resp.orderId,
-                        sumOdds = it.selectionLiteBean.odds.toOdds(),
-                        inputMoney = money,
-                        statusEnum = BetResultStatusEnum.getStatusByCode(resp.orderStatus)
-                    )
-                    val result = BetResultBean(
-                        selectionIds = listOf(it.selectionLiteBean.id),
-                        detail = listOf(resultBean)
-                    )
-                    betResultDao.insert(result)
-                    resultId = result.id
-                }
-                betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+    suspend fun sendBet(id: Long, money: Long): Long? = withContext(scope.coroutineContext) {
+        val bet = betDao.getBetById(id) ?: return@withContext null
+
+        if (bet.betType != BetTypeEnum.SINGLE) return@withContext null
+
+        betDao.updateBetStatus(id, BetStatusEnum.BETTING)
+
+
+        val result = BetResultBean(
+            selectionIds = listOf(bet.selectionLiteBean.id)
+        )
+
+        val resultId = betResultDao.insert(result)
+        val resultBean = BetResultDetailBean(
+            betResultId = resultId,
+            sumOdds = bet.selectionLiteBean.odds.toOdds(),
+            inputMoney = money
+        )
+        betResultDao.insertDetail(resultBean)
+        // 🔄 非同步執行 singleBet，更新資料庫
+        launch {
+            val resp = remoteManager.singleBet(bet, money)
+            if (resp != null && resp.isSuccessful) {
+                betResultDao.updateDetail(resultId, 1, resp.orderId, BetResultStatusEnum.getStatusByCode(resp.orderStatus))
+            } else {
+                betResultDao.updateDetail(resultId, 1, "", BetResultStatusEnum.REJECT)
             }
+            betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
         }
+
         resultId
     }
+
 }

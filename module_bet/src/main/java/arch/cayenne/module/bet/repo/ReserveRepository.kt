@@ -36,27 +36,31 @@ class ReserveRepository(
     }
 
     suspend fun sendReserve(id: Long, odds: Int, money: Long) = withContext(scope.coroutineContext) {
-        var resultId: Long? = null
-        betDao.getBetById(id)?.let {
-            if (it.betType == BetTypeEnum.RESERVE) {
-                val resp = remoteManager.reserveBet(it, odds, money)
-                if (resp != null) {
-                    val resultBean = BetResultDetailBean(
-                        orderId = "",
-                        sumOdds = it.selectionLiteBean.odds.toOdds(),
-                        inputMoney = money,
-                        statusEnum = if (resp.isSuccessful) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
-                    )
-                    val result = BetResultBean(
-                        selectionIds = listOf(it.selectionLiteBean.id) ,
-                        detail = listOf(resultBean)
-                    )
-                    betResultDao.insert(result)
-                    resultId = result.id
-                }
-                betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
-            }
+        val bet = betDao.getBetById(id) ?: return@withContext null
+        if (bet.betType != BetTypeEnum.RESERVE) return@withContext null
+
+        betDao.updateBetStatus(id, BetStatusEnum.BETTING)
+
+        val result = BetResultBean(
+            selectionIds = listOf(bet.selectionLiteBean.id)
+        )
+        val resultId = betResultDao.insert(result)
+
+        val resultBean = BetResultDetailBean(
+            betResultId = resultId,
+            sumOdds = bet.selectionLiteBean.odds.toOdds(),
+            inputMoney = money
+        )
+        betResultDao.insertDetail(resultBean)
+
+        launch {
+            val resp = remoteManager.reserveBet(bet, odds, money)
+            val status = if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
+
+            betResultDao.updateDetail(resultId, 1, "", status)
+            betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
         }
+
         resultId
     }
 }

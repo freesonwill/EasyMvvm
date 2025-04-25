@@ -102,7 +102,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             lifecycleScope.launch {
                 mViewModel.sendBet()?.let {
                     navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(it))
-
                 }
             }
         }

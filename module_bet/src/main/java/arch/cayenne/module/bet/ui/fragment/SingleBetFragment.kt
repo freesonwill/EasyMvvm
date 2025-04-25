@@ -87,7 +87,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.clBet.setOnClickListener {
             lifecycleScope.launch {
                 mViewModel.sendBet()?.let {
-                    navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(it))
+                    navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(it), null)
                 }
             }
 
