@@ -26,4 +26,7 @@ abstract class BetResultDao: BaseDao<BetResultBean>() {
 
     @Query("SELECT * FROM BetResultDetailBean WHERE betResultId = :id")
     abstract fun observeResultDetailById(id: Long): Flow<List<BetResultDetailBean>>
+
+    @Query("UPDATE BetResultDetailBean SET status = :status WHERE orderId = :orderId")
+    abstract suspend fun updateStatusByOrderId(orderId: String, status: BetResultStatusEnum)
 }

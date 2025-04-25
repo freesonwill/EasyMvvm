@@ -40,7 +40,12 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            commonRepository.observeBalanceChange()
+            launch {
+                commonRepository.observeBalanceChange()
+            }
+            launch {
+                commonRepository.observeBettingOrderStatus()
+            }
         }
     }
 
