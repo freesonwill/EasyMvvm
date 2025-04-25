@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.ui.widget.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
 import com.walisport.module.live.ui.adapter.StandingsAdapter
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
@@ -59,7 +62,13 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     override fun createObserver() {
         mViewModel.competitionTables.observe(this) {
             if (it != null) {
+                mBinding.mainLayout.setVisibilityGone()
                 standsAdapter.submitList(it.tablesList)
+            } else {
+                mBinding.mainLayout.setState(
+                    DynamicStateLayout.States.DATA_EMPTY,
+                    R.string.standings_empty.getString()
+                )
             }
         }
     }

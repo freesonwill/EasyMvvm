@@ -33,11 +33,6 @@
     <string name="live_video_loading">Loading...</string>
     <string name="live_video_error">Loading failed</string>
 
-
-
-
-
-
     <string-array name="bet_slip_menus">
         <item>Unsettled</item>
         <item>Confirming</item>
@@ -45,4 +40,7 @@
         <item>Reserve</item>
         <item>Invalidation</item>
     </string-array>
+
+    <string name="standings_empty">Standings Data is Empty</string>
+    <string name="outs_empty">Match Data is Empty</string>
 </resources>

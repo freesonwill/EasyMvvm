@@ -64,6 +64,8 @@
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
     <string name="lineup_empty">阵容数据为空</string>
+    <string name="standings_empty">积分榜数据为空</string>
+    <string name="outs_empty">赛况数据为空</string>
     <string name="lineup_today">今天</string>
 
     <string name="not_started">足球比赛未开始</string>
@@ -82,9 +84,5 @@
     <string name="penalty_finish">足球点球大战结束</string>
     <string name="interrupted">足球中断</string>
     <string name="abandoned">足球废弃</string>
-
-
-
-
 
 </resources>
