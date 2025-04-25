@@ -48,6 +48,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
     // 500-1003: 获取比赛详情
     suspend fun getMatchReq(scope: CoroutineScope, matchId: Long ): List<Common.Match>? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
@@ -65,6 +66,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
     //获取比赛趋势的实时数据
     suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchTrendData? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchTrendResp>(

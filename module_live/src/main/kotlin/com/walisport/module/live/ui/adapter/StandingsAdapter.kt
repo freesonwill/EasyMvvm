@@ -9,12 +9,13 @@ import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.TablesCompare
+import com.walisport.module.live.data.model.StandingsBean
 import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
 import galaxy.client.proto.Sloth
 
 class StandingsAdapter :
-    BaseAdapter<Sloth.Table, BaseViewHolder, ViewBinding>(
+    BaseAdapter<StandingsBean, BaseViewHolder, ViewBinding>(
         TablesCompare()
     ) {
 
@@ -45,21 +46,21 @@ class StandingsAdapter :
             }
             binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
             binding.layTeam.removeAllViews()
-            val size = item.rowsList.size
+            val size = item.rows.size
             for (i in 0..<size) {
-                val temp = item.rowsList[i]
+                val temp = item.rows[i]
                 val itemBinding =
                     ItemStandingsLayBinding.inflate(LayoutInflater.from(holder.itemView.context))
-                itemBinding.tvTeamName.text = temp.teamName
+                itemBinding.tvTeamName.text = temp.name
                 val index = i + 1
                 itemBinding.tvStandingsRank.text = index.toString()
-                Glide.with(holder.itemView.context).load(temp.teamLogo).into(itemBinding.ivTeamLogo)
+                Glide.with(holder.itemView.context).load(temp.logo).into(itemBinding.ivTeamLogo)
                 itemBinding.tvTotal.text = temp.total.toString()
                 itemBinding.tvWonDrawLoss.text =
-                    String.format("%d/%d/%d", temp.won, temp.draw, temp.loss)
+                    String.format("%d/%d/%d", temp.win, temp.draw, temp.loss)
                 itemBinding.tvGoalsAgainst.text =
-                    String.format("%d/%d", temp.goals, temp.goalsAgainst)
-                itemBinding.tvPoints.text = temp.points.toString()
+                    String.format("%d/%d", temp.goals, temp.fumble)
+                itemBinding.tvPoints.text = temp.score.toString()
                 binding.layTeam.addView(itemBinding.root)
             }
         }
