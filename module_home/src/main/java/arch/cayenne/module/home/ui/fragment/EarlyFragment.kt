@@ -139,6 +139,7 @@ class EarlyFragment : BaseFragment<EarlyViewModel, FragmentEarlyBinding>() {
 
     override fun createObserver() {
         homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
+            if (homeViewModel.getCurrentPlayType() != PlayType.EARLY) return@observe
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentTournament(it)
         }

@@ -17,7 +17,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.MATCH_LIVE_STREAM,
         ) {
             Client.MatchLiveStreamReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
 
@@ -38,7 +38,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_LINEUP
         ) {
             Client.MatchLineupReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
         if(result.error == null && result.data != null){
@@ -55,7 +55,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.MATCH_TREND
         ) {
             Client.MatchTrendReq.newBuilder().apply {
-                this.matchId = matchId.toInt()
+                this.matchId = matchId
             }.build()
         }
         if(result.error == null && result.data != null){
