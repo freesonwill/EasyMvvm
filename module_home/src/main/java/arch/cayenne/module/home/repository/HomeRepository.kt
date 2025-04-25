@@ -145,9 +145,9 @@ class HomeRepository(
         tournamentDao.clearTournaments()
     }
 
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         //先從DB拿取
-        val queryResult = database.matchDao().getFullMatch(playType, tournamentId)
+        val queryResult = database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
         if (queryResult.isNotEmpty()){
             return queryResult
         }
@@ -171,6 +171,8 @@ class HomeRepository(
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
+                    page = page,
+                    startTime = 0,
                     matchId = it.matchId,
                 )
             }
@@ -182,7 +184,7 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return database.matchDao().getFullMatch(playType, tournamentId)
+            return database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
         }
         return arrayListOf()
     }

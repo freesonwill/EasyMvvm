@@ -38,9 +38,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
-            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
             "WHERE ref.matchId = bean.matchId")
-    abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int) : List<MatchBean>
+    abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchBean>
 
     @Transaction
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
@@ -82,8 +82,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
-    open suspend fun getFullMatch(playType: Int, tournamentId: Int): List<MatchWithMarkets> {
-        return queryAllMatch(playType, tournamentId).map { matchBean ->
+    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): List<MatchWithMarkets> {
+        return queryAllMatch(playType, tournamentId, page, startTime).map { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelections(matchBean.matchId, marketBean.marketId)
                 MarketWithSelections(marketBean, selections)

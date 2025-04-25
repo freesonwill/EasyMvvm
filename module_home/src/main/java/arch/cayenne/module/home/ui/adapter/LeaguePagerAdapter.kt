@@ -32,7 +32,6 @@ class LeaguePagerAdapter(
         }
         val leagueId = tournament!![position].id
         val sportId = tournament!![position].sportId
-        "KC_ $sportId".loge("KC_")
         return when (playType) {
             PlayType.TODAY -> TodayGameListFragment.newInstance(sportId, leagueId)
             PlayType.EARLY -> {

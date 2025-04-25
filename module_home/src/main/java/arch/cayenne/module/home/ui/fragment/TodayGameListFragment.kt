@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -18,6 +19,7 @@ import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -63,8 +65,17 @@ class TodayGameListFragment : BaseFragment<TodayGameListViewModel, FragmentHomeG
 
     override fun createObserver() {
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            //TODO 處理賽事卡片UI
-            matchAdapter.submitList(matchList)
+            val oldList = matchAdapter.currentList
+            matchAdapter.submitList(oldList+matchList)
+            //測試
+            lifecycleScope.launch {
+                if (mViewModel.page <= 3) {
+                    delay(3000)
+                    mViewModel.page++
+                    mViewModel.getCurrentMatch()
+                }
+            }
+
         }
     }
 
