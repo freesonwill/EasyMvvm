@@ -16,9 +16,8 @@
       android:layout_height="wrap_content"
       tools:ignore="MissingConstraints">
 
-    <!-- 红点和数字 -->
     <ImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/ivLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
         android:background="@drawable/lineup_head"
@@ -27,7 +26,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/notification_badge"
+        android:id="@+id/tvNumber"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
         android:background="@drawable/circle_badge_blue"
@@ -39,15 +38,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:ignore="MissingConstraints" />
   </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
   <androidx.appcompat.widget.LinearLayoutCompat
       android:layout_width="0dp"
     android:layout_weight="1"
       android:orientation="vertical"
       android:layout_height="wrap_content">
     <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/stvName"
         android:layout_marginStart="7dp"
         android:layout_width="wrap_content"
         android:text="meixi"
@@ -57,6 +54,7 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvPosition"
         android:layout_marginStart="7dp"
         android:layout_width="wrap_content"
         android:text="qianfeng"
@@ -66,58 +64,4 @@
         tools:ignore="MissingConstraints" />
 
   </androidx.appcompat.widget.LinearLayoutCompat>
-
-  <androidx.appcompat.widget.LinearLayoutCompat
-      android:layout_width="0dp"
-      android:layout_weight="1"
-      android:gravity="right"
-      android:orientation="vertical"
-      android:layout_height="wrap_content">
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:layout_marginEnd="7dp"
-        android:layout_width="wrap_content"
-        android:text="meixi"
-        android:textSize="@dimen/sp_14"
-        android:textStyle="bold"
-        android:textColor="@color/substitution_text_color"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_marginEnd="7dp"
-        android:layout_width="wrap_content"
-        android:text="qianfeng"
-        android:textSize="@dimen/sp_12"
-        android:textColor="@color/color_929298"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
-
-  </androidx.appcompat.widget.LinearLayoutCompat>
-  <androidx.constraintlayout.widget.ConstraintLayout
-      android:layout_width="32dp"
-      android:layout_marginTop="@dimen/dp_3"
-      android:layout_height="wrap_content"
-      tools:ignore="MissingConstraints">
-
-    <!-- 红点和数字 -->
-    <ImageView
-        android:id="@+id/profile_image_right"
-        android:layout_width="@dimen/dp_28"
-        android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/notification_badge_right"
-        android:layout_width="@dimen/dp_14"
-        android:layout_height="@dimen/dp_14"
-        android:background="@drawable/circle_badge"
-        android:gravity="center"
-        android:text="12"
-        android:textColor="#FFFFFF"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:ignore="MissingConstraints" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.appcompat.widget.LinearLayoutCompat>

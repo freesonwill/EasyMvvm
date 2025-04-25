@@ -93,12 +93,20 @@ message MatchLiveData {
   repeated Stat stats = 2;            // 比赛统计字段说明，可能不存在
   repeated TLive tlive = 3;           // 文字直播字段说明，可能不存在
   repeated Incident incidents = 4;    // 比赛事件字段说明，可能不存在
-  map<string, IntArray> teamStats = 5;  //比赛球队半全场统计数据
-  int32 id = 6;                       // 比赛Id
+  repeated MatchHalfTeamStats team_stats = 5; //比赛球队半全场统计数据
+  int64 id = 6;                       // 比赛Id
 }
+
+//比赛球队半全场统计数据
+message MatchHalfTeamStats {
+  int32 type = 1;  //1 进球,2 角球,3 黄牌,4 红牌,5 越位,6 任意球,7 球门球,8 点球,9 换人,15  两黄变红,16  点球未进,17  乌龙球,21  射正,22  射偏,23  进攻,24  危险进攻,25  控球率,32  界外球,33  过人,34  过人成功,36  解围,37  有效阻挡,38  拦截,39  抢断,40  传球,41  传球成功,42  关键传球,43  传中球,44  传中球成功,45  长传,46  成功长传,48  1对1拼抢成功,49  丢球,52  扑救,53  拳击球,54  守门员出击,55  守门员出击成功,56  高空出击,61  1对1拼抢失败,63  获得任意球,65  任意球得分,69  击中门框,70  快攻,71  快攻射门,72  快攻进球,78  丢失球权,83  射门
+  int32 home_num = 2;
+  int32 away_num = 3;
+}
+
 //比分信息
 message ScoreData {
-  int32 match_id = 1;
+  int64 match_id = 1;
   int32 state = 2;
   /**
   Array[7]

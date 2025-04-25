@@ -2,6 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="blue">#0000FF</color>
     <color name="app_bg">#0e0f19</color>
     <color name="search_bg">#232530</color>
     <color name="search_bg_white">#36FFFFFF</color>
@@ -20,5 +21,8 @@
     <color name="secondary_text">#929298</color>
     <color name="district_line">#f7f7f7</color>
     <color name="dynamic_text">#929298</color>
+
+    <color name="color_blue">#2196f3</color>
+    <color name="bg_gray">#fff5f7fa</color>
 
 </resources>

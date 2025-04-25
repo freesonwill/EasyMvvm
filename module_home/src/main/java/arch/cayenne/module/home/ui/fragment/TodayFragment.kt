@@ -61,6 +61,7 @@ class TodayFragment : BaseFragment<TodayViewModel, FragmentTodayBinding>() {
 
     override fun createObserver() {
         homeViewModel.currentSportChange.observe(viewLifecycleOwner) {
+            if (homeViewModel.getCurrentPlayType() != PlayType.TODAY) return@observe
             mViewModel.setCurrentSport(it)
             mViewModel.getCurrentTournament(it)
         }

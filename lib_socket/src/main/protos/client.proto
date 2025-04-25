@@ -393,6 +393,12 @@ message BalanceNotify {
     string balance = 1; //余额
 }
 
+//600-1003: 预约单状态推送
+message ReserveStatusNotify {
+    string reserve_id = 1;
+    int32 status = 2;   //状态 1 - 预约成功  2 - 预约失败
+}
+
 message OrderStatus {
     string order_id = 1;
     int32 status = 2;   //2-拒单 4-接单成功
@@ -401,7 +407,7 @@ message OrderStatus {
 
 //700-2001: 比赛统计数据
 message MatchLiveReq {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 message MatchLiveResp {
     MatchLiveData match_live_data = 1;
@@ -409,7 +415,7 @@ message MatchLiveResp {
 
 //700-2002: 比赛阵容数据
 message MatchLineupReq {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 message MatchLineupResp {
     MatchLineupDetail match_lineup_detail = 1;
@@ -425,7 +431,7 @@ message CompetitionTableResp {
 
 //700-2004: 比赛趋势数据
 message MatchTrendReq {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 message MatchTrendResp {
     MatchTrendData match_trend_data = 1;
@@ -433,7 +439,7 @@ message MatchTrendResp {
 
 //700-1100: 比赛统计数据推送
 message SubscribeMatchLiveReq {
-    int32 match_id = 1; //required 比赛id  -1：取消订阅
+    int64 match_id = 1; //required 比赛id  -1：取消订阅
 }
 message SubscribeMatchLiveResp {
     MatchLiveData match_live_data = 1;
@@ -441,19 +447,19 @@ message SubscribeMatchLiveResp {
 
 //700-2005: 比赛直播流
 message MatchLiveStreamReq {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 message MatchLiveStreamResp {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
     repeated MatchLiveStream streams = 2; //视频流列表
 }
 
 //700-2006: 比赛动画直播URL
 message MatchAnimationLiveReq {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 message MatchAnimationLiveResp {
-    int32 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
     string url = 2; // iframeUrl
 }
 

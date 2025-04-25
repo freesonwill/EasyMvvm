@@ -42,9 +42,9 @@ class UIBindComponent<UIOwner, VM, VB>(
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.root.fitsSystemWindows = true
+        uiOwner.initData()
         uiOwner.initView(savedInstanceState)
         uiOwner.initListener()
-        uiOwner.initData()
         uiOwner.createObserver()
         viewModel.initViewModel()
         trackLoadingTime()

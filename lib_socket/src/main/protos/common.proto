@@ -53,6 +53,7 @@ message Market {
     string market_name = 2;   //盘口名称
     repeated MarketDetail market_detail = 3;
     int32 status = 4;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
+    repeated int32 market_type = 5;
 }
 
 //盘口详情
@@ -156,7 +157,7 @@ message ReserveOrder {
     int64 reserve_time = 2;       //预约时间
     string bet_amount = 3;     //下注金额
     ReserveOrderSelection selection = 4; //选项
-    int32 status = 5;        //选项状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消，4确认中
+    int32 status = 5;        //状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消
 }
 
 
@@ -241,4 +242,3 @@ message MarketBase {
     int64 market_id = 1;      //盘口id
     string market_name = 2;   //盘口名称
 }
-

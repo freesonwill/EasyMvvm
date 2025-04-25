@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toDecimalNumber
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.enums.PlayType
@@ -54,6 +54,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     mViewModel.setCurrentPlayType(PlayType.entries[position])
                 }
             })
+            vpHome.offscreenPageLimit = 3
 
             rvSportsList.apply {
                 layoutManager =
@@ -85,26 +86,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun createObserver() {
         mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
+            mViewModel.setCurrentSport(it[0].id)
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
-            if (mViewModel.currentSportChange.value == null) {
-                mViewModel.setCurrentSport(it[0].id)
-            }
-//            mViewModel.getCurrentTournament()
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            //TODO 等轉換long, 換成getMoney()
-            mBinding.tvWalletBalance.text = it.toDecimalNumber()
+            mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
-
-//        mViewModel.tournaments.observe(this) {
-//            //TODO 聯賽那一塊的UI
-//            if (!mViewModel.currentTournament.containsKey(mViewModel.currentSport)) {
-//                mViewModel.setCurrentTournament(mViewModel.currentSport!!, it[0].tournamentId)
-//            }
-//            mViewModel.getCurrentMatch()
-//        }
     }
 
     override fun onDestroyView() {
