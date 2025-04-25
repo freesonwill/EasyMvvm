@@ -21,6 +21,7 @@ import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.TournamentMatchRef
 
 @Database(
     entities = [
@@ -29,6 +30,7 @@ import arch.cayenne.lib.database.entity.SelectionBean
         LiveVideoBean::class,
         SportBean::class,
         TournamentBean::class,
+        TournamentMatchRef::class,
         MatchBean::class,
         MarketBean::class,
         SelectionBean::class,

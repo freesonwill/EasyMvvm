@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.fragment.EarlyGameListFragment
@@ -30,11 +31,13 @@ class LeaguePagerAdapter(
             throw IllegalStateException("league list is null or empty")
         }
         val leagueId = tournament!![position].id
+        val sportId = tournament!![position].sportId
+        "KC_ $sportId".loge("KC_")
         return when (playType) {
-            PlayType.TODAY -> TodayGameListFragment.newInstance(leagueId)
+            PlayType.TODAY -> TodayGameListFragment.newInstance(sportId, leagueId)
             PlayType.EARLY -> {
                 val date = getSelectedDate?.invoke(leagueId) ?: ""
-                EarlyGameListFragment.newInstance(leagueId, date)
+                EarlyGameListFragment.newInstance(sportId, leagueId, date)
             }
 
             else -> throw IllegalStateException("CHAMPION tab does not support league pager")//暫時不需要
