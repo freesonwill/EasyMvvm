@@ -12,6 +12,9 @@ import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.timeStringToInt
 import com.walisport.module.live.R
+import com.walisport.module.live.data.EventEnum
+import com.walisport.module.live.data.model.Incidents
+import com.walisport.module.live.data.model.MatchTrendData
 import galaxy.client.proto.Sloth
 
 /**
@@ -40,9 +43,10 @@ class GoalTrendView @JvmOverloads constructor(
     private val cornerBall: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_jiao)
     private val yellowCard: Drawable? =
         ContextCompat.getDrawable(context, R.mipmap.icon_live_yellow)
+    private val redCard: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_red)
     private val changeCard: Drawable? = ContextCompat.getDrawable(context, R.mipmap.icon_live_out)
 
-    private var eventList = ArrayList<Sloth.MatchTrendData.Incidents>() //进攻事件列表
+    private var eventList = ArrayList<Incidents>() //进攻事件列表
     private var trendList = ArrayList<Int>() //进攻趋势列表
 
 
@@ -74,19 +78,19 @@ class GoalTrendView @JvmOverloads constructor(
         tenBlue.style = Paint.Style.FILL
     }
 
-    fun setData(data: Sloth.MatchTrendData) {
+    fun setData(data: MatchTrendData) {
         //只显示5种事件：1进攻 2角球 3黄牌 4红牌 9换人
-        val array = data.incidentsList.filter {
-            it.type == 1
-                    || it.type == 2 || it.type == 3
-                    || it.type == 4 || it.type == 9
+        val array = data.incidents.filter {
+            it.type == EventEnum.EVENT_GOAL.type ||
+                    it.type == EventEnum.EVENT_CORNER.type ||
+                    it.type == EventEnum.EVENT_YELLOW_CARD.type ||
+                    it.type == EventEnum.EVENT_YELLOW_CARD.type ||
+                    it.type == EventEnum.EVENT_CHANGE.type
         }
         eventList.clear()
         eventList.addAll(array)
         trendList.clear()
-        for (item in data.dataList) {
-            trendList.addAll(item.valuesList)
-        }
+        trendList.addAll(data.data)
         this.invalidate()
     }
 
@@ -129,14 +133,14 @@ class GoalTrendView @JvmOverloads constructor(
         //绘制比赛事件图标
         val eventSize = eventList.size
         if (eventSize > 0) {
-            for (i in 0..< eventSize) {
+            for (i in 0..<eventSize) {
                 val time = eventList[i].time.timeStringToInt()
                 val type = eventList[i].type
                 val pos = eventList[i].position
                 //只显示5种事件：1进攻 2角球 3黄牌 4红牌 9换人
                 val left = (time * unitWidth).toInt()
                 when (type) {
-                    1 -> {
+                    EventEnum.EVENT_GOAL.type -> {
                         if (pos == 1) {//1-主队、2-客队
                             football?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
@@ -145,7 +149,7 @@ class GoalTrendView @JvmOverloads constructor(
                         football?.draw(canvas)
                     }
 
-                    2 -> {
+                    EventEnum.EVENT_CORNER.type -> {
                         if (pos == 1) {//1-主队、2-客队
                             cornerBall?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
@@ -154,7 +158,7 @@ class GoalTrendView @JvmOverloads constructor(
                         cornerBall?.draw(canvas)
                     }
 
-                    3 -> {
+                    EventEnum.EVENT_YELLOW_CARD.type -> {
                         if (pos == 1) {//1-主队、2-客队
                             yellowCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
@@ -163,16 +167,16 @@ class GoalTrendView @JvmOverloads constructor(
                         yellowCard?.draw(canvas)
                     }
 
-                    4 -> {
+                    EventEnum.EVENT_RED_CARD.type -> {
                         if (pos == 1) {//1-主队、2-客队
-                            yellowCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
+                            redCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {
-                            yellowCard?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
+                            redCard?.setBounds(left, iconY, left + 12.dp2px, iconY + 12.dp2px)
                         }
-                        yellowCard?.draw(canvas)
+                        redCard?.draw(canvas)
                     }
 
-                    5 -> {
+                    EventEnum.EVENT_CHANGE.type -> {
                         if (pos == 1) {//1-主队、2-客队
                             changeCard?.setBounds(left, 0, left + 12.dp2px, 12.dp2px)
                         } else {

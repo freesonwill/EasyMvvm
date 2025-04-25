@@ -37,20 +37,21 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private val args: LiveMainFragmentArgs by navArgs()
-    private var isGone : Boolean = true
+    private var isGone: Boolean = true
 
 
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
-        val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+        val binding =
+            TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
         mBinding.titleBar.loadDynamicsTitleBar(binding.root)
-        binding.ivBack.clickNoRepeat {findNavController().navigateUp() }
+        binding.ivBack.clickNoRepeat { findNavController().navigateUp() }
         binding.apply {
             tvMoney.text = "¥ 10000.00"
             tvCompetitionName.clickNoRepeat {
                 mBinding.llcOuts.visibility = View.VISIBLE
                 mBinding.llcOuts.animate()
-                    .alpha(if(isGone)0.95f else 0f) // 透明度从当前值渐变到 1（完全可见）
+                    .alpha(if (isGone) 0.95f else 0f) // 透明度从当前值渐变到 1（完全可见）
                     .setDuration(200) // 动画持续时间 500 毫秒
                     .start()
                 isGone = !isGone
@@ -66,49 +67,53 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId = matchId
         mViewModel.sportId = sportId
         mViewModel.geMatchMainMatch(mViewModel.matchId)
-        mViewModel.matchMainMatch.observe(viewLifecycleOwner){
-           it?.let {
-               LogUtils.dTag(TAG, "matchMainMatch----->${it}")
-                           Glide.with(this).load(it.basicInfo.tournamentIcon)
-                .error(R.drawable.title_league_icon)
-                .into(binding.ivLandscapeLeagueIcon)
-            binding.tvCompetitionName.text = "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}"
-               upData(it)
-           }
-       }
+        mViewModel.matchMainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                LogUtils.dTag(TAG, "matchMainMatch----->${it}")
+                Glide.with(this).load(it.basicInfo.tournamentIcon)
+                    .error(R.drawable.title_league_icon)
+                    .into(binding.ivLandscapeLeagueIcon)
+                binding.tvCompetitionName.text =
+                    "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}"
+                upData(it)
+            }
+        }
 
     }
 
-   private fun upData(data:Common.Match){
-       //主队
-       Glide.with(this).load(data.basicInfo.homeTeamIcon)
-           .into(mBinding.outsHomeLogo)
-       mBinding.outsHomeName.text = data.basicInfo.homeTeam
-       //客队
-       Glide.with(this).load(data.basicInfo.awayTeamIcon)
-           .into(mBinding.outsAwayLogo)
-       mBinding.outsAwayName.text = data.basicInfo.awayTeam
-       // bool roll_clock = 2;    //是否走表
-       //clock走表时间，以秒为单位
-       // int64 clock_modified = 8;  //走表修改时间就是网络延迟时间段。 本地时间戳减去+网络延迟时间段
-       //本地时间-clock_modified +clock
-       if (data.basicInfo.liveInfo.rollClock){
-           val timer = Timer(data.basicInfo.liveInfo.clock.toLong())
-           val scope = CoroutineScope(Dispatchers.Default)
-           timer.start(scope) { time ->
-               mBinding.tvTime.text = time
-           }
-       }else{
-           mBinding.tvScore.text = data.basicInfo.liveInfo.score.ifEmpty { "0 - 0" }
-           mBinding.tvPeriod.text =
-               MatchPeriodEnum.fromCode(data.basicInfo.liveInfo.period)?.description ?: ""
-       }
-       mBinding.tvTime.visibility =  if (data.basicInfo.liveInfo.rollClock)View.VISIBLE else View.GONE
-       mBinding.tvToday.visibility =  if (data.basicInfo.liveInfo.rollClock)View.VISIBLE else View.GONE
-       mBinding.tvScore.visibility = if (!data.basicInfo.liveInfo.rollClock)View.VISIBLE else View.GONE
-       mBinding.tvPeriod.visibility =  if (!data.basicInfo.liveInfo.rollClock)View.VISIBLE else View.GONE
+    private fun upData(data: Common.Match) {
+        //主队
+        Glide.with(this).load(data.basicInfo.homeTeamIcon)
+            .into(mBinding.outsHomeLogo)
+        mBinding.outsHomeName.text = data.basicInfo.homeTeam
+        //客队
+        Glide.with(this).load(data.basicInfo.awayTeamIcon)
+            .into(mBinding.outsAwayLogo)
+        mBinding.outsAwayName.text = data.basicInfo.awayTeam
+        // bool roll_clock = 2;    //是否走表
+        //clock走表时间，以秒为单位
+        // int64 clock_modified = 8;  //走表修改时间就是网络延迟时间段。 本地时间戳减去+网络延迟时间段
+        //本地时间-clock_modified +clock
+        if (data.basicInfo.liveInfo.rollClock) {
+            val timer = Timer(data.basicInfo.liveInfo.clock.toLong())
+            val scope = CoroutineScope(Dispatchers.Default)
+            timer.start(scope) { time ->
+                mBinding.tvTime.text = time
+            }
+        } else {
+            mBinding.tvScore.text = data.basicInfo.liveInfo.score.ifEmpty { "0 - 0" }
+            mBinding.tvPeriod.text =
+                MatchPeriodEnum.fromCode(data.basicInfo.liveInfo.period)?.description ?: ""
+        }
+        mBinding.tvTime.visibility =
+            if (data.basicInfo.liveInfo.rollClock) View.VISIBLE else View.GONE
+        mBinding.tvToday.visibility =
+            if (data.basicInfo.liveInfo.rollClock) View.VISIBLE else View.GONE
+        mBinding.tvScore.visibility =
+            if (!data.basicInfo.liveInfo.rollClock) View.VISIBLE else View.GONE
+        mBinding.tvPeriod.visibility =
+            if (!data.basicInfo.liveInfo.rollClock) View.VISIBLE else View.GONE
     }
-
 
 
     override fun initListener() {
@@ -136,9 +141,17 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
-                PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
+                PagerBean(R.string.live_outs.getString()) {
+                    LiveOutsFragment().also {
+                        it.arguments = Bundle().apply { putLong("matchId", args.matchId) }
+                    }
+                },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
-                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
+                PagerBean(R.string.live_standings.getString()) {
+                    LiveStandingsFragment().also {
+                        it.arguments = Bundle().apply { putLong("matchId", args.matchId) }
+                    }
+                })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             vpPage.offscreenPageLimit = list.size
