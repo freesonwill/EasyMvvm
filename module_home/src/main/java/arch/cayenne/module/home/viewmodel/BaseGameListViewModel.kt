@@ -40,7 +40,6 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     //取得比賽列表
     fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            "KC_ getAllMatch by playType = ${playType.id} & sportId = ${_sportId} & tournament = ${_tournamentId}".loge("KC_")
             val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, DEFAULT_MATCH_SIZE, 1)
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {

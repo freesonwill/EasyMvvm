@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
@@ -145,6 +146,11 @@ class HomeRepository(
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
+        //先從DB拿取
+        val queryResult = database.matchDao().getFullMatch(playType, tournamentId)
+        if (queryResult.isNotEmpty()){
+            return queryResult
+        }
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -161,14 +167,22 @@ class HomeRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
+            val tournamentMatchRefs = resp.data!!.matchList.map {
+                TournamentMatchRef(
+                    playType = playType,
+                    tournamentId = tournamentId,
+                    matchId = it.matchId,
+                )
+            }
             database.matchDao().insertFullMatch(
+                tournamentMatchRefs = tournamentMatchRefs,
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return database.matchDao().getFullMatch()
+            return database.matchDao().getFullMatch(playType, tournamentId)
         }
         return arrayListOf()
     }
