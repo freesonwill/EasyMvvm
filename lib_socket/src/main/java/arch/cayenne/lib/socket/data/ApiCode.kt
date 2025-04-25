@@ -17,6 +17,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_ORDER(500,1012),    //500-1012: 获取下注记录
     GER_RESERVE_ORDER(500,1021), //500-1021 获取预约下注记录
     GET_LINEUP(700,2002),    //700-2002: 比赛阵容数据
+    GET_MATCH(500,1003),    // 500-1003: 获取比赛详情
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额
     GET_COMBO_RISK(500,1014),     //500-1014: 获取串关下注限额

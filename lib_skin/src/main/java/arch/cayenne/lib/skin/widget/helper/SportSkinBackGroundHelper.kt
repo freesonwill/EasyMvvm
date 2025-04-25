@@ -38,6 +38,7 @@ class SportSkinBackGroundHelper(mView: View) : SportSkinHelper(mView) {
             mView.background =drawable
             mView.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
         }
+
     }
 
     override fun updateLanguage(languageCode:String) {
