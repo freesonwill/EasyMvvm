@@ -5,6 +5,12 @@ import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
+import galaxy.client.proto.Client.EarlySettleReq
+import galaxy.client.proto.Client.EarlySettleResp
+import galaxy.client.proto.Client.ReserveCancelReq
+import galaxy.client.proto.Client.ReserveCancelResp
+import galaxy.client.proto.Client.ReserveUpdateReq
+import galaxy.client.proto.Client.ReserveUpdateResp
 import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
@@ -12,7 +18,10 @@ import kotlinx.coroutines.Dispatchers
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
-    suspend fun queryLiveStream(scope: CoroutineScope, matchId: Long): List<Sloth.MatchLiveStream>? {
+    suspend fun queryLiveStream(
+        scope: CoroutineScope,
+        matchId: Long
+    ): List<Sloth.MatchLiveStream>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveStreamResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -33,7 +42,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     //获取阵容实时数据
-    suspend fun getMatchLiveReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchLineupDetail? {
+    suspend fun getMatchLiveReq(scope: CoroutineScope, matchId: Long): Sloth.MatchLineupDetail? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLineupResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -43,14 +52,14 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data!!.matchLineupDetail
         }
         return null
     }
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long ): List<Common.Match>? {
+    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): List<Common.Match>? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -60,7 +69,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.addMatchId(matchId)
             }.build()
         }
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
             return result.data!!.matchList
         }
@@ -78,7 +87,10 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         startTime: Long? = null,
         endTime: Long? = null,
     ): List<Common.Order>? {
-        LogUtils.dTag("aaa","getOrderReq status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId")
+        LogUtils.dTag(
+            "aaa",
+            "getOrderReq status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId"
+        )
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -95,10 +107,10 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         LogUtils.dTag("aaa", "result ${result?.data?.orderList?.size}")
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
-        LogUtils.dTag("aaa","error  ${result.error?.msg}")
+        LogUtils.dTag("aaa", "error  ${result.error?.msg}")
 
         return null
     }
@@ -111,7 +123,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         startTime: Long? = null,
         endTime: Long? = null
     ): List<Common.ReserveOrder>? {
-        LogUtils.dTag("aaa","getReserveOrder matchId $matchId sportId $sportId")
+        LogUtils.dTag("aaa", "getReserveOrder matchId $matchId sportId $sportId")
 
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
@@ -125,7 +137,10 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.addSportId(sportId)
             }.build()
         }
-        LogUtils.dTag("aaa", " getReserveOrder  result ${result.data?.orderList?.size}   ${result.error != null} ${result?.data != null}")
+        LogUtils.dTag(
+            "aaa",
+            " getReserveOrder  result ${result.data?.orderList?.size}   ${result.error != null} ${result?.data != null}"
+        )
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
@@ -134,7 +149,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
 
     //获取比赛趋势的实时数据
-    suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long ): Sloth.MatchTrendData? {
+    suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long): Sloth.MatchTrendData? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchTrendResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -144,14 +159,14 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data!!.matchTrendData
         }
         return null
     }
 
     //获取积分榜的实时数据
-    suspend fun getCompetitionReq(scope: CoroutineScope, matchId: Long ): Sloth.CompetitionTables? {
+    suspend fun getCompetitionReq(scope: CoroutineScope, matchId: Long): Sloth.CompetitionTables? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.CompetitionTableResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -161,9 +176,73 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data!!.competitionTables
         }
         return null
     }
+
+    suspend fun earlySettleReq(
+        scope: CoroutineScope,
+        betId: String,
+        amount: String,
+        expectPrice: String,
+        acceptPriceReduce: Boolean
+    ): EarlySettleResp? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettleResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.EARLY_SETTLE
+        ) {
+            EarlySettleReq.newBuilder().apply {
+                this.betId = betId
+                this.amount = amount
+                this.expectPrice = expectPrice
+                this.acceptPriceReduce = acceptPriceReduce
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data
+        }
+        return null
+    }
+
+    suspend fun reserveCancelReq(scope: CoroutineScope, reserveId: String): ReserveCancelResp? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<ReserveCancelResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.RESERVE_CANCEL
+        ) {
+            ReserveCancelReq.newBuilder().apply {
+                this.reserveId = reserveId
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data
+        }
+        return null
+    }
+
+    suspend fun reserveUpdateReq(
+        scope: CoroutineScope,
+        amount: String,
+        odds: String
+    ): ReserveUpdateResp? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<ReserveUpdateResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.RESERVE_UPDATE
+        ) {
+            ReserveUpdateReq.newBuilder().apply {
+                this.amount = amount
+                this.odds = odds
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data
+        }
+        return null
+    }
+
+
 }

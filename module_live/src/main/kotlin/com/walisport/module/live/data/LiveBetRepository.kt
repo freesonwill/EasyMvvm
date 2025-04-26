@@ -8,6 +8,10 @@ import arch.cayenne.lib.socket.data.SocketResponseData
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client
+import galaxy.client.proto.Client.EarlySettlePriceResp
+import galaxy.client.proto.Client.EarlySettleResp
+import galaxy.client.proto.Client.ReserveCancelResp
+import galaxy.client.proto.Client.ReserveUpdateResp
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,5 +55,28 @@ class LiveBetRepository(
         return resp
     }
 
+    suspend fun earlySettlePrice(
+        betId: String,
+        amount: String,
+        expectPrice: String,
+        acceptPriceReduce: Boolean
+    ): EarlySettleResp? {
+        val resp =
+            remoteManager.earlySettleReq(scope, betId, amount, expectPrice, acceptPriceReduce)
+        return resp
+    }
+
+    suspend fun reserveCancel(reserveId: String): ReserveCancelResp? {
+        val resp = remoteManager.reserveCancelReq(scope, reserveId)
+        return resp
+    }
+
+    suspend fun reserveUpdate(
+        amount: String,
+        odds: String
+    ): ReserveUpdateResp? {
+        val resp = remoteManager.reserveUpdateReq(scope, amount, odds)
+        return resp
+    }
 
 }
