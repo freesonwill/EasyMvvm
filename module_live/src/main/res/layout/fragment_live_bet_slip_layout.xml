@@ -35,7 +35,7 @@
             app:tabTextColor="@color/secondary_text"
             tools:ignore="SpeakableTextPresentCheck" />
 
-        <com.walisport.module.live.ui.widget.InnerViewPager2Container
+        <arch.cayenne.lib.common.ui.widget.InnerViewPager2Container
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,7 +51,7 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:orientation="horizontal" />
 
-        </com.walisport.module.live.ui.widget.InnerViewPager2Container>
+        </arch.cayenne.lib.common.ui.widget.InnerViewPager2Container>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.walisport.module.live.ui.widget
+package arch.cayenne.lib.common.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet

@@ -1,4 +1,4 @@
-package com.walisport.module.live.ui.widget
+package arch.cayenne.lib.common.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -7,6 +7,10 @@ import android.widget.FrameLayout
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.utils.LogUtils
 
+/**
+ * 使用InnerViewPager2Container包裹ViewPager2，解决ViewPager2中包含了ViewPager2滑动冲突。
+ * 当InnerViewPager2 不可滑动后，外层viewpager2获取touch事件
+ * */
 class InnerViewPager2Container @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
 ) : FrameLayout(context, attrs) {
