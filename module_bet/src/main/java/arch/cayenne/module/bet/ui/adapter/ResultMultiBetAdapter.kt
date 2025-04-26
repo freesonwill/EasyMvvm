@@ -6,13 +6,13 @@ import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.database.entity.BetResultDetailBean
+import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemResultMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.BetResultDetailCompare
 
 class ResultMultiBetAdapter(private val listener: ResultMultiBetListener) :
-    BaseAdapter<BetResultDetailBean, BaseViewHolder, ItemResultMultiBetBinding>(
+    BaseAdapter<BetDetailBean, BaseViewHolder, ItemResultMultiBetBinding>(
         BetResultDetailCompare()
     ) {
     override fun convertPlus(

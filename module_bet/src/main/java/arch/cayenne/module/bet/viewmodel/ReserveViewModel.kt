@@ -6,16 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class ReserveViewModel(private val repo: ReserveRepository, private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
+class ReserveViewModel(private val repo: ReserveRepository, private val singleRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
-    private val _onReserveSheetListener = MutableLiveData<BetBean>()
-    val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
+    private val _onReserveSheetListener = MutableLiveData<BetSelectionBean>()
+    val onReserveSheetListener: LiveData<BetSelectionBean> get() =  _onReserveSheetListener
 
     private val _onOddsListener = MutableLiveData<Int>()
     val onOddsListener: LiveData<Int> get() = _onOddsListener
@@ -51,10 +51,15 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
                 }
             }
             launch {
-                repo.observeReserveBet().collect {
-                    if (it != null) {
-                        _onReserveSheetListener.value = it
-                        setNumberLimit(it.minAmount, it.maxAmount)
+                repo.observeSelectionBean().collect {
+                    _onReserveSheetListener.value = it
+                }
+            }
+            launch {
+                repo.observeComboBean().collect {
+                    setNumberLimit(it.minAmount, it.maxAmount)
+                    if (it.inputMoney > 0) {
+                        setEditNumber(it.inputMoney)
                     }
                 }
             }
@@ -66,28 +71,20 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     }
 
     fun removeReserve() {
-        _onReserveSheetListener.value?.let {
-            repo.removeReserve(it.matchId)
-        }
-
+        repo.removeReserve()
     }
 
     fun removeBet() {
-        _onReserveSheetListener.value?.let {
-            betRepo.removeBet(it.matchId)
-        }
+        singleRepo.removeBet()
     }
 
     fun saveToCombo() {
-        _onReserveSheetListener.value?.let {
-            betRepo.saveToCombo(it.matchId)
-        }
+        singleRepo.saveToCombo()
     }
 
-    suspend fun sendReserve(): Long? {
-        val id = onReserveSheetListener.value?.matchId ?: return null
-        val odds = onOddsListener.value ?: return null
-        val money = onEditNumber.value?.toMoney() ?: return null
-        return repo.sendReserve(id, odds, money)
+    fun sendReserve() {
+        val odds = onOddsListener.value ?: return
+        val money = onEditNumber.value?.toMoney() ?: return
+        return repo.sendReserve(odds, money)
     }
 }

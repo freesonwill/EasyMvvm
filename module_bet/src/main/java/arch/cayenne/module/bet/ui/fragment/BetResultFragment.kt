@@ -2,17 +2,16 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.database.entity.BetResultDetailBean
+import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
-import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
+import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import com.bumptech.glide.Glide
@@ -22,8 +21,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     BetSheetListener {
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
-    private val args: BetResultFragmentArgs by navArgs()
-    private val betSheetAdapter by lazy { BetSheetAdapter() }
+    private val betSelectionAdapter by lazy { BetSelectionAdapter() }
     private val detailAdapter by lazy { ResultMultiBetAdapter(
         object : ResultMultiBetAdapter.ResultMultiBetListener {
             override fun getBetSize(): Int {
@@ -33,9 +31,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     ) }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.setResultId(args.id)
-
-        mBinding.rvBet.adapter = betSheetAdapter
+        mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
     }
 
@@ -44,7 +40,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
         }
         mBinding.btnConfirm.setOnClickListener {
-            mViewModel.clearBetBean()
             dismiss()
         }
     }
@@ -52,8 +47,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             mBinding.rvComboOdds.isVisible = it.size > 1
-            betSheetAdapter.submitList(it)
-            mBinding.tvMaxWin.text = if (it.size == 1 && it.first().betType == BetTypeEnum.SINGLE) {
+            betSelectionAdapter.submitList(it)
+            mBinding.tvMaxWin.text = if (it.size == 1 && mViewModel.type == BetTypeEnum.SINGLE) {
                 getString(R.string.title_result_win_single_bet)
             } else {
                 getString(R.string.title_result_win_combo_bet)
@@ -108,14 +103,14 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         }
     }
 
-    private fun setAmount(data: List<BetResultDetailBean>) {
+    private fun setAmount(data: List<BetDetailBean>) {
         val total = "\$${data.sumOf { it.inputMoney }.getMoney()}"
         mBinding.tvAmountMoney.text = total
         val win = "\$${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
         mBinding.tvMaxWinMoney.text = win
     }
 
-    private fun setComboOdds(data: List<BetResultDetailBean>) {
+    private fun setComboOdds(data: List<BetDetailBean>) {
         detailAdapter.submitList(data)
     }
 

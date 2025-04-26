@@ -1,23 +1,21 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBinding>(),
@@ -85,12 +83,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
-            lifecycleScope.launch {
-                mViewModel.sendBet()?.let {
-                    navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(it), null)
-                }
-            }
-
+            mViewModel.sendBet()
+            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
@@ -106,8 +100,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
                     location.last() + mBinding.btnReserve.height,
-                    it.matchId,
-                    odds = it.selectionLiteBean.odds
+                    odds = it.odds
                 ).show(childFragmentManager)
             }
 
@@ -139,7 +132,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
     }
 
-    private fun setBetData(data: BetBean) {
+    private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
     }
 

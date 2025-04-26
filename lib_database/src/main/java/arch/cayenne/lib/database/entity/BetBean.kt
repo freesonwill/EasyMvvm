@@ -1,56 +1,53 @@
 package arch.cayenne.lib.database.entity
 
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/***
- * @param matchId 赛事ID
- * @param selectionLiteBean 选择的盘口
- * @param reverseOdds 預約赔率
- * @param betType 0: 單注 1: 串關 2: 預約
- * @param status 下注狀態
- * @param leagueName 联赛名称 ex. 世界盃
- * @param matchName 赛事名称 ex. 中國 vs 日本
- * @param minAmount 最小下注金额
- * @param maxAmount 最大下注金额
- * @param isBetStop 是否停止下注
- * @param isPlaying 是否滾球
- */
+
 @Entity(tableName = "BetBean")
 data class BetBean(
     @PrimaryKey
-    val matchId: Long, // 赛事ID
-    @Embedded var selectionLiteBean: SelectionLiteBean, // 选择的盘口
-    var betType: BetTypeEnum, // 0: 單注 1: 串關 2: 預約
+    val betId: Long = System.currentTimeMillis(),
+    var betType: BetTypeEnum = BetTypeEnum.SINGLE, // 0: 單注 1: 串關 2: 預約
     var status: BetStatusEnum = BetStatusEnum.PENDING, // 下注狀態
-    val leagueName: String, // 联赛名称 ex. 世界盃
-    val matchName: String, // 赛事名称 ex. 中國 vs 日本
-    var minAmount: Long = 10_000L, // 最小下注金额
-    var maxAmount: Long = 10_000L, // 最大下注金额
-    var isBetStop: Boolean = false, // 是否停止下注
-    var isPlaying: Boolean = false // 是否滾球
+)
+
+@Entity(
+    primaryKeys = ["betId", "combo"],
+)
+data class BetDetailBean(
+    val betId: Long,
+    var orderId: String = "",
+    val combo: Int = 1, // 串關次數
+    val sumOdds: Int, // 串關後賠率加總
+    val count: Int = 1, // 場次組合數量
+    val inputMoney: Long,
+    var status: BetResultStatusEnum? = null
 )
 
 /**
  * 首頁盤口監聽投注項用
  */
-data class BetLiteBean(
+data class BetSelectionLiteBean(
     val matchId: Long, // 赛事ID
     val selectionId: Long, // 盘口ID
 )
 
-/***
- * @param marketName 盘口名称 ex. 讓分盤
- * @param id 盘口ID
- * @param name 盘口名称 ex. 中國 (+1.5)
- * @param odds 盘口赔率 ex. 1.9
- */
-data class SelectionLiteBean(
+
+@Entity(
+    primaryKeys = ["betId", "matchId", "selectionId"],
+)
+data class BetSelectionBean(
+    val betId: Long,
+    val matchId: Long,
     val marketName: String, // 盘口名称 ex. 讓分盤
-    val id: Long, // 盘口ID
-    var name: String, // 盘口名称 ex. 中國 (+1.5)
-    var odds: String // 盘口赔率 ex. 1.9
+    val selectionId: Long, // 盘口ID
+    val name: String, // 盘口名称 ex. 中國 (+1.5)
+    var odds: Int, // 盘口赔率 ex. 1.9
+    val leagueName: String, // 联赛名称 ex. 世界盃
+    val matchName: String, // 赛事名称 ex. 中國 vs 日本
+    var isBetStop: Boolean = false, // 是否停止下注
+    var isPlaying: Boolean = false // 是否滾球
 )
 
 enum class BetTypeEnum {
@@ -61,4 +58,20 @@ enum class BetStatusEnum {
     PENDING, // 待下注
     BETTING, // 下注中
     COMPLETE // 下注完成, 完成並非成功!!
+}
+
+enum class BetResultStatusEnum(val code: Int) {
+    CREATE(0),
+    CONFIRMING(1),
+    REJECT(2),
+    CANCEL(3),
+    SUCCESS_BET(4),
+    SETTLED(5);
+
+    companion object {
+        fun getStatusByCode(code: Int): BetResultStatusEnum {
+            return entries.first { it.code == code }
+        }
+    }
+
 }

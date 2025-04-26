@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.bet.repo.BetResultRepository
+import arch.cayenne.module.bet.repo.BetSheetRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.repo.FloatingButtonRepository
@@ -16,6 +17,7 @@ import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
+import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -48,6 +50,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::BetResultViewModel)
         viewModelOf(::ComboBetMoneyKeyboardDialogViewModel)
         viewModelOf(::ReserveViewModel)
+        viewModelOf(::BetSheetViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
@@ -57,6 +60,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         factoryOf(::BetResultRepository)
         factoryOf(::BetRepository)
         factoryOf(::BalanceRepository)
+        factoryOf(::BetSheetRepository)
     }
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
 }

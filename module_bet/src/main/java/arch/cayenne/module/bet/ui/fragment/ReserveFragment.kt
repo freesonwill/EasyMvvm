@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
@@ -93,11 +94,8 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
-            lifecycleScope.launch {
-                mViewModel.sendReserve()?.let {
-                    navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment(it))
-                }
-            }
+            mViewModel.sendReserve()
+            navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment())
         }
     }
 
@@ -131,7 +129,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
         }
     }
 
-    private fun setBetData(data: BetBean) {
+    private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
 
         mBinding.btnReserve.isVisible = false

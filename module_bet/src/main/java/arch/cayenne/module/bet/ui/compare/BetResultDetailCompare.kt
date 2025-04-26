@@ -1,19 +1,19 @@
 package arch.cayenne.module.bet.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.lib.database.entity.BetResultDetailBean
+import arch.cayenne.lib.database.entity.BetDetailBean
 
-class BetResultDetailCompare: DiffUtil.ItemCallback<BetResultDetailBean>() {
+class BetResultDetailCompare: DiffUtil.ItemCallback<BetDetailBean>() {
     override fun areItemsTheSame(
-        oldItem: BetResultDetailBean,
-        newItem: BetResultDetailBean
+        oldItem: BetDetailBean,
+        newItem: BetDetailBean
     ): Boolean {
         return oldItem.orderId == newItem.orderId
     }
 
     override fun areContentsTheSame(
-        oldItem: BetResultDetailBean,
-        newItem: BetResultDetailBean
+        oldItem: BetDetailBean,
+        newItem: BetDetailBean
     ): Boolean {
         return oldItem == newItem
     }

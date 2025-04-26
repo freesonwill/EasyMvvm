@@ -6,16 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
 class SingleBetViewModel(private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
-    private val _onBetSheetListener = MutableLiveData<BetBean>()
-    val onBetSheetListener: LiveData<BetBean> get() =  _onBetSheetListener
+    private val _onBetSheetListener = MutableLiveData<BetSelectionBean>()
+    val onBetSheetListener: LiveData<BetSelectionBean> get() =  _onBetSheetListener
 
     private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
@@ -23,7 +22,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds = data.selectionLiteBean.odds.toOdds()
+            odds = data.odds
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -45,11 +44,16 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     init {
         viewModelScope.launch {
             launch {
-                betRepo.observeSingleBet().collect {
-                    if (it != null) {
-                        _onBetSheetListener.value = it
-                        setNumberLimit(it.minAmount, it.maxAmount)
+                betRepo.observeSelectionBean().collect {
+                    _onBetSheetListener.value = it
+                }
+            }
+            launch {
+                betRepo.observeComboBean().collect {
+                    if (it.inputMoney != 0L) {
+                        setEditNumber(it.inputMoney)
                     }
+                    setNumberLimit(it.minAmount, it.maxAmount)
                 }
             }
             launch {
@@ -61,21 +65,16 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         }
     }
 
-    suspend fun sendBet(): Long? {
-        val id = _onBetSheetListener.value?.matchId ?: return null
-        val money = onEditNumber.value?.toMoney() ?: return null
-        return betRepo.sendBet(id, money)
+    fun sendBet() {
+        val money = onEditNumber.value?.toMoney() ?: return
+        return betRepo.sendBet(money)
     }
 
     fun removeBet() {
-        _onBetSheetListener.value?.let {
-            betRepo.removeBet(it.matchId)
-        }
+        betRepo.removeBet()
     }
 
     fun saveToCombo() {
-        _onBetSheetListener.value?.let {
-            betRepo.saveToCombo(it.matchId)
-        }
+        betRepo.saveToCombo()
     }
 }

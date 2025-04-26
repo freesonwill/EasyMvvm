@@ -22,10 +22,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     companion object {
         private const val POSITION_X = "positionX"
         private const val POSITION_Y = "positionY"
-        private const val MATCH_ID = "matchId"
         private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, id: Long, odds: String): ReserveDialogFragment {
+        fun newInstance(positionX: Int?, positionY: Int?, odds: Int): ReserveDialogFragment {
             val b = Bundle()
             positionX?.let {
                 b.putInt(POSITION_X, it)
@@ -33,8 +32,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             positionY?.let {
                 b.putInt(POSITION_Y, it)
             }
-            b.putLong(MATCH_ID, id)
-            b.putString(ODDS_NUMBER, odds)
+            b.putInt(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
             }
@@ -78,9 +76,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.etRate.requestFocus()
 
-        val odds = requireArguments().getString(ODDS_NUMBER)
-        if (!odds.isNullOrEmpty()) {
-            mViewModel.setNumber(odds.toOdds().toLong())
+        val odds = requireArguments().getInt(ODDS_NUMBER, -1)
+        if (odds != -1) {
+            mViewModel.setNumber(odds.toLong())
         }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
@@ -111,10 +109,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             mViewModel.clearNumber()
         }
         mBinding.btnConfirm.setOnClickListener {
-            val id = requireArguments().getLong(MATCH_ID, -1L)
             val odds = mViewModel.onEditNumber.value?.toOdds() ?: -1
-            if (id != -1L && odds != -1) {
-                mViewModel.reserve(id)
+            if (odds != -1) {
+                mViewModel.reserve()
                 arguments = Bundle().apply {
                     putString(KEY_RESULT, VALUE_RESERVE_COMPLETE)
                     putInt(KEY_ODDS_RESULT, odds)

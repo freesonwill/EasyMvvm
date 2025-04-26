@@ -45,11 +45,6 @@
         android:name="arch.cayenne.module.bet.ui.fragment.BetResultFragment"
         android:label="SingleBetResultFragment"
         tools:layout="@layout/fragment_bet_result" >
-
-        <argument
-            android:name="id"
-            app:argType="long"
-            app:nullable="false" />
     </fragment>
 
     <fragment

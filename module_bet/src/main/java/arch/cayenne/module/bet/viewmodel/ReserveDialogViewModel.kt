@@ -23,7 +23,7 @@ class ReserveDialogViewModel(private val repository: ReserveRepository) : Number
         setEditNumber(odds.toLong())
     }
 
-    fun reserve(id: Long) {
-        repository.setSingleToReserve(id)
+    fun reserve() {
+        repository.setSingleToReserve()
     }
 }

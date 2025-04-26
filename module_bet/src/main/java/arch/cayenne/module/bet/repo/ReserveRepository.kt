@@ -3,64 +3,103 @@ package arch.cayenne.module.bet.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
-import arch.cayenne.lib.database.dao.BetResultDao
-import arch.cayenne.lib.database.entity.BetResultBean
-import arch.cayenne.lib.database.entity.BetResultDetailBean
+import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ReserveRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
-    private val betResultDao: BetResultDao,
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    fun observeReserveBet() = betDao.observeReserveBet()
+    private val selectionFlow = MutableSharedFlow<BetSelectionBean>()
+    private val comboFlow = MutableSharedFlow<ComboMultiBetBean>()
 
-    fun setSingleToReserve(id: Long) {
+    init {
         scope.launch {
-            betDao.updateBetType(id, BetTypeEnum.RESERVE)
+            betDao.getCurrentBet()?.let { bet ->
+                val selection = betDao.getSelections(bet.betId).firstOrNull() ?: return@let
+                remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
+                    if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
+                        val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
+                        val detailBean = if (lastDetail == null) {
+                            ComboMultiBetBean(
+                                sumOdds = selection.odds,
+                                minAmount = risk.minAmount,
+                                maxAmount = risk.maxAmount
+                            )
+                        } else {
+                            ComboMultiBetBean(
+                                sumOdds = selection.odds,
+                                inputMoney = lastDetail.inputMoney,
+                                minAmount = risk.minAmount,
+                                maxAmount = risk.maxAmount,
+                            )
+                        }
+                        selectionFlow.emit(selection)
+                        comboFlow.emit(detailBean)
+                    }
+                }
+            }
         }
     }
 
-    fun removeReserve(id: Long) {
+    fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
+    fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
+
+    fun setSingleToReserve() {
         scope.launch {
-            betDao.updateBetType(id, BetTypeEnum.SINGLE)
+            betDao.getCurrentBet()?.let {
+                if (it.betType == BetTypeEnum.SINGLE) {
+                    betDao.updateBetType(it.betId, BetTypeEnum.SINGLE)
+                }
+            }
         }
     }
 
-    suspend fun sendReserve(id: Long, odds: Int, money: Long) = withContext(scope.coroutineContext) {
-        val bet = betDao.getBetById(id) ?: return@withContext null
-        if (bet.betType != BetTypeEnum.RESERVE) return@withContext null
-
-        betDao.updateBetStatus(id, BetStatusEnum.BETTING)
-
-        val result = BetResultBean(
-            selectionIds = listOf(bet.selectionLiteBean.id)
-        )
-        val resultId = betResultDao.insert(result)
-
-        val resultBean = BetResultDetailBean(
-            betResultId = resultId,
-            sumOdds = bet.selectionLiteBean.odds.toOdds(),
-            inputMoney = money
-        )
-        betResultDao.insertDetail(resultBean)
-
-        launch {
-            val resp = remoteManager.reserveBet(bet, odds, money)
-            val status = if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
-
-            betResultDao.updateDetail(resultId, 1, "", status)
-            betDao.updateBetStatus(id, BetStatusEnum.COMPLETE)
+    fun removeReserve() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                if (bet.betType == BetTypeEnum.RESERVE) {
+                    betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE)
+                }
+            }
         }
+    }
 
-        resultId
+    fun sendReserve(odds: Int, money: Long) {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                if (bet.betType == BetTypeEnum.RESERVE) {
+                    val betId = bet.betId
+                    betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+
+                    val selection = betDao.getSelections(betId).first()
+
+                    val resp = remoteManager.reserveBet(selection, odds, money)
+                    val status = if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
+
+                    val detailBean = BetDetailBean(
+                        betId = betId,
+                        orderId = "",
+                        sumOdds = odds,
+                        inputMoney = money,
+                        status = status
+                    )
+                    betDao.insertDetail(detailBean)
+                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                }
+            }
+        }
     }
 }

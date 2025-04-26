@@ -1,26 +1,24 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.Config.KEY_RESULT
+import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
-import arch.cayenne.module.bet.ui.adapter.BetSheetAdapter
+import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ComboMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding>(),
@@ -29,9 +27,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override val vbClass: KClass<FragmentComboBetBinding> = FragmentComboBetBinding::class
     override val vmClass: KClass<ComboBetViewModel> = ComboBetViewModel::class
 
-    private val betSheetAdapter by lazy {
-        BetSheetAdapter(object : BetSheetAdapter.OnBetSheetClickListener {
-            override fun onDeleteClick(item: BetBean) {
+    private val betSelectionAdapter by lazy {
+        BetSelectionAdapter(object : BetSelectionAdapter.OnBetSelectionClickListener {
+            override fun onDeleteClick(item: BetSelectionBean) {
                 CommonDialog.newInstance(
                     title = "",
                     message = getString(R.string.title_dialog_remove),
@@ -39,7 +37,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     cancelText = getString(R.string.btn_cancel)
                 ).apply {
                     setOnOkClickListener {
-                        mViewModel.removeBet(item.matchId)
+                        mViewModel.removeSelection(item.selectionId)
                     }
                 }.show(childFragmentManager)
             }
@@ -50,7 +48,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
             override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
                 mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
-                    childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
+                    childFragmentManager.setFragmentResultListener(
+                        KEY_RESULT,
+                        viewLifecycleOwner
+                    ) { resultKey, bundle ->
                         childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
                             val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
@@ -61,12 +62,19 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     val minAmount = it.minAmount
                     val maxAmount = it.maxAmount
                     val remainingMoney = mViewModel.remainingBalance / it.count
-                    ComboBetMoneyKeyboardDialogFragment.newInstance(locationX, locationY, currentMoney, minAmount, maxAmount, remainingMoney).show(childFragmentManager)
+                    ComboBetMoneyKeyboardDialogFragment.newInstance(
+                        locationX,
+                        locationY,
+                        currentMoney,
+                        minAmount,
+                        maxAmount,
+                        remainingMoney
+                    ).show(childFragmentManager)
                 }
             }
 
             override fun getSize(): Int {
-                return betSheetAdapter.currentList.size
+                return betSelectionAdapter.currentList.size
             }
         })
     }
@@ -75,7 +83,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        mBinding.rvBet.adapter = betSheetAdapter
+        mBinding.rvBet.adapter = betSelectionAdapter
 
         val decoration = BetSheetDecoration(6.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
@@ -99,11 +107,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mBinding.clBet.setOnClickListener {
-            lifecycleScope.launch {
-                mViewModel.sendBet()?.let {
-                    navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(it))
-                }
-            }
+            mViewModel.sendBet()
+            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
         }
     }
 
@@ -112,7 +117,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             if (it.isEmpty()) {
                 dismiss()
             } else if (it.size > 1) {
-                betSheetAdapter.submitList(it)
+                betSelectionAdapter.submitList(it)
             } else {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),
