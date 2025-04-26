@@ -70,7 +70,7 @@ androidx-core = { group = "androidx.core", name = "core", version.ref = "core" }
 androidx-drawerlayout = { group = "androidx.drawerlayout", name = "drawerlayout", version.ref = "drawerlayout" }
 koin = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
 mmkv = { module = "com.tencent:mmkv", version.ref = "mmkv" }
-startup = { group = "androidx.startup", name = "startup-runtime", version = "1.1.1" }
+startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startupRuntime" }
 okhttps = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttps" }
 protobuf = { group ="com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigation" }
@@ -94,7 +94,6 @@ autosize = {group = "me.jessyan", name = "autosize", version.ref = "autoSize"}
 
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
-androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startupRuntime" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
