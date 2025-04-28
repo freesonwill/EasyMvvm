@@ -312,3 +312,5 @@ nav_graph_child_fragment.xml
 
 - fragment嵌套ViewPager2时，返回崩溃问题: BaseFragment问题，已经修正
 
+## 参考
+[Jetpack 导航]https://developer.android.google.cn/codelabs/android-navigation?hl=zh-cn#0

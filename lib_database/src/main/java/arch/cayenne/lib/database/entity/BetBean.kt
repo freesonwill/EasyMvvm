@@ -1,5 +1,6 @@
 package arch.cayenne.lib.database.entity
 
+import android.text.Selection
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -63,4 +64,25 @@ enum class BetStatusEnum {
     FAIL, // 下注失敗
     BETTING, // 下注中
     COMPLETE // 下注完成
+}
+
+class BetBeanTypeConvert {
+
+    @TypeConverter
+    fun fromSelection(value: String): SelectionLiteBean {
+        return value.split(",").let {
+            SelectionLiteBean(
+                marketName = it[0],
+                id = it[1].toLong(),
+                name = it[2],
+                odds = it[3]
+            )
+        }
+    }
+
+    @TypeConverter
+    fun toSelection(value: SelectionLiteBean): String {
+        return "${value.marketName},${value.id},${value.name},${value.odds}"
+    }
+
 }

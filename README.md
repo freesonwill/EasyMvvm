@@ -29,6 +29,48 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 ### 模块初始化
 模块需要在Application启动时，初始化自己的工作，通过[Jetpack Startup](https://developer.android.com/topic/libraries/app-startup?hl=zh-cn)组件实现
 
+### 目录划分
+
+以module_setting举例，其他模块目录仿照此风格
+```text
+module_setting/
+├── data/                              # 数据层，负责数据获取和存储
+│   ├── api/                          # 接口定义（网络请求API）
+│   │   └── SettingApi.kt
+│   ├── repo/                         # 仓库，封装数据来源
+│   │   └── SettingRepository.kt
+│   ├── model/                        # 数据模型（实体类）
+│   │   └── SettingBean.kt
+│   └── constants/                    # 常量和枚举配置
+│       ├── SettingEnum.kt           # 枚举类
+│       └── SettingConstant.kt       # 常量类
+
+├── ui/                               # 界面层，包含所有UI组件
+│   ├── activity/                    # Activity 页面
+│   ├── fragment/                    # Fragment 页面
+│   ├── dialog/                      # 弹窗组件
+│   ├── view/                        # 自定义View组件
+│   ├── adapter/                     # 列表适配器（含 ViewHolder）
+│   │   ├── SettingAdapter.kt
+│   │   └── SettingViewHolder.kt
+│   └── viewmodel/                   # ViewModel，负责界面数据状态管理
+
+├── utils/                            # 工具类和扩展函数
+│   ├── ext/                         # Kotlin 扩展函数目录
+│   │   └── StringExt.kt
+│   └── ThreadUtils.kt               # 线程调度相关工具类
+
+├── service/                          # 模块核心业务逻辑及服务
+│   ├── ISettingService.kt           # 服务接口定义（对外暴露功能）
+│   ├── SettingServiceImpl.kt        # 服务实现类
+│   ├── manager/                     # 管理类目录，管理模块内复杂业务逻辑
+│   │   └── SettingManager.kt        # 设置相关业务管理类
+│   ├── SettingProvider.kt           # 内容提供者（ContentProvider）
+│   └── SettingBroadcastReceiver.kt  # 广播接收器（接收系统或模块广播）
+
+├── SettingModuleInitializer.kt       # 模块初始化入口（注册服务等）
+```
+
 ### mvvm架构
 ![img.png](z_doc/img/img_6.png)
 

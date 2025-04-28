@@ -53,4 +53,7 @@
     <color name="input_word">#929298</color>
 
     <color name="list_separator">#F6F6F6</color>
+    <color name="tab_bg">#3d404d</color>
+    <color name="tab_text">#cbd8eb</color>
+
 </resources>
