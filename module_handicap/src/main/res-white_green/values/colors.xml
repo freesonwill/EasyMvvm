@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background_white_green">#EEEEEE</color>
+    <color name="line_white_green">#E8E8EA</color>
+    <color name="item_name_white_green">#222222</color>
+</resources>

@@ -33,20 +33,28 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment()) },
             R.string.simulate_bet.getString()
         )
+
         with(mBinding) {
             val array = resources.getStringArray(R.array.handicap_tabs)
             val list = listOf(
                 PagerBean(array[0]) { HandicapLetBallFragment() },
                 PagerBean(array[1]) { HandicapBigSmallFragment() },
-                PagerBean(array[2]) { HandicapCornerFragment() }
+                PagerBean(array[2]) { HandicapCornerFragment() },
             )
             viewpager.adapter = null
             viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
+
             tabLayout.removeAllTips()
             reflexPadding(tabLayout)
+            mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {}
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
         }
     }
 
@@ -72,6 +80,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             }
         }
     }
+
 
     override fun initListener() {
 

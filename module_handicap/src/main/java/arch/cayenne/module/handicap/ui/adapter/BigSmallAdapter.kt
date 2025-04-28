@@ -2,6 +2,7 @@ package arch.cayenne.module.handicap.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.base.adapter.BaseAdapter
@@ -42,6 +43,11 @@ class BigSmallAdapter : BaseAdapter<BigSmallBean, BaseViewHolder, ItemBigSmallBi
             awayType.text = item.list[i].awayType
             score.text = String.format("%d-%d", item.list[i].homeScore, item.list[i].awayScore)
             tips.text = item.list[i].msg
+            if (i == item.list.size - 1) {
+                view.itemLine.visibility = View.GONE
+            } else {
+                view.itemLine.visibility = View.VISIBLE
+            }
             binding.layLetBall.addView(view.root)
         }
     }
