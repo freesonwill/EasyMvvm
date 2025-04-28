@@ -8,9 +8,10 @@ import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import com.walisport.module.live.databinding.AdapterLiveBetContentItemLayoutBinding
 import com.walisport.module.live.databinding.AdapterLiveBetMenuContentItemLayoutBinding
+import galaxy.common.proto.Common
 
-class LiveBetMenuContentAdapter(compare: DiffUtil.ItemCallback<String>) :
-    BaseAdapter<String, LiveBetMenuContentAdapter.LiveBetMenuContentViewHolder, ViewBinding>(
+class LiveBetMenuContentAdapter(compare: DiffUtil.ItemCallback<Common.MarketBase>) :
+    BaseAdapter<Common.MarketBase, LiveBetMenuContentAdapter.LiveBetMenuContentViewHolder, ViewBinding>(
         compare
     ) {
 
@@ -27,7 +28,7 @@ class LiveBetMenuContentAdapter(compare: DiffUtil.ItemCallback<String>) :
             if (position==2){
                 viewBinding.clRoot.isSelected = true
             }
-            viewBinding.tvName.text = getItem(position)
+            viewBinding.tvName.text = getItem(position).marketName
         }
     }
     override fun convertPlus(holder: LiveBetMenuContentViewHolder, binding: ViewBinding, position: Int) {

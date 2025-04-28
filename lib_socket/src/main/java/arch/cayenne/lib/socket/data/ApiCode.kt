@@ -24,4 +24,5 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
     GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
+    GET_MARKET_TYPE(500, 1007)     // 500-1007: 盘口分类
 }

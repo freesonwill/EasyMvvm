@@ -100,4 +100,21 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
+    // 500-1007: 盘口分类
+    suspend fun getMarketTypeReq(scope: CoroutineScope, matchId: Long ): List<Common.MarketType>? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MarketTypeResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.GET_MARKET_TYPE
+        ) {
+            Client.MatchTrendReq.newBuilder().apply {
+                this.matchId = matchId
+            }.build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.marketTypeList
+        }
+        return null
+    }
 }

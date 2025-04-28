@@ -16,27 +16,17 @@ import arch.cayenne.lib.base.adapter.BaseAdapter
 import arch.cayenne.lib.base.viewholder.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.databinding.AdapterLiveBetMenuLayoutBinding
+import galaxy.common.proto.Common
+import org.koin.core.component.getScopeName
 import kotlin.math.ceil
 import kotlin.math.min
 
 
-class LiveBetOnMenuAdapter(compare: DiffUtil.ItemCallback<String>) :
-    BaseAdapter<String, LiveBetOnMenuAdapter.LiveBetOnMenuViewHolder, ViewBinding>(
+class LiveBetOnMenuAdapter(compare: DiffUtil.ItemCallback<Common.MarketType>) :
+    BaseAdapter<Common.MarketType, LiveBetOnMenuAdapter.LiveBetOnMenuViewHolder, ViewBinding>(
         compare
     ) {
     private val SPAN_COUNT: Int = 3
-
-    //模拟数据
-    private var list: List<String> = listOf(
-        "全场让球",
-        "角球大小",
-        "罚牌大小",
-        "谁先开球&谁先进球",
-        "谁先进球",
-        "先进球",
-        "先进球",
-        "先进球"
-    )
 
     inner class LiveBetOnMenuViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetMenuLayoutBinding =
@@ -46,6 +36,7 @@ class LiveBetOnMenuAdapter(compare: DiffUtil.ItemCallback<String>) :
             setOnClickListener()
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         private fun setOnClickListener() {
 
         }
@@ -55,17 +46,18 @@ class LiveBetOnMenuAdapter(compare: DiffUtil.ItemCallback<String>) :
             if (position == itemCount) {
                 viewBinding.VLin.visibility = View.GONE
             }
-            val item = getItem(position)
-            viewBinding.tvName.text = item
+            val item :Common.MarketType = getItem(position)
+            viewBinding.tvName.text = item.name
             viewBinding.rvContent.apply {
+                isNestedScrollingEnabled = false
                 itemAnimator = null
                 layoutManager = GridLayoutManager(context, SPAN_COUNT)
-                adapter = LiveBetMenuContentAdapter(object : DiffUtil.ItemCallback<String>() {
-                    override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+                adapter = LiveBetMenuContentAdapter(object : DiffUtil.ItemCallback<Common.MarketBase>() {
+                    override fun areItemsTheSame(oldItem: Common.MarketBase, newItem: Common.MarketBase): Boolean {
                         return oldItem == newItem
                     }
 
-                    override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+                    override fun areContentsTheSame(oldItem: Common.MarketBase, newItem: Common.MarketBase): Boolean {
                         return oldItem == newItem
                     }
                 }).apply {
@@ -73,22 +65,19 @@ class LiveBetOnMenuAdapter(compare: DiffUtil.ItemCallback<String>) :
                         (layoutManager as GridLayoutManager).spanSizeLookup =
                             object : SpanSizeLookup() {
                                 override fun getSpanSize(position: Int): Int {
-                                    val tag: String = list[position]
+                                    val tag: String = item.marketBaseList[position].marketName
                                     val paint = TextPaint()
-                                    paint.textSize =
-                                        14 * resources.displayMetrics.scaledDensity // 字体大小 14sp
-                                    val textWidth =
-                                        paint.measureText(tag) + 8.dp2px * resources.displayMetrics.scaledDensity // 加上 padding
+                                    paint.textSize =  14 * resources.displayMetrics.scaledDensity // 字体大小 14sp
+                                    val textWidth = paint.measureText(tag) + 8.dp2px * resources.displayMetrics.scaledDensity // 加上 padding
                                     val columnWidth: Int = width / SPAN_COUNT // 每列宽度（3列）
-                                    val spanCount =
-                                        ceil((textWidth / columnWidth).toDouble()).toInt() // 计算需要的列数
+                                    val spanCount = ceil((textWidth / columnWidth).toDouble()).toInt() // 计算需要的列数
                                     return min(spanCount.toDouble(), 3.0).toInt() // 最多占3列
                                 }
                             }
                         adapter?.notifyDataSetChanged() // 刷新布局
                         val decoration = GridSpacingItemDecoration()
                         addItemDecoration(decoration)
-                        submitList(list)
+                        submitList(item.marketBaseList)
                     }
                 }
             }

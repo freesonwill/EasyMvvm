@@ -6,13 +6,15 @@
     android:background="@color/app_bg"
     android:paddingTop="30dp"
     tools:context=".ui.LiveBetOnMenuFragment">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="5000dp">
+            <com.walisport.module.live.ui.widget.NesticalRecyclerView
+                android:id="@+id/rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                />
+    </androidx.core.widget.NestedScrollView>
 </arch.cayenne.lib.skin.widget.SportRelativeLayout>

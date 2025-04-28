@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
@@ -20,9 +21,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.BaseSideSheetDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnMenuAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
+import com.walisport.module.live.viewmodel.LiveMainViewModel
+import galaxy.common.proto.Common
 import kotlin.math.abs
 import kotlin.reflect.KClass
 
@@ -31,7 +35,8 @@ class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
-    private var mList: List<String> = listOf("热门", "让球", "大小")
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
     private var startX: Float = 0f
     private var startY: Float = 0f
     private var translationX: Float = 0f
@@ -54,30 +59,40 @@ class LiveBetOnMenuFragment :
             }
         }
     }
+    class NonScrollableLinearLayoutManager(context: Context) : LinearLayoutManager(context) {
+        override fun canScrollVertically(): Boolean {
+            return false // 禁止垂直滑动
+        }
 
+        override fun canScrollHorizontally(): Boolean {
+            return false // 禁止水平滑动
+        }
+    }
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.rv.apply {
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(
-                this@LiveBetOnMenuFragment.context,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            adapter = LiveBetOnMenuAdapter(object : DiffUtil.ItemCallback<String>() {
-                override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-                    return oldItem == newItem
-                }
 
-                override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-                    return oldItem == newItem
+            mBinding.rv.apply {
+                itemAnimator = null
+                layoutManager = this@LiveBetOnMenuFragment.context?.let { it1 ->
+                    NonScrollableLinearLayoutManager(
+                        it1
+                    )
                 }
-            }).apply {
-                post {
-                    addItemDecoration(MenuItemDecoration())
-                    submitList(mList)
+                adapter = LiveBetOnMenuAdapter(object : DiffUtil.ItemCallback<Common.MarketType>() {
+                    override fun areItemsTheSame(oldItem: Common.MarketType, newItem: Common.MarketType): Boolean {
+                        return oldItem.name == newItem.name
+                    }
+
+                    override fun areContentsTheSame(oldItem: Common.MarketType, newItem: Common.MarketType): Boolean {
+                        return oldItem.name == newItem.name
+                    }
+                }).apply {
+                    post {
+                        addItemDecoration(MenuItemDecoration())
+                       // submitList(it)
+                    }
                 }
             }
-        }
     }
 
     override fun initListener() {
