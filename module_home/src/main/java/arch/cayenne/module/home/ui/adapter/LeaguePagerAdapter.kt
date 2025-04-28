@@ -27,7 +27,6 @@ class LeaguePagerAdapter(
     override fun createFragment(position: Int): Fragment {
         val list = tournament ?: throw IllegalStateException("tournament list is null")
         val sportId = list[position].sportId
-        "KC_ $sportId".loge("KC_")
         val leagueId = list[position].id
         return MatchListPagerFragment.newInstance(sportId, playType.id, leagueId)
     }

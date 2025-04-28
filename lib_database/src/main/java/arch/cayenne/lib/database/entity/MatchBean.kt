@@ -40,11 +40,13 @@ data class SelectionBean(
 * Cross Reference Entity
 * */
 
-@Entity(primaryKeys = ["playType", "tournamentId", "matchId"])
+@Entity(primaryKeys = ["playType", "tournamentId", "matchId", "startTime", "page"])
 data class TournamentMatchRef(
     val playType: Int,
     val tournamentId: Int,
-    val matchId: Long
+    val page: Int,
+    val startTime: Long, //0表示取得ALL
+    val matchId: Long,
 )
 
 @Entity(primaryKeys = ["matchId", "marketId"],)

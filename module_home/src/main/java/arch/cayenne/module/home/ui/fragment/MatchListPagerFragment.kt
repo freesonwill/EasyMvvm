@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -19,6 +20,7 @@ import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
+import kotlinx.coroutines.delay
 import arch.cayenne.module.home.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -87,8 +89,22 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            matchAdapter.submitList(matchList)
+            val oldList = matchAdapter.currentList
+            matchAdapter.submitList(oldList+matchList)
+            //測試
+            lifecycleScope.launch {
+                if (mViewModel.page <= 3) {
+                    delay(3000)
+                    mViewModel.page++
+                    mViewModel.getCurrentMatch()
+                }
+            }
         }
+
+    }
+
+    fun test() {
+
     }
 
     private fun refreshListByDate() {
