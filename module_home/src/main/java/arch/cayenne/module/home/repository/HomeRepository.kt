@@ -29,6 +29,10 @@ class HomeRepository(
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
 
+    companion object {
+        const val ONE_DAY_TIME_STAMP = 86399000L
+    }
+
     @Transaction
     suspend fun getSportStatistical(): List<SportDataModel>? {
         //clear sport table
@@ -167,6 +171,10 @@ class HomeRepository(
                 this.tournamentId = tournamentId
                 this.page = page
                 this.size = DEFAULT_MATCH_SIZE
+                if (startTime != 0L){
+                    this.startTime = startTime
+                    this.endTime = startTime + ONE_DAY_TIME_STAMP
+                }
             }.build()
         }
 
