@@ -27,6 +27,7 @@ class HomeRepository(
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
+    private val matchDao = database.matchDao()
 
     @Transaction
     suspend fun getSportStatistical(): List<SportDataModel>? {
@@ -85,6 +86,7 @@ class HomeRepository(
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         clearTournamentCache()
+        clearMatchCache()
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
@@ -143,6 +145,9 @@ class HomeRepository(
 
     private fun clearTournamentCache() {
         tournamentDao.clearTournaments()
+    }
+    private fun clearMatchCache() {
+        matchDao.clearAllMatch()
     }
 
     suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {

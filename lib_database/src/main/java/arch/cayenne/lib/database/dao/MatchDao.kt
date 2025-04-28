@@ -1,6 +1,7 @@
 package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -75,6 +76,26 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT * FROM SelectionBean WHERE selectionId = :selectionId")
     abstract suspend fun getSelectionById(selectionId: Long): SelectionBean
 
+    @Query("DELETE FROM MatchBean" )
+    abstract fun deleteMatchBean()
+
+    @Query("DELETE FROM MarketBean" )
+    abstract fun deleteMarketBean()
+
+    @Query("DELETE FROM SelectionBean" )
+    abstract fun deleteSelectionBean()
+
+    @Query("DELETE FROM TournamentMatchRef" )
+    abstract fun deleteTournamentMatchRef()
+
+    @Query("DELETE FROM MatchMarketCrossRef" )
+    abstract fun deleteMatchMarketCrossRef()
+
+    @Query("DELETE FROM MarketSelectCrossRef" )
+    abstract fun deleteMarketSelectCrossRef()
+
+
+
     @Transaction
     open suspend fun insertFullMatch(
         tournamentMatchRefs: List<TournamentMatchRef>,
@@ -125,5 +146,15 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             }
             MatchWithMarkets(matchBean, markets)
         }
+    }
+
+    @Transaction
+    open fun clearAllMatch() {
+        deleteTournamentMatchRef()
+        deleteMatchBean()
+        deleteMarketBean()
+        deleteMatchMarketCrossRef()
+        deleteSelectionBean()
+        deleteMarketSelectCrossRef()
     }
 }
