@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -13,6 +14,8 @@ import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class MatchDao : BaseDao<MatchBean>() {
@@ -35,12 +38,20 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMarketSelectionCrossRef(crossRef: List<MarketSelectCrossRef>)
 
+    @RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
             "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
             "WHERE ref.matchId = bean.matchId")
     abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchBean>
+
+    @Transaction
+    @Query("SELECT * " +
+            "FROM MatchBean bean " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
+            "WHERE ref.matchId = bean.matchId")
+    abstract fun observeAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : Flow<List<MatchBean>>
 
     @Transaction
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
@@ -89,6 +100,19 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)
+        }
+    }
+
+
+    open fun observeFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> {
+        return observeAllMatch(playType, tournamentId, page, startTime).map { matchBeanList ->
+            matchBeanList.map { matchBean ->
+                val markets = geMarkets(matchBean.matchId).map { marketBean ->
+                    val selections = getSelections(matchBean.matchId, marketBean.marketId)
+                    MarketWithSelections(marketBean, selections)
+                }
+                MatchWithMarkets(matchBean, markets)
+            }
         }
     }
 

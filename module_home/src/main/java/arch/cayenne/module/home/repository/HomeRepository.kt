@@ -190,4 +190,6 @@ class HomeRepository(
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
+
+    suspend fun observeFullMatchData(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> = database.matchDao().observeFullMatch(playType, tournamentId, page, startTime)
 }

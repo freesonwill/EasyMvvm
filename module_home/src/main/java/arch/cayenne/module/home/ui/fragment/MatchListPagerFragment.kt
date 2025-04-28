@@ -79,6 +79,7 @@ class MatchListPagerFragment :
 
     override fun createObserver() {
         homeViewModel.selectedDate.observe(viewLifecycleOwner) { date ->
+            test()
             if (date.isNullOrEmpty()) {
                 //切換後選回全部
             } else {
@@ -98,6 +99,11 @@ class MatchListPagerFragment :
                 }
             }
         }
+
+    }
+
+    fun test() {
+
     }
 
     override fun initData() {
@@ -111,6 +117,7 @@ class MatchListPagerFragment :
             mViewModel.setTournamentId(leagueId)
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
         }
+
         mViewModel.getCurrentMatch()
     }
 

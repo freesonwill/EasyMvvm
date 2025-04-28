@@ -11,6 +11,7 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -28,6 +29,10 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
+    override fun initViewModel() {
+        super.initViewModel()
+        observeMatchData()
+    }
 
     fun setSportId(id: Int) {
         _sportId = id
@@ -35,6 +40,24 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     fun setTournamentId(id: Int) {
         _tournamentId = id
+    }
+
+    private fun observeMatchData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeFullMatchData(
+                playType = playType.id,
+                tournamentId = _tournamentId,
+                page = page,
+                startTime = 0
+            ).collect { list ->
+                //TODO 接上被動連接的資料
+//                if (list.isNotEmpty()) {
+//                    withContext(Dispatchers.Main) {
+//                        matchListChange.value = list
+//                    }
+//                }
+            }
+        }
     }
 
     fun getTournamentId() = _tournamentId

@@ -77,7 +77,7 @@ class HomeViewModel : BaseViewModel() {
         getCurrentTournament(sportId)
     }
 
-    fun getCurrentTournament(sportId: Int) {
+    private fun getCurrentTournament(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getTenTournaments(currentPlayType.id, sportId)
             if (list.isNullOrEmpty()) {
