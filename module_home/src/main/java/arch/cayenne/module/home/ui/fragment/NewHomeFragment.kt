@@ -103,7 +103,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.adapter = null
             leagueAdapter = LeaguePagerAdapter(
                 childFragmentManager,
-                viewLifecycleOwner.lifecycle
+                viewLifecycleOwner.lifecycle,
+                mViewModel.getCurrentPlayType()
             )
             vpGameList.adapter = leagueAdapter
 
@@ -131,7 +132,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     }
                     // 記錄當前聯賽所選的 tab index
                     mViewModel.setSelectedDate(dateString)
-
                     // 需實作ViewModel更新對應賽事列表頁頁面
 
                 }
