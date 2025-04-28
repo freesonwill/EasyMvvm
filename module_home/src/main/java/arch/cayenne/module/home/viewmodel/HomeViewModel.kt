@@ -32,6 +32,8 @@ class HomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
 
+    private val _selectedDate = MutableLiveData<String>() // Pair<leagueId, date>
+    val selectedDate: MutableLiveData<String> = _selectedDate
     override fun initViewModel() {
         super.initViewModel()
         //觀察餘額變化
@@ -96,5 +98,10 @@ class HomeViewModel : BaseViewModel() {
         return viewModelScope.async(Dispatchers.IO) {
             betRepository.setSelection(matchId, selectionId)
         }.await()
+    }
+
+    fun setSelectedDate(date: String) {
+        if (_selectedDate.value == date) return
+        _selectedDate.value = date
     }
 }

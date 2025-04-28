@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.BaseFragment
@@ -20,7 +21,6 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
-import arch.cayenne.module.home.manager.DateTabManager
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.utils.DateUtils
@@ -35,7 +35,8 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-
+    private val fragments = mutableMapOf<PlayType, Fragment>()
+    private var isFirstTime = true
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
             Toast.makeText(
@@ -46,7 +47,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private lateinit var leagueAdapter: LeaguePagerAdapter
-    private val dateTabManager = DateTabManager()
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -75,12 +75,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                     }
                 }
+
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
 
         }
     }
+
     //init 二級導航欄位
     private fun initSportLayout() {
         mBinding.apply {
@@ -91,6 +93,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
+
     //init 三級導航欄位與日期
     private fun initTournamentLayout() {
         val dateTabs = DateUtils.getFutureDays(7, Locale.getDefault()) // 取得未來 7 天 (MMDD, 星期)
@@ -100,12 +103,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.adapter = null
             leagueAdapter = LeaguePagerAdapter(
                 childFragmentManager,
-                viewLifecycleOwner.lifecycle,
-                mViewModel.getCurrentPlayType(),
+                viewLifecycleOwner.lifecycle
             )
             vpGameList.adapter = leagueAdapter
 
-            tlLeagueList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.customView?.isSelected = true
                     vpGameList.currentItem = tab?.position ?: 0
@@ -119,18 +121,21 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             // 日期 Tab 設定
             updateDateTabs(tlDateList, dateTabs)
-            tlDateList.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            tlDateList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val dateTabIndex = tab?.position ?: 0
-                    val position = vpGameList.currentItem
-                    val leagueId = leagueAdapter.getItemId(position).toInt()
-
+                    val dateString = if (dateTabIndex == 0) "" else {
+                        val datePair = DateUtils.getFutureDays(7, Locale.getDefault())
+                            .getOrNull(dateTabIndex - 1)
+                        datePair?.first.orEmpty() // MMdd 格式
+                    }
                     // 記錄當前聯賽所選的 tab index
-                    dateTabManager.setSelectedIndex(leagueId, dateTabIndex)
+                    mViewModel.setSelectedDate(dateString)
 
                     // 需實作ViewModel更新對應賽事列表頁頁面
 
                 }
+
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
@@ -138,11 +143,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //ViewPager
             vpGameList.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
-                    val leagueId = leagueAdapter.getItemId(position).toInt()
                     tlLeagueList.getTabAt(position)?.select()
                     // 找到該聯賽目前記錄的日期 tab index
                     updateDateTabs(tlDateList, dateTabs)
-                    tlDateList.getTabAt(dateTabManager.getSelectedIndex(leagueId))?.select()
                 }
             })
             vpGameList.post {
@@ -258,7 +261,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
             mViewModel.setCurrentSport(it[0].id)
             sportsListAdapter.setData(it)
-            sportsListAdapter.notifyItemRangeChanged(0,it.size-1)
+            sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
