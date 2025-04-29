@@ -94,10 +94,8 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    suspend fun setSelection(matchId: Long, selectionId: Long): BetTypeEnum {
-        return viewModelScope.async(Dispatchers.IO) {
-            betRepository.setSelection(matchId, selectionId)
-        }.await()
+    fun setSelection(matchId: Long, selectionId: Long) {
+        betRepository.setSelection(matchId, selectionId)
     }
 
     fun setSelectedDate(date: String) {

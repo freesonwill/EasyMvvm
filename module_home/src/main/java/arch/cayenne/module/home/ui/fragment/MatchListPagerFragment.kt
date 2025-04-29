@@ -54,15 +54,7 @@ class MatchListPagerFragment :
                 }
 
                 override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
-                    //TODO 投注點擊狀態顯示規則待處理
-                    lifecycleScope.launch {
-                        val id =
-                            homeViewModel.setSelection(item.match.matchId, selection.selectionId)
-                        if (id == BetTypeEnum.SINGLE) {
-                            BetSheetFragment.newInstance(item.match.matchId)
-                                .show(childFragmentManager)
-                        }
-                    }
+                    homeViewModel.setSelection(item.match.matchId, selection.selectionId)
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
