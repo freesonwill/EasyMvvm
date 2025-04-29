@@ -16,7 +16,15 @@ data class MatchBean(
     val collect: Boolean,
     @Embedded(prefix = "basic_") val basicInfo: MatchBasicInfoBean,
     @Embedded(prefix = "live_") val liveInfo: MatchLiveInfoBean,
-)
+) {
+//    override fun equals(newItem: Any?): Boolean {
+//        return newItem is MatchBean &&
+//                matchId == newItem.matchId &&
+//                basicInfo.status == newItem.basicInfo.status &&
+//                basicInfo.betStop == newItem.basicInfo.betStop &&
+//                basicInfo.startTime == newItem.basicInfo.startTime
+//    }
+}
 
 @Entity
 data class MarketBean(
@@ -110,12 +118,24 @@ data class MarketDetailBean(
 data class MarketWithSelections(
     val market: MarketBean,
     val selections: List<SelectionBean>
-)
+) {
+//    override fun equals(newItem: Any?): Boolean {
+//        return newItem is MarketWithSelections &&
+//                market == newItem.market
+//
+//    }
+}
 
 data class MatchWithMarkets(
     val match: MatchBean,
     val markets: List<MarketWithSelections>
-)
+) {
+//    override fun equals(newItem: Any?): Boolean {
+//        return newItem is MatchWithMarkets &&
+//                match == newItem.match &&
+//                markets == newItem.markets
+//    }
+}
 
 //用來做notify收到時組合起來更新資料表用的
 data class MatchBeanLite(

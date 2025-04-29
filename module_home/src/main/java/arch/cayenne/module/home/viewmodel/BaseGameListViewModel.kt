@@ -17,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 
 abstract class BaseGameListViewModel: BaseViewModel() {
     companion object {
-        const val DEFAULT_MATCH_SIZE = 3
+        const val DEFAULT_MATCH_SIZE = 10
     }
 
     private var _sportId = SportType.Init.id
@@ -32,7 +32,15 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         observeMatchData()
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeMatchNotify()
+            repository.observeMatchNotify().collect { matchWithMarket ->
+                if (matchListChange.value == null) return@collect
+                val old = matchListChange.value!!.toMutableList()
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = old
+                }
+            }
         }
     }
 
@@ -64,14 +72,18 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     fun getTournamentId() = _tournamentId
 
-    //取得比賽列表
+    //取得分頁的比賽列表
     fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            "取得首頁比賽資料  PlayType = ${playType.id} sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
+            "取得比賽資料  PlayType = ${playType.id} sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
             val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, DEFAULT_MATCH_SIZE, page, 0)
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
-                    matchListChange.value = list
+                    matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
+                        matchListChange.value!! + list
+                    } else {
+                        list
+                    }
                 }
             }
 
@@ -81,7 +93,18 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     fun subscribeMatch(ids: List<Long>) {
         viewModelScope.launch(Dispatchers.IO) {
             "訂閱比賽  $ids".logi(this::class.java.name)
-            repository.subscribeMatch(ids)
+            val matchWithMarkets = repository.subscribeMatch(ids)
+
+            if (matchListChange.value == null) return@launch
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarkets.forEach { matchWithMarket ->
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+            }
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
+
         }
     }
 }

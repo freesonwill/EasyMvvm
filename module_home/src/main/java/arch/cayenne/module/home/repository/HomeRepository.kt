@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 
 class HomeRepository(
     override val scope: CoroutineScope,
@@ -205,7 +206,7 @@ class HomeRepository(
         return arrayListOf()
     }
 
-    suspend fun subscribeMatch(ids: List<Long>) {
+    suspend fun subscribeMatch(ids: List<Long>): List<MatchWithMarkets> {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -218,34 +219,33 @@ class HomeRepository(
         if (res.error == null && res.data != null && res.data!!.success) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
-            matchDao.updateFullMatch(
+           return matchDao.updateFullMatch(
                 matchUpdateData.matchLites,
                 matchUpdateData.markets,
                 matchUpdateData.selections,
                 matchUpdateData.matchMarketCrossRefs,
                 matchUpdateData.marketSelectCrossRefs
             )
-        }
+        } else { return arrayListOf() }
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
 
-    suspend fun observeMatchNotify() {
-        "開始接收比賽推播".logi(this::class.java.name)
-        socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).collect {
+    suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
+        return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
                 "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
                 val matchUpdateData = arrayListOf(it.data!!).toRoomData()
-                matchDao.updateFullMatch(
+                val list = matchDao.updateFullMatch(
                     matchUpdateData.matchLites,
                     matchUpdateData.markets,
                     matchUpdateData.selections,
                     matchUpdateData.matchMarketCrossRefs,
                     matchUpdateData.marketSelectCrossRefs
                 )
+                list.forEach { matchWithMarket -> emit(matchWithMarket) }
             }
         }
-
     }
 
     suspend fun observeFullMatchData(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> = database.matchDao().observeFullMatch(playType, tournamentId, page, startTime)
