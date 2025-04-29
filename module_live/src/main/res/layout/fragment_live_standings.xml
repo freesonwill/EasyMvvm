@@ -4,7 +4,6 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_0E0F19"
     tools:context=".ui.LiveStandingsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
