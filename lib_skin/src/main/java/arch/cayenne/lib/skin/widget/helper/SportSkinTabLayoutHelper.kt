@@ -3,7 +3,6 @@ package arch.cayenne.lib.skin.widget.helper
 import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
 

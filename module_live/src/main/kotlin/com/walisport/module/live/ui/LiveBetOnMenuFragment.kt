@@ -10,7 +10,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import arch.cayenne.lib.base.ui.BaseSideSheetDialogFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.MarketTypeBean
@@ -22,7 +21,7 @@ import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
-import arch.cayenne.lib.base.data.StatusBarConfig
+import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import kotlin.math.atan2
 import kotlin.math.sqrt
 

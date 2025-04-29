@@ -1,11 +1,9 @@
 package com.walisport.module.live.ui
-
-
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -33,13 +31,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.getMarketType(mainViewModel.matchId)
-        mViewModel.marketType.observe(viewLifecycleOwner){
-            LogUtils.e("marketTypeData${it}")
-        }
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
-    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
         mViewModel.getMarketType(mainViewModel.matchId)
         mViewModel.marketType.observe(viewLifecycleOwner){
        LogUtils.e("marketTypeData${it}")
