@@ -177,19 +177,37 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): List<MatchWithMarkets> {
         return queryAllMatch(playType, tournamentId, page, startTime).map { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
-                val selections = getSelections(matchBean.matchId, marketBean.marketId)
+                val selections = specialHandling(
+                    marketBean.marketId,
+                    getSelections(matchBean.matchId, marketBean.marketId)
+                )
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)
         }
     }
-
+    //針對market id不同selection做些特殊處理
+    private fun specialHandling(marketId: Long, originSelections: List<SelectionBean>): List<SelectionBean> {
+        return when(marketId) {
+            1L -> {     //全場獨贏api selection順序為主平客，UI顯示應該為主客平
+                originSelections
+                    .toMutableList()
+                    .apply {
+                        this[1] = this[2].also { this[2] = this[1] }
+                    }
+            }
+            else -> { originSelections }
+        }
+    }
 
     open fun observeFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> {
         return observeAllMatch(playType, tournamentId, page, startTime).map { matchBeanList ->
             matchBeanList.map { matchBean ->
                 val markets = geMarkets(matchBean.matchId).map { marketBean ->
-                    val selections = getSelections(matchBean.matchId, marketBean.marketId)
+                    val selections = specialHandling(
+                        marketBean.marketId,
+                        getSelections(matchBean.matchId, marketBean.marketId)
+                    )
                     MarketWithSelections(marketBean, selections)
                 }
                 MatchWithMarkets(matchBean, markets)
