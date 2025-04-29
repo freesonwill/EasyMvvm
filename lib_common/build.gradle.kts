@@ -50,6 +50,7 @@ dependencies {
     api(project(":lib_skin"))
     api(project(":lib_socket"))
     api(project(":lib_database"))
+    implementation(project(":lib_res"))
     implementation(libs.jsbridge)
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
