@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.widget
+package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.util.AttributeSet

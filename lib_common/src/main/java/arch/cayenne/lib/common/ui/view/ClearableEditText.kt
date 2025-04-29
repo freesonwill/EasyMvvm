@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.ui.widget
+package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnFocusChangeListener
 import android.view.View.OnTouchListener
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import arch.cayenne.lib.common.R

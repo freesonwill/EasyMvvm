@@ -1,11 +1,10 @@
-package arch.cayenne.lib.common.ui.widget
+package arch.cayenne.lib.common.ui.view
 
 import arch.cayenne.lib.common.R
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.contains

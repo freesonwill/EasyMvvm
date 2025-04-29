@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.ui.widget.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.bumptech.glide.Glide

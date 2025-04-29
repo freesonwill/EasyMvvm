@@ -32,7 +32,7 @@
             android:src="@drawable/search_icon"
             />
         
-        <arch.cayenne.lib.common.ui.widget.ClearableEditText
+        <arch.cayenne.lib.common.ui.view.ClearableEditText
             android:id="@+id/ce_search"
             style="@style/CustomToolbarEditStyle"
             android:textColor="@color/search_text"
