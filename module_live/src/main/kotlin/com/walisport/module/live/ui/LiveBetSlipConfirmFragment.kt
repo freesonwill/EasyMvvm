@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
@@ -35,6 +36,8 @@ class LiveBetSlipConfirmFragment :
             it.layoutManager = LinearLayoutManager(requireContext())
             it.addItemDecoration(divider)
             it.adapter = adapter
+            it.setItemViewCacheSize(10)
+            it.setRecycledViewPool(RecyclerView.RecycledViewPool())
         }
     }
 

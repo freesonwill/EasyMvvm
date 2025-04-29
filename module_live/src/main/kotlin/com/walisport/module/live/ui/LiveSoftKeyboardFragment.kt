@@ -34,13 +34,13 @@ class LiveSoftKeyboardFragment :
     lateinit var mKeyboardHelper: SoftKeyboardStateHelper
     private var softKeyListener: LiveChatSoftKeyListener? = null
     private val itemListener = object : RecyclerItemListener<EmojiData> {
-        override fun onItemClick(item: EmojiData, position: Int) {
-            if (item.key == "del") {
+        override fun onItemClick(item: EmojiData?, position: Int) {
+            if (item?.key == "del") {
                 val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
                 ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
                 ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
             } else {
-                mBinding.liveChatEtInput.text?.append(item.key)
+                mBinding.liveChatEtInput.text?.append(item?.key)
             }
         }
     }
