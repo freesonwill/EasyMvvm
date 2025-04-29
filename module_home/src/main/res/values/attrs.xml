@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DrawerItemView">
+        <attr name="drawerIcon" format="reference" />
+        <attr name="drawerTitle" format="string" />
+        <attr name="item_text_size" format="dimension"/>
+        <attr name="drawerIconWidth" format="dimension" />
+        <attr name="drawerIconHeight" format="dimension" />
+        <attr name="drawerTitleHeight" format="dimension" />
+    </declare-styleable>
+</resources>
