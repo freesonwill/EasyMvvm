@@ -3,11 +3,9 @@ package arch.cayenne.lib.base
 import android.content.Context
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.repository.EmptyRepository
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.LogUtilsExt
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import arch.cayenne.lib.base.BuildConfig
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.androidx.viewmodel.dsl.viewModelOf

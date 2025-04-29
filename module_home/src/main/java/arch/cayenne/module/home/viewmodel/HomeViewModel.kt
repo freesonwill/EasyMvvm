@@ -2,9 +2,8 @@ package arch.cayenne.module.home.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
@@ -12,7 +11,6 @@ import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject

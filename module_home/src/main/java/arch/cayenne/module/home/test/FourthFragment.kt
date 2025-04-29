@@ -1,10 +1,9 @@
 package arch.cayenne.module.home.test
 
 import android.os.Bundle
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentTestFourthBinding
 import kotlin.reflect.KClass

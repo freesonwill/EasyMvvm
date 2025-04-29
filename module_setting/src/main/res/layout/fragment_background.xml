@@ -7,7 +7,7 @@
     android:id="@+id/root"
     android:background="@color/background">
 
-    <arch.cayenne.lib.common.ui.widget.TitleBarView
+    <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

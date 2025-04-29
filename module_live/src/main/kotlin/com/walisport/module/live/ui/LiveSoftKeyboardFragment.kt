@@ -2,15 +2,14 @@ package com.walisport.module.live.ui
 
 import android.app.Activity
 import android.os.Bundle
-import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.PagerBean
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator

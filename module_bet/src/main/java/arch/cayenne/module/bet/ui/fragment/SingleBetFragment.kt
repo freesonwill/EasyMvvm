@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate

@@ -13,9 +13,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarConfig
-import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat

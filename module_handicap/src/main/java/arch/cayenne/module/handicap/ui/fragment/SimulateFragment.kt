@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding

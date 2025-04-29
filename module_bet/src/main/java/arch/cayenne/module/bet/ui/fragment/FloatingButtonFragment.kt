@@ -3,7 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
