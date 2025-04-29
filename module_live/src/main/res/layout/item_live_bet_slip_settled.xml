@@ -50,7 +50,7 @@
             android:layout_height="@dimen/dp_20"
             android:background="@drawable/live_betslip_settled_status"
             android:gravity="center"
-            android:text="输一半"
+            android:text="输半"
             android:textColor="@color/tab_text"
             android:textSize="@dimen/sp_13"
             android:visibility="gone"
