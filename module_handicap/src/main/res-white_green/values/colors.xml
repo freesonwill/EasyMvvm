@@ -3,4 +3,5 @@
     <color name="background_white_green">#EEEEEE</color>
     <color name="line_white_green">#E8E8EA</color>
     <color name="item_name_white_green">#222222</color>
+    <color name="item_answer_white_green">#F3F3F4</color>
 </resources>

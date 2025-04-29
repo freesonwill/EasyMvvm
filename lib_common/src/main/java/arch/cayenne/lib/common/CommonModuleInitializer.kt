@@ -21,7 +21,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
     }
 
     private val moduleList: List<Module> = listOf(module {
-        factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get()) }
+        factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
         single { UserDataManager() }
     })
 }

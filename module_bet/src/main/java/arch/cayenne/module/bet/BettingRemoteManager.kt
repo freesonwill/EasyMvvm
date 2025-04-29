@@ -1,7 +1,8 @@
 package arch.cayenne.module.bet
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
@@ -19,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 
 class BettingRemoteManager(private val scope: CoroutineScope, private val socketManager: WebSocketManager) {
 
-    suspend fun singleBet(bean: BetBean, money: Long): SingleBetDataModel? {
+    suspend fun singleBet(bean: BetSelectionBean, money: Long): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -27,8 +28,8 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
         ) {
             Client.SingleBetReq.newBuilder().apply {
                 this.matchId = bean.matchId
-                this.selectionId = bean.selectionLiteBean.id
-                this.odds = bean.selectionLiteBean.odds
+                this.selectionId = bean.selectionId
+                this.odds = bean.odds.getOdds()
                 this.betAmount = money.getMoney()
                 this.oddsChange = 2
             }.build()
@@ -48,19 +49,20 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
     }
 
     suspend fun reserveBet(
-        bean: BetBean,
+        bean: BetSelectionBean,
+        reserveOdds: Int,
         money: Long
     ): ReserveBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ReserveBetResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SINGLE_BET,
+            apiCode = ApiCode.RESERVE_BET,
         ) {
             Client.ReserveBetReq.newBuilder().apply {
                 this.setBet(Common.BetOption.newBuilder().apply {
                     this.matchId = bean.matchId
-                    this.selectionId = bean.selectionLiteBean.id
-                    this.odds = bean.selectionLiteBean.odds
+                    this.selectionId = bean.selectionId
+                    this.odds = reserveOdds.getOdds()
                 })
                 this.betAmount = money.getMoney()
             }.build()
@@ -77,7 +79,7 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
     }
 
     suspend fun comboBet(
-        beans: List<BetBean>,
+        beans: List<BetSelectionBean>,
         multi: List<ComboMultiBetBean>
     ): ComboBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.MultipleBetResp>(
@@ -90,8 +92,8 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
                     beans.map {
                         Common.BetOption.newBuilder().apply {
                             this.matchId = it.matchId
-                            this.selectionId = it.selectionLiteBean.id
-                            this.odds = it.selectionLiteBean.odds
+                            this.selectionId = it.selectionId
+                            this.odds = it.odds.getOdds()
                         }.build()
                     }
                 )
@@ -111,7 +113,7 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
             val placeBetInfo = data.placeBetInfoList.map {
                 ComboMultiBetInfo(
                     orderId = it.orderId,
-                    comboValue = it.serialValue,
+                    comboValue = if (it.serialValue == 0) 1 else it.serialValue,
                     orderStatus = it.orderStatus,
                     orderStatusMsg = it.orderStatusMsg
                 )
@@ -157,7 +159,7 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
     }
 
     suspend fun getComboRisk(
-        beans: List<BetBean>
+        beans: List<BetSelectionBean>
     ): List<ComboRiskDataModel>? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetComboRiskResp>(
             scope = scope,
@@ -168,7 +170,7 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
                 val risk = beans.map { bean ->
                     Common.RiskSelection.newBuilder().apply {
                         this.matchId = bean.matchId
-                        this.selectionId = bean.selectionLiteBean.id
+                        this.selectionId = bean.selectionId
                     }.build()
                 }
                 this.addAllSelection(risk)

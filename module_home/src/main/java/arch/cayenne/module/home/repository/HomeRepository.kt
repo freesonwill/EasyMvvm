@@ -27,6 +27,11 @@ class HomeRepository(
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
+    private val matchDao = database.matchDao()
+
+    companion object {
+        const val ONE_DAY_TIME_STAMP = 86399000L
+    }
 
     @Transaction
     suspend fun getSportStatistical(): List<SportDataModel>? {
@@ -85,6 +90,7 @@ class HomeRepository(
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         clearTournamentCache()
+        clearMatchCache()
         //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
@@ -144,10 +150,13 @@ class HomeRepository(
     private fun clearTournamentCache() {
         tournamentDao.clearTournaments()
     }
+    private fun clearMatchCache() {
+        matchDao.clearAllMatch()
+    }
 
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int) : List<MatchWithMarkets> {
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         //先從DB拿取
-        val queryResult = database.matchDao().getFullMatch(playType, tournamentId)
+        val queryResult = database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
         if (queryResult.isNotEmpty()){
             return queryResult
         }
@@ -162,6 +171,10 @@ class HomeRepository(
                 this.tournamentId = tournamentId
                 this.page = page
                 this.size = DEFAULT_MATCH_SIZE
+                if (startTime != 0L){
+                    this.startTime = startTime
+                    this.endTime = startTime + ONE_DAY_TIME_STAMP
+                }
             }.build()
         }
 
@@ -171,6 +184,8 @@ class HomeRepository(
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
+                    page = page,
+                    startTime = 0,
                     matchId = it.matchId,
                 )
             }
@@ -182,10 +197,12 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return database.matchDao().getFullMatch(playType, tournamentId)
+            return database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
         }
         return arrayListOf()
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
+
+    suspend fun observeFullMatchData(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> = database.matchDao().observeFullMatch(playType, tournamentId, page, startTime)
 }

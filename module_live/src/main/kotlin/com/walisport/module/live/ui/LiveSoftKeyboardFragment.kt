@@ -63,17 +63,14 @@ class LiveSoftKeyboardFragment :
         mBinding.liveChatIvEmoji.setOnClickListener {
             showEmoji()
         }
-
         mBinding.liveChatTvSend.setOnClickListener {
             showChat()
             sendText()
         }
-
         mBinding.liveChatIvKeyboard.setOnClickListener {
             showSoftKeyBoard()
             EditTextUtils.showKeyboard(context, mBinding.liveChatEtInput)
         }
-
         mBinding.liveChatEtInput.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
                 showSoftKeyBoard()
@@ -88,7 +85,6 @@ class LiveSoftKeyboardFragment :
 
     override fun createObserver() {
     }
-
 
     private fun initTab() {
 

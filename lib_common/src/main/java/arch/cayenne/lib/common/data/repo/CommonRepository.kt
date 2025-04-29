@@ -1,12 +1,12 @@
 package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.UserDataKey
 import arch.cayenne.lib.common.data.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
@@ -23,6 +23,7 @@ class CommonRepository(
     private val socketManager: WebSocketManager,
     private val userDataManager: UserDataManager,
     private val infoDao: InfoDao,
+    private val betDao: BetDao
 ) : BaseRepository() {
 
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
@@ -80,11 +81,21 @@ class CommonRepository(
     //觀察從API來的餘額變化並塞進資料庫
     suspend fun observeBalanceChange() {
         socketManager.observeProtoMessage<Client.BalanceNotify>(ApiCode.BALANCE_NOTIFY).collect {
-            //TODO 待驗證，不知道能不能收得到
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {
                 infoDao.update(InfoBean(this.uid, it.data!!.balance.balanceStringToLong(), this.login))
+            }
+        }
+    }
+
+    //觀察從API來的餘額變化並塞進資料庫
+    suspend fun observeBettingOrderStatus() {
+        socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY).collect {
+            if (it.data == null || it.data!!.orderStatusList.isEmpty())
+                return@collect
+            it.data!!.orderStatusList.forEach { resp ->
+                betDao.updateDetailResult(resp.orderId, BetResultStatusEnum.getStatusByCode(resp.status))
             }
         }
     }

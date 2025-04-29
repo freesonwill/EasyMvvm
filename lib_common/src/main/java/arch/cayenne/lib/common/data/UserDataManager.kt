@@ -47,8 +47,9 @@ class UserDataManager {
         flow.tryEmit(value)
     }
 
-    fun observe(key: UserDataKey): Flow<Any?> {
+    fun<T> observe(key: UserDataKey): Flow<T> {
         val flow = flows.getOrPut(key) { MutableSharedFlow(replay = 1) }
-        return flow
+        @Suppress("UNCHECKED_CAST")
+        return flow as Flow<T>
     }
 }

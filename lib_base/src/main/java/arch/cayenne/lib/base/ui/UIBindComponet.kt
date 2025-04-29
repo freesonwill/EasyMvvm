@@ -42,12 +42,12 @@ class UIBindComponent<UIOwner, VM, VB>(
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.root.fitsSystemWindows = true
-        uiOwner.initData()
+        trackLoadingTime()
+        viewModel.initViewModel()
         uiOwner.initView(savedInstanceState)
         uiOwner.initListener()
         uiOwner.createObserver()
-        viewModel.initViewModel()
-        trackLoadingTime()
+        uiOwner.initData()
     }
 
     fun onDestroyView() {

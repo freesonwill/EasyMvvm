@@ -20,4 +20,5 @@
     <color name="background">#0E0F19</color>
     <color name="line">#23252F</color>
     <color name="item_name">#FFFFFF</color>
+    <color name="item_answer">#30303E</color>
 </resources>
