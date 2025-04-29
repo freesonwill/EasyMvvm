@@ -16,6 +16,8 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         val combo = getString(R.string.title_combo_bet_odds).format(onComboMultiBetClickListener.getSize(), item.combo)
         val title = "$combo @${item.sumOdds.getOdds()}"
         mBinding.tvTitleCombo.text = title
+        val multi = "${item.count}x"
+        mBinding.tvMulti.text = multi
 
         updateMoney(item)
 

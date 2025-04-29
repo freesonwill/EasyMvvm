@@ -74,7 +74,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
 
             override fun getSize(): Int {
-                return betSelectionAdapter.currentList.size
+                return mViewModel.onBetListListener.value?.size ?: 0
             }
         })
     }
