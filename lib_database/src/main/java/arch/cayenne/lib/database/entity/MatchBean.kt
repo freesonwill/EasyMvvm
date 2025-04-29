@@ -47,6 +47,7 @@ data class TournamentMatchRef(
     val page: Int,
     val startTime: Long, //0表示取得ALL
     val matchId: Long,
+    val order: Int,
 )
 
 @Entity(primaryKeys = ["matchId", "marketId"],)

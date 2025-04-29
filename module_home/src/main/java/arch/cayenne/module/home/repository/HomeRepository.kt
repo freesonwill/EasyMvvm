@@ -183,13 +183,14 @@ class HomeRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = resp.data!!.matchList.toRoomData()
-            val tournamentMatchRefs = resp.data!!.matchList.map {
+            val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
                     page = page,
                     startTime = 0,
-                    matchId = it.matchId,
+                    matchId = match.matchId,
+                    order = page * 100 + index
                 )
             }
             database.matchDao().insertFullMatch(

@@ -47,7 +47,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT * " +
             "FROM MatchBean bean " +
             "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
-            "WHERE ref.matchId = bean.matchId")
+            "WHERE ref.matchId = bean.matchId ORDER BY ref.`order`")
     abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchBean>
 
     @Transaction
