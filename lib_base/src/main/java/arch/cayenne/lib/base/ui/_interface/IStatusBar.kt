@@ -1,8 +1,6 @@
-package arch.cayenne.lib.base.ui.interface_
+package arch.cayenne.lib.base.ui._interface
 
-import android.view.ViewGroup
-import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.data.StatusBarConfig
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 
 /**
  * 状态栏StatusBar

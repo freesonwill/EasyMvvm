@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
-import arch.cayenne.lib.base.ui.BaseDialogFragment
+import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
@@ -17,7 +17,7 @@ import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 
-class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel,FragmentReserveDialogBinding>() {
+class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"

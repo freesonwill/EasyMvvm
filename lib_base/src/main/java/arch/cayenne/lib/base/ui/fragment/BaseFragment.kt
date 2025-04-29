@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui
+package arch.cayenne.lib.base.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,12 +16,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.data.StatusBarConfig
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.interface_.IStatusBar
-import arch.cayenne.lib.base.ui.interface_.IView
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.LogUtilsExt.printStackTrace
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
+import arch.cayenne.lib.base.ui.delegate.UIBindComponent
+import arch.cayenne.lib.base.ui._interface.IStatusBar
+import arch.cayenne.lib.base.ui._interface.IView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job

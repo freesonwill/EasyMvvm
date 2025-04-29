@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.data
+package arch.cayenne.lib.base.data.model
 
 
 

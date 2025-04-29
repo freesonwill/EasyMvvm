@@ -1,6 +1,6 @@
 package arch.cayenne.module.bet.ui.viewholder
 
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import arch.cayenne.module.bet.util.ViewHelper

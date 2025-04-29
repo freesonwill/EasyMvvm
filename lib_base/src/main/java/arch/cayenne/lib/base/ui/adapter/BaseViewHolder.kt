@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.viewholder
+package arch.cayenne.lib.base.ui.adapter
 
 import android.content.res.Resources
 import androidx.recyclerview.widget.RecyclerView

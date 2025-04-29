@@ -12,10 +12,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.data.StatusBarConfig
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.interface_.IStatusBar
-import arch.cayenne.lib.base.ui.interface_.IView
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui._interface.IStatusBar
+import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
+import arch.cayenne.lib.base.ui.delegate.UIBindComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job

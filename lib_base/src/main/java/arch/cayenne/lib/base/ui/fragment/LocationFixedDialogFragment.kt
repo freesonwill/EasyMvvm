@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui
+package arch.cayenne.lib.base.ui.fragment
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -6,7 +6,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 
 /**
  * 指定位置的DialogFragment

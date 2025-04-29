@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.adapter
+package arch.cayenne.lib.base.ui.adapter
 
 import android.os.Bundle
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
-import arch.cayenne.lib.base.data.PagerBean
+import arch.cayenne.lib.base.data.model.PagerBean
 class PagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,

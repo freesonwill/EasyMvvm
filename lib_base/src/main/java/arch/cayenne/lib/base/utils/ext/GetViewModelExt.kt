@@ -1,9 +1,9 @@
-package arch.cayenne.lib.base.utils
+package arch.cayenne.lib.base.utils.ext
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import java.lang.reflect.ParameterizedType
 
 

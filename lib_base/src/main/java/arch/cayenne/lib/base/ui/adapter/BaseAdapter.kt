@@ -1,11 +1,10 @@
-package arch.cayenne.lib.base.adapter
+package arch.cayenne.lib.base.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
 
 /***
  * @param T: Item Object

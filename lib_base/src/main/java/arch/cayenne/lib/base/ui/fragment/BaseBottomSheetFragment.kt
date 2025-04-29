@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui
+package arch.cayenne.lib.base.ui.fragment
 
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -19,8 +19,9 @@ import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.interface_.IView
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.delegate.UIBindComponent
+import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
 

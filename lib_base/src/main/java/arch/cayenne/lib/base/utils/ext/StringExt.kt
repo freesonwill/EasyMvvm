@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.utils
+package arch.cayenne.lib.base.utils.ext
 
 /**
  * 字符串扩展

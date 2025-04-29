@@ -1,7 +1,7 @@
-package arch.cayenne.lib.base.data
+package arch.cayenne.lib.base.data.model
 
 import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 
 /***
  * TabLayout & ViewPager 所用

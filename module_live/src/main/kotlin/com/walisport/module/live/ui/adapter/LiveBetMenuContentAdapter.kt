@@ -4,9 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import com.walisport.module.live.databinding.AdapterLiveBetContentItemLayoutBinding
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.databinding.AdapterLiveBetMenuContentItemLayoutBinding
 
 class LiveBetMenuContentAdapter(compare: DiffUtil.ItemCallback<String>) :

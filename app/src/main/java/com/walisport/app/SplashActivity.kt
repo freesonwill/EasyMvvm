@@ -4,12 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import arch.cayenne.lib.base.data.StatusBarConfig
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.walisport.app.data.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.socket.data.LoginTokenFailedError

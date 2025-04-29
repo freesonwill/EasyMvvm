@@ -1,8 +1,8 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.databinding.FragmentLiveShareBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel

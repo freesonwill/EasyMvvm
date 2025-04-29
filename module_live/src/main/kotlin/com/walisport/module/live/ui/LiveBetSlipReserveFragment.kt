@@ -1,17 +1,15 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.livebetslip.LiveBetSlipData
-import com.walisport.module.live.data.livebetslip.LiveBetSlipSelectionData
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipReserveBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter

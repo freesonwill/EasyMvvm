@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.data.viewmodel
+package arch.cayenne.lib.base.ui.viewmodel
 
 
 

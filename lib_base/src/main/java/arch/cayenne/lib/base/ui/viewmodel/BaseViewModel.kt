@@ -1,7 +1,6 @@
-package arch.cayenne.lib.base.data.viewmodel
+package arch.cayenne.lib.base.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import org.koin.core.component.KoinComponent
 
 /**

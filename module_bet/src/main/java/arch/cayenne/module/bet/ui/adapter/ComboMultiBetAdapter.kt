@@ -2,7 +2,7 @@ package arch.cayenne.module.bet.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.databinding.ItemComboMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.ComboRateCompare

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui
+package arch.cayenne.lib.base.ui.delegate
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.interface_.IView
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 
 /**
  * @author: zhangsan

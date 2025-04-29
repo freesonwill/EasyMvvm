@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui.interface_
+package arch.cayenne.lib.base.ui._interface
 
 import android.os.Bundle
 

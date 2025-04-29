@@ -1,6 +1,6 @@
 package arch.cayenne.lib.common.utils
 
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

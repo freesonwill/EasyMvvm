@@ -1,7 +1,7 @@
-package arch.cayenne.lib.common.helper
+package arch.cayenne.lib.common.utils.helper
 
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.launchWithCustomContext
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ext.CommonExt.isMainThread

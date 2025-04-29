@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.ui
+package arch.cayenne.lib.base.ui.fragment
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -14,10 +14,12 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.data.StatusBarConfig
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.interface_.IStatusBar
-import arch.cayenne.lib.base.ui.interface_.IView
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
+import arch.cayenne.lib.base.ui.delegate.UIBindComponent
+import arch.cayenne.lib.base.ui._interface.IStatusBar
+import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
 

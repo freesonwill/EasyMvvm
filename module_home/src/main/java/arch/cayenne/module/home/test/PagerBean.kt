@@ -1,7 +1,6 @@
 package arch.cayenne.module.home.test
 
 import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.ui.BaseFragment
 
 /**
  * @author: zhangsan

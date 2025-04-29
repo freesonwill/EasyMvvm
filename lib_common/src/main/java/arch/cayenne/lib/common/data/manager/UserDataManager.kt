@@ -1,5 +1,6 @@
-package arch.cayenne.lib.common.data
+package arch.cayenne.lib.common.data.manager
 
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow

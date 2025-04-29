@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.data
+package arch.cayenne.lib.common.data.constants
 
 enum class UserDataKey(val key: String) {
 

@@ -1,6 +1,7 @@
-package arch.cayenne.lib.base.utils
+package arch.cayenne.lib.base.utils.ext
 
-import arch.cayenne.lib.base.utils.StringExt.safeSubstring
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.StringExt.safeSubstring
 
 object LogUtilsExt {
 
