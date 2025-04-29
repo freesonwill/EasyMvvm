@@ -3,7 +3,7 @@
     android:id="@+id/llOddsRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_2"
+    android:paddingEnd="@dimen/dp_2"
     android:orientation="vertical">
 
     <!-- 單格 odds cell（重複三次）-->

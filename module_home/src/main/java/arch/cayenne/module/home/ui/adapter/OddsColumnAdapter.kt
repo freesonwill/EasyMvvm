@@ -9,14 +9,20 @@ import arch.cayenne.module.home.ui.compare.OddsDiffCallback
 import arch.cayenne.module.home.ui.viewholder.OddsColumnViewHolder
 
 class OddsColumnAdapter(
-    private val onOddsClick: (SelectionBean) -> Unit
+    private val onOddsClick: (SelectionBean, Boolean) -> Unit
 ) : BaseAdapter<List<SelectionBean>, OddsColumnViewHolder, ItemOddsColumnBinding>(OddsDiffCallback()) {
+    private var selectedSelectionId: Long? = null
+
+    fun updateSelectedSelectionId(id: Long?) {
+        selectedSelectionId = id
+        notifyDataSetChanged()
+    }
     override fun convertPlus(
         holder: OddsColumnViewHolder,
         binding: ItemOddsColumnBinding,
         position: Int
     ) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), selectedSelectionId)
     }
 
     override fun createViewBinding(
@@ -40,9 +46,9 @@ class OddsColumnAdapter(
         payloads: List<Any>
     ) {
         if (payloads.isNotEmpty()) {
-            holder.bindPayload(getItem(position), payloads)
+            holder.bindPayload(getItem(position), payloads, selectedSelectionId)
         } else {
-            holder.bind(getItem(position))
+            holder.bind(getItem(position), selectedSelectionId)
         }
     }
 }

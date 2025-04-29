@@ -57,7 +57,7 @@
         app:layout_constraintTop_toTopOf="@+id/tv_game_status"
         tools:text="117’" />
 
-    <!-- 客隊區塊 -->
+    <!-- 主隊區塊 -->
     <LinearLayout
         android:id="@+id/layout_home_team"
         android:layout_width="0dp"
@@ -100,7 +100,7 @@
             tools:text="1" />
     </LinearLayout>
 
-    <!-- 主隊區塊 -->
+    <!-- 客隊區塊 -->
     <LinearLayout
         android:id="@+id/layout_away_team"
         android:layout_width="0dp"

@@ -26,12 +26,20 @@ class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
     private val onMatchItemClickListener: MatchItemAdapter.OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
-    private val oddsColumnAdapter = OddsColumnAdapter { selection ->
-        onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
-    }
+    private lateinit var oddsColumnAdapter: OddsColumnAdapter
+
+
     private lateinit var currentMatchWithMarkets: MatchWithMarkets
 
     fun init(data: MatchWithMarkets) {
+        oddsColumnAdapter = OddsColumnAdapter { selection, isSelected ->
+            if (isSelected) {
+                onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
+                oddsColumnAdapter.updateSelectedSelectionId(selection.selectionId)
+            } else {
+                oddsColumnAdapter.updateSelectedSelectionId(null)
+            }
+        }
         currentMatchWithMarkets = data
         with(mBinding) {
             val basicInfo = data.match.basicInfo
@@ -65,7 +73,6 @@ class MatchItemViewHolder(
             val columnCount = markets.size
             layoutOddsTitle.columnCount = columnCount
 
-            //TODO 獨贏的主客和要改
             markets.forEachIndexed { index, bean ->
                 val titleView = TextView(binding.root.context).apply {
                     text = bean.market.marketName
@@ -91,6 +98,7 @@ class MatchItemViewHolder(
             rvOddsGrid.apply {
                 layoutManager = GridLayoutManager(root.context, 3)
                 adapter = oddsColumnAdapter
+
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,

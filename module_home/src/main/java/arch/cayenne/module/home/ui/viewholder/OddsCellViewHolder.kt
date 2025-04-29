@@ -8,27 +8,53 @@ import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
-    private val onOddsClick: (SelectionBean) -> Unit
+    private val onOddsClick: (SelectionBean, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
     private var currentSelection: SelectionBean? = null
-    fun bind(item: SelectionBean) {
+    private var isSelected = false
+    fun bind(item: SelectionBean, selectedId: Long?) {
         currentSelection = item
-        updateOddsView(item)
-    }
-    private fun updateOddsView(item: SelectionBean) {
         with(mBinding) {
             tvShortName.text = item.shortName
             tvOdds.text = item.odds.getOdds()
-            if (item.active) activate() else deActivate()
-//            ivFlashIcon.visibility = View.GONE // 初始關閉閃爍 icon
+            llOddsCell.isSelected = item.selectionId == selectedId //<<<< 是否選中
+            updateState(item.active)
 
             llOddsCell.setOnClickListener {
-                if (item.active) onOddsClick(item)
+                if (item.active) {
+                    val isSelected = !(llOddsCell.isSelected)
+                    llOddsCell.isSelected = isSelected
+                    onOddsClick(item, isSelected)
+                }
             }
         }
+//        updateOddsView(item, isSelected)
     }
 
-    fun bindPayload(item: SelectionBean, payloads: List<Any>) {
+//    private fun updateOddsView(item: SelectionBean,isSelected: Boolean) {
+//        with(mBinding) {
+//            tvShortName.text = item.shortName
+//            tvOdds.text = item.odds.getOdds()
+//            llOddsCell.isSelected = item.selectionId == selectedId
+//            if (item.active) activate() else deActivate()
+////            ivFlashIcon.visibility = View.GONE // 初始關閉閃爍 icon
+//            llOddsCell.isSelected = isSelected
+//            llOddsCell.setOnClickListener {
+//                if (!item.active) return@setOnClickListener
+//
+//                isSelected = !isSelected // toggle
+//                llOddsCell.isSelected = isSelected
+//
+//                if (isSelected) {
+//                    onOddsClick(item) // 點擊通知外層
+//                } else {
+//                    onOddsClick(null) // 如果取消選中，傳一個無效ID通知（看你的外部邏輯）
+//                }
+//            }
+//        }
+//    }
+
+    fun bindPayload(item: SelectionBean, payloads: List<Any>, selectedId: Long?) {
         val diff = payloads.firstOrNull() as? Set<*> ?: return
         currentSelection = item
 
@@ -53,6 +79,7 @@ class OddsCellViewHolder(
             if ("parlay" in diff) {
                 // 目前沒特別UI變化
             }
+            llOddsCell.isSelected = item.selectionId == selectedId
         }
     }
     //    private fun animateOddsChange(view: View) {
@@ -64,8 +91,16 @@ class OddsCellViewHolder(
 //        anim.duration = 300
 //        anim.start()
 //    }
+    private fun updateState(active: Boolean) {
+        with(mBinding) {
+            tvShortName.visibility = if (active) View.VISIBLE else View.GONE
+            tvOdds.visibility = if (active) View.VISIBLE else View.GONE
+            ivLock.visibility = if (active) View.GONE else View.VISIBLE
+            llOddsCell.isEnabled = active
+        }
+    }
 
-    fun activate() {
+    private fun activate() {
         with(mBinding) {
             tvShortName.visibility = View.VISIBLE
             tvOdds.visibility = View.VISIBLE
@@ -74,7 +109,7 @@ class OddsCellViewHolder(
         }
     }
 
-    fun deActivate() {
+    private fun deActivate() {
         with(mBinding) {
             tvShortName.visibility = View.GONE
             tvOdds.visibility = View.GONE

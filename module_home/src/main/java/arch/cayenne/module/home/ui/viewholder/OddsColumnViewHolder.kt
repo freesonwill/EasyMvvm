@@ -6,7 +6,7 @@ import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 
 class OddsColumnViewHolder(
     mBinding: ItemOddsColumnBinding, // odds_row_item.xml 的 binding
-    onOddsClick: (SelectionBean) -> Unit
+    onOddsClick: (SelectionBean, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
 
     private val oddsCells = listOf(
@@ -15,19 +15,15 @@ class OddsColumnViewHolder(
         OddsCellViewHolder(mBinding.itemOddsCell3, onOddsClick)
     )
 
-    fun bind(selections: List<SelectionBean>) {
+    fun bind(selections: List<SelectionBean>, selectedId: Long?) {
         oddsCells.forEachIndexed { index, cell ->
-            val selection = selections.getOrNull(index)
-            if (selection != null) {
-                // 綁定數據
-                cell.bind(selection)
-            } else {
-                cell.hideView()
-            }
+            selections.getOrNull(index)?.let {
+                cell.bind(it, selectedId)
+            } ?: cell.hideView()
         }
     }
 
-    fun bindPayload(selections: List<SelectionBean>, payloads: List<Any>) {
+    fun bindPayload(selections: List<SelectionBean>, payloads: List<Any>, selectedId: Long?) {
         val changes = payloads.firstOrNull() as? Set<*> ?: return
         oddsCells.forEachIndexed { index, cell ->
             val selection = selections.getOrNull(index)
@@ -39,9 +35,9 @@ class OddsColumnViewHolder(
                 if ("parlay" in changes) individualChanges.add("parlay")
 
                 if (individualChanges.isNotEmpty()) {
-                    cell.bindPayload(selection, listOf(individualChanges))
+                    cell.bindPayload(selection, listOf(individualChanges), selectedId)
                 } else {
-                    cell.bind(selection)
+                    cell.bind(selection, selectedId)
                 }
             } else {
                 cell.hideView()
