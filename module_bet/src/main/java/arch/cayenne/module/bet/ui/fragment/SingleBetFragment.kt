@@ -92,7 +92,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
                         val odds = bundle.getInt(KEY_ODDS_RESULT)
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(odds))
+                        mViewModel.saveReserveOdds(odds)
+                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment())
                     }
                 }
                 val location = IntArray(2)

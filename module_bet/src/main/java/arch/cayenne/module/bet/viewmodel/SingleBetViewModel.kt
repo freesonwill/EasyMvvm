@@ -77,4 +77,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     fun saveToCombo() {
         betRepo.saveToCombo()
     }
+
+    fun saveReserveOdds(odds: Int) {
+        betRepo.saveReserve(odds)
+    }
 }

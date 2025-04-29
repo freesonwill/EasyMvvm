@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
@@ -14,7 +13,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class ReserveRepository(
     override val scope: CoroutineScope,
@@ -31,23 +29,16 @@ class ReserveRepository(
                 val selection = betDao.getSelections(bet.betId).firstOrNull() ?: return@let
                 remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
                     if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
-                        val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
-                        val detailBean = if (lastDetail == null) {
-                            ComboMultiBetBean(
-                                sumOdds = selection.odds,
-                                minAmount = risk.minAmount,
-                                maxAmount = risk.maxAmount
-                            )
-                        } else {
-                            ComboMultiBetBean(
-                                sumOdds = selection.odds,
+                        betDao.getDetail(bet.betId).firstOrNull()?.let { lastDetail ->
+                            val detailBean = ComboMultiBetBean(
+                                sumOdds = lastDetail.sumOdds,
                                 inputMoney = lastDetail.inputMoney,
                                 minAmount = risk.minAmount,
                                 maxAmount = risk.maxAmount,
                             )
+                            comboFlow.emit(detailBean)
                         }
                         selectionFlow.emit(selection)
-                        comboFlow.emit(detailBean)
                     }
                 }
             }
@@ -77,7 +68,7 @@ class ReserveRepository(
         }
     }
 
-    fun sendReserve(odds: Int, money: Long) {
+    fun sendReserve(money: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.RESERVE) {
@@ -85,14 +76,16 @@ class ReserveRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId).first()
+                    val detail = betDao.getDetail(betId).first()
 
-                    val resp = remoteManager.reserveBet(selection, odds, money)
-                    val status = if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
+                    val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)
+                    val status =
+                        if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
 
                     val detailBean = BetDetailBean(
                         betId = betId,
                         orderId = "",
-                        sumOdds = odds,
+                        sumOdds = detail.sumOdds,
                         inputMoney = money,
                         status = status
                     )

@@ -2,30 +2,25 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.core.view.isVisible
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>(), BetSheetListener {
 
     override val vbClass: KClass<FragmentSingleBetBinding> = FragmentSingleBetBinding::class
     override val vmClass: KClass<ReserveViewModel> = ReserveViewModel::class
-    private val args: ReserveFragmentArgs by navArgs()
 
     override fun initView(savedInstanceState: Bundle?) {
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
@@ -51,8 +46,6 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             }
 
         })
-
-        mViewModel.setOdds(args.odds)
     }
 
     override fun initListener() {

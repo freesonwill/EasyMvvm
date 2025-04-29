@@ -111,7 +111,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         mBinding.btnConfirm.setOnClickListener {
             val odds = mViewModel.onEditNumber.value?.toOdds() ?: -1
             if (odds != -1) {
-                mViewModel.reserve()
                 arguments = Bundle().apply {
                     putString(KEY_RESULT, VALUE_RESERVE_COMPLETE)
                     putInt(KEY_ODDS_RESULT, odds)

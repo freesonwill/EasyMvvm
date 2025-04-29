@@ -43,8 +43,9 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let { type ->
                     when (type) {
-                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment())
-                        BetTypeEnum.COMBO -> navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment())
+                        BetTypeEnum.SINGLE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+                        BetTypeEnum.COMBO -> navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                        BetTypeEnum.RESERVE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToReserveFragment(), null)
                     }
                 }
             }

@@ -57,6 +57,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
             }
             launch {
                 repo.observeComboBean().collect {
+                    _onOddsListener.value = it.sumOdds
                     setNumberLimit(it.minAmount, it.maxAmount)
                     if (it.inputMoney > 0) {
                         setEditNumber(it.inputMoney)
@@ -64,10 +65,6 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
                 }
             }
         }
-    }
-
-    fun setOdds(odds: Int) {
-        _onOddsListener.value = odds
     }
 
     fun removeReserve() {
@@ -83,8 +80,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
     }
 
     fun sendReserve() {
-        val odds = onOddsListener.value ?: return
         val money = onEditNumber.value?.toMoney() ?: return
-        return repo.sendReserve(odds, money)
+        return repo.sendReserve(money)
     }
 }

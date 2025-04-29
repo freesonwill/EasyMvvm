@@ -28,26 +28,26 @@ class SingleBetRepository(
             betDao.getCurrentBet()?.let { bet ->
                 val selection = betDao.getSelections(bet.betId).firstOrNull() ?: return@let
                 remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
-                        if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
-                            val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
-                            val detailBean = if (lastDetail == null) {
-                                ComboMultiBetBean(
-                                    sumOdds = selection.odds,
-                                    minAmount = risk.minAmount,
-                                    maxAmount = risk.maxAmount
-                                )
-                            } else {
-                                ComboMultiBetBean(
-                                    sumOdds = selection.odds,
-                                    inputMoney = lastDetail.inputMoney,
-                                    minAmount = risk.minAmount,
-                                    maxAmount = risk.maxAmount,
-                                )
-                            }
-                            selectionFlow.emit(selection)
-                            comboFlow.emit(detailBean)
+                    if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
+                        val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
+                        val detailBean = if (lastDetail == null) {
+                            ComboMultiBetBean(
+                                sumOdds = selection.odds,
+                                minAmount = risk.minAmount,
+                                maxAmount = risk.maxAmount
+                            )
+                        } else {
+                            ComboMultiBetBean(
+                                sumOdds = selection.odds,
+                                inputMoney = lastDetail.inputMoney,
+                                minAmount = risk.minAmount,
+                                maxAmount = risk.maxAmount,
+                            )
                         }
+                        selectionFlow.emit(selection)
+                        comboFlow.emit(detailBean)
                     }
+                }
             }
         }
     }
@@ -65,6 +65,23 @@ class SingleBetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let {
                 betDao.updateBetType(it.betId, BetTypeEnum.COMBO)
+            }
+        }
+    }
+
+    fun saveReserve(odds: Int) {
+        scope.launch {
+            betDao.getCurrentBet()?.let {
+                if (it.betType == BetTypeEnum.SINGLE) {
+                    betDao.insertDetail(
+                        BetDetailBean(
+                            betId = it.betId,
+                            sumOdds = odds,
+                            inputMoney = 0L
+                        )
+                    )
+                    betDao.updateBetType(it.betId, BetTypeEnum.RESERVE)
+                }
             }
         }
     }
