@@ -7,10 +7,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
+import androidx.room.Update
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.MatchBeanLite
+import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
@@ -94,7 +97,34 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM MarketSelectCrossRef" )
     abstract fun deleteMarketSelectCrossRef()
 
-
+    //收到notify時，match不是全收到，沒收到的那些也是不會變動的，所以只更新有收到的參數
+    @Query("UPDATE MatchBean " +
+            "SET basic_status = :status, " +
+                "basic_betStop = :betStop, " +
+                "basic_startTime = :startTime," +
+                "live_clock = :clock, " +
+                "live_rollClock = :rollClock, " +
+                "live_period = :period, " +
+                "live_score = :score, " +
+                "live_liveVideo = :liveVideo, " +
+                "live_charRoom = :charRoom, " +
+                "live_viewerCount = :viewerCount, " +
+                "live_clockModified = :clockModified " +
+            "WHERE matchId = :matchId")
+    abstract fun updateNotifyMatch(
+        matchId: Long,
+        status: Int,
+        betStop: Boolean,
+        startTime: Long,
+        clock: Int,
+        rollClock: Boolean,
+        period: String,
+        score: String,
+        liveVideo: Boolean,
+        charRoom: Boolean,
+        viewerCount: Int,
+        clockModified: Long
+    )
 
     @Transaction
     open suspend fun insertFullMatch(
@@ -107,6 +137,36 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         ) {
         insertTournamentMatchRef(tournamentMatchRefs)
         insertMatch(matches)
+        insertMarkets(markets)
+        insertSelections(selections)
+        insertMatchMarketCrossRef(marketCrossRef)
+        insertMarketSelectionCrossRef(marketSelectCrossRefs)
+    }
+
+    @Transaction
+    open suspend fun updateFullMatch(
+        matchLites: List<MatchBeanLite>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+    ) {
+        matchLites.forEach { bean ->
+            updateNotifyMatch(
+                matchId = bean.matchId,
+                status = bean.status,
+                betStop = bean.betStop,
+                startTime = bean.startTime,
+                clock = bean.liveInfo.clock,
+                rollClock = bean.liveInfo.rollClock,
+                period = bean.liveInfo.period,
+                score = bean.liveInfo.score,
+                liveVideo = bean.liveInfo.liveVideo,
+                charRoom = bean.liveInfo.charRoom,
+                viewerCount = bean.liveInfo.viewerCount,
+                clockModified = bean.liveInfo.clockModified,
+            )
+        }
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)

@@ -116,5 +116,11 @@ data class MatchWithMarkets(
     val markets: List<MarketWithSelections>
 )
 
-//MatchWithMarkets -> List<MarketWithSelections> ->
-//    MarketBean + List<SelectionBean>
+//用來做notify收到時組合起來更新資料表用的
+data class MatchBeanLite(
+    val matchId: Long,
+    val status: Int,  //update MatchBasicInfoBean
+    val betStop: Boolean, //update MatchBasicInfoBean
+    val startTime: Long, //update MatchBasicInfoBean
+    val liveInfo: MatchLiveInfoBean  //update MatchLiveInfoBean
+)

@@ -2,6 +2,7 @@ package arch.cayenne.module.home.repository
 
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -12,6 +13,7 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.toRoomData
 import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
@@ -19,6 +21,7 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class HomeRepository(
     override val scope: CoroutineScope,
@@ -202,7 +205,48 @@ class HomeRepository(
         return arrayListOf()
     }
 
+    suspend fun subscribeMatch(ids: List<Long>) {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeMatchReq.newBuilder().apply {
+                this.addAllMatchId(ids)
+            }.build()
+        }
+        if (res.error == null && res.data != null && res.data!!.success) {
+            "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
+            val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
+            matchDao.updateFullMatch(
+                matchUpdateData.matchLites,
+                matchUpdateData.markets,
+                matchUpdateData.selections,
+                matchUpdateData.matchMarketCrossRefs,
+                matchUpdateData.marketSelectCrossRefs
+            )
+        }
+    }
+
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
+
+    suspend fun observeMatchNotify() {
+        "開始接收比賽推播".logi(this::class.java.name)
+        socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).collect {
+            if (it.error == null && it.data != null) {
+                "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
+                val matchUpdateData = arrayListOf(it.data!!).toRoomData()
+                matchDao.updateFullMatch(
+                    matchUpdateData.matchLites,
+                    matchUpdateData.markets,
+                    matchUpdateData.selections,
+                    matchUpdateData.matchMarketCrossRefs,
+                    matchUpdateData.marketSelectCrossRefs
+                )
+            }
+        }
+
+    }
 
     suspend fun observeFullMatchData(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> = database.matchDao().observeFullMatch(playType, tournamentId, page, startTime)
 }

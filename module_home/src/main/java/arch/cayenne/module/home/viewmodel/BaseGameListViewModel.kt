@@ -32,6 +32,10 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     override fun initViewModel() {
         super.initViewModel()
         observeMatchData()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeMatchNotify()
+        }
     }
 
     fun setSportId(id: Int) {
@@ -73,6 +77,13 @@ abstract class BaseGameListViewModel: BaseViewModel() {
                 }
             }
 
+        }
+    }
+
+    fun subscribeMatch(ids: List<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            "訂閱比賽  $ids".logi(this::class.java.name)
+            repository.subscribeMatch(ids)
         }
     }
 }

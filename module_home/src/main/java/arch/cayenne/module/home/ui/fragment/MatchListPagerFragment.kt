@@ -92,13 +92,19 @@ class MatchListPagerFragment :
             val oldList = matchAdapter.currentList
             matchAdapter.submitList(oldList+matchList)
             //測試
-            lifecycleScope.launch {
-                if (mViewModel.page <= 3) {
-                    delay(3000)
-                    mViewModel.page++
-                    mViewModel.getCurrentMatch()
-                }
+//            lifecycleScope.launch {
+//                if (mViewModel.page <= 3) {
+//                    delay(3000)
+//                    mViewModel.page++
+//                    mViewModel.getCurrentMatch()
+//                }
+//            }
+            //TODO 測試訂閱遊戲
+            if (mViewModel.page == 1) {
+                val list = matchList.map { it.match.matchId }
+                mViewModel.subscribeMatch(list)
             }
+
         }
 
     }
