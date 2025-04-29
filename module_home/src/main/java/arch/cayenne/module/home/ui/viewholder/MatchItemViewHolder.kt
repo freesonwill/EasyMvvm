@@ -99,6 +99,7 @@ class MatchItemViewHolder(
                 layoutManager = GridLayoutManager(root.context, 3)
                 adapter = oddsColumnAdapter
 
+                val spacing = 2.dp2px
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,
@@ -110,9 +111,8 @@ class MatchItemViewHolder(
                         if (position == RecyclerView.NO_POSITION) return
 
                         val column = position % 3
-                        if (column != 2) {
-                            outRect.right = 2.dp2px
-                        }
+                        outRect.left = spacing / 2
+                        outRect.right = spacing / 2
                     }
                 })
             }
