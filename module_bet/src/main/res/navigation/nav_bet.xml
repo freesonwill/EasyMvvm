@@ -45,6 +45,15 @@
         android:name="arch.cayenne.module.bet.ui.fragment.BetResultFragment"
         android:label="SingleBetResultFragment"
         tools:layout="@layout/fragment_bet_result" >
+        <action
+            android:id="@+id/action_betResultFragment_to_singleBetFragment"
+            app:destination="@id/singleBetFragment" />
+        <action
+            android:id="@+id/action_betResultFragment_to_reserveFragment"
+            app:destination="@id/reserveFragment" />
+        <action
+            android:id="@+id/action_betResultFragment_to_comboBetFragment"
+            app:destination="@id/comboBetFragment" />
     </fragment>
 
     <fragment

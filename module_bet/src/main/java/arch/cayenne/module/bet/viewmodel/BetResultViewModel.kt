@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -30,6 +31,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
         viewModelScope.launch {
             repo.getLastOrderBet()?.let {
                 type = it.betType
+                Log.d("abcd", "+++ $it")
                 val selection = repo.getSelection(it.betId)
 
                 _onBetSheetListener.value = selection
@@ -57,6 +59,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
 
     private fun setBetMode(status: BetResultStatusEnum) {
         _onBetModeListener.value = Pair(type, status)
-
     }
+
+    suspend fun continueBet() = repo.continueBet()
 }

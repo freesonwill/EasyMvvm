@@ -29,8 +29,8 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertDetail(data: List<BetDetailBean>): List<Long>
 
-    @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
-    abstract suspend fun getLastBetOrder(status: BetStatusEnum = BetStatusEnum.COMPLETE): BetBean?
+    @Query("SELECT * FROM BetBean WHERE status IN (:statuses) ORDER BY betId DESC LIMIT 1")
+    abstract suspend fun getLastBetOrder(statuses: List<BetStatusEnum> = listOf(BetStatusEnum.COMPLETE, BetStatusEnum.BETTING)): BetBean?
 
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?

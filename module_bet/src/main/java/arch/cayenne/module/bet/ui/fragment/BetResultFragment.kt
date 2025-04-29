@@ -2,8 +2,10 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -15,6 +17,7 @@ import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBinding>(),
@@ -37,7 +40,14 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun initListener() {
         mBinding.btnContinueBet.setOnClickListener {
-
+            lifecycleScope.launch {
+                mViewModel.continueBet()?.let { type ->
+                    when (type) {
+                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment())
+                        BetTypeEnum.COMBO -> navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment())
+                    }
+                }
+            }
         }
         mBinding.btnConfirm.setOnClickListener {
             dismiss()
