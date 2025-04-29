@@ -1,8 +1,8 @@
 package com.walisport.module.login.ui
 
 import android.os.Bundle
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import com.walisport.module.login.R
 import kotlin.reflect.KClass

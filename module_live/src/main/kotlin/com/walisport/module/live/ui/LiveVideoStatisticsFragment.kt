@@ -1,7 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.walisport.module.live.databinding.FragmentLiveStatisticsBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import me.jessyan.autosize.internal.CancelAdapt

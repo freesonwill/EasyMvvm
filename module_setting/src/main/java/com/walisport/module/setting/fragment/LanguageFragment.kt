@@ -2,7 +2,7 @@ package com.walisport.module.setting.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R

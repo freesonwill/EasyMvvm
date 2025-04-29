@@ -2,7 +2,7 @@ package com.walisport.module.live
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import com.walisport.module.live.data.LiveBetRepository
+import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
@@ -15,11 +15,6 @@ import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipConfirmViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipExpiredViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipReserveViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipSettledViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipUnsettledViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
@@ -55,12 +50,6 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveBetOnViewModel)
         viewModelOf(::LiveLineupViewModel)
         viewModelOf(::LiveStandingsViewModel)
-        viewModelOf(::LiveBetSlipUnsettledViewModel)
-        viewModelOf(::LiveBetSlipUnsettledViewModel)
-        viewModelOf(::LiveBetSlipConfirmViewModel)
-        viewModelOf(::LiveBetSlipExpiredViewModel)
-        viewModelOf(::LiveBetSlipReserveViewModel)
-        viewModelOf(::LiveBetSlipSettledViewModel)
         viewModelOf(::LiveSoftKeyboardViewModel)
         viewModelOf(::EmojiViewModel)
         viewModelOf(::LiveBetOnMenuViewModel)

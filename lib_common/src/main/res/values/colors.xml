@@ -25,4 +25,6 @@
     <color name="color_blue">#2196f3</color>
     <color name="bg_gray">#fff5f7fa</color>
 
+    <color name="message_fill_color">#F3F3F4</color>
+    <color name="toast_text">#222222</color>
 </resources>

@@ -1,16 +1,13 @@
 package com.walisport.module.login.ui.fragment
 
 import android.os.Bundle
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.viewBind
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.login.R
 import com.walisport.module.login.databinding.FragmentLoginBinding
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 /**

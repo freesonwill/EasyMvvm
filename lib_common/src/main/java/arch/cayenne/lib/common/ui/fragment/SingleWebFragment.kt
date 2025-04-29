@@ -1,9 +1,6 @@
 package arch.cayenne.lib.common.ui.fragment
 
-import android.content.ActivityNotFoundException
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -11,29 +8,19 @@ import android.os.Message
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import android.webkit.WebResourceError
-import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.launch
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import arch.cayenne.lib.common.R
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.databinding.FragmentSingleWebBinding
-import arch.cayenne.lib.common.utils.NetworkUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.github.lzyzsd.jsbridge.BridgeWebView
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 /**

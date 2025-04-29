@@ -6,24 +6,26 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
-class ReserveViewModel(private val repo: ReserveRepository, private val betRepo: SingleBetRepository) : NumberCalculatorViewModel() {
+class ReserveViewModel(private val repo: ReserveRepository, private val singleRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
-    private val _onReserveSheetListener = MutableLiveData<BetBean>()
-    val onReserveSheetListener: LiveData<BetBean> get() =  _onReserveSheetListener
+    private val _onReserveSheetListener = MutableLiveData<BetSelectionBean>()
+    val onReserveSheetListener: LiveData<BetSelectionBean> get() =  _onReserveSheetListener
 
-    private val _onBalanceListener = MutableLiveData(123456L)
+    private val _onOddsListener = MutableLiveData<Int>()
+    val onOddsListener: LiveData<Int> get() = _onOddsListener
+
+    private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
+    private val odds: Int get() = _onOddsListener.value ?: 1
+
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
-        var odds = 1
-        addSource(_onReserveSheetListener) { data ->
-            odds *= data.reverseOdds ?: 1
-        }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
                 "0"
@@ -41,35 +43,44 @@ class ReserveViewModel(private val repo: ReserveRepository, private val betRepo:
     }
     val onReserveWinMoney: LiveData<String> get() = _onReserveWinMoney
 
-    fun setReserveBet(id: Long) {
+    init {
         viewModelScope.launch {
-            repo.getReverseById(id)?.let {
-                _onReserveSheetListener.value = it
-                setNumberLimit(it.minAmount, it.maxAmount)
+            launch {
+                balanceRepo.observeBalance().collect {
+                    _onBalanceListener.value = it
+                }
+            }
+            launch {
+                repo.observeSelectionBean().collect {
+                    _onReserveSheetListener.value = it
+                }
+            }
+            launch {
+                repo.observeComboBean().collect {
+                    _onOddsListener.value = it.sumOdds
+                    setNumberLimit(it.minAmount, it.maxAmount)
+                    if (it.inputMoney > 0) {
+                        setEditNumber(it.inputMoney)
+                    }
+                }
             }
         }
     }
 
-    fun removeReserve(id: Long) {
-        repo.removeReserve(id)
+    fun removeReserve() {
+        repo.removeReserve()
     }
 
     fun removeBet() {
-        _onReserveSheetListener.value?.let {
-            betRepo.removeBet(it.matchId)
-        }
+        singleRepo.removeBet()
     }
 
     fun saveToCombo() {
-        _onReserveSheetListener.value?.let {
-            repo.updateReserveOdds(it.matchId, null)
-            betRepo.saveToCombo(it.matchId)
-        }
+        singleRepo.saveToCombo()
     }
 
     fun sendReserve() {
-        val id = _onReserveSheetListener.value?.matchId ?: return
         val money = onEditNumber.value?.toMoney() ?: return
-        repo.sendReserve(id, money)
+        return repo.sendReserve(money)
     }
 }

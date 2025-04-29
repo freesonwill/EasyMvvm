@@ -35,6 +35,13 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.getMarketType(mainViewModel.matchId)
         mViewModel.marketType.observe(viewLifecycleOwner){
+            LogUtils.e("marketTypeData${it}")
+        }
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.walisport.module.live.viewmodel.LiveMainViewModel
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+        mViewModel.getMarketType(mainViewModel.matchId)
+        mViewModel.marketType.observe(viewLifecycleOwner){
        LogUtils.e("marketTypeData${it}")
         }
         addNewTab()

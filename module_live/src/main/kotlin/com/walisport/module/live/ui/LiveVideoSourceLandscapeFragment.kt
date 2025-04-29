@@ -2,13 +2,12 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourceLandscapeBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceVerticalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
-import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
 

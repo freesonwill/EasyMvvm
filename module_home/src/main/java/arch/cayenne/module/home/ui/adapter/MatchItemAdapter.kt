@@ -2,7 +2,7 @@ package arch.cayenne.module.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding

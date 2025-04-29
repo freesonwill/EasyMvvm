@@ -39,14 +39,14 @@
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
-    <string name="live_bet_full_handicap">全场让球 (0-0)</string>
+    <string name="live_bet_full_handicap">全场让球</string>
     <string name="live_bet_cancel_reserve">取消预约</string>
     <string name="live_bet_modify_odds">修改赔率</string>
     <string name="live_bet_odds">赔率</string>
     <string name="live_bet_part_early_settle">部分提前结算</string>
     <string name="live_bet_win_lose_amount">输赢金额</string>
     <string name="live_bet_win">赢</string>
-    <string name="live_bet_except_odds">预计赔率@1.85</string>
+    <string name="live_bet_except_odds">预计赔率@%1$s</string>
     <string name="live_bet_early_settle">提前结算</string>
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>

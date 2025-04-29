@@ -5,9 +5,9 @@ import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ActvityBaseNavBinding

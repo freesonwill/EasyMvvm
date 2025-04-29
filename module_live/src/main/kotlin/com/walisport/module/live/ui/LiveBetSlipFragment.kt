@@ -2,14 +2,14 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import android.widget.LinearLayout
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.data.model.PagerBean
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
-import arch.cayenne.lib.base.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.PagerBean
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
@@ -25,6 +25,7 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
+
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
     }
@@ -37,16 +38,15 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                 PagerBean(array[1]) { LiveBetSlipConfirmFragment() },
                 PagerBean(array[2]) { LiveBetSlipSettledFragment() },
                 PagerBean(array[3]) { LiveBetSlipReserveFragment() },
-                PagerBean(array[4]) { LiveBetSlipExpiredFragment() },
+                PagerBean(array[4]) { LiveBetSlipInvalidFragment() },
             )
-            viewpager.adapter = null
-            viewpager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-
-            TabLayoutMediator(tabLayout, viewpager) { tab, position ->
+            viewPager.adapter = null
+            viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
-
             tabLayout.removeAllTips()
+
             reflexPadding(tabLayout)
         }
     }
@@ -68,8 +68,9 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
                             params.width = 74.dp2px
                             params.rightMargin = marginStart
                         }
+
                         else -> {
-                           params.width = 60.dp2px
+                            params.width = 60.dp2px
                         }
                     }
                     tabView.layoutParams = params
@@ -81,9 +82,70 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
         }
     }
 
+//    private fun initRecycler() {
+//
+//        val list: MutableList<List<Common.Order>> = mutableListOf()
+//        val array = resources.getStringArray(R.array.bet_slip_menus)
+//        array.forEach {
+//            val order = Common.Order.newBuilder().setBetId("0").build()
+//            val order1 = Common.Order.newBuilder().setBetId("1").build()
+//            val tmpList = arrayListOf(order, order1)
+//            list.add(tmpList)
+//        }
+//        val adapter = LiveBetSlipTabAdapter(LiveBetSlipTabCompare())
+//        adapter.submitList(list)
+//        mBinding.horizontalRecycler.also {
+//            it.setHasFixedSize(true)
+//            it.layoutManager =
+//                HorizontalLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+//            it.adapter = adapter
+//        }
+//        val snapHelper = PagerSnapHelper()
+//        snapHelper.attachToRecyclerView(mBinding.horizontalRecycler)
+//
+//        mBinding.horizontalRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+//                super.onScrollStateChanged(recyclerView, newState)
+//                when (newState) {
+//                    RecyclerView.SCROLL_STATE_IDLE -> {
+//                        recyclerView.layoutManager?.let {
+//                            val manager = it as LinearLayoutManager
+//                            val firstVisibleItem = manager.findFirstVisibleItemPosition()
+//                            val count = manager.childCount
+//                            val lastVisbleItem = manager.findLastVisibleItemPosition()
+//                            mBinding.tabLayout.getTabAt(firstVisibleItem)?.select()
+////                            LogUtils.dTag("TAG","first $firstVisibleItem  last $lastVisbleItem count $count")
+//                        }
+//                    }
+//
+//                    RecyclerView.SCROLL_STATE_DRAGGING -> {}
+//                    RecyclerView.SCROLL_STATE_SETTLING -> {}
+//                }
+//            }
+//        })
+//    }
+
     override fun initListener() {
     }
 
     override fun createObserver() {
     }
+
+//    inner class HorizontalLayoutManager(
+//        context: Context?, @RecyclerView.Orientation orientation: Int,
+//        reverseLayout: Boolean
+//    ) : LinearLayoutManager(context, orientation, reverseLayout) {
+//        override fun canScrollVertically(): Boolean {
+//            return false
+//        }
+//
+//        override fun canScrollHorizontally(): Boolean {
+//            return true
+//        }
+//    }
+
+    companion object{
+         val TAG = LiveBetSlipFragment::class.java.simpleName
+    }
+
 }

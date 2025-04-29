@@ -24,5 +24,11 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
     GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
+
+    EARLY_SETTLE(500,1011),      //500-1011:发起提前结算
+    RESERVE_CANCEL(500,1022),     // 500-1021: 获取用户预约下注记录列表
+    RESERVE_UPDATE(500,1023),    // 500-1023: 修改预约下注订单
+
+    ORDER_STATUS_NOTIFY(600, 1001),     //600-1001: 订单状态推送(被動)
     GET_MARKET_TYPE(500, 1007)     // 500-1007: 盘口分类
 }

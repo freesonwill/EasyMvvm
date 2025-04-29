@@ -8,11 +8,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
-import arch.cayenne.lib.base.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.PagerBean
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -23,8 +22,6 @@ import com.walisport.module.live.databinding.TittleBarLiveBinding
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
-import androidx.core.view.isGone
-import androidx.lifecycle.lifecycleScope
 import com.walisport.module.live.data.MatchPeriodEnum
 import com.walisport.module.live.utils.Timer
 import kotlinx.coroutines.CoroutineScope

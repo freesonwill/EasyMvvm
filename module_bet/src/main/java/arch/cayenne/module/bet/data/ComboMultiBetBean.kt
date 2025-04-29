@@ -14,9 +14,9 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
  * @param maxAmount 最大下注金額
  */
 data class ComboMultiBetBean(
-    val combo: Int, // 串關次數
+    val combo: Int = 1, // 串關次數
     val sumOdds: Int, // 串關後賠率加總
-    val count: Int, // 場次組合數量
+    val count: Int = 1, // 場次組合數量
     var inputMoney: Long = 0,
     val minAmount: Long,
     val maxAmount: Long

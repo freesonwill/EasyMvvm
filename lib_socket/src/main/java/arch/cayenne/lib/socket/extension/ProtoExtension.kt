@@ -1,6 +1,6 @@
 package arch.cayenne.lib.socket.extension
 
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import com.google.protobuf.GeneratedMessageLite
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.WebSocketManager.Companion.responseTimeout

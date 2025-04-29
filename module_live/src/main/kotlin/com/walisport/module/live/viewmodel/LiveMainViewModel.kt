@@ -3,7 +3,8 @@ package com.walisport.module.live.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.live.data.LiveMainRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
