@@ -6,12 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
@@ -61,6 +63,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
         with(mBinding) {
+            ivHomeSidebar.clickNoRepeat {
+                drawerLayout.openDrawer(GravityCompat.START)
+            }
             PlayType.entries.forEach {
                 tlHome.addTab(tlHome.newTab().setText(it.titleRes))
             }
