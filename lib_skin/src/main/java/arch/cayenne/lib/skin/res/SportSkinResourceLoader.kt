@@ -8,7 +8,6 @@ import androidx.annotation.ColorRes
 
 interface SportSkinResourceLoader {
 
-
     fun getColor(context: Context,@ColorRes resId: Int):Int
 
     fun getColorStateList(context: Context,@ColorRes resId: Int):ColorStateList?
@@ -16,5 +15,7 @@ interface SportSkinResourceLoader {
     fun getDrawable(context: Context,@AnyRes resId: Int):Drawable?
 
     fun getTargetResourceId(context: Context,@AnyRes resId: Int):Int
+
+    fun getSkinName():String
 
 }

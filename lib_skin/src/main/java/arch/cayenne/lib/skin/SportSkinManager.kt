@@ -16,6 +16,7 @@ class SportSkinManager {
     val skinFlow: Flow<String> = _skinFlow
     val languageFlow: Flow<Locale?> = _languageFlow
 
+
     suspend fun loadSkin(skinName: String) {
         resourcesManager.initResource(SportSkinBuildInResourceLoader(skinName))
         _skinFlow.emit(skinName)
@@ -34,5 +35,9 @@ class SportSkinManager {
     suspend fun changeLanguage(local: Locale) {
         _languageFlow.emit(local)
     }
+    /**
+     * 获取皮肤名称
+     * */
+    fun getSkinName() = resourcesManager.getSkinName()
 
 }

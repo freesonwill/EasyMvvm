@@ -60,4 +60,8 @@ class SportSkinBuildInResourceLoader(val skinName: String) : SportSkinResourceLo
             SportSkinHelper.INVALID_ID
         }
     }
+
+    override fun getSkinName(): String {
+        return skinName
+    }
 }

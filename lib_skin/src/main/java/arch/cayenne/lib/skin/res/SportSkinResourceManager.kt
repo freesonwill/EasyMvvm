@@ -9,6 +9,9 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import java.util.Locale
 
+/**
+ *
+ * */
 object SportSkinResourceManager {
     private var resourceLoader: SportSkinResourceLoader = SportSkinBuildInResourceLoader("")
 
@@ -46,4 +49,5 @@ object SportSkinResourceManager {
     fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int =
         resourceLoader.getTargetResourceId(context, resId)
 
+    fun getSkinName() = resourceLoader.getSkinName()
 }
