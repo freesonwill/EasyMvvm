@@ -28,9 +28,7 @@ class HomeViewModel : BaseViewModel() {
     private var currentPlayType : PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
-    val currentSportChange by lazy { MutableLiveData<Int>() }
 
-    var currentTournament = HashMap<Int, Int>()//(sportId, currentTournament)
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 

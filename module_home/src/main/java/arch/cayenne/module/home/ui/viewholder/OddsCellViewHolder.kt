@@ -11,7 +11,6 @@ class OddsCellViewHolder(
     private val onOddsClick: (SelectionBean, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
     private var currentSelection: SelectionBean? = null
-    private var isSelected = false
     fun bind(item: SelectionBean, selectedId: Long?) {
         currentSelection = item
         with(mBinding) {
@@ -28,31 +27,8 @@ class OddsCellViewHolder(
                 }
             }
         }
-//        updateOddsView(item, isSelected)
     }
 
-//    private fun updateOddsView(item: SelectionBean,isSelected: Boolean) {
-//        with(mBinding) {
-//            tvShortName.text = item.shortName
-//            tvOdds.text = item.odds.getOdds()
-//            llOddsCell.isSelected = item.selectionId == selectedId
-//            if (item.active) activate() else deActivate()
-////            ivFlashIcon.visibility = View.GONE // 初始關閉閃爍 icon
-//            llOddsCell.isSelected = isSelected
-//            llOddsCell.setOnClickListener {
-//                if (!item.active) return@setOnClickListener
-//
-//                isSelected = !isSelected // toggle
-//                llOddsCell.isSelected = isSelected
-//
-//                if (isSelected) {
-//                    onOddsClick(item) // 點擊通知外層
-//                } else {
-//                    onOddsClick(null) // 如果取消選中，傳一個無效ID通知（看你的外部邏輯）
-//                }
-//            }
-//        }
-//    }
 
     fun bindPayload(item: SelectionBean, payloads: List<Any>, selectedId: Long?) {
         val diff = payloads.firstOrNull() as? Set<*> ?: return
@@ -109,7 +85,7 @@ class OddsCellViewHolder(
         }
     }
 
-    private fun deActivate() {
+    fun deActivate() {
         with(mBinding) {
             tvShortName.visibility = View.GONE
             tvOdds.visibility = View.GONE
@@ -117,7 +93,6 @@ class OddsCellViewHolder(
             llOddsCell.isEnabled = false
         }
     }
-
     fun hideView() {
         mBinding.root.visibility = View.GONE
     }
