@@ -1,12 +1,11 @@
 package com.walisport.module.live.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.widget.LinearLayout
-import arch.cayenne.lib.base.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.PagerBean
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import arch.cayenne.lib.base.data.model.PagerBean
 import com.google.android.material.tabs.TabLayout
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips

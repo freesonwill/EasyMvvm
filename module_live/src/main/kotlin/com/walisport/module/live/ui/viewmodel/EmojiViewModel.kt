@@ -1,6 +1,6 @@
 package com.walisport.module.live.ui.viewmodel
 
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.BidEmojiEnum
 import com.walisport.module.live.data.EmojiEnum

@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar

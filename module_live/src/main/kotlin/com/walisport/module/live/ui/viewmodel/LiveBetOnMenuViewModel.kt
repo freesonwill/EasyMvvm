@@ -1,6 +1,6 @@
 package com.walisport.module.live.ui.viewmodel
 
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 
 class LiveBetOnMenuViewModel : BaseViewModel() {
 }

@@ -7,8 +7,8 @@ import android.os.Bundle
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.socket.SocketModuleInitializer
 import com.walisport.app.data.AppNavViewModel

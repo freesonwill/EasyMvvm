@@ -2,7 +2,7 @@ package com.walisport.module.live
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import com.walisport.module.live.data.LiveBetRepository
+import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager

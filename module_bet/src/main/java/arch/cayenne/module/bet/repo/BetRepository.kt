@@ -1,93 +1,90 @@
 package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
-import arch.cayenne.lib.database.entity.BetLiteBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.database.entity.BetSelectionLiteBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
-import arch.cayenne.lib.database.entity.SelectionLiteBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class BetRepository(
     override val scope: CoroutineScope,
-    private val betDao: BetDao, private val matchDao: MatchDao
+    private val betDao: BetDao,
+    private val matchDao: MatchDao
 ) : BaseRepository() {
 
-    val observerAllBet: Flow<List<BetLiteBean>> = flow {
-        betDao.observeAllBet().collect {
-            val data = it.map { bean ->
-                BetLiteBean(
-                    matchId = bean.matchId,
-                    selectionId = bean.selectionLiteBean.id,
-                )
-            }
-            emit(data)
-        }
-    }
+    val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
 
     /***
      * 新增投注資料
      * @return type 返回單注or串關
      */
-    suspend fun setSelection(matchId: Long, selectionId: Long) =
-        withContext(scope.coroutineContext) {
-            val isSingle = betDao.getBetSheet().isEmpty()
-            val betBean = betDao.getBetById(matchId)
-            val match = matchDao.getOneMatchById(matchId)
-            val selections = matchDao.getSelectionById(selectionId)
-
+    fun setSelection(matchId: Long, selectionId: Long) {
+        scope.launch {
+            val bet = betDao.getCurrentBet()
             // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
-            if (betBean == null) {
-                getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
-                    val bean = BetBean(
-                        matchId = matchId,
-                        selectionLiteBean = selectionLiteBean,
-                        betType = if (isSingle) BetTypeEnum.SINGLE else BetTypeEnum.COMBO,
-                        leagueName = match.match.basicInfo.tournamentName,
-                        matchName = match.match.basicInfo.matchName,
-                        isBetStop = match.match.basicInfo.betStop,
-                        isPlaying = match.match.basicInfo.status == 5,
-                    )
-                    betDao.insert(bean)
-                }
+            val betId = bet?.betId ?: betDao.insert(BetBean())
+            val selections = betDao.getSelections(betId)
+            val selection = selections.find { it.matchId == matchId }
+            if (selection == null) {
+                addSelection(betId, matchId, selectionId)
             } else {
-                if (betBean.selectionLiteBean.id == selectionId) {
-                    remove(matchId)
+                if (selection.selectionId == selectionId) {
+                    betDao.removeBetSelectionByMatchId(betId, matchId)
                 } else {
-                    getSelectionLiteBean(match, selections)?.let { selectionLiteBean ->
-                        betBean.selectionLiteBean = selectionLiteBean
-                        betDao.update(betBean)
+                    getSelectionLiteBean(betId, matchDao.getOneMatchById(matchId), matchDao.getSelectionById(selectionId))?.let { selectionLiteBean ->
+                        betDao.updateSelection(selectionLiteBean)
                     }
                 }
             }
-            if (isSingle) {
-                BetTypeEnum.SINGLE
-            } else {
-                BetTypeEnum.COMBO
-            }
+            checkBetBeanType(betId)
         }
+    }
+
+    private suspend fun addSelection(betId: Long, matchId: Long, selectionId: Long) {
+        val match = matchDao.getOneMatchById(matchId)
+        val selection = matchDao.getSelectionById(selectionId)
+        getSelectionLiteBean(betId, match, selection)?.let { selectionLiteBean ->
+            betDao.insertSelection(selectionLiteBean)
+        }
+    }
+
+    private suspend fun checkBetBeanType(betId: Long) {
+        val selection = betDao.getSelections(betId)
+        if (selection.isEmpty()) {
+            betDao.removeBet(betId)
+        } else if (selection.size == 1) {
+            betDao.updateBetType(betId, BetTypeEnum.SINGLE)
+        } else {
+            betDao.updateBetType(betId, BetTypeEnum.COMBO)
+        }
+    }
 
     private fun getSelectionLiteBean(
+        betId: Long,
         match: MatchWithMarkets,
         selectionBean: SelectionBean
-    ): SelectionLiteBean? {
+    ): BetSelectionBean? {
         match.markets.find { market ->
             market.selections.find { it.selectionId == selectionBean.selectionId } != null
         }?.let { market ->
-            val marketName = market.market.marketName
-            return SelectionLiteBean(
-                marketName = marketName,
-                id = selectionBean.selectionId,
+            return BetSelectionBean(
+                betId = betId,
+                matchId = match.match.matchId,
+                marketName = market.market.marketName,
+                selectionId = selectionBean.selectionId,
                 name = selectionBean.name,
-                odds = selectionBean.odds.getOdds(),
+                odds = selectionBean.odds,
+                leagueName = match.match.basicInfo.tournamentName,
+                matchName = match.match.basicInfo.matchName,
+                isBetStop = match.match.basicInfo.betStop,
+                isPlaying = match.match.basicInfo.status == 5
             )
         }
         return null
@@ -96,12 +93,9 @@ class BetRepository(
     /***
      * 暫時關閉盤口
      */
-    fun closeSelection(matchId: Long) {
+    fun closeSelection(selectionId: Long) {
         scope.launch {
-            betDao.getBetById(matchId)?.let { bet ->
-                bet.isBetStop = true
-                betDao.update(bet)
-            }
+
         }
     }
 
@@ -110,19 +104,7 @@ class BetRepository(
      */
     fun openSelection(matchId: Long) {
         scope.launch {
-            betDao.getBetById(matchId)?.let { bet ->
-                bet.isBetStop = false
-                betDao.update(bet)
-            }
-        }
-    }
 
-    /***
-     * 刪除投注資料
-     */
-    private fun remove(matchId: Long) {
-        scope.launch {
-            betDao.removeBet(matchId)
         }
     }
 
@@ -131,10 +113,7 @@ class BetRepository(
      */
     fun setPlaying(matchId: Long) {
         scope.launch {
-            betDao.getBetById(matchId)?.let { bet ->
-                bet.isPlaying = true
-                betDao.update(bet)
-            }
+
         }
     }
 }

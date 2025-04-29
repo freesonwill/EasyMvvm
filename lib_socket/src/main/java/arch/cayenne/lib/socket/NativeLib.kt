@@ -1,8 +1,8 @@
 package arch.cayenne.lib.socket
 
 import android.util.Log
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.socket.data.IRequest
 import arch.cayenne.lib.socket.data.IResponse
 import arch.cayenne.lib.socket.data.ISecurity

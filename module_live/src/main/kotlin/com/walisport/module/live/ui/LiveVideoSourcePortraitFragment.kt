@@ -6,14 +6,13 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
+import arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
-import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlin.reflect.KClass
 
 /**

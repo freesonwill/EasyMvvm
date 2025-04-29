@@ -3,13 +3,11 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
-import kotlinx.coroutines.launch
+import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import kotlin.reflect.KClass
 
 class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
@@ -38,13 +36,9 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
                     }
                 }
                 if (count == 1) {
-                    lifecycleScope.launch {
-                        val id = mViewModel.getSingleBetById()
-                        BetSheetFragment.newInstance(id).show(parentFragmentManager)
-                    }
-                } else {
-                    BetSheetFragment.newInstance().show(parentFragmentManager)
+                    mViewModel.saveToSingle()
                 }
+                BetSheetFragment.newInstance().show(parentFragmentManager)
                 mBinding.root.visibility = View.GONE
             }
         }

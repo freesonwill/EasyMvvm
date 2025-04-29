@@ -3,21 +3,22 @@ package arch.cayenne.module.bet.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
-class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() {
+class ComboBetViewModel(private val repo: ComboBetRepository, private val balanceRepo: BalanceRepository) : BaseViewModel() {
 
-    private val _onBetListListener = MutableLiveData<List<BetBean>>()
-    val onBetListListener: LiveData<List<BetBean>> get() = _onBetListListener
+    private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
+    val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData(123456L)
+    private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     val remainingBalance: Long
@@ -34,7 +35,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                     _onBetListListener.value = it
                     if (it.size <= 1) {
                         if (it.isNotEmpty()) {
-                            repo.saveToSingleBet(it.first().matchId)
+                            repo.saveToSingleBet()
                         }
                     }
                 }
@@ -44,13 +45,16 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
                     setMultiBetBean(beans)
                 }
             }
+            launch {
+                balanceRepo.observeBalance().collect {
+                    _onBalanceListener.value = it
+                }
+            }
         }
     }
 
-    fun removeBet(id: Long) {
-        viewModelScope.launch {
-            repo.removeBet(id)
-        }
+    fun removeSelection(selectionId: Long) {
+        repo.removeSelection(selectionId)
     }
 
     fun removeAll() {
@@ -71,8 +75,10 @@ class ComboBetViewModel(private val repo: ComboBetRepository) : BaseViewModel() 
     }
 
     fun sendBet() {
-        _onComboMultiBetBeanListener.value?.let {
-            repo.sendBet(it)
+        _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
+            if (it.isNotEmpty()) {
+                repo.sendBet(it)
+            }
         }
     }
 
