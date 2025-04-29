@@ -43,25 +43,6 @@ class SportTabLayout : TabLayout {
         }
     }
 
-    override fun addTab(tab: Tab, setSelected: Boolean) {
-        super.addTab(tab, setSelected)
-        tabLayoutHelper.updateTabBack(tab)
-    }
-
-    override fun addTab(tab: Tab, position: Int) {
-        super.addTab(tab, position)
-        tabLayoutHelper.updateTabBack(tab)
-    }
-
-    override fun addTab(tab: Tab, position: Int, setSelected: Boolean) {
-        super.addTab(tab, position, setSelected)
-        tabLayoutHelper.updateTabBack(tab)
-
-    }
-    override fun addTab(tab: Tab) {
-        super.addTab(tab)
-        tabLayoutHelper.updateTabBack(tab)
-    }
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)

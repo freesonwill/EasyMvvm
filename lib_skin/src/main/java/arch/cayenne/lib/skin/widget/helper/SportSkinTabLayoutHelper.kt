@@ -3,7 +3,6 @@ package arch.cayenne.lib.skin.widget.helper
 import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.Tab
@@ -55,12 +54,7 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
     }
 
     fun updateTabBackground(tab: Tab) {
-        tab.view.setBackgroundResource(
-            resourcesManager.getTargetResourceId(
-                mView.context,
-                tabBackground
-            )
-        )
+        tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
     }
 
     override fun updateLanguage(languageCode: String) {
