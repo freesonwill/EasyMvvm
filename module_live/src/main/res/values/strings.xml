@@ -39,14 +39,14 @@
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
-    <string name="live_bet_full_handicap">全场让球 (0-0)</string>
+    <string name="live_bet_full_handicap">全场让球</string>
     <string name="live_bet_cancel_reserve">取消预约</string>
     <string name="live_bet_modify_odds">修改赔率</string>
     <string name="live_bet_odds">赔率</string>
     <string name="live_bet_part_early_settle">部分提前结算</string>
     <string name="live_bet_win_lose_amount">输赢金额</string>
     <string name="live_bet_win">赢</string>
-    <string name="live_bet_except_odds">预计赔率@1.85</string>
+    <string name="live_bet_except_odds">预计赔率</string>
     <string name="live_bet_early_settle">提前结算</string>
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
@@ -58,12 +58,31 @@
     <string name="choose_source">选直播源</string>
     <string name="soft_keyboard_talk">说点什么...</string>
 
-
-
     <string name="live_starting_lineup">首发阵容</string>
     <string name="live_substitution_lineup">本场换人</string>
     <string name="live_repair_lineup">替补队员</string>
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
     <string name="lineup_empty">阵容数据为空</string>
+    <string name="standings_empty">积分榜数据为空</string>
+    <string name="outs_empty">赛况数据为空</string>
+    <string name="lineup_today">今天</string>
+
+    <string name="not_started">足球比赛未开始</string>
+   <string name="first_half">足球上半场</string>
+    <string name="half_time">足球中场休息</string>
+    <string name="second_half">足球下半场</string>
+    <string name="ft_finish">足球常规时间结束</string>
+    <string name="et_first_half">足球et(加时赛)上半场</string>
+    <string name="et_half_time">足球et(加时赛)半场时间</string>
+   <string name="et_second_half">足球et(加时赛)-后半场</string>
+    <string name="et_finish">足球et(加时赛)-结束</string>
+    <string name="penalty">足球点球大战</string>
+    <string name="finish">足球比赛结束</string>
+    <string name="awaiting_et">足球等待加时</string>
+    <string name="awaiting_penalty">足球等待点球大战</string>
+    <string name="penalty_finish">足球点球大战结束</string>
+    <string name="interrupted">足球中断</string>
+    <string name="abandoned">足球废弃</string>
+
 </resources>

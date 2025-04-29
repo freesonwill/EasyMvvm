@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.SportDataModel
+import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
@@ -18,14 +19,21 @@ import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
 class HomeViewModel : BaseViewModel() {
+    companion object {
+        const val TOURNAMENT_ALL_ID = 0
+    }
     private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
-    val currentSportChange by lazy { MutableLiveData<Int>() }
+    private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
+    val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
+
+    private val _selectedDate = MutableLiveData<String>() // Pair<leagueId, date>
+    val selectedDate: MutableLiveData<String> = _selectedDate
     override fun initViewModel() {
         super.initViewModel()
         //觀察餘額變化
@@ -65,12 +73,33 @@ class HomeViewModel : BaseViewModel() {
     }
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
-        currentSportChange.value = sportId
+        currentSportId = sportId
+        getCurrentTournament(sportId)
     }
 
-    suspend fun setSelection(matchId: Long, selectionId: Long): BetTypeEnum {
-        return viewModelScope.async(Dispatchers.IO) {
-            betRepository.setSelection(matchId, selectionId)
-        }.await()
+    private fun getCurrentTournament(sportId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repository.getTenTournaments(currentPlayType.id, sportId)
+            if (list.isNullOrEmpty()) {
+                //TODO 拿取聯賽錯誤
+                "Get Tournament List failed!!".loge(this::class.java.simpleName)
+            } else {
+                withContext(Dispatchers.Main) {
+                    tournaments.value = ArrayList<TournamentDataModel>().apply {
+                        add(TournamentDataModel.createAllItem(sportId))
+                        addAll(list)
+                    }
+                }
+            }
+        }
+    }
+
+    fun setSelection(matchId: Long, selectionId: Long) {
+        betRepository.setSelection(matchId, selectionId)
+    }
+
+    fun setSelectedDate(date: String) {
+        if (_selectedDate.value == date) return
+        _selectedDate.value = date
     }
 }

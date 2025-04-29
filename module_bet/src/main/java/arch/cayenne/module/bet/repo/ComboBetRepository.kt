@@ -4,7 +4,9 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.dao.BetDao
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetDetailBean
+import arch.cayenne.lib.database.entity.BetResultStatusEnum
+import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
@@ -21,63 +23,120 @@ class ComboBetRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
+    private val selectionFlow = MutableSharedFlow<List<BetSelectionBean>>()
     private val comboMultiBetFlow = MutableSharedFlow<List<ComboMultiBetBean>>()
 
     init {
         scope.launch {
-            betDao.observeComboBet().collect { bets ->
-                if (bets.isNotEmpty()) {
-                    remoteManager.getComboRisk(bets)?.let { riskList ->
-                        val multiBet = calculateMultiBetSums(bets, riskList)
-                        comboMultiBetFlow.emit(multiBet)
+            betDao.getCurrentBet()?.let {  bet ->
+                betDao.observeSelections(bet.betId).collect {
+                    val selection = betDao.getSelections(bet.betId)
+                    if (selection.isNotEmpty()) {
+                        remoteManager.getComboRisk(selection)?.let { riskList ->
+                            val lastDetail = betDao.getDetail(bet.betId)
+                            val multiBet = calculateMultiBetSums(selection, riskList).map { bean ->
+                                val detail = lastDetail.firstOrNull { it.combo == bean.combo }
+                                if (detail == null) {
+                                    bean
+                                } else {
+                                    ComboMultiBetBean(
+                                        combo = bean.combo,
+                                        sumOdds = bean.sumOdds,
+                                        count = bean.count,
+                                        inputMoney = detail.inputMoney,
+                                        minAmount = bean.minAmount,
+                                        maxAmount = bean.maxAmount
+                                    )
+                                }
+
+                            }
+                            comboMultiBetFlow.emit(multiBet)
+                        }
                     }
+                    selectionFlow.emit(selection)
                 }
             }
         }
     }
 
-    fun observeComboBet() = betDao.observeComboBet()
+    fun observeComboBet(): Flow<List<BetSelectionBean>> = selectionFlow
     fun observeComboMultiBet(): Flow<List<ComboMultiBetBean>> = comboMultiBetFlow
 
-    fun removeBet(id: Long) {
+    fun removeSelection(selectionId: Long) {
         scope.launch {
-            betDao.removeBet(id)
+            betDao.getCurrentBet()?.let { bet ->
+                val selection =
+                    betDao.getSelections(bet.betId).firstOrNull { it.selectionId == selectionId }
+                if (selection != null) {
+                    betDao.removeBetSelectionByMatchId(bet.betId, selection.matchId)
+                }
+            }
         }
     }
 
     fun removeAll() {
         scope.launch {
-            betDao.deleteAll()
+            betDao.removeCurrentBet()
         }
     }
 
-    fun saveToSingleBet(id: Long) {
+    fun saveToSingleBet() {
         scope.launch {
-            betDao.updateBetType(id, BetTypeEnum.SINGLE)
+            betDao.getCurrentBet()?.let {
+                betDao.updateBetType(it.betId, BetTypeEnum.SINGLE)
+            }
         }
     }
 
     fun sendBet(multiBet: List<ComboMultiBetBean>) {
         scope.launch {
-            val betBeans = betDao.getComboBet()
-            val ids = betBeans.map { it.matchId }
-            betDao.updateBetListStatus(ids, BetStatusEnum.BETTING)
-            // TODO 等接入實際盤口資料後再測試
-            val resp = remoteManager.comboBet(betBeans, multiBet)
-            if (resp == null || !resp.isSuccessful) {
-                betDao.updateBetListStatus(ids, BetStatusEnum.FAIL)
-            } else {
-                betDao.updateBetListStatus(ids, BetStatusEnum.COMPLETE)
+            betDao.getCurrentBet()?.let {  bet ->
+                if (bet.betType == BetTypeEnum.COMBO) {
+                    val betId = bet.betId
+                    betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+
+                    val selection = betDao.getSelections(betId)
+
+                    val resp = remoteManager.comboBet(selection, multiBet)
+                    val detailBean = if (resp != null && resp.isSuccessful) {
+                        multiBet.map { bean ->
+                            val res = resp.data.first { it.comboValue == bean.combo }
+                            BetDetailBean(
+                                betId = betId,
+                                combo = res.comboValue,
+                                orderId = res.orderId,
+                                sumOdds = bean.sumOdds,
+                                count = bean.count,
+                                inputMoney = bean.inputMoney,
+                                status = BetResultStatusEnum.getStatusByCode(res.orderStatus)
+                            )
+                        }
+                    } else {
+                        multiBet.map { bean ->
+                            BetDetailBean(
+                                betId = betId,
+                                combo = bean.combo,
+                                orderId = "",
+                                sumOdds = bean.sumOdds,
+                                count = bean.count,
+                                inputMoney = bean.inputMoney,
+                                status = BetResultStatusEnum.REJECT
+                            )
+                        }
+                    }
+                    betDao.insertDetail(detailBean)
+                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                }
             }
         }
     }
 
     private fun calculateMultiBetSums(
-        data: List<BetBean>,
+        data: List<BetSelectionBean>,
         riskList: List<ComboRiskDataModel>
     ): List<ComboMultiBetBean> {
         val result = mutableListOf<ComboMultiBetBean>()
-        val oddsList = data.map { it.selectionLiteBean.odds.toOdds() }
+        val oddsList = data.map { it.odds }
         val n = data.size
 
         val riskMap = riskList.associateBy { it.count }
@@ -88,7 +147,8 @@ class ComboBetRepository(
                 val odds = when (k) {
                     1 -> oddsList.reduce { acc, l -> acc.getOdds(l).toOdds() }
                     n -> oddsList.sum()
-                    else -> oddsList.combinations(k).sumOf { it.reduce { acc, l -> acc.getOdds(l).toOdds() } }
+                    else -> oddsList.combinations(k)
+                        .sumOf { it.reduce { acc, l -> acc.getOdds(l).toOdds() } }
                 }
                 val count = combinations.size
 

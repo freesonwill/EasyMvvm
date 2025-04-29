@@ -3,7 +3,6 @@ package arch.cayenne.lib.common.utils.ext
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import java.math.BigDecimal
 import java.math.RoundingMode
-import java.text.DecimalFormat
 
 object SportStringExt {
 
@@ -31,7 +30,6 @@ object SportStringExt {
      */
     fun String.toOdds(): Int {
         if (this == "0" || this.isEmpty()) return 0 // 明確處理 0
-
         val value = if (this.last() == '.') {
             this.substring(0, this.length - 1)
         } else {

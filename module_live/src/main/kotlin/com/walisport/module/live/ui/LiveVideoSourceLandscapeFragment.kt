@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourceLandscapeBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceVerticalAdapter
+import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
@@ -15,10 +16,10 @@ import kotlin.reflect.KClass
  * 视频横屏播放时的选择数据源页
  */
 class LiveVideoSourceLandscapeFragment :
-    BaseFragment<LiveVideoViewModel, FragmentLiveSourceLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoSourceViewModel, FragmentLiveSourceLandscapeBinding>(), CancelAdapt {
     override val vbClass: KClass<FragmentLiveSourceLandscapeBinding> =
         FragmentLiveSourceLandscapeBinding::class
-    override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
+    override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -75,7 +76,7 @@ class LiveVideoSourceLandscapeFragment :
 
 
     companion object {
-        const val TAG = "LiveVideoChooseSourceFragment"
+        const val TAG = "LiveVideoSourceLandscapeFragment"
     }
 
 }

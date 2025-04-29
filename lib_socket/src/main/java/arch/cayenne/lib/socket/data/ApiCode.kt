@@ -17,9 +17,17 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_ORDER(500,1012),    //500-1012: 获取下注记录
     GER_RESERVE_ORDER(500,1021), //500-1021 获取预约下注记录
     GET_LINEUP(700,2002),    //700-2002: 比赛阵容数据
+    GET_MATCH(500,1003),    // 500-1003: 获取比赛详情
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额
-    GET_COMBO_RISK(500,1014),    //500-1013: 获取串关下注限额
+    GET_COMBO_RISK(500,1014),     //500-1014: 获取串关下注限额
 
-    MATCH_TREND(700, 2004),//700-2004: 比赛趋势数据
+    MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
+    GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
+
+    EARLY_SETTLE(500,1011),      //500-1011:发起提前结算
+    RESERVE_CANCEL(500,1022),     // 500-1021: 获取用户预约下注记录列表
+    RESERVE_UPDATE(500,1023),    // 500-1023: 修改预约下注订单
+
+    ORDER_STATUS_NOTIFY(600, 1001),     //600-1001: 订单状态推送(被動)
 }

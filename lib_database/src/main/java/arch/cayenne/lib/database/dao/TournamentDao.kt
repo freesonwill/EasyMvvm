@@ -24,13 +24,13 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
 //    )
 //    abstract fun queryTournament(playType: Int, sportId: Int): List<TournamentDataModel>
 
-    @Query("SELECT bean.id as id , bean.name as name, bean.simpleName as simpleName, bean.icon as icon, bean.weight as weight " +
+    @Query("SELECT bean.id as id, bean.sportId as sportId, bean.name as name, bean.simpleName as simpleName, bean.icon as icon, bean.weight as weight " +
             "FROM TournamentBean bean " +
             "order by weight desc limit :limit"
     )
     abstract fun queryTournamentWithLimit(limit: Int): List<TournamentDataModel>
 
-    @Query("SELECT bean.id as id , bean.name as name, bean.simpleName as simpleName, bean.icon as icon, bean.weight as weight " +
+    @Query("SELECT bean.id as id, bean.sportId as sportId, bean.name as name, bean.simpleName as simpleName, bean.icon as icon, bean.weight as weight " +
             "FROM TournamentBean bean " +
             "order by weight desc"
     )

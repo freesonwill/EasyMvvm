@@ -12,15 +12,13 @@ class FloatingButtonRepository(
     private val betDao: BetDao
 ) : BaseRepository() {
 
-    fun observeComboBetCount() = betDao.observeComboBetCount()
+    fun observeComboBetCount() = betDao.observeComboCount()
 
-    suspend fun getSingleBetId() = with(scope.coroutineContext) {
-        betDao.getBetSheet().first().matchId
-    }
-
-    fun saveToSingleBet(id: Long) {
+    fun saveToSingleBet() {
         scope.launch {
-            betDao.updateBetType(id, BetTypeEnum.SINGLE)
+            betDao.getCurrentBet()?.let {
+                betDao.updateBetType(it.betId, BetTypeEnum.SINGLE)
+            }
         }
     }
 }

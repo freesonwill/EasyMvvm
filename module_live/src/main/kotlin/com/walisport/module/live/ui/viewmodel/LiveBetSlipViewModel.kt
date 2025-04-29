@@ -5,8 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.live.data.LiveBetRepository
 import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.ui.adapter.LiveBetSlipReserveAdapter
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -39,10 +41,24 @@ class LiveBetSlipViewModel : BaseViewModel() {
     fun getReserveOrder() {
         viewModelScope.launch {
             val result = repository.getReserveOrder(sportId, matchId)
+            LogUtils.dTag("aaa","gerRerveOrder ${result?.size}")
             _reserveLiveData.value = result
         }
 
     }
 
 
+    fun getTestList(): List<Common.Order> {
+        val order = Common.Order.newBuilder().setBetId("0").build()
+        val order1 = Common.Order.newBuilder().setBetId("1").build()
+        val tmpList = arrayListOf(order, order1)
+        return tmpList
+    }
+
+    fun getTestList1(): List<Common.ReserveOrder> {
+        val order = Common.ReserveOrder.newBuilder().setReserveId("0").build()
+        val order1 = Common.ReserveOrder.newBuilder().setReserveId("1").build()
+        val tmpList = arrayListOf(order, order1)
+        return tmpList
+    }
 }

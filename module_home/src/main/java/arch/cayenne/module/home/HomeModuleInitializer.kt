@@ -4,10 +4,8 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.LogUtilsExt.logd
 import arch.cayenne.module.home.repository.HomeRepository
-import arch.cayenne.module.home.viewmodel.EarlyViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel
-import arch.cayenne.module.home.viewmodel.TodayGameListViewModel
-import arch.cayenne.module.home.viewmodel.TodayViewModel
+import arch.cayenne.module.home.viewmodel.MatchListViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
@@ -28,9 +26,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
 
     private val viewModules = module {
         viewModel { HomeViewModel() }
-        viewModel { TodayViewModel() }
-        viewModel { EarlyViewModel() }
-        viewModel { TodayGameListViewModel() }
+        viewModel { MatchListViewModel() }
     }
     private val daoModule = module {
 //        factory { get<GameDatabase>().sportDao() }
