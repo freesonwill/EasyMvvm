@@ -2,7 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult

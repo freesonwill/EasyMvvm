@@ -1,14 +1,11 @@
 package com.walisport.module.live.ui.adapter
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.compare.LiveEmojiCompare
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding

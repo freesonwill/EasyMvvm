@@ -2,9 +2,9 @@ package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository

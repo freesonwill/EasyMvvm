@@ -1,6 +1,6 @@
 package arch.cayenne.lib.socket
 
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.IRequest

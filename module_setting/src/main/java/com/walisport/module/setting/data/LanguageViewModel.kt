@@ -2,7 +2,7 @@ package com.walisport.module.setting.data
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 

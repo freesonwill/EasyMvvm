@@ -41,34 +41,38 @@ module_setting/
 │   │   └── SettingRepository.kt
 │   ├── model/                        # 数据模型（实体类）
 │   │   └── SettingBean.kt
-│   └── constants/                    # 常量和枚举配置
-│       ├── SettingEnum.kt           # 枚举类
-│       └── SettingConstant.kt       # 常量类
+│   ├── constants/                    # 常量和枚举配置
+│   │   ├── SettingEnum.kt           # 枚举类
+│   │   └── SettingConstant.kt       # 常量类
+│   └── manager/                     # 管理类，封装模块状态/缓存/策略等
+│       └── SettingManager.kt
 
 ├── ui/                               # 界面层，包含所有UI组件
 │   ├── activity/                    # Activity 页面
 │   ├── fragment/                    # Fragment 页面
 │   ├── dialog/                      # 弹窗组件
 │   ├── view/                        # 自定义View组件
-│   ├── adapter/                     # 列表适配器（含 ViewHolder）
+│   ├── adapter/                     # 列表适配器
 │   │   ├── SettingAdapter.kt
 │   │   └── SettingViewHolder.kt
 │   └── viewmodel/                   # ViewModel，负责界面数据状态管理
 
-├── utils/                            # 工具类和扩展函数
+├── utils/                            # 通用工具类与扩展函数（无状态）
 │   ├── ext/                         # Kotlin 扩展函数目录
 │   │   └── StringExt.kt
-│   └── ThreadUtils.kt               # 线程调度相关工具类
+│   ├── ThreadUtils.kt               # 线程调度相关
+│   └── helper/                      # 助手类，封装通用逻辑
+│       ├── CountDownHelper.kt       # 倒计时辅助类
+│       └── ToastHelper.kt           # Toast 弹窗辅助类
 
-├── service/                          # 模块核心业务逻辑及服务
-│   ├── ISettingService.kt           # 服务接口定义（对外暴露功能）
-│   ├── SettingServiceImpl.kt        # 服务实现类
-│   ├── manager/                     # 管理类目录，管理模块内复杂业务逻辑
-│   │   └── SettingManager.kt        # 设置相关业务管理类
-│   ├── SettingProvider.kt           # 内容提供者（ContentProvider）
-│   └── SettingBroadcastReceiver.kt  # 广播接收器（接收系统或模块广播）
+├── service/                          # 模块对外能力与通信服务
+│   ├── ISettingService.kt           # 服务接口定义（对外暴露）
+│   ├── SettingServiceImpl.kt        # 服务实现
+│   ├── SettingProvider.kt           # 内容提供者
+│   └── SettingBroadcastReceiver.kt  # 广播接收器
 
-├── SettingModuleInitializer.kt       # 模块初始化入口（注册服务等）
+├── SettingModuleInitializer.kt       # 模块初始化类，负责模块的初始化
+
 ```
 
 ### mvvm架构
@@ -132,7 +136,7 @@ UI層不要有資料層的東西注入
 ```
 11. 消息推送设计： Netty or WebSocket？
 ```text
-
+WebSocket
 ```
 12. 自定义title：所有标题继承于TitleBarView
 ```text
@@ -157,6 +161,5 @@ UI層不要有資料層的東西注入
      * @param view 传入布局view
      * @param callback 返回 不传入Unit 默认不显示ivBack 
      */
-   
 
 ```

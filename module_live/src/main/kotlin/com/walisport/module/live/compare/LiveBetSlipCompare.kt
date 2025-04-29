@@ -1,14 +1,26 @@
 package com.walisport.module.live.compare
 
 import androidx.recyclerview.widget.DiffUtil
+import com.walisport.module.live.data.livebetslip.LiveBetSlipData
 import galaxy.common.proto.Common
 
-class LiveBetSlipCompare : DiffUtil.ItemCallback<Common.Order>() {
-    override fun areItemsTheSame(oldItem: Common.Order, newItem: Common.Order): Boolean {
-        return oldItem.betId == newItem.betId
+class LiveBetSlipCompare : DiffUtil.ItemCallback<LiveBetSlipData>() {
+    override fun areItemsTheSame(oldItem: LiveBetSlipData, newItem: LiveBetSlipData): Boolean {
+        if(oldItem.order != null){
+           return oldItem.order.betId == newItem.order?.betId
+        }else if(oldItem.reserve != null){
+            return oldItem.reserve.reserveId == newItem.reserve?.reserveId
+        }
+        return  false
     }
 
-    override fun areContentsTheSame(oldItem: Common.Order, newItem: Common.Order): Boolean {
-        return oldItem.betId == newItem.betId
+    override fun areContentsTheSame(oldItem: LiveBetSlipData, newItem: LiveBetSlipData): Boolean {
+        if(oldItem.order != null){
+            return oldItem.order.betId == newItem.order?.betId
+        }else if(oldItem.reserve != null){
+            return oldItem.reserve.reserveId == newItem.reserve?.reserveId
+        }
+        return  false
     }
+
 }

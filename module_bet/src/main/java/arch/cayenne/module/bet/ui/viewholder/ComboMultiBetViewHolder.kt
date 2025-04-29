@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R

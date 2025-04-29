@@ -2,8 +2,8 @@ package arch.cayenne.module.bet.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetDetailBean

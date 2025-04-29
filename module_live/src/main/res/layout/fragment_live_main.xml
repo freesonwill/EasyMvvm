@@ -7,7 +7,7 @@
     android:background="@color/app_bg"
     android:orientation="vertical">
 
-    <arch.cayenne.lib.common.ui.widget.TitleBarView
+    <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/titleBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

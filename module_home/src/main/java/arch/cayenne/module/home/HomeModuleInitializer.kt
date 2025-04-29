@@ -2,7 +2,7 @@ package arch.cayenne.module.home
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.MatchListViewModel

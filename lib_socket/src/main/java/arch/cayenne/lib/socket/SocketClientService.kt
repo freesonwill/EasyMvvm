@@ -4,8 +4,8 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
-import arch.cayenne.lib.base.utils.LogUtilsExt.logi
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.IRequest
 import arch.cayenne.lib.socket.data.IResponse

@@ -1,14 +1,13 @@
 package com.walisport.module.live.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
-import com.walisport.module.live.data.LiveBetRepository
+import com.walisport.module.live.data.livebetslip.LiveBetSlipData
+import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.model.LiveBetSlipEnum
-import com.walisport.module.live.ui.adapter.LiveBetSlipReserveAdapter
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -48,10 +47,10 @@ class LiveBetSlipViewModel : BaseViewModel() {
     }
 
 
-    fun getTestList(): List<Common.Order> {
+    fun getTestList(): List<LiveBetSlipData> {
         val order = Common.Order.newBuilder().setBetId("0").build()
         val order1 = Common.Order.newBuilder().setBetId("1").build()
-        val tmpList = arrayListOf(order, order1)
+        val tmpList = arrayListOf(LiveBetSlipData(order), LiveBetSlipData(order1))
         return tmpList
     }
 
