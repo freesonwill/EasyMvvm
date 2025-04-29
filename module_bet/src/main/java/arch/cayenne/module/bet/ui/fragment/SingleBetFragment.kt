@@ -2,16 +2,16 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ViewUtils
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.database.entity.BetBean
+import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
-import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
@@ -84,15 +84,16 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.clBet.setOnClickListener {
             mViewModel.sendBet()
-            val id = mViewModel.onBetSheetListener.value?.matchId ?: -1
-            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(id))
+            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
                 childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment(it.matchId))
+                        val odds = bundle.getInt(KEY_ODDS_RESULT)
+                        mViewModel.saveReserveOdds(odds)
+                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment())
                     }
                 }
                 val location = IntArray(2)
@@ -100,8 +101,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
                     location.last() + mBinding.btnReserve.height,
-                    it.matchId,
-                    odds = it.selectionLiteBean.odds
+                    odds = it.odds
                 ).show(childFragmentManager)
             }
 
@@ -130,11 +130,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "\$ ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
-            mViewModel.setRemainingNumber(it)
         }
     }
 
-    private fun setBetData(data: BetBean) {
+    private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
     }
 

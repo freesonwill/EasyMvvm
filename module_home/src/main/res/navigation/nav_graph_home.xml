@@ -5,22 +5,19 @@
     android:id="@+id/nav_graph_home"
     app:startDestination="@id/homeFragment">
 
-
     <fragment
         android:id="@+id/homeFragment"
         android:name="arch.cayenne.module.home.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
+
         <action
             android:id="@+id/action_homeFragment_to_secondFragment"
-            app:destination="@id/secondFragment"
-            />
-           <!-- app:popUpTo="@id/homeFragment"
-            app:popUpToInclusive="true"-->
+            app:destination="@id/secondFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_LoginActivity"
-            app:destination="@id/LoginActivity"
-            >
+            app:destination="@id/LoginActivity">
             <argument
                 android:name="userId"
                 android:defaultValue="@null"
@@ -35,23 +32,20 @@
         <action
             android:id="@+id/action_homeFragment_to_newHomeFragment"
             app:destination="@id/newHomeFragment" />
-
     </fragment>
-
 
     <!--  隐式调用其他模块的activity -->
     <activity
         android:id="@+id/LoginActivity"
         android:label="activity_home"
-        app:targetPackage="${applicationId}"
         app:data="walisport://login_activity"
-        >
+        app:targetPackage="${applicationId}">
         <argument
             android:name="userId"
             android:defaultValue="@null"
             app:argType="string"
             app:nullable="true" />
-         <deepLink app:uri="walisport://login_activity?userId={userId}" />
+        <deepLink app:uri="walisport://login_activity?userId={userId}" />
     </activity>
 
     <activity
@@ -69,13 +63,11 @@
             app:uri="walisport://login_activity?userId={userId}" />
     </activity>
 
-
     <fragment
         android:id="@+id/secondFragment"
         android:name="arch.cayenne.module.home.test.SecondFragment"
         android:label="fragment_second"
-        tools:layout="@layout/fragment_test_second"
-        >
+        tools:layout="@layout/fragment_test_second">
         <argument
             android:name="userId"
             android:defaultValue="@null"
@@ -86,17 +78,15 @@
             app:destination="@id/thirdFragment" />
     </fragment>
 
-
     <activity
         android:id="@+id/homeActivity"
         android:name="arch.cayenne.module.home.ui.HomeActivity"
-        android:label="activity_home"
-        />
+        android:label="activity_home" />
     <fragment
         android:id="@+id/thirdFragment"
         android:name="arch.cayenne.module.home.test.ThirdFragment"
         android:label="fragment_third"
-        tools:layout="@layout/fragment_test_third" >
+        tools:layout="@layout/fragment_test_third">
 
         <action
             android:id="@+id/action_thirdFragment_to_fourthFragment"
@@ -106,42 +96,37 @@
     <fragment
         android:id="@+id/viewPagerFragment"
         android:name="arch.cayenne.module.home.test.ViewPagerFragment"
-        android:label="ViewPagerFragment"
-        >
+        android:label="ViewPagerFragment">
         <action
             android:id="@+id/action_viewPagerItem2Fragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpToSaveState="true"
-            app:restoreState="true"
-            />
+            app:restoreState="true" />
     </fragment>
 
     <fragment
         android:id="@+id/newHomeFragment"
         android:name="arch.cayenne.module.home.ui.fragment.NewHomeFragment"
-        android:label="NewHomeFragment"
-        >
+        android:label="NewHomeFragment">
         <action
             android:id="@+id/action_newHomeFragment_to_homeFragment"
             app:destination="@id/homeFragment"
             app:popUpToSaveState="true"
-            app:restoreState="true"
-            />
+            app:restoreState="true" />
+
+        <deepLink app:uri="walisport://module_home/NewHomeFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/fourthFragment"
         android:name="arch.cayenne.module.home.test.FourthFragment"
         android:label="fragment_test_fourth"
-        tools:layout="@layout/fragment_test_fourth" >
+        tools:layout="@layout/fragment_test_fourth">
 
         <action
             android:id="@+id/action_fourthFragment_to_homeFragment"
             app:destination="@id/homeFragment"
-            app:popUpToInclusive="true"
             app:popUpTo="@id/homeFragment"
-            />
+            app:popUpToInclusive="true" />
     </fragment>
-
-
 </navigation>
