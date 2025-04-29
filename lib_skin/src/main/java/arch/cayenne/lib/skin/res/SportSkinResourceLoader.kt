@@ -8,14 +8,17 @@ import androidx.annotation.ColorRes
 
 interface SportSkinResourceLoader {
 
-    fun getColor(context: Context,@ColorRes resId: Int):Int
+    fun getColor(context: Context, @ColorRes resId: Int): Int
 
-    fun getColorStateList(context: Context,@ColorRes resId: Int):ColorStateList?
+    fun getColorStateList(context: Context, @ColorRes resId: Int): ColorStateList?
 
-    fun getDrawable(context: Context,@AnyRes resId: Int):Drawable?
+    fun getDrawable(context: Context, @AnyRes resId: Int): Drawable?
 
-    fun getTargetResourceId(context: Context,@AnyRes resId: Int):Int
+    fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int
 
-    fun getSkinName():String
+    fun getSkinName(): String
+
+    //给BuildInLoader设置 其他Loader没有效果
+    fun setSecondarySkin(skinName: String)
 
 }

@@ -13,12 +13,12 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 
-class SportSkinAssetsResourceLoader(context: Context, val skinName: String) : SportSkinResourceLoader {
+class SportSkinAssetsResourceLoader(context: Context, private val _skinName: String) : SportSkinResourceLoader {
     val SKIN_DEPLOY_PATH = "skins"
     private var _resources: Resources? = null
 
     init {
-        val nSkinPath = getSkinPath(context, skinName)
+        val nSkinPath = getSkinPath(context, _skinName)
         if (File(nSkinPath).exists()) {
             val pkgName = getSkinPackageName(context, nSkinPath)
             val resources = getSkinResources(context, nSkinPath)
@@ -75,7 +75,11 @@ class SportSkinAssetsResourceLoader(context: Context, val skinName: String) : Sp
     }
 
     override fun getSkinName(): String {
-        return skinName
+        return _skinName
+    }
+
+    override fun setSecondarySkin(skinName: String) {
+
     }
 
     private fun getSkinResources(context: Context, skinPkgPath: String): Resources? {

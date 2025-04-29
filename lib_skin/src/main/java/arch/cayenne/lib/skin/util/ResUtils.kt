@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.collection.LruCache
 
 object ResUtils {
-   private val sResourceCache = LruCache<String,Int>(100)
+   private val sResourceCache = LruCache<String,Int>(150)
 
     fun getResourceId(context: Context, resourceName: String, defType: String): Int {
         val key = resourceName + "_" + defType

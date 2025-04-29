@@ -10,13 +10,23 @@ import androidx.annotation.StringRes
 import java.util.Locale
 
 /**
- *
+ * 获取对应资源文件
  * */
-object SportSkinResourceManager {
+ object SportSkinResourceManager {
     private var resourceLoader: SportSkinResourceLoader = SportSkinBuildInResourceLoader("")
 
     fun initResource(resourceLoader: SportSkinResourceLoader) {
         SportSkinResourceManager.resourceLoader = resourceLoader
+        if(resourceLoader is SportSkinBuildInResourceLoader){
+            resourceLoader.getSkinName()
+        }
+    }
+    fun setSecondaryName(secondaryName:String){
+        resourceLoader.setSecondarySkin(secondaryName)
+    }
+
+    fun restoreSecondaryName(){
+        resourceLoader.setSecondarySkin("")
     }
 
     fun getTextResourceText(
