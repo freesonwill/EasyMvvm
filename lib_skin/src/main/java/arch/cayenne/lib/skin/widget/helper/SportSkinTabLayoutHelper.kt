@@ -51,21 +51,21 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
                 mView.setTabTextColors(normal, selectd)
             }
         }
-        "====".loge("数据")
-        updateTabBackground()
+//        "====".loge("数据")
+//        updateTabBackground()
     }
 
 
-    private fun updateTabBackground() {
-        "数量 ${mView.tabCount}".loge("数据")
-        for (i in 0 until mView.tabCount) {
-            val tab = mView.getTabAt(i)
-            "得到背景颜色${tabBackground}======${tab?.view}".loge("数据")
-           updateTabBack(tab)
-        }
-    }
+//    private fun updateTabBackground() {
+//        "数量 ${mView.tabCount}".loge("数据")
+//        for (i in 0 until mView.tabCount) {
+//            val tab = mView.getTabAt(i)
+//            "得到背景颜色${tabBackground}======${tab?.view}".loge("数据")
+//            updateTabBack(tab)
+//        }
+//    }
 
-    fun updateTabBack(tab: TabLayout.Tab?){
+    fun updateTabBack(tab: TabLayout.Tab?) {
         tab?.view?.setBackgroundResource(
             resourcesManager.getTargetResourceId(
                 mView.context,
