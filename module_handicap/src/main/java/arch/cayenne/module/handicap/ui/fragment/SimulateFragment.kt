@@ -1,21 +1,20 @@
 package arch.cayenne.module.handicap.ui.fragment
 
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.skin.widget.SportButton
-import arch.cayenne.lib.skin.widget.SportImageView
-import arch.cayenne.lib.skin.widget.SportLinearLayout
-import arch.cayenne.lib.skin.widget.SportTextView
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding
 import arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.module.handicap.R
+import arch.cayenne.module.handicap.databinding.ItemFlipperBinding
 
 /**
  * 模拟投注页面
@@ -43,75 +42,57 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
         val list = mViewModel.getFlipperData()
         val size = list.size
         for (item in list) {
-            val layout = LayoutInflater.from(context)
-                .inflate(R.layout.item_flipper, null) as SportLinearLayout
-            val tvType = layout.findViewById<SportTextView>(R.id.tv_type)
-            val tvQuestion = layout.findViewById<SportTextView>(R.id.tv_question)
-            val tvScore = layout.findViewById<SportTextView>(R.id.tv_score)
-            val tvHome = layout.findViewById<SportTextView>(R.id.tv_home_team)
-            val tvAway = layout.findViewById<SportTextView>(R.id.tv_away_team)
-            val tvLeft = layout.findViewById<SportTextView>(R.id.tv_left)
-            val tvRight = layout.findViewById<SportTextView>(R.id.tv_right)
-            val ivLeft = layout.findViewById<SportImageView>(R.id.iv_left)
-            val ivRight = layout.findViewById<SportImageView>(R.id.iv_right)
-            val layLeft = layout.findViewById<SportLinearLayout>(R.id.line_left)
-            val layRight = layout.findViewById<SportLinearLayout>(R.id.line_right)
-            val layContent = layout.findViewById<SportLinearLayout>(R.id.line_content)
-            val ivTip = layout.findViewById<SportImageView>(R.id.iv_tip)
-            val tvTip = layout.findViewById<SportTextView>(R.id.tv_tip)
-            val tvMsg = layout.findViewById<SportTextView>(R.id.tv_msg)
-            val btnNext = layout.findViewById<SportButton>(R.id.btn_next)
-            tvType.text = item.type
-            tvQuestion.text = item.question
-            tvScore.text = item.score
-            tvHome.text = item.homeName
-            tvAway.text = item.awayName
-            tvLeft.text = item.left
-            tvRight.text = item.right
-            layLeft.background = getLayoutBackground(item.isRight)
-            layRight.background = getLayoutBackground(!item.isRight)
-            ivLeft.background = getImageBackground(item.isRight)
-            ivRight.background = getImageBackground(!item.isRight)
-            layLeft.setOnClickListener {
-                layLeft.isSelected = true
-                layRight.isSelected = false
-                ivLeft.visibility = View.VISIBLE
-                ivRight.visibility = View.GONE
-                tvTip.text = getTipText(item.isRight)
-                ivTip.background = getTipBackground(item.isRight)
-                tvMsg.text = item.leftMsg
-                layContent.visibility = View.VISIBLE
+            val itemBinding = ItemFlipperBinding.inflate(LayoutInflater.from(context))
+            itemBinding.tvType.text = item.type
+            itemBinding.tvQuestion.text = item.question
+            itemBinding.tvScore.text = item.score
+            itemBinding.tvHomeTeam.text = item.homeName
+            itemBinding.tvAwayTeam.text = item.awayName
+            itemBinding.tvLeft.text = item.left
+            itemBinding.tvRight.text = item.right
+            itemBinding.layLeft.background = getLayoutBackground(item.isRight)
+            itemBinding.layRight.background = getLayoutBackground(!item.isRight)
+            itemBinding.ivLeft.background = getImageBackground(item.isRight)
+            itemBinding.ivRight.background = getImageBackground(!item.isRight)
+            itemBinding.layLeft.setOnClickListener {
+                itemBinding.layLeft.isSelected = true
+                itemBinding.layRight.isSelected = false
+                itemBinding.ivLeft.visibility = View.VISIBLE
+                itemBinding.ivRight.visibility = View.GONE
+                itemBinding.tvTip.text = getTipText(item.isRight)
+                itemBinding.ivTip.background = getTipBackground(item.isRight)
+                itemBinding.tvMsg.text = item.leftMsg
+                itemBinding.layContent.visibility = View.VISIBLE
             }
-            layRight.setOnClickListener {
-                layLeft.isSelected = false
-                layRight.isSelected = true
-                ivLeft.visibility = View.GONE
-                ivRight.visibility = View.VISIBLE
-                tvTip.text = getTipText(!item.isRight)
-                ivTip.background = getTipBackground(!item.isRight)
-                tvMsg.text = item.rightMsg
-                layContent.visibility = View.VISIBLE
+            itemBinding.layRight.setOnClickListener {
+                itemBinding.layLeft.isSelected = false
+                itemBinding.layRight.isSelected = true
+                itemBinding.ivLeft.visibility = View.GONE
+                itemBinding.ivRight.visibility = View.VISIBLE
+                itemBinding.tvTip.text = getTipText(!item.isRight)
+                itemBinding.ivTip.background = getTipBackground(!item.isRight)
+                itemBinding.tvMsg.text = item.rightMsg
+                itemBinding.layContent.visibility = View.VISIBLE
             }
             if (item.id < size) {
                 val tip = getString(R.string.next_question)
-                btnNext.text = String.format("%s(%s/%s)", tip, item.id, list.size)
+                itemBinding.btnNext.text = String.format("%s(%s/%s)", tip, item.id, list.size)
             } else {
-                btnNext.text = getString(R.string.go_to_bet)
+                itemBinding.btnNext.text = getString(R.string.go_to_bet)
             }
-            btnNext.setOnClickListener {
+            itemBinding.btnNext.setOnClickListener {
                 if (item.id < size) {
-                    layLeft.isSelected = false
-                    layRight.isSelected = false
-                    ivLeft.visibility = View.GONE
-                    ivRight.visibility = View.GONE
-                    layContent.visibility = View.GONE
+                    itemBinding.layLeft.isSelected = false
+                    itemBinding.layRight.isSelected = false
+                    itemBinding.ivLeft.visibility = View.GONE
+                    itemBinding.ivRight.visibility = View.GONE
+                    itemBinding.layContent.visibility = View.GONE
                     mBinding.viewFlipper.showNext()
                 } else {
-                    //后面需要修改为点击跳转投注页
-                    findNavController().navigateUp()
+                    navigate(Uri.parse("walisport://module_home/NewHomeFragment"))
                 }
             }
-            mBinding.viewFlipper.addView(layout)
+            mBinding.viewFlipper.addView(itemBinding.root)
         }
     }
 
