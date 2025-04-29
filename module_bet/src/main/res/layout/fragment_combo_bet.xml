@@ -19,7 +19,6 @@
 
             <TextView
                 android:id="@+id/tv_title_betting_slip"
-                style="@style/TextViewStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="16dp"
@@ -39,8 +38,9 @@
                 android:background="@drawable/bg_balance"
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
-                android:textColor="@color/color_textview_balance"
+                android:textColor="@color/money_color"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_close"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -108,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/title_combo_bet_odds_expand"
-                        android:textColor="@color/color_bet_sheet_text_second"
+                        android:textColor="@color/secondary_text"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -118,7 +118,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
                     android:text="@string/title_combo_bet_money"
-                    android:textColor="@color/color_bet_sheet_text_second"
+                    android:textColor="@color/secondary_text"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="@id/tv_sum_bet_money"
                     app:layout_constraintEnd_toStartOf="@id/tv_sum_bet_money"
@@ -129,7 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
-                    android:textColor="@color/color_textview_balance"
+                    android:textColor="@color/money_color"
                     android:textSize="13sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -172,7 +172,7 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="4dp"
                 android:background="@drawable/shape_8dp"
-                android:backgroundTint="@color/color_button"
+                android:backgroundTint="@color/brand_color"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/btn_delete"
@@ -183,7 +183,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/btn_bet_hint"
-                    android:textColor="@color/color_textview"
+                    android:textColor="@color/main_text"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toTopOf="@id/tv_bet_money"

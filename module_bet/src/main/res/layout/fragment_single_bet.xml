@@ -12,7 +12,6 @@
 
         <TextView
             android:id="@+id/tv_title_betting_slip"
-            style="@style/TextViewStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="16dp"
@@ -32,7 +31,7 @@
             android:background="@drawable/bg_balance"
             android:paddingHorizontal="8dp"
             android:paddingVertical="4dp"
-            android:textColor="@color/color_textview_balance"
+            android:textColor="@color/money_color"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/iv_close"
@@ -71,7 +70,7 @@
             android:layout_height="46dp"
             android:layout_marginEnd="4dp"
             android:background="@drawable/shape_8dp"
-            android:backgroundTint="@color/color_button_normal"
+            android:backgroundTint="@color/input_box_2"
             android:focusable="true"
             android:focusableInTouchMode="true"
             app:layout_constraintEnd_toStartOf="@id/cl_reserve"
@@ -94,12 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
                 android:background="@null"
-                android:cursorVisible="true"
                 android:hint="@string/et_money_hint"
-                android:inputType="numberDecimal"
-                android:textColor="@color/color_textview"
-                android:textColorHint="@color/color_edittext_hint"
-                android:textCursorDrawable="@drawable/shape_edittext_cursor"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -130,9 +124,9 @@
                 android:id="@+id/cl_cancel_reserve"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:background="@drawable/shape_8dp"
-                android:backgroundTint="@color/color_button_normal"
                 android:visibility="gone"
+                android:background="@drawable/shape_8dp"
+                android:backgroundTint="@color/input_box_2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -144,11 +138,10 @@
                     android:layout_height="0dp"
                     android:layout_margin="4dp"
                     android:background="@drawable/shape_6dp"
-                    android:backgroundTint="@color/color_button_number"
+                    android:backgroundTint="@color/reserve_bg"
                     android:gravity="center"
                     android:paddingHorizontal="10dp"
                     android:paddingVertical="8dp"
-                    android:textColor="@color/color_textview"
                     android:textSize="15sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -177,7 +170,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/shape_6dp"
-            android:backgroundTint="@color/color_button_normal"
+            android:backgroundTint="@color/keyboard_1"
             android:gravity="center"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -199,13 +192,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
-                android:background="@color/diver" />
+                android:background="@color/dividing_line" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_500"
                 style="@style/TextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:paddingVertical="12dp"
@@ -216,13 +210,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
-                android:background="@color/diver" />
+                android:background="@color/dividing_line" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_1000"
                 style="@style/TextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:paddingVertical="12dp"
@@ -233,13 +228,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
-                android:background="@color/diver" />
+                android:background="@color/dividing_line" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_2000"
                 style="@style/TextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:paddingVertical="12dp"
@@ -250,13 +246,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
-                android:background="@color/diver" />
+                android:background="@color/dividing_line" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_5000"
                 style="@style/TextViewStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textStyle="bold"
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:paddingVertical="12dp"
@@ -287,7 +284,7 @@
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:src="@mipmap/icon_back" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -295,7 +292,7 @@
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:text="@string/btn_clear"
                 android:textSize="12sp" />
 
@@ -304,7 +301,7 @@
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:text="@string/btn_double"
                 android:textSize="12sp" />
 
@@ -313,7 +310,7 @@
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:padding="10dp"
                 android:scaleType="fitCenter"
                 android:src="@mipmap/icon_keyboard" />
@@ -348,7 +345,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/shape_8dp"
-            android:backgroundTint="@color/color_button"
+            android:backgroundTint="@color/brand_color"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_collusion"
@@ -359,7 +356,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/btn_bet_hint"
-                android:textColor="@color/color_textview"
+                android:textColor="@color/text_on_theme_color"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@id/tv_bet_money"

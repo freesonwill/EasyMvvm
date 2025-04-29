@@ -10,7 +10,7 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="1" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -19,7 +19,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="2" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -27,7 +27,7 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="3" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -36,14 +36,14 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="4" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_five"
         style="@style/NumberKeyboardButton"
         android:layout_margin="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="5" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -52,7 +52,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="6" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -61,14 +61,14 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="7" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_eight"
         style="@style/NumberKeyboardButton"
         android:layout_margin="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="8" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -77,7 +77,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="9" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -86,7 +86,7 @@
         android:textSize="14sp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/color_button_number" />
+        android:backgroundTint="@color/keyboard_2" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_zero"
@@ -94,7 +94,7 @@
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="0" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -102,7 +102,7 @@
         style="@style/NumberKeyboardButton"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
-        android:backgroundTint="@color/color_button_number"
+        android:backgroundTint="@color/keyboard_2"
         android:text="." />
 
 </GridLayout>
