@@ -43,4 +43,18 @@
 
     <string name="standings_empty">Standings Data is Empty</string>
     <string name="outs_empty">Match Data is Empty</string>
+    <string name="live_bet_reserve_expired">ReservationExpired</string>
+    <string name="live_bet_grounder">RollingBall</string>
+    <string name="live_bet_bet_num">OrderNumber</string>
+    <string name="live_bet_reserve_odds">BookingOdds</string>
+    <string name="live_bet_reserve_bet">BookingReservation</string>
+    <string name="live_bet_except_max_win">ExpectedMaximumWin</string>
+    <string name="live_bet_full_handicap">FullTimeHandicap</string>
+    <string name="live_bet_cancel_reserve">CancelAppointment</string>
+    <string name="live_bet_modify_odds">ModifyOdds</string>
+    <string name="live_bet_odds">Odds</string>
+    <string name="live_bet_part_early_settle">PartialEarlySettle</string>
+    <string name="live_bet_win_lose_amount">WinAndLosingAmount</string>
+    <string name="live_bet_win">Win</string>
+    <string name="live_bet_except_odds">EstimatedOdds@%1$s</string>
 </resources>
