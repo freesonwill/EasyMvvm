@@ -456,14 +456,14 @@ class LiveVideoLandscapeFragment :
 
 
 
-        mViewModel.leagueIconUrl.observe(this) {
+        mViewModel.leagueImgSrc.observe(this) {
             Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
                 .placeholder(R.drawable.title_league_icon)
                 .into(mBinding.ivVideoLandscapeLeagueIcon)
         }
 
-        mViewModel.playerAName.observe(this) {
-            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.playerBName.value}"
+        mViewModel.homeTeamName.observe(this) {
+            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.awayTeamName.value}"
         }
 
         playingStatusLiveData.observe(viewLifecycleOwner) {

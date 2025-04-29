@@ -1,17 +1,23 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.LiveRemoteManager
-import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
-class LiveMainRepository( private val remoteManager: LiveRemoteManager
+class LiveMainRepository(
+    private val remoteManager: LiveRemoteManager, private val database: GameDatabase
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    suspend fun getMatchReq( matchId: Long ):Common.Match?  {
-        return remoteManager.getMatchReq(scope, matchId)?.firstOrNull{it.matchId==matchId}
+
+    private val matchDao = database.matchDao()
+
+    suspend fun getMatchBean(matchId: Long): MatchBean {
+        return matchDao.getMatchById(matchId)
+
     }
 
 }
+

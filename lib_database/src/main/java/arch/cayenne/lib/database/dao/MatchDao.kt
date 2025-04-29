@@ -58,6 +58,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
     abstract suspend fun getMatchById(matchId: Long) : MatchBean
 
+    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    abstract fun observeMatchById(matchId: Long): Flow<MatchBean?>
+
     @Transaction
     @Query("SELECT * " +
             "FROM MarketBean market " +

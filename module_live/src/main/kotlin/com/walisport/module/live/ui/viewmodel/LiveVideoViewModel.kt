@@ -1,6 +1,5 @@
 package com.walisport.module.live.ui.viewmodel
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -8,6 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -21,13 +21,25 @@ class LiveVideoViewModel(
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
 
-    val videoPlayVisible = MutableLiveData(View.VISIBLE)
+    //比赛状态
+    private val _matchStatusLiveData = MutableLiveData<MatchStatus?>()
+    val matchStatusLiveData: LiveData<MatchStatus?> = _matchStatusLiveData
 
-    val statusVisible = MutableLiveData(View.INVISIBLE)
+    //主队名称
+    private val _homeTeamName = MutableLiveData("")
+    val homeTeamName: LiveData<String> = _homeTeamName
 
-    val playerAUrl = MutableLiveData<String>("")
+    //主队图标
+    private val _homeTeamIcon = MutableLiveData<String>("")
+    val homeTeamIcon: LiveData<String> = _homeTeamIcon
 
-    val playerBUrl = MutableLiveData<String>("")
+    //客队名称
+    private val _awayTeamName = MutableLiveData("阿根廷")
+    val awayTeamName: LiveData<String> = _awayTeamName
+
+    //客队图标
+    private val _awayTeamIcon = MutableLiveData<String>("")
+    val awayTeamIcon: LiveData<String> = _awayTeamIcon
 
 
     val titleText = MutableLiveData<String>("")
@@ -38,15 +50,8 @@ class LiveVideoViewModel(
     val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
     val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
 
-
-    private val _leagueIconUrl = MutableLiveData("")
-    val leagueIconUrl: LiveData<String> = _leagueIconUrl
-
-    private val _playerAName = MutableLiveData("法国")
-    val playerAName: LiveData<String> = _playerAName
-
-    private val _playerBName = MutableLiveData("阿根廷")
-    val playerBName: LiveData<String> = _playerBName
+    private val _leagueImgSrc = MutableLiveData("")
+    val leagueImgSrc: LiveData<String> = _leagueImgSrc
 
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
@@ -65,15 +70,31 @@ class LiveVideoViewModel(
 
     fun setMatchId(matchId: Long) {
         repo.matchId = matchId
+    }
 
+    fun createObserver() {
         viewModelScope.launch {
             repo.observeLiveVideoBean(repo.matchId).collect {
                 if (it != null) {
                     _liveVideoBean.value = it
                 }
             }
-
         }
+
+        viewModelScope.launch {
+            repo.observeMatchBean(repo.matchId).collect { matchBean ->
+                matchBean?.let { match ->
+//                    "match.${match}".logd("matchIssue")
+                    _matchStatusLiveData.value =
+                        MatchStatus.entries.find { it.code == match.basicInfo.status }
+                    _homeTeamName.value = match.basicInfo.homeTeam
+                    _homeTeamIcon.value = match.basicInfo.homeTeamIcon
+                    _awayTeamName.value = match.basicInfo.awayTeam
+                    _awayTeamIcon.value = match.basicInfo.awayTeamIcon
+                }
+            }
+        }
+
     }
 
 

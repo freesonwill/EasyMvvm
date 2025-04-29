@@ -12,8 +12,10 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayStatus
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -41,12 +43,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
+
     override fun initView(savedInstanceState: Bundle?) {
-        val matchId = arguments?.getLong("matchId") ?: 0
-
-        mViewModel.setMatchId(matchId)
-        mViewModel.queryLiveStream()
-
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
             mediaPlayer.setOption(
@@ -203,9 +201,40 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
             }
 
+            //比赛状态的监听
+            matchStatusLiveData.observe(viewLifecycleOwner) {
+                it?.let {
+                    when (it) {
+                        MatchStatus.NOT_STARTED -> {
+                            //比赛还没开始
+                            mBinding.ctVideoPlay.visibility = View.GONE
+
+//                            with(mBinding.includedMatchNotStarted.ivPlayerA) {
+//                                Glide.with(this).load(mViewModel.homeTeamIcon).into(this)
+//                            }
+//
+//                            with(mBinding.includedMatchNotStarted.ivPlayerB) {
+//                                Glide.with(this).load(mViewModel.awayTeamIcon).into(this)
+//                            }
+//
+//                            mBinding.includedMatchNotStarted.tvPlayerA.text =
+//                                mViewModel.homeTeamName.value
+
+                        }
+
+                        else -> {
+                            //其他情况
+                            mBinding.ctVideoPlay.visibility = View.GONE
+                        }
+                    }
+                }
+
+            }
+
 
         }
 
+        //播放状态的监听
         playingStatusLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
@@ -246,6 +275,17 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         }
 
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
+
+        mViewModel.createObserver()
+    }
+
+
+    override fun initData() {
+        super.initData()
+
+        mViewModel.queryLiveStream()
     }
 
     override fun onPause() {
