@@ -128,16 +128,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
     //針對market id不同selection做些特殊處理
     private fun specialHandling(marketId: Long, originSelections: List<SelectionBean>): List<SelectionBean> {
-        return when(marketId) {
-            1L -> {     //全場獨贏api selection順序為主平客，UI顯示應該為主客平
-                originSelections
-                    .toMutableList()
-                    .apply {
-                        this[1] = this[2].also { this[2] = this[1] }
-                    }
-            }
-            else -> { originSelections }
-        }
+        return if (marketId == 1L && originSelections.size == 3) {
+            originSelections
+                .toMutableList()
+                .apply {
+                    this[1] = this[2].also { this[2] = this[1] }
+                }
+        } else { originSelections }
     }
 
     open fun observeFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> {
