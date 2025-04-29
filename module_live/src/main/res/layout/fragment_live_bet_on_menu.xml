@@ -3,18 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/app_bg"
-    android:paddingTop="30dp"
+    android:paddingTop="40dp"
     tools:context=".ui.LiveBetOnMenuFragment">
     <androidx.core.widget.NestedScrollView
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="5000dp">
-            <com.walisport.module.live.ui.widget.NesticalRecyclerView
-                android:id="@+id/rv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:nestedScrollingEnabled="false"
-                />
+        android:layout_height="match_parent">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/llc"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="20dp"
+           >
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.core.widget.NestedScrollView>
 </arch.cayenne.lib.skin.widget.SportRelativeLayout>
