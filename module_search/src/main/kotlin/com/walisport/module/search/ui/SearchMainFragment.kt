@@ -1,7 +1,7 @@
 package com.walisport.module.search.ui
 
 import android.os.Bundle
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.walisport.module.search.databinding.FragmentSearchMainBinding
 import com.walisport.module.search.viewmodel.SearchMainViewModel
 import kotlin.reflect.KClass

@@ -65,3 +65,22 @@ inline fun <reified T: Animal> toAnimal():T?{
 }
 ```
 
+6. 在构造时调用可能覆盖的方法
+```kotlin
+open class Animal {
+  init { call() }
+  open fun call() {}
+}
+class Cat:Animal(){
+  private var name = "jerry"
+
+  override fun call() {
+    println("name.length:${name.length}")
+  }
+}
+println(Cat())
+```
+Cat的call()在父类的init中执行，此时其name还没有初始化，这样访问的name为null,name.length会报空指针
+正确的做法: 不要在构造中调用可被复写的方法，初始化完成之后再调用
+
+

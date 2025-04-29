@@ -1,8 +1,8 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
-import arch.cayenne.lib.base.data.viewmodel.EmptyViewModel
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
 import kotlin.reflect.KClass
 

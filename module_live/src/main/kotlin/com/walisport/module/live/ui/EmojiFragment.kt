@@ -3,7 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentSoftkeyboardEmojiBinding
 import com.walisport.module.live.ui.adapter.LiveEmojiAdapter

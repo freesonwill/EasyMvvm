@@ -3,7 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.BidEmojiEnum
 import com.walisport.module.live.data.EmojiEnum

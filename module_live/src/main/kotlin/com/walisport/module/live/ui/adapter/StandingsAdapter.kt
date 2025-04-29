@@ -4,15 +4,14 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.TablesCompare
 import com.walisport.module.live.data.model.StandingsBean
 import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
-import galaxy.client.proto.Sloth
 
 class StandingsAdapter :
     BaseAdapter<StandingsBean, BaseViewHolder, ViewBinding>(

@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
-import arch.cayenne.lib.base.ui.BaseDialogFragment
+import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -23,7 +23,7 @@ import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
 
 class ComboBetMoneyKeyboardDialogFragment private constructor():
-    BaseDialogFragment<ComboBetMoneyKeyboardDialogViewModel,FragmentComboBetMoneyKeyboardDialogBinding>() {
+    BaseDialogFragment<ComboBetMoneyKeyboardDialogViewModel, FragmentComboBetMoneyKeyboardDialogBinding>() {
 
     companion object {
         private const val POSITION_X = "positionX"

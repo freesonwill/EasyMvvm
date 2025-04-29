@@ -3,7 +3,7 @@ package arch.cayenne.module.bet.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 import arch.cayenne.module.bet.ui.compare.BetSelectionBeanCompare

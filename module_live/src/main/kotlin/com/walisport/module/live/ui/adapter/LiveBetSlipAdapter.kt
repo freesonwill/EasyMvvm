@@ -3,8 +3,8 @@ package com.walisport.module.live.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.compare.LiveBetSlipCompare
 import com.walisport.module.live.data.livebetslip.LiveBetSlipAdapterManager
 import com.walisport.module.live.data.model.LiveBetSlipEnum

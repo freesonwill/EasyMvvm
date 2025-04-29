@@ -1,8 +1,8 @@
 package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.common.data.UserDataKey
-import arch.cayenne.lib.common.data.UserDataManager
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
