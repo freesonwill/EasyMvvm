@@ -109,7 +109,6 @@ class MatchItemViewHolder(
                             oddsCellBinding.llOddsCell.isEnabled = true
                             oddsCellBinding.llOddsCell.setOnClickListener {
                                 //TODO 點擊狀態顯示規則待處理
-//                                updateSelectedOddsCell(layoutOddsGrid, it)
                                 onMatchItemClickListener?.onOddsCellClick(data, selection)
                             }
                         }
@@ -131,14 +130,4 @@ class MatchItemViewHolder(
             }
         }
     }
-
-//    private fun updateSelectedOddsCell(container: ViewGroup, selectedView: View) {
-//        for (i in 0 until container.childCount) {
-//            val child = container.getChildAt(i)
-//            val cell = child.findViewById<View>(R.id.ll_odds_cell)
-//            cell?.isSelected = false
-//        }
-//        selectedView.isSelected = true
-//    }
-
 }
