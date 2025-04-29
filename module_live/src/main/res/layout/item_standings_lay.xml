@@ -39,27 +39,30 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_standings_country"
+            android:id="@+id/iv_team_logo"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_16"
             android:layout_marginStart="@dimen/dp_12"
-            android:background="@mipmap/icon_country"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_standings_rank"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_standings_country"
+            android:id="@+id/tv_team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
+            android:maxWidth="@dimen/dp_80"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
+            android:ellipsize="end"
+            android:lines="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_standings_country"
+            app:layout_constraintStart_toEndOf="@+id/iv_team_logo"
             app:layout_constraintTop_toTopOf="parent" />
 
         <LinearLayout
+            android:id="@+id/line_right"
             android:layout_width="@dimen/dp_200"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_10"

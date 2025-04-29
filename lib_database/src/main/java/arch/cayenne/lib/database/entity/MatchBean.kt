@@ -40,61 +40,22 @@ data class SelectionBean(
 * Cross Reference Entity
 * */
 
-@Entity(
-    primaryKeys = ["matchId", "marketId"],
-    foreignKeys = [
-        ForeignKey(
-            entity = MatchBean::class,
-            parentColumns = ["matchId"],
-            childColumns = ["matchId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = MarketBean::class,
-            parentColumns = ["marketId"],
-            childColumns = ["marketId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [
-        Index("matchId"),
-        Index("marketId")
-    ]
+@Entity(primaryKeys = ["playType", "tournamentId", "matchId", "startTime", "page"])
+data class TournamentMatchRef(
+    val playType: Int,
+    val tournamentId: Int,
+    val page: Int,
+    val startTime: Long, //0表示取得ALL
+    val matchId: Long,
 )
+
+@Entity(primaryKeys = ["matchId", "marketId"],)
 data class MatchMarketCrossRef(
     val matchId: Long,
     val marketId: Long
 )
 
-@Entity(
-    primaryKeys = ["matchId", "marketId", "selectionId"],
-    foreignKeys = [
-        ForeignKey(
-            entity = MatchBean::class,
-            parentColumns = ["matchId"],
-            childColumns = ["matchId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = MarketBean::class,
-            parentColumns = ["marketId"],
-            childColumns = ["marketId"],
-            onDelete = ForeignKey.CASCADE
-        ),
-        ForeignKey(
-            entity = SelectionBean::class,
-            parentColumns = ["selectionId"],
-            childColumns = ["selectionId"],
-            onDelete = ForeignKey.CASCADE
-        )
-
-    ],
-    indices = [
-        Index("matchId"),
-        Index("marketId"),
-        Index("selectionId"),
-    ]
-)
+@Entity(primaryKeys = ["matchId", "marketId", "selectionId"],)
 data class MarketSelectCrossRef(
     val matchId: Long,
     val marketId: Long,

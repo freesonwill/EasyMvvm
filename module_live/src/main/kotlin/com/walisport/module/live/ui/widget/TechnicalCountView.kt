@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import com.walisport.module.live.R
+import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
 import galaxy.client.proto.Sloth
 
@@ -36,7 +37,7 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.tvScore.text = sore
     }
 
-    fun setTrendData(data: Sloth.MatchTrendData) {
+    fun setTrendData(data: MatchTrendData) {
         mBinding.viewGoalTrend.setData(data)
     }
 

@@ -14,11 +14,6 @@ interface IView {
     fun initView(savedInstanceState: Bundle?)
 
     /**
-     * 初始化数据
-     */
-    fun initData() {}
-
-    /**
      * 初始化监听器
      */
     fun initListener()
@@ -27,6 +22,11 @@ interface IView {
      * 创建数据观察者
      */
     fun createObserver()
+
+    /**
+     * 初始化数据
+     */
+    fun initData() {}
 
     /**
      * 是否追踪加载时间（DEBUG用）
