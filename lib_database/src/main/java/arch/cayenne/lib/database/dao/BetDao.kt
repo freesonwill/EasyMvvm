@@ -21,6 +21,9 @@ abstract class BetDao: BaseDao<BetBean>() {
     abstract suspend fun insertSelection(data: BetSelectionBean): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertSelection(data: List<BetSelectionBean>): List<Long>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertDetail(data: BetDetailBean): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -32,10 +35,10 @@ abstract class BetDao: BaseDao<BetBean>() {
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
 
-    @Query("UPDATE BetBean SET status = :status WHERE betType = :betId")
+    @Query("UPDATE BetBean SET status = :status WHERE betId = :betId")
     abstract suspend fun updateBetStatus(betId: Long, status: BetStatusEnum)
 
-    @Query("UPDATE BetBean SET betType = :type WHERE betType = :betId and status = :status")
+    @Query("UPDATE BetBean SET betType = :type WHERE betId = :betId AND status = :status")
     abstract suspend fun updateBetType(betId: Long, type: BetTypeEnum, status: BetStatusEnum = BetStatusEnum.PENDING)
 
     @Query("SELECT * FROM BetSelectionBean WHERE betId = :betId")

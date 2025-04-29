@@ -35,7 +35,7 @@ data class BetSelectionLiteBean(
 
 
 @Entity(
-    primaryKeys = ["betId", "matchId", "selectionId"],
+    primaryKeys = ["betId", "matchId"],
 )
 data class BetSelectionBean(
     val betId: Long,

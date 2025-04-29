@@ -29,27 +29,29 @@ class ComboBetRepository(
     init {
         scope.launch {
             betDao.getCurrentBet()?.let {  bet ->
-                val selection = betDao.getSelections(bet.betId)
-                if (selection.isNotEmpty()) {
-                    remoteManager.getComboRisk(selection)?.let { riskList ->
-                        val lastDetail = betDao.getDetail(bet.betId)
-                        val multiBet = calculateMultiBetSums(selection, riskList).map { bean ->
-                            val detail = lastDetail.firstOrNull { it.combo == bean.combo }
-                            if (detail == null) {
-                                bean
-                            } else {
-                                ComboMultiBetBean(
-                                    combo = bean.combo,
-                                    sumOdds = bean.sumOdds,
-                                    count = bean.count,
-                                    inputMoney = detail.inputMoney,
-                                    minAmount = bean.minAmount,
-                                    maxAmount = bean.maxAmount
-                                )
-                            }
+                betDao.observeSelections(bet.betId).collect {
+                    val selection = betDao.getSelections(bet.betId)
+                    if (selection.isNotEmpty()) {
+                        remoteManager.getComboRisk(selection)?.let { riskList ->
+                            val lastDetail = betDao.getDetail(bet.betId)
+                            val multiBet = calculateMultiBetSums(selection, riskList).map { bean ->
+                                val detail = lastDetail.firstOrNull { it.combo == bean.combo }
+                                if (detail == null) {
+                                    bean
+                                } else {
+                                    ComboMultiBetBean(
+                                        combo = bean.combo,
+                                        sumOdds = bean.sumOdds,
+                                        count = bean.count,
+                                        inputMoney = detail.inputMoney,
+                                        minAmount = bean.minAmount,
+                                        maxAmount = bean.maxAmount
+                                    )
+                                }
 
+                            }
+                            comboMultiBetFlow.emit(multiBet)
                         }
-                        comboMultiBetFlow.emit(multiBet)
                     }
                     selectionFlow.emit(selection)
                 }
@@ -62,7 +64,13 @@ class ComboBetRepository(
 
     fun removeSelection(selectionId: Long) {
         scope.launch {
-            betDao.removeBetSelection(selectionId)
+            betDao.getCurrentBet()?.let { bet ->
+                val selection =
+                    betDao.getSelections(bet.betId).firstOrNull { it.selectionId == selectionId }
+                if (selection != null) {
+                    betDao.removeBetSelectionByMatchId(bet.betId, selection.matchId)
+                }
+            }
         }
     }
 

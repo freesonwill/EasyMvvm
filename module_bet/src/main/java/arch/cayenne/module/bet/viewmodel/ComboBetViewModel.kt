@@ -54,9 +54,7 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
     }
 
     fun removeSelection(selectionId: Long) {
-        viewModelScope.launch {
-            repo.removeSelection(selectionId)
-        }
+        repo.removeSelection(selectionId)
     }
 
     fun removeAll() {

@@ -6,6 +6,7 @@ import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import kotlinx.coroutines.CoroutineScope
@@ -42,6 +43,7 @@ class BetRepository(
                     }
                 }
             }
+            checkBetBeanType(betId)
         }
     }
 
@@ -50,6 +52,17 @@ class BetRepository(
         val selection = matchDao.getSelectionById(selectionId)
         getSelectionLiteBean(betId, match, selection)?.let { selectionLiteBean ->
             betDao.insertSelection(selectionLiteBean)
+        }
+    }
+
+    private suspend fun checkBetBeanType(betId: Long) {
+        val selection = betDao.getSelections(betId)
+        if (selection.isEmpty()) {
+            betDao.removeBet(betId)
+        } else if (selection.size == 1) {
+            betDao.updateBetType(betId, BetTypeEnum.SINGLE)
+        } else {
+            betDao.updateBetType(betId, BetTypeEnum.COMBO)
         }
     }
 
