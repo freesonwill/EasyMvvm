@@ -96,25 +96,51 @@ class BetRepository(
      */
     fun closeSelection(selectionId: Long) {
         scope.launch {
-
+            betDao.getCurrentSelectionById(selectionId)?.let {
+                it.isBetStop = false
+                betDao.updateSelection(it)
+            }
         }
     }
 
     /***
      * 開啟盤口
      */
-    fun openSelection(matchId: Long) {
+    fun openSelection(selectionId: Long) {
         scope.launch {
+            betDao.getCurrentSelectionById(selectionId)?.let {
+                it.isBetStop = true
+                betDao.updateSelection(it)
+            }
+        }
+    }
 
+    fun setOdds(selectionId: Long, odds: Int) {
+        scope.launch {
+            betDao.getCurrentSelectionById(selectionId)?.let {
+                // TODO 待首頁確認如何更新賠率
+            }
         }
     }
 
     /***
      * 滾球
      */
-    fun setPlaying(matchId: Long) {
+    fun setPlaying(selectionId: Long, isPlaying: Boolean) {
         scope.launch {
+            betDao.getCurrentSelectionById(selectionId)?.let {
+                it.isPlaying = isPlaying
+                betDao.updateSelection(it)
+            }
+        }
+    }
 
+    fun setParlay(selectionId: Long, isParlay: Boolean) {
+        scope.launch {
+            betDao.getCurrentSelectionById(selectionId)?.let {
+                it.isParlay = isParlay
+                betDao.updateSelection(it)
+            }
         }
     }
 }
