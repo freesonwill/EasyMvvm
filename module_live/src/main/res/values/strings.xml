@@ -85,6 +85,13 @@
     <string name="penalty_finish">足球点球大战结束</string>
     <string name="interrupted">足球中断</string>
     <string name="abandoned">足球废弃</string>
+    <string name="match_finished">比赛结束</string>
+    <string name="match_postponed">比赛推迟</string>
+    <string name="match_interrupted">比赛中断</string>
+    <string name="match_cancelled">比赛取消</string>
+    <string name="match_delayed">比赛延期</string>
+    <string name="match_abandoned">比赛废弃</string>
+    <string name="match_suspended">比赛暂停</string>
     <string name="live_bet_tab_all">全部</string>
 
     <string name="live_out_dy">-低压时刻</string>

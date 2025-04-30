@@ -44,7 +44,13 @@
 
     <string name="standings_empty">積分榜數據爲空</string>
     <string name="outs_empty">賽況數據爲空</string>
-
+    <string name="match_finished">比賽結束</string>
+    <string name="match_postponed">比賽推遲</string>
+    <string name="match_interrupted">比賽中斷</string>
+    <string name="match_cancelled">比賽取消</string>
+    <string name="match_delayed">比賽延期</string>
+    <string name="match_abandoned">比賽廢棄</string>
+    <string name="match_suspended">比賽暫停</string>
     <string name="live_out_dy">-低壓時刻</string>
     <string name="live_out_gy">-高壓時刻</string>
     <string name="live_out_know">我知道了</string>

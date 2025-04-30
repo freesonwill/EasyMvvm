@@ -10,8 +10,18 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ct_match_not_started"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/live_video_mask">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/live_video_match_overlay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_player_a"
@@ -19,7 +29,7 @@
             android:layout_height="@dimen/dp_46"
             android:layout_marginStart="@dimen/dp_46"
             android:layout_marginTop="@dimen/dp_57"
-            android:src="@{model.playerAUrl}"
+            android:scaleType="centerInside"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -30,7 +40,6 @@
             android:layout_marginTop="@dimen/dp_15"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{model.playerAName}"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="@id/iv_player_a"
@@ -50,19 +59,13 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{model.titleText}"
-                android:textColor="@{model.titleTextColor}"
-                android:textSize="@{model.titleTextSize}" />
+                android:layout_height="wrap_content" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_2"
-                android:text="@{model.subTitleText}"
-                android:textColor="@{model.subTitleTextColor}"
-                android:textSize="@{model.subTitleTextSize}" />
+                android:layout_marginTop="@dimen/dp_2" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -72,7 +75,7 @@
             android:layout_height="@dimen/dp_46"
             android:layout_marginTop="@dimen/dp_57"
             android:layout_marginEnd="@dimen/dp_46"
-            android:src="@{model.playerBUrl}"
+            android:scaleType="centerInside"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -84,7 +87,6 @@
             android:ellipsize="end"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@{model.playerBName}"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_14"
             app:layout_constraintEnd_toEndOf="@id/iv_player_b"

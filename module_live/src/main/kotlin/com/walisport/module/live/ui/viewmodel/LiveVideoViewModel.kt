@@ -1,14 +1,19 @@
 package com.walisport.module.live.ui.viewmodel
 
-import android.view.View
+import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.LiveVideoBean
+import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
+import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -21,32 +26,71 @@ class LiveVideoViewModel(
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
 
-    val videoPlayVisible = MutableLiveData(View.VISIBLE)
+    //比赛状态
+    private val _matchBeanLiveData = MutableLiveData<MatchBean>()
+    val matchBeanLiveData: LiveData<MatchBean> = _matchBeanLiveData
 
-    val statusVisible = MutableLiveData(View.INVISIBLE)
+    //主队名称
+    private val _homeTeamName = MutableLiveData("")
+    val homeTeamName: LiveData<String> = _homeTeamName
 
-    val playerAUrl = MutableLiveData<String>("")
+    //主队图标
+    private val _homeTeamIcon = MutableLiveData<String>("")
+    val homeTeamIcon: LiveData<String> = _homeTeamIcon
 
-    val playerBUrl = MutableLiveData<String>("")
+    //客队名称
+    private val _awayTeamName = MutableLiveData("")
+    val awayTeamName: LiveData<String> = _awayTeamName
 
+    //客队图标
+    private val _awayTeamIcon = MutableLiveData<String>("")
+    val awayTeamIcon: LiveData<String> = _awayTeamIcon
 
-    val titleText = MutableLiveData<String>("")
-    val titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
-    val titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
+    //比赛名称
+    private val _matchName = MutableLiveData("")
+    val matchName: LiveData<String> = _matchName
 
-    val subTitleText = MutableLiveData<String>("")
-    val subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
-    val subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
+    //标题信息
+    private val _titleText = MutableLiveData<String>("")
+    val titleText: LiveData<String> = _titleText
 
+    @ColorRes
+    private val _titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
 
-    private val _leagueIconUrl = MutableLiveData("")
-    val leagueIconUrl: LiveData<String> = _leagueIconUrl
+    @ColorRes
+    val titleTextColor: LiveData<Int> = _titleTextColor
 
-    private val _playerAName = MutableLiveData("法国")
-    val playerAName: LiveData<String> = _playerAName
+    @DimenRes
+    private val _titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
 
-    private val _playerBName = MutableLiveData("阿根廷")
-    val playerBName: LiveData<String> = _playerBName
+    @DimenRes
+    val titleTextSize: LiveData<Int> = _titleTextSize
+
+    //副标题信息
+    private val _subTitleText = MutableLiveData<String>("")
+    val subTitleText: LiveData<String> = _subTitleText
+
+    @ColorRes
+    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
+
+    @ColorRes
+    val subTitleTextColor: LiveData<Int> = _subTitleTextColor
+
+    @DimenRes
+    private val _subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
+
+    @DimenRes
+    val subTitleTextSize: LiveData<Int> = _subTitleTextSize
+
+    /**
+     * 联赛图标
+     */
+    private val _tournamentIcon = MutableLiveData("")
+
+    /**
+     * 联赛图标
+     */
+    val tournamentIcon: LiveData<String> = _tournamentIcon
 
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
@@ -65,15 +109,84 @@ class LiveVideoViewModel(
 
     fun setMatchId(matchId: Long) {
         repo.matchId = matchId
+    }
 
+    fun createObserver() {
         viewModelScope.launch {
             repo.observeLiveVideoBean(repo.matchId).collect {
                 if (it != null) {
                     _liveVideoBean.value = it
                 }
             }
-
         }
+
+        viewModelScope.launch {
+            repo.observeMatchBean(repo.matchId).collect { matchBean ->
+
+                matchBean?.let { match ->
+//                    "match.${match}".logd("matchIssue")
+                    _matchBeanLiveData.value = match
+
+                    _homeTeamName.value = match.basicInfo.homeTeam
+                    _homeTeamIcon.value = match.basicInfo.homeTeamIcon
+                    _awayTeamName.value = match.basicInfo.awayTeam
+                    _awayTeamIcon.value = match.basicInfo.awayTeamIcon
+
+                    //比赛名称
+                    _matchName.value = match.basicInfo.matchName
+
+                    //联赛图标
+                    _tournamentIcon.value = match.basicInfo.tournamentIcon
+
+                    val matchStatus =
+                        MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
+
+                    matchStatus?.let {
+                        when (it) {
+                            MatchStatus.NOT_STARTED -> {
+                                val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
+                                _titleText.value = date
+                                _titleTextColor.value = arch.cayenne.lib.common.R.color.white
+                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
+                                _subTitleText.value = time
+                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_666666
+                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                            }
+
+                            MatchStatus.IN_PROGRESS -> {
+                                _titleText.value = match.liveInfo.score
+                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                _subTitleText.value = "" // 比赛进行中不展示副标题
+                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                            }
+
+                            else -> {
+                                _titleText.value = match.liveInfo.score
+                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                _subTitleText.value = when (it) {
+                                    MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
+                                    MatchStatus.POSTPONED -> com.walisport.module.live.R.string.match_postponed.getString()
+                                    MatchStatus.INTERRUPTED -> com.walisport.module.live.R.string.match_interrupted.getString()
+                                    MatchStatus.CANCELED -> com.walisport.module.live.R.string.match_cancelled.getString()
+                                    MatchStatus.DELAYED -> com.walisport.module.live.R.string.match_delayed.getString()
+                                    MatchStatus.ABANDONED -> com.walisport.module.live.R.string.match_abandoned.getString()
+                                    MatchStatus.PAUSED -> com.walisport.module.live.R.string.match_suspended.getString()
+                                    else -> "" // 防止遗漏
+                                }
+                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
+
     }
 
 
