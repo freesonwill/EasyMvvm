@@ -46,6 +46,10 @@ class LiveVideoViewModel(
     private val _awayTeamIcon = MutableLiveData<String>("")
     val awayTeamIcon: LiveData<String> = _awayTeamIcon
 
+    //比赛名称
+    private val _matchName = MutableLiveData("")
+    val matchName: LiveData<String> = _matchName
+
     //标题信息
     private val _titleText = MutableLiveData<String>("")
     val titleText: LiveData<String> = _titleText
@@ -128,7 +132,11 @@ class LiveVideoViewModel(
                     _awayTeamName.value = match.basicInfo.awayTeam
                     _awayTeamIcon.value = match.basicInfo.awayTeamIcon
 
-                    match.basicInfo.tournamentIcon
+                    //比赛名称
+                    _matchName.value = match.basicInfo.matchName
+
+                    //联赛图标
+                    _tournamentIcon.value = match.basicInfo.tournamentIcon
 
                     val matchStatus =
                         MatchStatus.entries.find { it.code == matchBean.basicInfo.status }

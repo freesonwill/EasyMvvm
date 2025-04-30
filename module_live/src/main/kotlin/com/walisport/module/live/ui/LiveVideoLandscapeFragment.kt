@@ -194,7 +194,7 @@ class LiveVideoLandscapeFragment :
             jumpToLeagueFragment()
         }
 
-        mBinding.tvCompetitionName.clickNoRepeat {
+        mBinding.tvMatchName.clickNoRepeat {
             jumpToLeagueFragment()
         }
 
@@ -249,14 +249,21 @@ class LiveVideoLandscapeFragment :
         }
 
         mViewModel.tournamentIcon.observe(this) {
-            Glide.with(requireContext()).load(it)
-                .placeholder(R.drawable.title_league_icon)
-                .error(R.drawable.title_league_icon)
-                .into(mBinding.ivVideoLandscapeTournamentIcon)
+//            "tournamentIcon: $it".logd("matchIssue")
+
+            it?.takeIf { it.isNotEmpty() }?.let { url ->
+                Glide.with(requireContext()).load(url)
+                    .placeholder(R.drawable.title_league_icon)
+                    .error(R.drawable.title_league_icon)
+                    .into(mBinding.ivVideoLandscapeTournamentIcon)
+            }
+
         }
 
-        mViewModel.homeTeamName.observe(this) {
-            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.awayTeamName.value}"
+        mViewModel.matchName.observe(this) {
+            it?.takeIf { it.isNotEmpty() }?.let { name ->
+                mBinding.tvMatchName.text = name
+            }
         }
 
         playingStatusLiveData.observe(viewLifecycleOwner) {
