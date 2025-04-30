@@ -4,12 +4,8 @@ import arch.cayenne.lib.common.R
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
-import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
 import arch.cayenne.lib.skin.widget.SportConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
