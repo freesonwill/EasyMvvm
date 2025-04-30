@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.contains
+import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
+import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
 import arch.cayenne.lib.skin.widget.SportConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -17,9 +19,7 @@ class DynamicStateLayout @JvmOverloads constructor(
 ) : SportConstraintLayout(context, attrs, defStyleAttr) {
 
     //数据为空,网络异常,关闭
-    private var emptyView: View =
-        LayoutInflater.from(context).inflate(R.layout.layout_empty_error_close, this, false)
-
+    val binding = LayoutEmptyErrorCloseBinding.inflate(LayoutInflater.from(context), this, false)
     enum class States {
         DATA_EMPTY,//数据为空
         NETWORK_ANOMALY,//网络异常
@@ -30,29 +30,32 @@ class DynamicStateLayout @JvmOverloads constructor(
 
     // 设置当前状态
     fun setState(state: States,msg:String) {
+        if (currentState!=States.NULL){
+            removeView(binding.root)
+        }
         currentState = state
         when(currentState){
             States.DATA_EMPTY->{
-                emptyView.findViewById<ImageView>(R.id.iv_icon).setBackgroundResource(R.drawable.icon_empty)
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
             }
             States.NETWORK_ANOMALY->{
-                emptyView.findViewById<ImageView>(R.id.iv_icon).setBackgroundResource(R.drawable.icon_error_net)
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_error_net)
             }
             States.CLOSE->{
-                emptyView.findViewById<ImageView>(R.id.iv_icon).setBackgroundResource(R.drawable.icon_close)
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_close)
             }
             States.NULL ->{}
         }
-        emptyView.findViewById<TextView>(R.id.tv_message).text=msg
-        if(!this.contains(emptyView)){
-            addView(emptyView)
+        binding.tvMessage.text=msg
+        if(!this.contains(binding.root)){
+            addView(binding.root)
         }
     }
 
     fun setVisibilityGone(){
         if (currentState!=States.NULL){
+            removeView(binding.root)
             currentState = States.NULL
-            emptyView.visibility = GONE
         }
     }
 }
