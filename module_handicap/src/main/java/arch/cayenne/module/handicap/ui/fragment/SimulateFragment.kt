@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding
 import arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel
 import kotlin.reflect.KClass
@@ -57,6 +58,8 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
             itemBinding.layLeft.setOnClickListener {
                 itemBinding.layLeft.isSelected = true
                 itemBinding.layRight.isSelected = false
+                itemBinding.tvLeft.isSelected = true
+                itemBinding.tvRight.isSelected = false
                 itemBinding.ivLeft.visibility = View.VISIBLE
                 itemBinding.ivRight.visibility = View.GONE
                 itemBinding.tvTip.text = getTipText(item.isRight)
@@ -67,6 +70,8 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
             itemBinding.layRight.setOnClickListener {
                 itemBinding.layLeft.isSelected = false
                 itemBinding.layRight.isSelected = true
+                itemBinding.tvLeft.isSelected = false
+                itemBinding.tvRight.isSelected = true
                 itemBinding.ivLeft.visibility = View.GONE
                 itemBinding.ivRight.visibility = View.VISIBLE
                 itemBinding.tvTip.text = getTipText(!item.isRight)
@@ -115,12 +120,12 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
         isRight: Boolean
     ): Drawable? {
         return if (isRight)
-            AppCompatResources.getDrawable(
+            SportSkinResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.selector_submit_right
             )
         else
-            AppCompatResources.getDrawable(
+            SportSkinResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.selector_submit_wrong
             )

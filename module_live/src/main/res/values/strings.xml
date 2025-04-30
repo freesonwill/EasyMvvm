@@ -91,5 +91,6 @@
     <string name="match_delayed">比赛延期</string>
     <string name="match_abandoned">比赛废弃</string>
     <string name="match_suspended">比赛暂停</string>
+    <string name="live_bet_tab_all">全部</string>
 
 </resources>

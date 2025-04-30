@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, private val remoteManager: LiveRemoteManager
 ) : BaseRepository(){
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    fun observeLiveVideoBean() = marketTypeBeanDao.observeMarketTypeBean()
     fun queryLiveMarketType(matchId: Long) {
         scope.launch {
             val resp = remoteManager.getMarketTypeReq(scope, matchId)
@@ -30,4 +31,9 @@ class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, pri
             marketTypeBeanDao.insert(data)
         }
     }
+
+    suspend fun queryLiveMarketType() : List<MarketTypeBean>? {
+        return marketTypeBeanDao.getAllMarketTypeBean()
+    }
+
 }

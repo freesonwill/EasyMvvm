@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/white" android:state_selected="true" />
+    <item android:color="@color/white" /><!--暗色模式下选中与否均为白色，淡色模式下选中白色未选中灰色-->
+</selector>
