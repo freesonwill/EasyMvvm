@@ -1,7 +1,6 @@
 package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.VideoSourceBean
