@@ -1,13 +1,12 @@
 package com.walisport.module.live.ui.viewmodel
 
-import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
@@ -50,21 +49,33 @@ class LiveVideoViewModel(
     //标题信息
     private val _titleText = MutableLiveData<String>("")
     val titleText: LiveData<String> = _titleText
+
     @ColorRes
     private val _titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
+
+    @ColorRes
     val titleTextColor: LiveData<Int> = _titleTextColor
+
     @DimenRes
     private val _titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
+
+    @DimenRes
     val titleTextSize: LiveData<Int> = _titleTextSize
 
     //副标题信息
     private val _subTitleText = MutableLiveData<String>("")
     val subTitleText: LiveData<String> = _subTitleText
+
     @ColorRes
     private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
+
+    @ColorRes
     val subTitleTextColor: LiveData<Int> = _subTitleTextColor
+
     @DimenRes
     private val _subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
+
+    @DimenRes
     val subTitleTextSize: LiveData<Int> = _subTitleTextSize
 
     private val _leagueImgSrc = MutableLiveData("")
@@ -115,57 +126,40 @@ class LiveVideoViewModel(
 
                     matchStatus?.let {
                         when (it) {
-                            MatchStatus.FINISHED -> {
-                                _titleText.value = match.liveInfo.score
-                                _titleTextColor.value = arch.cayenne.lib.common.R.color.white
-                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
-
-                                _subTitleText.value = "比赛结束"
-                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_666666
-                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
-                            }
-
-                            MatchStatus.POSTPONED -> {
-
-                            }
-
-                            MatchStatus.INTERRUPTED -> {
-
-                            }
-
-                            MatchStatus.CANCELED -> {
-
-                            }
-
                             MatchStatus.NOT_STARTED -> {
                                 val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
-
                                 _titleText.value = date
                                 _titleTextColor.value = arch.cayenne.lib.common.R.color.white
                                 _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
-
                                 _subTitleText.value = time
                                 _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_666666
                                 _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
-
                             }
-
                             MatchStatus.IN_PROGRESS -> {
-
+                                _titleText.value = match.liveInfo.score
+                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                _subTitleText.value = "" // 比赛进行中不展示副标题
+                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                             }
-
-                            MatchStatus.DELAYED -> {
-
+                            else -> {
+                                _titleText.value = match.liveInfo.score
+                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                _subTitleText.value = when (it) {
+                                    MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
+                                    MatchStatus.POSTPONED -> com.walisport.module.live.R.string.match_postponed.getString()
+                                    MatchStatus.INTERRUPTED -> com.walisport.module.live.R.string.match_interrupted.getString()
+                                    MatchStatus.CANCELED -> com.walisport.module.live.R.string.match_cancelled.getString()
+                                    MatchStatus.DELAYED -> com.walisport.module.live.R.string.match_delayed.getString()
+                                    MatchStatus.ABANDONED -> com.walisport.module.live.R.string.match_abandoned.getString()
+                                    MatchStatus.PAUSED -> com.walisport.module.live.R.string.match_suspended.getString()
+                                    else -> "" // 防止遗漏
+                                }
+                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
+                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                             }
-
-                            MatchStatus.ABANDONED -> {
-
-                            }
-
-                            MatchStatus.PAUSED -> {
-
-                            }
-
                         }
                     }
 

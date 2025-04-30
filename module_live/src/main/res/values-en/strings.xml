@@ -57,4 +57,12 @@
     <string name="live_bet_win_lose_amount">WinAndLosingAmount</string>
     <string name="live_bet_win">Win</string>
     <string name="live_bet_except_odds">EstimatedOdds@%1$s</string>
+    <string name="match_finished">Match Ended</string>
+    <string name="match_postponed">Match Postponed</string>
+    <string name="match_interrupted">Match Interrupted</string>
+    <string name="match_cancelled">Match Cancelled</string>
+    <string name="match_delayed">Match Delayed</string>
+    <string name="match_abandoned">Match Abandoned</string>
+    <string name="match_suspended">Match Suspended</string>
+
 </resources>
