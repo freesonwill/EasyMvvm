@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
 import kotlinx.coroutines.launch

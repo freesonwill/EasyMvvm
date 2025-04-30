@@ -7,4 +7,5 @@
     <color name="tab_indicator_color_white_green">#24ee8a</color>
     <color name="text_color_white_green">#000000</color>
     <color name="menu_lin_white_green">#e8e8ea</color>
+    <color name="standing_text_white_green">#222222</color>
 </resources>

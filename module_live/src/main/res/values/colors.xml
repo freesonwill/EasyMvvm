@@ -59,4 +59,5 @@
     <color name="text_color">#ffffff</color>
     <color name="lose_color">#FF3019</color>
     <color name="live_video_mask">#ff121321</color>
+    <color name="standing_text">#ffffff</color>
 </resources>
