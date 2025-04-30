@@ -51,6 +51,7 @@
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
     <string name="live_chat_talk">和大家聊聊...</string>
+    <string name="live_match_trend">进攻趋势</string>
     <string name="share">分享给朋友</string>
     <string name="share_link">复制链接</string>
     <string name="choose_commentary">选解说</string>
@@ -86,4 +87,8 @@
     <string name="abandoned">足球废弃</string>
     <string name="live_bet_tab_all">全部</string>
 
+    <string name="live_out_dy">-低压时刻</string>
+    <string name="live_out_gy">-高压时刻</string>
+    <string name="live_out_know">我知道了</string>
+    <string name="live_out_dialog_tip">这个图表让你能洞悉比赛的进程，柱状显示的是球队在比赛中攻势的变化趋势</string>
 </resources>
