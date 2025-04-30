@@ -4,6 +4,7 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.home.repository.HomeRepository
+import arch.cayenne.module.home.viewmodel.DrawerContentViewModel
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.MatchListViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +28,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
     private val viewModules = module {
         viewModel { HomeViewModel() }
         viewModel { MatchListViewModel() }
+        viewModel { DrawerContentViewModel() }
     }
     private val daoModule = module {
 //        factory { get<GameDatabase>().sportDao() }

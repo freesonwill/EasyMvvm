@@ -38,6 +38,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private val fragments = mutableMapOf<PlayType, Fragment>()
+    private var drawerContentFragment: DrawerContentFragment? = null
     private var isFirstTime = true
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
@@ -58,6 +59,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
+        initDrawerContent()
     }
 
     //init 一級導航欄位
@@ -160,7 +162,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-
+    //init DrawerLayout Content
+    private fun initDrawerContent() {
+        if (drawerContentFragment == null) {
+            drawerContentFragment = DrawerContentFragment()
+        }
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.fragmentDrawerContent.id, drawerContentFragment!!,DrawerContentFragment.TAG)
+            .commitNow()
+    }
     private fun updateDateTabs(tlDateList: TabLayout, dateTabs: List<Pair<String, String>>) {
         tlDateList.apply {
             removeAllTabs()
