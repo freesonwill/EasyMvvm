@@ -224,6 +224,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             MatchStatus.IN_PROGRESS -> {
                                 //比赛正在进行中
                                 mBinding.ctVideoPlay.visibility = View.VISIBLE
+                                //比赛正在进行中才会拉取视频流
+                                mViewModel.queryLiveStream()
                             }
 
                             else -> {
@@ -354,8 +356,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initData() {
         super.initData()
-
-        mViewModel.queryLiveStream()
     }
 
     override fun onPause() {
