@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -11,6 +12,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -45,6 +48,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.model = mViewModel
+        mBinding.includedMatchNotStarted.model = mViewModel
+
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
             mediaPlayer.setOption(
@@ -149,8 +155,14 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 LiveVideoSourcePortraitFragment().apply {
                     arguments = Bundle().apply {
                         putLong("matchId", mViewModel.matchId())
-                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X, x)
-                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y, y)
+                        putInt(
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
+                            x
+                        )
+                        putInt(
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
+                            y
+                        )
                         putInt(
                             arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
                             ViewGroup.LayoutParams.MATCH_PARENT
@@ -202,33 +214,101 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
 
             //比赛状态的监听
-            matchStatusLiveData.observe(viewLifecycleOwner) {
-                it?.let {
-                    when (it) {
-                        MatchStatus.NOT_STARTED -> {
-                            //比赛还没开始
-                            mBinding.ctVideoPlay.visibility = View.GONE
+            matchBeanLiveData.observe(viewLifecycleOwner) {
+                it?.let { matchBean ->
+                    val matchStatus =
+                        MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
 
-//                            with(mBinding.includedMatchNotStarted.ivPlayerA) {
-//                                Glide.with(this).load(mViewModel.homeTeamIcon).into(this)
-//                            }
-//
-//                            with(mBinding.includedMatchNotStarted.ivPlayerB) {
-//                                Glide.with(this).load(mViewModel.awayTeamIcon).into(this)
-//                            }
-//
-//                            mBinding.includedMatchNotStarted.tvPlayerA.text =
-//                                mViewModel.homeTeamName.value
+                    matchStatus?.let { _ ->
+                        when (matchStatus) {
+                            MatchStatus.FINISHED -> {
+                                //比赛已经结束
+                                mBinding.ctVideoPlay.visibility = View.GONE
+                            }
 
+                            MatchStatus.IN_PROGRESS -> {
+                                //比赛正在进行中
+                                mBinding.ctVideoPlay.visibility = View.VISIBLE
+                            }
+
+                            MatchStatus.NOT_STARTED -> {
+                                //比赛还没开始
+                                mBinding.ctVideoPlay.visibility = View.GONE
+                            }
+
+                            else -> {
+                                //其他情况
+                                mBinding.ctVideoPlay.visibility = View.GONE
+                            }
                         }
 
-                        else -> {
-                            //其他情况
-                            mBinding.ctVideoPlay.visibility = View.GONE
-                        }
                     }
+
                 }
 
+            }
+
+            homeTeamName.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvPlayerA.text = it
+                }
+            }
+
+            homeTeamIcon.observe(viewLifecycleOwner) {
+                it?.let {
+                    Glide.with(requireContext())
+                        .load(it)
+                        .placeholder(R.drawable.live_video_error)
+                        .error(R.drawable.live_video_error)
+                        .into(mBinding.includedMatchNotStarted.ivPlayerA)
+                }
+            }
+
+            awayTeamName.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvPlayerB.text = it }
+            }
+
+            awayTeamIcon.observe(viewLifecycleOwner) {
+                it?.let {
+                    Glide.with(requireContext())
+                        .load(it)
+                        .placeholder(R.drawable.live_video_error)
+                        .error(R.drawable.live_video_error)
+                        .into(mBinding.includedMatchNotStarted.ivPlayerB)
+                }
+            }
+
+            titleText.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvTitle.text = it }
+            }
+
+            titleTextSize.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvTitle.setTextSize(
+                        COMPLEX_UNIT_PX,
+                        it.getDimension()
+                    )
+                }
+            }
+
+            titleTextColor.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvTitle.setTextColor(it.getColor()) }
+            }
+
+            subTitleText.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.text = it }
+            }
+
+            subTitleTextSize.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvSubtitle.setTextSize(
+                        COMPLEX_UNIT_PX,
+                        it.getDimension()
+                    )
+                }
+            }
+            subTitleTextColor.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.setTextColor(it.getColor()) }
             }
 
 
