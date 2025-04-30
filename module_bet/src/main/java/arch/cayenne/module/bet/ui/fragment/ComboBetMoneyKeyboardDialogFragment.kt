@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
@@ -132,7 +133,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
-            // TODO show toast
+            it.msg?.let { msg ->
+                showToast(msg)
+            }
         }
     }
 

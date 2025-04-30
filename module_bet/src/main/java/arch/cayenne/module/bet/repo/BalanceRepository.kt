@@ -11,4 +11,8 @@ class BalanceRepository(
 
     fun observeBalance() = infoDao.observeBalance()
 
+    suspend fun getBalance(): Long {
+        return infoDao.getBalance()
+    }
+
 }
