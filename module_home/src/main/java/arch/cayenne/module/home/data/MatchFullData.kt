@@ -158,7 +158,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                 MatchMarketCrossRef(matchId,marketId)
             )
             market.marketDetailList.forEachIndexed { index, detail ->
-                detail.selectionList.forEach { selection ->
+                detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                     val selectionId = selection.selectionId
                     selections.add(
                         SelectionBean(
