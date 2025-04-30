@@ -190,7 +190,7 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-        mBinding.ivVideoLandscapeLeagueIcon.clickNoRepeat {
+        mBinding.ivVideoLandscapeTournamentIcon.clickNoRepeat {
             jumpToLeagueFragment()
         }
 
@@ -232,6 +232,77 @@ class LiveVideoLandscapeFragment :
             showStatisticsView()
         }
 
+    }
+
+    override fun createObserver() {
+        with(mViewModel) {
+            liveVideoBean.observe(viewLifecycleOwner) {
+                it?.let {
+
+                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                        mBinding.videoView.setVideoURI(Uri.parse(url))
+                        mBinding.videoView.start()
+                    }
+                }
+            }
+        }
+
+        mViewModel.tournamentIcon.observe(this) {
+            Glide.with(requireContext()).load(it)
+                .placeholder(R.drawable.title_league_icon)
+                .error(R.drawable.title_league_icon)
+                .into(mBinding.ivVideoLandscapeTournamentIcon)
+        }
+
+        mViewModel.homeTeamName.observe(this) {
+            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.awayTeamName.value}"
+        }
+
+        playingStatusLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+                when (it) {
+                    PlayStatus.Playing -> {
+                        loadingAnim?.cancel()
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
+                    }
+
+                    PlayStatus.Loading -> {
+                        // 创建旋转动画
+                        loadingAnim = ObjectAnimator.ofFloat(
+                            mBinding.includedLandscapeCtLoading.ivVideoLoading,  // 目标 View
+                            "rotation",  // 属性名称
+                            0f, 360f // 从 0 度旋转到 360 度
+                        ).run {
+                            // 设置动画属性
+                            setDuration(1000) // 持续时间 1 秒
+                            repeatCount = ObjectAnimator.INFINITE // 无限循环
+                            interpolator = LinearInterpolator() // 匀速旋转
+
+                            // 启动动画
+                            start()
+                            this
+                        }
+
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.VISIBLE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
+                    }
+
+                    PlayStatus.Error -> {
+                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
+                        mBinding.includedLandscapeCtError.ctError.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+        }
+
+        mViewModel.createObserver()
+    }
+
+    override fun initData() {
+        super.initData()
     }
 
     /**
@@ -437,73 +508,6 @@ class LiveVideoLandscapeFragment :
             start()
         }
 
-    }
-
-
-    override fun createObserver() {
-        with(mViewModel) {
-            liveVideoBean.observe(viewLifecycleOwner) {
-                it?.let {
-
-                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
-                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        mBinding.videoView.setVideoURI(Uri.parse(url))
-                        mBinding.videoView.start()
-                    }
-                }
-            }
-        }
-
-
-
-        mViewModel.leagueImgSrc.observe(this) {
-            Glide.with(mBinding.ivVideoLandscapeLeagueIcon).load(it)
-                .placeholder(R.drawable.title_league_icon)
-                .into(mBinding.ivVideoLandscapeLeagueIcon)
-        }
-
-        mViewModel.homeTeamName.observe(this) {
-            mBinding.tvCompetitionName.text = "$it vs ${mViewModel.awayTeamName.value}"
-        }
-
-        playingStatusLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    PlayStatus.Playing -> {
-                        loadingAnim?.cancel()
-                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Loading -> {
-                        // 创建旋转动画
-                        loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.includedLandscapeCtLoading.ivVideoLoading,  // 目标 View
-                            "rotation",  // 属性名称
-                            0f, 360f // 从 0 度旋转到 360 度
-                        ).run {
-                            // 设置动画属性
-                            setDuration(1000) // 持续时间 1 秒
-                            repeatCount = ObjectAnimator.INFINITE // 无限循环
-                            interpolator = LinearInterpolator() // 匀速旋转
-
-                            // 启动动画
-                            start()
-                            this
-                        }
-
-                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.VISIBLE
-                        mBinding.includedLandscapeCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Error -> {
-                        mBinding.includedLandscapeCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedLandscapeCtError.ctError.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-        }
     }
 
     override fun onStop() {

@@ -78,8 +78,15 @@ class LiveVideoViewModel(
     @DimenRes
     val subTitleTextSize: LiveData<Int> = _subTitleTextSize
 
-    private val _leagueImgSrc = MutableLiveData("")
-    val leagueImgSrc: LiveData<String> = _leagueImgSrc
+    /**
+     * 联赛图标
+     */
+    private val _tournamentIcon = MutableLiveData("")
+
+    /**
+     * 联赛图标
+     */
+    val tournamentIcon: LiveData<String> = _tournamentIcon
 
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
     val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
@@ -121,6 +128,8 @@ class LiveVideoViewModel(
                     _awayTeamName.value = match.basicInfo.awayTeam
                     _awayTeamIcon.value = match.basicInfo.awayTeamIcon
 
+                    match.basicInfo.tournamentIcon
+
                     val matchStatus =
                         MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
 
@@ -135,6 +144,7 @@ class LiveVideoViewModel(
                                 _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_666666
                                 _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                             }
+
                             MatchStatus.IN_PROGRESS -> {
                                 _titleText.value = match.liveInfo.score
                                 _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
@@ -143,6 +153,7 @@ class LiveVideoViewModel(
                                 _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
                                 _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                             }
+
                             else -> {
                                 _titleText.value = match.liveInfo.score
                                 _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
