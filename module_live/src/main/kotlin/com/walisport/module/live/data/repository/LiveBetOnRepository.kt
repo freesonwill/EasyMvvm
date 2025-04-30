@@ -11,9 +11,8 @@ import kotlinx.coroutines.launch
 
 class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, private val remoteManager: LiveRemoteManager
 ) : BaseRepository(){
-
-    fun observeLiveVideoBean() = marketTypeBeanDao.observeMarketTypeBean()
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    fun observeLiveVideoBean() = marketTypeBeanDao.observeMarketTypeBean()
     fun queryLiveMarketType(matchId: Long) {
         scope.launch {
             val resp = remoteManager.getMarketTypeReq(scope, matchId)

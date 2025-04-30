@@ -20,15 +20,15 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     //获取所有
-   private fun getMarketTypeAll() {
+    private fun getMarketTypeAll() {
         viewModelScope.launch {
             _marketType.value = repository.queryLiveMarketType()
         }
     }
 
-    fun observeLiveVideoBean(){
+    fun observeLiveVideoBean() {
         viewModelScope.launch {
-            repository.observeLiveVideoBean().collect{
+            repository.observeLiveVideoBean().collect {
                 getMarketTypeAll()
             }
         }

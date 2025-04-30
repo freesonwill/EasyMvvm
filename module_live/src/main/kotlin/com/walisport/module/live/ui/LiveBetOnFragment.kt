@@ -1,4 +1,5 @@
 package com.walisport.module.live.ui
+
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
@@ -20,15 +21,12 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
-
-
 //投注
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-    //测试数据
-    //赛选条件
+
     private var tabList: MutableList<String> = mutableListOf()
 
     //赛选内容
@@ -68,7 +66,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun createObserver() {
-        mViewModel.marketType.observe(viewLifecycleOwner){list->
+        mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             LogUtils.e("marketTypeData${list}")
             tabList.apply {
                 clear()
