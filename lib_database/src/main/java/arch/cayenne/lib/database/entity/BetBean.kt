@@ -46,7 +46,7 @@ data class BetSelectionBean(
     var odds: Int, // 盘口赔率 ex. 1.9
     val leagueName: String, // 联赛名称 ex. 世界盃
     val matchName: String, // 赛事名称 ex. 中國 vs 日本
-    var isBetStop: Boolean, // 是否停止下注
+    var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
     var isParlay: Boolean
 )

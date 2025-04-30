@@ -118,7 +118,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 dismiss()
             } else if (it.size > 1) {
                 betSelectionAdapter.submitList(it)
-                mBinding.clBet.isEnabled = !it.any { bean -> bean.isBetStop || bean.isParlay }
+                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive || bean.isParlay }
             } else {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),

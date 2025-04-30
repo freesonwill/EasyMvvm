@@ -83,64 +83,11 @@ class BetRepository(
                 odds = selectionBean.odds,
                 leagueName = match.match.basicInfo.tournamentName,
                 matchName = match.match.basicInfo.matchName,
-                isBetStop = selectionBean.active,
+                isActive = selectionBean.active,
                 isPlaying = match.match.basicInfo.status == 5,
                 isParlay = selectionBean.parlay
             )
         }
         return null
-    }
-
-    /***
-     * 暫時關閉盤口
-     */
-    fun closeSelection(selectionId: Long) {
-        scope.launch {
-            betDao.getCurrentSelectionById(selectionId)?.let {
-                it.isBetStop = false
-                betDao.updateSelection(it)
-            }
-        }
-    }
-
-    /***
-     * 開啟盤口
-     */
-    fun openSelection(selectionId: Long) {
-        scope.launch {
-            betDao.getCurrentSelectionById(selectionId)?.let {
-                it.isBetStop = true
-                betDao.updateSelection(it)
-            }
-        }
-    }
-
-    fun setOdds(selectionId: Long, odds: Int) {
-        scope.launch {
-            betDao.getCurrentSelectionById(selectionId)?.let {
-                // TODO 待首頁確認如何更新賠率
-            }
-        }
-    }
-
-    /***
-     * 滾球
-     */
-    fun setPlaying(selectionId: Long, isPlaying: Boolean) {
-        scope.launch {
-            betDao.getCurrentSelectionById(selectionId)?.let {
-                it.isPlaying = isPlaying
-                betDao.updateSelection(it)
-            }
-        }
-    }
-
-    fun setParlay(selectionId: Long, isParlay: Boolean) {
-        scope.launch {
-            betDao.getCurrentSelectionById(selectionId)?.let {
-                it.isParlay = isParlay
-                betDao.updateSelection(it)
-            }
-        }
     }
 }

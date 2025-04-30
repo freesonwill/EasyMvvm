@@ -139,7 +139,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
-        mBinding.clBet.isEnabled = data.isBetStop
+        mBinding.clBet.isEnabled = data.isActive
     }
 
     override fun dismiss(key: String, value: String) {
