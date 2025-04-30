@@ -25,7 +25,7 @@
             app:tabRippleColor="@null"
             android:background="@color/app_bg"
             app:tabTextAppearance="@style/CustomTabText"
-            app:tabTextColor="@color/live_bet_selected_text"
+            app:tabTextColor="@drawable/live_bet_selected_text"
             app:tabIndicatorHeight="0dp"
             tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
 
