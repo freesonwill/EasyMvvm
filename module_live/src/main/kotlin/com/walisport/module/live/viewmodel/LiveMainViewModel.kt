@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.live.data.LiveMainRepository
-import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 

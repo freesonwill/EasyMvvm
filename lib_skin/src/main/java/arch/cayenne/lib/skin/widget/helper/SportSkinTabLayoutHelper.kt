@@ -3,9 +3,9 @@ package arch.cayenne.lib.skin.widget.helper
 import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
-import arch.cayenne.lib.base.utils.LogUtilsExt.loge
 import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.Tab
 
 class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
     private var indicatorColor: Int = INVALID_ID
@@ -51,27 +51,10 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
                 mView.setTabTextColors(normal, selectd)
             }
         }
-//        "====".loge("数据")
-//        updateTabBackground()
     }
 
-
-//    private fun updateTabBackground() {
-//        "数量 ${mView.tabCount}".loge("数据")
-//        for (i in 0 until mView.tabCount) {
-//            val tab = mView.getTabAt(i)
-//            "得到背景颜色${tabBackground}======${tab?.view}".loge("数据")
-//            updateTabBack(tab)
-//        }
-//    }
-
-    fun updateTabBack(tab: TabLayout.Tab?) {
-        tab?.view?.setBackgroundResource(
-            resourcesManager.getTargetResourceId(
-                mView.context,
-                tabBackground
-            )
-        )
+    fun updateTabBackground(tab: Tab) {
+        tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
     }
 
     override fun updateLanguage(languageCode: String) {
