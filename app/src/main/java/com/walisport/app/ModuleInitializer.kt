@@ -84,4 +84,3 @@ class ModuleInitializer : DefaultInitializer<String> {
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }
-
