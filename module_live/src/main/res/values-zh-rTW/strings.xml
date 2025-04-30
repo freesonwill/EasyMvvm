@@ -25,6 +25,7 @@
     <string name="standings_down">換下</string>
     <string name="standings_out_line">出綫區</string>
     <string name="technical_statistics">技術統計</string>
+    <string name="live_match_trend">進攻趨勢</string>
     <string name="share">分享給朋友</string>
     <string name="share_link">複製連結</string>
     <string name="choose_commentary">選解說</string>
@@ -43,4 +44,9 @@
 
     <string name="standings_empty">積分榜數據爲空</string>
     <string name="outs_empty">賽況數據爲空</string>
+
+    <string name="live_out_dy">-低壓時刻</string>
+    <string name="live_out_gy">-高壓時刻</string>
+    <string name="live_out_know">我知道了</string>
+    <string name="live_out_dialog_tip">這個圖表讓妳能洞悉比賽的進程，柱狀顯示的是球隊在比賽中攻勢的變化趨勢</string>
 </resources>

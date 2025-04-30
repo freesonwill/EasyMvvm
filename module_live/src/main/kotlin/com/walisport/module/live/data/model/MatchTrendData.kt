@@ -1,5 +1,7 @@
 package com.walisport.module.live.data.model
 
+import java.io.Serializable
+
 /**
  * 比赛趋势数据
  */
@@ -7,7 +9,7 @@ package com.walisport.module.live.data.model
 data class MatchTrendData @JvmOverloads constructor(
     val incidents: List<Incidents>,
     val data: List<Int>
-)
+) : Serializable
 
 data class Incidents @JvmOverloads constructor(
     val time: String,  //时间(分钟)
