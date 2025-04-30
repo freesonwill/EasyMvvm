@@ -11,13 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxTextViewBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
@@ -29,7 +27,6 @@ class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
-    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private var startX = 0f
     private var startY = 0f
@@ -43,17 +40,22 @@ class LiveBetOnMenuFragment :
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.getMarketType()
-        mViewModel.updateMarket.observe(viewLifecycleOwner){
+        mViewModel.updateMarket.observe(viewLifecycleOwner) {
             mViewModel.getMarketType()
         }
-        mViewModel.marketType.observe(viewLifecycleOwner){ it ->
+        mViewModel.marketType.observe(viewLifecycleOwner) { it ->
+            if (it == null) return@observe
             mBinding.llc.removeAllViews()
-            val groupedByName: Map<String, List<MarketTypeBean>>? = it?.groupBy {
+            val groupedByName: Map<String, List<MarketTypeBean>> = it.groupBy {
                 it.name
             }
             var currentIndex = 0
             groupedByName?.forEach { (name, items) ->
-                val binding = LiveBetMenuFlexboxLayoutBinding.inflate(LayoutInflater.from(context), mBinding.llc, false)
+                val binding = LiveBetMenuFlexboxLayoutBinding.inflate(
+                    LayoutInflater.from(context),
+                    mBinding.llc,
+                    false
+                )
                 binding.apply {
                     if (currentIndex == groupedByName.size - 1) {
                         VLin.visibility = View.GONE
@@ -61,17 +63,21 @@ class LiveBetOnMenuFragment :
                     tvName.text = name
                 }
                 //选择中颜色的ID
-               var select:Long = 0
+                var select: Long = 0
                 items.forEach {
-                    val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(LayoutInflater.from(context), mBinding.llc, false)
-                    if (it.isSelect){
+                    val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
+                        LayoutInflater.from(context),
+                        mBinding.llc,
+                        false
+                    )
+                    if (it.isSelect) {
                         select = it.marketId
                     }
                     textBinding.apply {
                         tvContent.text = it.marketName
                         tvContent.isSelected = it.isSelect
-                        tvContent.clickNoRepeat {s->
-                            mViewModel.setMarketSelect(it.marketId,select,true)
+                        tvContent.clickNoRepeat { s ->
+                            mViewModel.setMarketSelect(it.marketId, select, true)
                         }
                     }
                     binding.flexboxLayout.addView(textBinding.root)
@@ -132,7 +138,8 @@ class LiveBetOnMenuFragment :
                         // 计算滑动角度（相对于水平方向）
                         val angle = Math.toDegrees(atan2(deltaY.toDouble(), deltaX.toDouble()))
                         // 水平滑动：角度接近 0° 或 180°，允许 ±angleTolerance 偏差
-                        isHorizontalSwipe = abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
+                        isHorizontalSwipe =
+                            abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
                     }
 
                     // 处理滑动
