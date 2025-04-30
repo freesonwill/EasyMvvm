@@ -221,19 +221,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
                     matchStatus?.let { _ ->
                         when (matchStatus) {
-                            MatchStatus.FINISHED -> {
-                                //比赛已经结束
-                                mBinding.ctVideoPlay.visibility = View.GONE
-                            }
-
                             MatchStatus.IN_PROGRESS -> {
                                 //比赛正在进行中
                                 mBinding.ctVideoPlay.visibility = View.VISIBLE
-                            }
-
-                            MatchStatus.NOT_STARTED -> {
-                                //比赛还没开始
-                                mBinding.ctVideoPlay.visibility = View.GONE
                             }
 
                             else -> {
