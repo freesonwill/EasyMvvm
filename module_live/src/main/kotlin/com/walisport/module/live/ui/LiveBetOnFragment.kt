@@ -1,19 +1,24 @@
 package com.walisport.module.live.ui
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.google.android.material.tabs.TabLayout
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -24,18 +29,14 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     //测试数据
     //赛选条件
-    private var tabList: List<String> =
-        listOf("全部", "让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
+    private var tabList: MutableList<String> = mutableListOf()
 
     //赛选内容
     private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.getMarketType(mainViewModel.matchId)
-        mViewModel.marketType.observe(viewLifecycleOwner){
-       LogUtils.e("marketTypeData${it}")
-        }
-        addNewTab()
+        mViewModel.observeLiveVideoBean()
         mBinding.rvBetList.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(
@@ -61,22 +62,26 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun initListener() {
-        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
-
         mBinding.ivMenu.clickNoRepeat {
             navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
         }
     }
 
-
     override fun createObserver() {
+        mViewModel.marketType.observe(viewLifecycleOwner){list->
+            LogUtils.e("marketTypeData${list}")
+            tabList.apply {
+                clear()
+                add(R.string.live_bet_tab_all.getString())
+            }
+            val tabNameList = list?.map { it.marketName } ?: emptyList()
+            list?.forEach { if (it.isSelect) tabList.add(it.marketName) }
+            if (tabList.size == 1) tabList.addAll(tabNameList)
+            lifecycleScope.launch {
+                mBinding.tabLayout.removeAllTabs()
+                addNewTab()
+            }
+        }
     }
 
     // 动态添加Tab的方法

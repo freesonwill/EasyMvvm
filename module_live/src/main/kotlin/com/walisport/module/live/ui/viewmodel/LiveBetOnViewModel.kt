@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.data.repository.LiveBetOnRepository
 import kotlinx.coroutines.launch
@@ -17,6 +16,21 @@ class LiveBetOnViewModel : BaseViewModel() {
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
             repository.queryLiveMarketType(matchId)
+        }
+    }
+
+    //获取所有
+   private fun getMarketTypeAll() {
+        viewModelScope.launch {
+            _marketType.value = repository.queryLiveMarketType()
+        }
+    }
+
+    fun observeLiveVideoBean(){
+        viewModelScope.launch {
+            repository.observeLiveVideoBean().collect{
+                getMarketTypeAll()
+            }
         }
     }
 }

@@ -10,16 +10,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class MarketTypeBeanDao : BaseDao<MarketTypeBean>(){
 
-//    @Query("""
-//    UPDATE MarketTypeBean
-//    SET isSelect = CASE  WHEN marketId = :marketId THEN :marketSelect
-//        WHEN marketId = :selectId THEN :isSelect
-//        ELSE isSelect
-//    END
-//    WHERE marketId IN (:marketId, :selectId)""")
-//    abstract fun observeMarketTypeBeanDao(marketId: Long, marketSelect: Boolean, selectId: Long = 0, isSelect: Boolean = false)
 
-
+    @Query("SELECT * FROM MarketTypeBean")
+    abstract fun observeMarketTypeBean(): Flow<MarketTypeBean?>
 
     @Query("""
     UPDATE MarketTypeBean

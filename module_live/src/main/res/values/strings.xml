@@ -84,5 +84,6 @@
     <string name="penalty_finish">足球点球大战结束</string>
     <string name="interrupted">足球中断</string>
     <string name="abandoned">足球废弃</string>
+    <string name="live_bet_tab_all">全部</string>
 
 </resources>

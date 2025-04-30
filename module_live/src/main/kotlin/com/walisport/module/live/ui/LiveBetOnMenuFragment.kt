@@ -11,13 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxTextViewBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
@@ -29,7 +27,6 @@ class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
-    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private var startX = 0f
     private var startY = 0f
@@ -47,8 +44,9 @@ class LiveBetOnMenuFragment :
             mViewModel.getMarketType()
         }
         mViewModel.marketType.observe(viewLifecycleOwner){ it ->
+            if (it==null)return@observe
             mBinding.llc.removeAllViews()
-            val groupedByName: Map<String, List<MarketTypeBean>>? = it?.groupBy {
+            val groupedByName: Map<String, List<MarketTypeBean>> = it.groupBy {
                 it.name
             }
             var currentIndex = 0
