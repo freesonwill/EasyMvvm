@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipEnum
@@ -33,7 +33,6 @@ class LiveBetSlipInvalidFragment:
         divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.item_divide_live_bet_recycler)!!)
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
-            it.addItemDecoration(divider)
             it.adapter = adapter
             it.setItemViewCacheSize(10)
             it.addItemDecoration(divider)

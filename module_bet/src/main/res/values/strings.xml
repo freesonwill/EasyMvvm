@@ -23,7 +23,7 @@
     <string name="title_combo_bet_money">共投注：</string>
     <string name="title_combo_bet_odds_amount">本金：</string>
     <string name="title_combo_bet_odds_max_money">预计最高可赢：</string>
-    <string name="title_combo_bet_odds">%d串%d：</string>
+    <string name="title_combo_bet_odds">%d串%d</string>
 
     <string name="title_reserve">预约</string>
 

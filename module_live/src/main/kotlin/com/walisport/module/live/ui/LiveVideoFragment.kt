@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import androidx.lifecycle.MutableLiveData
-import arch.cayenne.lib.base.ui.BaseFragment
-import arch.cayenne.lib.base.ui.LocationFixedDialogFragment
-import arch.cayenne.lib.base.utils.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -152,14 +151,14 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 LiveVideoSourcePortraitFragment().apply {
                     arguments = Bundle().apply {
                         putLong("matchId", mViewModel.matchId())
-                        putInt(LocationFixedDialogFragment.POSITION_X, x)
-                        putInt(LocationFixedDialogFragment.POSITION_Y, y)
+                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X, x)
+                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y, y)
                         putInt(
-                            LocationFixedDialogFragment.WIDTH,
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
                             ViewGroup.LayoutParams.MATCH_PARENT
                         )
                         putInt(
-                            LocationFixedDialogFragment.HEIGHT,
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
                     }

@@ -1,18 +1,19 @@
 package com.walisport.module.live.ui
-
-
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
+import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 
@@ -20,7 +21,7 @@ import kotlin.reflect.KClass
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
-
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     //测试数据
     //赛选条件
     private var tabList: List<String> =
@@ -30,6 +31,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewModel.getMarketType(mainViewModel.matchId)
+        mViewModel.marketType.observe(viewLifecycleOwner){
+       LogUtils.e("marketTypeData${it}")
+        }
         addNewTab()
         mBinding.rvBetList.apply {
             itemAnimator = null

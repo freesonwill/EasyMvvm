@@ -9,11 +9,24 @@ import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
 import java.util.Locale
 
-object SportSkinResourceManager {
+/**
+ * 获取对应资源文件
+ * */
+ object SportSkinResourceManager {
     private var resourceLoader: SportSkinResourceLoader = SportSkinBuildInResourceLoader("")
 
     fun initResource(resourceLoader: SportSkinResourceLoader) {
         SportSkinResourceManager.resourceLoader = resourceLoader
+        if(resourceLoader is SportSkinBuildInResourceLoader){
+            resourceLoader.getSkinName()
+        }
+    }
+    fun setSecondaryName(secondaryName:String){
+        resourceLoader.setSecondarySkin(secondaryName)
+    }
+
+    fun restoreSecondaryName(){
+        resourceLoader.setSecondarySkin("")
     }
 
     fun getTextResourceText(
@@ -46,4 +59,5 @@ object SportSkinResourceManager {
     fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int =
         resourceLoader.getTargetResourceId(context, resId)
 
+    fun getSkinName() = resourceLoader.getSkinName()
 }

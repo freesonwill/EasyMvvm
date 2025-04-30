@@ -3,8 +3,8 @@ package arch.cayenne.module.handicap.ui.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import arch.cayenne.lib.base.adapter.BaseAdapter
-import arch.cayenne.lib.base.viewholder.BaseViewHolder
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.module.handicap.compare.CornerBallCompare
 import arch.cayenne.module.handicap.data.CornerBallBean
 import arch.cayenne.module.handicap.databinding.ItemCornerLayoutBinding
