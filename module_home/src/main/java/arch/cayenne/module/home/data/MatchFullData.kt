@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.data
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketDetailBean
@@ -179,7 +180,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
                 }
             }
+
         }
+        "收到比賽推播結束---------------------------------------------".logi("MatchFullData")
     }
     return MatchUpdateData(
         matchLites,

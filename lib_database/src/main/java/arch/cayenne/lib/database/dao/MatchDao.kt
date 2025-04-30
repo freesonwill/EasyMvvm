@@ -42,6 +42,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMarketSelectionCrossRef(crossRef: List<MarketSelectCrossRef>)
 
+    @Query("DELETE FROM MarketSelectCrossRef WHERE matchId IN (:matchId) AND marketId IN (:marketId) ")
+    abstract suspend fun deleteMarketSelectionCrossRef(matchId: List<Long>, marketId:List<Long>)
+
     @RewriteQueriesToDropUnusedColumns
     @Transaction
     @Query("SELECT * " +
@@ -174,6 +177,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)
+        //盤口的selection有可能在推播時整個變更（例如兩個選項+0.5/-0.5 -> +1/-1），所以刪除之前的cross ref，把之前盤口和selection連結斷開再連接，避免query取得之前的盤口
+        deleteMarketSelectionCrossRef(marketCrossRef.map { it.matchId }, marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
 
         return getOneMatchByIds(matchLites.map { it.matchId })
