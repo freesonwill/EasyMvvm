@@ -44,12 +44,13 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         } else {
             mBinding.tvDisplay.text = getString(R.string.menu_europe)
         }
-    }
-
-    override fun initListener() {
+        //标题栏设置
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), {
             findNavController().navigateUp()
         })
+    }
+
+    override fun initListener() {
         mBinding.settingOdds.clickNoRepeat {
             showOddsDisplayDialog()
         }
