@@ -12,28 +12,30 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.data.model.LeagueMatchBean
-import com.walisport.module.live.data.model.MatchBean
+import com.bumptech.glide.Glide
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
+
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
+    private var standsAdapter = LeagueAdapter()
 
     class LeagueItemDecoration(
-        private val spacing: Int = 12.dp2px,         // 常规间距大小（像素）
-        private val leftRight: Int = 8.dp2px,         // 左右间距
-        private val bottomSpacing: Int = 20.dp2px,   // 最后一个 item 与底部的距离（像素）
+        private val spacing: Int = 12.dp2px,
+        private val leftRight: Int = 8.dp2px,
+        private val bottomSpacing: Int = 20.dp2px,
     ) : ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State
         ) {
-            val position = parent.getChildAdapterPosition(view) // item 位置
-            val itemCount = parent.adapter?.itemCount ?: 0 // 总 item 数
+            val position = parent.getChildAdapterPosition(view)
+            val itemCount = parent.adapter?.itemCount ?: 0
             outRect.top = if (position == 0) spacing else spacing / 2
             outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
             outRect.left = leftRight
@@ -42,24 +44,31 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val match1 = MatchBean(1,true, "12月8日 星期四", 0, "", "", "", "")
-        val match2 = MatchBean(2,true, "12月10日 星期六", 0, "", "", "", "")
-        val match3 = MatchBean(3,false, "", 1000000, "", "", "阿森纳", "阿森纳")
-        mBinding.recyclerLeague.apply {
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = LeagueAdapter().apply {
-                addItemDecoration(LeagueItemDecoration())
-                val list = listOf(match1, match3, match2, match3, match2, match3)
-                submitList(list)
-            }
-        }
+        val leagueID = arguments?.getInt("leagueID") ?: 0
+        //浸入式背景
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.hideStatusBar = true
         setStatusBar(StatusBarConfig)
-        //测试背景切换，接入数据后需屏蔽
-        val week1 = LeagueMatchBean(0, match1, "#008040", "#0E0F1A")
-        mViewModel.setData(week1)
+        //获取联赛日程列表
+        mViewModel.getMatchLeagueData(leagueID)
+        //初始化联赛列表
+        mBinding.recyclerLeague.apply {
+            itemAnimator = null
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = standsAdapter
+            addItemDecoration(LeagueItemDecoration())
+        }
+        //点击列表Item跳转直播详情页
+        standsAdapter.setOnItemClickListener { pos ->
+            val matchId = standsAdapter.currentList[pos].matchId
+            val sportId = standsAdapter.currentList[pos].sportId
+            navigate(
+                LiveLeagueFragmentDirections.actionLeagueFragmentToLiveMainFragment(
+                    matchId,
+                    sportId
+                )
+            )
+        }
     }
 
     override fun initListener() {
@@ -76,17 +85,25 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun createObserver() {
-        //当数据发生变化时页面需要更新数据和背景
         mViewModel.leagueData.observe(this) {
-            if (it != null && "" != it.startColor && "" != it.endColor) {
-                //创建线性背景
-                val startColor = Color.parseColor(it.startColor)
-                val endColor = Color.parseColor(it.endColor)
+            if (it != null) {
+                //更新设置背景色
+                var startColor = Color.parseColor("#377c46")
+                if (it.color.isNotEmpty()) {
+                    startColor = Color.parseColor(it.color)
+                }
+                val endColor = Color.parseColor("#000000")
                 val gradientDrawable = GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
                 )
                 gradientDrawable.shape = GradientDrawable.RECTANGLE
                 mBinding.root.background = gradientDrawable
+                //更新设置联赛LOGO
+                Glide.with(this).load(it.logo).into(mBinding.ivLeagueLogo)
+                //更新设置联赛名称
+                mBinding.tvLeagueName.text = it.tournamentName
+                //更新联赛数据
+                standsAdapter.submitList(it.match)
             }
         }
     }
