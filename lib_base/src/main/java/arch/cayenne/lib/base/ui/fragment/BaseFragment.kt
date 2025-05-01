@@ -19,7 +19,7 @@ import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
-import arch.cayenne.lib.base.ui.delegate.UIBindComponent
+import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
 import kotlinx.coroutines.CoroutineScope
@@ -44,7 +44,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
     private val uiBind by lazy {
-        UIBindComponent(
+        UIBindDelegate(
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB)

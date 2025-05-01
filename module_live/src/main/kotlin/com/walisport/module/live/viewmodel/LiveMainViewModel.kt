@@ -7,7 +7,9 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
 import kotlinx.coroutines.launch
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
     var matchId: Long = 0

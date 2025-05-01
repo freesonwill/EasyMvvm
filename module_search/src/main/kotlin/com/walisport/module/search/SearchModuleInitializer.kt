@@ -18,9 +18,7 @@ class SearchModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::SearchMainViewModel)
-
-
+        includes(autoViewModels)
     }
     private val repoModules = module {
     }
