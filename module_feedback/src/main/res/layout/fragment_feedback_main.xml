@@ -53,6 +53,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/deposit_issue"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -64,6 +65,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/gameplay_issue"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +79,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/stream_issue"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -90,6 +93,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/ui_optimization"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -101,6 +105,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/withdrawal_issue"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -114,6 +119,7 @@
         android:button="@null"
         android:gravity="center"
         android:text="@string/other_suggestions"
+        android:textColor="@drawable/checkbox_text_color"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
