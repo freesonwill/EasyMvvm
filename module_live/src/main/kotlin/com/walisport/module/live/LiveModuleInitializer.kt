@@ -11,6 +11,7 @@ import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
 import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
+import com.walisport.module.live.data.repository.LiveLeagueRepository
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
@@ -23,7 +24,6 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -65,6 +65,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         factoryOf(::LiveStandingRepository)
         factoryOf(::LiveBetOnRepository)
         factoryOf(::LiveBetOnMenuRepository)
+        factoryOf(::LiveLeagueRepository)
     }
 
     private val managerModule = module {

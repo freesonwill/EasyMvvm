@@ -8,7 +8,6 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -30,18 +29,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
-
     private val args: LiveMainFragmentArgs by navArgs()
+    private var leagueID: Int = 0
 
     private val titleBarBinding: TittleBarLiveBinding by lazy {
         TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
 
-
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
-
         setVideoView()
         loadFragment()
         val matchId = args.matchId
@@ -50,16 +47,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.sportId = sportId
     }
 
-
     override fun initListener() {
         with(titleBarBinding) {
             ivBack.clickNoRepeat { findNavController().navigateUp() }
-
             ivLandscapeLeagueIcon.clickNoRepeat {
-                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment(leagueID))
             }
             tvCompetitionName.clickNoRepeat {
-                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment(leagueID))
             }
         }
     }
@@ -72,11 +67,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 "matchMainMatch----->${it}".logd(TAG)
-
+                leagueID = it.basicInfo.tournamentId //联赛ID
                 Glide.with(this).load(it.basicInfo.tournamentIcon)
                     .error(R.drawable.title_league_icon)
                     .into(titleBarBinding.ivLandscapeLeagueIcon)
-
                 titleBarBinding.tvCompetitionName.text =
                     it.basicInfo.matchName
             }
