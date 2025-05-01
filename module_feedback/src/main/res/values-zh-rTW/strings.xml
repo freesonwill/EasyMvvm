@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="feedback_title">反饋與建議</string>
-    <string name="feedback_type">反饋類型：(* 至少選擇一個)</string>
+    <string name="feedback_type_label">反饋類型</string>
+    <string name="select_at_least_one">（至少選擇一個）</string>
+    <string name="feedback_description_label">反饋描述</string>
+    <string name="word_limit_200">（200字以內）</string>
 </resources>
