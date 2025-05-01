@@ -14,7 +14,9 @@ import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.utils.LiveDateUtil
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
@@ -112,76 +114,85 @@ class LiveVideoViewModel(
     }
 
     fun createObserver() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repo.observeLiveVideoBean(repo.matchId).collect {
-                if (it != null) {
-                    _liveVideoBean.value = it
+                withContext(Dispatchers.Main) {
+                    if (it != null) {
+                        _liveVideoBean.value = it
+                    }
                 }
             }
         }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             repo.observeMatchBean(repo.matchId).collect { matchBean ->
 
                 matchBean?.let { match ->
+                    withContext(Dispatchers.Main) {
 //                    "match.${match}".logd("matchIssue")
-                    _matchBeanLiveData.value = match
+                        _matchBeanLiveData.value = match
 
-                    _homeTeamName.value = match.basicInfo.homeTeam
-                    _homeTeamIcon.value = match.basicInfo.homeTeamIcon
-                    _awayTeamName.value = match.basicInfo.awayTeam
-                    _awayTeamIcon.value = match.basicInfo.awayTeamIcon
+                        _homeTeamName.value = match.basicInfo.homeTeam
+                        _homeTeamIcon.value = match.basicInfo.homeTeamIcon
+                        _awayTeamName.value = match.basicInfo.awayTeam
+                        _awayTeamIcon.value = match.basicInfo.awayTeamIcon
 
-                    //比赛名称
-                    _matchName.value = match.basicInfo.matchName
+                        //比赛名称
+                        _matchName.value = match.basicInfo.matchName
 
-                    //联赛图标
-                    _tournamentIcon.value = match.basicInfo.tournamentIcon
+                        //联赛图标
+                        _tournamentIcon.value = match.basicInfo.tournamentIcon
 
-                    val matchStatus =
-                        MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
+                        val matchStatus =
+                            MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
 
-                    matchStatus?.let {
-                        when (it) {
-                            MatchStatus.NOT_STARTED -> {
-                                val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
-                                _titleText.value = date
-                                _titleTextColor.value = arch.cayenne.lib.common.R.color.white
-                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
-                                _subTitleText.value = time
-                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_666666
-                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
-                            }
-
-                            MatchStatus.IN_PROGRESS -> {
-                                _titleText.value = match.liveInfo.score
-                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
-                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
-                                _subTitleText.value = "" // 比赛进行中不展示副标题
-                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
-                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
-                            }
-
-                            else -> {
-                                _titleText.value = match.liveInfo.score
-                                _titleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
-                                _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
-                                _subTitleText.value = when (it) {
-                                    MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
-                                    MatchStatus.POSTPONED -> com.walisport.module.live.R.string.match_postponed.getString()
-                                    MatchStatus.INTERRUPTED -> com.walisport.module.live.R.string.match_interrupted.getString()
-                                    MatchStatus.CANCELED -> com.walisport.module.live.R.string.match_cancelled.getString()
-                                    MatchStatus.DELAYED -> com.walisport.module.live.R.string.match_delayed.getString()
-                                    MatchStatus.ABANDONED -> com.walisport.module.live.R.string.match_abandoned.getString()
-                                    MatchStatus.PAUSED -> com.walisport.module.live.R.string.match_suspended.getString()
-                                    else -> "" // 防止遗漏
+                        matchStatus?.let {
+                            when (it) {
+                                MatchStatus.NOT_STARTED -> {
+                                    val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
+                                    _titleText.value = date
+                                    _titleTextColor.value = arch.cayenne.lib.common.R.color.white
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
+                                    _subTitleText.value = time
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.res.R.color.color_666666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
-                                _subTitleTextColor.value = arch.cayenne.lib.res.R.color.color_fe3666
-                                _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+
+                                MatchStatus.IN_PROGRESS -> {
+                                    _titleText.value = match.liveInfo.score
+                                    _titleTextColor.value =
+                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                    _subTitleText.value = "" // 比赛进行中不展示副标题
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                                }
+
+                                else -> {
+                                    _titleText.value = match.liveInfo.score
+                                    _titleTextColor.value =
+                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                    _subTitleText.value = when (it) {
+                                        MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
+                                        MatchStatus.POSTPONED -> com.walisport.module.live.R.string.match_postponed.getString()
+                                        MatchStatus.INTERRUPTED -> com.walisport.module.live.R.string.match_interrupted.getString()
+                                        MatchStatus.CANCELED -> com.walisport.module.live.R.string.match_cancelled.getString()
+                                        MatchStatus.DELAYED -> com.walisport.module.live.R.string.match_delayed.getString()
+                                        MatchStatus.ABANDONED -> com.walisport.module.live.R.string.match_abandoned.getString()
+                                        MatchStatus.PAUSED -> com.walisport.module.live.R.string.match_suspended.getString()
+                                        else -> "" // 防止遗漏
+                                    }
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                                }
                             }
                         }
-                    }
 
+                    }
                 }
 
             }

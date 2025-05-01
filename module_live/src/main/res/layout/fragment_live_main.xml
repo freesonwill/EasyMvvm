@@ -12,29 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_video"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_211">
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_video"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_211" />
-    </FrameLayout>
+        android:layout_height="@dimen/dp_211" />
 
 
     <arch.cayenne.lib.skin.widget.SportTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:paddingBottom="2dp"
         android:background="@color/live_main_tab_bg"
+        android:paddingBottom="2dp"
+        app:tabGravity="fill"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/tab_indicator_color"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
-        app:tabGravity="fill"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/tab_selected_text_color"
         app:tabTextAppearance="@style/CustomTabText"

@@ -8,7 +8,9 @@ import arch.cayenne.lib.skin.SportSkinManager
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class BackgroundViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }

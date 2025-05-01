@@ -1,0 +1,13 @@
+
+apply plugin: 'com.google.devtools.ksp'
+
+project.afterEvaluate {
+    ksp {
+        arg("KOIN_GENERATED_PACKAGE", project.extensions.getByName("android").namespace)
+    }
+}
+
+dependencies {
+    implementation(project(":plugin_koin"))
+    ksp(project(":plugin_koin"))
+}

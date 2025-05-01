@@ -9,11 +9,13 @@ import com.walisport.module.live.compare.LiveBetSlipCompare
 import com.walisport.module.live.data.livebetslip.LiveBetSlipAdapterManager
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.data.livebetslip.LiveBetSlipData
+import com.walisport.module.live.data.livebetslip.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
+import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Order
 
@@ -63,12 +65,25 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): LiveBetSlipViewHolder {
         val holder = LiveBetSlipViewHolder(binding)
-        holder.manager.init()
+        //监听投注项是否展开
+        holder.manager.init(object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
+            override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
+                val status =
+                    if (item == LiveBetSlipExpandedEnum.Fold) LiveBetSlipExpandedEnum.Expanded else LiveBetSlipExpandedEnum.Fold
+                currentList[position].expandedEnum = status
+                notifyItemChanged(position)
+            }
+        })
         return holder
     }
 
+
     override fun convertPlus(holder: LiveBetSlipViewHolder, binding: ViewBinding, position: Int) {
-        holder.manager.updateAdapter(position,getItem(position))
+
+        val item = getItem(position)
+
+        holder.manager.updateView(position, getItem(position))
+
     }
 
     private fun getSelections(order: Common.Order) = order.selectionsList
@@ -79,7 +94,7 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
 
     inner class LiveBetSlipViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
 
-        val manager = LiveBetSlipAdapterManager(binding,betSlipType)
+        val manager = LiveBetSlipAdapterManager(binding, betSlipType)
     }
 
 }

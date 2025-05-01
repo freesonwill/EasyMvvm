@@ -7,6 +7,7 @@ ext {
 
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-kapt'
+apply from: rootProject.file("gradle/_koin.gradle")
 
 android{
 

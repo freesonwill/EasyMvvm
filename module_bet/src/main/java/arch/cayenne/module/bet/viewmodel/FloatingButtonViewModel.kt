@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.module.bet.repo.FloatingButtonRepository
 import kotlinx.coroutines.launch
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : BaseViewModel() {
 
     private val _onBettingCount = MutableLiveData(0)

@@ -5,37 +5,45 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import com.bumptech.glide.Glide
 import com.walisport.module.live.compare.LeagueMatchCompare
 import com.walisport.module.live.data.model.MatchBean
 import com.walisport.module.live.databinding.ItemLeagueBinding
 import com.walisport.module.live.databinding.ItemWeekBinding
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
     LeagueMatchCompare()
 ) {
+    private var listener: OnItemClickListener? = null
+
     companion object {
         const val TYPE_WEEK = 0
         const val TYPE_ITEM = 1
     }
 
     override fun convertPlus(
-        holder: BaseViewHolder,
-        binding: ViewBinding,
-        position: Int
+        holder: BaseViewHolder, mBinding: ViewBinding, position: Int
     ) {
         val item = getItem(position)
-        if (binding is ItemLeagueBinding) {
-            binding.tvHomeName.text = item.homeTeamName
-            binding.tvAwayName.text = item.awayTeamName
-        } else if (binding is ItemWeekBinding) {
-            binding.tvLeagueWeek.text = item.weekDay
+        if (mBinding is ItemLeagueBinding) {
+            mBinding.tvHomeName.text = item.homeName
+            mBinding.tvAwayName.text = item.awayName
+            mBinding.tvTime.text = convertStampToStr(item.startTime)
+            mBinding.itemRoot.setOnClickListener {
+                listener?.onItemClick(position)
+            }
+            Glide.with(mBinding.root).load(item.homeLogo).into(mBinding.ivHomeLogo)
+            Glide.with(mBinding.root).load(item.awayLogo).into(mBinding.ivAwayLogo)
+        } else if (mBinding is ItemWeekBinding) {
+            mBinding.tvLeagueWeek.text = item.weekDay
         }
     }
 
     override fun createViewBinding(
-        inflater: LayoutInflater,
-        parent: ViewGroup,
-        viewType: Int
+        inflater: LayoutInflater, parent: ViewGroup, viewType: Int
     ): ViewBinding {
         if (viewType == TYPE_WEEK) {
             return ItemWeekBinding.inflate(inflater, parent, false)
@@ -53,6 +61,20 @@ class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
 
     private fun isWeekHeader(position: Int): Boolean {
         val item = getItem(position)
-        return item.isWeek
+        return item.isWeekHead
+    }
+
+    private fun convertStampToStr(timeStamp: Long): String {
+        val date = Date(timeStamp)
+        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return format.format(date)
+    }
+
+    fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {
+        this.listener = onItemClickListener
+    }
+
+    fun interface OnItemClickListener {
+        fun onItemClick(position: Int)
     }
 }

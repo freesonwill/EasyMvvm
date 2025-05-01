@@ -2,15 +2,16 @@ package com.walisport.module.live
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
-import com.walisport.module.live.data.repository.LiveBetOnRepository
 import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
+import com.walisport.module.live.data.repository.LiveBetOnRepository
+import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
+import com.walisport.module.live.data.repository.LiveLeagueRepository
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
@@ -23,7 +24,6 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -41,7 +41,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::LiveMainViewModel)
+        includes(autoViewModels)
         viewModelOf(::LiveVideoViewModel)
         viewModelOf(::LiveBetSlipViewModel)
         viewModelOf(::LiveChatViewModel)
@@ -65,6 +65,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         factoryOf(::LiveStandingRepository)
         factoryOf(::LiveBetOnRepository)
         factoryOf(::LiveBetOnMenuRepository)
+        factoryOf(::LiveLeagueRepository)
     }
 
     private val managerModule = module {

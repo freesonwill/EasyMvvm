@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
+import com.walisport.module.live.data.livebetslip.LiveBetSlipData
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
@@ -34,21 +35,34 @@ class LiveBetSlipUnsettledFragment :
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                updateData(it.first())
+                updateData(it)
+            } else {
+                showEmpty()
             }
         }
     }
 
-    private fun updateData(data: Common.Order) {
+    private fun showEmpty() {
 
+    }
 
+    private fun updateData(orders: List<Common.Order>) {
+        val list = orders.map { LiveBetSlipData(order = it) }.toList()
+         mBinding.recyclerView.adapter?.let {
+             val adapter = it as LiveBetSlipAdapter
+             adapter.submitList(list)
+         }
     }
 
     private fun initRecycler() {
         val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.UnSettled)
-        adapter.submitList(mViewModel.getTestList())
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.item_divide_live_bet_recycler)!!)
+        divider.setDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.item_divide_live_bet_recycler
+            )!!
+        )
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = adapter

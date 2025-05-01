@@ -3,28 +3,23 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.database.entity.MatchBean
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
-import com.walisport.module.live.data.MatchPeriodEnum
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TittleBarLiveBinding
-import com.walisport.module.live.utils.Timer
 import com.walisport.module.live.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlin.reflect.KClass
 
 /**
@@ -35,21 +30,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private val args: LiveMainFragmentArgs by navArgs()
-    private var isGone: Boolean = true
-    private var binding: TittleBarLiveBinding? = null
+    private var leagueID: Int = 0
+
+    private val titleBarBinding: TittleBarLiveBinding by lazy {
+        TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+    }
+
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
-        binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
-        mBinding.titleBar.loadDynamicsTitleBar(binding!!.root)
-        binding!!.ivBack.clickNoRepeat { findNavController().navigateUp() }
-        binding!!.apply {
-            tvMoney.text = "¥ 10000.00"
-            tvCompetitionName.clickNoRepeat {
-            }
-            ivLandscapeLeagueIcon.clickNoRepeat {
-                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment())
-            }
-        }
+        mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         setVideoView()
         loadFragment()
         val matchId = args.matchId
@@ -58,27 +47,43 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.sportId = sportId
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.geMatchMainMatch(mViewModel.matchId)
-    }
-
     override fun initListener() {
-
-    }
-
-    override fun createObserver() {
-        mViewModel.matchMainMatch.observe(viewLifecycleOwner) {
-            it?.let {
-                LogUtils.dTag(TAG, "matchMainMatch----->${it}")
-                Glide.with(this).load(it.basicInfo.tournamentIcon)
-                    .error(R.drawable.title_league_icon)
-                    .into(binding!!.ivLandscapeLeagueIcon)
-                binding!!.tvCompetitionName.text =
-                    "${it.basicInfo.homeTeam} vs ${it.basicInfo.awayTeam}"
+        with(titleBarBinding) {
+            ivBack.clickNoRepeat { findNavController().navigateUp() }
+            ivLandscapeLeagueIcon.clickNoRepeat {
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment(leagueID))
+            }
+            tvCompetitionName.clickNoRepeat {
+                navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment(leagueID))
             }
         }
     }
+
+    override fun createObserver() {
+        mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
+            titleBarBinding.tvMoney.text = it.getFormalMoney()
+        }
+
+        mViewModel.mainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                "matchMainMatch----->${it}".logd(TAG)
+                leagueID = it.basicInfo.tournamentId //联赛ID
+                Glide.with(this).load(it.basicInfo.tournamentIcon)
+                    .error(R.drawable.title_league_icon)
+                    .into(titleBarBinding.ivLandscapeLeagueIcon)
+                titleBarBinding.tvCompetitionName.text =
+                    it.basicInfo.matchName
+            }
+        }
+    }
+
+
+    override fun initData() {
+        super.initData()
+        mViewModel.getMainMatch(mViewModel.matchId)
+
+    }
+
 
     private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG)

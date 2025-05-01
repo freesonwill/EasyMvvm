@@ -43,7 +43,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::FloatingButtonViewModel)
+        includes(autoViewModels)
         viewModelOf(::SingleBetViewModel)
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ComboBetViewModel)
