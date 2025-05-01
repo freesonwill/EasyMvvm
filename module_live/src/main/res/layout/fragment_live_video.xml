@@ -16,9 +16,9 @@
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ct_video_play"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{model.videoPlayVisible}">
+            android:layout_height="match_parent">
 
             <tv.danmaku.ijk.media.example.widget.media.IjkVideoView
                 android:id="@+id/videoView"

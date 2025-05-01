@@ -20,12 +20,12 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             app:sportTabBackground="@drawable/tab_selected_background"
-            app:tabMode="auto"
-            app:tabGravity="center"
+            app:tabMode="scrollable"
+            app:tabGravity="start"
             app:tabRippleColor="@null"
             android:background="@color/app_bg"
             app:tabTextAppearance="@style/CustomTabText"
-            app:tabTextColor="@color/live_bet_selected_text"
+            app:tabTextColor="@drawable/live_bet_selected_text"
             app:tabIndicatorHeight="0dp"
             tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
 

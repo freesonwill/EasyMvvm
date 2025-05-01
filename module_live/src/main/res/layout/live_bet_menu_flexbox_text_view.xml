@@ -14,6 +14,6 @@
         android:gravity="center"
         android:maxLines="1"
         android:singleLine="true"
-        android:textColor="@color/live_bet_menu_list_selected_text"
+        android:textColor="@drawable/live_bet_menu_list_selected_text"
         android:layout_height="38dp"
         tools:ignore="MissingConstraints" />

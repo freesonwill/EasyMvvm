@@ -18,7 +18,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
  * @date: 2025/4/15 18:32
  * @description: UI绑定组件，封装 ViewBinding + ViewModel 生命周期处理
  */
-class UIBindComponent<UIOwner, VM, VB>(
+class UIBindDelegate<UIOwner, VM, VB>(
     private val uiOwner: UIOwner,
     private val vmProvider: () -> VM,
     private val vbProvider: (container: ViewGroup?) -> VB,

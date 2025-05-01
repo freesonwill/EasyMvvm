@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_shape_dialog"
+    app:layout_constraintBottom_toBottomOf="parent">
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/title_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_56"
+        android:gravity="center"
+        android:text="@string/live_match_trend"
+        android:textColor="@color/standing_text"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_17"
+        android:layout_marginEnd="@dimen/dp_25"
+        android:text="@string/live_out_dialog_tip"
+        android:textColor="@color/video_tab_text_color"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_bar" />
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_dialog_home"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="法国-高压时刻"
+        android:textColor="@color/text_dialog_gy"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_content" />
+
+    <com.walisport.module.live.ui.widget.GoalTrendView
+        android:id="@+id/view_goal_trend"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_110"
+        android:layout_marginStart="@dimen/dp_62"
+        android:layout_marginEnd="@dimen/dp_25"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_home" />
+
+    <ImageView
+        android:id="@+id/iv_home_logo"
+        android:layout_width="@dimen/dp_21"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_25"
+        android:background="@mipmap/icon_country"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_home" />
+
+    <ImageView
+        android:id="@+id/iv_away_logo"
+        android:layout_width="@dimen/dp_21"
+        android:layout_height="@dimen/dp_14"
+        android:layout_marginStart="@dimen/dp_25"
+        android:layout_marginTop="@dimen/dp_63"
+        android:background="@mipmap/icon_country"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_home" />
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_dialog_away"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_25"
+        android:text="阿根廷-低压时刻"
+        android:textColor="@color/text_dialog_dy"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_goal_trend" />
+
+    <arch.cayenne.lib.skin.widget.SportButton
+        android:id="@+id/btn_know"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_57"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_57"
+        android:background="@drawable/bg_shape_know"
+        android:text="@string/live_out_know"
+        android:textColor="@color/text_know"
+        android:textSize="@dimen/sp_15"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_dialog_away" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_20"
+        app:layout_constraintTop_toBottomOf="@+id/btn_know" />
+</arch.cayenne.lib.skin.widget.SportConstraintLayout>

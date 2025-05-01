@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class LanguageViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }

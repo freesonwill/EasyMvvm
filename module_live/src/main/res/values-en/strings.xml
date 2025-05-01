@@ -25,6 +25,7 @@
     <string name="standings_down">Down</string>
     <string name="standings_out_line">Out Line Area</string>
     <string name="technical_statistics">Technical Statistics</string>
+    <string name="live_match_trend">Attach Trend</string>
     <string name="share">Share with friends</string>
     <string name="share_link">Copy link</string>
     <string name="choose_commentary">Choose source</string>
@@ -59,4 +60,15 @@
     <string name="live_bet_except_odds">EstimatedOdds@%1$s</string>
     <string name="see_more">SeeMore</string>
     <string name="fold_up">FoldUp</string>
+    <string name="match_finished">Match Ended</string>
+    <string name="match_postponed">Match Postponed</string>
+    <string name="match_interrupted">Match Interrupted</string>
+    <string name="match_cancelled">Match Cancelled</string>
+    <string name="match_delayed">Match Delayed</string>
+    <string name="match_abandoned">Match Abandoned</string>
+    <string name="match_suspended">Match Suspended</string>
+    <string name="live_out_dy">-Low pressure Time</string>
+    <string name="live_out_gy">-High pressure Time</string>
+    <string name="live_out_know">I Know</string>
+    <string name="live_out_dialog_tip">This chart gives you insight into the progress of the game. The bar chart shows the changing trend of the team\'s offensive in the game</string>
 </resources>

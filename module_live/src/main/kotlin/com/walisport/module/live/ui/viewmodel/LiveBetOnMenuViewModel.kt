@@ -25,9 +25,9 @@ class LiveBetOnMenuViewModel : BaseViewModel() {
     }
 
     //改变选择的颜色
-    fun setMarketSelect(marketID: Long,selectId:Long,bool: Boolean) {
+    fun setMarketSelect(marketID: Long, selectId: Long, bool: Boolean) {
         viewModelScope.launch {
-            _updateMarket.value= repository.updateMarketIdByMarketSelect(marketID,bool,selectId)
+            _updateMarket.value = repository.updateMarketIdByMarketSelect(marketID, bool, selectId)
         }
     }
 }

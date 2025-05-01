@@ -52,7 +52,7 @@ module_setting/
 │   ├── fragment/                    # Fragment 页面
 │   ├── dialog/                      # 弹窗组件
 │   ├── view/                        # 自定义View组件
-│   ├── adapter/                     # 列表适配器
+│   ├── adapter/                     # 列表适配器（含 ViewHolder）
 │   │   ├── SettingAdapter.kt
 │   │   └── SettingViewHolder.kt
 │   └── viewmodel/                   # ViewModel，负责界面数据状态管理
