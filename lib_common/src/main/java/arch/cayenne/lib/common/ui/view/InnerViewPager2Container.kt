@@ -79,7 +79,7 @@ class InnerViewPager2Container @JvmOverloads constructor(
             } else {
                 val flag1 = currentItem != itemCount - 1
                 val flag2 = endX - startX >= 0
-                LogUtils.dTag("aaa", "innerviewpager2  flag1 $flag1 flag2 $flag2")
+//                LogUtils.dTag("aaa", "innerviewpager2  flag1 $flag1 flag2 $flag2")
                 parent.requestDisallowInterceptTouchEvent(flag1 || flag2)
             }
         } else if (disY > disX) {

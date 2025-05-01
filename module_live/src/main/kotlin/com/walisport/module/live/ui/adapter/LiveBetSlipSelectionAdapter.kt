@@ -6,6 +6,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.compare.LiveBetSlipSelectionCompare
+import com.walisport.module.live.data.livebetslip.LiveBetSlipExpandedEnum
 import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.data.livebetslip.LiveBetSlipSelectionAdapterManager
 import com.walisport.module.live.data.livebetslip.LiveBetSlipSelectionData
@@ -16,27 +17,27 @@ import com.walisport.module.live.databinding.ItemLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipUnsettleBinding
 import com.walisport.module.live.utils.RecyclerItemListener
 
-class LiveBetSlipSelectionAdapter(betSlipType: LiveBetSlipEnum) :
+class LiveBetSlipSelectionAdapter(
+    betSlipType: LiveBetSlipEnum,
+    val expandListener: RecyclerItemListener<LiveBetSlipExpandedEnum>? = null
+) :
     BaseAdapter<LiveBetSlipSelectionData, LiveBetSlipSelectionAdapter.LiveBetSlipSelectionViewHolder, ViewBinding>(
         LiveBetSlipSelectionCompare()
     ) {
     private val betType = betSlipType
-    private var gradient = false
-    private var itemListener: RecyclerItemListener<LiveBetSlipSelectionData>? = null
+    private var expandEnum: LiveBetSlipExpandedEnum = LiveBetSlipExpandedEnum.Hide
+    private var parentPosition: Int = -1
 
 
-    fun updateGradient(flag: Boolean) {
-        this.gradient = flag
-    }
-
-    fun setItemListener(listener: RecyclerItemListener<LiveBetSlipSelectionData>) {
-        this.itemListener = listener
+    fun updateBasicData(flag: LiveBetSlipExpandedEnum, parentPosition: Int) {
+        this.expandEnum = flag
+        this.parentPosition = parentPosition
     }
 
     override fun convertPlus(
         holder: LiveBetSlipSelectionViewHolder, binding: ViewBinding, position: Int
     ) {
-        holder.manager.updateView(position, itemCount, false, getItem(position))
+        holder.manager.updateView(position, itemCount, expandEnum, getItem(position))
     }
 
     override fun createViewBinding(
@@ -72,7 +73,7 @@ class LiveBetSlipSelectionAdapter(betSlipType: LiveBetSlipEnum) :
         val holder = LiveBetSlipSelectionViewHolder(binding)
         holder.manager.initListener(object : RecyclerItemListener<LiveBetSlipSelectionData> {
             override fun onItemClick(item: LiveBetSlipSelectionData?, position: Int) {
-                itemListener?.onItemClick(getItem(position), position)
+                expandListener?.onItemClick(expandEnum, parentPosition)
             }
         })
         return holder

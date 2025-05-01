@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/shape_live_bet_slip_more"
             android:gravity="center"
-            android:text="查看更多"
+            android:text="@string/see_more"
             android:textColor="@color/secondary_text" />
 
         <androidx.appcompat.widget.AppCompatImageView

@@ -58,6 +58,8 @@
     <string name="live_bet_win_lose_amount">WinAndLosingAmount</string>
     <string name="live_bet_win">Win</string>
     <string name="live_bet_except_odds">EstimatedOdds@%1$s</string>
+    <string name="see_more">SeeMore</string>
+    <string name="fold_up">FoldUp</string>
     <string name="match_finished">Match Ended</string>
     <string name="match_postponed">Match Postponed</string>
     <string name="match_interrupted">Match Interrupted</string>
