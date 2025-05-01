@@ -68,7 +68,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun createObserver() {
-        mainViewModel.matchMainMatch.observe(viewLifecycleOwner) {
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             it.basicInfo.let { i ->
                 if (i.betStop) {
