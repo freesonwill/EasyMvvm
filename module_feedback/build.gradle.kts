@@ -33,7 +33,11 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":lib_res"))
+    implementation(project(":lib_skin"))
+    implementation(project(":lib_common"))
+    implementation(project(":lib_database"))
+    implementation(project(":lib_socket"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
