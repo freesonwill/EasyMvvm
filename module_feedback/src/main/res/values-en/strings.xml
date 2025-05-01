@@ -5,4 +5,11 @@
     <string name="select_at_least_one">(Select at least one)</string>
     <string name="feedback_description_label">Feedback Description</string>
     <string name="word_limit_200">(Within 200 characters)</string>
+
+    <string name="deposit_issue">Deposit Issue</string>
+    <string name="gameplay_issue">Gameplay Issue</string>
+    <string name="stream_issue">Transaction Issue</string>
+    <string name="ui_optimization">UI Optimization</string>
+    <string name="withdrawal_issue">Withdrawal Issue</string>
+    <string name="other_suggestions">Other Suggestions</string>
 </resources>

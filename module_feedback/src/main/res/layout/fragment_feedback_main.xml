@@ -45,100 +45,79 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <!-- 反馈类型 -->
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_96"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/deposit_issue"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-
-    <!-- 单选按钮组 -->
-    <RadioGroup
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_96"
-        android:orientation="vertical"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/gameplay_issue"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:orientation="horizontal">
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_96"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/stream_issue"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
-                android:id="@+id/radio_experience"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="有款问题"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
 
-            <RadioButton
-                android:id="@+id/radio_gameplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="游戏问题"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_142"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/ui_optimization"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
-                android:id="@+id/radio_stream"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="流水问题"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_142"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/withdrawal_issue"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="@dimen/dp_104"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_142"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:button="@null"
+        android:gravity="center"
+        android:text="@string/other_suggestions"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <RadioButton
-                android:id="@+id/radio_quality"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="界面优化"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-
-            <RadioButton
-                android:id="@+id/radio_acquisition"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="取款问题"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-
-            <RadioButton
-                android:id="@+id/radio_other"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/radio_background"
-                android:button="@null"
-                android:padding="8dp"
-                android:text="其他建议"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
-    </RadioGroup>
 
     <!-- 反馈描述 -->
     <androidx.appcompat.widget.LinearLayoutCompat

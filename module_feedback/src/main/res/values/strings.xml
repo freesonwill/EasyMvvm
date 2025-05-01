@@ -5,4 +5,10 @@
     <string name="select_at_least_one">（至少选择一个）</string>
     <string name="feedback_description_label">反馈描述</string>
     <string name="word_limit_200">（200字以内）</string>
+    <string name="deposit_issue">存款问题</string>
+    <string name="gameplay_issue">游戏问题</string>
+    <string name="stream_issue">流水问题</string>
+    <string name="ui_optimization">界面优化</string>
+    <string name="withdrawal_issue">取款问题</string>
+    <string name="other_suggestions">其他建议</string>
 </resources>
