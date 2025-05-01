@@ -2,8 +2,10 @@ package com.walisport.module.feedback
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import com.walisport.module.feedback.data.FeedbackMainRepository
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 class FeedbackModuleInitializer : DefaultInitializer<String> {
@@ -20,10 +22,12 @@ class FeedbackModuleInitializer : DefaultInitializer<String> {
     }
 
     private val repoModules = module {
+        factoryOf(::FeedbackMainRepository)
 
     }
 
     private val managerModule = module {
+        factoryOf(::FeedbackRemoteManager)
 
     }
 

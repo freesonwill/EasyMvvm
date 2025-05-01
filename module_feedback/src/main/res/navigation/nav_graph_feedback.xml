@@ -11,7 +11,7 @@
         android:label="fragment_live_main"
         tools:layout="@layout/fragment_feedback_main">
 
-        <deepLink app:uri="walisport://module_live/feedbackFragment" />
+        <deepLink app:uri="walisport://module_feedback/feedbackFragment" />
     </fragment>
 
 </navigation>
