@@ -4,7 +4,7 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/flavor.gradle"))
-
+apply(from = rootProject.file("gradle/_koin.gradle"))
 android {
     namespace = "com.walisport.module.live"
     compileSdk = 34

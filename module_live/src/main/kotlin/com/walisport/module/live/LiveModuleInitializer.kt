@@ -41,7 +41,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::LiveMainViewModel)
+        includes(autoViewModels)
         viewModelOf(::LiveVideoViewModel)
         viewModelOf(::LiveBetSlipViewModel)
         viewModelOf(::LiveChatViewModel)

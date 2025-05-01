@@ -23,10 +23,7 @@ class SettingModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::SettingViewModel)
-        viewModelOf(::NoticeViewModel)
-        viewModelOf(::LanguageViewModel)
-        viewModelOf(::BackgroundViewModel)
+        includes(autoViewModels)
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> SettingRepository(scope) }
