@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
@@ -82,70 +83,14 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
         }
     }
 
-//    private fun initRecycler() {
-//
-//        val list: MutableList<List<Common.Order>> = mutableListOf()
-//        val array = resources.getStringArray(R.array.bet_slip_menus)
-//        array.forEach {
-//            val order = Common.Order.newBuilder().setBetId("0").build()
-//            val order1 = Common.Order.newBuilder().setBetId("1").build()
-//            val tmpList = arrayListOf(order, order1)
-//            list.add(tmpList)
-//        }
-//        val adapter = LiveBetSlipTabAdapter(LiveBetSlipTabCompare())
-//        adapter.submitList(list)
-//        mBinding.horizontalRecycler.also {
-//            it.setHasFixedSize(true)
-//            it.layoutManager =
-//                HorizontalLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-//            it.adapter = adapter
-//        }
-//        val snapHelper = PagerSnapHelper()
-//        snapHelper.attachToRecyclerView(mBinding.horizontalRecycler)
-//
-//        mBinding.horizontalRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-//            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-//                super.onScrollStateChanged(recyclerView, newState)
-//                when (newState) {
-//                    RecyclerView.SCROLL_STATE_IDLE -> {
-//                        recyclerView.layoutManager?.let {
-//                            val manager = it as LinearLayoutManager
-//                            val firstVisibleItem = manager.findFirstVisibleItemPosition()
-//                            val count = manager.childCount
-//                            val lastVisbleItem = manager.findLastVisibleItemPosition()
-//                            mBinding.tabLayout.getTabAt(firstVisibleItem)?.select()
-////                            LogUtils.dTag("TAG","first $firstVisibleItem  last $lastVisbleItem count $count")
-//                        }
-//                    }
-//
-//                    RecyclerView.SCROLL_STATE_DRAGGING -> {}
-//                    RecyclerView.SCROLL_STATE_SETTLING -> {}
-//                }
-//            }
-//        })
-//    }
-
     override fun initListener() {
     }
 
     override fun createObserver() {
     }
 
-//    inner class HorizontalLayoutManager(
-//        context: Context?, @RecyclerView.Orientation orientation: Int,
-//        reverseLayout: Boolean
-//    ) : LinearLayoutManager(context, orientation, reverseLayout) {
-//        override fun canScrollVertically(): Boolean {
-//            return false
-//        }
-//
-//        override fun canScrollHorizontally(): Boolean {
-//            return true
-//        }
-//    }
-
-    companion object{
-         val TAG = LiveBetSlipFragment::class.java.simpleName
+    companion object {
+        val TAG = LiveBetSlipFragment::class.java.simpleName
     }
 
 }
