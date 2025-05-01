@@ -64,7 +64,7 @@
     <string name="live_repair_lineup">替补队员</string>
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
-    <string name="lineup_empty">阵容数据为空</string>
+    <string name="lineup_empty">暂无数据,请换个试一试~</string>
     <string name="standings_empty">积分榜数据为空</string>
     <string name="outs_empty">赛况数据为空</string>
     <string name="lineup_today">今天</string>
@@ -93,9 +93,9 @@
     <string name="match_abandoned">比赛废弃</string>
     <string name="match_suspended">比赛暂停</string>
     <string name="live_bet_tab_all">全部</string>
-
     <string name="live_out_dy">-低压时刻</string>
     <string name="live_out_gy">-高压时刻</string>
     <string name="live_out_know">我知道了</string>
     <string name="live_out_dialog_tip">这个图表让你能洞悉比赛的进程，柱状显示的是球队在比赛中攻势的变化趋势</string>
+    <string name="bet_stop">已停止投注,请换个试一试~</string>
 </resources>

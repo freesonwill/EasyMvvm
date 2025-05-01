@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -21,6 +22,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+
 //投注
 class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
@@ -33,8 +35,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.getMarketType(mainViewModel.matchId)
-        mViewModel.observeLiveVideoBean()
+        mViewModel.getMarketTypeAll()
+        mViewModel.observeMarketTypeBean()
         mBinding.rvBetList.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(
@@ -66,21 +68,40 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun createObserver() {
+        mainViewModel.matchMainMatch.observe(viewLifecycleOwner) {
+            // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+            it.basicInfo.let { i ->
+                if (i.betStop) {
+                    mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+                    return@observe
+                } else {
+                    mBinding.clDynamics.setVisibilityGone()
+                }
+            }
+            mViewModel.getMarketType(mainViewModel.matchId)
+        }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             LogUtils.e("marketTypeData${list}")
+            if (list!!.isEmpty()) {
+                mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
+                return@observe
+            } else {
+                mBinding.clDynamics.setVisibilityGone()
+            }
             tabList.apply {
                 clear()
                 add(R.string.live_bet_tab_all.getString())
             }
-            val tabNameList = list?.map { it.marketName } ?: emptyList()
-            list?.forEach { if (it.isSelect) tabList.add(it.marketName) }
-            if (tabList.size == 1) tabList.addAll(tabNameList)
+            list.forEach { tabList.add(it.name) }
             lifecycleScope.launch {
-                mBinding.tabLayout.removeAllTabs()
                 addNewTab()
             }
         }
+        mViewModel.observeMarketType.observe(viewLifecycleOwner){
+        }
     }
+
+    //获取code在tab的位置
 
     // 动态添加Tab的方法
     private fun addNewTab() {

@@ -48,7 +48,7 @@
             android:paddingEnd="@dimen/dp_9"
             android:text="¥1000"
             android:layout_marginStart="10dp"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|right"
             android:textColor="@color/title_money_text"
             android:background="@drawable/title_live_money_background"
             app:layout_constraintBottom_toBottomOf="parent"
