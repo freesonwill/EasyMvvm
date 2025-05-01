@@ -217,7 +217,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             matchBeanLiveData.observe(viewLifecycleOwner) {
                 it?.let { matchBean ->
                     val matchStatus =
-                        MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
+                        MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
 
                     matchStatus?.let { _ ->
                         when (matchStatus) {

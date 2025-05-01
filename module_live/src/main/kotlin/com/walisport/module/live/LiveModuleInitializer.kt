@@ -2,12 +2,12 @@ package com.walisport.module.live
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.LiveLineupRepository
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
-import com.walisport.module.live.data.repository.LiveBetOnRepository
 import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
+import com.walisport.module.live.data.repository.LiveBetOnRepository
+import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
@@ -23,7 +23,6 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
