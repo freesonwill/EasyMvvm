@@ -1,6 +1,8 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.lifecycle.LiveData
@@ -45,6 +47,10 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
 
     private var lastLiveData: LiveData<String>? = null
 
+    override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
+        val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.BetModuleTheme)
+        return super.onGetLayoutInflater(savedInstanceState).cloneInContext(contextThemeWrapper)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         isCancelable = false

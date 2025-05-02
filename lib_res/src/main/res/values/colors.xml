@@ -50,9 +50,14 @@
 
     <color name="keyboard_number">#000000</color>
     <color name="keyboard_1">#E8E8EA</color>
+    <color name="keyboard_2">#FFFFFF</color>
+    <color name="keyboard_3">#F3F3F4</color>
+    <color name="dividing_line">#FFFFFF</color>
 
+    <color name="input_box">#F3F3F4</color>
     <color name="input_box_2">#E8E8EA</color>
     <color name="input_word">#929298</color>
+    <color name="reserve_bg">#FFFFFF</color>
 
     <color name="list_separator">#F6F6F6</color>
     <color name="tab_bg">#3d404d</color>

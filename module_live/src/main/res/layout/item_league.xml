@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_94"
+    android:id="@+id/item_root"
     android:background="@drawable/shape_bg_item_league"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
@@ -15,7 +16,6 @@
         android:layout_height="@dimen/dp_54"
         android:layout_marginStart="@dimen/dp_42"
         android:layout_marginTop="@dimen/dp_8"
-        android:background="@mipmap/icon_logo_qex"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -24,6 +24,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_4"
+        android:maxWidth="@dimen/dp_120"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="@+id/iv_home_logo"
@@ -37,7 +40,6 @@
         android:layout_marginTop="@dimen/dp_22"
         android:background="@drawable/shape_bg_time"
         android:gravity="center"
-        android:text="15:32"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,7 +52,6 @@
         android:layout_height="@dimen/dp_54"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_42"
-        android:background="@mipmap/icon_logo_qex"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -61,6 +62,9 @@
         android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
+        android:maxWidth="@dimen/dp_120"
+        android:ellipsize="end"
+        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="@+id/iv_away_logo"
         app:layout_constraintStart_toStartOf="@+id/iv_away_logo"
         app:layout_constraintTop_toBottomOf="@+id/iv_away_logo" />

@@ -83,37 +83,11 @@ class BetRepository(
                 odds = selectionBean.odds,
                 leagueName = match.match.basicInfo.tournamentName,
                 matchName = match.match.basicInfo.matchName,
-                isBetStop = match.match.basicInfo.betStop,
-                isPlaying = match.match.basicInfo.status == 5
+                isActive = selectionBean.active,
+                isPlaying = match.match.basicInfo.status == 5,
+                isParlay = selectionBean.parlay
             )
         }
         return null
-    }
-
-    /***
-     * 暫時關閉盤口
-     */
-    fun closeSelection(selectionId: Long) {
-        scope.launch {
-
-        }
-    }
-
-    /***
-     * 開啟盤口
-     */
-    fun openSelection(matchId: Long) {
-        scope.launch {
-
-        }
-    }
-
-    /***
-     * 滾球
-     */
-    fun setPlaying(matchId: Long) {
-        scope.launch {
-
-        }
     }
 }

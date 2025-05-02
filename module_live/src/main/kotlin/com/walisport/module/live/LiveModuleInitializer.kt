@@ -11,6 +11,7 @@ import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
+import com.walisport.module.live.data.repository.LiveLeagueRepository
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
@@ -64,6 +65,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         factoryOf(::LiveStandingRepository)
         factoryOf(::LiveBetOnRepository)
         factoryOf(::LiveBetOnMenuRepository)
+        factoryOf(::LiveLeagueRepository)
     }
 
     private val managerModule = module {

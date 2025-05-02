@@ -42,6 +42,11 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
             }
             launch {
                 repo.observeComboMultiBet().collect { beans ->
+                    val balance = balanceRepo.getBalance()
+                    val sumMoney = beans.sumOf { it.inputMoney }
+                    if (sumMoney > balance) {
+                        beans.forEach { it.inputMoney = 0 }
+                    }
                     setMultiBetBean(beans)
                 }
             }

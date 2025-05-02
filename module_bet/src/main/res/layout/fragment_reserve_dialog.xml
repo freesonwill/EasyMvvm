@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_12dp"
-        android:backgroundTint="@color/color_main_background"
+        android:backgroundTint="@color/keyboard_3"
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,8 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
             android:text="@string/title_rate"
-            android:textColor="@color/color_textview"
-            android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/et_rate"
             app:layout_constraintEnd_toStartOf="@id/et_rate"
@@ -45,13 +43,8 @@
             android:layout_width="130dp"
             android:layout_height="36dp"
             android:background="@drawable/shape_8dp"
-            android:backgroundTint="@color/color_button_normal"
-            android:cursorVisible="true"
-            android:inputType="numberDecimal"
+            android:backgroundTint="@color/input_box_2"
             android:padding="8dp"
-            android:textColor="@color/color_textview"
-            android:textColorHint="@color/color_edittext_hint"
-            android:textCursorDrawable="@drawable/shape_edittext_cursor"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +76,7 @@
                 android:layout_width="62dp"
                 android:layout_height="48dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:src="@mipmap/icon_back" />
 
             <androidx.appcompat.widget.AppCompatButton
@@ -93,19 +86,19 @@
                 android:layout_height="48dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button_normal"
+                android:backgroundTint="@color/keyboard_1"
                 android:text="@string/btn_clear"
                 android:textSize="12sp" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_confirm"
-                style="@style/NumberKeyboardButton"
+                style="@style/ButtonStyle"
                 android:layout_width="62dp"
                 android:layout_height="96dp"
                 android:layout_columnWeight="2"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/color_button"
+                android:backgroundTint="@color/brand_color"
                 android:text="@string/btn_confirm"
                 android:textSize="12sp" />
 

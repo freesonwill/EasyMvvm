@@ -15,9 +15,6 @@ class LiveBetOnMenuViewModel : BaseViewModel() {
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
 
-    private val _updateMarket = MutableLiveData<Int>()
-    val updateMarket: LiveData<Int> = _updateMarket
-
     fun getMarketType() {
         viewModelScope.launch {
             _marketType.value = repository.queryLiveMarketType()
@@ -25,9 +22,12 @@ class LiveBetOnMenuViewModel : BaseViewModel() {
     }
 
     //改变选择的颜色
-    fun setMarketSelect(marketID: Long, selectId: Long, bool: Boolean) {
+    fun setMarketSelect(nowCode:String,
+                          nowId: Long,
+                          beforeCode:String= "",
+                          beforeId: Long = 0,) {
         viewModelScope.launch {
-            _updateMarket.value = repository.updateMarketIdByMarketSelect(marketID, bool, selectId)
+            repository.updateMarketIdByMarketSelect(nowCode, nowId, beforeCode,beforeId)
         }
     }
 }

@@ -181,8 +181,31 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
+    //获取联赛日程列表数据
+    suspend fun getMatchLeagueReq(
+        scope: CoroutineScope,
+        tournamentId: Int
+    ): Client.TournamentMatchResp? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.TournamentMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_LEAGUE
+        ) {
+            Client.TournamentMatchReq.newBuilder().apply {
+                this.tournamentId = tournamentId
+                this.page = 1
+                this.size = 50
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data!!
+        }
+        return null
+    }
+
     // 500-1007: 盘口分类
-    suspend fun getMarketTypeReq(scope: CoroutineScope, matchId: Long ): List<Common.MarketType>? {
+    suspend fun getMarketTypeReq(scope: CoroutineScope, matchId: Long): List<Common.MarketType>? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.MarketTypeResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -192,7 +215,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data!!.marketTypeList
         }
         return null

@@ -23,9 +23,13 @@ class ResultMultiBetAdapter(private val listener: ResultMultiBetListener) :
         val item = getItem(holder.adapterPosition)
         val combo = holder.getString(R.string.title_combo_bet_odds).format(listener.getBetSize(), item.combo)
         binding.tvCombo.text = combo
-        binding.tvOdds.text = item.sumOdds.getOdds()
+        val odds ="@${item.sumOdds.getOdds()}"
+        binding.tvOdds.text = odds
         val money = "\$${item.inputMoney.getMoney()}"
         binding.tvBetMoney.text = money
+
+        val multi = "${item.count} x"
+        binding.tvPlus.text = multi
 
     }
 
