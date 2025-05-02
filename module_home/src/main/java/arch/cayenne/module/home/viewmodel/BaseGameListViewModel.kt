@@ -31,7 +31,6 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     override fun initViewModel() {
         super.initViewModel()
-        observeMatchData()
 
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchNotify().collect { matchWithMarket ->
@@ -52,24 +51,6 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     fun setTournamentId(id: Int) {
         _tournamentId = id
-    }
-
-    private fun observeMatchData() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.observeFullMatchData(
-                playType = playType.id,
-                tournamentId = _tournamentId,
-                page = page,
-                startTime = 0
-            ).collect { list ->
-                //TODO 接上被動連接的資料
-//                if (list.isNotEmpty()) {
-//                    withContext(Dispatchers.Main) {
-//                        matchListChange.value = list
-//                    }
-//                }
-            }
-        }
     }
 
     fun getTournamentId() = _tournamentId

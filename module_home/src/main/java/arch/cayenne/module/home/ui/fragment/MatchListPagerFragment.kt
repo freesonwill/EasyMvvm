@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -50,7 +51,7 @@ class MatchListPagerFragment :
                 override fun onFavoriteClick(item: MatchWithMarkets) {
                 }
 
-                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
+                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
                     homeViewModel.setSelection(item.match.matchId, selection.selectionId)
                 }
             })

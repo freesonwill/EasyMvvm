@@ -1,22 +1,20 @@
 package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
-import androidx.room.Update
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.MatchBean
 import arch.cayenne.lib.database.entity.MatchBeanLite
-import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -76,15 +74,27 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun geMarkets(matchId: Long): List<MarketBean>
 
     @Transaction
-    @Query("SELECT * " +
+    @Query("SELECT sel.selectionId as selectionId, " +
+                "sel.detail_active as detailActive, " +
+                "sel.name as name, " +
+                "sel.shortName as shortName, " +
+                "sel.odds as odds, " +
+                "sel.active as active, " +
+                "sel.parlay as parlay, " +
+                "0 as isSelected," +
+                "0 as trend " +
             "FROM SelectionBean sel " +
             "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
             "WHERE sel.selectionId = ref.selectionId ")
-    abstract suspend fun getSelections(matchId: Long, marketId: Long): List<SelectionBean>
+    abstract suspend fun getSelectionLites(matchId: Long, marketId: Long): List<SelectionBeanLite>
 
     @Transaction
     @Query("SELECT * FROM SelectionBean WHERE selectionId = :selectionId")
     abstract suspend fun getSelectionById(selectionId: Long): SelectionBean
+
+    @Transaction
+    @Query("SELECT * FROM SelectionBean WHERE selectionId IN (:selectionIds)")
+    abstract suspend fun getSelectionsByIds(selectionIds: List<Long>): List<SelectionBean>
 
     @Query("DELETE FROM MatchBean" )
     abstract fun deleteMatchBean()
@@ -174,6 +184,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 clockModified = bean.liveInfo.clockModified,
             )
         }
+        val oldOdds =
+            getSelectionsByIds(selections.map { it.selectionId }).associate { it.selectionId to it.odds }
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)
@@ -181,7 +193,16 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         deleteMarketSelectionCrossRef(marketCrossRef.map { it.matchId }, marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
 
-        return getOneMatchByIds(matchLites.map { it.matchId })
+        return getOneMatchByIds(matchLites.map { it.matchId }).onEach {
+            //加入賠率趨勢
+            it.markets.forEach { markets ->
+                markets.selections.forEach { selection ->
+                    if (oldOdds.containsKey(selection.selectionId)) {
+                        selection.trend = selection.odds - oldOdds[selection.selectionId]!!
+                    }
+                }
+            }
+        }
     }
 
     @Transaction
@@ -190,7 +211,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
-                    getSelections(matchBean.matchId, marketBean.marketId)
+                    getSelectionLites(matchBean.matchId, marketBean.marketId)
                 )
                 MarketWithSelections(marketBean, selections)
             }
@@ -198,7 +219,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         }
     }
     //針對market id不同selection做些特殊處理
-    private fun specialHandling(marketId: Long, originSelections: List<SelectionBean>): List<SelectionBean> {
+    private fun specialHandling(marketId: Long, originSelections: List<SelectionBeanLite>): List<SelectionBeanLite> {
         return if (marketId == 1L && originSelections.size == 3) {
             originSelections
                 .toMutableList()
@@ -208,28 +229,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         } else { originSelections }
     }
 
-    open fun observeFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> {
-        return observeAllMatch(playType, tournamentId, page, startTime).map { matchBeanList ->
-            matchBeanList.map { matchBean ->
-                val markets = geMarkets(matchBean.matchId).map { marketBean ->
-                    val selections = specialHandling(
-                        marketBean.marketId,
-                        getSelections(matchBean.matchId, marketBean.marketId)
-                    )
-                    MarketWithSelections(marketBean, selections)
-                }
-                MatchWithMarkets(matchBean, markets)
-            }
-        }
-    }
-
     @Transaction
     open suspend fun getOneMatchByIds(matchId: List<Long>): List<MatchWithMarkets> {
         return getMatchByIds(matchId).map { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
-                    getSelections(matchBean.matchId, marketBean.marketId)
+                    getSelectionLites(matchBean.matchId, marketBean.marketId)
                 )
                 MarketWithSelections(marketBean, selections)
             }
@@ -241,7 +247,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
-                val selections = getSelections(matchBean.matchId, marketBean.marketId)
+                val selections = getSelectionLites(matchBean.matchId, marketBean.marketId)
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)

@@ -247,6 +247,4 @@ class HomeRepository(
             }
         }
     }
-
-    suspend fun observeFullMatchData(playType: Int, tournamentId: Int, page: Int, startTime: Long): Flow<List<MatchWithMarkets>> = database.matchDao().observeFullMatch(playType, tournamentId, page, startTime)
 }

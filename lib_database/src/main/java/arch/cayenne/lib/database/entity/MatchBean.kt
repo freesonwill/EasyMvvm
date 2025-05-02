@@ -117,7 +117,7 @@ data class MarketDetailBean(
 
 data class MarketWithSelections(
     val market: MarketBean,
-    val selections: List<SelectionBean>
+    val selections: List<SelectionBeanLite>
 ) {
 //    override fun equals(newItem: Any?): Boolean {
 //        return newItem is MarketWithSelections &&
@@ -125,6 +125,18 @@ data class MarketWithSelections(
 //
 //    }
 }
+
+data class SelectionBeanLite(
+    val selectionId: Long,
+    val detailActive: Boolean,
+    val name: String,
+    val shortName: String?,
+    val odds: Int,
+    val active: Boolean,
+    val parlay: Boolean,
+    var isSelected: Boolean = false,
+    var trend: Int = 0,
+)
 
 data class MatchWithMarkets(
     val match: MatchBean,
