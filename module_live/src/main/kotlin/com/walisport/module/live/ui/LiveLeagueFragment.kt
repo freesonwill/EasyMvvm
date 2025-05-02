@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -26,7 +26,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
     private var standsAdapter = LeagueAdapter()
-
+private var statusBarColor :Int = 0
     class LeagueItemDecoration(
         private val spacing: Int = 12.dp2px,
         private val leftRight: Int = 8.dp2px,
@@ -46,8 +46,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun initView(savedInstanceState: Bundle?) {
         //浸入式背景
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.hideStatusBar = true
+        statusBarColor = StatusBarConfig.statusBarColor
+        StatusBarConfig.statusBarColor = arch.cayenne.lib.common.R.color.tran_0
         setStatusBar(StatusBarConfig)
         //获取联赛日程列表
         val leagueID = arguments?.getInt("leagueID") ?: 0
@@ -79,8 +79,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun onDestroyView() {
-        mBinding.root.fitsSystemWindows = true
-        StatusBarConfig.hideStatusBar = false
+        StatusBarConfig.statusBarColor =statusBarColor
         setStatusBar(StatusBarConfig)
         super.onDestroyView()
     }

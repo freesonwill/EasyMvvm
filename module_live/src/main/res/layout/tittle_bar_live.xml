@@ -27,24 +27,22 @@
         android:layout_marginEnd="@dimen/dp_6"
         android:src="@drawable/title_landscape_separator" />
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_weight="1">
 
         <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_competition_name"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/title_bar_dow_icon"
-            android:drawablePadding="@dimen/dp_5"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
             android:textColor="@color/title_bar"
-            android:textSize="15sp" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+            android:textSize="15sp"
+            android:drawablePadding="@dimen/dp_5"
+            android:drawableEnd="@drawable/title_bar_dow_icon"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SportTextView
         android:id="@+id/tv_money"

@@ -47,7 +47,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
     version = 1,
     exportSchema = false
 )
-@TypeConverters(VideoSourceBeanConverter::class)
+@TypeConverters(VideoSourceBeanConverter::class,MarketTypeBeanConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
