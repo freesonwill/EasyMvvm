@@ -45,12 +45,12 @@ private var statusBarColor :Int = 0
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val leagueID = arguments?.getInt("leagueID") ?: 0
         //浸入式背景
         statusBarColor = StatusBarConfig.statusBarColor
         StatusBarConfig.statusBarColor = arch.cayenne.lib.common.R.color.tran_0
         setStatusBar(StatusBarConfig)
         //获取联赛日程列表
+        val leagueID = arguments?.getInt("leagueID") ?: 0
         mViewModel.getMatchLeagueData(leagueID)
         //初始化联赛列表
         mBinding.recyclerLeague.apply {

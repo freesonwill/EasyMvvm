@@ -17,16 +17,14 @@
         <argument
             android:name="sportId"
             app:argType="integer" />
+
         <deepLink app:uri="walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}" />
+
+        <!--从直播详情页跳转到联赛日程页-->
         <action
             android:id="@+id/action_liveMainFragment_to_leagueFragment"
-            app:destination="@id/leagueFragment">
-            <argument
-                android:name="leagueID"
-                android:defaultValue="0"
-                app:argType="integer"
-                app:nullable="false" />
-        </action>
+            app:destination="@id/leagueFragment"/>
+
         <action
             android:id="@+id/action_liveMainFragment_to_VideoLandscapeFragment"
             app:destination="@id/liveVideoLandscapeFragment" />
@@ -41,11 +39,7 @@
         android:name="com.walisport.module.live.ui.LiveLeagueFragment"
         android:label="fragment_live_league"
         tools:layout="@layout/fragment_league">
-        <argument
-            android:name="leagueID"
-            android:defaultValue="0"
-            app:argType="integer"
-            app:nullable="false" />
+
         <deepLink app:uri="walisport://module_live/leagueFragment" />
 
         <!--从联赛日程页跳转到直播详情页-->

@@ -10,10 +10,12 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
 import com.walisport.module.live.ui.adapter.StandingsAdapter
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
+import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -22,6 +24,7 @@ import kotlin.reflect.KClass
 
 class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveStandingsBinding>() {
 
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     override val vbClass: KClass<FragmentLiveStandingsBinding> = FragmentLiveStandingsBinding::class
     override val vmClass: KClass<LiveStandingsViewModel> = LiveStandingsViewModel::class
     private var standsAdapter = StandingsAdapter()
@@ -47,14 +50,13 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val matchId = arguments?.getLong("matchId") ?: 0L
         mBinding.recyclerStandings.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = standsAdapter
             addItemDecoration(StandingsItemDecoration())
         }
-        mViewModel.getCompetitionData(matchId)
+        mViewModel.getCompetitionData(mainViewModel.matchId)
     }
 
     override fun initListener() {
