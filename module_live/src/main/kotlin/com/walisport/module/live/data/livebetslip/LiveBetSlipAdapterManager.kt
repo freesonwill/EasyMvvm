@@ -17,6 +17,7 @@ import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
 import com.walisport.module.live.utils.LiveBetSlipUtils.calculateMaxWin
 import com.walisport.module.live.utils.LiveBetSlipUtils.winOrLoseAmount
+import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Order
 
@@ -24,31 +25,30 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
 
     private val METHOD_INIT = 0
     private val METHOD_UPDATE = 1
-    private val METHOD_ADAPTER = 2
     private val binding: ViewBinding = binding
     private val betSlipType = type
+    private var expandedListener: RecyclerItemListener<LiveBetSlipExpandedEnum>? = null
 
-    fun init() {
-        managerView(METHOD_INIT, -1, null)
+    fun init(listener: RecyclerItemListener<LiveBetSlipExpandedEnum>) {
+        this.expandedListener = listener
+        managerView(METHOD_INIT, -1)
     }
 
     fun updateView(position: Int, item: LiveBetSlipData) {
         managerView(METHOD_UPDATE, position, item)
     }
 
-    fun updateAdapter(position: Int, item: LiveBetSlipData) {
-        managerView(METHOD_ADAPTER, position, item)
-    }
-
-
-    private fun managerView(method: Int, position: Int, item: LiveBetSlipData? = null) {
+    private fun managerView(
+        method: Int,
+        position: Int,
+        item: LiveBetSlipData? = null,
+    ) {
 
         when (binding) {
             is AdapterLiveBetSlipUnsettleBinding -> {
                 val nBinding = binding
                 when (method) {
                     METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
-                    METHOD_ADAPTER -> initAdapter(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -57,6 +57,9 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                                 tvOdds = it.betUnsettledTvOddsValue,
                                 tvBet = it.betUnsettledTvBettingValue,
                                 tvExpectMaxWin = it.betUnsettledTvExceptValue
+                            )
+                            submitAdapter(
+                                it.recyclerSelection, item, position
                             )
                         }
                     }
@@ -69,7 +72,6 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 val nBinding = binding
                 when (method) {
                     METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
-                    METHOD_ADAPTER -> initAdapter(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -79,7 +81,11 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                                 tvBet = it.betConfirmTvBettingValue,
                                 tvExpectMaxWin = it.betConfirmTvExceptValue
                             )
+                            submitAdapter(
+                                it.recyclerSelection, item, position
+                            )
                         }
+
                     }
 
                     else -> {}
@@ -90,7 +96,6 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 val nBinding = binding
                 when (method) {
                     METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
-                    METHOD_ADAPTER -> initAdapter(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -99,6 +104,9 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                                 tvOdds = it.betSettledTvOddsValue,
                                 tvBet = it.betSettledTvBettingValue,
                                 tvExpectMaxWin = it.betSettledTvExceptValue
+                            )
+                            submitAdapter(
+                                it.recyclerSelection, item, position
                             )
                         }
                     }
@@ -111,9 +119,11 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 val nBinding = binding
                 when (method) {
                     METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
-                    METHOD_ADAPTER -> initAdapter(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         updateInvalid(item.order, nBinding, false)
+                        submitAdapter(
+                            nBinding.recyclerSelection, item, position
+                        )
                     }
 
                     else -> {}
@@ -124,13 +134,10 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 val nBinding = binding
                 when (method) {
                     METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
-                    METHOD_ADAPTER -> initReserveAdapter(
-                        nBinding.recyclerSelection,
-                        item?.reserve!!
-                    )
 
                     METHOD_UPDATE -> item?.reserve?.let {
                         updateReserveData(item.reserve, nBinding)
+                        submitReserveAdapter(nBinding.recyclerSelection, item.reserve)
                     }
 
                     else -> {}
@@ -144,7 +151,13 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
      * */
     private fun initRecycler(recyclerView: RecyclerView) {
         val manager = LinearLayoutManager(binding.root.context)
-        val adapter = LiveBetSlipSelectionAdapter(betSlipType)
+        val adapter = LiveBetSlipSelectionAdapter(
+            betSlipType,
+            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
+                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
+                    expandedListener?.onItemClick(null, position)
+                }
+            })
         recyclerView.also {
             it.layoutManager = manager
             it.itemAnimator = null
@@ -155,14 +168,17 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     /**
      * 投注单列表展示
      * */
-    private fun initAdapter(recyclerView: RecyclerView) {
-        val list = arrayListOf(
-            LiveBetSlipSelectionData(Common.OrderSelection.newBuilder().build()),
-            LiveBetSlipSelectionData(Common.OrderSelection.newBuilder().build()),
-            LiveBetSlipSelectionData(Common.OrderSelection.newBuilder().build()),
-        )
+    private fun submitAdapter(
+        recyclerView: RecyclerView, data: LiveBetSlipData, position: Int
+    ) {
+        var list = data.order!!.selectionsList.map { LiveBetSlipSelectionData(selection = it) }.toList()
         recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipSelectionAdapter
+            adapter.updateBasicData(data.expandedEnum, position)
+            if (list.size > 3 && data.expandedEnum == LiveBetSlipExpandedEnum.Fold) {
+                list = list.subList(0, 2)
+            }
+            adapter.currentList.clear()
             adapter.submitList(list)
         }
     }
@@ -170,8 +186,10 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     /**
      * 预约单列表展示
      * */
-    private fun initReserveAdapter(recyclerView: RecyclerView, reserve: Common.ReserveOrder) {
-
+    private fun submitReserveAdapter(
+        recyclerView: RecyclerView,
+        reserve: Common.ReserveOrder,
+    ) {
         val list = arrayListOf(LiveBetSlipSelectionData(reserve = reserve.selection))
         recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipSelectionAdapter
@@ -238,8 +256,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 tvUnit1Value.text = item.betId
                 tvUnit2Value.text = item.odds
                 tvUnit3Value.text = item.betAmount
-//            TODO 预计最高可赢
-                tvUnit4Value.text = item.returnAmount
+                tvUnit4Value.text = calculateMaxWin(item.odds, item.betAmount).toString()
             }
         }
     }
@@ -249,17 +266,15 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
      * 预约单数据更新
      * */
     private fun updateReserveData(
-        order: Common.ReserveOrder,
-        nBinding: AdapterLiveBetSlipReserveBinding
+        order: Common.ReserveOrder, nBinding: AdapterLiveBetSlipReserveBinding
     ) {
         with(nBinding) {
             val selection = order.selection
             betReserveTvOddsValue.text = selection.odds
             betReserveTvBettingValue.text = order.betAmount
-            betReserveTvExceptValue.text =
-                calculateMaxWin(
-                    order.selection.odds, order.betAmount
-                ).toString()
+            betReserveTvExceptValue.text = calculateMaxWin(
+                order.selection.odds, order.betAmount
+            ).toString()
         }
     }
 

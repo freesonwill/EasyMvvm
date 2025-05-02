@@ -17,9 +17,10 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         position: Int
     ) {
+        val item = getItem(position)
         binding.layoutOddsTitle.removeAllViews()
-        binding.layoutOddsGrid.removeAllViews()
-        holder.init(getItem(position))
+        binding.rvOddsGrid.removeAllViews()
+        holder.init(item)
         binding.layoutLiveEntry.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
@@ -41,6 +42,19 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         viewType: Int
     ): MatchItemViewHolder {
         return MatchItemViewHolder(binding, onMatchItemClickListener)
+    }
+
+    override fun onBindViewHolder(
+        holder: MatchItemViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            val item = getItem(holder.adapterPosition)
+            holder.bindPayload(item, payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     interface OnMatchItemClickListener {

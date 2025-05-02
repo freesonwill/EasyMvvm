@@ -20,7 +20,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import arch.cayenne.lib.base.R
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.delegate.UIBindComponent
+import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
@@ -33,7 +33,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     private var isDismissing = false
     //#region VB,VM
     private val uiBind by lazy {
-        UIBindComponent(
+        UIBindDelegate(
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB)

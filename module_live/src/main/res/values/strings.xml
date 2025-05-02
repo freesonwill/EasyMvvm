@@ -39,7 +39,7 @@
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
-    <string name="live_bet_full_handicap">全场让球</string>
+    <string name="live_bet_full_handicap">全场让球(%1$s-$2$s)</string>
     <string name="live_bet_cancel_reserve">取消预约</string>
     <string name="live_bet_modify_odds">修改赔率</string>
     <string name="live_bet_odds">赔率</string>
@@ -48,9 +48,12 @@
     <string name="live_bet_win">赢</string>
     <string name="live_bet_except_odds">预计赔率@%1$s</string>
     <string name="live_bet_early_settle">提前结算</string>
+    <string name="see_more">查看更多</string>
+    <string name="fold_up">向上收起</string>
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
     <string name="live_chat_talk">和大家聊聊...</string>
+    <string name="live_match_trend">进攻趋势</string>
     <string name="share">分享给朋友</string>
     <string name="share_link">复制链接</string>
     <string name="choose_commentary">选解说</string>
@@ -63,7 +66,7 @@
     <string name="live_repair_lineup">替补队员</string>
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
-    <string name="lineup_empty">阵容数据为空</string>
+    <string name="lineup_empty">暂无数据,请换个试一试~</string>
     <string name="standings_empty">积分榜数据为空</string>
     <string name="outs_empty">赛况数据为空</string>
     <string name="lineup_today">今天</string>
@@ -84,5 +87,17 @@
     <string name="penalty_finish">足球点球大战结束</string>
     <string name="interrupted">足球中断</string>
     <string name="abandoned">足球废弃</string>
-
+    <string name="match_finished">比赛结束</string>
+    <string name="match_postponed">比赛推迟</string>
+    <string name="match_interrupted">比赛中断</string>
+    <string name="match_cancelled">比赛取消</string>
+    <string name="match_delayed">比赛延期</string>
+    <string name="match_abandoned">比赛废弃</string>
+    <string name="match_suspended">比赛暂停</string>
+    <string name="live_bet_tab_all">全部</string>
+    <string name="live_out_dy">-低压时刻</string>
+    <string name="live_out_gy">-高压时刻</string>
+    <string name="live_out_know">我知道了</string>
+    <string name="live_out_dialog_tip">这个图表让你能洞悉比赛的进程，柱状显示的是球队在比赛中攻势的变化趋势</string>
+    <string name="bet_stop">已停止投注,请换个试一试~</string>
 </resources>

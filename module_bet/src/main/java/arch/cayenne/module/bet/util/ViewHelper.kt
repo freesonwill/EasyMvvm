@@ -2,10 +2,7 @@ package arch.cayenne.module.bet.util
 
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
-import arch.cayenne.lib.database.entity.BetStatusEnum
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.databinding.ItemBetSheetBinding
 
 internal object ViewHelper {
@@ -20,6 +17,6 @@ internal object ViewHelper {
         binding.tvLeagueName.text = bean.leagueName
 
         binding.tvStatus.isVisible = bean.isPlaying
-        binding.tvBetStop.isVisible = bean.isBetStop
+        binding.tvBetStop.isVisible = bean.isActive
     }
 }

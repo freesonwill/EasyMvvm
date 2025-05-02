@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.util.AttributeSet
 import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.Tab
 
 class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
     private var indicatorColor: Int = INVALID_ID
@@ -50,22 +51,11 @@ class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
                 mView.setTabTextColors(normal, selectd)
             }
         }
-        updateTabBackground()
     }
 
-
-    private fun updateTabBackground() {
-        for (i in 0 until mView.tabCount) {
-            val tab = mView.getTabAt(i)
-            tab?.view?.setBackgroundResource(
-                resourcesManager.getTargetResourceId(
-                    mView.context,
-                    tabBackground
-                )
-            )
-        }
+    fun updateTabBackground(tab: Tab) {
+        tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
     }
-
 
     override fun updateLanguage(languageCode: String) {
     }

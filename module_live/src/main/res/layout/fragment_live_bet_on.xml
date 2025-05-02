@@ -1,54 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.DynamicStateLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clDynamics"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.LiveBetOnFragment">
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="13dp"
+        android:id="@+id/linear"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:layout_height="@dimen/dp_32">
+        android:paddingTop="13dp"
+        android:paddingBottom="13dp">
 
         <arch.cayenne.lib.skin.widget.SportTabLayout
             android:id="@+id/tabLayout"
             android:layout_width="0dp"
+            android:layout_height="32dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"
-            app:sportTabBackground="@drawable/tab_selected_background"
-            app:tabMode="auto"
-            app:tabGravity="center"
-            app:tabRippleColor="@null"
             android:background="@color/app_bg"
-            app:tabTextAppearance="@style/CustomTabText"
-            app:tabTextColor="@color/live_bet_selected_text"
+            app:sportTabBackground="@drawable/tab_selected_background"
+            app:tabGravity="start"
             app:tabIndicatorHeight="0dp"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@null"
+            app:tabTextAppearance="@style/CustomTabText"
+            app:tabTextColor="@drawable/live_bet_selected_text"
             tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
 
         <ImageView
             android:id="@+id/ivMenu"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
-            android:src="@drawable/live_bet_on_menu"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            />
+            android:src="@drawable/live_bet_on_menu" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <androidx.recyclerview.widget.RecyclerView
-        app:layout_constraintTop_toBottomOf="@id/tabLayout"
         android:id="@+id/rvBetList"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_weight="1"
-        />
+        app:layout_constraintTop_toBottomOf="@id/linear" />
 
-</androidx.appcompat.widget.LinearLayoutCompat>
+</arch.cayenne.lib.common.ui.view.DynamicStateLayout>

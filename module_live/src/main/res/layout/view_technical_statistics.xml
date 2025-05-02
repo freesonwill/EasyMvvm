@@ -27,24 +27,26 @@
         android:layout_marginEnd="@dimen/dp_12">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_home_country"
+            android:id="@+id/iv_home_logo"
             android:layout_width="@dimen/dp_21"
             android:layout_height="@dimen/dp_14"
-            android:background="@mipmap/icon_country"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_home_country"
+            android:id="@+id/tv_home_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:gravity="center_vertical"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_15"
+            android:singleLine="true"
+            android:maxWidth="@dimen/dp_160"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/iv_home_country"
+            app:layout_constraintStart_toEndOf="@+id/iv_home_logo"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
@@ -53,7 +55,7 @@
             android:layout_marginStart="@dimen/dp_6"
             android:background="@drawable/shape_red_point"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tv_home_country"
+            app:layout_constraintStart_toEndOf="@+id/tv_home_name"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -69,24 +71,26 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/iv_away_country"
+            android:id="@+id/iv_away_logo"
             android:layout_width="@dimen/dp_21"
             android:layout_height="@dimen/dp_14"
-            android:background="@mipmap/icon_country"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_away_country"
+            android:id="@+id/tv_away_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_6"
             android:gravity="center_vertical"
             android:textColor="@color/white"
             android:textSize="@dimen/sp_15"
+            android:singleLine="true"
+            android:maxWidth="@dimen/dp_160"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/iv_away_country"
+            app:layout_constraintEnd_toStartOf="@+id/iv_away_logo"
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
@@ -95,7 +99,7 @@
             android:layout_marginEnd="@dimen/dp_6"
             android:background="@drawable/shape_blue_point"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tv_away_country"
+            app:layout_constraintEnd_toStartOf="@+id/tv_away_name"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

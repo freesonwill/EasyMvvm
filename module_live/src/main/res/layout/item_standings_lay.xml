@@ -8,7 +8,6 @@
         android:id="@+id/item_standings"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:background="@color/tran_08_ac8e6a"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -27,12 +26,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_standings_rank"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_20"
-            android:textColor="@color/white"
+            android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_15"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -47,13 +46,13 @@
             app:layout_constraintStart_toEndOf="@+id/tv_standings_rank"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_team_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_12"
             android:maxWidth="@dimen/dp_80"
-            android:textColor="@color/white"
+            android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_14"
             android:ellipsize="end"
             android:lines="1"
@@ -71,44 +70,44 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_total"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="@color/standing_text"
                 android:textSize="@dimen/sp_14" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_won_draw_loss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="0/0/0"
-                android:textColor="@color/white"
+                android:textColor="@color/standing_text"
                 android:textSize="@dimen/sp_14" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_goals_against"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="0/0"
-                android:textColor="@color/white"
+                android:textColor="@color/standing_text"
                 android:textSize="@dimen/sp_14" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_points"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="0"
-                android:textColor="@color/white"
+                android:textColor="@color/standing_text"
                 android:textSize="@dimen/sp_14" />
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

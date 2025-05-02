@@ -62,6 +62,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
     abstract suspend fun getMatchById(matchId: Long) : MatchBean
 
+    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    abstract fun observeMatchById(matchId: Long): Flow<MatchBean?>
+
     @Transaction
     @Query("SELECT * FROM MatchBean WHERE matchId IN (:matchIds)")
     abstract suspend fun getMatchByIds(matchIds: List<Long>) : List<MatchBean>
@@ -245,6 +248,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
+
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelectionLites(matchBean.matchId, marketBean.marketId)

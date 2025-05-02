@@ -33,7 +33,6 @@ class LiveBetSlipInvalidFragment:
         divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.item_divide_live_bet_recycler)!!)
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
-            it.addItemDecoration(divider)
             it.adapter = adapter
             it.setItemViewCacheSize(10)
             it.addItemDecoration(divider)

@@ -20,6 +20,7 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -43,7 +44,8 @@ class BetModuleInitializer: DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        viewModelOf(::FloatingButtonViewModel)
+        //includes(autoViewModels)
+        viewModel { arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel(get()) }
         viewModelOf(::SingleBetViewModel)
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ComboBetViewModel)

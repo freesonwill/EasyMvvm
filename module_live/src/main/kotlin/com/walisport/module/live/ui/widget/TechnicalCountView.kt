@@ -5,10 +5,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
-import galaxy.client.proto.Sloth
 
 /**
  * 赛况页技术统计布局控件
@@ -18,8 +18,16 @@ class TechnicalCountView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
 
-    private val mBinding: ViewTechnicalStatisticsBinding =
+    private var clicklistener: OnClickListener? = null
+
+    private var mBinding: ViewTechnicalStatisticsBinding =
         ViewTechnicalStatisticsBinding.inflate(LayoutInflater.from(context), this, true)
+
+    init {
+        mBinding.viewGoalTrend.setOnClickListener{
+            clicklistener?.onClick()
+        }
+    }
 
     //在全屏直播模式下，只需要展示技术统计的部分数据
     fun setFullScreenMode() {
@@ -28,10 +36,13 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.root.background = null
     }
 
-    fun setTeamName(homeName: String, awayName: String) {
-        mBinding.tvHomeCountry.text = homeName
-        mBinding.tvAwayCountry.text = awayName
+    fun setTeamInfo(homeName: String, awayName: String, homeLogo: String, awayLogo: String) {
+        mBinding.tvHomeName.text = homeName
+        mBinding.tvAwayName.text = awayName
+        Glide.with(context).load(homeLogo).into(mBinding.ivHomeLogo)
+        Glide.with(context).load(awayLogo).into(mBinding.ivAwayLogo)
     }
+
 
     fun setScore(sore: String) {
         mBinding.tvScore.text = sore
@@ -117,5 +128,13 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.techProJiao.setData("角球", 22, 13)
         mBinding.techProYw.setData("越位", 14, 12)
         mBinding.techProFg.setData("犯规", 15, 22)
+    }
+
+    fun setOnItemClickListener(listener: OnClickListener) {
+        this.clicklistener = listener
+    }
+
+    interface OnClickListener {
+        fun onClick()
     }
 }

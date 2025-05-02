@@ -35,8 +35,8 @@ lifecycleViewmodelKtx = "2.8.7"
 window = "1.3.0"
 glide = "4.16.0"
 autoSize = "1.2.1"
-ksp = "1.9.0-1.0.13"
-
+ksp = "1.9.24-1.0.20"
+flexbox = "2.0.1"
 immersionbar = "3.2.2"
 legacySupportV4 = "1.0.0"
 fragmentKtx = "1.5.6"
@@ -91,7 +91,7 @@ immersionbar = { group = "com.geyifeng.immersionbar", name = "immersionbar", ver
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glidecompiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 autosize = {group = "me.jessyan", name = "autosize", version.ref = "autoSize"}
-
+flexbox = {group = "com.google.android", name = "flexbox", version.ref = "flexbox"}
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 [plugins]

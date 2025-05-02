@@ -16,6 +16,7 @@ class SportTabLayout : TabLayout {
     private val backgroundTintHelper = SportSkinBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
     private val tabLayoutHelper = SportSkinTabLayoutHelper(this)
+    private val TAG = SportTabLayout::class.java.simpleName
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -45,5 +46,25 @@ class SportTabLayout : TabLayout {
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
+    }
+
+    override fun addTab(tab: Tab, position: Int, setSelected: Boolean) {
+        super.addTab(tab, position, setSelected)
+        tabLayoutHelper.updateTabBackground(tab)
+    }
+
+    override fun addTab(tab: Tab, position: Int) {
+        super.addTab(tab, position)
+        tabLayoutHelper.updateTabBackground(tab)
+    }
+
+    override fun addTab(tab: Tab, setSelected: Boolean) {
+        super.addTab(tab, setSelected)
+        tabLayoutHelper.updateTabBackground(tab)
+    }
+
+    override fun addTab(tab: Tab) {
+        super.addTab(tab)
+        tabLayoutHelper.updateTabBackground(tab)
     }
 }

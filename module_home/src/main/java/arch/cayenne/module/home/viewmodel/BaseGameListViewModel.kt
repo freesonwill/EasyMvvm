@@ -23,7 +23,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     }
 
     private var _sportId = SportType.Init.id
-    abstract val playType: PlayType
+    private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
     var page: Int = 1
     private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
@@ -50,16 +50,22 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     }
 
     fun setTournamentId(id: Int) {
+        if (_tournamentId == id) return
         _tournamentId = id
     }
+    fun setPlayTypeId(id: Int) {
+        _playType = id
+    }
+
+    fun getPlayTypeId(): Int = _playType
 
     fun getTournamentId() = _tournamentId
 
     //取得分頁的比賽列表
     fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            "取得比賽資料  PlayType = ${playType.id} sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
-            val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, page, 0)
+            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
+            val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, 0)
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {

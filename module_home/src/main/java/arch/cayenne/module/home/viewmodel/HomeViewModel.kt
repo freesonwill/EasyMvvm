@@ -15,7 +15,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
@@ -26,12 +28,14 @@ class HomeViewModel : BaseViewModel() {
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
+
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
     val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
 
     private val _selectedDate = MutableLiveData<String>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<String> = _selectedDate
+
     override fun initViewModel() {
         super.initViewModel()
         //觀察餘額變化

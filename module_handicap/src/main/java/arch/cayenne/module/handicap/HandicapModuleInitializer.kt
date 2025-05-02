@@ -19,6 +19,7 @@ class HandicapModuleInitializer : DefaultInitializer<Unit> {
     }
 
     private val viewModules = module {
+        //includes(autoViewModels)
         viewModelOf(::HandicapViewModel)
         viewModelOf(::SimulateViewModel)
         viewModelOf(::HandicapCornerViewModel)

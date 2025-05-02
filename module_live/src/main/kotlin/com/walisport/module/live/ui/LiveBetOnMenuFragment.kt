@@ -3,76 +3,85 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
-import com.walisport.module.live.ui.adapter.LiveBetOnMenuAdapter
+import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
+import com.walisport.module.live.databinding.LiveBetMenuFlexboxTextViewBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
-
+import android.view.ViewConfiguration
+import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
+import kotlin.math.atan2
+import kotlin.math.sqrt
 
 class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
-    private var mList: List<String> = listOf("热门", "让球", "大小")
-    private var startX: Float = 0f
-    private var startY: Float = 0f
-    private var translationX: Float = 0f
-    private var isSwipingDialog: Boolean = false
-    private val swipeThreshold = 0.5f
-    private val touchSlop = 10f
 
-    class MenuItemDecoration(
-
-    ) : ItemDecoration() {
-        override fun getItemOffsets(
-            outRect: Rect,
-            view: View,
-            parent: RecyclerView,
-            state: RecyclerView.State
-        ) {
-            val position = parent.getChildAdapterPosition(view)
-            if (position == 0) {
-                outRect.top = 30.dp2px
-            }
-        }
-    }
-
+    private var startX = 0f
+    private var startY = 0f
+    private var translationX = 0f
+    private var isSwipingDialog = false
+    private var isHorizontalSwipe = false
+    private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
+    private val swipeThreshold = 0.3f // 滑动阈值，30% 宽度
+    private val angleTolerance = 30.0 // 允许的偏差角度（度）
+    //选择中颜色的ID
+    private var selectCode: String = ""
+    private var selectId: Long = 0
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.rv.apply {
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(
-                this@LiveBetOnMenuFragment.context,
-                LinearLayoutManager.VERTICAL,
-                false
-            )
-            adapter = LiveBetOnMenuAdapter(object : DiffUtil.ItemCallback<String>() {
-                override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
-                    return oldItem == newItem
+        mViewModel.getMarketType()
+        mViewModel.marketType.observe(viewLifecycleOwner) { it ->
+            if (it == null) return@observe
+            mBinding.llc.removeAllViews()
+            var currentIndex = 0
+            it.forEach { items ->
+                val binding = LiveBetMenuFlexboxLayoutBinding.inflate(
+                    LayoutInflater.from(context),
+                    mBinding.llc,
+                    false
+                )
+                binding.apply {
+                    if (currentIndex == it.size - 1) {
+                        VLin.visibility = View.GONE
+                    }
+                    tvName.text = items.name
                 }
-
-                override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
-                    return oldItem == newItem
+                items.marketMenuBean.forEach {bean->
+                    val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
+                        LayoutInflater.from(context),
+                        mBinding.llc,
+                        false
+                    )
+                    if (bean.isSelect) {
+                        selectCode = items.code
+                        selectId = bean.marketId
+                    }
+                    textBinding.apply {
+                        tvContent.text = bean.marketName
+                        tvContent.isSelected = bean.isSelect
+                        tvContent.clickNoRepeat {
+                            mViewModel.setMarketSelect(items.code,bean.marketId, selectCode,selectId)
+                            animateDismiss()
+                        }
+                    }
+                    binding.flexboxLayout.addView(textBinding.root)
                 }
-            }).apply {
-                post {
-                    addItemDecoration(MenuItemDecoration())
-                    submitList(mList)
-                }
+                mBinding.llc.addView(binding.root)
+                currentIndex++
             }
+
         }
     }
 
@@ -103,34 +112,45 @@ class LiveBetOnMenuFragment :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupSwipeGesture() {
-        mBinding.main.setOnTouchListener { _, event ->
+        mBinding.llc.setOnTouchListener { _, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
                     startX = event.rawX
                     startY = event.rawY
                     translationX = mBinding.root.translationX
                     isSwipingDialog = false
+                    isHorizontalSwipe = false
                     true
                 }
 
                 MotionEvent.ACTION_MOVE -> {
                     val deltaX = event.rawX - startX
                     val deltaY = event.rawY - startY
-                    if (!isSwipingDialog && (Math.abs(deltaX) > touchSlop || Math.abs(deltaY) > touchSlop)) {
-                        isSwipingDialog = abs(deltaX) > Math.abs(deltaY) && deltaX >= 0
-                        if (isSwipingDialog) {
-                        }
+                    val distance = sqrt(deltaX * deltaX + deltaY * deltaY)
+
+                    // 仅在滑动距离超过 touchSlop 时判断方向
+                    if (!isSwipingDialog && distance > touchSlop) {
+                        isSwipingDialog = true
+                        // 计算滑动角度（相对于水平方向）
+                        val angle = Math.toDegrees(atan2(deltaY.toDouble(), deltaX.toDouble()))
+                        // 水平滑动：角度接近 0° 或 180°，允许 ±angleTolerance 偏差
+                        isHorizontalSwipe =
+                            abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
                     }
-                    if (isSwipingDialog) {
+
+                    // 处理滑动
+                    if (isSwipingDialog && isHorizontalSwipe) {
                         if (deltaX >= 0) {
                             mBinding.root.translationX = translationX + deltaX
                         }
+                        true // 消费水平滑动事件
+                    } else {
+                        false // 允许垂直滑动事件传递
                     }
-                    false
                 }
 
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    if (isSwipingDialog) {
+                    if (isSwipingDialog && isHorizontalSwipe) {
                         val swipeDistance = mBinding.root.translationX
                         if (swipeDistance > mBinding.root.width * swipeThreshold) {
                             animateDismiss()
@@ -138,7 +158,8 @@ class LiveBetOnMenuFragment :
                             animateReset()
                         }
                     }
-                    isSwipingDialog = true
+                    isSwipingDialog = false
+                    isHorizontalSwipe = false
                     true
                 }
 

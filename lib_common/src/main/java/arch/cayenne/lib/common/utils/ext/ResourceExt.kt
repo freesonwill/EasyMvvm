@@ -4,6 +4,7 @@ import android.app.Application
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
@@ -46,6 +47,14 @@ object ResourceExt {
      */
     fun @receiver:DrawableRes Int.getDrawable(): Drawable {
         return ContextCompat.getDrawable(application, this)!!
+    }
+
+    /**
+     * 获取getDimension
+     * @return
+     */
+    fun @receiver:DimenRes Int.getDimension(): Float {
+        return application.resources.getDimension(this)
     }
 
 }

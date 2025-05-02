@@ -12,119 +12,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_video"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_211">
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_video"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_211" />
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/llcOuts"
-            android:visibility="gone"
-            android:background="@drawable/live_outs_gb"
-            android:layout_width="match_parent"
-            android:orientation="horizontal"
-            android:layout_height="match_parent">
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:id="@+id/outsHomeLogo"
-                    android:layout_width="64dp"
-                    android:layout_height="46dp"/>
-                <TextView
-                    android:id="@+id/outsHomeName"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:layout_marginTop="15dp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/tvTime"
-                    android:textColor="@color/white"
-                    android:textSize="17sp"
-                    android:layout_marginTop="5dp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/tvToday"
-                    android:textColor="@color/color_666666"
-                    android:textSize="14sp"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/lineup_today"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <TextView
-                    android:id="@+id/tvScore"
-                    android:textColor="@color/color_FE3666"
-                    android:textSize="24sp"
-                    android:layout_marginTop="5dp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/tvPeriod"
-                    android:textColor="@color/color_FE3666"
-                    android:textSize="14sp"
-                    android:layout_marginTop="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:id="@+id/outsAwayLogo"
-                    android:layout_width="64dp"
-                    android:layout_height="46dp"/>
-
-                <TextView
-                    android:id="@+id/outsAwayName"
-                    android:textColor="@color/white"
-                    android:textSize="14sp"
-                    android:layout_marginTop="15dp"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-    </FrameLayout>
+        android:layout_height="@dimen/dp_211" />
 
 
     <arch.cayenne.lib.skin.widget.SportTabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        android:paddingBottom="2dp"
         android:background="@color/live_main_tab_bg"
+        android:paddingBottom="2dp"
+        app:tabGravity="fill"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/tab_indicator_color"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabMode="fixed"
-        app:tabGravity="fill"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/tab_selected_text_color"
         app:tabTextAppearance="@style/CustomTabText"

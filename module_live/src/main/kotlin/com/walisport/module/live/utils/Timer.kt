@@ -20,7 +20,7 @@ class Timer(private val initialTimeInSeconds: Long) {
                 val seconds = elapsedTime % 60
                 onTick(String.format("%02d:%02d", minutes, seconds))
                 delay(1000)
-                elapsedTime--
+                elapsedTime++
             }
             if (elapsedTime <= 0) {
                 onTick("00:00")

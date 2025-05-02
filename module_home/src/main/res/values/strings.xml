@@ -29,4 +29,16 @@
     <string name="match_title_win">全場獨贏</string>
     <string name="match_title_handicap">全場讓球</string>
     <string name="match_title_over_under">全場大小</string>
+    <string name="drawer_recharge">充值</string>
+    <string name="drawer_bet_slip">注单</string>
+    <string name="drawer_common_function">常用功能</string>
+    <string name="drawer_tutorial">教程</string>
+    <string name="drawer_setting">设置</string>
+    <string name="drawer_help">帮助</string>
+    <string name="drawer_feedback">反馈与建议</string>
+    <string name="drawer_notification_line_2">钱包服务: 15元现金红包已...</string>
+    <string name="drawer_notification_line_1">钱包服务: 15元现金红包已...</string>
+    <string name="drawer_notification_time_1">05:35</string>
+    <string name="drawer_notification_time_2">周一</string>
+    <string name="drawer_notification_message">通知消息</string>
 </resources>
