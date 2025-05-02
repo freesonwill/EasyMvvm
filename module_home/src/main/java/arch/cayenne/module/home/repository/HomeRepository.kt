@@ -234,6 +234,13 @@ class HomeRepository(
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
 
     /**
+    * 取得特定的match，藉由matchId
+    * */
+    suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
+        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected().firstOrNull()
+    }
+
+    /**
      * 已經跟後端訂閱後的賽事，收到的賽事資料回傳
      * */
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
@@ -274,6 +281,9 @@ class HomeRepository(
      * */
     private suspend fun List<MatchWithMarkets>.setSelected(): List<MatchWithMarkets> {
         val betSelections = betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
+        betSelections.forEach {
+            "KC_ betSelections $it".logi()
+        }
         this.forEach { match ->
             match.markets.forEach { market ->
                 market.selections.forEach {

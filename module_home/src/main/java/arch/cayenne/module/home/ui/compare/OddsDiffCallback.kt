@@ -37,6 +37,8 @@ class OddsDiffCallback : DiffUtil.ItemCallback<List<SelectionBeanLite>>() {
             if (old.shortName != new.shortName) diff.add("shortName")
             if (old.active != new.active) diff.add("active")
             if (old.parlay != new.parlay) diff.add("parlay")
+            if (old.trend != new.trend) diff.add("trend")
+            if (old.isSelected != new.isSelected) diff.add("isSelected")
         }
         return if (diff.isEmpty()) null else diff
     }

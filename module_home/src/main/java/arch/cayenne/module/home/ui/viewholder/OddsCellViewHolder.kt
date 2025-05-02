@@ -11,19 +11,16 @@ class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
-    private var currentSelection: SelectionBeanLite? = null
-    fun bind(item: SelectionBeanLite, selectedId: Long?) {
-        currentSelection = item
+    fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
             tvOdds.text = item.odds.getOdds()
-            llOddsCell.isSelected = item.selectionId == selectedId //<<<< 是否選中
+            llOddsCell.isSelected = item.isSelected //<<<< 是否選中
             updateState(item.active)
 
             llOddsCell.setOnClickListener {
                 if (item.active) {
                     val isSelected = !(llOddsCell.isSelected)
-                    llOddsCell.isSelected = isSelected
                     onOddsClick(item, isSelected)
                 }
             }
@@ -31,9 +28,8 @@ class OddsCellViewHolder(
     }
 
 
-    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>, selectedId: Long?) {
+    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>) {
         val diff = payloads.firstOrNull() as? Set<*> ?: return
-        currentSelection = item
 
         with(mBinding) {
             if ("odds" in diff) {
@@ -56,7 +52,14 @@ class OddsCellViewHolder(
             if ("parlay" in diff) {
                 // 目前沒特別UI變化
             }
-            llOddsCell.isSelected = item.selectionId == selectedId
+
+            if ("isSelected" in diff) {
+                llOddsCell.isSelected = item.isSelected
+            }
+
+            if ("trend" in diff) {
+                //TODO 賠率趨勢
+            }
         }
     }
     //    private fun animateOddsChange(view: View) {

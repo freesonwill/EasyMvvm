@@ -3,9 +3,11 @@ package arch.cayenne.module.home.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.room.Transaction
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
@@ -27,6 +29,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
     var page: Int = 1
     private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
+    private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     override fun initViewModel() {
@@ -91,7 +94,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         }
     }
 
-    fun subscribeMatch(ids: List<Long>) {
+    private fun subscribeMatch(ids: List<Long>) {
         viewModelScope.launch(Dispatchers.IO) {
             "訂閱比賽  $ids".logi(this::class.java.name)
             val matchWithMarkets = repository.subscribeMatch(ids)
@@ -106,6 +109,23 @@ abstract class BaseGameListViewModel: BaseViewModel() {
                 matchListChange.value = old
             }
 
+        }
+    }
+
+    @Transaction
+    fun setSelection(matchId: Long, selectionId: Long) {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            betRepository.setSelection(matchId, selectionId)
+            val matchWithMarket = repository.getOneMatchById(matchId)
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarket?.apply {
+                val index = old.indexOfFirst { it.match.matchId == this.match.matchId }
+                if (index != -1) { old[index] = this }
+            }
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
         }
     }
 }

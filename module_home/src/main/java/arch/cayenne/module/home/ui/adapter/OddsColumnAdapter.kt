@@ -12,18 +12,17 @@ import arch.cayenne.module.home.ui.viewholder.OddsColumnViewHolder
 class OddsColumnAdapter(
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseAdapter<List<SelectionBeanLite>, OddsColumnViewHolder, ItemOddsColumnBinding>(OddsDiffCallback()) {
-    private var selectedSelectionId: Long? = null
 
-    fun updateSelectedSelectionId(id: Long?) {
-        selectedSelectionId = id
-        notifyDataSetChanged()
-    }
+//    fun updateSelectedSelectionId(id: Long?) {
+//        selectedSelectionId = id
+//        notifyDataSetChanged()
+//    }
     override fun convertPlus(
         holder: OddsColumnViewHolder,
         binding: ItemOddsColumnBinding,
         position: Int
     ) {
-        holder.bind(getItem(position), selectedSelectionId)
+        holder.bind(getItem(position))
     }
 
     override fun createViewBinding(
@@ -47,9 +46,9 @@ class OddsColumnAdapter(
         payloads: List<Any>
     ) {
         if (payloads.isNotEmpty()) {
-            holder.bindPayload(getItem(position), payloads, selectedSelectionId)
+            holder.bindPayload(getItem(position), payloads)
         } else {
-            holder.bind(getItem(position), selectedSelectionId)
+            holder.bind(getItem(position))
         }
     }
 }

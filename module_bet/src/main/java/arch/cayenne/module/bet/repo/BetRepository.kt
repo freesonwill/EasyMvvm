@@ -25,26 +25,24 @@ class BetRepository(
      * 新增投注資料
      * @return type 返回單注or串關
      */
-    fun setSelection(matchId: Long, selectionId: Long) {
-        scope.launch {
-            val bet = betDao.getCurrentBet()
-            // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
-            val betId = bet?.betId ?: betDao.insert(BetBean())
-            val selections = betDao.getSelections(betId)
-            val selection = selections.find { it.matchId == matchId }
-            if (selection == null) {
-                addSelection(betId, matchId, selectionId)
+    suspend fun setSelection(matchId: Long, selectionId: Long) {
+        val bet = betDao.getCurrentBet()
+        // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
+        val betId = bet?.betId ?: betDao.insert(BetBean())
+        val selections = betDao.getSelections(betId)
+        val selection = selections.find { it.matchId == matchId }
+        if (selection == null) {
+            addSelection(betId, matchId, selectionId)
+        } else {
+            if (selection.selectionId == selectionId) {
+                betDao.removeBetSelectionByMatchId(betId, matchId)
             } else {
-                if (selection.selectionId == selectionId) {
-                    betDao.removeBetSelectionByMatchId(betId, matchId)
-                } else {
-                    getSelectionLiteBean(betId, matchDao.getOneMatchById(matchId), matchDao.getSelectionById(selectionId))?.let { selectionLiteBean ->
-                        betDao.updateSelection(selectionLiteBean)
-                    }
+                getSelectionLiteBean(betId, matchDao.getOneMatchById(matchId), matchDao.getSelectionById(selectionId))?.let { selectionLiteBean ->
+                    betDao.updateSelection(selectionLiteBean)
                 }
             }
-            checkBetBeanType(betId)
         }
+        checkBetBeanType(betId)
     }
 
     private suspend fun addSelection(betId: Long, matchId: Long, selectionId: Long) {

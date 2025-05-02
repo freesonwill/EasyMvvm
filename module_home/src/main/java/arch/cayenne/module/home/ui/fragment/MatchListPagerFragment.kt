@@ -40,7 +40,7 @@ class MatchListPagerFragment :
                 }
 
                 override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
-                    homeViewModel.setSelection(item.match.matchId, selection.selectionId)
+                    mViewModel.setSelection(item.match.matchId, selection.selectionId)
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
