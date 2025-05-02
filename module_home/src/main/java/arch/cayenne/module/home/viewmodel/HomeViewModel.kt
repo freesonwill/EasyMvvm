@@ -96,10 +96,6 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    fun setSelection(matchId: Long, selectionId: Long) {
-        betRepository.setSelection(matchId, selectionId)
-    }
-
     fun setSelectedDate(date: String) {
         if (_selectedDate.value == date) return
         _selectedDate.value = date
