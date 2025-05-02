@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.module.bet.data.NumberOverEnum
 import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
@@ -50,10 +51,17 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             }
             launch {
                 betRepo.observeComboBean().collect {
-                    if (it.inputMoney != 0L) {
+                    setNumberLimit(it.minAmount, it.maxAmount)
+                    val balance = balanceRepo.getBalance()
+                    if (it.inputMoney > balance) {
+                        it.inputMoney = 0
+                        setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                    } else if (it.inputMoney > it.maxAmount) {
+                        it.inputMoney = it.maxAmount
+                    }
+                    if (it.inputMoney > 0L) {
                         setEditNumber(it.inputMoney)
                     }
-                    setNumberLimit(it.minAmount, it.maxAmount)
                 }
             }
             launch {

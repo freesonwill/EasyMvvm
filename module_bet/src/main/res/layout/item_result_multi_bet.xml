@@ -9,8 +9,7 @@
         android:id="@+id/tv_combo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_bet_sheet_text_second"
-        android:textSize="14sp"
+        android:textColor="@color/secondary_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -19,8 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
-        android:textColor="@color/color_bet_sheet_text_second"
-        android:textSize="14sp"
+        android:textColor="@color/secondary_text"
         app:layout_constraintBottom_toBottomOf="@id/tv_combo"
         app:layout_constraintStart_toEndOf="@id/tv_combo"
         app:layout_constraintTop_toTopOf="@id/tv_combo" />
@@ -29,8 +27,6 @@
         android:id="@+id/tv_bet_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/color_bet_sheet_text_first"
-        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/tv_combo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,8 +37,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
-        android:textColor="@color/color_bet_sheet_text_first"
-        android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/tv_bet_money"
         app:layout_constraintEnd_toStartOf="@id/tv_bet_money"
