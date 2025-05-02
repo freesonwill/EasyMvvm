@@ -83,7 +83,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
                         }
                         //看db, 點擊的不在matchBean中會爆掉
-                        "joseph tabSelected: playType: ${PlayType.entries[this]}"
+
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                         leagueAdapter.setPlayType(PlayType.entries[this])
                     }
@@ -239,7 +239,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    "joseph tabSelected: ${tab?.position}"
                     tab?.customView?.isSelected = true
                     vpGameList.currentItem = tab?.position ?: 0
                 }

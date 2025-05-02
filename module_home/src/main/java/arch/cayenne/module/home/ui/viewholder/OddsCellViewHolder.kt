@@ -1,9 +1,10 @@
 package arch.cayenne.module.home.ui.viewholder
 
+import android.animation.ValueAnimator
 import android.view.View
+import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 
@@ -11,12 +12,13 @@ class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
-    fun bind(item: SelectionBeanLite) {
+    fun bind(item: SelectionBeanLite, forceLocked: Boolean = false) {
         with(mBinding) {
             tvShortName.text = item.shortName
             tvOdds.text = item.odds.getOdds()
             llOddsCell.isSelected = item.isSelected //<<<< 是否選中
-            updateState(item.active)
+            val isActive = item.active && !forceLocked
+            updateState(isActive)
 
             llOddsCell.setOnClickListener {
                 if (item.active) {
@@ -28,14 +30,14 @@ class OddsCellViewHolder(
     }
 
 
-    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>) {
+    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>, forceLocked: Boolean = false) {
         val diff = payloads.firstOrNull() as? Set<*> ?: return
-
+        val isActive = item.active && !forceLocked
         with(mBinding) {
+
             if ("odds" in diff) {
                 if (tvOdds.text.toString() != item.odds.getOdds()) {
                     tvOdds.text = item.odds.getOdds()
-//                    animateOddsChange(tvOdds)
                 }
             }
 
@@ -45,8 +47,8 @@ class OddsCellViewHolder(
                 }
             }
 
-            if ("active" in diff) {
-                if (item.active) activate() else deActivate()
+            if ("active" in diff || "forceInactive" in diff) {
+                updateState(isActive)
             }
 
             if ("parlay" in diff) {
@@ -58,20 +60,53 @@ class OddsCellViewHolder(
             }
 
             if ("trend" in diff) {
-                //TODO 賠率趨勢
+                //TODO 賠率變更閃爍
+                showOddsTrend(item.trend)
             }
         }
     }
-    //    private fun animateOddsChange(view: View) {
-//        val anim = ObjectAnimator.ofArgb(
-//            view,
-//            "backgroundColor",
-//            Color.YELLOW, Color.TRANSPARENT
-//        )
-//        anim.duration = 300
-//        anim.start()
-//    }
+
+    fun showOddsTrend(trendDelta: Int?) {
+        with(mBinding) {
+            // 先隱藏所有效果
+            ivTrendUp.visibility = View.GONE
+            ivTrendDown.visibility = View.GONE
+            vTrendHighlight.clearAnimation()
+            vTrendHighlight.visibility = View.GONE
+
+            val trendView = when {
+                trendDelta == null || trendDelta == 0 -> null
+                trendDelta < 0 -> ivTrendUp   // 賠率下降 → 變好
+                trendDelta > 0 -> ivTrendDown // 賠率上升 → 變差
+                else -> null
+            }
+            // 同步閃爍 trendView 和 overlay
+            trendView?.let { trendImage ->
+                trendImage.alpha = 1f
+                trendImage.visibility = View.VISIBLE
+                vTrendHighlight.alpha = 0.3f
+                vTrendHighlight.visibility = View.VISIBLE
+
+                val animator = ValueAnimator.ofFloat(1f, 0f).apply {
+                    duration = 2000
+                    addUpdateListener { animation ->
+                        val alpha = animation.animatedValue as Float
+                        vTrendHighlight.alpha = alpha
+                        trendImage.alpha = alpha
+                    }
+                    addListener(onEnd = {
+                        vTrendHighlight.visibility = View.GONE
+                        trendImage.visibility = View.GONE
+                    })
+                }
+                animator.start()
+            }
+        }
+    }
+
+
     private fun updateState(active: Boolean) {
+
         with(mBinding) {
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
@@ -97,6 +132,7 @@ class OddsCellViewHolder(
             llOddsCell.isEnabled = false
         }
     }
+
     fun hideView() {
         mBinding.root.visibility = View.GONE
     }

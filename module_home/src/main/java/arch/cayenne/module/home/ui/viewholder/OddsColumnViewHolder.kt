@@ -1,7 +1,7 @@
 package arch.cayenne.module.home.ui.viewholder
 
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 
@@ -16,16 +16,23 @@ class OddsColumnViewHolder(
         OddsCellViewHolder(mBinding.itemOddsCell3, onOddsClick)
     )
 
-    fun bind(selections: List<SelectionBeanLite>) {
+    fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
+        val forceLocked = market.defaultSelectionCount == 0 // 判斷是否要強制鎖盤
+
         oddsCells.forEachIndexed { index, cell ->
             selections.getOrNull(index)?.let {
-                cell.bind(it)
+                cell.bind(it, forceLocked)
             } ?: cell.hideView()
         }
     }
 
-    fun bindPayload(selections: List<SelectionBeanLite>, payloads: List<Any>) {
+    fun bindPayload(
+        market: MarketBeanLite,
+        selections: List<SelectionBeanLite>,
+        payloads: List<Any>
+    ) {
         val changes = payloads.firstOrNull() as? Set<*> ?: return
+        val forceLocked = market.defaultSelectionCount == 0
         oddsCells.forEachIndexed { index, cell ->
             val selection = selections.getOrNull(index)
             if (selection != null) {
@@ -38,9 +45,9 @@ class OddsColumnViewHolder(
                 if ("trend" in changes) individualChanges.add("trend")
 
                 if (individualChanges.isNotEmpty()) {
-                    cell.bindPayload(selection, listOf(individualChanges))
+                    cell.bindPayload(selection, listOf(individualChanges), forceLocked)
                 } else {
-                    cell.bind(selection)
+                    cell.bind(selection, forceLocked)
                 }
             } else {
                 cell.hideView()

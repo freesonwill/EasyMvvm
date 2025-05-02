@@ -2,6 +2,7 @@ package arch.cayenne.module.home.repository
 
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -21,7 +22,6 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 
 class HomeRepository(
@@ -262,10 +262,13 @@ class HomeRepository(
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
         return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
-                "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
+                "joseph 收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
                 val matchUpdateData = arrayListOf(it.data!!).toRoomData()
                 val list = updateFullMath(matchUpdateData)
-                list.forEach { matchWithMarket -> emit(matchWithMarket) }
+                list.forEach { matchWithMarket ->
+                    "joseph observe notify: ${matchWithMarket.markets}".logd(this::class.java.name)
+                    emit(matchWithMarket)
+                }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -18,7 +19,6 @@ import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class MatchDao : BaseDao<MatchBean>() {
@@ -203,6 +203,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 markets.selections.forEach { selection ->
                     if (oldOdds.containsKey(selection.selectionId)) {
                         selection.trend = selection.odds - oldOdds[selection.selectionId]!!
+                        "joseph getOneMatchByIds trend:${selection.trend}".logd(this::class.java.name)
                     }
                 }
             }
