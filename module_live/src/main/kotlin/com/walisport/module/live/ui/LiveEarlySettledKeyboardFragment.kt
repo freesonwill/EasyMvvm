@@ -19,26 +19,22 @@ import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
 import com.walisport.module.live.ui.widget.LiveBetNumberKeyboardView
 import kotlin.reflect.KClass
 
-class LiveEarlySettledKeyboardFragment :
+class LiveEarlySettledKeyboardFragment private constructor() :
     BaseDialogFragment<LiveEarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
     companion object {
-        val requestKey: String = "money"
         fun instance(): LiveEarlySettledKeyboardFragment {
-            val b = Bundle()
-            return LiveEarlySettledKeyboardFragment().apply {
-                arguments = b
-            }
+            return LiveEarlySettledKeyboardFragment()
         }
-
     }
 
     override val vbClass: KClass<FragmentEarlySettledNumberKeyboardBinding>
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<LiveEarlySettledKeyboardViewModel>
         get() = LiveEarlySettledKeyboardViewModel::class
+    private var onEarlySettleClick: ((money: String) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-
+        dialog?.setCanceledOnTouchOutside(true)
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney)
@@ -69,7 +65,12 @@ class LiveEarlySettledKeyboardFragment :
             btnClear.clickNoRepeat { mViewModel.clearNumber() }
             btnDouble.clickNoRepeat { mViewModel.doubleNumber() }
             btnCollapse.clickNoRepeat { }
-            btnPartSettle.clickNoRepeat { setResult() }
+            btnPartSettle.clickNoRepeat {
+                onEarlySettleClick?.invoke(
+                    mViewModel.editNumber.value ?: ""
+                )
+                dismiss()
+            }
             btnCancel.clickNoRepeat { dismiss() }
         }
     }
@@ -131,14 +132,14 @@ class LiveEarlySettledKeyboardFragment :
     override fun initListener() {
     }
 
+    fun setOnEarlySettleListener(listener: (money: String) -> Unit) {
+        this.onEarlySettleClick = listener
+    }
+
     override fun createObserver() {
+        mViewModel.editNumber.observe(viewLifecycleOwner) {
+            mBinding.etMoney.setText(it)
+            mBinding.etMoney.setSelection(it.length)
+        }
     }
-
-    private fun setResult() {
-        val result = Bundle()
-        result.putString(requestKey, mViewModel.editNumber.value)
-        parentFragmentManager.setFragmentResult(requestKey, result)
-        dismiss()
-    }
-
 }

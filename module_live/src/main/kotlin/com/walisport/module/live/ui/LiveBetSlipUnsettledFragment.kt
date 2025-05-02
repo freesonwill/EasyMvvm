@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.livebetslip.LiveBetSlipData
@@ -33,16 +34,6 @@ class LiveBetSlipUnsettledFragment :
     }
 
     override fun initListener() {
-        parentFragmentManager.setFragmentResultListener(
-            LiveEarlySettledKeyboardFragment.requestKey,
-            viewLifecycleOwner
-        ) { requestKey, result ->
-            val money = result.getString(requestKey)
-            if(money.isNullOrEmpty()){
-                return@setFragmentResultListener
-            }
-            mViewModel.earlyPartSettled(BigDecimal(money))
-        }
     }
 
     override fun createObserver() {
@@ -85,7 +76,11 @@ class LiveBetSlipUnsettledFragment :
         }
         adapter.setItemListener(object : RecyclerItemListener<LiveBetSlipData> {
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
-                LiveEarlySettledKeyboardFragment.instance().show(childFragmentManager)
+                LiveEarlySettledKeyboardFragment.instance().apply {
+                    setOnEarlySettleListener {
+                        LogUtils.dTag("aaa", "money $it")
+                    }
+                }.show(childFragmentManager)
             }
         })
     }
