@@ -29,6 +29,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             llDrawerSetting.clickNoRepeat {
                 navigate(Uri.parse("walisport://module_setting/settingFragment"))
             }
+
+            llDrawerFeedback.clickNoRepeat {
+                navigate(Uri.parse("walisport://module_feedback/feedbackFragment"))
+            }
         }
     }
 

@@ -9,6 +9,9 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     STATISTICAL(500, 1000), // 500-1000: 获取赛事统计
     TOURNAMENT(500, 1001),  // 500-1001: 获取联赛信息
     LIST_MATCH(500, 1002),   //500-1002: 获取比赛列表，盘口信息只返回热门盘口
+    SUBSCRIBE_MATCH(500, 1100),  //500-1100: 订阅比赛
+    CANCEL_SUBSCRIBE_MATCH(500, 1101),  //500-1101: 取消订阅比赛
+    MATCH_NOTIFY(600, 1000),   //600-1000: 比赛推送
     COMBO_BET(500, 1010),   //500-1010: 串关下注
     SINGLE_BET(500, 1015),   //500-1015: 單注下注
     RESERVE_BET(500, 1020),  //500-1020: 預約下注

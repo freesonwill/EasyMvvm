@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="feedback_title">反馈与建议</string>
+    <string name="feedback_type_label">反馈类型</string>
+    <string name="select_at_least_one">（至少选择一个）</string>
+    <string name="feedback_description_label">反馈描述</string>
+    <string name="word_limit">（%d字以内）</string>
+    <string name="deposit_issue">存款问题</string>
+    <string name="gameplay_issue">游戏问题</string>
+    <string name="stream_issue">流水问题</string>
+    <string name="ui_optimization">界面优化</string>
+    <string name="withdrawal_issue">取款问题</string>
+    <string name="other_suggestions">其他建议</string>
+    <string name="edit_text_hint">请详细描述您的问题或建议，建议被采纳后会获得奖励，反馈多多，奖励多多</string>
+    <string name="submit">提交</string>
+</resources>

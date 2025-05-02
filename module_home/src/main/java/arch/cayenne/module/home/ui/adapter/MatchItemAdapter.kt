@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.compare.MatchItemCompare
 import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
@@ -59,6 +60,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     interface OnMatchItemClickListener {
         fun onLiveEntryClick(item: MatchWithMarkets)
         fun onFavoriteClick(item: MatchWithMarkets)
-        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean)
+        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
     }
 }

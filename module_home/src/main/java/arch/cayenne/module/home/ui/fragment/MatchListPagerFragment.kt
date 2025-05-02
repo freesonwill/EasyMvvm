@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
@@ -38,9 +39,8 @@ class MatchListPagerFragment :
                 override fun onFavoriteClick(item: MatchWithMarkets) {
                 }
 
-                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
-                    //TODO 換到早盤時, 有時點擊盤口投注會發現matchId null比對不到的問題
-                    homeViewModel.setSelection(item.match.matchId, selection.selectionId)
+                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
+                    mViewModel.setSelection(item.match.matchId, selection.selectionId)
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
@@ -67,16 +67,8 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            val oldList = matchAdapter.currentList
-            matchAdapter.submitList(oldList+matchList)
-            //測試
-            lifecycleScope.launch {
-                if (mViewModel.page <= 3) {
-                    delay(3000)
-                    mViewModel.page++
-                    mViewModel.getCurrentMatch()
-                }
-            }
+            matchAdapter.submitList(matchList)
+
         }
 
     }

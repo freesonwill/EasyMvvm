@@ -53,7 +53,8 @@ message Market {
     string market_name = 2;   //盘口名称
     repeated MarketDetail market_detail = 3;
     int32 status = 4;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
-    repeated int32 market_type = 5;
+    int32 style = 5;          //1-两列 2-三列 3-波胆
+    repeated int32 market_type = 6;
 }
 
 //盘口详情
@@ -122,15 +123,15 @@ message Order {
     int64 bet_time = 2;       //下注时间
     int64 settle_time = 3;    //结算时间
     string bet_amount = 4;     //下注总金额
-    string return_amount = 5; //返还金额
+    string return_amount = 5; //正常结算派奖金额
     repeated OrderSelection selections = 6; //选项
-    int32 combo_type = 7;           //串关类型，0-单关  1-串关  2-全串关(4串11)  3-全串关和单关(4串15)
+    int32 combo_type = 7;           //串关类型，0-单关  1-串关  2-全串关(4串11)
     string parlay_name = 8;         //串关名称
     string odds = 9;                //赔率
     int32 status = 10;              //订单状态 1投注确认中，2拒单，3取消订单，4接单成功，5已结算
     bool early_support = 11;            //是否支持提前结算
-    string early_bet_amount = 12;        //部分提前结算总本金
-    string early_return_amount = 13;    //部分提前结算赢得总金额
+    string early_bet_amount = 12;        //提前结算总本金
+    string early_return_amount = 13;    //提前结算派彩金额
     int32 early_settle_times = 14;      //已经提前结算的次数
     int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-输一半 5-赢一半 6-退款 7-提前结算
     EarlySettlePrice early_settle_price = 16; //提前结算报价

@@ -47,12 +47,14 @@ data class TournamentMatchRef(
     val page: Int,
     val startTime: Long, //0表示取得ALL
     val matchId: Long,
+    val order: Int,
 )
 
 @Entity(primaryKeys = ["matchId", "marketId"],)
 data class MatchMarketCrossRef(
     val matchId: Long,
-    val marketId: Long
+    val marketId: Long,
+    val selectionCount: Int,  //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
 )
 
 @Entity(primaryKeys = ["matchId", "marketId", "selectionId"],)
@@ -107,8 +109,27 @@ data class MarketDetailBean(
 )
 
 data class MarketWithSelections(
-    val market: MarketBean,
-    val selections: List<SelectionBean>
+    val market: MarketBeanLite,
+    val selections: List<SelectionBeanLite>, //這場比賽這個盤口底下的選項(去除佔位符了)
+)
+
+data class MarketBeanLite(
+    @PrimaryKey val marketId: Long,
+    val marketName: String,
+    val status: Int,
+    var defaultSelectionCount: Int, //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
+)
+
+data class SelectionBeanLite(
+    val selectionId: Long,
+    val detailActive: Boolean,
+    val name: String,
+    val shortName: String?,
+    val odds: Int,
+    val active: Boolean,
+    val parlay: Boolean,
+    var isSelected: Boolean = false,
+    var trend: Int = 0,
 )
 
 data class MatchWithMarkets(
@@ -116,5 +137,11 @@ data class MatchWithMarkets(
     val markets: List<MarketWithSelections>
 )
 
-//MatchWithMarkets -> List<MarketWithSelections> ->
-//    MarketBean + List<SelectionBean>
+//用來做notify收到時組合起來更新資料表用的
+data class MatchBeanLite(
+    val matchId: Long,
+    val status: Int,  //update MatchBasicInfoBean
+    val betStop: Boolean, //update MatchBasicInfoBean
+    val startTime: Long, //update MatchBasicInfoBean
+    val liveInfo: MatchLiveInfoBean  //update MatchLiveInfoBean
+)
