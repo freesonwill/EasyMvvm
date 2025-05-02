@@ -3,9 +3,9 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
@@ -30,13 +31,13 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private var tabList: MutableList<String> = mutableListOf()
-
-    //赛选内容
-    private var list: List<String> = listOf("让球大小", "波胆", "角球&罚牌", "罚球", "角球&罚牌")
-
+    val itemDecoration: RecyclerView.ItemDecoration = LinearSpacingItemDecoration(8.dp2px, 10.dp2px)
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.getMarketTypeAll()
         mViewModel.observeMarketTypeBean()
+    }
+
+    fun showData(list: List<MarketMenuBean>?) {
+        var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         mBinding.rvBetList.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(
@@ -44,17 +45,29 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 LinearLayoutManager.VERTICAL,
                 false
             )
-            adapter = LiveBetOnAdapter(object : DiffUtil.ItemCallback<String>() {
-                override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            adapter = LiveBetOnAdapter(object : DiffUtil.ItemCallback<MarketMenuBean>() {
+                override fun areItemsTheSame(
+                    oldItem: MarketMenuBean,
+                    newItem: MarketMenuBean
+                ): Boolean {
                     return oldItem == newItem
                 }
 
-                override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+                override fun areContentsTheSame(
+                    oldItem: MarketMenuBean,
+                    newItem: MarketMenuBean
+                ): Boolean {
                     return oldItem == newItem
                 }
             }).apply {
+                setHomeAway(
+                    baseInfo?.homeTeam.toString(),
+                    baseInfo?.homeTeamIcon.toString(),
+                    baseInfo?.awayTeam.toString(),
+                    baseInfo?.awayTeamIcon.toString()
+                )
                 post {
-                    addItemDecoration(LinearSpacingItemDecoration(8.dp2px, 10.dp2px))
+                    addItemDecoration(itemDecoration)
                     submitList(list)
                 }
             }
@@ -62,6 +75,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun initListener() {
+        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                mViewModel.getMarketList(mViewModel.marketType.value?.get(tab.position)?.code)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+
         mBinding.ivMenu.clickNoRepeat {
             navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
         }
@@ -70,8 +92,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override fun createObserver() {
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
-            it.basicInfo.let { i ->
-                if (i.betStop) {
+            if (it.basicInfo != null) {
+                if (it.basicInfo.betStop) {
                     mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
                     return@observe
                 } else {
@@ -92,17 +114,25 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 clear()
                 add(R.string.live_bet_tab_all.getString())
             }
-            list.forEach { tabList.add(it.name) }
+            list.forEach {
+                tabList.add(it.name)
+            }
             lifecycleScope.launch {
                 addNewTab()
             }
+
         }
-        mViewModel.observeMarketType.observe(viewLifecycleOwner){
+        //根据盘口分类code获取盘口列表
+        mViewModel.getMarketList.observe(viewLifecycleOwner) {
+            showData(it)
+        }
+
+        mViewModel.observeMarketType.observe(viewLifecycleOwner) {
+            mViewModel.getMarketTypeAll()
         }
     }
 
     //获取code在tab的位置
-
     // 动态添加Tab的方法
     private fun addNewTab() {
         mBinding.tabLayout.removeAllTabs()
