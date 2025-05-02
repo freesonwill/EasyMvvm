@@ -3,6 +3,8 @@ package com.walisport.module.feedback
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.feedback.data.FeedbackMainRepository
+import com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel
+import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -18,7 +20,7 @@ class FeedbackModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        includes(autoViewModels)
+        viewModelOf(::FeedbackMainViewModel)
     }
 
     private val repoModules = module {
