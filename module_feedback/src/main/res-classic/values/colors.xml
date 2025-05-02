@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="feedback_main_background_classic">#0E0F1A</color>
+    <color name="feedback_main_text_classic">#FFFFFF</color>
+    <color name="feedback_secondary_text_classic">#929298</color>
 </resources>

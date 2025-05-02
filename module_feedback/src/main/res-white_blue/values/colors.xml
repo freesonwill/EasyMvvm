@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="feedback_main_background_white_blue">#EEEEEE</color>
+    <color name="feedback_main_text_white_blue">#222222</color>
+    <color name="feedback_secondary_text_white_blue">#666666</color>
 </resources>
