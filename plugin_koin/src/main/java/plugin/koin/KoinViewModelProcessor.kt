@@ -61,7 +61,7 @@ class KoinViewModelProcessor(
                             val bindings = (it.value as List<KSType>).map { it.declaration }
                             bindingsStr = definitionWriter.generateBindings(bindings)
                         }
-                        "isGet"->{
+                        "isGets"->{
                             isGets = it.value as List<Boolean>
                         }
                     }

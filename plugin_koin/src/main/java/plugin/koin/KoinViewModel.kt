@@ -12,5 +12,5 @@ import kotlin.reflect.KClass
 //@Retention(AnnotationRetention.RUNTIME)
 annotation class KoinViewModel(
     val binds: Array<KClass<*>> = [],
-    val isGet: BooleanArray = []
+    val isGets: BooleanArray = []
 )
