@@ -12,4 +12,5 @@
     <string name="withdrawal_issue">取款问题</string>
     <string name="other_suggestions">其他建议</string>
     <string name="edit_text_hint">请详细描述您的问题或建议，建议被采纳后会获得奖励，反馈多多，奖励多多</string>
+    <string name="submit">提交</string>
 </resources>

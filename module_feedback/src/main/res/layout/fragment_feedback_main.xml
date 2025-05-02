@@ -142,25 +142,39 @@
         android:hint="@string/edit_text_hint"
         android:inputType="textMultiLine"
         android:maxLength="200"
-        android:padding="8dp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#AAAAAA"
+        android:padding="@dimen/dp_12"
+        android:textColor="@color/feedback_text_color"
+        android:textColorHint="@color/feedback_text_color_hint"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <arch.cayenne.lib.skin.widget.SportTextView
+        android:id="@+id/tv_edit_text_length"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:textColor="@color/feedback_text_color_hint"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@id/edit_feedback"
+        app:layout_constraintEnd_toEndOf="@+id/edit_feedback" />
+
     <!-- 提交按钮 -->
-    <Button
+    <arch.cayenne.lib.skin.widget.SportButton
         android:id="@+id/button_submit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_472"
+        android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/button_background"
-        android:text="提交"
-
-        android:textColor="#000000"
-        android:textSize="16sp"
+        android:text="@string/submit"
+        android:textColor="#80000000"
+        android:textSize="@dimen/sp_15"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
