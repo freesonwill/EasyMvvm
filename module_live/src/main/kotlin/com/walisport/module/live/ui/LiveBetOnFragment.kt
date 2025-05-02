@@ -105,6 +105,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     // 动态添加Tab的方法
     private fun addNewTab() {
+        mBinding.tabLayout.removeAllTabs()
         tabList.forEach { text ->
             // 添加新Tab
             val newTab = mBinding.tabLayout.newTab()
