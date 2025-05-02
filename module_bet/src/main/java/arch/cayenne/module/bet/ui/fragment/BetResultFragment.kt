@@ -3,7 +3,9 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -15,6 +17,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
+import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
@@ -34,8 +37,14 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     ) }
 
     override fun initView(savedInstanceState: Bundle?) {
+        (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+
         mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
+
+        val decoration = BetSheetDecoration(6.dp2px)
+        mBinding.rvBet.addItemDecoration(decoration)
     }
 
     override fun initListener() {
