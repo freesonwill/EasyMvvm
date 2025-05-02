@@ -26,7 +26,7 @@
             android:gravity="center_vertical"
             android:text="@string/feedback_type_label"
             android:textColor="@color/feedback_main_text"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp_14" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_8"
@@ -40,7 +40,7 @@
             android:gravity="center_vertical"
             android:text="@string/select_at_least_one"
             android:textColor="@color/feedback_secondary_text"
-            android:textSize="14sp" />
+            android:textSize="@dimen/sp_14" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -110,8 +110,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="@string/feedback_description_label"
-            android:textColor="@color/main_text"
-            android:textSize="14sp" />
+            android:textColor="@color/feedback_main_text"
+            android:textSize="@dimen/sp_14" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="@dimen/dp_8"
@@ -124,26 +124,29 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="@string/word_limit_200"
-            android:textColor="@color/secondary_text"
-            android:textSize="14sp" />
+            android:textColor="@color/feedback_secondary_text"
+            android:textSize="@dimen/sp_14" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <!-- 输入框 -->
-    <EditText
+    <arch.cayenne.lib.skin.widget.SportEditText
         android:id="@+id/edit_feedback"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="@dimen/dp_200"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_248"
+        android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/edit_text_background"
         android:gravity="top|start"
-        android:hint="请详细描述你的问题或建议，建议将手机型号、系统版本等资料提供给我们，方便我们定位问题，多谢你的支持"
+        android:hint="@string/edit_text_hint"
         android:inputType="textMultiLine"
         android:maxLength="200"
         android:padding="8dp"
         android:textColor="#FFFFFF"
         android:textColorHint="#AAAAAA"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
