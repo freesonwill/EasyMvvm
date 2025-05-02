@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
@@ -33,12 +34,7 @@ class MatchItemViewHolder(
 
     fun init(data: MatchWithMarkets) {
         oddsColumnAdapter = OddsColumnAdapter { selection, isSelected ->
-            if (isSelected) {
-                onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
-                oddsColumnAdapter.updateSelectedSelectionId(selection.selectionId)
-            } else {
-                oddsColumnAdapter.updateSelectedSelectionId(null)
-            }
+            onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
         }
         currentMatchWithMarkets = data
         with(mBinding) {
