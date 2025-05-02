@@ -88,4 +88,14 @@ abstract class BetDao: BaseDao<BetBean>() {
 
     @Query("DELETE FROM BetSelectionBean WHERE matchId = :matchId and betId = :betId")
     abstract suspend fun removeBetSelectionByMatchId(betId: Long, matchId: Long)
+
+    @Query(
+        "SELECT selectionId FROM BetSelectionBean WHERE betId = (" +
+                "        SELECT betId FROM BetBean" +
+                "        WHERE status = :status" +
+                "        ORDER BY betId DESC" +
+                "        LIMIT 1" +
+                "    )"
+    )
+    abstract suspend fun getCurrentSelectionIds(status: BetStatusEnum = BetStatusEnum.PENDING): List<Long>
 }

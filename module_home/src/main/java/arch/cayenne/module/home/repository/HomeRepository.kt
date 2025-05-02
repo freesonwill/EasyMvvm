@@ -14,6 +14,7 @@ import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.MatchUpdateData
 import arch.cayenne.module.home.data.toRoomData
 import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
@@ -31,6 +32,7 @@ class HomeRepository(
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
+    private val betDao = database.betDao()
 
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
@@ -157,9 +159,12 @@ class HomeRepository(
         matchDao.clearAllMatch()
     }
 
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, size: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
+    /**
+     * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
+     * */
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         //先從DB拿取
-        val queryResult = database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
+        val queryResult = queryFullMatch(playType, tournamentId, page, startTime)
         if (queryResult.isNotEmpty()){
             return queryResult
         }
@@ -201,11 +206,14 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return database.matchDao().getFullMatch(playType, tournamentId, page, startTime)
+            return queryFullMatch(playType, tournamentId, page, startTime)
         }
         return arrayListOf()
     }
 
+    /**
+     * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
+     * */
     suspend fun subscribeMatch(ids: List<Long>): List<MatchWithMarkets> {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
             scope = scope,
@@ -219,32 +227,60 @@ class HomeRepository(
         if (res.error == null && res.data != null && res.data!!.success) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
-           return matchDao.updateFullMatch(
-                matchUpdateData.matchLites,
-                matchUpdateData.markets,
-                matchUpdateData.selections,
-                matchUpdateData.matchMarketCrossRefs,
-                matchUpdateData.marketSelectCrossRefs
-            )
+           return updateFullMath(matchUpdateData)
         } else { return arrayListOf() }
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
 
+    /**
+     * 已經跟後端訂閱後的賽事，收到的賽事資料回傳
+     * */
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
         return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
                 "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
                 val matchUpdateData = arrayListOf(it.data!!).toRoomData()
-                val list = matchDao.updateFullMatch(
-                    matchUpdateData.matchLites,
-                    matchUpdateData.markets,
-                    matchUpdateData.selections,
-                    matchUpdateData.matchMarketCrossRefs,
-                    matchUpdateData.marketSelectCrossRefs
-                )
+                val list = updateFullMath(matchUpdateData)
                 list.forEach { matchWithMarket -> emit(matchWithMarket) }
             }
         }
+    }
+
+    /**
+    * 更新首頁賽事資料，開始訂閱比賽與訂閱後收到比賽更新訊息時使用
+     * @return 回傳更新後的賽事資料
+    * */
+    private suspend fun updateFullMath(updateData: MatchUpdateData): List<MatchWithMarkets> {
+        return matchDao.updateFullMatch(
+            updateData.matchLites,
+            updateData.markets,
+            updateData.selections,
+            updateData.matchMarketCrossRefs,
+            updateData.marketSelectCrossRefs
+        ).setSelected()
+    }
+
+    /**
+     * 單純根據頁數和時間取得資料，用來第一次取得比賽和下一頁取得和時間區間取得比賽
+     * @return 根據條件query的賽事資料
+     * */
+    private suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
+        return database.matchDao().getFullMatch(playType, tournamentId, page, startTime).setSelected()
+    }
+
+    /**
+     * 找出投注單中未投注的selection，把它設為點擊狀態
+     * */
+    private suspend fun List<MatchWithMarkets>.setSelected(): List<MatchWithMarkets> {
+        val betSelections = betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
+        this.forEach { match ->
+            match.markets.forEach { market ->
+                market.selections.forEach {
+                    it.isSelected = betSelections.contains(it.selectionId)
+                }
+            }
+        }
+        return this
     }
 }

@@ -59,7 +59,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
             "取得比賽資料  PlayType = ${playType.id} sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
-            val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, DEFAULT_MATCH_SIZE, page, 0)
+            val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, page, 0)
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
