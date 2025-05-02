@@ -11,7 +11,7 @@ import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val playType: PlayType
+    private var playType: PlayType
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private var tournament: List<TournamentDataModel>? = null
@@ -19,6 +19,9 @@ class LeaguePagerAdapter(
     fun setData(list: List<TournamentDataModel>) {
         tournament = list
         notifyItemRangeChanged(0, list.size - 1)
+    }
+    fun setPlayType(newPlayType: PlayType) {
+        playType = newPlayType
     }
 
     override fun getItemCount(): Int = tournament?.size ?: 0

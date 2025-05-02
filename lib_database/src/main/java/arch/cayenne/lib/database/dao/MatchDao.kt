@@ -1,7 +1,6 @@
 package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -157,6 +156,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
+
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = getSelections(matchBean.matchId, marketBean.marketId)
