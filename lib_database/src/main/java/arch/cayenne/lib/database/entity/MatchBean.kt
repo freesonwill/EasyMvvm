@@ -53,7 +53,8 @@ data class TournamentMatchRef(
 @Entity(primaryKeys = ["matchId", "marketId"],)
 data class MatchMarketCrossRef(
     val matchId: Long,
-    val marketId: Long
+    val marketId: Long,
+    val selectionCount: Int,  //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
 )
 
 @Entity(primaryKeys = ["matchId", "marketId", "selectionId"],)
@@ -108,8 +109,15 @@ data class MarketDetailBean(
 )
 
 data class MarketWithSelections(
-    val market: MarketBean,
-    val selections: List<SelectionBeanLite>
+    val market: MarketBeanLite,
+    val selections: List<SelectionBeanLite>, //這場比賽這個盤口底下的選項(去除佔位符了)
+)
+
+data class MarketBeanLite(
+    @PrimaryKey val marketId: Long,
+    val marketName: String,
+    val status: Int,
+    var defaultSelectionCount: Int, //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
 )
 
 data class SelectionBeanLite(

@@ -281,9 +281,6 @@ class HomeRepository(
      * */
     private suspend fun List<MatchWithMarkets>.setSelected(): List<MatchWithMarkets> {
         val betSelections = betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
-        betSelections.forEach {
-            "KC_ betSelections $it".logi()
-        }
         this.forEach { match ->
             match.markets.forEach { market ->
                 market.selections.forEach {

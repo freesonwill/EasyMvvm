@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.RewriteQueriesToDropUnusedColumns
 import androidx.room.Transaction
 import arch.cayenne.lib.database.entity.MarketBean
+import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
 import arch.cayenne.lib.database.entity.MarketWithSelections
 import arch.cayenne.lib.database.entity.MatchBean
@@ -70,11 +71,11 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun getMatchByIds(matchIds: List<Long>) : List<MatchBean>
 
     @Transaction
-    @Query("SELECT * " +
+    @Query("SELECT market.marketId as marketId, market.marketName as marketName, market.status as status, ref.selectionCount as defaultSelectionCount " +
             "FROM MarketBean market " +
             "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
             "WHERE market.marketId = ref.marketId ")
-    abstract suspend fun geMarkets(matchId: Long): List<MarketBean>
+    abstract suspend fun geMarkets(matchId: Long): List<MarketBeanLite>
 
     @Transaction
     @Query("SELECT sel.selectionId as selectionId, " +
@@ -216,6 +217,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                     marketBean.marketId,
                     getSelectionLites(matchBean.matchId, marketBean.marketId)
                 )
+
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)

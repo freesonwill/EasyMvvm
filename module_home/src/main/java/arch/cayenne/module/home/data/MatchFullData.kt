@@ -76,11 +76,11 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                     status = market.status
                 )
             )
-            matchMarketCrossRefs.add(
-                MatchMarketCrossRef(matchId,marketId)
-            )
+
+            var selectionCount = 0
             market.marketDetailList.forEachIndexed { index, detail ->
-                detail.selectionList.forEach { selection ->
+                selectionCount += detail.selectionList.size
+                detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                     val selectionId = selection.selectionId
                     selections.add(
                         SelectionBean(
@@ -101,6 +101,9 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                     marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
                 }
             }
+            matchMarketCrossRefs.add(
+                MatchMarketCrossRef(matchId,marketId, selectionCount)
+            )
         }
     }
     return MatchFullData(
@@ -155,10 +158,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     status = market.status
                 )
             )
-            matchMarketCrossRefs.add(
-                MatchMarketCrossRef(matchId,marketId)
-            )
+            var selectionCount = 0
             market.marketDetailList.forEachIndexed { index, detail ->
+                selectionCount += detail.selectionList.size
                 detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                     val selectionId = selection.selectionId
                     selections.add(
@@ -180,7 +182,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
                 }
             }
-
+            matchMarketCrossRefs.add(
+                MatchMarketCrossRef(matchId,marketId,selectionCount)
+            )
         }
         "收到比賽推播結束---------------------------------------------".logi("MatchFullData")
     }
