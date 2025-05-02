@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -44,12 +45,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val leagueID = arguments?.getInt("leagueID") ?: 0
         //浸入式背景
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.hideStatusBar = true
         setStatusBar(StatusBarConfig)
         //获取联赛日程列表
+        val leagueID = arguments?.getInt("leagueID") ?: 0
         mViewModel.getMatchLeagueData(leagueID)
         //初始化联赛列表
         mBinding.recyclerLeague.apply {
