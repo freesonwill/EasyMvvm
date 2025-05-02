@@ -61,6 +61,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                             submitAdapter(
                                 it.recyclerSelection, item, position
                             )
+                        it.betUnsettledBtSettle.tag = position
                         }
                     }
 

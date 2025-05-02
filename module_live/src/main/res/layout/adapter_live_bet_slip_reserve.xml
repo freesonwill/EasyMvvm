@@ -148,7 +148,7 @@
         android:id="@+id/bet_reserve_bt_modify"
         android:layout_width="207dp"
         android:layout_height="48dp"
-        android:background="@drawable/bet_settle_button"
+        android:background="@drawable/shape_gradient_button_8dp"
         android:text="@string/live_bet_modify_odds"
         android:textColor="@color/theme_text"
         android:textSize="@dimen/sp_15"

@@ -156,7 +156,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/bet_settle_button"
+        android:background="@drawable/shape_gradient_button_8dp"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

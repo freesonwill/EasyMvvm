@@ -2,6 +2,7 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,8 +14,10 @@ import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
+import com.walisport.module.live.utils.RecyclerItemListener
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
+import java.math.BigDecimal
 import kotlin.reflect.KClass
 
 //注单未结算
@@ -30,6 +33,16 @@ class LiveBetSlipUnsettledFragment :
     }
 
     override fun initListener() {
+        parentFragmentManager.setFragmentResultListener(
+            LiveEarlySettledKeyboardFragment.requestKey,
+            viewLifecycleOwner
+        ) { requestKey, result ->
+            val money = result.getString(requestKey)
+            if(money.isNullOrEmpty()){
+                return@setFragmentResultListener
+            }
+            mViewModel.earlyPartSettled(BigDecimal(money))
+        }
     }
 
     override fun createObserver() {
@@ -48,10 +61,10 @@ class LiveBetSlipUnsettledFragment :
 
     private fun updateData(orders: List<Common.Order>) {
         val list = orders.map { LiveBetSlipData(order = it) }.toList()
-         mBinding.recyclerView.adapter?.let {
-             val adapter = it as LiveBetSlipAdapter
-             adapter.submitList(list)
-         }
+        mBinding.recyclerView.adapter?.let {
+            val adapter = it as LiveBetSlipAdapter
+            adapter.submitList(list)
+        }
     }
 
     private fun initRecycler() {
@@ -70,6 +83,11 @@ class LiveBetSlipUnsettledFragment :
             it.addItemDecoration(divider)
             it.setRecycledViewPool(RecyclerView.RecycledViewPool())
         }
+        adapter.setItemListener(object : RecyclerItemListener<LiveBetSlipData> {
+            override fun onItemClick(item: LiveBetSlipData?, position: Int) {
+                LiveEarlySettledKeyboardFragment.instance().show(childFragmentManager)
+            }
+        })
     }
 
     override fun initData() {

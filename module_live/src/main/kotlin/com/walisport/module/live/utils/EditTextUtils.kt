@@ -15,7 +15,7 @@ object EditTextUtils {
     fun hideKeyboard(context: Context?, editText: EditText) {
         val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
-//        editText.clearFocus()
+        editText.clearFocus()
     }
 
     /**

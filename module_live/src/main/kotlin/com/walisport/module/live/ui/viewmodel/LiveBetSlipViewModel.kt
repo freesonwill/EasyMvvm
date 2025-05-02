@@ -12,6 +12,7 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import java.math.BigDecimal
 
 
 class LiveBetSlipViewModel : BaseViewModel() {
@@ -60,4 +61,10 @@ class LiveBetSlipViewModel : BaseViewModel() {
         val tmpList = arrayListOf(order, order1)
         return tmpList
     }
+
+    fun earlyPartSettled(money:BigDecimal){
+
+
+    }
+
 }
