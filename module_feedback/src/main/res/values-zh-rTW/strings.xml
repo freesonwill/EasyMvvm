@@ -4,7 +4,7 @@
     <string name="feedback_type_label">反饋類型</string>
     <string name="select_at_least_one">（至少選擇一個）</string>
     <string name="feedback_description_label">反饋描述</string>
-    <string name="word_limit_200">（200字以內）</string>
+    <string name="word_limit">（%d字以內）</string>
 
     <string name="deposit_issue">存款問題</string>
     <string name="gameplay_issue">遊戲問題</string>

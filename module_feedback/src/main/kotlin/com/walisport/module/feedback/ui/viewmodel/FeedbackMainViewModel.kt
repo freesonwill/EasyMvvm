@@ -7,6 +7,7 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class FeedbackMainViewModel(private val repo: FeedbackMainRepository) : BaseViewModel() {
 
+    val maxInputLength = 200
 
     override fun initViewModel() {
         super.initViewModel()

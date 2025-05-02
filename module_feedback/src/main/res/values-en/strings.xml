@@ -4,7 +4,7 @@
     <string name="feedback_type_label">Feedback Type</string>
     <string name="select_at_least_one">(Select at least one)</string>
     <string name="feedback_description_label">Feedback Description</string>
-    <string name="word_limit_200">(Within 200 characters)</string>
+    <string name="word_limit">(Within %d characters)</string>
 
     <string name="deposit_issue">Deposit Issue</string>
     <string name="gameplay_issue">Gameplay Issue</string>

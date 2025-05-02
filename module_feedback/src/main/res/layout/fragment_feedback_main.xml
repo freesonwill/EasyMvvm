@@ -1,181 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/feedback_main_background">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- 标题 -->
-    <arch.cayenne.lib.common.ui.view.TitleBarView
-        android:id="@+id/title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+        <variable
+            name="model"
+            type="com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel" />
+    </data>
+
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_66"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingEnd="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:background="@color/feedback_main_background">
+
+        <!-- 标题 -->
+        <arch.cayenne.lib.common.ui.view.TitleBarView
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_66"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/feedback_type_label"
+                android:textColor="@color/feedback_main_text"
+                android:textSize="@dimen/sp_14" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_10"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/asterisk" />
+
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/select_at_least_one"
+                android:textColor="@color/feedback_secondary_text"
+                android:textSize="@dimen/sp_14" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- 反馈类型 -->
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_96"
+            android:text="@string/deposit_issue"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginTop="@dimen/dp_96"
+            android:text="@string/gameplay_issue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginTop="@dimen/dp_96"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:text="@string/stream_issue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_142"
+            android:text="@string/ui_optimization"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginTop="@dimen/dp_142"
+            android:text="@string/withdrawal_issue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SportCheckBox
+            style="@style/feedback_checkbox"
+            android:layout_marginTop="@dimen/dp_142"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:text="@string/other_suggestions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <!-- 反馈描述 -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_218"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingEnd="@dimen/dp_20"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/feedback_description_label"
+                android:textColor="@color/feedback_main_text"
+                android:textSize="@dimen/sp_14" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_10"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/asterisk" />
+
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@{String.format(@string/word_limit, model.maxInputLength)}"
+                android:textColor="@color/feedback_secondary_text"
+                android:textSize="@dimen/sp_14" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!-- 输入框 -->
+        <arch.cayenne.lib.skin.widget.SportEditText
+            android:id="@+id/edit_feedback"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_200"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_248"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/edit_text_background"
+            android:gravity="top|start"
+            android:hint="@string/edit_text_hint"
+            android:inputType="textMultiLine"
+            android:maxLength="@{model.maxInputLength}"
+            android:padding="@dimen/dp_12"
+            android:textColor="@color/feedback_text_color"
+            android:textColorHint="@color/feedback_text_color_hint"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/tv_edit_text_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/feedback_type_label"
-            android:textColor="@color/feedback_main_text"
-            android:textSize="@dimen/sp_14" />
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:textColor="@color/feedback_text_color_hint"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintBottom_toBottomOf="@id/edit_feedback"
+            app:layout_constraintEnd_toEndOf="@+id/edit_feedback" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_10"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/asterisk" />
+        <!-- 提交按钮 -->
+        <arch.cayenne.lib.skin.widget.SportButton
+            android:id="@+id/button_submit"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_472"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:background="@drawable/button_background"
+            android:text="@string/submit"
+            android:textColor="#80000000"
+            android:textSize="@dimen/sp_15"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/select_at_least_one"
-            android:textColor="@color/feedback_secondary_text"
-            android:textSize="@dimen/sp_14" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <!-- 反馈类型 -->
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_96"
-        android:text="@string/deposit_issue"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginTop="@dimen/dp_96"
-        android:text="@string/gameplay_issue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginTop="@dimen/dp_96"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:text="@string/stream_issue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_142"
-        android:text="@string/ui_optimization"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginTop="@dimen/dp_142"
-        android:text="@string/withdrawal_issue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SportCheckBox
-        style="@style/feedback_checkbox"
-        android:layout_marginTop="@dimen/dp_142"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:text="@string/other_suggestions"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <!-- 反馈描述 -->
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_218"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingEnd="@dimen/dp_20"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <arch.cayenne.lib.skin.widget.SportTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/feedback_description_label"
-            android:textColor="@color/feedback_main_text"
-            android:textSize="@dimen/sp_14" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_8"
-            android:layout_height="@dimen/dp_10"
-            android:layout_gravity="center_vertical"
-            app:srcCompat="@drawable/asterisk" />
-
-        <arch.cayenne.lib.skin.widget.SportTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="@string/word_limit_200"
-            android:textColor="@color/feedback_secondary_text"
-            android:textSize="@dimen/sp_14" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-    <!-- 输入框 -->
-    <arch.cayenne.lib.skin.widget.SportEditText
-        android:id="@+id/edit_feedback"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_248"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/edit_text_background"
-        android:gravity="top|start"
-        android:hint="@string/edit_text_hint"
-        android:inputType="textMultiLine"
-        android:maxLength="200"
-        android:padding="@dimen/dp_12"
-        android:textColor="@color/feedback_text_color"
-        android:textColorHint="@color/feedback_text_color_hint"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <arch.cayenne.lib.skin.widget.SportTextView
-        android:id="@+id/tv_edit_text_length"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/dp_12"
-        android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="@color/feedback_text_color_hint"
-        android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/edit_feedback"
-        app:layout_constraintEnd_toEndOf="@+id/edit_feedback" />
-
-    <!-- 提交按钮 -->
-    <arch.cayenne.lib.skin.widget.SportButton
-        android:id="@+id/button_submit"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_48"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_472"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:background="@drawable/button_background"
-        android:text="@string/submit"
-        android:textColor="#80000000"
-        android:textSize="@dimen/sp_15"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</layout>
