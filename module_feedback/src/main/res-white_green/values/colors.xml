@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="feedback_main_background_white_green">#EEEEEE</color>
+    <color name="feedback_main_text_white_green">#FFFFFF</color>
+    <color name="feedback_secondary_text_white_green">#929298</color>
+    <color name="feedback_text_color_white_green">#929298</color>
+    <color name="feedback_text_color_hint_white_green">#929298</color>
+</resources>
