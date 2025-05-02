@@ -45,82 +45,52 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <!-- 反馈类型 -->
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_96"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/deposit_issue"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginTop="@dimen/dp_96"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/gameplay_issue"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginTop="@dimen/dp_96"
         android:layout_marginEnd="@dimen/dp_20"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/stream_issue"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_142"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/ui_optimization"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginTop="@dimen/dp_142"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/withdrawal_issue"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="@dimen/dp_104"
-        android:layout_height="wrap_content"
+    <arch.cayenne.lib.skin.widget.SportCheckBox
+        style="@style/feedback_checkbox"
         android:layout_marginTop="@dimen/dp_142"
         android:layout_marginEnd="@dimen/dp_20"
-        android:button="@null"
-        android:gravity="center"
         android:text="@string/other_suggestions"
-        android:textColor="@drawable/checkbox_text_color"
-        android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
