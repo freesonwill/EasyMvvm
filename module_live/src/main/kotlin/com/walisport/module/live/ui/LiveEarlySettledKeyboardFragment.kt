@@ -19,11 +19,22 @@ import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
 import com.walisport.module.live.ui.widget.LiveBetNumberKeyboardView
 import kotlin.reflect.KClass
 
+/**
+ * 提前结算报价
+ * */
 class LiveEarlySettledKeyboardFragment private constructor() :
     BaseDialogFragment<LiveEarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
+    private val betIdKey = "bet_id"
+    private var betId: String = ""
+
     companion object {
-        fun instance(): LiveEarlySettledKeyboardFragment {
-            return LiveEarlySettledKeyboardFragment()
+
+        fun instance(price: String): LiveEarlySettledKeyboardFragment {
+            return LiveEarlySettledKeyboardFragment().apply {
+                arguments = Bundle().apply {
+                    putString(betIdKey, price)
+                }
+            }
         }
     }
 
@@ -31,10 +42,12 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<LiveEarlySettledKeyboardViewModel>
         get() = LiveEarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((money: String) -> Unit)? = null
+    private var onEarlySettleClick: ((money: String,expectPrice:String) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         dialog?.setCanceledOnTouchOutside(true)
+        betId = arguments?.getString(betIdKey) ?: ""
+        mViewModel.earlySettledPrice(betId)
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney)
@@ -67,11 +80,12 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             btnCollapse.clickNoRepeat { }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
-                    mViewModel.editNumber.value ?: ""
+                    mViewModel.editNumber.value ?: "",mViewModel.prices.value?.price.toString() ?:""
                 )
                 dismiss()
             }
             btnCancel.clickNoRepeat { dismiss() }
+            tvBetMoney.text = getString(R.string.refund_amount, betId)
         }
     }
 
@@ -132,7 +146,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
     override fun initListener() {
     }
 
-    fun setOnEarlySettleListener(listener: (money: String) -> Unit) {
+    fun setOnEarlySettleListener(listener: (money: String,expectPrice:String) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
@@ -140,6 +154,9 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         mViewModel.editNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             mBinding.etMoney.setSelection(it.length)
+        }
+        mViewModel.prices.observe(viewLifecycleOwner) {
+            mBinding.tvBetMoney.text = getString(R.string.refund_amount, it.price)
         }
     }
 }

@@ -2,10 +2,12 @@ package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import com.walisport.module.live.LiveRemoteManager
+import galaxy.client.proto.Client.EarlySettlePriceResp
 import galaxy.client.proto.Client.EarlySettleResp
 import galaxy.client.proto.Client.ReserveCancelResp
 import galaxy.client.proto.Client.ReserveUpdateResp
 import galaxy.common.proto.Common
+import galaxy.common.proto.Common.EarlySettlePrice
 import kotlinx.coroutines.CoroutineScope
 
 class LiveBetRepository(
@@ -47,7 +49,7 @@ class LiveBetRepository(
         return resp
     }
 
-    suspend fun earlySettlePrice(
+    suspend fun earlySettle(
         betId: String,
         amount: String,
         expectPrice: String,
@@ -69,6 +71,11 @@ class LiveBetRepository(
     ): ReserveUpdateResp? {
         val resp = remoteManager.reserveUpdateReq(scope, amount, odds)
         return resp
+    }
+
+    suspend fun earlySettledPrice(betId: String): List<EarlySettlePrice>? {
+        val resp = remoteManager.earlySettlePriceReq(scope, betId)
+        return resp?.priceList
     }
 
 }

@@ -3,13 +3,20 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import com.walisport.module.live.data.repository.LiveBetRepository
+import galaxy.common.proto.Common.EarlySettlePrice
+import kotlinx.coroutines.launch
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import java.math.BigDecimal
 
 
 class LiveEarlySettledKeyboardViewModel : BaseViewModel() {
     private val _editNumber: MutableLiveData<String> = MutableLiveData()
+    private val repository: LiveBetRepository by inject { parametersOf(viewModelScope) }
+    var prices: MutableLiveData<EarlySettlePrice> = MutableLiveData()
     val editNumber: LiveData<String> = _editNumber.distinctUntilChanged()
 
 
@@ -57,6 +64,15 @@ class LiveEarlySettledKeyboardViewModel : BaseViewModel() {
                 it.substring(0, it.length - 1)
             } else {
                 ""
+            }
+        }
+    }
+
+    fun earlySettledPrice(betId: String) {
+        viewModelScope.launch {
+            val result = repository.earlySettledPrice(betId)
+            if (!result.isNullOrEmpty()) {
+                prices.value = result.first()
             }
         }
     }

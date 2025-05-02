@@ -66,7 +66,12 @@ class LiveBetSlipViewModel : BaseViewModel() {
         viewModelScope.launch {
 //            val result = repository.earlySettlePrice(order.betId,money.toString(),"",false)
         }
+    }
 
+    fun earlySettledPrice(betId:String){
+        viewModelScope.launch {
+            val result = repository.earlySettledPrice(betId)
+        }
     }
 
 }
