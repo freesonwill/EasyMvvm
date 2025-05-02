@@ -18,7 +18,7 @@ class BetRepository(
     private val betDao: BetDao,
     private val matchDao: MatchDao
 ) : BaseRepository() {
-
+    // TODO 收到empty相當於是第一次單注投注, 跳彈窗
     val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
 
     /***
