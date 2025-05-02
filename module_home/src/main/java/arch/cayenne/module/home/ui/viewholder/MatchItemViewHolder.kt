@@ -43,11 +43,11 @@ class MatchItemViewHolder(
                 tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
             }
 
-            Glide.with(binding.root).load(basicInfo.awayTeamIcon).into(ivAwayIcon)
+            Glide.with(binding.root).load(basicInfo.awayTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivAwayIcon)
             tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
             tvAwayScore.text = liveInfo.score.getAwayScore()
 
-            Glide.with(binding.root).load(basicInfo.homeTeamIcon).into(ivHomeIcon)
+            Glide.with(binding.root).load(basicInfo.homeTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()

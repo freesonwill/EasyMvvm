@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.skin.widget.SportView
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.OrderStatusEnum
 import com.walisport.module.live.data.model.LiveBetSlipEnum
@@ -32,23 +33,23 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
 
     fun initListener(listener: RecyclerItemListener<LiveBetSlipSelectionData>) {
         this.itemListener = listener
-        managerView(METHOD_LISTENER, -1, -1, false)
+        managerView(METHOD_LISTENER, -1, -1, null)
     }
 
     fun updateView(
         position: Int,
         count: Int,
-        gradient: Boolean,
+        expandedEnum: LiveBetSlipExpandedEnum,
         item: LiveBetSlipSelectionData? = null
     ) {
-        managerView(METHOD_UPDATE, position, count, gradient, item)
+        managerView(METHOD_UPDATE, position, count, expandedEnum, item)
     }
 
     private fun managerView(
         method: Int,
         position: Int,
         count: Int,
-        gradient: Boolean,
+        expandedEnum: LiveBetSlipExpandedEnum? = null,
         selection: LiveBetSlipSelectionData? = null
     ) {
         when (binding) {
@@ -57,9 +58,11 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     METHOD_UPDATE -> {
                         binding.also {
                             configView(
-                                gradient,
+                                expandedEnum,
                                 it.line,
                                 it.groupGradient,
+                                it.tvMore,
+                                it.ivArrow,
                                 position,
                                 count,
                                 it.llMore
@@ -80,7 +83,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     }
 
                     METHOD_LISTENER -> {
-                        initListener(binding.llMore)
+                        initMoreListener(binding.llMore)
                     }
 
                     else -> {}
@@ -94,9 +97,11 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     METHOD_UPDATE -> {
                         binding.also {
                             configView(
-                                gradient,
+                                expandedEnum,
                                 it.line,
                                 it.groupGradient,
+                                it.tvMore,
+                                it.ivArrow,
                                 position,
                                 count,
                                 it.llMore
@@ -118,7 +123,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     }
 
                     METHOD_LISTENER -> {
-                        initListener(binding.llMore)
+                        initMoreListener(binding.llMore)
                     }
 
                     else -> {}
@@ -131,9 +136,11 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
 
                         binding.also {
                             configView(
-                                gradient,
+                                expandedEnum,
                                 it.line,
                                 it.groupGradient,
+                                it.tvMore,
+                                it.ivArrow,
                                 position,
                                 count,
                                 it.llMore
@@ -155,7 +162,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     }
 
                     METHOD_LISTENER -> {
-                        initListener(binding.llMore)
+                        initMoreListener(binding.llMore)
                     }
 
                     else -> {}
@@ -168,9 +175,11 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     METHOD_UPDATE -> {
                         binding.also {
                             configView(
-                                gradient,
+                                expandedEnum,
                                 it.line,
                                 it.groupGradient,
+                                it.tvMore,
+                                it.ivArrow,
                                 position,
                                 count,
                                 it.llMore
@@ -182,7 +191,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     }
 
                     METHOD_LISTENER -> {
-                        initListener(binding.llMore)
+                        initMoreListener(binding.llMore)
                     }
 
                     else -> {}
@@ -195,9 +204,11 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     METHOD_UPDATE -> {
                         binding.also {
                             configView(
-                                gradient,
+                                expandedEnum,
                                 it.line,
                                 it.groupGradient,
+                                it.tvMore,
+                                it.ivArrow,
                                 position,
                                 count,
                                 it.llMore
@@ -218,7 +229,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                     }
 
                     METHOD_LISTENER -> {
-                        initListener(binding.llMore)
+                        initMoreListener(binding.llMore)
                     }
 
                     else -> {}
@@ -227,7 +238,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
         }
     }
 
-    private fun initListener(llMore: LinearLayout) {
+    private fun initMoreListener(llMore: LinearLayout) {
         llMore.setOnClickListener {
             val position = llMore.tag as Int
             itemListener?.onItemClick(null, position)
@@ -235,16 +246,25 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
     }
 
     private fun configView(
-        gradient: Boolean,
+        expandedEnum: LiveBetSlipExpandedEnum? = null,
         line: SportView,
         group: Group,
+        tvMore: TextView,
+        ivArrow: ImageView,
         position: Int,
         count: Int,
         llMore: LinearLayout
     ) {
         line.isVisible = position != count - 1
-        group.isVisible = position == 2 && gradient
+        group.isVisible = expandedEnum != LiveBetSlipExpandedEnum.Hide
         llMore.tag = position
+        if (expandedEnum != LiveBetSlipExpandedEnum.Hide) {
+            tvMore.text = ContextCompat.getString(
+                tvMore.context,
+                if (expandedEnum == LiveBetSlipExpandedEnum.Fold) R.string.see_more else R.string.fold_up
+            )
+            ivArrow.setImageResource(if (expandedEnum == LiveBetSlipExpandedEnum.Fold) R.drawable.icon_cricle_arrrow_down else R.drawable.icon_cricle_arrrow_up)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -260,26 +280,22 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
         tvScore1: TextView? = null,
         isExpectedOdds: Boolean = false
     ) {
-
-//        item?.let {
-//            val match = item.matchBasic
-//            Glide.with(ivIcon.context).load(match.tournamentIcon).into(ivIcon)
-//            tvMatch.text = match.matchName
-//            tvSelection.text = item.selectionName
-//            tvOdds.text = if (isExpectedOdds) binding.root.resources.getString(
-//                R.string.live_bet_except_odds,
-//                "@${item.odds}"
-//            ) else "@${item.odds}"
-////                TODO 滚球不清楚
-//            tvStatus.text = "滚球"
-//            tvScore.text = ContextCompat.getString(
-//                binding.root.context,
-//                R.string.live_bet_full_handicap
-//            ) + "  " + item.betScore
-//            tvStart?.text =
-//                LiveDateUtil.getMDHm(match.startTime)
-//            tvScore1?.text = item.endScore
-//        }
+        item?.let {
+            val match = item.matchBasic
+            Glide.with(ivIcon.context).load(match.tournamentIcon).into(ivIcon)
+            tvMatch.text = match.matchName
+            tvSelection.text = item.selectionName
+            tvOdds.text = if (isExpectedOdds) binding.root.resources.getString(
+                R.string.live_bet_except_odds,
+                "@${item.odds}"
+            ) else "@${item.odds}"
+//                TODO 滚球不清楚
+            tvStatus.text = "滚球"
+            tvScore.text = item.marketName + "  " + item.betScore
+            tvStart?.text =
+                LiveDateUtil.getMDHm(match.startTime)
+            tvScore1?.text = item.endScore
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -288,11 +304,12 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
         nBinding: ItemLiveBetSlipReserveBinding
     ) {
         val match = item.matchBasic
-//        Glide.with(nBinding.root.context).load(match.tournamentIcon).into(nBinding.betReserveIvBall)
+        Glide.with(nBinding.root.context).load(match.tournamentIcon).into(nBinding.betReserveIvBall)
         with(nBinding) {
             betReserveTvRace.text = match.matchName
             betReserveTvIntroduce.text = item.selectionName
-            betReserveTvAodds.text = nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
+            betReserveTvAodds.text =
+                nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
 //                TODO 滚球不清楚
             betReserveTvStatus.text = "滚球"
             betReserveTvScore.text = ContextCompat.getString(

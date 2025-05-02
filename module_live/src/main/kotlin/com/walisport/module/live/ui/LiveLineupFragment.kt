@@ -71,10 +71,10 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         Glide.with(this).load(data.awayLogo).into( mBinding.awayIncidentsLogo)
         Glide.with(this).load(data.homeLogo).into( mBinding.homeSubstituteLogo)
         Glide.with(this).load(data.awayLogo).into( mBinding.awaySubstituteLogo)
-        mainViewModel.match?.basicInfo.let {
-            mBinding.homeSubstituteName.text =it?.homeTeam
+        mainViewModel.mainMatch.value?.basicInfo.let {
+            mBinding.homeSubstituteName.text = it?.homeTeam
             mBinding.awaySubstituteName.text = it?.awayTeam
-            mBinding.homeIncidentsName.text =it?.homeTeam
+            mBinding.homeIncidentsName.text = it?.homeTeam
             mBinding.awayIncidentsName.text = it?.awayTeam
         }
 

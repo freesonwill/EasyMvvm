@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.animation.ObjectAnimator
 import android.net.Uri
 import android.os.Bundle
+import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -11,9 +12,13 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayStatus
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -41,11 +46,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
-    override fun initView(savedInstanceState: Bundle?) {
-        val matchId = arguments?.getLong("matchId") ?: 0
 
-        mViewModel.setMatchId(matchId)
-        mViewModel.queryLiveStream()
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.model = mViewModel
+        mBinding.includedMatchNotStarted.model = mViewModel
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
@@ -151,8 +155,14 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 LiveVideoSourcePortraitFragment().apply {
                     arguments = Bundle().apply {
                         putLong("matchId", mViewModel.matchId())
-                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X, x)
-                        putInt(arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y, y)
+                        putInt(
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
+                            x
+                        )
+                        putInt(
+                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
+                            y
+                        )
                         putInt(
                             arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
                             ViewGroup.LayoutParams.MATCH_PARENT
@@ -203,9 +213,100 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
             }
 
+            //比赛状态的监听
+            matchBeanLiveData.observe(viewLifecycleOwner) {
+                it?.let { matchBean ->
+                    val matchStatus =
+                        MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
+
+                    matchStatus?.let { _ ->
+                        when (matchStatus) {
+                            MatchStatus.IN_PROGRESS -> {
+                                //比赛正在进行中
+                                mBinding.ctVideoPlay.visibility = View.VISIBLE
+                                //比赛正在进行中才会拉取视频流
+                                mViewModel.queryLiveStream()
+                            }
+
+                            else -> {
+                                //其他情况
+                                mBinding.ctVideoPlay.visibility = View.GONE
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+            homeTeamName.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvPlayerA.text = it
+                }
+            }
+
+            homeTeamIcon.observe(viewLifecycleOwner) {
+                it?.let {
+                    Glide.with(requireContext())
+                        .load(it)
+                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
+                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .into(mBinding.includedMatchNotStarted.ivPlayerA)
+                }
+            }
+
+            awayTeamName.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvPlayerB.text = it }
+            }
+
+            awayTeamIcon.observe(viewLifecycleOwner) {
+                it?.let {
+                    Glide.with(requireContext())
+                        .load(it)
+                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
+                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .into(mBinding.includedMatchNotStarted.ivPlayerB)
+                }
+            }
+
+            titleText.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvTitle.text = it }
+            }
+
+            titleTextSize.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvTitle.setTextSize(
+                        COMPLEX_UNIT_PX,
+                        it.getDimension()
+                    )
+                }
+            }
+
+            titleTextColor.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvTitle.setTextColor(it.getColor()) }
+            }
+
+            subTitleText.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.text = it }
+            }
+
+            subTitleTextSize.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.includedMatchNotStarted.tvSubtitle.setTextSize(
+                        COMPLEX_UNIT_PX,
+                        it.getDimension()
+                    )
+                }
+            }
+            subTitleTextColor.observe(viewLifecycleOwner) {
+                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.setTextColor(it.getColor()) }
+            }
+
 
         }
 
+        //播放状态的监听
         playingStatusLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 when (it) {
@@ -246,6 +347,15 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         }
 
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
+
+        mViewModel.createObserver()
+    }
+
+
+    override fun initData() {
+        super.initData()
     }
 
     override fun onPause() {

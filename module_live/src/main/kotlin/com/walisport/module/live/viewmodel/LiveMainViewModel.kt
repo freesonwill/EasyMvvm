@@ -4,24 +4,43 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
-import galaxy.common.proto.Common
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import plugin.koin.KoinViewModel
 
+@KoinViewModel
 class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
-    var matchId:Long = 0
-    var sportId:Int = 0
-     var match : Common.Match? = null
-    private val _matchMainMatch = MutableLiveData<Common.Match?>()
-    val matchMainMatch: LiveData<Common.Match?> = _matchMainMatch
-    fun geMatchMainMatch(matchId: Long) {
-        viewModelScope.launch {
-            val data = repo.getMatchReq(matchId)
-            if (data != null) {
-                match = data
-                _matchMainMatch.value = match
+    var matchId: Long = 0
+    var sportId: Int = 0
+
+    private val _mainMatch = MutableLiveData<MatchBean>()
+    val mainMatch: LiveData<MatchBean> = _mainMatch
+
+    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+
+    override fun initViewModel() {
+        super.initViewModel()
+
+        //监听余额变化
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.observeBalance().collect {
+                withContext(Dispatchers.Main) {
+                    currentBalanceChange.value = it
+                }
+            }
+        }
+
+    }
+
+    fun getMainMatch(matchId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val data = repo.getMatchBean(matchId)
+            withContext(Dispatchers.Main) {
+                _mainMatch.value = data
             }
         }
     }

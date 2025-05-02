@@ -254,36 +254,10 @@
         android:layout_height="match_parent"
         app:drawerLayoutCornerSize="0dp"
         android:layout_gravity="start">
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
-            <androidx.fragment.app.FragmentContainerView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fragment_drawer_notification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="arch.cayenne.module.home.ui.fragment.DrawerNotificationFragment"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
-            <androidx.fragment.app.FragmentContainerView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fragment_drawer_common_function"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="arch.cayenne.module.home.ui.fragment.DrawerCommonFunctionFragment"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fragment_drawer_notification"/>
 
             <androidx.fragment.app.FragmentContainerView
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/fragment_container_view"
+                android:id="@+id/fragment_drawer_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name="arch.cayenne.module.home.ui.fragment.DrawerBottomFragment"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:layout_height="match_parent" />
     </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

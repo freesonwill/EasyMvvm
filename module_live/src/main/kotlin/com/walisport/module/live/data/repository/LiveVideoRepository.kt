@@ -1,7 +1,7 @@
 package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.database.dao.LiveVideoDao
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.VideoSourceBean
 import com.walisport.module.live.LiveRemoteManager
@@ -13,29 +13,34 @@ import kotlinx.coroutines.launch
  * 直播视频的repository,  存储视频源信息
  */
 class LiveVideoRepository(
-    private val liveVideoDao: LiveVideoDao, private val remoteManager: LiveRemoteManager
+    private val remoteManager: LiveRemoteManager,
+    private val database: GameDatabase
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
+    private val matchDao = database.matchDao()
+    private val liveVideoDao = database.liveVideoDao()
+
     var matchId: Long = 0
 
-    fun observeLiveVideoBean(observeMatchId:Long) = liveVideoDao.observeLiveVideoBean(observeMatchId)
+    fun observeLiveVideoBean(observeMatchId: Long) =
+        liveVideoDao.observeLiveVideoBean(observeMatchId)
 
-    fun setPlayingVideoId(id:Int) {
+    fun observeMatchBean(observeMatchId: Long) = matchDao.observeMatchById(observeMatchId)
+
+    fun setPlayingVideoId(id: Int) {
         scope.launch {
 
             val liveVideoBean = liveVideoDao.queryLiveVideoBean(matchId)
             liveVideoBean?.source?.forEach { it.isPlaying = it.id == id }
-            liveVideoDao.updatePlayingId(liveVideoBean?.source?: emptyList(), matchId)
+            liveVideoDao.updatePlayingId(liveVideoBean?.source ?: emptyList(), matchId)
         }
     }
-
 
     fun queryLiveStream() {
         scope.launch {
             val resp = remoteManager.queryLiveStream(scope, matchId)
-            liveVideoDao.deleteAll()
-
+            
             val data = resp?.mapIndexed { index, matchLiveStream ->
                 VideoSourceBean(
                     id = index,

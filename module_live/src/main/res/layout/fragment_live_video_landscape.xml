@@ -53,10 +53,10 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_video_landscape_league_icon"
+                android:id="@+id/iv_video_landscape_tournament_icon"
                 android:layout_width="@dimen/dp_96"
                 android:layout_height="@dimen/dp_22"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:src="@drawable/title_league_icon" />
 
             <androidx.appcompat.widget.AppCompatImageView
@@ -67,7 +67,7 @@
                 android:src="@drawable/title_landscape_separator" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_competition_name"
+                android:id="@+id/tv_match_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/color_E6E6E6"

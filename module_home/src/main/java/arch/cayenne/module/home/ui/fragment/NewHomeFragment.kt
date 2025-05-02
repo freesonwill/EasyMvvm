@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -38,6 +40,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private val fragments = mutableMapOf<PlayType, Fragment>()
+    private var drawerContentFragment: DrawerContentFragment? = null
     private var isFirstTime = true
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
@@ -58,6 +61,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
+        initDrawerContent()
     }
 
     //init 一級導航欄位
@@ -160,7 +164,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-
+    //init DrawerLayout Content
+    private fun initDrawerContent() {
+        if (drawerContentFragment == null) {
+            drawerContentFragment = DrawerContentFragment()
+        }
+        childFragmentManager.beginTransaction()
+            .replace(mBinding.fragmentDrawerContent.id, drawerContentFragment!!,DrawerContentFragment.TAG)
+            .commitNow()
+    }
     private fun updateDateTabs(tlDateList: TabLayout, dateTabs: List<Pair<String, String>>) {
         tlDateList.apply {
             removeAllTabs()
@@ -253,7 +265,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llSearchEntry.setOnClickListener {
-
+                navigate(Uri.parse("walisport://module_search/searchFragment"))
             }
 
             llBetEntry.setOnClickListener {
