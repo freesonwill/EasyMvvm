@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
@@ -35,10 +36,13 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.root.background = null
     }
 
-    fun setTeamName(homeName: String, awayName: String) {
-        mBinding.tvHomeCountry.text = homeName
-        mBinding.tvAwayCountry.text = awayName
+    fun setTeamInfo(homeName: String, awayName: String, homeLogo: String, awayLogo: String) {
+        mBinding.tvHomeName.text = homeName
+        mBinding.tvAwayName.text = awayName
+        Glide.with(context).load(homeLogo).into(mBinding.ivHomeLogo)
+        Glide.with(context).load(awayLogo).into(mBinding.ivAwayLogo)
     }
+
 
     fun setScore(sore: String) {
         mBinding.tvScore.text = sore

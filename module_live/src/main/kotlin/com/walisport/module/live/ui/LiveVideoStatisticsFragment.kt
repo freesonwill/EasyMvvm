@@ -26,7 +26,7 @@ class LiveVideoStatisticsFragment : BaseFragment<LiveVideoViewModel, FragmentLiv
     override fun createObserver() {
         mViewModel.liveVideoBean.observe(this){
             //推送websocket数据发生变化时更新界面数据
-            mBinding.viewTechStatic.setTeamName("法国", "阿根廷")
+            //mBinding.viewTechStatic.setTeamInfo("法国", "阿根廷")
             mBinding.viewTechStatic.setScore("2:2")
             mBinding.viewTechStatic.setAttackData(8, 5)
             mBinding.viewTechStatic.setDangerAttackData(10, 12)
