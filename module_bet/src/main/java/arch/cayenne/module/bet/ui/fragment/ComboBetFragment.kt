@@ -74,7 +74,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
 
             override fun getSize(): Int {
-                return betSelectionAdapter.currentList.size
+                return mViewModel.onBetListListener.value?.size ?: 0
             }
         })
     }
@@ -118,6 +118,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 dismiss()
             } else if (it.size > 1) {
                 betSelectionAdapter.submitList(it)
+                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive || bean.isParlay }
             } else {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),

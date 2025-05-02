@@ -36,48 +36,44 @@ class LiveBetOnMenuFragment :
     private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
     private val swipeThreshold = 0.3f // 滑动阈值，30% 宽度
     private val angleTolerance = 30.0 // 允许的偏差角度（度）
-
+    //选择中颜色的ID
+    private var selectCode: String = ""
+    private var selectId: Long = 0
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.getMarketType()
-        mViewModel.updateMarket.observe(viewLifecycleOwner) {
-            mViewModel.getMarketType()
-        }
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe
             mBinding.llc.removeAllViews()
-            val groupedByName: Map<String, List<MarketTypeBean>> = it.groupBy {
-                it.name
-            }
             var currentIndex = 0
-            groupedByName?.forEach { (name, items) ->
+            it.forEach { items ->
                 val binding = LiveBetMenuFlexboxLayoutBinding.inflate(
                     LayoutInflater.from(context),
                     mBinding.llc,
                     false
                 )
                 binding.apply {
-                    if (currentIndex == groupedByName.size - 1) {
+                    if (currentIndex == it.size - 1) {
                         VLin.visibility = View.GONE
                     }
-                    tvName.text = name
+                    tvName.text = items.name
                 }
-                //选择中颜色的ID
-                var select: Long = 0
-                items.forEach {
+                items.marketMenuBean.forEach {bean->
                     val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
                         LayoutInflater.from(context),
                         mBinding.llc,
                         false
                     )
-                    if (it.isSelect) {
-                        select = it.marketId
+                    if (bean.isSelect) {
+                        selectCode = items.code
+                        selectId = bean.marketId
                     }
                     textBinding.apply {
-                        tvContent.text = it.marketName
-                        tvContent.isSelected = it.isSelect
-                        tvContent.clickNoRepeat { s ->
-                            mViewModel.setMarketSelect(it.marketId, select, true)
+                        tvContent.text = bean.marketName
+                        tvContent.isSelected = bean.isSelect
+                        tvContent.clickNoRepeat {
+                            mViewModel.setMarketSelect(items.code,bean.marketId, selectCode,selectId)
+                            animateDismiss()
                         }
                     }
                     binding.flexboxLayout.addView(textBinding.root)

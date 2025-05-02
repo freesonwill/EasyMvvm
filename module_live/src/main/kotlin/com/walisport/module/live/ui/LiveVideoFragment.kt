@@ -217,7 +217,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             matchBeanLiveData.observe(viewLifecycleOwner) {
                 it?.let { matchBean ->
                     val matchStatus =
-                        MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
+                        MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
 
                     matchStatus?.let { _ ->
                         when (matchStatus) {
@@ -250,8 +250,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(R.drawable.live_video_error)
-                        .error(R.drawable.live_video_error)
+                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
+                        .error(arch.cayenne.lib.res.R.color.color_333A45)
                         .into(mBinding.includedMatchNotStarted.ivPlayerA)
                 }
             }
@@ -264,8 +264,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(R.drawable.live_video_error)
-                        .error(R.drawable.live_video_error)
+                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
+                        .error(arch.cayenne.lib.res.R.color.color_333A45)
                         .into(mBinding.includedMatchNotStarted.ivPlayerB)
                 }
             }

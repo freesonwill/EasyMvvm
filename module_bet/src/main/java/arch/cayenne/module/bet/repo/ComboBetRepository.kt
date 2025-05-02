@@ -31,6 +31,7 @@ class ComboBetRepository(
             betDao.getCurrentBet()?.let {  bet ->
                 betDao.observeSelections(bet.betId).collect {
                     val selection = betDao.getSelections(bet.betId)
+                    selectionFlow.emit(selection)
                     if (selection.isNotEmpty()) {
                         remoteManager.getComboRisk(selection)?.let { riskList ->
                             val lastDetail = betDao.getDetail(bet.betId)
@@ -53,7 +54,6 @@ class ComboBetRepository(
                             comboMultiBetFlow.emit(multiBet)
                         }
                     }
-                    selectionFlow.emit(selection)
                 }
             }
         }
@@ -139,7 +139,7 @@ class ComboBetRepository(
         val oddsList = data.map { it.odds }
         val n = data.size
 
-        val riskMap = riskList.associateBy { it.count }
+        val riskMap = riskList.associateBy { it.combo }
 
         for (k in n downTo 1) {
             riskMap[k]?.let { risk ->
@@ -150,11 +150,15 @@ class ComboBetRepository(
                     else -> oddsList.combinations(k)
                         .sumOf { it.reduce { acc, l -> acc.getOdds(l).toOdds() } }
                 }
-                val count = combinations.size
+                val count = when (k) {
+                    1 -> 1
+                    n -> n
+                    else -> combinations.size
+                }
 
                 result.add(
                     ComboMultiBetBean(
-                        combo = risk.count,
+                        combo = risk.combo,
                         sumOdds = odds,
                         count = count,
                         minAmount = risk.minAmount,

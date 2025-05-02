@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
@@ -109,7 +110,9 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
-            // TODO show toast
+            it.msg?.let { msg ->
+                showToast(msg)
+            }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "\$ ${it.getFormalMoney()}"

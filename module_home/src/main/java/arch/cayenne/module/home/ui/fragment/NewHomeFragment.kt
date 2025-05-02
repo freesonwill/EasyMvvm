@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -79,7 +82,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         } else if (PlayType.entries[this] == PlayType.EARLY) {
                             mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
                         }
+                        //看db, 點擊的不在matchBean中會爆掉
+                        "joseph tabSelected: playType: ${PlayType.entries[this]}"
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
+                        leagueAdapter.setPlayType(PlayType.entries[this])
                     }
                 }
 
@@ -114,18 +120,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 mViewModel.getCurrentPlayType()
             )
             vpGameList.adapter = leagueAdapter
-
-            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.customView?.isSelected = true
-                    vpGameList.currentItem = tab?.position ?: 0
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
-
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
 
             // 日期 Tab 設定
             updateDateTabs(tlDateList, dateTabs)
@@ -208,6 +202,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
+        "joseph initLeaguesLayout: ${tournaments}".logd()
         mBinding.layoutContainer.apply {
             leagueAdapter.setData(tournaments)
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
@@ -240,10 +235,21 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     10f.dp2px,
                     0
                 )
-                tab.view.setOnClickListener {
-                    //傳聯賽id索取賽事列表資料更新列表
-                }
             }.attach()
+
+            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    "joseph tabSelected: ${tab?.position}"
+                    tab?.customView?.isSelected = true
+                    vpGameList.currentItem = tab?.position ?: 0
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+
         }
     }
 
@@ -263,7 +269,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llSearchEntry.setOnClickListener {
-
+                navigate(Uri.parse("walisport://module_search/searchFragment"))
             }
 
             llBetEntry.setOnClickListener {
@@ -280,6 +286,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
+            if (it.isNullOrEmpty()) return@observe
             initLeaguesLayout(it)
         }
 
