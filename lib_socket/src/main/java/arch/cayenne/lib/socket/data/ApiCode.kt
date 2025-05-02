@@ -31,5 +31,10 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     RESERVE_UPDATE(500,1023),    // 500-1023: 修改预约下注订单
 
     ORDER_STATUS_NOTIFY(600, 1001),     //600-1001: 订单状态推送(被動)
-    GET_MARKET_TYPE(500, 1007)     // 500-1007: 盘口分类
+    GET_MARKET_TYPE(500, 1007),     // 500-1007: 盘口分类
+
+    MATCH_NOTIFY(600, 1000),     //600-1000: 比赛推送(被動)
+    SUBSCRIBE_MATCH(500, 1100),   // 500-1100: 订阅比赛
+    CANCEL_SUBSCRIBE_MATCH(500, 1100),   // 500-1101: 取消订阅比赛
+
 }

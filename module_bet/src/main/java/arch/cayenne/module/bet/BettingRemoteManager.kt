@@ -2,10 +2,13 @@ package arch.cayenne.module.bet
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
+import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.bet.data.BetNotifySelectionBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.remote.ComboBetDataModel
 import arch.cayenne.module.bet.data.remote.ComboMultiBetInfo
@@ -17,8 +20,44 @@ import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
-class BettingRemoteManager(private val scope: CoroutineScope, private val socketManager: WebSocketManager) {
+class BettingRemoteManager(
+    private val scope: CoroutineScope,
+    private val socketManager: WebSocketManager
+) {
+
+    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> by lazy {
+        MutableSharedFlow()
+    }
+
+    val matchNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchNotifyFlow
+
+    init {
+        scope.launch {
+            socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).collect { res ->
+                if (res.error == null && res.data != null) {
+                    val data = res.data!!
+                    val matchId = data.matchId
+                    val notifyList = data.marketUpdateList
+                        .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
+                        .flatMap { it.selectionList }
+                        .map { selection ->
+                            BetNotifySelectionBean(
+                                matchId,
+                                selection.selectionId,
+                                selection.odds.toOdds(),
+                                selection.active,
+                                selection.parlay
+                            )
+                        }
+                    _matchNotifyFlow.emit(notifyList)
+                }
+            }
+        }
+    }
 
     suspend fun singleBet(bean: BetSelectionBean, money: Long): SingleBetDataModel? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SingleBetResp>(
@@ -180,13 +219,57 @@ class BettingRemoteManager(private val scope: CoroutineScope, private val socket
             val data = res.data!!
             data.riskList.map {
                 ComboRiskDataModel(
-                    combo =  if (it.serialValue == 0) 1 else it.serialValue,
+                    combo = if (it.serialValue == 0) 1 else it.serialValue,
                     minAmount = it.min,
                     maxAmount = it.max
                 )
             }
         } else {
             null
+        }
+    }
+
+    suspend fun registerMatchNotify(matchIds: List<Long>): List<BetNotifySelectionBean>? {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeMatchReq.newBuilder().apply {
+                this.addAllMatchId(matchIds)
+            }.build()
+        }
+        if (res.error == null && res.data != null) {
+            res.data!!.matchNotifyList.map {
+                val matchId = it.matchId
+                return it.marketUpdateList
+                    .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
+                    .flatMap { it.selectionList }
+                    .map { selection ->
+                        BetNotifySelectionBean(
+                            matchId,
+                            selection.selectionId,
+                            selection.odds.toOdds(),
+                            selection.active,
+                            selection.parlay
+                        )
+                    }
+            }
+        }
+        return null
+    }
+
+    fun unregisterMatchNotify(matchIds: List<Long>) {
+        scope.launch {
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+            ) {
+                Client.CancelSubscribeMatchReq.newBuilder().apply {
+                    this.addAllMatchId(matchIds)
+                }.build()
+            }
         }
     }
 }

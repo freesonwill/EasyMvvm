@@ -116,5 +116,11 @@ data class MatchWithMarkets(
     val markets: List<MarketWithSelections>
 )
 
+enum class OddsStatusEnum {
+    UP,
+    DOWN,
+    SAME
+}
+
 //MatchWithMarkets -> List<MarketWithSelections> ->
 //    MarketBean + List<SelectionBean>

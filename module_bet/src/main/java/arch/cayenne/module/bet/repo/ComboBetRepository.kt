@@ -69,6 +69,7 @@ class ComboBetRepository(
                     betDao.getSelections(bet.betId).firstOrNull { it.selectionId == selectionId }
                 if (selection != null) {
                     betDao.removeBetSelectionByMatchId(bet.betId, selection.matchId)
+                    remoteManager.unregisterMatchNotify(listOf(selection.matchId))
                 }
             }
         }
