@@ -68,6 +68,7 @@ dependencies {
     implementation(project(":module_handicap"))
     implementation(project(":module_search"))
     implementation(project(":module_feedback"))
+    implementation(project(":module_message"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.appcompat)
