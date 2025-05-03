@@ -9,10 +9,11 @@
     android:paddingTop="17dp"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
     android:paddingBottom="12dp"
     android:id="@+id/roots"
     >
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBetTitle"
         android:layout_width="match_parent"
@@ -116,10 +117,7 @@
                 tools:ignore="MissingConstraints" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBet"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+   <include  layout="@layout/adapter_live_bet_content_item_layout"
+       />
+    <include  layout="@layout/adapter_live_bet_content_item_layout"/>
 </arch.cayenne.lib.skin.widget.SportLinearLayout>

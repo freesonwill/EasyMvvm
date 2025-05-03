@@ -35,8 +35,17 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     //根据盘口分类code获取盘口列表
-    fun getMarketList(code: String?){
-        _getMarketList.value = observeMarketType.value?.find { it.code==code }?.marketMenuBean
+    fun getMarketList(code: String){
+        if (code.isEmpty()){
+            val list: MutableList<MarketMenuBean> = mutableListOf()
+            observeMarketType.value?.forEach {
+                list.addAll(it.marketMenuBean)
+            }
+            _getMarketList.value = list
+        }else{
+            _getMarketList.value = observeMarketType.value?.find { it.code==code }?.marketMenuBean
+        }
+
     }
 
     fun observeMarketTypeBean() {

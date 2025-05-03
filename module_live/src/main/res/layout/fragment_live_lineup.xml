@@ -23,7 +23,6 @@
         >
 <RelativeLayout
     android:layout_width="match_parent"
-    android:visibility="gone"
     android:layout_height="554dp">
   <arch.cayenne.lib.skin.widget.SportLinearLayout
       android:layout_width="match_parent"
@@ -177,11 +176,13 @@
             android:textSize="@dimen/sp_14"
             android:textColor="@color/substitution_text_color"
             android:drawablePadding="8dp"
+            android:textStyle="bold"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints" />
       </arch.cayenne.lib.skin.widget.SportConstraintLayout>
       <androidx.appcompat.widget.LinearLayoutCompat
           android:id="@+id/llcHome"
+          android:layout_marginTop="@dimen/dp_10"
           android:layout_width="match_parent"
           android:orientation="vertical"
           android:layout_height="wrap_content"/>
@@ -206,6 +207,7 @@
             app:layout_constraintStart_toEndOf="@id/awayIncidentsLogo"
             android:gravity="center_vertical"
             android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
             android:textColor="@color/substitution_text_color"
             android:drawablePadding="8dp"
             android:layout_height="wrap_content"
@@ -213,9 +215,9 @@
       </arch.cayenne.lib.skin.widget.SportConstraintLayout>
       <androidx.appcompat.widget.LinearLayoutCompat
           android:id="@+id/llcAway"
-
           android:layout_width="match_parent"
           android:orientation="vertical"
+          android:layout_marginTop="@dimen/dp_10"
           android:layout_height="wrap_content"/>
     </arch.cayenne.lib.skin.widget.SportLinearLayout>
       <arch.cayenne.lib.skin.widget.SportLinearLayout
@@ -265,6 +267,7 @@
                   android:textSize="@dimen/sp_14"
                   android:textColor="@color/substitution_text_color"
                   android:drawablePadding="8dp"
+                  android:textStyle="bold"
                   android:layout_height="wrap_content"
                   tools:ignore="MissingConstraints" />
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -283,6 +286,7 @@
                   android:layout_width="wrap_content"
                   android:gravity="center_vertical"
                   android:textSize="@dimen/sp_14"
+                  android:textStyle="bold"
                   android:textColor="@color/substitution_text_color"
                   android:drawablePadding="8dp"
                   android:layout_height="wrap_content"
@@ -297,6 +301,7 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_height="wrap_content">
 
           <androidx.appcompat.widget.LinearLayoutCompat
