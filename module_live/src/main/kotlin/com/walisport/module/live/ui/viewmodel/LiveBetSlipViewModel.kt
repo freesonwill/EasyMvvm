@@ -56,13 +56,6 @@ class LiveBetSlipViewModel : BaseViewModel() {
         return tmpList
     }
 
-    fun getTestList1(): List<Common.ReserveOrder> {
-        val order = Common.ReserveOrder.newBuilder().setReserveId("0").build()
-        val order1 = Common.ReserveOrder.newBuilder().setReserveId("1").build()
-        val tmpList = arrayListOf(order, order1)
-        return tmpList
-    }
-
     fun earlyPartSettled(order: Common.Order, money:String,expectPrice:String){
         viewModelScope.launch {
             val result = repository.earlySettle(order.betId,money,expectPrice,false)

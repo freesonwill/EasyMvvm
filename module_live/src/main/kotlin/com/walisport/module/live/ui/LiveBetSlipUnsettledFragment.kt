@@ -30,7 +30,11 @@ class LiveBetSlipUnsettledFragment :
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
     }
-
+    override fun initData() {
+        super.initData()
+        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
+        mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
+    }
     override fun initListener() {
     }
 
@@ -92,9 +96,5 @@ class LiveBetSlipUnsettledFragment :
         })
     }
 
-    override fun initData() {
-        super.initData()
-        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
-        mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
-    }
+
 }
