@@ -7,4 +7,23 @@
     <style name="betSlipTabText" parent="TextAppearance.AppCompat">
         <item name="android:textSize">14sp</item> <!-- 设置字体大小 -->
     </style>
+
+    <style name="NumberKeyboardButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_rowWeight">1</item>
+        <item name="android:background">@drawable/shape_6dp</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="KeyboardSideTextView">
+        <item name="android:textColor">@color/keyboard_number</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

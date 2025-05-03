@@ -4,7 +4,10 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import com.google.gson.Gson
 import galaxy.client.proto.Client
+import galaxy.client.proto.Client.EarlySettlePriceReq
+import galaxy.client.proto.Client.EarlySettlePriceResp
 import galaxy.client.proto.Client.EarlySettleReq
 import galaxy.client.proto.Client.EarlySettleResp
 import galaxy.client.proto.Client.ReserveCancelReq
@@ -106,12 +109,10 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 endTime?.let { this.endTime = endTime }
             }.build()
         }
-        LogUtils.dTag("aaa", "result ${result?.data?.orderList?.size}")
+        LogUtils.dTag("aaa", "result ${Gson().toJson(result)}")
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
-        LogUtils.dTag("aaa", "error  ${result.error?.msg}")
-
         return null
     }
 
@@ -139,7 +140,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         LogUtils.dTag(
             "aaa",
-            " getReserveOrder  result ${result.data?.orderList?.size}   ${result.error != null} ${result?.data != null}"
+            " getReserveOrder  result ${result.data?.orderList?.size}"
         )
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
@@ -228,6 +229,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         expectPrice: String,
         acceptPriceReduce: Boolean
     ): EarlySettleResp? {
+        LogUtils.dTag("aaa","提前结算 betId $betId amout $amount expectprice $expectPrice ")
+
         val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettleResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -240,6 +243,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.acceptPriceReduce = acceptPriceReduce
             }.build()
         }
+
+        LogUtils.dTag("aaa","提前结算 result ${Gson().toJson(result)}")
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -278,6 +283,23 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
+            return result.data
+        }
+        return null
+    }
+
+    suspend fun earlySettlePriceReq(scope: CoroutineScope, betId: String): EarlySettlePriceResp? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettlePriceResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.EARLY_SETTLE_PRICE
+        ) {
+            EarlySettlePriceReq.newBuilder().apply {
+                addBetId(betId)
+            }.build()
+        }
+        LogUtils.dTag("aaa","betId $betId earlySettlePrice  ${Gson().toJson(result)}")
+        if(result.error == null && result.data != null){
             return result.data
         }
         return null

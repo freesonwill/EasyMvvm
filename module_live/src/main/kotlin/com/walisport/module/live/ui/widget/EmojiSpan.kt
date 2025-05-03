@@ -1,4 +1,4 @@
-package com.walisport.module.live.widget
+package com.walisport.module.live.ui.widget
 
 
 import android.content.Context
@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.graphics.Paint.FontMetricsInt
 import android.text.style.DynamicDrawableSpan
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
