@@ -12,7 +12,6 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import java.math.BigDecimal
 
 
 class LiveBetSlipViewModel : BaseViewModel() {
@@ -25,6 +24,8 @@ class LiveBetSlipViewModel : BaseViewModel() {
     val orderLiveData: LiveData<List<Common.Order>?> = _orderLiveData
     private val _reserveLiveData = MutableLiveData<List<Common.ReserveOrder>?>()
     val reserveLiveData: LiveData<List<Common.ReserveOrder>?> = _reserveLiveData
+    private  val _earlySettledLiveData:MutableLiveData<Boolean> = MutableLiveData()
+    val earlySettledLiveData :LiveData<Boolean> = _earlySettledLiveData
 
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
@@ -62,16 +63,13 @@ class LiveBetSlipViewModel : BaseViewModel() {
         return tmpList
     }
 
-    fun earlyPartSettled(order: Common.Order, money:BigDecimal){
+    fun earlyPartSettled(order: Common.Order, money:String,expectPrice:String){
         viewModelScope.launch {
-//            val result = repository.earlySettlePrice(order.betId,money.toString(),"",false)
+            val result = repository.earlySettle(order.betId,money,expectPrice,false)
+            _earlySettledLiveData.value = result?.success
         }
     }
 
-    fun earlySettledPrice(betId:String){
-        viewModelScope.launch {
-            val result = repository.earlySettledPrice(betId)
-        }
-    }
+
 
 }

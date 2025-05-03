@@ -170,9 +170,9 @@
             android:textSize="@dimen/sp_16" />
 
         <arch.cayenne.lib.skin.widget.SportTextView
+            android:id="@+id/bet_unsettled_tv_early_settle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$109.00"
             android:textColor="@color/color_016f4a"
             android:textSize="@dimen/sp_16" />
     </LinearLayout>

@@ -2,7 +2,6 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentResultListener
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +17,6 @@ import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.utils.RecyclerItemListener
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
-import java.math.BigDecimal
 import kotlin.reflect.KClass
 
 //注单未结算
@@ -43,6 +41,9 @@ class LiveBetSlipUnsettledFragment :
             } else {
                 showEmpty()
             }
+        }
+        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner){
+            mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
         }
     }
 
@@ -76,12 +77,17 @@ class LiveBetSlipUnsettledFragment :
         }
         adapter.setItemListener(object : RecyclerItemListener<LiveBetSlipData> {
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
-                mViewModel.earlySettledPrice(item?.order?.betId ?: "")
-                LiveEarlySettledKeyboardFragment.instance(item?.order?.earlySettlePrice?.price ?: "").apply {
-                    setOnEarlySettleListener {money,price ->
-                        LogUtils.dTag("aaa", "money $money")
-                    }
-                }.show(childFragmentManager)
+                item?.order?.let {
+                    LiveEarlySettledKeyboardFragment.instance(
+                        it.betId
+                    ).apply {
+                        setOnEarlySettleListener { money, price ->
+                            LogUtils.dTag("aaa", "money $money  price $price")
+                            mViewModel.earlyPartSettled(it, money, price)
+                        }
+                    }.show(childFragmentManager)
+                }
+
             }
         })
     }

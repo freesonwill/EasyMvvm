@@ -229,6 +229,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         expectPrice: String,
         acceptPriceReduce: Boolean
     ): EarlySettleResp? {
+        LogUtils.dTag("aaa","提前结算 betId $betId amout $amount expectprice $expectPrice ")
+
         val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettleResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -241,6 +243,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.acceptPriceReduce = acceptPriceReduce
             }.build()
         }
+
+        LogUtils.dTag("aaa","提前结算 result ${Gson().toJson(result)}")
         if (result.error == null && result.data != null) {
             return result.data
         }

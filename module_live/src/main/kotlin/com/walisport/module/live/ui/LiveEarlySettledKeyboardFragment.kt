@@ -85,7 +85,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
                 dismiss()
             }
             btnCancel.clickNoRepeat { dismiss() }
-            tvBetMoney.text = getString(R.string.refund_amount, betId)
+            tvBetMoney.text = getString(R.string.refund_amount, mViewModel.prices.value?.price)
         }
     }
 

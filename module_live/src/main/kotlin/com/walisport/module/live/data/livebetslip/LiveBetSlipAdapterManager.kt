@@ -56,7 +56,8 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                                 tvCode = it.betUnsettledTvBetcodeValue,
                                 tvOdds = it.betUnsettledTvOddsValue,
                                 tvBet = it.betUnsettledTvBettingValue,
-                                tvExpectMaxWin = it.betUnsettledTvExceptValue
+                                tvExpectMaxWin = it.betUnsettledTvExceptValue,
+                                tvEarlySettle = it.betUnsettledTvEarlySettle
                             )
                             submitAdapter(
                                 it.recyclerSelection, item, position
@@ -210,7 +211,8 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         tvExpectMaxWin: TextView? = null,
         tvPartEarlySettled: TextView? = null,
         tvWinLoseAmount: TextView? = null,
-        tvStatus: TextView? = null
+        tvStatus: TextView? = null,
+        tvEarlySettle:TextView? = null
     ) {
         tvCode?.text = order.betId
         tvOdds?.text = order.odds
@@ -225,6 +227,9 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             status?.let { st ->
                 it.background = ContextCompat.getDrawable(it.context, st.resId)
             }
+        }
+        tvEarlySettle?.let {
+            it.text = "$${order.earlySettlePrice.price}"
         }
     }
 
