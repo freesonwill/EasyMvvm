@@ -30,6 +30,16 @@
     <string name="share_link">複製連結</string>
     <string name="choose_commentary">選解說</string>
     <string name="statistics">技術統計</string>
+    <string name="statistics_attack">進攻</string>
+    <string name="statistics_danger">危險進攻</string>
+    <string name="statistics_kql">控球率</string>
+    <string name="statistics_sms">射門數</string>
+    <string name="statistics_szs">射正數</string>
+    <string name="statistics_cqs">傳球數</string>
+    <string name="statistics_cqcgl">傳球成功率</string>
+    <string name="statistics_ryq">任意球</string>
+    <string name="statistics_jq">角球</string>
+    <string name="statistics_yw">越位</string>
     <string name="choose_source">選直播源</string>
     <string name="live_video_loading">載入中...</string>
     <string name="live_video_error">載入失敗</string>

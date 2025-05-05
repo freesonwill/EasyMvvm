@@ -17,9 +17,9 @@ class LiveStandingsViewModel : BaseViewModel() {
     private val _competitionTables = MutableLiveData<List<StandingsBean>>()
     val competitionTables: LiveData<List<StandingsBean>> = _competitionTables
 
-    fun getCompetitionData(matchId: Long) {
+    fun getCompetitionData(compId: Int) {
         viewModelScope.launch {
-            val result = repository.getCompetitionReq(matchId)
+            val result = repository.getCompetitionReq(compId)
             _competitionTables.value = result
         }
     }

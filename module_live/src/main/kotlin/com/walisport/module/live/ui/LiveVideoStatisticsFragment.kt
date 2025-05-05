@@ -27,11 +27,11 @@ class LiveVideoStatisticsFragment : BaseFragment<LiveVideoViewModel, FragmentLiv
         mViewModel.liveVideoBean.observe(this){
             //推送websocket数据发生变化时更新界面数据
             //mBinding.viewTechStatic.setTeamInfo("法国", "阿根廷")
-            mBinding.viewTechStatic.setScore("2:2")
-            mBinding.viewTechStatic.setAttackData(8, 5)
-            mBinding.viewTechStatic.setDangerAttackData(10, 12)
-            mBinding.viewTechStatic.setBallControlData(20, 13)
-            mBinding.viewTechStatic.setHomeAwayData(3, 4, 5, 3, 2, 4)
+            //mBinding.viewTechStatic.setScore("2:2")
+            //mBinding.viewTechStatic.setAttackData(8, 5)
+            //mBinding.viewTechStatic.setDangerAttackData(10, 12)
+            //mBinding.viewTechStatic.setBallControlData(20, 13)
+            //mBinding.viewTechStatic.setHomeAwayData(3, 4, 5, 3, 2, 4)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -17,10 +18,16 @@ class TechProgressView @JvmOverloads constructor(
     private val mBinding: ViewProgressStatisticsBinding =
         ViewProgressStatisticsBinding.inflate(LayoutInflater.from(context), this, true)
 
-    fun setData(techType: String, left: Int, right: Int) {
+    @SuppressLint("SetTextI18n")
+    fun setData(techType: String, left: Int, right: Int, isRate: Boolean) {
         mBinding.tvProgressName.text = techType
-        mBinding.tvProgressLeft.text = left.toString()
-        mBinding.tvProgressRight.text = right.toString()
+        if (isRate) {
+            mBinding.tvProgressLeft.text = "$left%"
+            mBinding.tvProgressRight.text = "$right%"
+        } else {
+            mBinding.tvProgressLeft.text = String.format("%s", left)
+            mBinding.tvProgressRight.text = String.format("%s", right)
+        }
         mBinding.proLeft.progress = left
         mBinding.proRight.progress = right
     }

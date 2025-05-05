@@ -56,10 +56,10 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             adapter = standsAdapter
             addItemDecoration(StandingsItemDecoration())
         }
-        mViewModel.getCompetitionData(mainViewModel.matchId)
     }
 
     override fun initListener() {
+        mViewModel.getCompetitionData(mainViewModel.matchId.toInt())
     }
 
     override fun createObserver() {
