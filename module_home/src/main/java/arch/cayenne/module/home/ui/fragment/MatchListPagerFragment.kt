@@ -2,8 +2,10 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -44,11 +46,55 @@ class MatchListPagerFragment :
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
+            val layoutManager = LinearLayoutManager(context)
             mBinding.rvHomeGameList.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = matchAdapter
+                this.layoutManager = layoutManager
+                this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
+
+            rvHomeGameList.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (matchAdapter.itemCount == 0) return
+                    rvHomeGameList.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+                    if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                        mViewModel.subscribeMatch(
+                            matchAdapter.currentList
+                                .slice(firstVisible..lastVisible)
+                                .map { it.match.matchId }
+                                .toSet()
+                        )
+                    }
+                }
+            })
+
+            rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 滑動停止時觸發
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                        val lastVisible = layoutManager.findLastVisibleItemPosition()
+                        val totalItemCount = layoutManager.itemCount
+                        //讀取下一頁
+                        if (lastVisible >= totalItemCount - 1) {
+                            mViewModel.loadNextPage()
+                        }
+                        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                            mViewModel.subscribeMatch(
+                                matchAdapter.currentList
+                                    .slice(firstVisible..lastVisible)
+                                    .map { it.match.matchId }
+                                    .toSet()
+                            )
+                        }
+                    }
+                }
+            })
         }
     }
 
