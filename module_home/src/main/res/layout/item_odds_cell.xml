@@ -54,8 +54,8 @@
     <!-- 賠率上升圖示 -->
     <ImageView
         android:id="@+id/iv_trend_up"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="@dimen/dp_8"
+        android:layout_height="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_3"
         android:layout_marginEnd="@dimen/dp_3"
         android:src="@drawable/ic_odds_up"
@@ -66,8 +66,8 @@
     <!-- 賠率下降圖示 -->
     <ImageView
         android:id="@+id/iv_trend_down"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="@dimen/dp_8"
+        android:layout_height="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_3"
         android:layout_marginBottom="@dimen/dp_3"
         android:src="@drawable/ic_odds_down"

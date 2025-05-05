@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -202,7 +201,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
-        "joseph initLeaguesLayout: ${tournaments}".logd()
         mBinding.layoutContainer.apply {
             leagueAdapter.setData(tournaments)
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->

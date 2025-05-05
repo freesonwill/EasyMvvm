@@ -127,7 +127,6 @@ class MatchListPagerFragment :
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
         }
-        "joseph initData: playTypeId: ${mViewModel.getPlayTypeId()}, tournamentId: ${mViewModel.getTournamentId()}".logd()
         //TODO 早盤日期要資料
         mViewModel.getCurrentMatch()
     }

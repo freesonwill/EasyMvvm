@@ -186,7 +186,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                 MatchMarketCrossRef(matchId,marketId,selectionCount)
             )
         }
-        "joseph 收到比賽推播結束---------------------------------------------".logi("MatchFullData")
+        "收到比賽推播結束---------------------------------------------".logi("MatchFullData")
     }
     return MatchUpdateData(
         matchLites,

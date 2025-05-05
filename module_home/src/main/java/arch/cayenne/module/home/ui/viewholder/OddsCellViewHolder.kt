@@ -60,13 +60,12 @@ class OddsCellViewHolder(
             }
 
             if ("trend" in diff) {
-                //TODO 賠率變更閃爍
                 showOddsTrend(item.trend)
             }
         }
     }
 
-    fun showOddsTrend(trendDelta: Int?) {
+    private fun showOddsTrend(trendDelta: Int?) {
         with(mBinding) {
             // 先隱藏所有效果
             ivTrendUp.visibility = View.GONE
@@ -88,7 +87,7 @@ class OddsCellViewHolder(
                 vTrendHighlight.visibility = View.VISIBLE
 
                 val animator = ValueAnimator.ofFloat(1f, 0f).apply {
-                    duration = 2000
+                    duration = 500
                     addUpdateListener { animation ->
                         val alpha = animation.animatedValue as Float
                         vTrendHighlight.alpha = alpha

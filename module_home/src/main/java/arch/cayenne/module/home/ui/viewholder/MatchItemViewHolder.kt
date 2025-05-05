@@ -113,8 +113,6 @@ class MatchItemViewHolder(
                 })
             }
 
-            //TODO 多一個判斷是MarketBeanLite的defaultSelectionCount, 就全部顯示鎖盤
-//            val selectionsGrouped = data.markets.map { it.selections }
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
         }
@@ -148,14 +146,9 @@ class MatchItemViewHolder(
                 tvWatchCount.text = liveInfo.viewerCount.toString()
             }
             if ("odds" in changes) {
-//                val selectionsGrouped = item.markets.map { it.selections }
                 val selectionsGrouped = item.markets.map { it.market to it.selections }
                 oddsColumnAdapter.submitList(selectionsGrouped)
             }
         }
     }
-
-//    fun resetSelectionState() {
-//        oddsColumnAdapter.updateSelectedSelectionId(null)
-//    }
 }

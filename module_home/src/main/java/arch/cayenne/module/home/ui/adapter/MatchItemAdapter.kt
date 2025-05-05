@@ -58,10 +58,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         }
     }
 
-    //    fun resetAllSelections() {
-//        //TODO 每次換頁之前先 reset, 或在收到投注成功（或取消）之後重置cell的點擊狀態
-//        holders.forEach { it.resetSelectionState() }
-//    }
     interface OnMatchItemClickListener {
         fun onLiveEntryClick(item: MatchWithMarkets)
         fun onFavoriteClick(item: MatchWithMarkets)

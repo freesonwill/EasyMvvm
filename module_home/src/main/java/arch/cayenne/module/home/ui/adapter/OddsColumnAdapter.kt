@@ -14,18 +14,13 @@ class OddsColumnAdapter(
 ) : BaseAdapter<Pair<MarketBeanLite, List<SelectionBeanLite>>, OddsColumnViewHolder, ItemOddsColumnBinding>(
     OddsDiffCallback()
 ) {
-
-//    fun updateSelectedSelectionId(id: Long?) {
-//        selectedSelectionId = id
-//        notifyDataSetChanged()
-//    }
     override fun convertPlus(
         holder: OddsColumnViewHolder,
         binding: ItemOddsColumnBinding,
         position: Int
     ) {
-    val (market, selections) = getItem(position)
-    holder.bind(market, selections)
+        val (market, selections) = getItem(position)
+        holder.bind(market, selections)
     }
 
     override fun createViewBinding(
@@ -48,11 +43,6 @@ class OddsColumnAdapter(
         position: Int,
         payloads: List<Any>
     ) {
-//        if (payloads.isNotEmpty()) {
-//            holder.bindPayload(getItem(position), payloads)
-//        } else {
-//            holder.bind(getItem(position))
-//        }
         val (market, selections) = getItem(position)
         if (payloads.isNotEmpty()) {
             holder.bindPayload(market, selections, payloads)
