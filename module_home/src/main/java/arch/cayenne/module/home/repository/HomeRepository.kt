@@ -231,6 +231,22 @@ class HomeRepository(
         } else { return arrayListOf() }
     }
 
+    suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeMatchReq.newBuilder().apply {
+                this.addAllMatchId(ids)
+            }.build()
+        }
+        if (res.error == null && res.data != null && res.data!!.success) {
+            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
+            return res.data!!.success
+        } else { return false }
+    }
+
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
 
     /**

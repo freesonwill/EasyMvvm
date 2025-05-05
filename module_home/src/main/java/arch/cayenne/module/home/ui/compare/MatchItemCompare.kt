@@ -19,23 +19,6 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
 
 //        return true
     }
-
-    private fun compareLiveInfoIsSame(oldItem: MatchLiveInfoBean, newItem: MatchLiveInfoBean): Boolean {
-        return oldItem.clock == newItem.clock &&
-                oldItem.rollClock == newItem.rollClock &&
-                oldItem.period == newItem.period &&
-                oldItem.score == newItem.score &&
-                oldItem.liveVideo == newItem.liveVideo &&
-                oldItem.charRoom == newItem.charRoom &&
-                oldItem.viewerCount == newItem.viewerCount &&
-                oldItem.clockModified == newItem.clockModified
-    }
-    private fun compareMatchIsSame(oldItem: MatchBean, newItem: MatchBean): Boolean {
-        return oldItem.matchId == newItem.matchId &&
-                oldItem.basicInfo.status == newItem.basicInfo.status &&
-                oldItem.basicInfo.betStop == newItem.basicInfo.betStop &&
-                oldItem.basicInfo.startTime == newItem.basicInfo.startTime
-    }
     override fun getChangePayload(oldItem: MatchWithMarkets, newItem: MatchWithMarkets): Any? {
         val diff = mutableSetOf<String>()
         val oldLiveInfo = oldItem.match.liveInfo
@@ -55,7 +38,9 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
                 if (oldSelection.odds != newSelection.odds ||
                     oldSelection.active != newSelection.active ||
                     oldSelection.shortName != newSelection.shortName ||
-                    oldSelection.parlay != newSelection.parlay
+                    oldSelection.parlay != newSelection.parlay ||
+                    oldSelection.isSelected != newSelection.isSelected ||
+                    oldSelection.trend != newSelection.trend
                 ) {
                     diff.add("odds") // 如果有其中任何一個不同就記錄 odds
                     return@forEachIndexed

@@ -23,7 +23,9 @@ class OddsDiffCallback : DiffUtil.ItemCallback<List<SelectionBeanLite>>() {
                     oldSelection.shortName == newSelection.shortName &&
                     oldSelection.odds == newSelection.odds &&
                     oldSelection.active == newSelection.active &&
-                    oldSelection.parlay == newSelection.parlay
+                    oldSelection.parlay == newSelection.parlay &&
+                    oldSelection.isSelected == newSelection.isSelected &&
+                    oldSelection.trend == newSelection.trend
         }
     }
 
