@@ -1,8 +1,8 @@
-package com.walisport.module.live.data
+package com.walisport.module.live.data.constants
 
 import com.walisport.module.live.R
 
-enum class OrderStatusEnum(val value: Int, val names: String, val resId: Int) {
+enum class LiveBetSlipResultOrderStatusEnum(val value: Int, val names: String, val resId: Int) {
     UnSettled(0, "未结算", R.drawable.live_bet_selection_status_light),
     Win(1, "赢", R.drawable.bet_settle_result),
     Tie(2, "平", R.drawable.live_bet_selection_status_light),
@@ -12,7 +12,7 @@ enum class OrderStatusEnum(val value: Int, val names: String, val resId: Int) {
     Cancel(6, "取消", R.drawable.live_bet_selection_status_light);
 
    companion object{
-       fun getStatus(value: Int): OrderStatusEnum? {
+       fun getStatus(value: Int): LiveBetSlipResultOrderStatusEnum? {
            return entries.find { it.value == value }
        }
    }

@@ -167,14 +167,14 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     //获取积分榜的实时数据
-    suspend fun getCompetitionReq(scope: CoroutineScope, matchId: Long): Sloth.CompetitionTables? {
+    suspend fun getCompetitionReq(scope: CoroutineScope, compId: Int): Sloth.CompetitionTables? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.CompetitionTableResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_STANDINGS
         ) {
-            Client.MatchTrendReq.newBuilder().apply {
-                this.matchId = matchId
+            Client.CompetitionTableReq.newBuilder().apply {
+                this.compId = compId
             }.build()
         }
         if (result.error == null && result.data != null) {
@@ -201,6 +201,23 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         if (result.error == null && result.data != null) {
             return result.data!!
+        }
+        return null
+    }
+
+    //获取比赛技术统计实时数据
+    suspend fun getMatchStatisticReq(scope: CoroutineScope, matchId: Long): Sloth.MatchLiveData? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_LIVE
+        ) {
+            Client.MatchLiveReq.newBuilder().apply {
+                this.matchId = matchId
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data!!.matchLiveData
         }
         return null
     }

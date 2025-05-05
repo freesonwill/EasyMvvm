@@ -1,8 +1,7 @@
 package com.walisport.module.live.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
-import galaxy.common.proto.Common
+import com.walisport.module.live.data.model.LiveBetSlipData
 
 class LiveBetSlipCompare : DiffUtil.ItemCallback<LiveBetSlipData>() {
     override fun areItemsTheSame(oldItem: LiveBetSlipData, newItem: LiveBetSlipData): Boolean {

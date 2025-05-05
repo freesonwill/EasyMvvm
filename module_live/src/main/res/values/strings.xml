@@ -36,6 +36,7 @@
     <string name="live_bet_reserve_expired">预约失效</string>
     <string name="live_bet_grounder">滚球</string>
     <string name="live_bet_bet_num">注单号</string>
+    <string name="live_bet_rejection">拒单</string>
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
@@ -58,6 +59,16 @@
     <string name="share_link">复制链接</string>
     <string name="choose_commentary">选解说</string>
     <string name="statistics">技术统计</string>
+    <string name="statistics_attack">进攻</string>
+    <string name="statistics_danger">危险进攻</string>
+    <string name="statistics_kql">控球率</string>
+    <string name="statistics_sms">射门数</string>
+    <string name="statistics_szs">射正数</string>
+    <string name="statistics_cqs">传球数</string>
+    <string name="statistics_cqcgl">传球成功率</string>
+    <string name="statistics_ryq">任意球</string>
+    <string name="statistics_jq">角球</string>
+    <string name="statistics_yw">越位</string>
     <string name="choose_source">选直播源</string>
     <string name="soft_keyboard_talk">说点什么...</string>
 

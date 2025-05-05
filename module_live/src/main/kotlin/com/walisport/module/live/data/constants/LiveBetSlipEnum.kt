@@ -1,4 +1,4 @@
-package com.walisport.module.live.data.model
+package com.walisport.module.live.data.constants
 
 enum class LiveBetSlipEnum(val value: Int) {
     UnSettled(value = 3),

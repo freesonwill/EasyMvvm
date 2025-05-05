@@ -1,4 +1,4 @@
-package com.walisport.module.live.data.livebetslip
+package com.walisport.module.live.data.model
 
 import galaxy.common.proto.Common
 

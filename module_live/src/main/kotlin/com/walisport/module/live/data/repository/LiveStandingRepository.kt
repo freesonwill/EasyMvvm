@@ -16,8 +16,8 @@ class LiveStandingRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     //获取积分榜实时数据
-    suspend fun getCompetitionReq(matchId: Long): List<StandingsBean> {
-        val resp = remoteManager.getCompetitionReq(scope, matchId)
+    suspend fun getCompetitionReq(compId: Int): List<StandingsBean> {
+        val resp = remoteManager.getCompetitionReq(scope, compId)
         val data = resp?.tablesList?.mapIndexed { index, competitionTable ->
             val rows = competitionTable.rowsList?.mapIndexed { idx, item ->
                 TeamBean(

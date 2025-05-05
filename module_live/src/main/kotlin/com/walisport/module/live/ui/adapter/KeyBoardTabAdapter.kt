@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import com.walisport.module.live.data.KeyBoardTabData
+import com.walisport.module.live.data.model.KeyBoardTabData
 import com.walisport.module.live.databinding.ItemKeyboardTabLayoutBinding
 
 class KeyBoardTabAdapter(compare: DiffUtil.ItemCallback<KeyBoardTabData>) :

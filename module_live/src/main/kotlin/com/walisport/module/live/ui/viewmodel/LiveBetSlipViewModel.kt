@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
+import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.repository.LiveBetRepository
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
