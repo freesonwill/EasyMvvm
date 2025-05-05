@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TittleBarLiveBinding
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**

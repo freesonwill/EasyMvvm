@@ -13,7 +13,7 @@ import com.walisport.module.live.data.model.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipSettledLayoutBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 //注单已结算
