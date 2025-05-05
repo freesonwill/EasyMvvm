@@ -18,7 +18,7 @@ class SettingModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        includes(autoViewModels)
+        includes(defaultModule)
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> SettingRepository(scope) }

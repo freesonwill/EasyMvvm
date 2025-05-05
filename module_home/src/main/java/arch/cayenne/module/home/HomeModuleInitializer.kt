@@ -22,7 +22,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
     }
 
     private val viewModules = module {
-        includes(autoViewModels)
+        includes(defaultModule)
     }
     private val daoModule = module {
 //        factory { get<GameDatabase>().sportDao() }
