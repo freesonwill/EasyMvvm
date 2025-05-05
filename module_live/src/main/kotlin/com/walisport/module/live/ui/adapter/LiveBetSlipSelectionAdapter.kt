@@ -6,10 +6,10 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.compare.LiveBetSlipSelectionCompare
-import com.walisport.module.live.data.livebetslip.LiveBetSlipExpandedEnum
-import com.walisport.module.live.data.model.LiveBetSlipEnum
-import com.walisport.module.live.data.livebetslip.LiveBetSlipSelectionAdapterManager
-import com.walisport.module.live.data.livebetslip.LiveBetSlipSelectionData
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.model.LiveBetSlipSelectionAdapterManager
+import com.walisport.module.live.data.model.LiveBetSlipSelectionData
 import com.walisport.module.live.databinding.ItemLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipReserveBinding

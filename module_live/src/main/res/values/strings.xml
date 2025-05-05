@@ -36,6 +36,7 @@
     <string name="live_bet_reserve_expired">预约失效</string>
     <string name="live_bet_grounder">滚球</string>
     <string name="live_bet_bet_num">注单号</string>
+    <string name="live_bet_rejection">拒单</string>
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>

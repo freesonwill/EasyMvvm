@@ -7,10 +7,10 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.LiveBetSlipCompare
-import com.walisport.module.live.data.livebetslip.LiveBetSlipAdapterManager
-import com.walisport.module.live.data.model.LiveBetSlipEnum
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
-import com.walisport.module.live.data.livebetslip.LiveBetSlipExpandedEnum
+import com.walisport.module.live.data.model.LiveBetSlipAdapterManager
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.model.LiveBetSlipData
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding

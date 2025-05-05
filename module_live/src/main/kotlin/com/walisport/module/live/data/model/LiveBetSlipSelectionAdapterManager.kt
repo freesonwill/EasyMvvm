@@ -1,4 +1,4 @@
-package com.walisport.module.live.data.livebetslip
+package com.walisport.module.live.data.model
 
 import android.annotation.SuppressLint
 import android.widget.ImageView
@@ -11,8 +11,9 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.skin.widget.SportView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
-import com.walisport.module.live.data.OrderStatusEnum
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.ItemLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipReserveBinding
@@ -326,21 +327,21 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
         binding: ItemLiveBetSlipSettledBinding
     ) {
         binding.also {
-            when (val status = OrderStatusEnum.getStatus(item.status)) {
-                OrderStatusEnum.Win,
-                OrderStatusEnum.Lose -> {
+            when (val status = LiveBetSlipResultOrderStatusEnum.getStatus(item.status)) {
+                LiveBetSlipResultOrderStatusEnum.Win,
+                LiveBetSlipResultOrderStatusEnum.Lose -> {
                     it.iv1.isVisible = true
                     it.betSettledTvStatus1.isVisible = false
                     val resId =
-                        if (status == OrderStatusEnum.Win) R.drawable.icon_betslip_tick else R.drawable.icon_betslip_fork
+                        if (status == LiveBetSlipResultOrderStatusEnum.Win) R.drawable.icon_betslip_tick else R.drawable.icon_betslip_fork
                     it.iv1.setImageResource(resId)
                 }
 
-                OrderStatusEnum.WinHalf,
-                OrderStatusEnum.UnSettled,
-                OrderStatusEnum.Cancel,
-                OrderStatusEnum.Tie,
-                OrderStatusEnum.LoseHalf -> {
+                LiveBetSlipResultOrderStatusEnum.WinHalf,
+                LiveBetSlipResultOrderStatusEnum.UnSettled,
+                LiveBetSlipResultOrderStatusEnum.Cancel,
+                LiveBetSlipResultOrderStatusEnum.Tie,
+                LiveBetSlipResultOrderStatusEnum.LoseHalf -> {
                     it.iv1.isVisible = false
                     it.betSettledTvStatus1.isVisible = true
                     it.betSettledTvStatus1.text = status.names
