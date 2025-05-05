@@ -15,27 +15,33 @@ class KoinViewModelProcessor(
     private val options: Map<String, String>
 ) : SymbolProcessor {
     private val definitionWriter:DefinitionWriter by lazy { DefinitionWriter() }
-
-    override fun process(resolver: Resolver): List<KSAnnotated> {
-        val generatedPackage = options["KOIN_GENERATED_PACKAGE"]
+    private val generatedPackage  by lazy {
+        options["KOIN_GENERATED_PACKAGE"]
             ?: throw IllegalStateException("""
                 ❌ "KOIN_GENERATED_PACKAGE" not found!
-                ➜ 请在 module 的 build.gradle 中配置：
+                ➡️ please config in the module's build.gradle：
                     ksp {
                         arg("KOIN_GENERATED_PACKAGE", "your.package.name")
                     }
                 """.trimIndent())
+    }
+    private val defaultModule by lazy { "defaultModule" }
+
+    override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("plugin.koin.KoinViewModel")
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
-        //logger.warn("------------------------->Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size}")
         if (viewModels.isEmpty()) return emptyList()
 
+        logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size}")
+        val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
+        logger.warn("--->Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
         val file = codeGenerator.createNewFile(
-            Dependencies(false),
-            "$generatedPackage",
-            "AutoViewModels"
+            //Dependencies(false), //❌ May cause file not to generate when referenced
+            //Dependencies.ALL_FILES, //❌ Full aggregation hurts performance
+            Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()), //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
+            generatedPackage,
+            defaultModule.replaceFirstChar { it.uppercaseChar() }
         )
-
         file.bufferedWriter().use { writer ->
             writer.write("package $generatedPackage\n\n")
             writer.write("import org.koin.dsl.module\n")
@@ -45,7 +51,7 @@ class KoinViewModelProcessor(
             writer.write("import org.koin.androidx.viewmodel.dsl.viewModel\n\n")
 
 
-            writer.write("\nval autoViewModels = module {\n")
+            writer.write("\nval $defaultModule = module {\n")
             viewModels.forEach { classDeclaration ->
                 val constructor = classDeclaration.primaryConstructor
                 val paramCount = constructor?.parameters?.size ?: 0
@@ -61,7 +67,7 @@ class KoinViewModelProcessor(
                             val bindings = (it.value as List<KSType>).map { it.declaration }
                             bindingsStr = definitionWriter.generateBindings(bindings)
                         }
-                        "isGet"->{
+                        "isGets"->{
                             isGets = it.value as List<Boolean>
                         }
                     }

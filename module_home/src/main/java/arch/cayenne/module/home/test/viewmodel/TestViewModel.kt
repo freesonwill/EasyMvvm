@@ -18,11 +18,11 @@ class Test2ViewModel(val name:String) : BaseViewModel() {
 
 }
 
-@KoinViewModel(isGet = [false,true])
+@KoinViewModel(isGets = [false,true])
 class Test3ViewModel(val name:String,model: Test1ViewModel) : BaseViewModel() {
 }
 
-@KoinViewModel(binds = [BaseViewModel::class],isGet = [true,false])
+@KoinViewModel(binds = [BaseViewModel::class],isGets = [true,false])
 class Test4ViewModel(val name:String,model: Test1ViewModel) : BaseViewModel() {
 
 }
