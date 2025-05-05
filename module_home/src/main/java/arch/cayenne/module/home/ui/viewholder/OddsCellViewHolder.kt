@@ -83,11 +83,11 @@ class OddsCellViewHolder(
             trendView?.let { trendImage ->
                 trendImage.alpha = 1f
                 trendImage.visibility = View.VISIBLE
-                vTrendHighlight.alpha = 0.3f
+                vTrendHighlight.alpha = 1f
                 vTrendHighlight.visibility = View.VISIBLE
 
                 val animator = ValueAnimator.ofFloat(1f, 0f).apply {
-                    duration = 500
+                    duration = 800
                     addUpdateListener { animation ->
                         val alpha = animation.animatedValue as Float
                         vTrendHighlight.alpha = alpha
