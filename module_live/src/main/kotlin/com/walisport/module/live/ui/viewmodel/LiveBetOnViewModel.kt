@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.data.repository.LiveBetOnRepository
 import kotlinx.coroutines.launch
@@ -18,6 +18,9 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
 
+    private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
+    val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
+
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
             repository.queryLiveMarketType(matchId)
@@ -29,6 +32,20 @@ class LiveBetOnViewModel : BaseViewModel() {
         viewModelScope.launch {
             _marketType.value = repository.queryLiveMarketTypeAll()
         }
+    }
+
+    //根据盘口分类code获取盘口列表
+    fun getMarketList(code: String){
+        if (code.isEmpty()){
+            val list: MutableList<MarketMenuBean> = mutableListOf()
+            observeMarketType.value?.forEach {
+                list.addAll(it.marketMenuBean)
+            }
+            _getMarketList.value = list
+        }else{
+            _getMarketList.value = observeMarketType.value?.find { it.code==code }?.marketMenuBean
+        }
+
     }
 
     fun observeMarketTypeBean() {

@@ -9,10 +9,11 @@
     android:paddingTop="17dp"
     android:paddingStart="12dp"
     android:paddingEnd="12dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
     android:paddingBottom="12dp"
     android:id="@+id/roots"
     >
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clBetTitle"
         android:layout_width="match_parent"
@@ -23,25 +24,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="全场让球"
+            android:lines="1"
+            android:textStyle="bold"
+            android:singleLine="true"
             android:textSize="@dimen/sp_14"
             android:textColor="@color/text_color"
             tools:ignore="MissingConstraints" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvNameOne"
-            android:layout_marginStart="17dp"
+            android:layout_marginStart="5dp"
             app:layout_constraintLeft_toRightOf="@id/tvBetName"
             android:drawableStart="@drawable/bet_outs_icon_ball"
             android:layout_width="wrap_content"
-            android:text="3-2"
             android:drawablePadding="8dp"
             android:textColor="@color/color_24ee8a"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints" />
         <androidx.appcompat.widget.AppCompatTextView
+            android:visibility="gone"
             android:id="@+id/tvNameTwo"
             android:layout_marginStart="17dp"
             android:drawablePadding="8dp"
+            android:textStyle="bold"
             app:layout_constraintLeft_toRightOf="@id/tvNameOne"
             android:layout_width="wrap_content"
             android:drawableStart="@drawable/bet_outs_icon_ball"
@@ -51,40 +56,68 @@
             tools:ignore="MissingConstraints" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/clBet"
-        android:layout_marginTop="19dp"
         android:layout_width="match_parent"
+        android:orientation="horizontal"
         android:layout_height="wrap_content">
-
-        <arch.cayenne.lib.skin.widget.SportTextView
-            android:id="@+id/tvBetDuelLeft"
-            android:drawableStart="@drawable/live_bet_country_icon"
-            android:layout_width="wrap_content"
-            android:text="阿根廷"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/text_color"
-            android:drawablePadding="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_6"
             android:layout_height="wrap_content"
-            tools:ignore="MissingConstraints" />
-        <arch.cayenne.lib.skin.widget.SportTextView
-            android:id="@+id/tvBetDuelRight"
-            android:drawablePadding="8dp"
-            android:textSize="@dimen/sp_14"
-            android:textColor="@color/text_color"
-            android:layout_width="wrap_content"
-            android:drawableStart="@drawable/live_bet_country_icon"
-            android:text="法国"
-            app:layout_constraintRight_toRightOf="parent"
+            tools:ignore="MissingConstraints">
+            <ImageView
+                android:id="@+id/homeLogo"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                tools:ignore="MissingConstraints" />
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:id="@+id/homeName"
+                android:layout_marginStart="@dimen/dp_6"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/sp_14"
+                android:lines="1"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:textColor="@color/substitution_text_color"
+                android:drawablePadding="8dp"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_6"
             android:layout_height="wrap_content"
-            tools:ignore="MissingConstraints" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvBet"
-        android:layout_marginTop="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+            tools:ignore="MissingConstraints">
+            <arch.cayenne.lib.skin.widget.SportTextView
+                android:id="@+id/awayName"
+                android:layout_marginEnd="@dimen/dp_6"
+                android:layout_width="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/sp_14"
+                android:textColor="@color/substitution_text_color"
+                android:drawablePadding="8dp"
+                android:lines="1"
+                android:singleLine="true"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
+            <ImageView
+                android:id="@+id/awayLogo"
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                tools:ignore="MissingConstraints" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+   <include  layout="@layout/adapter_live_bet_content_item_layout"
+       />
+    <include  layout="@layout/adapter_live_bet_content_item_layout"/>
 </arch.cayenne.lib.skin.widget.SportLinearLayout>
