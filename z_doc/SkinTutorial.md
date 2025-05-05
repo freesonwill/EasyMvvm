@@ -65,4 +65,14 @@ override fun onAttachedToWindow() {
 private val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
 sportSkinManager.changeLanguage(Locale.SIMPLIFIED_CHINESE)
 ```
-注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackground
+注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
+
+## 5. 使用suffixes.gradle.kts 对res-suffix下drawable mipmap 文件 colors里的name自动添加后缀
+- (1) 将app下或module下的build.gradle中添加 
+``` 
+apply(from = rootProject.file("gradle/suffixes.gradle.kts"))
+```
+- (2) 对特定module下的资源文件添加后缀
+``` 
+./gradlew :module_live:addResourceSuffixes
+```
