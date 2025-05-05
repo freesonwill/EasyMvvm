@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SportConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_height="match_parent"
+    android:background="@color/drawer_bg">
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:id="@+id/cl_drawer_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/ic_drawer_card_bg">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/cl_notification_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,20 +26,20 @@
             android:paddingEnd="10dp"
             android:paddingBottom="12dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_message"
                 android:textSize="16sp"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_notification_title"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_arrow_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,9 +48,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/item_notification_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -59,7 +60,7 @@
             android:paddingBottom="12dp"
             >
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_icon_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -69,14 +70,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_message_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/drawer_notification_line_1"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_notification_message"
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -85,20 +86,20 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_time_1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_time_1"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_notification_message"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
             android:id="@+id/item_notification_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -107,7 +108,7 @@
             android:paddingHorizontal="12dp"
             android:paddingBottom="16dp">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_icon_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -117,14 +118,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_message_2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginEnd="8dp"
                 android:text="@string/drawer_notification_line_2"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_notification_message"
                 android:textSize="14sp"
                 android:maxLines="1"
                 android:ellipsize="end"
@@ -133,21 +134,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_time_2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_time_2"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_notification_message"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:id="@+id/cl_drawer_common_function"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -165,14 +166,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             >
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="12dp"
                 android:text="@string/drawer_common_function"
                 android:textSize="15sp"
-                android:textColor="@color/black"
+                android:textColor="@color/drawer_common_function_title"
                 android:textStyle="bold"
                 />
         </LinearLayout>
@@ -189,20 +190,20 @@
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_recharge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_drawer_recharge"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_recharge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textSize="12sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_common_function_text"
                 android:text="@string/drawer_recharge" />
         </LinearLayout>
         <LinearLayout
@@ -218,20 +219,20 @@
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_bet_slip"
                 android:layout_width="@dimen/dp_38"
                 android:layout_height="@dimen/dp_38"
                 android:src="@drawable/ic_drawer_bet_slip"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_bet_slip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textSize="12sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_common_function_text"
                 android:text="@string/drawer_bet_slip" />
         </LinearLayout>
         <LinearLayout
@@ -247,24 +248,24 @@
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_drawer_tutorial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_drawer_tutorial"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_drawer_tutorial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textSize="12sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_common_function_text"
                 android:text="@string/drawer_tutorial" />
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <androidx.constraintlayout.widget.ConstraintLayout
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
         android:id="@+id/cl_drawer_bottom"
         android:layout_marginBottom="22dp"
         android:layout_width="match_parent"
@@ -282,20 +283,20 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_drawer_setting"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:src="@drawable/ic_drawer_setting"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_drawer_setting"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/drawer_setting"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_bottom_function_text"
                 android:textSize="12sp" />
         </LinearLayout>
         <LinearLayout
@@ -310,20 +311,20 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_drawer_feedback"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:src="@drawable/ic_drawer_feedback"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_drawer_feedback"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="@string/drawer_feedback"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_bottom_function_text"
                 android:textSize="12sp" />
         </LinearLayout>
         <LinearLayout
@@ -336,21 +337,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_drawer_help"
                 android:layout_width="@dimen/dp_28"
                 android:layout_height="@dimen/dp_28"
                 android:src="@drawable/ic_drawer_help"
                 android:scaleType="fitXY" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SportTextView
                 android:id="@+id/tv_drawer_help"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:textSize="13sp"
-                android:textColor="@android:color/black"
+                android:textColor="@color/drawer_bottom_function_text"
                 android:text="@string/drawer_help" />
         </LinearLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</arch.cayenne.lib.skin.widget.SportConstraintLayout>
