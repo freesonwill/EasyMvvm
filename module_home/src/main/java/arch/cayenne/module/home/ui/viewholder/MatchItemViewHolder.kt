@@ -96,6 +96,7 @@ class MatchItemViewHolder(
                 adapter = oddsColumnAdapter
 
                 val spacing = 2.dp2px
+                if (itemDecorationCount > 0) { removeItemDecorationAt(0) }
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,
