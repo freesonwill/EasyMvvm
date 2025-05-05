@@ -2,19 +2,18 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.model.PagerBean
-import com.google.android.material.tabs.TabLayout
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import com.google.android.material.tabs.TabLayout.TabLayoutOnPageChangeListener
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetSlipLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**

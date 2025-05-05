@@ -4,17 +4,17 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.module.live.R
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.databinding.FragmentLiveOutsBinding
 import com.walisport.module.live.ui.dialog.MatchTrendDialog
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.widget.TechnicalCountView
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**

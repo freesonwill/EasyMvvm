@@ -14,8 +14,8 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveStandingsBinding
 import com.walisport.module.live.ui.adapter.StandingsAdapter
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**

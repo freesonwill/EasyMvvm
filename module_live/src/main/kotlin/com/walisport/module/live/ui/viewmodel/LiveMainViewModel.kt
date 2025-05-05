@@ -1,4 +1,4 @@
-package com.walisport.module.live.viewmodel
+package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
