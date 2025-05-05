@@ -1,4 +1,4 @@
-package com.walisport.module.live.data
+package com.walisport.module.live.data.constants
 
 import com.walisport.module.live.R
 

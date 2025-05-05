@@ -3,8 +3,8 @@ package com.walisport.module.live.utils
 import android.content.Context
 import android.text.Spannable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import com.walisport.module.live.data.BidEmojiEnum
-import com.walisport.module.live.data.EmojiEnum
+import com.walisport.module.live.data.constants.BidEmojiEnum
+import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.ui.widget.EmojiSpan
 import java.util.regex.Matcher
 import java.util.regex.Pattern

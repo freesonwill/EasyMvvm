@@ -1,4 +1,4 @@
-package com.walisport.module.live.data.livebetslip
+package com.walisport.module.live.data.model
 
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -6,9 +6,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import com.walisport.module.live.R
-import com.walisport.module.live.data.OrderStatusEnum
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
@@ -62,7 +65,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                             submitAdapter(
                                 it.recyclerSelection, item, position
                             )
-                        it.betUnsettledBtSettle.tag = position
+                            it.betUnsettledBtSettle.tag = position
                         }
                     }
 
@@ -173,7 +176,8 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     private fun submitAdapter(
         recyclerView: RecyclerView, data: LiveBetSlipData, position: Int
     ) {
-        var list = data.order!!.selectionsList.map { LiveBetSlipSelectionData(selection = it) }.toList()
+        var list =
+            data.order!!.selectionsList.map { LiveBetSlipSelectionData(selection = it) }.toList()
         recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipSelectionAdapter
             adapter.updateBasicData(data.expandedEnum, position)
@@ -212,7 +216,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         tvPartEarlySettled: TextView? = null,
         tvWinLoseAmount: TextView? = null,
         tvStatus: TextView? = null,
-        tvEarlySettle:TextView? = null
+        tvEarlySettle: TextView? = null
     ) {
         tvCode?.text = order.betId
         tvOdds?.text = order.odds
@@ -223,7 +227,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             order.betAmount, order.returnAmount
         ).toString() // order.betAmount-order.returnAmount
         tvStatus?.let {
-            val status = OrderStatusEnum.getStatus(order.status)
+            val status = LiveBetSlipResultOrderStatusEnum.getStatus(order.status)
             status?.let { st ->
                 it.background = ContextCompat.getDrawable(it.context, st.resId)
             }
@@ -241,6 +245,15 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     ) {
         with(bind) {
             if (isReserve) {
+                betExpiredTvStatus.width = 60.dp2px
+                betExpiredTvStatus.text =
+                    root.context.resources.getString(R.string.live_bet_reserve_expired)
+                betExpiredTvStatus.setBackgroundResource(
+                    SportSkinResourceManager.getTargetResourceId(
+                        root.context,
+                        R.drawable.live_bet_selection_status_light
+                    )
+                )
                 tvUnit1.text =
                     ContextCompat.getString(bind.root.context, R.string.live_bet_reserve_odds)
                 tvUnit2.text =
@@ -254,6 +267,15 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 tvUnit2Value.text = item.odds  //预约投注
                 tvUnit3Value.text = item.betAmount //预约最高可赢
             } else {
+                betExpiredTvStatus.width = 34.dp2px
+                betExpiredTvStatus.text =
+                    root.context.resources.getString(R.string.live_bet_rejection)
+                betExpiredTvStatus.setBackgroundResource(
+                    SportSkinResourceManager.getTargetResourceId(
+                        root.context,
+                        R.drawable.live_bet_selection_status_normal
+                    )
+                )
                 tvUnit1.text = ContextCompat.getString(bind.root.context, R.string.live_bet_bet_num)
                 tvUnit2.text = ContextCompat.getString(bind.root.context, R.string.live_bet_odds)
                 tvUnit3.text = ContextCompat.getString(bind.root.context, R.string.live_bet_on)

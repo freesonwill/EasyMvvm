@@ -5,8 +5,8 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.live.data.BidEmojiEnum
-import com.walisport.module.live.data.EmojiEnum
+import com.walisport.module.live.data.constants.BidEmojiEnum
+import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
