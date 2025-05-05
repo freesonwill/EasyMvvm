@@ -20,19 +20,22 @@ class KoinViewModelProcessor(
         val generatedPackage = options["KOIN_GENERATED_PACKAGE"]
             ?: throw IllegalStateException("""
                 ❌ "KOIN_GENERATED_PACKAGE" not found!
-                ➜ 请在 module 的 build.gradle 中配置：
+                ➡️ please config in the module's build.gradle：
                     ksp {
                         arg("KOIN_GENERATED_PACKAGE", "your.package.name")
                     }
                 """.trimIndent())
         val symbols = resolver.getSymbolsWithAnnotation("plugin.koin.KoinViewModel")
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
-        //logger.warn("------------------------->Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size}")
         if (viewModels.isEmpty()) return emptyList()
 
+        val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
+        logger.warn("--->Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
         val file = codeGenerator.createNewFile(
-            Dependencies(false),
-            "$generatedPackage",
+            //Dependencies(false),
+            //Dependencies.ALL_FILES,
+            Dependencies(true, sources = koinViewModelFiles.toTypedArray()),
+            generatedPackage,
             "AutoViewModels"
         )
 

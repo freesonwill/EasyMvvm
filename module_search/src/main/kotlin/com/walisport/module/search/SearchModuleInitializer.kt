@@ -2,8 +2,6 @@ package com.walisport.module.search
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -18,8 +16,7 @@ class SearchModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        //includes(autoViewModels)
-        viewModel { com.walisport.module.search.viewmodel.SearchMainViewModel() }
+        includes(autoViewModels)
     }
     private val repoModules = module {
     }
