@@ -30,6 +30,16 @@
     <string name="share_link">Copy link</string>
     <string name="choose_commentary">Choose source</string>
     <string name="statistics">Statistics</string>
+    <string name="statistics_attack">Attack</string>
+    <string name="statistics_danger">Danger Attack</string>
+    <string name="statistics_kql">Ball control rate</string>
+    <string name="statistics_sms">Shooting Number</string>
+    <string name="statistics_szs">Shooting Positive Number</string>
+    <string name="statistics_cqs">Number of Passes</string>
+    <string name="statistics_cqcgl">Passing success rate</string>
+    <string name="statistics_ryq">Free kick</string>
+    <string name="statistics_jq">Corner Kick</string>
+    <string name="statistics_yw">OffSide</string>
     <string name="choose_source">Choose source</string>
     <string name="live_video_loading">Loading...</string>
     <string name="live_video_error">Loading failed</string>

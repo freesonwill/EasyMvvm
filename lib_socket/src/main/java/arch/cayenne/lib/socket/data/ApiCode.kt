@@ -26,6 +26,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_COMBO_RISK(500,1014),     //500-1014: 获取串关下注限额
 
     MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
+    MATCH_LIVE(700, 2001),        //700-2001: 比赛统计数据
     GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
     MATCH_LEAGUE(500, 1006),     //500-1006: 联赛列表
 

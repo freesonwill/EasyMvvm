@@ -29,11 +29,21 @@ package com.walisport.module.live.data
  *  28 VAR(视频助理裁判)
  *  29 点球(点球大战)
  *  30 点球未进(点球大战)
+ *  83 射门数
  */
 enum class EventEnum(val type: Int) {
     EVENT_GOAL(1),
     EVENT_CORNER(2),
     EVENT_YELLOW_CARD(3),
     EVENT_RED_CARD(4),
-    EVENT_CHANGE(9)
+    EVENT_OFFSIDE(5),
+    EVENT_FREE(6),
+    EVENT_CHANGE(9),
+    EVENT_SHOOT_SUC(21),
+    EVENT_ATTACK(23),
+    EVENT_DANGER(24),
+    EVENT_BALL_CONTROL(25),
+    EVENT_PASS(40),
+    EVENT_PASS_SUC(41),
+    EVENT_SHOOT(83)
 }
