@@ -22,9 +22,7 @@ class SplashViewModel : BaseActivityViewModel() {
             }
         }
         addSource(loginIsSuccess) {
-            if (homeTimeSeconds.value == 0) {
-                value = it
-            }
+            value = it
         }
     }
 
