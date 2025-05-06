@@ -26,6 +26,8 @@ import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetSlipModifyOddsViewModel
+
 import com.walisport.module.live.viewmodel.LiveMainViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
@@ -59,6 +61,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveBetOnMenuViewModel)
         viewModelOf(::LiveVideoSourceViewModel)
         viewModelOf(::LiveEarlySettledKeyboardViewModel)
+        viewModelOf(::LiveBetSlipModifyOddsViewModel)
     }
 
     private val repoModules = module {

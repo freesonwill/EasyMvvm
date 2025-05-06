@@ -1,5 +1,10 @@
 package com.walisport.module.live.data.model
 
+import android.graphics.drawable.ColorDrawable
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.ImageView
+import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -7,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
@@ -17,6 +23,7 @@ import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
+import com.walisport.module.live.databinding.ItemTipsLayoutBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
 import com.walisport.module.live.utils.LiveBetSlipUtils.calculateMaxWin
 import com.walisport.module.live.utils.LiveBetSlipUtils.winOrLoseAmount
@@ -51,7 +58,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipUnsettleBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -76,7 +83,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipConfirmBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection,nBinding.ivTip)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -100,7 +107,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipSettledBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection,nBinding.ivTip)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -123,7 +130,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipInvalidBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection)
                     METHOD_UPDATE -> item?.order?.let {
                         updateInvalid(item.order, nBinding, false)
                         submitAdapter(
@@ -138,10 +145,10 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipReserveBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initRecycler(nBinding.recyclerSelection)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection)
 
                     METHOD_UPDATE -> item?.reserve?.let {
-                        updateReserveData(item.reserve, nBinding)
+                        updateReserveData(position,item.reserve, nBinding)
                         submitReserveAdapter(nBinding.recyclerSelection, item.reserve)
                     }
 
@@ -154,7 +161,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     /**
      * 投注单RecyclerView
      * */
-    private fun initRecycler(recyclerView: RecyclerView) {
+    private fun initView(recyclerView: RecyclerView, ivTip:ImageView? = null) {
         val manager = LinearLayoutManager(binding.root.context)
         val adapter = LiveBetSlipSelectionAdapter(
             betSlipType,
@@ -167,6 +174,11 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             it.layoutManager = manager
             it.itemAnimator = null
             it.adapter = adapter
+        }
+        ivTip?.let {
+            it.clickNoRepeat {
+             showBetTip(ivTip)
+            }
         }
     }
 
@@ -294,7 +306,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
      * 预约单数据更新
      * */
     private fun updateReserveData(
-        order: Common.ReserveOrder, nBinding: AdapterLiveBetSlipReserveBinding
+       position:Int, order: Common.ReserveOrder, nBinding: AdapterLiveBetSlipReserveBinding
     ) {
         with(nBinding) {
             val selection = order.selection
@@ -303,7 +315,17 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             betReserveTvExceptValue.text = calculateMaxWin(
                 order.selection.odds, order.betAmount
             ).toString()
+            betReserveBtCancel.tag = position
+            betReserveBtModify.tag = position
         }
     }
 
+    private fun showBetTip(attachView:View){
+        val pop = PopupWindow(attachView.context)
+        pop.contentView = ItemTipsLayoutBinding.inflate(LayoutInflater.from(attachView.context)).root
+        pop.isOutsideTouchable = true
+        pop.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(attachView.context,
+            arch.cayenne.lib.common.R.color.tran_0)))
+        pop.showAsDropDown(attachView)
+    }
 }

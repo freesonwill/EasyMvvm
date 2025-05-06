@@ -79,14 +79,13 @@ class LiveBetSlipUnsettledFragment :
             it.addItemDecoration(divider)
             it.setRecycledViewPool(RecyclerView.RecycledViewPool())
         }
-        adapter.setItemListener(object : RecyclerItemListener<LiveBetSlipData> {
+        adapter.setEarlySettleListener(object : RecyclerItemListener<LiveBetSlipData> {
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
                 item?.order?.let {
                     LiveEarlySettledKeyboardFragment.instance(
                         it.betId
                     ).apply {
                         setOnEarlySettleListener { money, price ->
-                            LogUtils.dTag("aaa", "money $money  price $price")
                             mViewModel.earlyPartSettled(it, money, price)
                         }
                     }.show(childFragmentManager)

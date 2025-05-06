@@ -1,6 +1,7 @@
 package com.walisport.module.live
 
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
@@ -20,6 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
+    private val TAG = LiveRemoteManager::class.java.simpleName
 
     suspend fun queryLiveStream(
         scope: CoroutineScope,
@@ -90,10 +92,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         startTime: Long? = null,
         endTime: Long? = null,
     ): List<Common.Order>? {
-        LogUtils.dTag(
-            "aaa",
-            "getOrderReq status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId"
-        )
+        "getOrderReq params status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -109,7 +108,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 endTime?.let { this.endTime = endTime }
             }.build()
         }
-        LogUtils.dTag("aaa", "result ${Gson().toJson(result)}")
+        "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
@@ -124,8 +123,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         startTime: Long? = null,
         endTime: Long? = null
     ): List<Common.ReserveOrder>? {
-        LogUtils.dTag("aaa", "getReserveOrder matchId $matchId sportId $sportId")
-
+        "getReserveOrder params matchId $matchId sportId $sportId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -138,10 +136,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.addSportId(sportId)
             }.build()
         }
-        LogUtils.dTag(
-            "aaa",
-            " getReserveOrder  result ${result.data?.orderList?.size}"
-        )
+        "getReserveOrder  result ${result.data?.orderList?.size}".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
@@ -246,8 +241,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         expectPrice: String,
         acceptPriceReduce: Boolean
     ): EarlySettleResp? {
-        LogUtils.dTag("aaa","提前结算 betId $betId amout $amount expectprice $expectPrice ")
-
+        "earlySettleReq parma betId $betId amout $amount expectprice $expectPrice ".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettleResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -260,8 +254,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.acceptPriceReduce = acceptPriceReduce
             }.build()
         }
-
-        LogUtils.dTag("aaa","提前结算 result ${Gson().toJson(result)}")
+        "earlySettleReq result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -278,6 +271,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.reserveId = reserveId
             }.build()
         }
+        "reserveCancel reserveId $reserveId  \n result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -286,6 +280,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
     suspend fun reserveUpdateReq(
         scope: CoroutineScope,
+        reserveId: String,
         amount: String,
         odds: String
     ): ReserveUpdateResp? {
@@ -295,10 +290,12 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.RESERVE_UPDATE
         ) {
             ReserveUpdateReq.newBuilder().apply {
+                this.reserveId = reserveId
                 this.amount = amount
                 this.odds = odds
             }.build()
         }
+        "reserveUpdateReq reserveId $reserveId amount $amount odds $odds  \n result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -315,7 +312,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 addBetId(betId)
             }.build()
         }
-        LogUtils.dTag("aaa","betId $betId earlySettlePrice  ${Gson().toJson(result)}")
+        "betId $betId earlySettlePrice  ${Gson().toJson(result)}".logd(TAG)
         if(result.error == null && result.data != null){
             return result.data
         }

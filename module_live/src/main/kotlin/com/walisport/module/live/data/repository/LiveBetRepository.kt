@@ -66,10 +66,11 @@ class LiveBetRepository(
     }
 
     suspend fun reserveUpdate(
+        reserveId:String,
         amount: String,
         odds: String
     ): ReserveUpdateResp? {
-        val resp = remoteManager.reserveUpdateReq(scope, amount, odds)
+        val resp = remoteManager.reserveUpdateReq(scope, reserveId,amount, odds)
         return resp
     }
 

@@ -134,6 +134,7 @@
         app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_odds" />
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/iv_tip"
         android:layout_width="@dimen/dp_18"
         android:layout_height="@dimen/dp_18"
         android:layout_marginStart="@dimen/dp_4"

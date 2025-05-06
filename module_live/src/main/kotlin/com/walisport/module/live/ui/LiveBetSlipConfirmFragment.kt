@@ -48,7 +48,7 @@ class LiveBetSlipConfirmFragment :
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
-                updateData(it)
+//                updateData(it)
             } else {
                 showEmpty()
             }
