@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
 import galaxy.client.proto.Client.EarlySettlePriceResp

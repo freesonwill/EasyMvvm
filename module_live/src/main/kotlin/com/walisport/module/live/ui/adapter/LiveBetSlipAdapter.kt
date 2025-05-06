@@ -120,7 +120,7 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
             nBinding.betUnsettledBtSettle.clickNoRepeat {
                 val position = it.tag as Int
                 if(getItem(position).order?.earlySupport == false){
-                    return
+                    return@clickNoRepeat
                 }
                 earlySettleListener?.onItemClick(getItem(position), position)
             }
