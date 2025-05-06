@@ -19,7 +19,7 @@ import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentComboBetMoneyKeyboardDialogBinding
-import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import kotlin.reflect.KClass
 

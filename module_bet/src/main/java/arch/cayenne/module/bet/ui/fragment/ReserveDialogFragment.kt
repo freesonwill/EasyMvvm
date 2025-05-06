@@ -13,7 +13,7 @@ import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
-import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 
