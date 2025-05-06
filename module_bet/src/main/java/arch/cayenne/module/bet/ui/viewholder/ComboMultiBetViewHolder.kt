@@ -35,6 +35,8 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         if (item.inputMoney > 0) {
             val money = "\$ ${item.inputMoney.getMoney()}"
             mBinding.etMoney.setText(money)
+        } else {
+            mBinding.etMoney.setText("")
         }
         val moneyHint = "\$ ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         mBinding.etMoney.hint = moneyHint

@@ -96,6 +96,12 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
+    fun setSelection(matchId: Long, selectionId: Long) {
+        viewModelScope.launch {
+            val status = betRepository.setSelection(matchId, selectionId)
+        }
+    }
+
     fun setSelectedDate(date: String) {
         if (_selectedDate.value == date) return
         _selectedDate.value = date
