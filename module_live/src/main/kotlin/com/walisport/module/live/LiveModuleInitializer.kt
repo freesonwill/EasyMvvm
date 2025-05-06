@@ -18,7 +18,6 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
-import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel

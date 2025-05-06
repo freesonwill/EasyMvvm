@@ -4,6 +4,7 @@ import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -72,7 +73,11 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                             submitAdapter(
                                 it.recyclerSelection, item, position
                             )
-                            it.betUnsettledBtSettle.tag = position
+                            configView(
+                                item.order,
+                                position,
+                                tvEarlySettle = it.betUnsettledBtSettle
+                            )
                         }
                     }
 
@@ -83,7 +88,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipConfirmBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initView(nBinding.recyclerSelection,nBinding.ivTip)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection, nBinding.ivTip)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -107,7 +112,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             is AdapterLiveBetSlipSettledBinding -> {
                 val nBinding = binding
                 when (method) {
-                    METHOD_INIT -> initView(nBinding.recyclerSelection,nBinding.ivTip)
+                    METHOD_INIT -> initView(nBinding.recyclerSelection, nBinding.ivTip)
                     METHOD_UPDATE -> item?.order?.let {
                         nBinding.also {
                             updateData(
@@ -148,7 +153,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                     METHOD_INIT -> initView(nBinding.recyclerSelection)
 
                     METHOD_UPDATE -> item?.reserve?.let {
-                        updateReserveData(position,item.reserve, nBinding)
+                        updateReserveData(position, item.reserve, nBinding)
                         submitReserveAdapter(nBinding.recyclerSelection, item.reserve)
                     }
 
@@ -161,7 +166,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
     /**
      * 投注单RecyclerView
      * */
-    private fun initView(recyclerView: RecyclerView, ivTip:ImageView? = null) {
+    private fun initView(recyclerView: RecyclerView, ivTip: ImageView? = null) {
         val manager = LinearLayoutManager(binding.root.context)
         val adapter = LiveBetSlipSelectionAdapter(
             betSlipType,
@@ -177,7 +182,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         }
         ivTip?.let {
             it.clickNoRepeat {
-             showBetTip(ivTip)
+                showBetTip(ivTip)
             }
         }
     }
@@ -237,7 +242,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         tvPartEarlySettled?.text = order.earlySettlePrice.price
         tvWinLoseAmount?.text = winOrLoseAmount(
             order.betAmount, order.returnAmount
-        ).toString() // order.betAmount-order.returnAmount
+        ).toString()
         tvStatus?.let {
             val status = LiveBetSlipResultOrderStatusEnum.getStatus(order.status)
             status?.let { st ->
@@ -306,7 +311,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
      * 预约单数据更新
      * */
     private fun updateReserveData(
-       position:Int, order: Common.ReserveOrder, nBinding: AdapterLiveBetSlipReserveBinding
+        position: Int, order: Common.ReserveOrder, nBinding: AdapterLiveBetSlipReserveBinding
     ) {
         with(nBinding) {
             val selection = order.selection
@@ -320,12 +325,26 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         }
     }
 
-    private fun showBetTip(attachView:View){
+    private fun configView(order: Order, position: Int, tvEarlySettle: LinearLayout? = null) {
+        tvEarlySettle?.let {
+//            it.isVisible = order.earlySupport
+            it.tag = position
+        }
+    }
+
+    private fun showBetTip(attachView: View) {
         val pop = PopupWindow(attachView.context)
-        pop.contentView = ItemTipsLayoutBinding.inflate(LayoutInflater.from(attachView.context)).root
+        pop.contentView =
+            ItemTipsLayoutBinding.inflate(LayoutInflater.from(attachView.context)).root
         pop.isOutsideTouchable = true
-        pop.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(attachView.context,
-            arch.cayenne.lib.common.R.color.tran_0)))
+        pop.setBackgroundDrawable(
+            ColorDrawable(
+                ContextCompat.getColor(
+                    attachView.context,
+                    arch.cayenne.lib.common.R.color.tran_0
+                )
+            )
+        )
         pop.showAsDropDown(attachView)
     }
 }
