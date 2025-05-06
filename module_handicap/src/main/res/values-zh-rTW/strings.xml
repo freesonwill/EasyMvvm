@@ -11,4 +11,10 @@
     <string name="tip_error">很遺憾，猜錯了</string>
     <string name="go_to_bet">去投注</string>
     <string name="next_question">下壹題</string>
+
+    <string name="win_all">全赢</string>
+    <string name="lose_all">全輸</string>
+    <string name="half_win">贏壹半</string>
+    <string name="half_lose">輸壹半</string>
+    <string name="seed_money">退本金</string>
 </resources>
