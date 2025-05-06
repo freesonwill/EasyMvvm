@@ -5,12 +5,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import com.walisport.app.data.SplashViewModel
+import com.walisport.app.ui.viewmodel.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.socket.data.LoginTokenFailedError
 import arch.cayenne.lib.socket.data.ResponseTimeOutError
@@ -120,7 +119,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
-        StatusBarConfig.statusBarColor =immersionBarColorExt(mViewModel.getSkinType())
+        StatusBarConfig.hideStatusBar = true
         return StatusBarConfig
     }
 

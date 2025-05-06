@@ -1,4 +1,4 @@
-package com.walisport.app.data
+package com.walisport.app.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
