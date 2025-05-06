@@ -7,7 +7,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -16,12 +15,12 @@ import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.MatchListViewModel
-import arch.cayenne.module.home.R
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -112,28 +111,26 @@ class MatchListPagerFragment :
 
     override fun createObserver() {
         homeViewModel.selectedDate.observe(viewLifecycleOwner) { date ->
-            "selectedDate: $date".logd()
-            refreshListByDate()
-            if (date.isNullOrEmpty()) {
-                //切換後選回全部
-            } else {
-                //TODO 早盤更新選中的日期列表
-            }
+            refreshListByDate(date)
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             matchAdapter.submitList(matchList)
-
         }
-
     }
 
     fun test() {
 
     }
 
-    private fun refreshListByDate() {
-        //TODO 早盤更新選中的日期列表
+    private fun refreshListByDate(date: Long) {
+        if (date.toInt() == 0) {
+            //切換後選回全部
+            mViewModel.setSelectedDate(0)
+        } else {
+            mViewModel.setSelectedDate(date)
+        }
+        mViewModel.getCurrentMatch()
     }
 
     override fun initData() {
@@ -142,7 +139,6 @@ class MatchListPagerFragment :
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
         }
-        //TODO 早盤日期要資料
         mViewModel.getCurrentMatch()
     }
 
