@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -42,10 +43,20 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
             }
             launch {
                 repo.observeComboMultiBet().collect { beans ->
-                    val balance = balanceRepo.getBalance()
-                    val sumMoney = beans.sumOf { it.inputMoney }
-                    if (sumMoney > balance) {
-                        beans.forEach { it.inputMoney = 0 }
+                    val oriData = _onComboMultiBetBeanListener.value
+                    if (oriData.isNullOrEmpty()) {
+                        val balance = balanceRepo.getBalance()
+                        val sumMoney = beans.sumOf { it.inputMoney }
+                        if (sumMoney > balance) {
+                            beans.forEach { it.inputMoney = 0L }
+                        }
+                    } else {
+                        beans.forEach { newBean ->
+                            val oldBean = oriData.find { it.combo == newBean.combo }
+                            if (oldBean != null) {
+                                newBean.inputMoney = oldBean.inputMoney
+                            }
+                        }
                     }
                     setMultiBetBean(beans)
                 }
@@ -89,5 +100,11 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
         _onComboMultiBetBeanListener.value = data
+    }
+
+    fun saveInputMoney() {
+        onComboMultiBetBeanListener.value?.let {
+            repo.saveInputMoney(it)
+        }
     }
 }

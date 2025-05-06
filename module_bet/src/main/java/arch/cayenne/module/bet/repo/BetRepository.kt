@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.repo
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
@@ -11,46 +12,61 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class BetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
     private val matchDao: MatchDao
 ) : BaseRepository() {
-    // TODO 收到empty相當於是第一次單注投注, 跳彈窗
+
     val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
 
     /***
      * 新增投注資料
      * @return type 返回單注or串關
      */
-    suspend fun setSelection(matchId: Long, selectionId: Long) {
+    suspend fun setSelection(matchId: Long, selectionId: Long): AddSelectionStatus = withContext(scope.coroutineContext) {
         val bet = betDao.getCurrentBet()
-        // 如果bet db無資料則新增，有資料則更新selection，相同selectionId則刪除
         val betId = bet?.betId ?: betDao.insert(BetBean())
-        val selections = betDao.getSelections(betId)
-        val selection = selections.find { it.matchId == matchId }
-        if (selection == null) {
-            addSelection(betId, matchId, selectionId)
-        } else {
-            if (selection.selectionId == selectionId) {
-                betDao.removeBetSelectionByMatchId(betId, matchId)
-            } else {
-                getSelectionLiteBean(betId, matchDao.getOneMatchById(matchId), matchDao.getSelectionById(selectionId))?.let { selectionLiteBean ->
-                    betDao.updateSelection(selectionLiteBean)
-                }
-            }
-        }
-        checkBetBeanType(betId)
-    }
 
-    private suspend fun addSelection(betId: Long, matchId: Long, selectionId: Long) {
-        val match = matchDao.getOneMatchById(matchId)
-        val selection = matchDao.getSelectionById(selectionId)
-        getSelectionLiteBean(betId, match, selection)?.let { selectionLiteBean ->
-            betDao.insertSelection(selectionLiteBean)
+        val selections = betDao.getSelections(betId)
+        val existing = selections.find { it.matchId == matchId }
+
+        // 1. 同場次 selection 存在且相同 → 刪除
+        if (existing?.selectionId == selectionId) {
+            betDao.removeBetSelectionByMatchId(betId, matchId)
+            checkBetBeanType(betId)
+            return@withContext AddSelectionStatus.REMOVE
         }
+
+        // 2. 該場次還沒加進去 → 新增
+        if (existing == null) {
+            val newSelection = matchDao.getSelectionById(selectionId)
+
+            // 非讓分盤則無法加入組合單
+            if (!newSelection.parlay) {
+                return@withContext AddSelectionStatus.DISABLE_COMBO
+            }
+
+            val match = matchDao.getOneMatchById(matchId)
+            getSelectionLiteBean(betId, match, newSelection)?.let {
+                betDao.insertSelection(it)
+            }
+
+            checkBetBeanType(betId)
+            return@withContext if (bet == null) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
+        }
+
+        // 3. 同場次但不同 selection → 更新
+        val match = matchDao.getOneMatchById(matchId)
+        val newSelection = matchDao.getSelectionById(selectionId)
+        getSelectionLiteBean(betId, match, newSelection)?.let {
+            betDao.updateSelection(it)
+        }
+
+        checkBetBeanType(betId)
+        return@withContext AddSelectionStatus.UPDATE
     }
 
     private suspend fun checkBetBeanType(betId: Long) {

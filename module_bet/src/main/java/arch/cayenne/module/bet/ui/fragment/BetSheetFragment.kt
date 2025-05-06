@@ -116,6 +116,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun superDismiss() {
+        mViewModel.unregister()
         parentFragmentManager.setFragmentResult(KEY_RESULT, Bundle().apply {
             putString(VALUE_DISMISS, VALUE_DISMISS)
         })

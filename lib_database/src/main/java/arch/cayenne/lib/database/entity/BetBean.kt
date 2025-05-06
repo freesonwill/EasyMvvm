@@ -48,8 +48,22 @@ data class BetSelectionBean(
     val matchName: String, // 赛事名称 ex. 中國 vs 日本
     var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
-    var isParlay: Boolean
-)
+    var isParlay: Boolean,
+    var oddsStatus: OddsStatusEnum? = null
+) {
+    fun updateOdds(newOdds: Int) {
+        val lastOdds = odds
+        odds = newOdds
+        oddsStatus = if (lastOdds == newOdds) {
+            OddsStatusEnum.SAME
+        } else if (lastOdds > newOdds) {
+            OddsStatusEnum.DOWN
+        } else {
+            OddsStatusEnum.UP
+        }
+    }
+
+}
 
 enum class BetTypeEnum {
     SINGLE, COMBO, RESERVE
@@ -59,6 +73,20 @@ enum class BetStatusEnum {
     PENDING, // 待下注
     BETTING, // 下注中
     COMPLETE // 下注完成, 完成並非成功!!
+}
+
+enum class AddSelectionStatus {
+    SINGLE,
+    COMBO,
+    DISABLE_COMBO,
+    UPDATE,
+    REMOVE
+}
+
+enum class OddsStatusEnum {
+    UP,
+    DOWN,
+    SAME
 }
 
 enum class BetResultStatusEnum(val code: Int) {

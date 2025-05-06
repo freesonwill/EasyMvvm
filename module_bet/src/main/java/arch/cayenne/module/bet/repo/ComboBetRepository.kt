@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.repo
 
+import android.util.Log
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
@@ -30,32 +31,34 @@ class ComboBetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let {  bet ->
                 betDao.observeSelections(bet.betId).collect {
-                    val selection = betDao.getSelections(bet.betId)
-                    selectionFlow.emit(selection)
-                    if (selection.isNotEmpty()) {
-                        remoteManager.getComboRisk(selection)?.let { riskList ->
-                            val lastDetail = betDao.getDetail(bet.betId)
-                            val multiBet = calculateMultiBetSums(selection, riskList).map { bean ->
-                                val detail = lastDetail.firstOrNull { it.combo == bean.combo }
-                                if (detail == null) {
-                                    bean
-                                } else {
-                                    ComboMultiBetBean(
-                                        combo = bean.combo,
-                                        sumOdds = bean.sumOdds,
-                                        count = bean.count,
-                                        inputMoney = detail.inputMoney,
-                                        minAmount = bean.minAmount,
-                                        maxAmount = bean.maxAmount
-                                    )
-                                }
-
-                            }
-                            comboMultiBetFlow.emit(multiBet)
-                        }
+                    selectionFlow.emit(it)
+                    if (it.isNotEmpty()) {
+                        val detail = betDao.getDetail(bet.betId)
+                        setComboMulti(it, detail)
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun setComboMulti(data: List<BetSelectionBean>, detailList: List<BetDetailBean>? = null) {
+        remoteManager.getComboRisk(data)?.let { riskList ->
+            val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
+                val detail = detailList?.find { it.combo == bean.combo }
+                if (detail == null) {
+                    bean
+                } else {
+                    ComboMultiBetBean(
+                        combo = bean.combo,
+                        sumOdds = bean.sumOdds,
+                        count = bean.count,
+                        inputMoney = detail.inputMoney,
+                        minAmount = bean.minAmount,
+                        maxAmount = bean.maxAmount
+                    )
+                }
+            }
+            comboMultiBetFlow.emit(multiBet)
         }
     }
 
@@ -66,9 +69,10 @@ class ComboBetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 val selection =
-                    betDao.getSelections(bet.betId).firstOrNull { it.selectionId == selectionId }
+                    betDao.getSelections(bet.betId).find { it.selectionId == selectionId }
                 if (selection != null) {
                     betDao.removeBetSelectionByMatchId(bet.betId, selection.matchId)
+                    remoteManager.unregisterMatchNotify(listOf(selection.matchId))
                 }
             }
         }
@@ -84,6 +88,27 @@ class ComboBetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let {
                 betDao.updateBetType(it.betId, BetTypeEnum.SINGLE)
+            }
+        }
+    }
+
+    fun saveInputMoney(data: List<ComboMultiBetBean>) {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                if (bet.betType == BetTypeEnum.COMBO) {
+                    val betId = bet.betId
+                    val detailBean = data.map { bean ->
+                        BetDetailBean(
+                            betId = betId,
+                            combo = bean.combo,
+                            orderId = "",
+                            sumOdds = bean.sumOdds,
+                            count = bean.count,
+                            inputMoney = bean.inputMoney
+                        )
+                    }
+                    betDao.insertDetail(detailBean)
+                }
             }
         }
     }
