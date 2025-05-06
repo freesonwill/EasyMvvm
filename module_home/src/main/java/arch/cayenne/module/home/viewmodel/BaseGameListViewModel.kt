@@ -1,11 +1,8 @@
 package arch.cayenne.module.home.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.room.Transaction
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -15,9 +12,6 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -32,6 +26,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
+    private var _selectedDate: Long = 0
     var page: Int = 1
     private var isLoadingData = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
@@ -88,6 +83,10 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     }
     fun setPlayTypeId(id: Int) {
         _playType = id
+    }
+
+    fun setSelectedDate(id: Long = 0) {
+        _selectedDate = id
     }
 
     fun getPlayTypeId(): Int = _playType
