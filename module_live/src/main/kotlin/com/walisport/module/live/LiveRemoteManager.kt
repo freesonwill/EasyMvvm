@@ -4,7 +4,6 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
 import galaxy.client.proto.Client.EarlySettlePriceResp
@@ -34,7 +33,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-
         return if (res.error == null && res.data != null) {
             val data = res.data!!
 
@@ -62,7 +60,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): List<Common.Match>? {
+    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): Common.Match? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -74,7 +72,9 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
-            return result.data!!.matchList
+            return result.data!!.matchList.find {
+                it.matchId==matchId
+            }
         }
         return null
     }
@@ -109,7 +109,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 endTime?.let { this.endTime = endTime }
             }.build()
         }
-        LogUtils.dTag("aaa", "result ${Gson().toJson(result)}")
         if (result.error == null && result.data != null) {
             return result.data!!.orderList
         }
@@ -244,7 +243,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
 
-        LogUtils.dTag("aaa","提前结算 result ${Gson().toJson(result)}")
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -298,7 +296,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 addBetId(betId)
             }.build()
         }
-        LogUtils.dTag("aaa","betId $betId earlySettlePrice  ${Gson().toJson(result)}")
         if(result.error == null && result.data != null){
             return result.data
         }

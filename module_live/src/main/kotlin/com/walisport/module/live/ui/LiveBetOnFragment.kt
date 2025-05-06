@@ -51,7 +51,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun initData() {
-        mViewModel.observeMarketTypeBean()
         super.initData()
     }
     fun showData(list: List<MarketMenuBean>?) {
@@ -86,6 +85,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     override fun createObserver() {
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+            mViewModel.observeMarketTypeBean()
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it.basicInfo != null) {
                 if (it.basicInfo.betStop) {
