@@ -7,6 +7,7 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.enums.PlayType
@@ -14,6 +15,7 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -146,10 +148,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         }
     }
 
-    @Transaction
-    fun setSelection(matchId: Long, selectionId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            betRepository.setSelection(matchId, selectionId)
-        }
+    suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
+        return betRepository.setSelection(matchId, selectionId)
     }
 }
