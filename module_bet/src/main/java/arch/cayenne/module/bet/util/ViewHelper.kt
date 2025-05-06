@@ -20,7 +20,7 @@ internal object ViewHelper {
         binding.tvLeagueName.text = bean.leagueName
 
         binding.tvStatus.isVisible = bean.isPlaying
-        binding.tvBetStop.isVisible = bean.isActive
+        binding.tvBetStop.isVisible = !bean.isActive
 
         val oddsColor = when (bean.oddsStatus) {
             OddsStatusEnum.UP -> ContextCompat.getColor(binding.root.context, arch.cayenne.module.bet.R.color.green)

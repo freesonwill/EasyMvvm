@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.module.bet.data.NumberOverEnum
 import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
@@ -59,8 +60,27 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
                 repo.observeComboBean().collect {
                     _onOddsListener.value = it.sumOdds
                     setNumberLimit(it.minAmount, it.maxAmount)
-                    if (it.inputMoney > 0) {
-                        setEditNumber(it.inputMoney)
+                    val oriData = onEditNumber.value
+                    if (oriData == null) {
+                        val balance = balanceRepo.getBalance()
+                        if (it.inputMoney > balance) {
+                            it.inputMoney = 0
+                            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                        } else if (it.inputMoney > it.maxAmount) {
+                            it.inputMoney = it.maxAmount
+                        }
+                        if (it.inputMoney > 0L) {
+                            setEditNumber(it.inputMoney)
+                        }
+                    } else {
+                        val oriMoney = oriData.toMoney()
+                        if (oriMoney > it.maxAmount) {
+                            setEditNumber(it.maxAmount)
+                        } else if (oriMoney < it.minAmount) {
+                            setEditNumber(it.minAmount)
+                        } else {
+                            setEditNumber(oriMoney)
+                        }
                     }
                 }
             }

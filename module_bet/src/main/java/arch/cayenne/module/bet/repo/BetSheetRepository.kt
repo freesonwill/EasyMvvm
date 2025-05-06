@@ -23,6 +23,7 @@ class BetSheetRepository(
                         oldSelection.updateOdds(newSelection.odds)
                         oldSelection.isActive = newSelection.isActive
                         oldSelection.isParlay = newSelection.isParlay
+                        betDao.updateSelection(oldSelection)
                     }
                 }
             }

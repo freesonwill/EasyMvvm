@@ -37,25 +37,13 @@ class BettingRemoteManager(
 
     init {
         scope.launch {
-            socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).collect { res ->
-                if (res.error == null && res.data != null) {
-                    val data = res.data!!
-                    val matchId = data.matchId
-                    val notifyList = data.marketUpdateList
-                        .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
-                        .flatMap { it.selectionList }
-                        .map { selection ->
-                            BetNotifySelectionBean(
-                                matchId,
-                                selection.selectionId,
-                                selection.odds.toOdds(),
-                                selection.active,
-                                selection.parlay
-                            )
-                        }
-                    _matchNotifyFlow.emit(notifyList)
+            socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY)
+                .collect { res ->
+                    if (res.error == null && res.data != null) {
+                        val data = res.data!!
+                        setMatchNotifyData(data)
+                    }
                 }
-            }
         }
     }
 
@@ -185,13 +173,14 @@ class BettingRemoteManager(
             }.build()
         }
         return if (res.error == null && res.data != null) {
-            val data = res.data!!.riskList.first()
-            SingleRiskDataModel(
-                matchId = data.matchId,
-                selectionId = data.selectionId,
-                minAmount = data.min,
-                maxAmount = data.max
-            )
+            res.data!!.riskList.firstOrNull()?.let { data ->
+                SingleRiskDataModel(
+                    matchId = data.matchId,
+                    selectionId = data.selectionId,
+                    minAmount = data.min,
+                    maxAmount = data.max
+                )
+            }
         } else {
             null
         }
@@ -229,7 +218,7 @@ class BettingRemoteManager(
         }
     }
 
-    suspend fun registerMatchNotify(matchIds: List<Long>): List<BetNotifySelectionBean>? {
+    suspend fun registerMatchNotify(matchIds: List<Long>) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -240,23 +229,10 @@ class BettingRemoteManager(
             }.build()
         }
         if (res.error == null && res.data != null) {
-            res.data!!.matchNotifyList.map {
-                val matchId = it.matchId
-                return it.marketUpdateList
-                    .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
-                    .flatMap { it.selectionList }
-                    .map { selection ->
-                        BetNotifySelectionBean(
-                            matchId,
-                            selection.selectionId,
-                            selection.odds.toOdds(),
-                            selection.active,
-                            selection.parlay
-                        )
-                    }
+            res.data!!.matchNotifyList.forEach {
+                setMatchNotifyData(it)
             }
         }
-        return null
     }
 
     fun unregisterMatchNotify(matchIds: List<Long>) {
@@ -271,5 +247,22 @@ class BettingRemoteManager(
                 }.build()
             }
         }
+    }
+
+    private fun setMatchNotifyData(data: Client.MatchNotify) {
+        val matchId = data.matchId
+        val selection = data.marketUpdateList
+            .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
+            .flatMap { it.selectionList }
+            .map { selection ->
+                BetNotifySelectionBean(
+                    matchId,
+                    selection.selectionId,
+                    selection.odds.toOdds(),
+                    selection.active,
+                    selection.parlay
+                )
+            }
+        _matchNotifyFlow.tryEmit(selection)
     }
 }
