@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_message"
+    app:startDestination="@id/messageMainFragment">
+
+    <fragment
+        android:id="@+id/messageMainFragment"
+        android:name="com.walisport.module.message.ui.fragment.MessageMainFragment"
+        android:label="fragment_message_main"
+        tools:layout="@layout/fragment_message_main">
+
+        <deepLink app:uri="walisport://module_message/messageFragment" />
+    </fragment>
+
+</navigation>

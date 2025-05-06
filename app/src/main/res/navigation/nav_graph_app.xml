@@ -11,5 +11,7 @@
     <include app:graph="@navigation/nav_graph_search" />
     <include app:graph="@navigation/nav_graph_handicap" />
     <include app:graph="@navigation/nav_graph_common" />
+    <include app:graph="@navigation/nav_graph_feedback" />
+    <include app:graph="@navigation/nav_graph_message" />
 
 </navigation>

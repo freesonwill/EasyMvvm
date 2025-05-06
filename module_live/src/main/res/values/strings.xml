@@ -36,6 +36,7 @@
     <string name="live_bet_reserve_expired">预约失效</string>
     <string name="live_bet_grounder">滚球</string>
     <string name="live_bet_bet_num">注单号</string>
+    <string name="live_bet_rejection">拒单</string>
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
@@ -58,6 +59,16 @@
     <string name="share_link">复制链接</string>
     <string name="choose_commentary">选解说</string>
     <string name="statistics">技术统计</string>
+    <string name="statistics_attack">进攻</string>
+    <string name="statistics_danger">危险进攻</string>
+    <string name="statistics_kql">控球率</string>
+    <string name="statistics_sms">射门数</string>
+    <string name="statistics_szs">射正数</string>
+    <string name="statistics_cqs">传球数</string>
+    <string name="statistics_cqcgl">传球成功率</string>
+    <string name="statistics_ryq">任意球</string>
+    <string name="statistics_jq">角球</string>
+    <string name="statistics_yw">越位</string>
     <string name="choose_source">选直播源</string>
     <string name="soft_keyboard_talk">说点什么...</string>
 
@@ -72,13 +83,13 @@
     <string name="lineup_today">今天</string>
 
     <string name="not_started">足球比赛未开始</string>
-   <string name="first_half">足球上半场</string>
+    <string name="first_half">足球上半场</string>
     <string name="half_time">足球中场休息</string>
     <string name="second_half">足球下半场</string>
     <string name="ft_finish">足球常规时间结束</string>
     <string name="et_first_half">足球et(加时赛)上半场</string>
     <string name="et_half_time">足球et(加时赛)半场时间</string>
-   <string name="et_second_half">足球et(加时赛)-后半场</string>
+    <string name="et_second_half">足球et(加时赛)-后半场</string>
     <string name="et_finish">足球et(加时赛)-结束</string>
     <string name="penalty">足球点球大战</string>
     <string name="finish">足球比赛结束</string>
@@ -100,4 +111,18 @@
     <string name="live_out_know">我知道了</string>
     <string name="live_out_dialog_tip">这个图表让你能洞悉比赛的进程，柱状显示的是球队在比赛中攻势的变化趋势</string>
     <string name="bet_stop">已停止投注,请换个试一试~</string>
+
+    <string name="keyboard_max">最高</string>
+    <string name="keyboard_clear">清空</string>
+    <string name="keyboard_double">双倍</string>
+    <string name="cancel">取消</string>
+    <string name="refund_amount">返还金额$%1$s</string>
+    <string name="want_settle_early">确定提前结算吗?</string>
+    <string name="capital">本金</string>
+    <string-array name="keyboard_percent">
+        <item>全部</item>
+        <item>25%</item>
+        <item>50%</item>
+        <item>75%</item>
+    </string-array>
 </resources>

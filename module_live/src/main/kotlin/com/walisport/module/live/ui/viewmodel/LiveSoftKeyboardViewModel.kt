@@ -2,10 +2,7 @@ package com.walisport.module.live.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.live.R
-import com.walisport.module.live.data.BidEmojiEnum
-import com.walisport.module.live.data.EmojiEnum
-import com.walisport.module.live.data.KeyBoardTabData
-import com.walisport.module.live.data.model.EmojiData
+import com.walisport.module.live.data.model.KeyBoardTabData
 
 class LiveSoftKeyboardViewModel : BaseViewModel() {
 

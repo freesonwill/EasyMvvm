@@ -1,15 +1,16 @@
 package arch.cayenne.module.home.ui.viewholder
 
-import android.view.LayoutInflater
+import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
@@ -18,19 +19,29 @@ import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
-import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
+import arch.cayenne.module.home.ui.adapter.OddsColumnAdapter
 import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
     private val onMatchItemClickListener: MatchItemAdapter.OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
+    private lateinit var oddsColumnAdapter: OddsColumnAdapter
+
+
+    private lateinit var currentMatchWithMarkets: MatchWithMarkets
 
     fun init(data: MatchWithMarkets) {
+        oddsColumnAdapter = OddsColumnAdapter { selection, isSelected ->
+            onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
+        }
+        currentMatchWithMarkets = data
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
+
+            //賽事資訊
             Glide.with(binding.root).load(basicInfo.tournamentIcon).into(ivTournamentIcon)
             tvTournamentName.text = basicInfo.tournamentName
             //TODO 階段與時間待確認
@@ -57,8 +68,7 @@ class MatchItemViewHolder(
 
             val columnCount = markets.size
             layoutOddsTitle.columnCount = columnCount
-            layoutOddsGrid.columnCount = columnCount
-            //TODO 獨贏的主客和要改
+
             markets.forEachIndexed { index, bean ->
                 val titleView = TextView(binding.root.context).apply {
                     text = bean.market.marketName
@@ -81,52 +91,64 @@ class MatchItemViewHolder(
                 layoutOddsTitle.addView(titleView, lp)
             }
 
-            val maxRowCount = markets.maxOfOrNull { it.selections.size } ?: 0
-            layoutOddsGrid.rowCount = maxRowCount
+            rvOddsGrid.apply {
+                layoutManager = GridLayoutManager(root.context, 3)
+                adapter = oddsColumnAdapter
 
-            for (rowIndex in 0 until maxRowCount) {
-                markets.forEachIndexed { columnIndex, market ->
-                    val selections = market.selections
-                    val selection = selections.getOrNull(rowIndex)
-                    "joseph row:$rowIndex column:$columnIndex, selections:$selections".logd()
-                    val view = LayoutInflater.from(binding.root.context)
-                        .inflate(R.layout.item_odds_cell, layoutOddsGrid, false)
-                    val oddsCellBinding = ItemOddsCellBinding.bind(view)
+                val spacing = 2.dp2px
+                if (itemDecorationCount > 0) { removeItemDecorationAt(0) }
+                addItemDecoration(object : RecyclerView.ItemDecoration() {
+                    override fun getItemOffsets(
+                        outRect: Rect,
+                        view: View,
+                        parent: RecyclerView,
+                        state: RecyclerView.State
+                    ) {
+                        val position = parent.getChildAdapterPosition(view)
+                        if (position == RecyclerView.NO_POSITION) return
 
-                    if (selection != null) {
-                        oddsCellBinding.tvShortName.text = selection.shortName
-                        oddsCellBinding.tvOdds.text = selection.odds.getOdds()
-
-                        if (!selection.active) {
-                            oddsCellBinding.tvShortName.visibility = View.GONE
-                            oddsCellBinding.tvOdds.visibility = View.GONE
-                            oddsCellBinding.ivLock.visibility = View.VISIBLE
-                            oddsCellBinding.llOddsCell.isEnabled = false
-                        } else {
-                            oddsCellBinding.ivLock.visibility = View.GONE
-                            oddsCellBinding.tvShortName.visibility = View.VISIBLE
-                            oddsCellBinding.tvOdds.visibility = View.VISIBLE
-                            oddsCellBinding.llOddsCell.isEnabled = true
-                            oddsCellBinding.llOddsCell.setOnClickListener {
-                                //TODO 點擊狀態顯示規則待處理
-                                onMatchItemClickListener?.onOddsCellClick(data, selection)
-                            }
-                        }
-                    } else {
-                        // 無資料
-                        oddsCellBinding.root.visibility = View.GONE
+                        val column = position % 3
+                        outRect.left = spacing / 2
+                        outRect.right = spacing / 2
                     }
+                })
+            }
 
-                    val cellParams = GridLayout.LayoutParams().apply {
-                        width = 0
-                        height = 43.dp2px
-                        columnSpec = GridLayout.spec(columnIndex, 1f)
-                        rowSpec = GridLayout.spec(rowIndex, 1f)
-                        setMargins(0, 2.dp2px, 2.dp2px, 0)
-                    }
+            val selectionsGrouped = data.markets.map { it.selections }
+            oddsColumnAdapter.submitList(selectionsGrouped)
+        }
+    }
 
-                    layoutOddsGrid.addView(oddsCellBinding.root, cellParams)
+    fun bindPayload(item: MatchWithMarkets, payloads: List<Any>) {
+        val changes = payloads.firstOrNull() as? Set<*> ?: return
+        with(mBinding) {
+            val basicInfo = item.match.basicInfo
+            val liveInfo = item.match.liveInfo
+
+            if ("status" in changes) {
+                if (basicInfo.status == 4) {
+                    tvGameStatus.text = basicInfo.startTime.toLocalDateTimeString()
+                    tvGameTime.visibility = TextView.GONE
+                } else {
+                    tvGameStatus.text = liveInfo.period
+                    tvGameTime.visibility = TextView.VISIBLE
+                    tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
                 }
+            }
+
+            if ("clock" in changes) {
+                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+            }
+            if ("score" in changes) {
+                tvAwayScore.text = liveInfo.score.getAwayScore()
+                tvHomeScore.text = liveInfo.score.getHomeScore()
+            }
+            if ("viewerCount" in changes) {
+                tvWatchCount.text = liveInfo.viewerCount.toString()
+            }
+            if ("odds" in changes) {
+                val selectionsGrouped = item.markets.map { it.selections }
+                oddsColumnAdapter.submitList(selectionsGrouped)
             }
         }
     }

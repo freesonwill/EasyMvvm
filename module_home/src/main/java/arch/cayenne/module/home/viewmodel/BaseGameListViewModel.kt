@@ -1,15 +1,20 @@
 package arch.cayenne.module.home.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.room.Transaction
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -17,19 +22,33 @@ import org.koin.core.parameter.parametersOf
 
 abstract class BaseGameListViewModel: BaseViewModel() {
     companion object {
-        const val DEFAULT_MATCH_SIZE = 3
+        const val DEFAULT_MATCH_SIZE = 10
     }
 
     private var _sportId = SportType.Init.id
-    abstract val playType: PlayType
+    private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
     var page: Int = 1
+    private var isLoadingData = false
+    private val subscribeMatchSet by lazy { HashSet<Long>() }
     private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
+    private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     override fun initViewModel() {
         super.initViewModel()
-        observeMatchData()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeMatchNotify().collect { matchWithMarket ->
+                if (matchListChange.value == null) return@collect
+                val old = matchListChange.value!!.toMutableList()
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = old
+                }
+            }
+        }
     }
 
     fun setSportId(id: Int) {
@@ -37,40 +56,85 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     }
 
     fun setTournamentId(id: Int) {
+        if (_tournamentId == id) return
         _tournamentId = id
     }
+    fun setPlayTypeId(id: Int) {
+        _playType = id
+    }
 
-    private fun observeMatchData() {
+    fun getPlayTypeId(): Int = _playType
+
+    fun getTournamentId() = _tournamentId
+
+    fun loadNextPage() {
+        if (isLoadingData) return
+        page++
+        getCurrentMatch()
+    }
+
+    //取得分頁的比賽列表
+    fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeFullMatchData(
-                playType = playType.id,
-                tournamentId = _tournamentId,
-                page = page,
-                startTime = 0
-            ).collect { list ->
-                //TODO 接上被動連接的資料
-//                if (list.isNotEmpty()) {
-//                    withContext(Dispatchers.Main) {
-//                        matchListChange.value = list
-//                    }
-//                }
+            isLoadingData = true
+            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
+            val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, 0)
+            if (list.isNotEmpty()) {
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
+                        matchListChange.value!! + list
+                    } else {
+                        list
+                    }
+                }
+            }
+            isLoadingData = false
+        }
+    }
+
+    fun subscribeMatch(ids: Set<Long>) {
+        val subscribe = ids - subscribeMatchSet
+        val cancel = subscribeMatchSet - ids
+        subscribeMatchSet.clear()
+        subscribeMatchSet.addAll(ids)
+        viewModelScope.launch(Dispatchers.IO) {
+            launch {
+                "取消訂閱比賽  $cancel".logi(this::class.java.name)
+                if (cancel.isNotEmpty()) {
+                    repository.cancelSubscribeMatch(cancel.toList())
+                }
+            }
+            launch {
+                "訂閱比賽  $subscribe".logi(this::class.java.name)
+                if (matchListChange.value != null && subscribe.isNotEmpty()) {
+                    val matchWithMarkets = repository.subscribeMatch(subscribe.toList())
+                    val old = matchListChange.value!!.toMutableList()
+                    matchWithMarkets.forEach { matchWithMarket ->
+                        val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                        if (index != -1) { old[index] = matchWithMarket }
+                    }
+                    withContext(Dispatchers.Main) {
+                        matchListChange.value = old
+                    }
+                }
             }
         }
     }
 
-    fun getTournamentId() = _tournamentId
+    @Transaction
+    fun setSelection(matchId: Long, selectionId: Long) {
 
-    //取得比賽列表
-    fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            "取得首頁比賽資料  PlayType = ${playType.id} sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
-            val list = repository.getAllMatch(playType.id, _sportId, _tournamentId, DEFAULT_MATCH_SIZE, page, 0)
-            if (list.isNotEmpty()) {
-                withContext(Dispatchers.Main) {
-                    matchListChange.value = list
-                }
+            betRepository.setSelection(matchId, selectionId)
+            val matchWithMarket = repository.getOneMatchById(matchId)
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarket?.apply {
+                val index = old.indexOfFirst { it.match.matchId == this.match.matchId }
+                if (index != -1) { old[index] = this }
             }
-
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
         }
     }
 }

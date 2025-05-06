@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_31"
+    android:layout_height="@dimen/dp_47"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/color_929298"
         android:textSize="@dimen/sp_14"
+        android:layout_marginTop="@dimen/dp_15"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -21,6 +22,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:layout_marginEnd="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_15"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_progress_name"/>
 
@@ -31,6 +33,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
         android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_15"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_progress_name"/>
 

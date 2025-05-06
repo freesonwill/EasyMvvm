@@ -8,11 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.model.LiveBetSlipData
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipConfirmBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 //注单确认‰‰
@@ -29,7 +31,6 @@ class LiveBetSlipConfirmFragment :
 
     private fun initRecycler() {
         val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.Confirming)
-        adapter.submitList(mViewModel.getTestList())
         val divider = DividerItemDecoration(context,DividerItemDecoration.VERTICAL)
         divider.setDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.item_divide_live_bet_recycler)!!)
         mBinding.recyclerView.also {
@@ -45,6 +46,25 @@ class LiveBetSlipConfirmFragment :
     }
 
     override fun createObserver() {
+        mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+            if (!it.isNullOrEmpty()) {
+                updateData(it)
+            } else {
+                showEmpty()
+            }
+        }
+    }
+
+    private fun showEmpty() {
+
+    }
+
+    private fun updateData(orders: List<Common.Order>) {
+        val list = orders.map { LiveBetSlipData(order = it) }.toList()
+        mBinding.recyclerView.adapter?.let {
+            val adapter = it as LiveBetSlipAdapter
+            adapter.submitList(list)
+        }
     }
 
     override fun initData() {

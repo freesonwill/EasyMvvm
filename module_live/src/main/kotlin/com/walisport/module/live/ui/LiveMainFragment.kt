@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TittleBarLiveBinding
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -63,9 +63,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = it.getFormalMoney()
+            titleBarBinding.tvMoney.text = "¥ ${it.getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {

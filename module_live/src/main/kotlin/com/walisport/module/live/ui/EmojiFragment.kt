@@ -55,8 +55,6 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
                 adapter.submitList(mViewModel.getBidEmojis())
                 mBinding.keyboardEmoji.adapter = adapter
             }
-
-
         }
     }
 

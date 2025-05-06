@@ -2,23 +2,24 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
-import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.HomeViewModel
-import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
-import kotlinx.coroutines.delay
 import arch.cayenne.module.home.viewmodel.MatchListViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -29,16 +30,6 @@ class MatchListPagerFragment :
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
-    private var leagueId: Int = -1
-    private var playTypeId: Int = -1
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            playTypeId = it.getInt(ARG_PLAY_TYPE_ID)
-            leagueId = it.getInt(ARG_LEAGUE_ID, TOURNAMENT_ALL_ID)
-        }
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -50,16 +41,60 @@ class MatchListPagerFragment :
                 override fun onFavoriteClick(item: MatchWithMarkets) {
                 }
 
-                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean) {
-                    homeViewModel.setSelection(item.match.matchId, selection.selectionId)
+                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
+                    mViewModel.setSelection(item.match.matchId, selection.selectionId)
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
+            val layoutManager = LinearLayoutManager(context)
             mBinding.rvHomeGameList.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = matchAdapter
+                this.layoutManager = layoutManager
+                this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
+
+            rvHomeGameList.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (matchAdapter.itemCount == 0) return
+                    rvHomeGameList.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+                    if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                        mViewModel.subscribeMatch(
+                            matchAdapter.currentList
+                                .slice(firstVisible..lastVisible)
+                                .map { it.match.matchId }
+                                .toSet()
+                        )
+                    }
+                }
+            })
+
+            rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 滑動停止時觸發
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                        val lastVisible = layoutManager.findLastVisibleItemPosition()
+                        val totalItemCount = layoutManager.itemCount
+                        //讀取下一頁
+                        if (lastVisible >= totalItemCount - 1) {
+                            mViewModel.loadNextPage()
+                        }
+                        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                            mViewModel.subscribeMatch(
+                                matchAdapter.currentList
+                                    .slice(firstVisible..lastVisible)
+                                    .map { it.match.matchId }
+                                    .toSet()
+                            )
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -78,16 +113,8 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            val oldList = matchAdapter.currentList
-            matchAdapter.submitList(oldList+matchList)
-            //測試
-            lifecycleScope.launch {
-                if (mViewModel.page <= 3) {
-                    delay(3000)
-                    mViewModel.page++
-                    mViewModel.getCurrentMatch()
-                }
-            }
+            matchAdapter.submitList(matchList)
+
         }
 
     }
@@ -102,15 +129,12 @@ class MatchListPagerFragment :
 
     override fun initData() {
         arguments?.apply {
-            mViewModel.setTournamentId(leagueId)
+            mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
+            mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
         }
+        "joseph initData: playTypeId: ${mViewModel.getPlayTypeId()}, tournamentId: ${mViewModel.getTournamentId()}".logd()
         //TODO 早盤日期要資料
-        if (playTypeId == PlayType.TODAY.id) {
-            //今日
-        } else if (playTypeId == PlayType.EARLY.id) {
-            //早盤初始化在全部賽事, viewmodel中比對startTime拿資料
-        }
         mViewModel.getCurrentMatch()
     }
 
@@ -118,7 +142,6 @@ class MatchListPagerFragment :
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
-        private const val ARG_DATE = "arg_date"
         fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {

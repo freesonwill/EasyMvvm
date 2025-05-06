@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.compare.MatchItemCompare
 import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
@@ -16,9 +17,10 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         position: Int
     ) {
+        val item = getItem(position)
         binding.layoutOddsTitle.removeAllViews()
-        binding.layoutOddsGrid.removeAllViews()
-        holder.init(getItem(position))
+        binding.rvOddsGrid.removeAllViews()
+        holder.init(item)
         binding.layoutLiveEntry.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
@@ -42,9 +44,22 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         return MatchItemViewHolder(binding, onMatchItemClickListener)
     }
 
+    override fun onBindViewHolder(
+        holder: MatchItemViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            val item = getItem(holder.adapterPosition)
+            holder.bindPayload(item, payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     interface OnMatchItemClickListener {
         fun onLiveEntryClick(item: MatchWithMarkets)
         fun onFavoriteClick(item: MatchWithMarkets)
-        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBean)
+        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
     }
 }

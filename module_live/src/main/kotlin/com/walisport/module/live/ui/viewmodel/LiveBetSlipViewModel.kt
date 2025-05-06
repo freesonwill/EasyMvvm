@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
+import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.repository.LiveBetRepository
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -24,6 +24,8 @@ class LiveBetSlipViewModel : BaseViewModel() {
     val orderLiveData: LiveData<List<Common.Order>?> = _orderLiveData
     private val _reserveLiveData = MutableLiveData<List<Common.ReserveOrder>?>()
     val reserveLiveData: LiveData<List<Common.ReserveOrder>?> = _reserveLiveData
+    private  val _earlySettledLiveData:MutableLiveData<Boolean> = MutableLiveData()
+    val earlySettledLiveData :LiveData<Boolean> = _earlySettledLiveData
 
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
@@ -54,10 +56,13 @@ class LiveBetSlipViewModel : BaseViewModel() {
         return tmpList
     }
 
-    fun getTestList1(): List<Common.ReserveOrder> {
-        val order = Common.ReserveOrder.newBuilder().setReserveId("0").build()
-        val order1 = Common.ReserveOrder.newBuilder().setReserveId("1").build()
-        val tmpList = arrayListOf(order, order1)
-        return tmpList
+    fun earlyPartSettled(order: Common.Order, money:String,expectPrice:String){
+        viewModelScope.launch {
+            val result = repository.earlySettle(order.betId,money,expectPrice,false)
+            _earlySettledLiveData.value = result?.success
+        }
     }
+
+
+
 }

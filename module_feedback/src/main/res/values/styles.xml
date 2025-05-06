@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="feedback_checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="android:layout_width">@dimen/dp_104</item>
+        <item name="android:layout_height">@dimen/dp_36</item>
+        <item name="android:background">@drawable/checkbox_background</item>
+        <item name="android:textColor">@drawable/checkbox_text_color</item>
+        <item name="android:textSize">@dimen/sp_14</item> <!-- 设置字体大小 -->
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+    </style>
+</resources>

@@ -9,12 +9,13 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
-import com.walisport.module.live.data.model.LiveBetSlipEnum
+import com.walisport.module.live.data.model.LiveBetSlipData
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipReserveBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 //注单预约
@@ -48,14 +49,27 @@ class LiveBetSlipReserveFragment :
     override fun createObserver() {
         mViewModel.reserveLiveData.observe(this) {
             LogUtils.dTag("aaa", "reserveLiveData ${it?.size}")
-            it?.let { item ->
-                val list = item.map { map -> LiveBetSlipData(reserve = map) }?.toList()
-                list?.let {
-                    adapter.submitList(list)
-                }
+            if (!it.isNullOrEmpty()) {
+                updateData(it)
+            } else {
+                showEmpty()
             }
         }
     }
+
+
+    private fun showEmpty() {
+
+    }
+
+    private fun updateData(orders: List<Common.ReserveOrder>) {
+        val list = orders.map { LiveBetSlipData(reserve = it) }.toList()
+        mBinding.recyclerView.adapter?.let {
+            val adapter = it as LiveBetSlipAdapter
+            adapter.submitList(list)
+        }
+    }
+
 
     override fun initData() {
         super.initData()

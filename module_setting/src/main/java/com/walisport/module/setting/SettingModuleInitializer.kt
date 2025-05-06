@@ -4,7 +4,6 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.CoroutineScope
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -19,11 +18,7 @@ class SettingModuleInitializer : DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        //includes(autoViewModels)
-        viewModel { com.walisport.module.setting.data.BackgroundViewModel() }
-        viewModel { com.walisport.module.setting.data.LanguageViewModel() }
-        viewModel { com.walisport.module.setting.data.NoticeViewModel() }
-        viewModel { com.walisport.module.setting.data.SettingViewModel() }
+        includes(defaultModule)
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> SettingRepository(scope) }

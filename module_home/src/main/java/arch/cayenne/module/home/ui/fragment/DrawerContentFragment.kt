@@ -23,11 +23,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
 
     override fun initListener() {
         with(mBinding) {
+            ivArrowRight.clickNoRepeat {
+                navigate(Uri.parse("walisport://module_message/messageFragment"))
+            }
             llDrawerTutorial.clickNoRepeat {
                 navigate(Uri.parse("walisport://module_handicap/HandicapFragment"))
             }
             llDrawerSetting.clickNoRepeat {
                 navigate(Uri.parse("walisport://module_setting/settingFragment"))
+            }
+
+            llDrawerFeedback.clickNoRepeat {
+                navigate(Uri.parse("walisport://module_feedback/feedbackFragment"))
             }
         }
     }

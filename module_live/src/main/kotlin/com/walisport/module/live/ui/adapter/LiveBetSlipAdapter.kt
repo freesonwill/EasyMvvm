@@ -5,11 +5,12 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.LiveBetSlipCompare
-import com.walisport.module.live.data.livebetslip.LiveBetSlipAdapterManager
-import com.walisport.module.live.data.model.LiveBetSlipEnum
-import com.walisport.module.live.data.livebetslip.LiveBetSlipData
-import com.walisport.module.live.data.livebetslip.LiveBetSlipExpandedEnum
+import com.walisport.module.live.data.model.LiveBetSlipAdapterManager
+import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.model.LiveBetSlipData
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
@@ -24,6 +25,11 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
         LiveBetSlipCompare()
     ) {
     private val betSlipType = type
+    private var itemListener: RecyclerItemListener<LiveBetSlipData>? = null
+
+    fun setItemListener(listener: RecyclerItemListener<LiveBetSlipData>) {
+        this.itemListener = listener
+    }
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -74,6 +80,7 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
                 notifyItemChanged(position)
             }
         })
+        holder.earlySettled()
         return holder
     }
 
@@ -81,7 +88,6 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
     override fun convertPlus(holder: LiveBetSlipViewHolder, binding: ViewBinding, position: Int) {
 
         val item = getItem(position)
-
         holder.manager.updateView(position, getItem(position))
 
     }
@@ -95,6 +101,17 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
     inner class LiveBetSlipViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
 
         val manager = LiveBetSlipAdapterManager(binding, betSlipType)
+
+        fun earlySettled() {
+            if (binding !is AdapterLiveBetSlipUnsettleBinding) {
+                return
+            }
+            val nBinding = binding as AdapterLiveBetSlipUnsettleBinding
+            nBinding.betUnsettledBtSettle.clickNoRepeat {
+                val position = it.tag as Int
+                itemListener?.onItemClick(getItem(position), position)
+            }
+        }
     }
 
 }

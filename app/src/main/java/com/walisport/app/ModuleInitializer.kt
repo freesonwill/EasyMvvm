@@ -11,11 +11,10 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.socket.SocketModuleInitializer
-import com.walisport.app.data.AppNavViewModel
-import com.walisport.app.data.MainRepository
-import com.walisport.app.data.SplashRepository
-import com.walisport.app.data.MainViewModel
-import com.walisport.app.data.SplashViewModel
+import com.walisport.app.data.repo.MainRepository
+import com.walisport.app.data.repo.SplashRepository
+import com.walisport.app.ui.viewmodel.MainViewModel
+import com.walisport.app.ui.viewmodel.SplashViewModel
 import arch.cayenne.module.home.HomeModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -76,7 +75,6 @@ class ModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         viewModelOf(::MainViewModel)
         viewModelOf(::SplashViewModel)
-        viewModelOf(::AppNavViewModel)
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }

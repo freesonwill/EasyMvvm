@@ -4,14 +4,17 @@ import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.walisport.module.live.R
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.walisport.module.live.R
+import com.walisport.module.live.data.EventEnum
+import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchTrendData
+import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.databinding.FragmentLiveOutsBinding
 import com.walisport.module.live.ui.dialog.MatchTrendDialog
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.widget.TechnicalCountView
-import com.walisport.module.live.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -30,7 +33,6 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     private lateinit var awayLogo: String
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.getMatchTrendData(mainViewModel.matchId)
     }
 
     override fun initListener() {
@@ -41,6 +43,12 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         })
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.getMatchTrendData(mainViewModel.matchId)
+        mViewModel.getStatisticData(mainViewModel.matchId)
+    }
+
     override fun createObserver() {
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
@@ -48,10 +56,17 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 homeLogo = it.basicInfo.homeTeamIcon
                 awayName = it.basicInfo.awayTeam
                 awayLogo = it.basicInfo.awayTeamIcon
+                mBinding.viewTechStatic.setScore(it.liveInfo.score)
                 mBinding.viewTechStatic.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
             }
         }
-        mViewModel.liveOutsData.observe(this) {
+        mViewModel.matchStatisticData.observe(this) {
+            it?.let {
+                parseData(it.stats)
+                parseHalfTeamData(it.team)
+            }
+        }
+        mViewModel.matchTrendData.observe(this) {
             if (it != null) {
                 matchTrendData = it
                 mBinding.mainLayout.setVisibilityGone()
@@ -61,6 +76,51 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                     DynamicStateLayout.States.DATA_EMPTY,
                     R.string.outs_empty.getString()
                 )
+            }
+        }
+    }
+
+    private fun parseHalfTeamData(data: List<MatchHalfTeamStats>) {
+        val list = listOf(
+            EventEnum.EVENT_BALL_CONTROL.type,
+            EventEnum.EVENT_PASS_SUC.type,
+            EventEnum.EVENT_SHOOT.type,
+            EventEnum.EVENT_SHOOT_SUC.type,
+            EventEnum.EVENT_PASS.type,
+            EventEnum.EVENT_FREE.type,
+            EventEnum.EVENT_CORNER.type,
+            EventEnum.EVENT_OFFSIDE.type
+        )
+        mBinding.viewTechStatic.setMatchData(data.filter { it.type in list })
+    }
+
+    private fun parseData(list: List<Stat>) {
+        list.mapIndexed { _, item ->
+            //2角球 3黄牌 4红牌 23进攻 24危险进攻 25控球率
+            when (item.type) {
+                EventEnum.EVENT_CORNER.type -> {
+                    mBinding.viewTechStatic.setCornerBallData(item.home, item.away)
+                }
+
+                EventEnum.EVENT_YELLOW_CARD.type -> {
+                    mBinding.viewTechStatic.setYellowCardData(item.home, item.away)
+                }
+
+                EventEnum.EVENT_RED_CARD.type -> {
+                    mBinding.viewTechStatic.setRedCardData(item.home, item.away)
+                }
+
+                EventEnum.EVENT_ATTACK.type -> {
+                    mBinding.viewTechStatic.setAttackData(item.home, item.away)
+                }
+
+                EventEnum.EVENT_DANGER.type -> {
+                    mBinding.viewTechStatic.setDangerAttackData(item.home, item.away)
+                }
+
+                EventEnum.EVENT_BALL_CONTROL.type -> {
+                    mBinding.viewTechStatic.setBallControlData(item.home, item.away)
+                }
             }
         }
     }

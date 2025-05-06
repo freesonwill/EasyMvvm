@@ -5,6 +5,5 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class MatchListViewModel : BaseGameListViewModel() {
-    override val playType: PlayType = PlayType.TODAY
 
 }

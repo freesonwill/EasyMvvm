@@ -9,6 +9,9 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     STATISTICAL(500, 1000), // 500-1000: 获取赛事统计
     TOURNAMENT(500, 1001),  // 500-1001: 获取联赛信息
     LIST_MATCH(500, 1002),   //500-1002: 获取比赛列表，盘口信息只返回热门盘口
+    SUBSCRIBE_MATCH(500, 1100),  //500-1100: 订阅比赛
+    CANCEL_SUBSCRIBE_MATCH(500, 1101),  //500-1101: 取消订阅比赛
+    MATCH_NOTIFY(600, 1000),   //600-1000: 比赛推送
     COMBO_BET(500, 1010),   //500-1010: 串关下注
     SINGLE_BET(500, 1015),   //500-1015: 單注下注
     RESERVE_BET(500, 1020),  //500-1020: 預約下注
@@ -23,6 +26,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_COMBO_RISK(500,1014),     //500-1014: 获取串关下注限额
 
     MATCH_TREND(700, 2004),       //700-2004: 比赛趋势数据
+    MATCH_LIVE(700, 2001),        //700-2001: 比赛统计数据
     GET_STANDINGS(700, 2003),     //700-2003: 积分榜数据
     MATCH_LEAGUE(500, 1006),     //500-1006: 联赛列表
 
@@ -31,10 +35,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     RESERVE_UPDATE(500,1023),    // 500-1023: 修改预约下注订单
 
     ORDER_STATUS_NOTIFY(600, 1001),     //600-1001: 订单状态推送(被動)
-    GET_MARKET_TYPE(500, 1007),     // 500-1007: 盘口分类
+    GET_MARKET_TYPE(500, 1007)  ,   // 500-1007: 盘口分类
 
-    MATCH_NOTIFY(600, 1000),     //600-1000: 比赛推送(被動)
-    SUBSCRIBE_MATCH(500, 1100),   // 500-1100: 订阅比赛
-    CANCEL_SUBSCRIBE_MATCH(500, 1100),   // 500-1101: 取消订阅比赛
-
+    EARLY_SETTLE_PRICE(500,1016) //500-1016
 }
