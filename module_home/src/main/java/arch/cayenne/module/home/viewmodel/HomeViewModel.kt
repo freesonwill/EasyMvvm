@@ -33,8 +33,8 @@ class HomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
 
-    private val _selectedDate = MutableLiveData<String>() // Pair<leagueId, date>
-    val selectedDate: MutableLiveData<String> = _selectedDate
+    private val _selectedDate = MutableLiveData<Long>() // Pair<leagueId, date>
+    val selectedDate: MutableLiveData<Long> = _selectedDate
 
     override fun initViewModel() {
         super.initViewModel()
@@ -96,7 +96,7 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    fun setSelectedDate(date: String) {
+    fun setSelectedDate(date: Long) {
         if (_selectedDate.value == date) return
         _selectedDate.value = date
     }

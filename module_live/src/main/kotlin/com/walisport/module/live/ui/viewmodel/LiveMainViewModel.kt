@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.MarketTypeBean
 import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +18,8 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     var matchId: Long = 0
     var sportId: Int = 0
-
-    private val _mainMatch = MutableLiveData<MatchBean>()
-    val mainMatch: LiveData<MatchBean> = _mainMatch
-
+    private val _mainMatch = MutableLiveData<LiveMatchBean>()
+    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
     override fun initViewModel() {
@@ -38,9 +38,13 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     fun getMainMatch(matchId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val data = repo.getMatchBean(matchId)
-            withContext(Dispatchers.Main) {
-                _mainMatch.value = data
+            repo.getMatchRes(matchId)
+        }
+    }
+    fun observeMatchBean(matchId: Long) {
+        viewModelScope.launch {
+            repo.observeMatchBean(matchId).collect {
+                _mainMatch.value = it
             }
         }
     }

@@ -5,7 +5,6 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
-import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
 import galaxy.client.proto.Client.EarlySettlePriceResp
@@ -36,7 +35,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-
         return if (res.error == null && res.data != null) {
             val data = res.data!!
 
@@ -64,7 +62,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): List<Common.Match>? {
+    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): Common.Match? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -76,7 +74,9 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
-            return result.data!!.matchList
+            return result.data!!.matchList.find {
+                it.matchId==matchId
+            }
         }
         return null
     }

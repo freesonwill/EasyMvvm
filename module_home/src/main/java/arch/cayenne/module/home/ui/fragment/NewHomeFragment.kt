@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -39,9 +39,7 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-    private val fragments = mutableMapOf<PlayType, Fragment>()
     private var drawerContentFragment: DrawerContentFragment? = null
-    private var isFirstTime = true
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
             Toast.makeText(
@@ -108,7 +106,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init 三級導航欄位與日期
     private fun initTournamentLayout() {
-        val dateTabs = DateUtils.getFutureDays(7, Locale.getDefault()) // 取得未來 7 天 (MMDD, 星期)
+        // 取得未來 7 天 (MMDD, 星期, timeStamp)
+        val dateTabs = DateUtils.getFutureDays(7, Locale.getDefault())
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -125,15 +124,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlDateList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     val dateTabIndex = tab?.position ?: 0
-                    val dateString = if (dateTabIndex == 0) "" else {
-                        val datePair = DateUtils.getFutureDays(7, Locale.getDefault())
+                    val dateTimestamp: Long = if (dateTabIndex == 0) {
+                        0L // 代表「全部」
+                    } else {
+                        val dateTriple = DateUtils.getFutureDays(7, Locale.getDefault())
                             .getOrNull(dateTabIndex - 1)
-                        datePair?.first.orEmpty() // MMdd 格式
+                        "選中日期,時間戳:$dateTriple".logd()
+                        dateTriple?.third ?: 0L
                     }
-                    // 記錄當前聯賽所選的 tab index
-                    mViewModel.setSelectedDate(dateString)
-                    // 需實作ViewModel更新對應賽事列表頁頁面
-
+                    mViewModel.setSelectedDate(dateTimestamp)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -164,7 +163,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             .replace(mBinding.fragmentDrawerContent.id, drawerContentFragment!!,DrawerContentFragment.TAG)
             .commitNow()
     }
-    private fun updateDateTabs(tlDateList: TabLayout, dateTabs: List<Pair<String, String>>) {
+    private fun updateDateTabs(
+        tlDateList: TabLayout,
+        dateTabs: List<Triple<String, String, Long>>
+    ) {
         tlDateList.apply {
             removeAllTabs()
 
@@ -182,7 +184,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             addTab(createTab(null, null))
-            dateTabs.forEach { (date, weekday) -> addTab(createTab(date, weekday)) }
+            dateTabs.forEach { (date, weekday, _) -> addTab(createTab(date, weekday)) }
 
             // 調整間距與樣式
             post {

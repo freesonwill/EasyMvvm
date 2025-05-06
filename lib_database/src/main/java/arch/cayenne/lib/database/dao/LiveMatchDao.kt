@@ -1,0 +1,73 @@
+package arch.cayenne.lib.database.dao
+
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import arch.cayenne.lib.database.entity.LiveMarketBean
+import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.LiveSelectionBean
+import arch.cayenne.lib.database.entity.MarketBean
+import arch.cayenne.lib.database.entity.MatchBean
+import arch.cayenne.lib.database.entity.SelectionBean
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertMatch(match: List<LiveMatchBean>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertMarkets(markets: List<LiveMarketBean>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertSelections(selections: List<LiveSelectionBean>)
+
+    @Transaction
+    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    abstract suspend fun getMatchById(matchId: Long) : LiveMatchBean
+
+    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    abstract fun observeMatchById(matchId: Long): Flow<LiveMatchBean>
+
+    @Transaction
+    @Query("SELECT * FROM LiveMatchBean WHERE matchId IN (:matchIds)")
+    abstract suspend fun getMatchByIds(matchIds: List<Long>) : List<LiveMatchBean>
+
+    @Transaction
+    @Query("SELECT * FROM LiveSelectionBean WHERE selectionId = :selectionId")
+    abstract suspend fun getSelectionById(selectionId: Long): LiveSelectionBean
+
+    @Transaction
+    @Query("SELECT * FROM LiveSelectionBean WHERE selectionId IN (:selectionIds)")
+    abstract suspend fun getSelectionsByIds(selectionIds: List<Long>): List<LiveSelectionBean>
+
+    @Query("DELETE FROM MatchBean" )
+    abstract fun deleteMatchBean()
+
+    @Query("DELETE FROM MarketBean" )
+    abstract fun deleteMarketBean()
+
+    @Query("DELETE FROM SelectionBean" )
+    abstract fun deleteSelectionBean()
+
+    @Transaction
+    open suspend fun insertFullMatch(
+        matches: List<LiveMatchBean>,
+        markets: List<LiveMarketBean>,
+        selections: List<LiveSelectionBean>,
+        ) {
+        insertMatch(matches)
+        insertMarkets(markets)
+        insertSelections(selections)
+    }
+
+    @Transaction
+    open fun clearAllMatch() {
+        deleteMatchBean()
+        deleteMarketBean()
+        deleteSelectionBean()
+    }
+}
