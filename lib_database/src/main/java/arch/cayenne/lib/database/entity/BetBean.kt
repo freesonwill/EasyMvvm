@@ -83,6 +83,12 @@ enum class AddSelectionStatus {
     REMOVE
 }
 
+enum class OddsStatusEnum {
+    UP,
+    DOWN,
+    SAME
+}
+
 enum class BetResultStatusEnum(val code: Int) {
     CREATE(0),
     CONFIRMING(1),
