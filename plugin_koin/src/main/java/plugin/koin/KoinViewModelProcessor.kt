@@ -26,32 +26,42 @@ class KoinViewModelProcessor(
                 """.trimIndent())
     }
     private val defaultModule by lazy { "defaultModule" }
-
+    private var createFileCount:Int = 0
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("plugin.koin.KoinViewModel")
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
-        if (viewModels.isEmpty()) return emptyList()
-
         logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size}")
         val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
-        logger.warn("--->Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
+        logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
+        val fileName = defaultModule.replaceFirstChar { it.uppercaseChar() }
+        //viewModels.isEmpty()第一次时创建空文件，第二次时返回，否则FileAlreadyExistsException
+        if(createFileCount == 1 && viewModels.isEmpty()) return emptyList()
+        createFileCount = (createFileCount+1) % 2
         val file = codeGenerator.createNewFile(
-            //Dependencies(false), //❌ May cause file not to generate when referenced
-            //Dependencies.ALL_FILES, //❌ Full aggregation hurts performance
-            Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()), //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
+            /*// ❌ May cause file not to generate when referenced
+            Dependencies(false),
+            // ❌ Full aggregation hurts performance
+            Dependencies.ALL_FILES,
+            //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
+            //Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),*/
+            if(viewModels.isEmpty()) //generate empty file
+                Dependencies(false)
+            else
+                Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),
             generatedPackage,
-            defaultModule.replaceFirstChar { it.uppercaseChar() }
+            fileName
         )
         file.bufferedWriter().use { writer ->
             writer.write("package $generatedPackage\n\n")
             writer.write("import org.koin.dsl.module\n")
-            writer.write("import org.koin.dsl.binds\n")
-            writer.write("import org.koin.dsl.bind\n")
-            writer.write("import org.koin.core.context.loadKoinModules\n")
-            writer.write("import org.koin.androidx.viewmodel.dsl.viewModel\n\n")
+            if(viewModels.isNotEmpty()){
+                writer.write("import org.koin.dsl.binds\n")
+                writer.write("import org.koin.dsl.bind\n")
+                writer.write("import org.koin.core.context.loadKoinModules\n")
+                writer.write("import org.koin.androidx.viewmodel.dsl.viewModel\n\n")
+            }
 
-
-            writer.write("\nval $defaultModule = module {\n")
+            writer.write("\ninternal val $defaultModule = module {\n")
             viewModels.forEach { classDeclaration ->
                 val constructor = classDeclaration.primaryConstructor
                 val paramCount = constructor?.parameters?.size ?: 0
@@ -104,12 +114,8 @@ class KoinViewModelProcessor(
             writer.write("}\n")
         }
 
-
-
         return emptyList()
     }
-
-
 }
 
 class KoinViewModelProcessorProvider : SymbolProcessorProvider {
