@@ -46,6 +46,7 @@ dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_socket"))
     implementation(project(":lib_skin"))
+    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

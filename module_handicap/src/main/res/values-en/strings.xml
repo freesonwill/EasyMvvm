@@ -11,4 +11,10 @@
     <string name="tip_error">Sorry, You guessed wrong.</string>
     <string name="go_to_bet">Go to bet</string>
     <string name="next_question">Next question</string>
+
+    <string name="win_all">Win All</string>
+    <string name="lose_all">Lose All</string>
+    <string name="half_win">Half Win</string>
+    <string name="half_lose">Half Lose</string>
+    <string name="seed_money">Seed Money</string>
 </resources>

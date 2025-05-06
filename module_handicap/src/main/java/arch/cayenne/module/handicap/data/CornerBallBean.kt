@@ -7,7 +7,7 @@ data class CornerBallBean(
     val awayScore: Int,
     val homeTip: String,
     val awayTip: String,
-    val homeType: String,
-    val awayType: String,
+    val homeType: Int,
+    val awayType: Int,
     val msg: String
 )
