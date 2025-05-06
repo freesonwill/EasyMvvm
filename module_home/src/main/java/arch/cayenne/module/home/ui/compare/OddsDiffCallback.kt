@@ -1,40 +1,56 @@
 package arch.cayenne.module.home.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 
-class OddsDiffCallback : DiffUtil.ItemCallback<List<SelectionBeanLite>>() {
+class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<SelectionBeanLite>>>() {
 
     override fun areItemsTheSame(
-        oldItem: List<SelectionBeanLite>,
-        newItem: List<SelectionBeanLite>
+        oldItem: Pair<MarketBeanLite, List<SelectionBeanLite>>,
+        newItem: Pair<MarketBeanLite, List<SelectionBeanLite>>
     ): Boolean {
-        return oldItem.map { it.selectionId } == newItem.map { it.selectionId }
+        return oldItem.first.marketId == newItem.first.marketId &&
+                oldItem.second.map { it.selectionId } == newItem.second.map { it.selectionId }
     }
 
     override fun areContentsTheSame(
-        oldItem: List<SelectionBeanLite>,
-        newItem: List<SelectionBeanLite>
+        oldItem: Pair<MarketBeanLite, List<SelectionBeanLite>>,
+        newItem: Pair<MarketBeanLite, List<SelectionBeanLite>>
     ): Boolean {
-        if (oldItem.size != newItem.size) return false
-        return oldItem.zip(newItem).all { (oldSelection, newSelection) ->
-            oldSelection.selectionId == newSelection.selectionId &&
-                    oldSelection.shortName == newSelection.shortName &&
-                    oldSelection.odds == newSelection.odds &&
-                    oldSelection.active == newSelection.active &&
-                    oldSelection.parlay == newSelection.parlay &&
-                    oldSelection.isSelected == newSelection.isSelected &&
-                    oldSelection.trend == newSelection.trend
+        val (oldMarket, oldSelections) = oldItem
+        val (newMarket, newSelections) = newItem
+
+        if (oldMarket.marketId != newMarket.marketId) return false
+        if (oldMarket.defaultSelectionCount != newMarket.defaultSelectionCount) return false
+
+        if (oldSelections.size != newSelections.size) return false
+
+        return oldSelections.zip(newSelections).all { (oldSel, newSel) ->
+            oldSel.selectionId == newSel.selectionId &&
+                    oldSel.shortName == newSel.shortName &&
+                    oldSel.odds == newSel.odds &&
+                    oldSel.active == newSel.active &&
+                    oldSel.parlay == newSel.parlay &&
+                    oldSel.trend == newSel.trend &&
+                    oldSel.isSelected == newSel.isSelected
         }
     }
 
     override fun getChangePayload(
-        oldItem: List<SelectionBeanLite>,
-        newItem: List<SelectionBeanLite>
+        oldItem: Pair<MarketBeanLite, List<SelectionBeanLite>>,
+        newItem: Pair<MarketBeanLite, List<SelectionBeanLite>>
     ): Any? {
+        val (oldMarket, oldSelections) = oldItem
+        val (newMarket, newSelections) = newItem
+
         val diff = mutableSetOf<String>()
-        oldItem.zip(newItem).forEach { (old, new) ->
+
+        if (oldMarket.defaultSelectionCount != newMarket.defaultSelectionCount) {
+            diff.add("defaultSelectionCount")
+        }
+
+        oldSelections.zip(newSelections).forEach { (old, new) ->
             if (old.odds != new.odds) diff.add("odds")
             if (old.shortName != new.shortName) diff.add("shortName")
             if (old.active != new.active) diff.add("active")

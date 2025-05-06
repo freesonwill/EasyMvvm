@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import arch.cayenne.module.home.ui.compare.MatchItemCompare
@@ -12,6 +11,7 @@ import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
     BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
+    private val holders = mutableListOf<MatchItemViewHolder>()
     override fun convertPlus(
         holder: MatchItemViewHolder,
         binding: ItemMatchCardBinding,
@@ -21,6 +21,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding.layoutOddsTitle.removeAllViews()
         binding.rvOddsGrid.removeAllViews()
         holder.init(item)
+        holders.add(holder)
         binding.layoutLiveEntry.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }

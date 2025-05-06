@@ -21,4 +21,5 @@
     <color name="league_tab_tint_unselect">@color/secondary_text</color>
     <color name="balance_background">#0A000000</color>
     <color name="balance_background_icon">#99FFFFFF</color>
+    <color name="odds_highlight_overlay">#e8e8e8</color>
 </resources>

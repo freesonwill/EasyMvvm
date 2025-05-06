@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
@@ -114,7 +113,7 @@ class MatchItemViewHolder(
                 })
             }
 
-            val selectionsGrouped = data.markets.map { it.selections }
+            val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
         }
     }
@@ -147,7 +146,7 @@ class MatchItemViewHolder(
                 tvWatchCount.text = liveInfo.viewerCount.toString()
             }
             if ("odds" in changes) {
-                val selectionsGrouped = item.markets.map { it.selections }
+                val selectionsGrouped = item.markets.map { it.market to it.selections }
                 oddsColumnAdapter.submitList(selectionsGrouped)
             }
         }

@@ -18,7 +18,6 @@ import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class MatchDao : BaseDao<MatchBean>() {
