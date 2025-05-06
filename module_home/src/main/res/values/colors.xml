@@ -23,4 +23,11 @@
     <color name="league_tab_tint_unselect">@color/secondary_text</color>
     <color name="balance_background">#0DFFFFFF</color>
     <color name="balance_background_icon">#0DFFFFFF</color>
+    <color name="drawer_bg">#0E0F1A</color>
+    <color name="drawer_notification_title">#E6E6E6</color>
+    <color name="drawer_notification_message">#929298</color>
+    <color name="drawer_common_function_title">#E6E6E6</color>
+    <color name="drawer_common_function_text">#929298</color>
+    <color name="drawer_bottom_function_text">#929298</color>
+    <color name="odds_highlight_overlay">#353848</color>
 </resources>

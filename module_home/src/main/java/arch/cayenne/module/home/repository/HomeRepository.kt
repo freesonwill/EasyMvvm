@@ -21,7 +21,6 @@ import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.transform
 
 class HomeRepository(
@@ -229,6 +228,22 @@ class HomeRepository(
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
            return updateFullMath(matchUpdateData)
         } else { return arrayListOf() }
+    }
+
+    suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeMatchReq.newBuilder().apply {
+                this.addAllMatchId(ids)
+            }.build()
+        }
+        if (res.error == null && res.data != null && res.data!!.success) {
+            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
+            return res.data!!.success
+        } else { return false }
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()

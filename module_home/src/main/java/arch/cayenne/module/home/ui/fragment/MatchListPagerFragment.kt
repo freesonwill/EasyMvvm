@@ -2,22 +2,26 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.ViewTreeObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.utils.MatchCardItemDecoration
 import arch.cayenne.module.home.viewmodel.HomeViewModel
 import arch.cayenne.module.home.viewmodel.MatchListViewModel
-import kotlinx.coroutines.delay
+import arch.cayenne.module.home.R
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -40,15 +44,66 @@ class MatchListPagerFragment :
                 }
 
                 override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
-                    mViewModel.setSelection(item.match.matchId, selection.selectionId)
+                    lifecycleScope.launch {
+                        val status = mViewModel.setSelection(item.match.matchId, selection.selectionId)
+                        if (status == AddSelectionStatus.SINGLE) {
+                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                            showToast(getString(R.string.disabled_to_combo))
+                        }
+                    }
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
+            val layoutManager = LinearLayoutManager(context)
             mBinding.rvHomeGameList.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = matchAdapter
+                this.layoutManager = layoutManager
+                this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
+
+            rvHomeGameList.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    if (matchAdapter.itemCount == 0) return
+                    rvHomeGameList.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                    val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                    val lastVisible = layoutManager.findLastVisibleItemPosition()
+
+                    if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                        mViewModel.subscribeMatch(
+                            matchAdapter.currentList
+                                .slice(firstVisible..lastVisible)
+                                .map { it.match.matchId }
+                                .toSet()
+                        )
+                    }
+                }
+            })
+
+            rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 滑動停止時觸發
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        val firstVisible = layoutManager.findFirstVisibleItemPosition()
+                        val lastVisible = layoutManager.findLastVisibleItemPosition()
+                        val totalItemCount = layoutManager.itemCount
+                        //讀取下一頁
+                        if (lastVisible >= totalItemCount - 1) {
+                            mViewModel.loadNextPage()
+                        }
+                        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+                            mViewModel.subscribeMatch(
+                                matchAdapter.currentList
+                                    .slice(firstVisible..lastVisible)
+                                    .map { it.match.matchId }
+                                    .toSet()
+                            )
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -87,7 +142,6 @@ class MatchListPagerFragment :
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
         }
-        "joseph initData: playTypeId: ${mViewModel.getPlayTypeId()}, tournamentId: ${mViewModel.getTournamentId()}".logd()
         //TODO 早盤日期要資料
         mViewModel.getCurrentMatch()
     }

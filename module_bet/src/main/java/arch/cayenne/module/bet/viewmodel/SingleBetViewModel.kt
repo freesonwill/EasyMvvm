@@ -52,15 +52,23 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             launch {
                 betRepo.observeComboBean().collect {
                     setNumberLimit(it.minAmount, it.maxAmount)
-                    val balance = balanceRepo.getBalance()
-                    if (it.inputMoney > balance) {
-                        it.inputMoney = 0
-                        setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-                    } else if (it.inputMoney > it.maxAmount) {
-                        it.inputMoney = it.maxAmount
-                    }
-                    if (it.inputMoney > 0L) {
-                        setEditNumber(it.inputMoney)
+                    val oriData = onEditNumber.value
+                    if (oriData.isNullOrEmpty()) {
+                        val balance = balanceRepo.getBalance()
+                        if (it.inputMoney > balance) {
+                            it.inputMoney = 0L
+                            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                        } else if (it.inputMoney > it.maxAmount) {
+                            it.inputMoney = it.maxAmount
+                        }
+                        if (it.inputMoney > 0L) {
+                            setEditNumber(it.inputMoney)
+                        }
+                    } else {
+                        val curMoney = oriData.toMoney()
+                        if (curMoney > 0L) {
+                            setEditNumber(curMoney)
+                        }
                     }
                 }
             }
@@ -83,6 +91,11 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     }
 
     fun saveToCombo() {
+        onEditNumber.value?.let {
+            if (it.isEmpty()) return
+            val money = it.toMoney()
+            betRepo.saveInputMoney(money)
+        }
         betRepo.saveToCombo()
     }
 

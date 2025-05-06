@@ -1,4 +1,4 @@
-package com.walisport.app.data
+package com.walisport.app.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -23,7 +23,7 @@ class SplashRepository(
     internal val countDownSecondsLD: SharedFlow<Int> by countDownHelper::countDownSecondsLD
     internal val isCountDownStart by countDownHelper::isCountDownStart
     init {
-        countDown = 5_000
+        countDown = 2_000
     }
 
     fun saveUserData(uid: Int, token: String) {

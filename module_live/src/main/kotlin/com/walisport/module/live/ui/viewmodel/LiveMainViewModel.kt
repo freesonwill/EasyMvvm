@@ -1,4 +1,4 @@
-package com.walisport.module.live.viewmodel
+package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,9 +9,9 @@ import com.walisport.module.live.data.LiveMainRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-//import plugin.koin.KoinViewModel
+import plugin.koin.KoinViewModel
 
-//@KoinViewModel
+@KoinViewModel
 class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
     var matchId: Long = 0

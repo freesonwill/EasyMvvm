@@ -6,21 +6,19 @@ import arch.cayenne.module.bet.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.bet.repo.BetResultRepository
 import arch.cayenne.module.bet.repo.BetSheetRepository
-import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import arch.cayenne.module.bet.repo.FloatingButtonRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
-import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
-import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
-import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
-import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
-import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
-import arch.cayenne.module.bet.viewmodel.ReserveViewModel
+import arch.cayenne.module.bet.repo.SingleBetRepository
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
+import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
+import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
+import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
+import arch.cayenne.module.bet.viewmodel.ReserveViewModel
+import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -44,8 +42,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
     }
 
     private val viewModules = module {
-        //includes(autoViewModels)
-        viewModel { arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel(get()) }
+        includes(defaultModule)
         viewModelOf(::SingleBetViewModel)
         viewModelOf(::ReserveDialogViewModel)
         viewModelOf(::ComboBetViewModel)

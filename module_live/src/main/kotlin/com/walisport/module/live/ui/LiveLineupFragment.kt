@@ -10,8 +10,8 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import com.bumptech.glide.Glide
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayerPosition
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
@@ -20,7 +20,7 @@ import com.walisport.module.live.databinding.LineupRepairItemAwayBinding
 import com.walisport.module.live.databinding.LineupRepairItemHomeBinding
 import com.walisport.module.live.databinding.LineupSubstitutionItemBinding
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import galaxy.client.proto.Sloth
 import kotlin.reflect.KClass
 

@@ -17,7 +17,7 @@ import com.walisport.module.live.databinding.FragmentLiveBetslipReserveBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.utils.RecyclerItemListener
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.ReserveOrder
 import kotlin.reflect.KClass

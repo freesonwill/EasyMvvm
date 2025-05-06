@@ -6,4 +6,8 @@ import arch.cayenne.module.bet.repo.BetSheetRepository
 class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() {
 
     suspend fun getBetType() = repo.getBetType()
+
+    fun unregister() {
+        repo.unregister()
+    }
 }

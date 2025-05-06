@@ -1,10 +1,8 @@
 package com.walisport.module.live.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -21,9 +19,8 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.launch
-import okhttp3.internal.notifyAll
 import kotlin.reflect.KClass
 
 //投注

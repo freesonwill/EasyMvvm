@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -83,7 +82,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
                         }
                         //看db, 點擊的不在matchBean中會爆掉
-                        "joseph tabSelected: playType: ${PlayType.entries[this]}"
+
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                         leagueAdapter.setPlayType(PlayType.entries[this])
                     }
@@ -202,7 +201,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
-        "joseph initLeaguesLayout: ${tournaments}".logd()
         mBinding.layoutContainer.apply {
             leagueAdapter.setData(tournaments)
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
@@ -239,7 +237,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    "joseph tabSelected: ${tab?.position}"
                     tab?.customView?.isSelected = true
                     vpGameList.currentItem = tab?.position ?: 0
                 }

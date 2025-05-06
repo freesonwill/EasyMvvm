@@ -1,10 +1,11 @@
-package com.walisport.app.data
+package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.skin.SportSkinManager
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
+import com.walisport.app.data.repo.SplashRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -22,9 +23,7 @@ class SplashViewModel : BaseActivityViewModel() {
             }
         }
         addSource(loginIsSuccess) {
-            if (homeTimeSeconds.value == 0) {
-                value = it
-            }
+            value = it
         }
     }
 
@@ -45,11 +44,6 @@ class SplashViewModel : BaseActivityViewModel() {
             repository.startSocket()
         }
     }
-
-    fun getSkinType():String{
-        return repository.getSkinType()
-    }
-
 
     //加载皮肤方案
     fun loadMyAppSkin() {

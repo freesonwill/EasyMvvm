@@ -18,7 +18,6 @@ import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.lib.database.entity.TournamentMatchRef
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 
 @Dao
 abstract class MatchDao : BaseDao<MatchBean>() {
@@ -79,6 +78,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     @Query("SELECT sel.selectionId as selectionId, " +
+                "ref.matchId as matchId,  " +
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +
