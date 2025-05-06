@@ -54,6 +54,7 @@
             android:id="@+id/item_notification_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/cl_notification_header"
             app:layout_constraintStart_toStartOf="parent"
             android:paddingHorizontal="12dp"
@@ -103,6 +104,7 @@
             android:id="@+id/item_notification_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/item_notification_1"
             app:layout_constraintStart_toStartOf="parent"
             android:paddingHorizontal="12dp"
@@ -177,35 +179,7 @@
                 android:textStyle="bold"
                 />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_recharge"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginTop="11dp"
-            android:layout_marginStart="26dp"
-            android:layout_marginBottom="@dimen/dp_12"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/li_title"
-            app:layout_constraintBottom_toBottomOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportImageView
-                android:id="@+id/iv_recharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_drawer_recharge"
-                android:scaleType="fitXY" />
-
-            <arch.cayenne.lib.skin.widget.SportTextView
-                android:id="@+id/tv_recharge"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="12sp"
-                android:textColor="@color/drawer_common_function_text"
-                android:text="@string/drawer_recharge" />
-        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -213,9 +187,9 @@
             android:gravity="center"
             android:orientation="vertical"
             android:layout_marginTop="11dp"
+            android:layout_marginStart="26dp"
             android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -243,7 +217,7 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_26"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
@@ -327,31 +301,6 @@
                 android:textColor="@color/drawer_bottom_function_text"
                 android:textSize="12sp" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_drawer_help"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginEnd="@dimen/dp_44"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportImageView
-                android:id="@+id/iv_drawer_help"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:src="@drawable/ic_drawer_help"
-                android:scaleType="fitXY" />
-
-            <arch.cayenne.lib.skin.widget.SportTextView
-                android:id="@+id/tv_drawer_help"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="13sp"
-                android:textColor="@color/drawer_bottom_function_text"
-                android:text="@string/drawer_help" />
-        </LinearLayout>
     </arch.cayenne.lib.skin.widget.SportConstraintLayout>
 </arch.cayenne.lib.skin.widget.SportConstraintLayout>
