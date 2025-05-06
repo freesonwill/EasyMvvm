@@ -29,8 +29,8 @@ class CommonRepository(
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
 
     suspend fun sendLogin(): SocketResponseData<Client.LoginResp> {
-        val uid = userDataManager.getIntValue(UserDataKey.KEY_UID, -1)
-        val token = userDataManager.getStringValue(UserDataKey.KEY_TOKEN, "")
+        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
+        val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
         //沒有Token
         if (uid == -1 || token == "") {
             return SocketResponseData(
