@@ -71,6 +71,7 @@ class HomeViewModel : BaseViewModel() {
         }
 
     }
+
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
@@ -95,7 +96,9 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun setSelection(matchId: Long, selectionId: Long) {
-        betRepository.setSelection(matchId, selectionId)
+        viewModelScope.launch {
+            val status = betRepository.setSelection(matchId, selectionId)
+        }
     }
 
     fun setSelectedDate(date: String) {

@@ -75,6 +75,14 @@ enum class BetStatusEnum {
     COMPLETE // 下注完成, 完成並非成功!!
 }
 
+enum class AddSelectionStatus {
+    SINGLE,
+    COMBO,
+    DISABLE_COMBO,
+    UPDATE,
+    REMOVE
+}
+
 enum class BetResultStatusEnum(val code: Int) {
     CREATE(0),
     CONFIRMING(1),
