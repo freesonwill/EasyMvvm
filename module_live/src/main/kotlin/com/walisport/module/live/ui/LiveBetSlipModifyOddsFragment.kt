@@ -3,16 +3,15 @@ package com.walisport.module.live.ui
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Editable
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams
 import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetslipModifybetBinding
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipModifyOddsViewModel
-import com.walisport.module.live.ui.widget.LiveBetNumberKeyboardView
 import kotlin.reflect.KClass
 
 class LiveBetSlipModifyOddsFragment private constructor() :
@@ -36,7 +35,7 @@ class LiveBetSlipModifyOddsFragment private constructor() :
         dialog?.setCanceledOnTouchOutside(true)
         with(mBinding) {
             keyboardNumber.setOnCalculatorClickListener(object :
-                LiveBetNumberKeyboardView.OnCalculatorClickListener {
+                NumberKeyboardView.OnCalculatorClickListener {
                 override fun onNumberClick(number: Int) {
                     mViewModel.addNumber(number)
                 }

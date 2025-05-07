@@ -62,7 +62,7 @@
 
     </FrameLayout>
 
-    <com.walisport.module.live.ui.widget.LiveBetNumberKeyboardView
+    <arch.cayenne.lib.common.ui.view.NumberKeyboardView
         android:id="@+id/keyboard_number"
         android:layout_width="224dp"
         android:layout_height="204dp"
