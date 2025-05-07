@@ -42,7 +42,6 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
 
     override fun initView(savedInstanceState: Bundle?) {
         mViewModel.geMatchLineupDetail(mainViewModel.matchId)
-        //  mViewModel.geMatchLineupDetail(458436)
     }
 
     override fun initListener() {
@@ -66,11 +65,13 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 )
             }
         }
-        mainViewModel.mainMatch.observe(viewLifecycleOwner){
-            mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
-            mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
-            mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
-            mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
+                mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
+                mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
+                mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+            }
         }
     }
 
@@ -264,7 +265,8 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             )
         }
     }
-    private fun removeAllViews(){
+
+    private fun removeAllViews() {
         mBinding.sclLineupItemBottom.removeAllViews()
         mBinding.sclLineupItemTop.removeAllViews()
         mBinding.llcHome.removeAllViews()
@@ -272,6 +274,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         mBinding.llcHomeSubstitute.removeAllViews()
         mBinding.llcAwaySubstitute.removeAllViews()
     }
+
     private fun getPositionFromString(position: String): PlayerPosition? {
         return try {
             enumValueOf<PlayerPosition>(position)
