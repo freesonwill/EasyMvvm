@@ -38,6 +38,12 @@ class MatchItemViewHolder(
 
             //賽事資訊
             Glide.with(binding.root).load(basicInfo.tournamentIcon).into(ivTournamentIcon)
+//            val iconUrl = basicInfo.tournamentIcon
+//            Glide.with(binding.root)
+//                .load(if (iconUrl.isEmpty()) R.drawable.ic_default_tournament else iconUrl)
+//                .placeholder(R.drawable.ic_default_tournament) // 載入中預設圖
+//                .error(R.drawable.ic_default_tournament)       // 載入失敗預設圖
+//                .into(ivTournamentIcon)
             tvTournamentName.text = basicInfo.tournamentName
             //TODO 階段與時間待確認
             if (basicInfo.status == 4) {
@@ -60,8 +66,6 @@ class MatchItemViewHolder(
             tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()
             ivFavorite.isSelected = data.match.collect
-
-
             val defaultTitleList = listOf(
                 R.string.match_title_win,
                 R.string.match_title_handicap,
