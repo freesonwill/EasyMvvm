@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.entity.TournamentBean
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.dao.LiveMatchDao
 import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.dao.MarketTypeBeanDao
 import arch.cayenne.lib.database.dao.MatchDao
@@ -26,7 +27,9 @@ import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import arch.cayenne.lib.database.entity.TournamentMatchRef
-
+import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.LiveMarketBean
+import arch.cayenne.lib.database.entity.LiveSelectionBean
 @Database(
     entities = [
         InfoBean::class,
@@ -42,7 +45,10 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         SelectionBean::class,
         MatchMarketCrossRef::class,
         MarketSelectCrossRef::class,
-        MarketTypeBean::class
+        MarketTypeBean::class,
+        LiveMatchBean::class,
+        LiveMarketBean::class,
+        LiveSelectionBean::class
     ],
     version = 1,
     exportSchema = false
@@ -79,6 +85,7 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun liveVideoDao(): LiveVideoDao
     abstract fun marketTypeDao(): MarketTypeBeanDao
     abstract fun matchDao(): MatchDao
+    abstract fun liveMatchDao(): LiveMatchDao
 
     abstract fun infoDao(): InfoDao
 }

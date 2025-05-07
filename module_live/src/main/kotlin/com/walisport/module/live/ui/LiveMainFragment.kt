@@ -81,6 +81,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun initData() {
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId)
+        mViewModel.observeMatchBean(mViewModel.matchId)
     }
 
     private fun setVideoView() {

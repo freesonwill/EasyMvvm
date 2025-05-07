@@ -66,6 +66,12 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 )
             }
         }
+        mainViewModel.mainMatch.observe(viewLifecycleOwner){
+            mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
+            mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
+            mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
+            mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+        }
     }
 
     // repeated Player home = 6;        // 主队阵型球员列表
@@ -81,12 +87,6 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         Glide.with(this).load(data.awayLogo).into(mBinding.awayIncidentsLogo)
         Glide.with(this).load(data.homeLogo).into(mBinding.homeSubstituteLogo)
         Glide.with(this).load(data.awayLogo).into(mBinding.awaySubstituteLogo)
-        mainViewModel.mainMatch.value?.basicInfo.let {
-            mBinding.homeSubstituteName.text = it?.homeTeam
-            mBinding.awaySubstituteName.text = it?.awayTeam
-            mBinding.homeIncidentsName.text = it?.homeTeam
-            mBinding.awayIncidentsName.text = it?.awayTeam
-        }
         removeAllViews()
         LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
         data.homeOrBuilderList.forEach { i ->

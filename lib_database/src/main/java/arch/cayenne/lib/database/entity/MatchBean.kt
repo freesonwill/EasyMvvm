@@ -123,6 +123,7 @@ data class MarketBeanLite(
 data class SelectionBeanLite(
     val selectionId: Long,
     val detailActive: Boolean,
+    val matchId: Long,
     val name: String,
     val shortName: String?,
     val odds: Int,

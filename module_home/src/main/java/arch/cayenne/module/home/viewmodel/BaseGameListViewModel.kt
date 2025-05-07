@@ -1,12 +1,10 @@
 package arch.cayenne.module.home.viewmodel
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import androidx.room.Transaction
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.enums.PlayType
@@ -14,7 +12,7 @@ import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import arch.cayenne.module.home.viewmodel.HomeViewModel.Companion.TOURNAMENT_ALL_ID
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -22,12 +20,13 @@ import org.koin.core.parameter.parametersOf
 
 abstract class BaseGameListViewModel: BaseViewModel() {
     companion object {
-        const val DEFAULT_MATCH_SIZE = 10
+        const val DEFAULT_MATCH_SIZE = 3
     }
 
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
+    private var _selectedDate: Long = 0
     var page: Int = 1
     private var isLoadingData = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
@@ -37,7 +36,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     override fun initViewModel() {
         super.initViewModel()
-
+        // 觀察賽事訂閱後，後端主動送出的變化
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchNotify().collect { matchWithMarket ->
                 if (matchListChange.value == null) return@collect
@@ -46,6 +45,29 @@ abstract class BaseGameListViewModel: BaseViewModel() {
                 if (index != -1) { old[index] = matchWithMarket }
                 withContext(Dispatchers.Main) {
                     matchListChange.value = old
+                }
+            }
+        }
+        //觀察投注單的變化，主要用來做selection變更
+        viewModelScope.launch(Dispatchers.IO) {
+            betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
+                if (matchListChange.value == null) return@collect
+                val origin = matchListChange.value!!.toMutableList()
+                val allSelections = origin.flatMap { it.markets }.flatMap { it.selections }  //把所有內部的selection展開
+                val betSelectionSet = betSelectionBeans.map { it.selectionId }.toSet()
+                allSelections.forEach { selectionBean ->
+                    //當在目前注單中，但是沒有選取，或是不在目前的注單中，但是卻選取中的match，重新再從DB同步一次
+                    if ((betSelectionSet.contains(selectionBean.selectionId) && !selectionBean.isSelected)
+                        || (!betSelectionSet.contains(selectionBean.selectionId) && selectionBean.isSelected)) {
+                        val matchWithMarket = repository.getOneMatchById(selectionBean.matchId)
+                        matchWithMarket?.apply {
+                            val index = origin.indexOfFirst { it.match.matchId == this.match.matchId }
+                            if (index != -1) { origin[index] = this }
+                        }
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = origin
                 }
             }
         }
@@ -61,6 +83,10 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     }
     fun setPlayTypeId(id: Int) {
         _playType = id
+    }
+
+    fun setSelectedDate(id: Long = 0) {
+        _selectedDate = id
     }
 
     fun getPlayTypeId(): Int = _playType
@@ -121,20 +147,8 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         }
     }
 
-    @Transaction
-    fun setSelection(matchId: Long, selectionId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            betRepository.setSelection(matchId, selectionId)
-            val matchWithMarket = repository.getOneMatchById(matchId)
-            val old = matchListChange.value!!.toMutableList()
-            matchWithMarket?.apply {
-                val index = old.indexOfFirst { it.match.matchId == this.match.matchId }
-                if (index != -1) { old[index] = this }
-            }
-            withContext(Dispatchers.Main) {
-                matchListChange.value = old
-            }
-        }
+    suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
+        return betRepository.setSelection(matchId, selectionId)
     }
 
     fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {
