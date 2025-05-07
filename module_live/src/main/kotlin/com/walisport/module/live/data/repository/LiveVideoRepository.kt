@@ -18,7 +18,7 @@ class LiveVideoRepository(
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    private val matchDao = database.matchDao()
+    private val liveMatchDao = database.liveMatchDao()
     private val liveVideoDao = database.liveVideoDao()
 
     var matchId: Long = 0
@@ -26,7 +26,7 @@ class LiveVideoRepository(
     fun observeLiveVideoBean(observeMatchId: Long) =
         liveVideoDao.observeLiveVideoBean(observeMatchId)
 
-    fun observeMatchBean(observeMatchId: Long) = matchDao.observeMatchById(observeMatchId)
+    fun observeMatchBean(observeMatchId: Long) = liveMatchDao.observeMatchById(observeMatchId)
 
     fun setPlayingVideoId(id: Int) {
         scope.launch {

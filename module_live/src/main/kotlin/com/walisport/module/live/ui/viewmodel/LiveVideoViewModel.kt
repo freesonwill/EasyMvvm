@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
@@ -29,8 +30,8 @@ class LiveVideoViewModel(
 ) : BaseViewModel() {
 
     //比赛状态
-    private val _matchBeanLiveData = MutableLiveData<MatchBean>()
-    val matchBeanLiveData: LiveData<MatchBean> = _matchBeanLiveData
+    private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
+    val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
 
     //主队名称
     private val _homeTeamName = MutableLiveData("")
