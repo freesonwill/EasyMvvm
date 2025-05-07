@@ -18,8 +18,8 @@ class HandicapCornerViewModel : BaseViewModel() {
             5,
             "-2",
             "+2",
-            "全赢",
-            "全输",
+            1,
+            2,
             "投注-2全赢\n投注+2全输"
         )
         val tmp2 = CornerBallBean(
@@ -29,8 +29,8 @@ class HandicapCornerViewModel : BaseViewModel() {
             5,
             "大12.5",
             "小12.5",
-            "全赢",
-            "全输",
+            1,
+            2,
             "投注大12.5全赢\n投注小12.5全输"
         )
         val tmp3 = CornerBallBean(
@@ -40,8 +40,8 @@ class HandicapCornerViewModel : BaseViewModel() {
             5,
             "单",
             "双",
-            "全赢",
-            "全输",
+            1,
+            2,
             "投注单全赢\n投注双全输"
         )
         val tmp4 = CornerBallBean(
@@ -49,10 +49,10 @@ class HandicapCornerViewModel : BaseViewModel() {
             "角球-独赢",
             8,
             5,
-            "-主胜",
+            "主胜",
             "客胜",
-            "全赢",
-            "全输",
+            1,
+            2,
             "投注主胜全赢\n投注和局、客胜双全输"
         )
         val list = listOf(tmp1, tmp2, tmp3, tmp4)

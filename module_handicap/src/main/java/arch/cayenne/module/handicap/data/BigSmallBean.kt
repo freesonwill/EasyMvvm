@@ -14,7 +14,7 @@ data class BigSmallItem(
     val awayScore: Int,
     val homeTip: String,
     val awayTip: String,
-    val homeType: String,
-    val awayType: String,
+    val homeType: Int,  //主队输赢结果类型 1全赢  2全输  3赢一半  4输一半  5退本金
+    val awayType: Int,  //客队输赢结果类型 1全赢  2全输  3赢一半  4输一半  5退本金
     val msg: String
 )

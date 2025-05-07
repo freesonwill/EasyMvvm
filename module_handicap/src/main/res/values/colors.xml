@@ -21,4 +21,8 @@
     <color name="line">#23252F</color>
     <color name="item_name">#FFFFFF</color>
     <color name="item_answer">#30303E</color>
+
+    <color name="text_green">#52AF6B</color>
+    <color name="text_red">#EA4A69</color>
+    <color name="text_gray">#CDD8E9</color>
 </resources>
