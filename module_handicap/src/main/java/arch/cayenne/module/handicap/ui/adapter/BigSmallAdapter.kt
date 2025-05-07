@@ -88,10 +88,10 @@ class BigSmallAdapter : BaseAdapter<BigSmallBean, BaseViewHolder, ItemBigSmallBi
 
     private fun getBackground(context: Context, type: Int): Drawable? {
         return when (type) {
-            1 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_win)
-            2 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_lose)
-            3 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_win)
-            4 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_lose)
+            1 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_win)
+            2 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_lose)
+            3 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_win)
+            4 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_lose)
             5 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_half)
             else -> null
         }

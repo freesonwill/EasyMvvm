@@ -82,8 +82,8 @@ class HandicapLetBallViewModel : BaseViewModel() {
             "角球-独赢",
             0,
             0,
-            1,
             2,
+            1,
             "两队打平或主队输球\n主队全输，客队全赢"
         )
         val list2 = listOf(b1, b2)
@@ -114,8 +114,8 @@ class HandicapLetBallViewModel : BaseViewModel() {
             "角球-独赢",
             0,
             0,
-            1,
             2,
+            1,
             "两队打平或主队输球\n主队全输，客队全赢"
         )
         val list3 = listOf(c1, c2, c3)

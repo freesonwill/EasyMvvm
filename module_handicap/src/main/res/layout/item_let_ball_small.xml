@@ -80,11 +80,12 @@
             android:id="@+id/tv_let_ball_msg"
             android:layout_width="@dimen/dp_120"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_10"
             android:gravity="center"
             android:lines="2"
             android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_12"
+            android:lineSpacingMultiplier="1.2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_game_score" />
