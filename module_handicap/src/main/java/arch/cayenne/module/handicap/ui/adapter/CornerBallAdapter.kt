@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.compare.CornerBallCompare
+import arch.cayenne.module.handicap.data.AnswerType
 import arch.cayenne.module.handicap.data.CornerBallBean
 import arch.cayenne.module.handicap.databinding.ItemCornerLayoutBinding
 
@@ -58,24 +59,33 @@ class CornerBallAdapter : BaseAdapter<CornerBallBean, BaseViewHolder, ItemCorner
 
     private fun getBtnTextColor(context: Context, type: Int): Int {
         return when (type) {
-            1 -> SportSkinResourceManager.getColor(context, R.color.text_green)
-            2 -> SportSkinResourceManager.getColor(context, R.color.text_red)
+            AnswerType.WIN_ALL.type -> SportSkinResourceManager.getColor(
+                context,
+                R.color.text_green
+            )
+            AnswerType.LOSE_ALL.type -> SportSkinResourceManager.getColor(context, R.color.text_red)
             else -> 0
         }
     }
 
     private fun getBackground(context: Context, type: Int): Drawable? {
         return when (type) {
-            1 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_win)
-            2 -> AppCompatResources.getDrawable(context, R.drawable.bg_shape_lose)
+            AnswerType.WIN_ALL.type -> AppCompatResources.getDrawable(
+                context,
+                R.drawable.bg_shape_win
+            )
+            AnswerType.LOSE_ALL.type -> AppCompatResources.getDrawable(
+                context,
+                R.drawable.bg_shape_lose
+            )
             else -> null
         }
     }
 
     private fun getTypeText(context: Context, type: Int): String {
         return when (type) {
-            1 -> context.getString(R.string.win_all)
-            2 -> context.getString(R.string.lose_all)
+            AnswerType.WIN_ALL.type -> context.getString(R.string.win_all)
+            AnswerType.LOSE_ALL.type -> context.getString(R.string.lose_all)
             else -> ""
         }
     }
