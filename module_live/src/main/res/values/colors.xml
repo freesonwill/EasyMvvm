@@ -63,5 +63,9 @@
     <color name="dividing_line">#14ffffff</color>
     <color name="green_white_bg">#24ee8a</color>
     <color name="black_20">#99000000</color>
+    <color name="black_65">#59000000</color>
+    <color name="message_fill_color">#30303e</color>
+    <color name="keyboard_3">#3d3e4b</color>
+
 
 </resources>

@@ -25,10 +25,20 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
         LiveBetSlipCompare()
     ) {
     private val betSlipType = type
-    private var itemListener: RecyclerItemListener<LiveBetSlipData>? = null
+    private var earlySettleListener: RecyclerItemListener<LiveBetSlipData>? = null
+    private var cancelReserveListener: RecyclerItemListener<LiveBetSlipData>? = null
+    private var modifyReserveListener: RecyclerItemListener<LiveBetSlipData>? = null
 
-    fun setItemListener(listener: RecyclerItemListener<LiveBetSlipData>) {
-        this.itemListener = listener
+    fun setEarlySettleListener(listener: RecyclerItemListener<LiveBetSlipData>) {
+        this.earlySettleListener = listener
+    }
+
+    fun setReserveListener(
+        cancelListener: RecyclerItemListener<LiveBetSlipData>,
+        modifyListener: RecyclerItemListener<LiveBetSlipData>
+    ) {
+        this.cancelReserveListener = cancelListener
+        this.modifyReserveListener = modifyListener
     }
 
     override fun createViewBinding(
@@ -81,6 +91,7 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
             }
         })
         holder.earlySettled()
+        holder.reserveListener()
         return holder
     }
 
@@ -89,7 +100,6 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
 
         val item = getItem(position)
         holder.manager.updateView(position, getItem(position))
-
     }
 
     private fun getSelections(order: Common.Order) = order.selectionsList
@@ -109,7 +119,26 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
             val nBinding = binding as AdapterLiveBetSlipUnsettleBinding
             nBinding.betUnsettledBtSettle.clickNoRepeat {
                 val position = it.tag as Int
-                itemListener?.onItemClick(getItem(position), position)
+                if(getItem(position).order?.earlySupport == false){
+                    return@clickNoRepeat
+                }
+                earlySettleListener?.onItemClick(getItem(position), position)
+            }
+        }
+
+        fun reserveListener() {
+            if (binding !is AdapterLiveBetSlipReserveBinding) {
+                return
+            }
+            (binding as AdapterLiveBetSlipReserveBinding).also {
+                it.betReserveBtCancel.clickNoRepeat {
+                    val position = it.tag as Int
+                    cancelReserveListener?.onItemClick(getItem(position), position)
+                }
+                it.betReserveBtModify.clickNoRepeat {
+                    val position = it.tag as Int
+                    modifyReserveListener?.onItemClick(getItem(position), position)
+                }
             }
         }
     }

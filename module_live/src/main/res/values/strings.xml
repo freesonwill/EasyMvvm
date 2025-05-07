@@ -125,4 +125,7 @@
         <item>50%</item>
         <item>75%</item>
     </string-array>
+    <string name="live_betslip_bettips">如果部分已提前结算，金额则为剩余投注额</string>
+    <string name="auto_bet_odds_reached">达到此赔率时自动投注</string>
+    <string name="confirm">确定</string>
 </resources>

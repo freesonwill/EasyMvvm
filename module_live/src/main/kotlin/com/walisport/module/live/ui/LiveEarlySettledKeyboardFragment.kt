@@ -70,21 +70,21 @@ class LiveEarlySettledKeyboardFragment private constructor() :
                     return ContextCompat.getString(requireContext(), R.string.keyboard_max)
                 }
             })
-            btn100.clickNoRepeat { mViewModel.setNumber(100) }
-            btn500.clickNoRepeat { mViewModel.setNumber(500) }
-            btn2000.clickNoRepeat { mViewModel.setNumber(2000) }
-            btn5000.clickNoRepeat { mViewModel.setNumber(5000) }
-            btnBack.clickNoRepeat { mViewModel.backNumber() }
-            btnClear.clickNoRepeat { mViewModel.clearNumber() }
-            btnDouble.clickNoRepeat { mViewModel.doubleNumber() }
-            btnCollapse.clickNoRepeat { }
+            btn100.setOnClickListener { mViewModel.setNumber(100) }
+            btn500.setOnClickListener { mViewModel.setNumber(500) }
+            btn2000.setOnClickListener { mViewModel.setNumber(2000) }
+            btn5000.setOnClickListener { mViewModel.setNumber(5000) }
+            btnBack.setOnClickListener { mViewModel.backNumber() }
+            btnClear.setOnClickListener { mViewModel.clearNumber() }
+            btnDouble.setOnClickListener { mViewModel.doubleNumber() }
+            btnCollapse.setOnClickListener { }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
                     mViewModel.editNumber.value ?: "",mViewModel.prices.value?.price.toString() ?:""
                 )
                 dismiss()
             }
-            btnCancel.clickNoRepeat { dismiss() }
+            btnCancel.setOnClickListener { dismiss() }
             tvBetMoney.text = getString(R.string.refund_amount, mViewModel.prices.value?.price)
         }
     }
@@ -95,7 +95,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
     }
 
     override val dialogBackground: Drawable?
-        get() = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black_20))
+        get() = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black_65))
 
     private fun setDialogPosition() {
         dialog?.window?.apply {
