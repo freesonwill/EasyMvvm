@@ -14,7 +14,7 @@ import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
-import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
