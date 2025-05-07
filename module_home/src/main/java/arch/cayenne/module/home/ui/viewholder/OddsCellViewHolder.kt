@@ -12,12 +12,12 @@ class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
-    fun bind(item: SelectionBeanLite, forceLocked: Boolean = false) {
+    fun bind(item: SelectionBeanLite) {
         with(mBinding) {
             tvShortName.text = item.shortName
             tvOdds.text = item.odds.getOdds()
             llOddsCell.isSelected = item.isSelected //<<<< 是否選中
-            val isActive = item.active && !forceLocked
+            val isActive = item.active
             updateState(isActive)
 
             llOddsCell.setOnClickListener {
@@ -30,9 +30,9 @@ class OddsCellViewHolder(
     }
 
 
-    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>, forceLocked: Boolean = false) {
+    fun bindPayload(item: SelectionBeanLite, payloads: List<Any>) {
         val diff = payloads.firstOrNull() as? Set<*> ?: return
-        val isActive = item.active && !forceLocked
+        val isActive = item.active
         with(mBinding) {
 
             if ("odds" in diff) {
@@ -47,7 +47,7 @@ class OddsCellViewHolder(
                 }
             }
 
-            if ("active" in diff || "forceInactive" in diff) {
+            if ("active" in diff) {
                 updateState(isActive)
             }
 
@@ -111,15 +111,6 @@ class OddsCellViewHolder(
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE
             llOddsCell.isEnabled = active
-        }
-    }
-
-    private fun activate() {
-        with(mBinding) {
-            tvShortName.visibility = View.VISIBLE
-            tvOdds.visibility = View.VISIBLE
-            ivLock.visibility = View.GONE
-            llOddsCell.isEnabled = true
         }
     }
 
