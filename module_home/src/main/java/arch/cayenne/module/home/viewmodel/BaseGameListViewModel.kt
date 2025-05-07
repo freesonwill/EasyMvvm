@@ -108,7 +108,9 @@ abstract class BaseGameListViewModel: BaseViewModel() {
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
-                        matchListChange.value!! + list
+                        //防呆，把重複的match id忽略
+                        val set = matchListChange.value!!.map { it.match.matchId }.toSet()
+                        matchListChange.value!! + list.filter { !set.contains(it.match.matchId) }
                     } else {
                         list
                     }
@@ -124,7 +126,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         subscribeMatchSet.clear()
         subscribeMatchSet.addAll(ids)
         viewModelScope.launch(Dispatchers.IO) {
-            launch {
+                launch {
                 "取消訂閱比賽  $cancel".logi(this::class.java.name)
                 if (cancel.isNotEmpty()) {
                     repository.cancelSubscribeMatch(cancel.toList())
@@ -149,5 +151,19 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
         return betRepository.setSelection(matchId, selectionId)
+    }
+
+    fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val matchWithMarket = repository.matchCollect(item, collect)
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarket?.apply {
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+            }
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
+        }
     }
 }

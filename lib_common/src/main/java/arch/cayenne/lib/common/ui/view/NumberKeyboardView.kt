@@ -1,25 +1,23 @@
-package com.walisport.module.live.ui.widget
+package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.walisport.module.live.databinding.ItemNumberKeyboardLayoutBinding
+import arch.cayenne.lib.common.databinding.LayoutNumberKeyboardBinding
 
-class LiveBetNumberKeyboardView:LinearLayout {
+class NumberKeyboardView : LinearLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    private val mBinding: ItemNumberKeyboardLayoutBinding
+    private val mBinding: LayoutNumberKeyboardBinding
     private var mListener: OnCalculatorClickListener? = null
-
-
 
     init {
         val layoutInflater = LayoutInflater.from(context)
-        mBinding = ItemNumberKeyboardLayoutBinding.inflate(layoutInflater, this, true)
+        mBinding = LayoutNumberKeyboardBinding.inflate(layoutInflater, this, true)
         mBinding.apply {
             btnZero.setOnClickListener { mListener?.onNumberClick(0) }
             btnOne.setOnClickListener { mListener?.onNumberClick(1) }
@@ -45,6 +43,6 @@ class LiveBetNumberKeyboardView:LinearLayout {
         fun onNumberClick(number: Int)
         fun onDotClick()
         fun onOtherClick()
-        fun getOtherText():String
+        fun getOtherText(): String
     }
 }

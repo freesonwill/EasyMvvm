@@ -8,6 +8,7 @@ import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -16,7 +17,6 @@ import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentEarlySettledNumberKeyboardBinding
 import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
-import com.walisport.module.live.ui.widget.LiveBetNumberKeyboardView
 import kotlin.reflect.KClass
 
 /**
@@ -53,7 +53,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             ViewUtils.hideKeyboard(requireContext(), etMoney)
             etMoney.requestFocus()
             numberKeyboard.setOnCalculatorClickListener(object :
-                LiveBetNumberKeyboardView.OnCalculatorClickListener {
+                NumberKeyboardView.OnCalculatorClickListener {
                 override fun onNumberClick(number: Int) {
                     mViewModel.addNumber(number)
                 }

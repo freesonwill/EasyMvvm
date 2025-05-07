@@ -13,7 +13,7 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
-import arch.cayenne.module.bet.ui.custom.NumberKeyboardView
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import kotlin.reflect.KClass
