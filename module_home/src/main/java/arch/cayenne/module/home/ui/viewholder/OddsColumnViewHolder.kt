@@ -17,12 +17,11 @@ class OddsColumnViewHolder(
     )
 
     fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
-        val forceLocked = market.defaultSelectionCount == 0 // 判斷是否要強制鎖盤
+        // 判斷是否強制鎖盤, 會出現defaultSelectionCount = 3, 但是selections為空的情況
+        val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
         if (forceLocked) {
-            oddsCells.forEachIndexed { index, cell ->
-                selections.getOrNull(index)?.let {
-                    cell.deActivate()
-                }
+            oddsCells.forEach { cell ->
+                cell.deActivate()
             }
         } else {
             oddsCells.forEachIndexed { index, cell ->
@@ -34,10 +33,19 @@ class OddsColumnViewHolder(
     }
 
     fun bindPayload(
+        market: MarketBeanLite,
         selections: List<SelectionBeanLite>,
         payloads: List<Any>
     ) {
         val changes = payloads.firstOrNull() as? Set<*> ?: return
+        val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
+        val wasLocked = oddsCells.all { it.isDeactivated() }
+        if (!forceLocked && wasLocked) {
+            // 鎖盤 ➝ 開盤：需要完整重繪
+            bind(market, selections)
+            return
+        }
+
         oddsCells.forEachIndexed { index, cell ->
             val selection = selections.getOrNull(index)
             if (selection != null) {

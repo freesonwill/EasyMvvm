@@ -45,7 +45,7 @@ class OddsColumnAdapter(
     ) {
         val (market, selections) = getItem(position)
         if (payloads.isNotEmpty()) {
-            holder.bindPayload(selections, payloads)
+            holder.bindPayload(market, selections, payloads)
         } else {
             holder.bind(market, selections)
         }

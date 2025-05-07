@@ -7,12 +7,15 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
+import arch.cayenne.module.home.enums.OddsCellState
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
+    private var currentState: OddsCellState = OddsCellState.HIDDEN
     fun bind(item: SelectionBeanLite) {
+        currentState = OddsCellState.VISIBLE
         with(mBinding) {
             tvShortName.text = item.shortName
             tvOdds.text = item.odds.getOdds()
@@ -31,6 +34,7 @@ class OddsCellViewHolder(
 
 
     fun bindPayload(item: SelectionBeanLite, payloads: List<Any>) {
+        currentState = OddsCellState.VISIBLE
         val diff = payloads.firstOrNull() as? Set<*> ?: return
         val isActive = item.active
         with(mBinding) {
@@ -115,6 +119,7 @@ class OddsCellViewHolder(
     }
 
     fun deActivate() {
+        currentState = OddsCellState.DEACTIVATED
         with(mBinding) {
             tvShortName.visibility = View.GONE
             tvOdds.visibility = View.GONE
@@ -124,6 +129,11 @@ class OddsCellViewHolder(
     }
 
     fun hideView() {
+        currentState = OddsCellState.HIDDEN
         mBinding.root.visibility = View.GONE
+    }
+
+    fun isDeactivated(): Boolean {
+        return currentState == OddsCellState.DEACTIVATED
     }
 }
