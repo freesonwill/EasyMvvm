@@ -146,6 +146,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         clockModified: Long
     )
 
+    @Query(
+        "UPDATE MatchBean SET collect = :collect WHERE matchId = :matchId")
+    abstract fun updateOnlyMatchCollect(matchId: Long, collect: Boolean)
+
     @Transaction
     open suspend fun insertFullMatch(
         tournamentMatchRefs: List<TournamentMatchRef>,
@@ -252,7 +256,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
-                val selections = getSelectionLites(matchBean.matchId, marketBean.marketId)
+                val selections = specialHandling(
+                marketBean.marketId,
+                getSelectionLites(matchBean.matchId, marketBean.marketId)
+            )
                 MarketWithSelections(marketBean, selections)
             }
             MatchWithMarkets(matchBean, markets)

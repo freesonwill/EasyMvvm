@@ -27,6 +27,7 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
         if (oldLiveInfo.clock != newLiveInfo.clock) diff.add("clock")
         if (oldLiveInfo.score != newLiveInfo.score) diff.add("score")
         if (oldLiveInfo.viewerCount != newLiveInfo.viewerCount) diff.add("viewerCount")
+        if (oldItem.match.collect != newItem.match.collect) diff.add("collect")
 
         // 遍歷比對所有 MarketWithSelections
         oldItem.markets.forEachIndexed { index, oldMarket ->

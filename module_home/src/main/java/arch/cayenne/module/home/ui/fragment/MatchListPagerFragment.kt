@@ -35,6 +35,7 @@ class MatchListPagerFragment :
                 }
 
                 override fun onFavoriteClick(item: MatchWithMarkets) {
+                    mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
                 override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
@@ -110,7 +111,6 @@ class MatchListPagerFragment :
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             matchAdapter.submitList(matchList)
-
         }
 
     }

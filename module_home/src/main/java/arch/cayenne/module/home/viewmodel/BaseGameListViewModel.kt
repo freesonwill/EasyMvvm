@@ -98,7 +98,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
         subscribeMatchSet.clear()
         subscribeMatchSet.addAll(ids)
         viewModelScope.launch(Dispatchers.IO) {
-            launch {
+                launch {
                 "取消訂閱比賽  $cancel".logi(this::class.java.name)
                 if (cancel.isNotEmpty()) {
                     repository.cancelSubscribeMatch(cancel.toList())
@@ -123,7 +123,6 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     @Transaction
     fun setSelection(matchId: Long, selectionId: Long) {
-
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.setSelection(matchId, selectionId)
             val matchWithMarket = repository.getOneMatchById(matchId)
@@ -131,6 +130,20 @@ abstract class BaseGameListViewModel: BaseViewModel() {
             matchWithMarket?.apply {
                 val index = old.indexOfFirst { it.match.matchId == this.match.matchId }
                 if (index != -1) { old[index] = this }
+            }
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
+        }
+    }
+
+    fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val matchWithMarket = repository.matchCollect(item, collect)
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarket?.apply {
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
             }
             withContext(Dispatchers.Main) {
                 matchListChange.value = old
