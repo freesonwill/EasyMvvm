@@ -10,46 +10,43 @@ class LiveBetSlipModifyOddsViewModel : BaseViewModel() {
     private val _editNumber: MutableLiveData<String> = MutableLiveData()
     val editNumber: LiveData<String> = _editNumber.distinctUntilChanged()
 
-
+    /**
+     *添加数字，最小到小数点后2位
+     * */
     fun addNumber(number: Int) {
-        val current = _editNumber.value ?: ""
-        if (current.contains(".")) {
-            val lastValue = current.substringAfter(".")
-            if (lastValue.length > 2) return
-        }
-        _editNumber.value = current + number
+        _editNumber.value = _editNumber.value?.let {
+            if (it.contains(".")) {
+                val lastValue = it.substringAfter(".")
+                if (lastValue.length > 2) it
+                else "$it$number"
+            } else "$it$number"
+        } ?: "$number"
     }
 
+    /**
+     *值加0.01
+     * */
     fun addZeroPointOne() {
         val current = _editNumber.value ?: "0"
         _editNumber.value = BigDecimal(current).add(BigDecimal(0.01)).toDouble().toString()
     }
 
+    /**
+     * 添加小数点 如果有小数点则返回
+     * */
     fun setDot() {
-        val current = _editNumber.value ?: ""
-        if (current.isEmpty()) {
-            _editNumber.value = "0."
-            return
-        } else if (current.contains(".")) {
-            return
-        }
-        _editNumber.value = "$current."
+        _editNumber.value = _editNumber.value?.let {
+            if (it.isEmpty()) "0." else if (it.contains(".")) "" else "$it."
+        } ?: "0."
     }
 
     fun clearNumber() {
         _editNumber.value = ""
     }
 
-    fun doubleNumber() {
-        _editNumber.value?.let {
-            if (it.isEmpty()) {
-                ""
-            } else {
-                _editNumber.value = BigDecimal(it).multiply(BigDecimal(2)).toString()
-            }
-        } ?: ""
-    }
-
+    /**
+     * 删除前一个数字
+     * */
     fun backNumber() {
         _editNumber.value = _editNumber.value?.let {
             if (it.length > 1) {

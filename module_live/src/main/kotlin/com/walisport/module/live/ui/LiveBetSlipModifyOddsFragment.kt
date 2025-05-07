@@ -88,7 +88,7 @@ class LiveBetSlipModifyOddsFragment private constructor() :
                     val layoutParams = attributes
                     layoutParams.width = LayoutParams.WRAP_CONTENT
                     layoutParams.height = LayoutParams.WRAP_CONTENT
-                    layoutParams.gravity = Gravity.BOTTOM
+                    layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
                     attributes = layoutParams
                 }
             })
