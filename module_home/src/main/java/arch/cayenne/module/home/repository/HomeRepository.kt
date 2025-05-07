@@ -4,7 +4,12 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.MarketBean
+import arch.cayenne.lib.database.entity.MarketSelectCrossRef
+import arch.cayenne.lib.database.entity.MatchBeanLite
+import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -244,6 +249,36 @@ class HomeRepository(
             "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
             return res.data!!.success
         } else { return false }
+    }
+
+    @Transaction
+    suspend fun matchCollect(item: MatchWithMarkets, collect: Boolean): MatchWithMarkets? {
+        val res = if (collect) {
+                socketManager.sendAndWaitProtoMessageResponse<Client.AddCollectResp>(
+                    scope = scope,
+                    dispatcher = Dispatchers.IO,
+                    apiCode = ApiCode.ADD_COLLECT,
+                ) {
+                    Client.AddCollectReq.newBuilder().apply {
+                        this.addMatchId(item.match.matchId)
+                    }.build()
+                }
+        } else {
+            socketManager.sendAndWaitProtoMessageResponse<Client.RemoveCollectReq>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.REMOVE_COLLECT,
+            ) {
+                Client.RemoveCollectReq.newBuilder().apply {
+                    this.addMatchId(item.match.matchId)
+                }.build()
+            }
+        }
+        if (res.error == null && res.data != null) {
+            matchDao.updateOnlyMatchCollect(item.match.matchId, collect)
+            return matchDao.getOneMatchById(item.match.matchId)
+        }
+        return null
     }
 
     suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()

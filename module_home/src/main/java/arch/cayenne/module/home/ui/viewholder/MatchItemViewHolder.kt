@@ -61,6 +61,8 @@ class MatchItemViewHolder(
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()
+            ivFavorite.isSelected = data.match.collect
+
 
             val markets = data.markets
                 .filter { it.selections.isNotEmpty() }
@@ -148,6 +150,9 @@ class MatchItemViewHolder(
             if ("odds" in changes) {
                 val selectionsGrouped = item.markets.map { it.market to it.selections }
                 oddsColumnAdapter.submitList(selectionsGrouped)
+            }
+            if ("collect" in changes) {
+                ivFavorite.isSelected = item.match.collect
             }
         }
     }

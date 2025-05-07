@@ -22,6 +22,7 @@ data class MatchFullData(
     val marketSelectCrossRefs: List<MarketSelectCrossRef>,
 )
 
+//把Common.Match整理成可以丟進資料庫的形式
 fun List<Common.Match>.toRoomData() : MatchFullData {
     val matches = mutableListOf<MatchBean>()
     val markets = mutableListOf<MarketBean>()
@@ -123,6 +124,7 @@ data class MatchUpdateData(
     val marketSelectCrossRefs: List<MarketSelectCrossRef>,
 )
 
+//把MatchNotify整理成可以丟進資料庫的形式
 fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
     val matchLites = arrayListOf<MatchBeanLite>()
     val markets = mutableListOf<MarketBean>()
