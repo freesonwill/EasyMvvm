@@ -6,17 +6,18 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.compare.BigSmallCompare
+import arch.cayenne.module.handicap.data.AnswerType
 import arch.cayenne.module.handicap.data.BigSmallBean
 import arch.cayenne.module.handicap.databinding.ItemBigSmallBinding
 import arch.cayenne.module.handicap.databinding.ItemBigSmallLayBinding
 
-class BigSmallAdapter : BaseAdapter<BigSmallBean, BaseViewHolder, ItemBigSmallBinding>(BigSmallCompare()) {
+class BigSmallAdapter :
+    BaseAdapter<BigSmallBean, BaseViewHolder, ItemBigSmallBinding>(BigSmallCompare()) {
 
     @SuppressLint("DefaultLocale")
     override fun convertPlus(
@@ -77,33 +78,60 @@ class BigSmallAdapter : BaseAdapter<BigSmallBean, BaseViewHolder, ItemBigSmallBi
     //1全赢  2全输  3赢一半  4输一半  5退本金
     private fun getTypeText(context: Context, type: Int): String {
         return when (type) {
-            1 -> context.getString(R.string.win_all)
-            2 -> context.getString(R.string.lose_all)
-            3 -> context.getString(R.string.half_win)
-            4 -> context.getString(R.string.half_lose)
-            5 -> context.getString(R.string.seed_money)
+            AnswerType.WIN_ALL.type -> context.getString(R.string.win_all)
+            AnswerType.LOSE_ALL.type -> context.getString(R.string.lose_all)
+            AnswerType.WIN_HALF.type -> context.getString(R.string.half_win)
+            AnswerType.LOSE_HALF.type -> context.getString(R.string.half_lose)
+            AnswerType.SEED_MONEY.type -> context.getString(R.string.seed_money)
             else -> ""
         }
     }
 
     private fun getBackground(context: Context, type: Int): Drawable? {
         return when (type) {
-            1 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_win)
-            2 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_lose)
-            3 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_win)
-            4 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_lose)
-            5 -> SportSkinResourceManager.getDrawable(context, R.drawable.bg_shape_half)
+            AnswerType.WIN_ALL.type -> SportSkinResourceManager.getDrawable(
+                context,
+                R.drawable.bg_shape_win
+            )
+            AnswerType.LOSE_ALL.type -> SportSkinResourceManager.getDrawable(
+                context,
+                R.drawable.bg_shape_lose
+            )
+            AnswerType.WIN_HALF.type -> SportSkinResourceManager.getDrawable(
+                context,
+                R.drawable.bg_shape_win
+            )
+            AnswerType.LOSE_HALF.type -> SportSkinResourceManager.getDrawable(
+                context,
+                R.drawable.bg_shape_lose
+            )
+            AnswerType.SEED_MONEY.type -> SportSkinResourceManager.getDrawable(
+                context,
+                R.drawable.bg_shape_half
+            )
             else -> null
         }
     }
 
     private fun getBtnTextColor(context: Context, type: Int): Int {
         return when (type) {
-            1 -> SportSkinResourceManager.getColor(context, R.color.text_green)
-            2 -> SportSkinResourceManager.getColor(context, R.color.text_red)
-            3 -> SportSkinResourceManager.getColor(context, R.color.text_green)
-            4 -> SportSkinResourceManager.getColor(context, R.color.text_red)
-            5 -> SportSkinResourceManager.getColor(context, R.color.text_gray)
+            AnswerType.WIN_ALL.type -> SportSkinResourceManager.getColor(
+                context,
+                R.color.text_green
+            )
+            AnswerType.LOSE_ALL.type -> SportSkinResourceManager.getColor(context, R.color.text_red)
+            AnswerType.WIN_HALF.type -> SportSkinResourceManager.getColor(
+                context,
+                R.color.text_green
+            )
+            AnswerType.LOSE_HALF.type -> SportSkinResourceManager.getColor(
+                context,
+                R.color.text_red
+            )
+            AnswerType.SEED_MONEY.type -> SportSkinResourceManager.getColor(
+                context,
+                R.color.text_gray
+            )
             else -> 0
         }
     }
