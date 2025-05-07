@@ -78,6 +78,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     @Query("SELECT sel.selectionId as selectionId, " +
+                "ref.matchId as matchId,  " +
                 "sel.detail_active as detailActive, " +
                 "sel.name as name, " +
                 "sel.shortName as shortName, " +

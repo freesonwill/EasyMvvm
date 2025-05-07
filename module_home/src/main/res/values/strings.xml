@@ -41,4 +41,6 @@
     <string name="drawer_notification_time_1">05:35</string>
     <string name="drawer_notification_time_2">周一</string>
     <string name="drawer_notification_message">通知消息</string>
+
+    <string name="disabled_to_combo">当前赛事不支持串关</string>
 </resources>
