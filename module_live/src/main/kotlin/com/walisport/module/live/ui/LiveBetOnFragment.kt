@@ -32,7 +32,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     var itemDecoration: RecyclerView.ItemDecoration = LinearSpacingItemDecoration(8.dp2px, 0.dp2px)
     var tabPosition = 0
-    var liveBetOnAdapter :LiveBetOnAdapter = LiveBetOnAdapter()
+    var liveBetOnAdapter: LiveBetOnAdapter = LiveBetOnAdapter()
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvBetList.apply {
             itemAnimator = null
@@ -50,14 +50,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override fun initData() {
         super.initData()
     }
+
     fun showData(list: List<MarketMenuBean>?) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         liveBetOnAdapter.submitList(list)
         liveBetOnAdapter.setHomeAway(
-                baseInfo?.homeTeam.toString(),
-        baseInfo?.homeTeamIcon.toString(),
-        baseInfo?.awayTeam.toString(),
-        baseInfo?.awayTeamIcon.toString()
+            baseInfo?.homeTeam.toString(),
+            baseInfo?.homeTeamIcon.toString(),
+            baseInfo?.awayTeam.toString(),
+            baseInfo?.awayTeamIcon.toString()
         )
     }
 
@@ -84,7 +85,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             mViewModel.observeMarketTypeBean()
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
-            if (it.basicInfo != null) {
+            if (it != null) {
                 if (it.basicInfo.betStop) {
                     mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
                     return@observe
