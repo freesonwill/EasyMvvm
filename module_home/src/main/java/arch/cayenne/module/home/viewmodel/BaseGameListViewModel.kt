@@ -108,7 +108,9 @@ abstract class BaseGameListViewModel: BaseViewModel() {
             if (list.isNotEmpty()) {
                 withContext(Dispatchers.Main) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
-                        matchListChange.value!! + list
+                        //防呆，把重複的match id忽略
+                        val set = matchListChange.value!!.map { it.match.matchId }.toSet()
+                        matchListChange.value!! + list.filter { !set.contains(it.match.matchId) }
                     } else {
                         list
                     }
