@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_broder_toast"
     android:padding="16dp">
 
     <TextView
@@ -13,6 +14,8 @@
         android:layout_marginBottom="14dp"
         android:ellipsize="end"
         android:gravity="start"
+        android:lines="1"
+        android:textColor="@color/main_text"
         app:layout_constraintBottom_toTopOf="@id/cl_content"
         app:layout_constraintEnd_toEndOf="@id/cl_content"
         app:layout_constraintStart_toStartOf="@id/cl_content"
@@ -38,6 +41,7 @@
                 android:id="@+id/tv_success_combo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="3串1、3串2、3串4" />
@@ -47,6 +51,7 @@
                 android:id="@+id/tv_failure_combo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="3串2" />
@@ -60,6 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="4dp"
+            android:textColor="@color/main_text"
             app:layout_constraintBottom_toBottomOf="@id/iv_success"
             app:layout_constraintEnd_toStartOf="@id/iv_success"
             app:layout_constraintStart_toEndOf="@id/cl_combo"
@@ -80,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:layout_marginEnd="4dp"
+            android:textColor="@color/main_text"
             app:layout_constraintBottom_toBottomOf="@id/iv_failure"
             app:layout_constraintEnd_toStartOf="@id/iv_failure"
             app:layout_constraintStart_toEndOf="@id/cl_combo"

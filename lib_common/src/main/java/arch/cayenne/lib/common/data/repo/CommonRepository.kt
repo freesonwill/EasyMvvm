@@ -6,6 +6,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
+import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.socket.WebSocketManager
@@ -17,6 +18,8 @@ import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 class CommonRepository(
     override val scope: CoroutineScope,
@@ -26,7 +29,10 @@ class CommonRepository(
     private val betDao: BetDao
 ) : BaseRepository() {
 
+    private val betResultFlow = MutableSharedFlow<List<BetResultLiteBean>>()
+
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
+    fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
 
     suspend fun sendLogin(): SocketResponseData<Client.LoginResp> {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
@@ -94,8 +100,20 @@ class CommonRepository(
         socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY).collect {
             if (it.data == null || it.data!!.orderStatusList.isEmpty())
                 return@collect
+            val resultList = mutableListOf<BetResultLiteBean>()
             it.data!!.orderStatusList.forEach { resp ->
                 betDao.updateDetailResult(resp.orderId, BetResultStatusEnum.getStatusByCode(resp.status))
+                betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
+                    val selection = betDao.getSelections(detail.betId)
+                    val matchName = selection.map { s -> s.matchName }
+                    val resultLiteBean = BetResultLiteBean(
+                        matchName,
+                        detail.combo,
+                        BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                    )
+                    resultList.add(resultLiteBean)
+                }
+                betResultFlow.emit(resultList)
             }
         }
     }

@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -8,6 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.socket.data.ConnectState
 import arch.cayenne.lib.socket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository
+import arch.cayenne.lib.database.entity.BetResultLiteBean
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -23,6 +25,8 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
     val loginIsSuccess = MutableLiveData<Boolean>()
     val connectingError = MutableLiveData<SocketResponseError>()
+    private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
+    val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
 
     override fun initViewModel() {
         super.initViewModel()
@@ -36,6 +40,11 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                     else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
                         "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
                     }
+                }
+            }
+            launch(Dispatchers.IO) {
+                commonRepository.getBetResultFlow().collect {
+                    _betResultListener.postValue(it)
                 }
             }
         }

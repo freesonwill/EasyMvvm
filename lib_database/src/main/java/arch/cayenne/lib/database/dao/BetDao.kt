@@ -69,6 +69,9 @@ abstract class BetDao : BaseDao<BetBean>() {
     @Query("SELECT * FROM BetDetailBean WHERE betId = :betId")
     abstract suspend fun getDetail(betId: Long): List<BetDetailBean>
 
+    @Query("SELECT * FROM BetDetailBean WHERE orderId = :orderId")
+    abstract suspend fun getDetailByOrderId(orderId: String): BetDetailBean?
+
     @Query("SELECT * FROM BetSelectionBean WHERE betId = :betId")
     abstract fun observeSelections(betId: Long): Flow<List<BetSelectionBean>>
 

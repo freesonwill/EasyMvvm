@@ -22,7 +22,7 @@ class BetResultToastView: LinearLayout {
     }
 
     fun setResult(data: List<BetResultLiteBean>) {
-        if (data.size == 1) {
+        if (data.size == 1 && data.first().matchName.size == 1) {
             setSingleResult(data.first())
         } else {
             setComboResult(data)
@@ -34,18 +34,22 @@ class BetResultToastView: LinearLayout {
         mBinding.groupSuccess.isVisible = data.isSuccessful
         mBinding.groupFailure.isVisible = !data.isSuccessful
         if (data.isSuccessful) {
-            mBinding.tvSuccessTitle.text = data.matchName
+            mBinding.tvSuccessTitle.text = data.matchName.first()
         } else {
-            mBinding.tvFailureCombo.text = data.matchName
+            mBinding.tvFailureCombo.text = data.matchName.first()
         }
     }
 
     private fun setComboResult(data: List<BetResultLiteBean>) {
-        mBinding.tvTitle.text = data.map { it.matchName }.joinToString { ", " }
+        mBinding.tvTitle.text = data.first().matchName.joinToString("、")
         val successfulData = data.filter { it.isSuccessful }
         val failureData = data.filter { !it.isSuccessful }
         mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
         mBinding.groupFailure.isVisible = failureData.isNotEmpty()
-
+        // TODO 之後補字串
+        mBinding.tvSuccessCombo.text =
+            successfulData.joinToString("、") { "${data.size} combo ${it.combo}" }
+        mBinding.tvFailureCombo.text =
+            failureData.joinToString("、") { "${data.size} combo ${it.combo}" }
     }
 }
