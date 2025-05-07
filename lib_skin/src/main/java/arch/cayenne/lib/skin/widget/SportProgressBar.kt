@@ -2,16 +2,17 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.LinearLayout
+import android.widget.ProgressBar
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SportSkinProgressBarHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-open class SportLinearLayout :LinearLayout {
-    private val backgroundTintHelper = SportSkinBackGroundHelper(this)
+class SportProgressBar : ProgressBar {
+
+    private val backgroundTintHelper = SportSkinProgressBarHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
     constructor(context: Context) : super(context) {

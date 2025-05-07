@@ -4,9 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.skin.widget.SportLinearLayout
 import com.walisport.module.live.data.model.MatchEventBean
 import com.walisport.module.live.databinding.ViewMatchEventBinding
 import com.walisport.module.live.ui.adapter.MatchEventAdapter
@@ -17,7 +17,7 @@ import com.walisport.module.live.ui.adapter.MatchEventAdapter
 
 class MatchEventView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : SportLinearLayout(context, attrs, defStyleAttr) {
 
     private val mBinding: ViewMatchEventBinding =
         ViewMatchEventBinding.inflate(LayoutInflater.from(context), this, true)
