@@ -24,7 +24,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return manager.getStringValue(UserDataKey.KEY_SKIN, SkinType.SKIN_BLACK_GREEN.value)
+        return manager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_BLACK_GREEN.value)
     }
 
     //设置赔率显示方式
@@ -34,7 +34,7 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //获取赔率显示方式
     fun getOddsDisplayType(): String {
-        return manager.getStringValue(UserDataKey.KEY_DISPLAY, "EP")
+        return manager.getValue(UserDataKey.KEY_DISPLAY, "EP")
     }
 
     //设置语言类型
@@ -44,6 +44,6 @@ class SettingRepository(override val scope: CoroutineScope) : BaseRepository() {
 
     //获取语言类型
     fun getLanguageType(): String {
-        return manager.getStringValue(UserDataKey.KEY_LANGUAGE, "SIMPLE")
+        return manager.getValue(UserDataKey.KEY_LANGUAGE, "SIMPLE")
     }
 }
