@@ -80,7 +80,8 @@ enum class AddSelectionStatus {
     COMBO,
     DISABLE_COMBO,
     UPDATE,
-    REMOVE
+    REMOVE,
+    FAIL
 }
 
 enum class OddsStatusEnum {

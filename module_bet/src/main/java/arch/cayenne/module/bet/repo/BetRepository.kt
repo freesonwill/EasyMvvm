@@ -52,7 +52,7 @@ class BetRepository(
             val match = matchDao.getOneMatchById(matchId)
             getSelectionLiteBean(betId, match, newSelection)?.let {
                 betDao.insertSelection(it)
-            }
+            } ?: return@withContext AddSelectionStatus.FAIL
 
             checkBetBeanType(betId)
             return@withContext if (bet == null) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
@@ -63,7 +63,7 @@ class BetRepository(
         val newSelection = matchDao.getSelectionById(selectionId)
         getSelectionLiteBean(betId, match, newSelection)?.let {
             betDao.updateSelection(it)
-        }
+        } ?: return@withContext AddSelectionStatus.FAIL
 
         checkBetBeanType(betId)
         return@withContext AddSelectionStatus.UPDATE
