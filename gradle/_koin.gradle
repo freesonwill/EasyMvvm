@@ -1,5 +1,10 @@
-
 apply plugin: 'com.google.devtools.ksp'
+
+println "_koin.gradle applied in module: ${project.path}, ext.koinApplied:${ext.has("koinApplied")}"  // 如 :app、:featureA
+if (ext.has("koinApplied")) {
+    return
+}
+ext.koinApplied = true
 
 project.afterEvaluate {
     ksp {
@@ -8,6 +13,10 @@ project.afterEvaluate {
 }
 
 dependencies {
+    /*// Koin Annotations
+    implementation("io.insert-koin:koin-annotations:1.3.0")
+    // Koin Annotations KSP Compiler
+    ksp("io.insert-koin:koin-ksp-compiler:1.3.0")*/
     implementation(project(":plugin_koin"))
     ksp(project(":plugin_koin"))
 }

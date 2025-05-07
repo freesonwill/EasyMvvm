@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
@@ -20,12 +21,51 @@ import arch.cayenne.lib.common.R
  * @description: Navigation的扩展
  */
 object NavigationExt {
-    private val defaultNavOptions = NavOptions.Builder()
-        .setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
-        .setExitAnim(R.anim.slide_out_left)   // 旧页面退出动画 <--
-        .setPopEnterAnim(R.anim.slide_in_left) // 返回时，新页面进入动画
-        .setPopExitAnim(R.anim.slide_out_right) // 返回时，当前页面退出动画
-        .build()
+    private val defaultNavOptions by lazy {
+        NavOptions.Builder()
+            .setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
+            .setExitAnim(R.anim.slide_out_left)   // 旧页面退出动画 <--
+            .setPopEnterAnim(R.anim.slide_in_left) // 返回时，新页面进入动画
+            .setPopExitAnim(R.anim.slide_out_right) // 返回时，当前页面退出动画
+            .build()
+    }
+
+    /**
+     * directions的配置覆盖navOptions的
+     *
+     * @param navController
+     * @param directions
+     * @param navOptions
+     * @return
+     */
+    private fun mergedNavOption(
+        navController: NavController,
+        directions: NavDirections,
+        navOptions: NavOptions?
+    ): NavOptions?{
+        return navOptions?.let {
+            //directions没有navOptions用navOptions
+            val dNavOptions = navController.currentDestination?.getAction(directions.actionId)?.navOptions ?: return@let navOptions
+            val mergedOptions = NavOptions.Builder().apply {
+                // 动画合并
+                setEnterAnim(navOptions.enterAnim)
+                setExitAnim(navOptions.exitAnim)
+                setPopEnterAnim(navOptions.popEnterAnim)
+                setPopExitAnim(navOptions.popExitAnim)
+                //合并popUpTo、isPopUpToInclusive
+                navOptions.takeIf { it.popUpToId != -1 }?.let {
+                    setPopUpTo(it.popUpToId, it.isPopUpToInclusive())
+                }
+                // popUpTo 逻辑：优先用 directions 中的，再 navOptions中的
+                dNavOptions.takeIf { it.popUpToId != -1 }?.let {
+                    setPopUpTo(it.popUpToId, it.isPopUpToInclusive())
+                }
+                // 合并launchSingleTop
+                setLaunchSingleTop(dNavOptions.shouldLaunchSingleTop())
+            }.build()
+            mergedOptions
+        }
+    }
 
     /** Activity的默认跳转 **/
     fun Activity.navigate(
@@ -34,14 +74,16 @@ object NavigationExt {
         navigatorExtras: Navigator.Extras? = null,
         @IdRes viewId: Int = R.id.nav_host
     ) {
-        findNavController(viewId).navigate(deepLink,navOptions,navigatorExtras)
+        findNavController(viewId).navigate(deepLink, navOptions, navigatorExtras)
     }
+
     fun Activity.navigate(
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions,
         @IdRes viewId: Int = R.id.nav_host
     ) {
-        findNavController(viewId).navigate(directions.actionId, directions.arguments, navOptions)
+        val navController = findNavController(viewId)
+        navController.navigate(directions, mergedNavOption(navController,directions, navOptions))
     }
 
     fun Activity.navigate(
@@ -63,14 +105,14 @@ object NavigationExt {
             navOptions.enterAnim,
             navOptions.exitAnim,
         )
-        startActivity(intent,options.toBundle())
+        startActivity(intent, options.toBundle())
     }
 
-    fun Activity.navigateUp(@IdRes viewId: Int = R.id.nav_host):Boolean {
+    fun Activity.navigateUp(@IdRes viewId: Int = R.id.nav_host): Boolean {
         return findNavController(viewId).navigateUp()
     }
 
-    fun Activity.popBackStack(@IdRes viewId: Int = R.id.nav_host):Boolean {
+    fun Activity.popBackStack(@IdRes viewId: Int = R.id.nav_host): Boolean {
         return findNavController(viewId).popBackStack()
     }
 
@@ -87,7 +129,8 @@ object NavigationExt {
         directions: NavDirections,
         navOptions: NavOptions? = defaultNavOptions
     ) {
-        findNavController().navigate(directions.actionId, directions.arguments, navOptions)
+        val navController = findNavController()
+        navController.navigate(directions,mergedNavOption(navController,directions,navOptions))
     }
 
 
@@ -100,11 +143,11 @@ object NavigationExt {
         findNavController().navigate(resId, args, navOptions, navigatorExtras)
     }
 
-    fun Fragment.navigateUp():Boolean {
+    fun Fragment.navigateUp(): Boolean {
         return findNavController().navigateUp()
     }
 
-    fun Fragment.popBackStack():Boolean {
+    fun Fragment.popBackStack(): Boolean {
         return findNavController().popBackStack()
     }
 }

@@ -45,7 +45,10 @@
         <!--从联赛日程页跳转到直播详情页-->
         <action
             android:id="@+id/action_leagueFragment_to_liveMainFragment"
-            app:destination="@id/liveMainFragment">
+            app:destination="@id/liveMainFragment"
+            app:popUpTo="@id/liveMainFragment"
+            app:popUpToInclusive="true"
+            >
             <argument
                 android:name="matchId"
                 app:argType="long" />
