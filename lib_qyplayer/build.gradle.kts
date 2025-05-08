@@ -34,7 +34,7 @@ android {
 
 dependencies {
     // 包含所有 .aar 文件
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
+    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
