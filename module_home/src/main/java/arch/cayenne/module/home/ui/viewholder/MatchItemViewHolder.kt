@@ -28,20 +28,22 @@ class MatchItemViewHolder(
 ) : BaseViewHolder(mBinding) {
     private lateinit var oddsColumnAdapter: OddsColumnAdapter
 
-
-    private lateinit var currentMatchWithMarkets: MatchWithMarkets
-
     fun init(data: MatchWithMarkets) {
-        oddsColumnAdapter = OddsColumnAdapter { selection, isSelected ->
-            onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
+        oddsColumnAdapter = OddsColumnAdapter { selection, _ ->
+            onMatchItemClickListener?.onOddsCellClick(data, selection)
         }
-        currentMatchWithMarkets = data
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
 
             //賽事資訊
             Glide.with(binding.root).load(basicInfo.tournamentIcon).into(ivTournamentIcon)
+//            val iconUrl = basicInfo.tournamentIcon
+//            Glide.with(binding.root)
+//                .load(if (iconUrl.isEmpty()) R.drawable.ic_default_tournament else iconUrl)
+//                .placeholder(R.drawable.ic_default_tournament) // 載入中預設圖
+//                .error(R.drawable.ic_default_tournament)       // 載入失敗預設圖
+//                .into(ivTournamentIcon)
             tvTournamentName.text = basicInfo.tournamentName
             //TODO 階段與時間待確認
             if (basicInfo.status == 4) {
@@ -53,26 +55,26 @@ class MatchItemViewHolder(
                 tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
             }
 
-            Glide.with(binding.root).load(basicInfo.awayTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivAwayIcon)
+            Glide.with(binding.root).load(basicInfo.awayTeamIcon)
+                .error(arch.cayenne.lib.res.R.color.color_333A45).into(ivAwayIcon)
             tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
             tvAwayScore.text = liveInfo.score.getAwayScore()
 
-            Glide.with(binding.root).load(basicInfo.homeTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivHomeIcon)
+            Glide.with(binding.root).load(basicInfo.homeTeamIcon)
+                .error(arch.cayenne.lib.res.R.color.color_333A45).into(ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()
             ivFavorite.isSelected = data.match.collect
-
-
-            val markets = data.markets
-                .filter { it.selections.isNotEmpty() }
-
-            val columnCount = markets.size
-            layoutOddsTitle.columnCount = columnCount
-
-            markets.forEachIndexed { index, bean ->
+            val defaultTitleList = listOf(
+                R.string.match_title_win,
+                R.string.match_title_handicap,
+                R.string.match_title_over_under
+            )
+            layoutOddsTitle.columnCount = defaultTitleList.size
+            defaultTitleList.forEachIndexed { index, title ->
                 val titleView = TextView(binding.root.context).apply {
-                    text = bean.market.marketName
+                    text = getString(title)
                     setTextColor(
                         ContextCompat.getColorStateList(
                             context,
@@ -97,7 +99,9 @@ class MatchItemViewHolder(
                 adapter = oddsColumnAdapter
 
                 val spacing = 2.dp2px
-                if (itemDecorationCount > 0) { removeItemDecorationAt(0) }
+                if (itemDecorationCount > 0) {
+                    removeItemDecorationAt(0)
+                }
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,

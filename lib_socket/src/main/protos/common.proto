@@ -53,7 +53,7 @@ message Market {
     string market_name = 2;   //盘口名称
     repeated MarketDetail market_detail = 3;
     int32 status = 4;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
-    int32 style = 5;          //1-两列 2-三列 3-波胆
+    int32 style = 5;          //0-默认 1-一列 2-两列 3-三列 4-波胆
     repeated int32 market_type = 6;
 }
 

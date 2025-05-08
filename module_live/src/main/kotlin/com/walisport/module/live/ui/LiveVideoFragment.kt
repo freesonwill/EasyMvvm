@@ -49,7 +49,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
-        mBinding.includedMatchNotStarted.model = mViewModel
+        mBinding.includedMatchNotInProgress.model = mViewModel
 
         val mediaPlayer = mBinding.videoView.mediaPlayer
         if (mediaPlayer is IjkMediaPlayer) {
@@ -242,7 +242,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             homeTeamName.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.includedMatchNotStarted.tvPlayerA.text = it
+                    mBinding.includedMatchNotInProgress.tvHomeTeam.text = it
                 }
             }
 
@@ -252,12 +252,12 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         .load(it)
                         .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
                         .error(arch.cayenne.lib.res.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotStarted.ivPlayerA)
+                        .into(mBinding.includedMatchNotInProgress.ivHomeTeam)
                 }
             }
 
             awayTeamName.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotStarted.tvPlayerB.text = it }
+                it?.let { mBinding.includedMatchNotInProgress.tvAwayTeam.text = it }
             }
 
             awayTeamIcon.observe(viewLifecycleOwner) {
@@ -266,17 +266,17 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         .load(it)
                         .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
                         .error(arch.cayenne.lib.res.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotStarted.ivPlayerB)
+                        .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
                 }
             }
 
             titleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotStarted.tvTitle.text = it }
+                it?.let { mBinding.includedMatchNotInProgress.tvTitle.text = it }
             }
 
             titleTextSize.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.includedMatchNotStarted.tvTitle.setTextSize(
+                    mBinding.includedMatchNotInProgress.tvTitle.setTextSize(
                         COMPLEX_UNIT_PX,
                         it.getDimension()
                     )
@@ -284,23 +284,23 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
 
             titleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotStarted.tvTitle.setTextColor(it.getColor()) }
+                it?.let { mBinding.includedMatchNotInProgress.tvTitle.setTextColor(it.getColor()) }
             }
 
             subTitleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.text = it }
+                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.text = it }
             }
 
             subTitleTextSize.observe(viewLifecycleOwner) {
                 it?.let {
-                    mBinding.includedMatchNotStarted.tvSubtitle.setTextSize(
+                    mBinding.includedMatchNotInProgress.tvSubtitle.setTextSize(
                         COMPLEX_UNIT_PX,
                         it.getDimension()
                     )
                 }
             }
             subTitleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotStarted.tvSubtitle.setTextColor(it.getColor()) }
+                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
             }
 
 
