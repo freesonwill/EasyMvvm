@@ -17,12 +17,18 @@ class OddsColumnViewHolder(
     )
 
     fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
-        val forceLocked = market.defaultSelectionCount == 0 // 判斷是否要強制鎖盤
-
-        oddsCells.forEachIndexed { index, cell ->
-            selections.getOrNull(index)?.let {
-                cell.bind(it, forceLocked)
-            } ?: cell.hideView()
+        // 判斷是否強制鎖盤, 會出現defaultSelectionCount = 3, 但是selections為空的情況
+        val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
+        if (forceLocked) {
+            oddsCells.forEach { cell ->
+                cell.deActivate()
+            }
+        } else {
+            oddsCells.forEachIndexed { index, cell ->
+                selections.getOrNull(index)?.let {
+                    cell.bind(it)
+                } ?: cell.hideView()
+            }
         }
     }
 
@@ -32,7 +38,14 @@ class OddsColumnViewHolder(
         payloads: List<Any>
     ) {
         val changes = payloads.firstOrNull() as? Set<*> ?: return
-        val forceLocked = market.defaultSelectionCount == 0
+        val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
+        val wasLocked = oddsCells.all { it.isDeactivated() }
+        if (!forceLocked && wasLocked) {
+            // 鎖盤 ➝ 開盤：需要完整重繪
+            bind(market, selections)
+            return
+        }
+
         oddsCells.forEachIndexed { index, cell ->
             val selection = selections.getOrNull(index)
             if (selection != null) {
@@ -45,9 +58,9 @@ class OddsColumnViewHolder(
                 if ("trend" in changes) individualChanges.add("trend")
 
                 if (individualChanges.isNotEmpty()) {
-                    cell.bindPayload(selection, listOf(individualChanges), forceLocked)
+                    cell.bindPayload(selection, listOf(individualChanges))
                 } else {
-                    cell.bind(selection, forceLocked)
+                    cell.bind(selection)
                 }
             } else {
                 cell.hideView()
