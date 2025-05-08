@@ -9,19 +9,26 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+
 
 /**
  * @author: zhangsan
  * @date: 2025/4/15 18:32
  * @description: UI绑定组件，封装 ViewBinding + ViewModel 生命周期处理
+ *
+ * @property uiOwner: UI宿主
+ * @property vmProvider： 提供viewModel
+ * @property vbProvider： 提供viewBinding
+ * @property keepViewOnNavigation: 在导航（Navigation）时是否保留 View（原生的会销毁）
  */
 class UIBindDelegate<UIOwner, VM, VB>(
     private val uiOwner: UIOwner,
     private val vmProvider: () -> VM,
     private val vbProvider: (container: ViewGroup?) -> VB,
+    private val keepViewOnNavigation:Boolean
 ) where UIOwner : IView, UIOwner : LifecycleOwner,
         VM : BaseViewModel,
         VB : ViewBinding {
@@ -31,31 +38,48 @@ class UIBindDelegate<UIOwner, VM, VB>(
     private var _viewModel: VM? = null
     val binding: VB get() = _binding ?: error("binding is null")
     val viewModel: VM get() = _viewModel ?: error("viewModel is null")
+    //是否第一次初始化
+    private var firstInit: Boolean = false
 
-    fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) {
-        _binding = vbProvider(container)
-        _viewModel = vmProvider()
-        (binding as? ViewDataBinding)?.let {
-            it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
+    fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
+        if(_binding == null || !keepViewOnNavigation) {
+            firstInit = true
+            _binding = vbProvider(container)
+            _viewModel = vmProvider()
+            (binding as? ViewDataBinding)?.let {
+                it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
+            }
+        } else {
+            firstInit = false
         }
+        return _binding!!.root
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.root.fitsSystemWindows = true
-        trackLoadingTime()
-        viewModel.initViewModel()
-        uiOwner.initView(savedInstanceState)
-        uiOwner.initListener()
-        uiOwner.createObserver()
-        uiOwner.initData()
+        if(firstInit) {
+            binding.root.fitsSystemWindows = true
+            trackLoadingTime()
+            viewModel.initViewModel()
+            uiOwner.initView(savedInstanceState)
+            uiOwner.initListener()
+            uiOwner.createObserver()
+            uiOwner.initData()
+        }
     }
 
     fun onDestroyView() {
         //延迟一帧置空，避免子类调用binding为null
-        binding.root.post {
-            _binding = null
-            _viewModel = null
+        if(!keepViewOnNavigation) {
+            binding.root.post {
+                _binding = null
+                _viewModel = null
+            }
         }
+    }
+
+    fun onDestroy(){
+        _binding = null
+        _viewModel = null
     }
 
     /**
