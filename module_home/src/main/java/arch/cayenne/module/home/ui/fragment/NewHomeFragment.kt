@@ -263,7 +263,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initListener() {
         with(mBinding) {
             llWalletEntry.setOnClickListener {
-
+                navigate(R.id.homeFragment)
             }
 
             llFavoriteEntry.setOnClickListener {
