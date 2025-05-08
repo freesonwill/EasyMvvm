@@ -231,15 +231,7 @@
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
         <include android:id="@+id/layout_container"
             layout="@layout/view_home_content" />
-        <!-- 內容區域 (ViewPager2 負責載入 "今日"、"早盤"、"冠軍") -->
-<!--        <androidx.viewpager2.widget.ViewPager2-->
-<!--            android:id="@+id/vp_home"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1" />-->
-
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/floating_container"

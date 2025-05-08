@@ -24,14 +24,14 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
+import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
-import arch.cayenne.module.home.utils.DateUtils
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -54,6 +54,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
+    private lateinit var leagueAdapter: LeaguePagerAdapter
+    private var isExpanded = false
+    private var leagueList: List<TournamentDataModel> = emptyList()
 //    private lateinit var leagueAdapter: LeaguePagerAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -144,6 +147,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+            ivHomeLeagueMore.clickNoRepeat {
+//                val isExpanded = !binding.tournamentSectionView.isExpanded
+//                binding.tournamentSectionView.toggleVisibility(isExpanded)
+//                binding.ivHomeLeagueMore.setImageResource(
+//                    if (isExpanded) R.drawable.ic_league_tabs_more_up else R.drawable.ic_league_tabs_more_down
+//                )
+                isExpanded = !isExpanded
+                toggleLeagueMoreSection(isExpanded)
+            }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
                 //呼叫日曆popup元件
@@ -442,8 +454,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
 //            if (it.isNullOrEmpty()) return@observe
+            leagueList = it
             setTournamentAndViewPagerLayout(it)
         }
+        //TODO 冠軍聯賽列表
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()

@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.SportDataModel
@@ -53,6 +54,7 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
+        "joseph setCurrentPlayType: $playType".logd()
         currentPlayType = playType
         if (playType != PlayType.CHAMPION) {
             getCurrentSportStatistical()
@@ -65,7 +67,6 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getCurrentPlayType() = currentPlayType
-
     private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getSportStatistical()?.filter {
@@ -91,6 +92,7 @@ class HomeViewModel : BaseViewModel() {
     private fun getCurrentTournament(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getTenTournaments(currentPlayType.id, sportId)
+            "joseph getCurrentTournament list: $list".logd()
             if (list.isNullOrEmpty()) {
                 //TODO 拿取聯賽錯誤
                 "Get Tournament List failed!!".loge(this::class.java.simpleName)

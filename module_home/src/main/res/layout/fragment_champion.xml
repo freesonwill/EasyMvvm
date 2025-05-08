@@ -30,5 +30,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"/>
-
+    <arch.cayenne.module.home.ui.view.TournamentSectionView
+        android:id="@+id/tsv_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

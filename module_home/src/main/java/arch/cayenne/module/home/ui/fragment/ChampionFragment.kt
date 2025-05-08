@@ -1,13 +1,21 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.module.home.viewmodel.HomeViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.module.home.R
+import arch.cayenne.module.home.databinding.FragmentChampionBinding
+import com.bumptech.glide.Glide
+import kotlin.reflect.KClass
+import android.view.LayoutInflater
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -15,16 +23,12 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
-import arch.cayenne.module.home.R
-import arch.cayenne.module.home.databinding.FragmentChampionBinding
 import arch.cayenne.module.home.databinding.TitleBarChampionBinding
 import arch.cayenne.module.home.ui.adapter.ChampionItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnChampionItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
-import kotlin.reflect.KClass
 
 class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
 
@@ -41,6 +45,9 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
         mViewModel.setMatchId(args.matchId)
         mViewModel.subscribeMatch()
         mViewModel.getChampionDetail()
+        arguments?.apply {
+            mViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -95,11 +102,33 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
 
 
         }
+        mViewModel.tournaments.observe(viewLifecycleOwner) {
+            "joseph observe tournaments:$it".logd()
+            if (it.isNullOrEmpty()) return@observe
+            initSectionLayout(it)
+        }
     }
 
+    private fun initSectionLayout(it: List<TournamentDataModel>) {
+        with(mBinding) {
+            tsvContainer.setTournamentList(it)
+        }
+    }
     override fun onDestroyView() {
         mViewModel.cancelSubscribeMatch()
         super.onDestroyView()
     }
-
+    companion object {
+        private const val ARG_SPORT_ID = "sport_id"
+        private const val ARG_PLAY_TYPE_ID = "play_type_id"
+        fun newInstance(sportId: Int, playTypeId: Int): ChampionFragment {
+            return ChampionFragment().apply {
+                "joseph new ChampionFragment:$sportId".logd()
+                arguments = Bundle().apply {
+                    putInt(ARG_SPORT_ID, sportId)
+                    putInt(ARG_PLAY_TYPE_ID, playTypeId)
+                }
+            }
+        }
+    }
 }
