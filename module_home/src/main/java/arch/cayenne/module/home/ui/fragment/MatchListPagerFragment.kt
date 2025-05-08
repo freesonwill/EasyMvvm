@@ -34,6 +34,9 @@ class MatchListPagerFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
+            refreshLayout.setOnRefreshListener {
+                mViewModel.reload()
+            }
             matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
@@ -117,6 +120,12 @@ class MatchListPagerFragment :
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             matchAdapter.submitList(matchList)
+        }
+
+        mViewModel.isLoadingData.observe(viewLifecycleOwner) { isLoading ->
+            if (!isLoading) {
+                mBinding.refreshLayout.finishRefresh()
+            }
         }
     }
 
