@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="SportBackgroundHelper">
         <attr name="android:background"/>
+        <attr name="android:progressDrawable"/>
     </declare-styleable>
 
     <declare-styleable name="SportImageView">
