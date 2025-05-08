@@ -5,8 +5,7 @@
     android:id="@+id/item_match_card"
     android:layout_width="match_parent"
     android:layout_height="213dp"
-    android:background="@drawable/bg_match_item_card"
-    android:paddingEnd="@dimen/dp_12">
+    android:background="@drawable/bg_match_item_card">
 
     <!-- 頂部賽事名稱 -->
     <ImageView
@@ -255,6 +254,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="43dp"
         android:layout_marginBottom="8dp"
+        android:paddingEnd="@dimen/dp_14"
         android:columnCount="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_vertical"
@@ -265,6 +265,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
+        android:paddingEnd="@dimen/dp_14"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
@@ -276,10 +277,11 @@
 
     <ImageView
         android:id="@+id/iv_favorite"
-        android:layout_width="@dimen/dp_34"
+        android:layout_width="@dimen/dp_46"
         android:layout_height="@dimen/dp_34"
         android:paddingBottom="@dimen/dp_10"
         android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_12"
         android:src="@drawable/selector_favorite_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
