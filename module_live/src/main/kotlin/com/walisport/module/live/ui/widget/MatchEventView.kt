@@ -7,6 +7,7 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.skin.widget.SportLinearLayout
+import com.bumptech.glide.Glide
 import com.walisport.module.live.data.model.MatchEventBean
 import com.walisport.module.live.databinding.ViewMatchEventBinding
 import com.walisport.module.live.ui.adapter.MatchEventAdapter
@@ -44,6 +45,14 @@ class MatchEventView @JvmOverloads constructor(
     fun setTeamName(homeName: String, awayName: String) {
         mBinding.tvHomeCountry.text = homeName
         mBinding.tvAwayCountry.text = awayName
+    }
+
+    //设置比赛双方名称和LOGO
+    fun setTeamInfo(homeName: String, awayName: String, homeLogo: String, awayLogo: String) {
+        mBinding.tvHomeCountry.text = homeName
+        mBinding.tvAwayCountry.text = awayName
+        Glide.with(context).load(homeLogo).into(mBinding.ivHomeCountry)
+        Glide.with(context).load(awayLogo).into(mBinding.ivAwayCountry)
     }
 
     fun setData(array: ArrayList<MatchEventBean>) {
