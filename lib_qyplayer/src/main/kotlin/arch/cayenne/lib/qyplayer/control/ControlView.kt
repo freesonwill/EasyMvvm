@@ -17,6 +17,7 @@ import android.widget.TextView
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.util.NetworkUtil
+import arch.cayenne.lib.qyplayer.util.TimeFormater
 import com.supucloud.qyplayer.PlayerMode
 
 

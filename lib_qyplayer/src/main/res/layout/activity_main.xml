@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    tools:context=".MainActivity">
+
+<!--    非加密视频连接： https://1252953476.vod2.myqcloud.com/ecc7720bvodgzp1252953476/d49885b71397757906475700957/MiQsWdIUDNwA.mp4  -->
+<!--    加密视频连接： https://1252953476.vod2.myqcloud.com/ecc7720bvodgzp1252953476/1d3477e91397757907007150718/ZqR3k45arcYA.mp4  -->
+
+    <EditText
+        android:id="@+id/etURL"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:hint="请输入播放地址"
+        android:inputType="text"
+        android:text="https://pl6721.dgjlq.cn/live/testB0.flv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btLivePlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="直播播放"
+        android:background="@color/cardview_dark_background"
+        app:layout_constraintTop_toBottomOf="@+id/etURL" />
+
+    <Button
+        android:id="@+id/btVodPlay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="点播播放"
+        android:background="@color/cardview_dark_background"
+        app:layout_constraintTop_toBottomOf="@+id/btLivePlay" />
+
+    <Button
+        android:id="@+id/btFilePlay"
+        android:background="@color/cardview_dark_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="文件播放"
+        app:layout_constraintTop_toBottomOf="@+id/btVodPlay" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
