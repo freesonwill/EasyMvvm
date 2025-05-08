@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.PopupWindow
 import android.widget.TextView
+import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
 
 /**

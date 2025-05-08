@@ -7,8 +7,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.supucloud.qyplayer.demo.R
-import com.supucloud.qyplayer.demo.util.ScreenUtils
+import arch.cayenne.lib.qyplayer.R
+import arch.cayenne.lib.qyplayer.util.ScreenUtils
 
 /**
  * 更多设置弹窗

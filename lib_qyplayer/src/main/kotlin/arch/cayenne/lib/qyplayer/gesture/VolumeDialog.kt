@@ -1,7 +1,7 @@
 package arch.cayenne.lib.qyplayer.gesture
 
 import android.app.Activity
-import com.supucloud.qyplayer.demo.R
+import arch.cayenne.lib.qyplayer.R
 
 /**
  * 手势滑动的音量提示框。

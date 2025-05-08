@@ -1,8 +1,8 @@
 package arch.cayenne.lib.qyplayer.gesture
 
 import android.app.Activity
-import com.supucloud.qyplayer.demo.R
-import com.supucloud.qyplayer.demo.util.TimeFormater
+import arch.cayenne.lib.qyplayer.R
+import arch.cayenne.lib.qyplayer.util.TimeFormater
 
 /**
  * 手势滑动的seek提示框。

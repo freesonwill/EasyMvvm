@@ -2,7 +2,7 @@ package arch.cayenne.lib.qyplayer.gesture
 
 import android.app.Activity
 import android.view.View
-import com.supucloud.qyplayer.demo.ScreenMode
+import arch.cayenne.lib.qyplayer.ScreenMode
 
 /**
  * 手势对话框的管理器。

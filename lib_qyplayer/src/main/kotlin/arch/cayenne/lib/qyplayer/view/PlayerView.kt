@@ -16,7 +16,17 @@ import android.view.animation.LinearInterpolator
 import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
+import arch.cayenne.lib.qyplayer.control.ControlView
+import arch.cayenne.lib.qyplayer.control.PlayState
+import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
+import arch.cayenne.lib.qyplayer.gesture.GestureListener
+import arch.cayenne.lib.qyplayer.gesture.GestureView
+import arch.cayenne.lib.qyplayer.util.FileUtils
+import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
+import arch.cayenne.lib.qyplayer.util.ScreenUtils
+import arch.cayenne.lib.qyplayer.util.toast
 import com.supucloud.qyplayer.MediaInfo
 import com.supucloud.qyplayer.MirrorMode
 import com.supucloud.qyplayer.PlayerConfig
@@ -25,16 +35,6 @@ import com.supucloud.qyplayer.PlayerState
 import com.supucloud.qyplayer.RotateMode
 import com.supucloud.qyplayer.ScaleMode
 import com.supucloud.qyplayer.ViewportRatioMode
-import com.supucloud.qyplayer.demo.control.ControlView
-import com.supucloud.qyplayer.demo.control.PlayState
-import com.supucloud.qyplayer.demo.gesture.GestureDialogManager
-import com.supucloud.qyplayer.demo.gesture.GestureListener
-import com.supucloud.qyplayer.demo.gesture.GestureView
-import com.supucloud.qyplayer.demo.util.FileUtils
-import com.supucloud.qyplayer.demo.util.OrientationWatchDog
-import com.supucloud.qyplayer.demo.util.OrientationWatchDog.OnOrientationListener
-import com.supucloud.qyplayer.demo.util.ScreenUtils
-import com.supucloud.qyplayer.demo.util.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -89,7 +89,8 @@ class PlayerView @JvmOverloads constructor(
     }
 
     private fun initListeners() {
-        mOrientationWatchDog.setOnOrientationListener(object : OnOrientationListener {
+        mOrientationWatchDog.setOnOrientationListener(object :
+            OrientationWatchDog.OnOrientationListener {
             override fun changedToLandForwardScape(fromPort: Boolean) {
                 this@PlayerView.changedToLandForwardScape(fromPort)
             }

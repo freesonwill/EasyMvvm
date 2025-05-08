@@ -6,7 +6,7 @@ import android.view.GestureDetector
 import android.view.GestureDetector.OnGestureListener
 import android.view.MotionEvent
 import android.view.View
-import com.supucloud.qyplayer.demo.util.ScreenUtils
+import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import kotlin.math.abs
 
 @SuppressLint("ClickableViewAccessibility")
