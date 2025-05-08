@@ -4,12 +4,7 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
-import arch.cayenne.lib.database.entity.MarketBean
-import arch.cayenne.lib.database.entity.MarketSelectCrossRef
-import arch.cayenne.lib.database.entity.MatchBeanLite
-import arch.cayenne.lib.database.entity.MatchMarketCrossRef
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -339,5 +334,9 @@ class HomeRepository(
             }
         }
         return this
+    }
+
+    fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
+        matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)
     }
 }
