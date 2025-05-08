@@ -41,6 +41,9 @@
             android:gravity="center_vertical"
             android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_15"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/dp_130"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_home_country"
             app:layout_constraintTop_toTopOf="parent" />
@@ -61,6 +64,9 @@
             android:gravity="center_vertical"
             android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_15"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:maxWidth="@dimen/dp_130"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_away_country"
             app:layout_constraintTop_toTopOf="parent" />
