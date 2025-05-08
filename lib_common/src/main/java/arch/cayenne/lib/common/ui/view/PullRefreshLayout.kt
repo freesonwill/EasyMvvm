@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
-class SportRefreshLayout: SmartRefreshLayout {
+class PullRefreshLayout: SmartRefreshLayout {
     constructor(context: Context?) : super(context) {
         init()
     }
@@ -13,6 +13,6 @@ class SportRefreshLayout: SmartRefreshLayout {
     }
 
     private fun init() {
-        setRefreshHeader(SportRefreshHeader(context))
+        setRefreshHeader(PullRefreshHeader(context))
     }
 }

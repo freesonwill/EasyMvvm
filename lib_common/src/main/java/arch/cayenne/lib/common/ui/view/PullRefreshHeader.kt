@@ -13,7 +13,7 @@ import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.scwang.smart.refresh.layout.simple.SimpleComponent
 
 
-class SportRefreshHeader : SimpleComponent, RefreshHeader {
+class PullRefreshHeader : SimpleComponent, RefreshHeader {
     private lateinit var binding: ViewSportHeaderBinding
 
     private lateinit var progressDrawable: ProgressDrawable
