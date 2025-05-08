@@ -42,11 +42,6 @@ class MatchEventView @JvmOverloads constructor(
         }
     }
 
-    fun setTeamName(homeName: String, awayName: String) {
-        mBinding.tvHomeCountry.text = homeName
-        mBinding.tvAwayCountry.text = awayName
-    }
-
     //设置比赛双方名称和LOGO
     fun setTeamInfo(homeName: String, awayName: String, homeLogo: String, awayLogo: String) {
         mBinding.tvHomeCountry.text = homeName
