@@ -1,22 +1,30 @@
-package arch.cayenne.module.home.ui
+package arch.cayenne.lib.common.ui.view
 
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PixelFormat
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.Drawable
 
 
-class ProgressDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
+class ProgressDrawable : Drawable(), Animatable, AnimatorUpdateListener {
     protected var mWidth = 0
     protected var mHeight = 0
     protected var mProgressDegree = 0
     protected var mValueAnimator: ValueAnimator = ValueAnimator.ofInt(30, 3600)
     protected var mPath = Path()
+    protected var mPaint = Paint()
 
     init {
+        mPaint.style = Paint.Style.FILL
+        mPaint.isAntiAlias = true
+        mPaint.color = -0x555556
+
         mValueAnimator.setDuration(10000)
         mValueAnimator.interpolator = null
         mValueAnimator.repeatCount = ValueAnimator.INFINITE
@@ -80,5 +88,21 @@ class ProgressDrawable : PaintDrawable(), Animatable, AnimatorUpdateListener {
 
     override fun isRunning(): Boolean {
         return mValueAnimator.isRunning
+    }
+
+    fun setColor(color: Int) {
+        mPaint.color = color
+    }
+
+    override fun setAlpha(alpha: Int) {
+        mPaint.alpha = alpha
+    }
+
+    override fun setColorFilter(cf: ColorFilter?) {
+        mPaint.setColorFilter(cf)
+    }
+
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
     }
 }
