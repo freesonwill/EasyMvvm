@@ -47,6 +47,7 @@ dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_socket"))
     implementation(project(":module_bet"))
+    implementation(libs.pullrefresh.kernel)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -28,12 +28,12 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     private var _tournamentId: Int = TOURNAMENT_ALL_ID
     private var _selectedDate: Long = 0
     var page: Int = 1
-    private var isLoadingData = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
     private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
+    val isLoadingData by lazy { MutableLiveData<Boolean>() }
     override fun initViewModel() {
         super.initViewModel()
         // 觀察賽事訂閱後，後端主動送出的變化
@@ -94,7 +94,7 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     fun getTournamentId() = _tournamentId
 
     fun loadNextPage() {
-        if (isLoadingData) return
+        if (isLoadingData.value == true) return
         page++
         getCurrentMatch()
     }
@@ -102,21 +102,31 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     //取得分頁的比賽列表
     fun getCurrentMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            isLoadingData = true
+            withContext(Dispatchers.Main) {
+                isLoadingData.value = true
+            }
             "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
             val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, 0)
-            if (list.isNotEmpty()) {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (list.isNotEmpty()) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
                         //防呆，把重複的match id忽略
-                        val set = matchListChange.value!!.map { it.match.matchId }.toSet()
-                        matchListChange.value!! + list.filter { !set.contains(it.match.matchId) }
+                        val origin = matchListChange.value!!.toMutableList()
+                        list.forEach { matchWithMarkets ->
+                            val index = origin.indexOfFirst { it.match.matchId == matchWithMarkets.match.matchId }
+                            if (index == -1) {
+                                origin.add(matchWithMarkets)
+                            } else {
+                                origin[index] = matchWithMarkets
+                            }
+                        }
+                        origin
                     } else {
                         list
                     }
                 }
+                isLoadingData.value = false
             }
-            isLoadingData = false
         }
     }
 
@@ -165,5 +175,16 @@ abstract class BaseGameListViewModel: BaseViewModel() {
                 matchListChange.value = old
             }
         }
+    }
+
+    fun reload() {
+        page = 1
+        //TODO 補上開始時間
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearCurrentMatch(_playType, _tournamentId, 0)
+            getCurrentMatch()
+        }
+
+
     }
 }
