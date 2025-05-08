@@ -58,6 +58,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 awayLogo = it.basicInfo.awayTeamIcon
                 mBinding.viewTechStatic.setScore(it.liveInfo.score)
                 mBinding.viewTechStatic.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
+                mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
             }
         }
         mViewModel.matchStatisticData.observe(this) {
