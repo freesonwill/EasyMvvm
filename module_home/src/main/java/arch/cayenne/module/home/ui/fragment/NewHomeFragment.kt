@@ -156,6 +156,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
     //init DrawerLayout Content
     private fun initDrawerContent() {
+        //蒙層顏色依照版型作變化
+        mBinding.drawerLayout.setScrimColor(SportSkinResourceManager.getColor(requireContext(), R.color.drawer_scrim_color))
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
         }
