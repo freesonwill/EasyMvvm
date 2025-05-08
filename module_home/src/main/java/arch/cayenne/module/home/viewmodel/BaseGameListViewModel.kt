@@ -184,7 +184,5 @@ abstract class BaseGameListViewModel: BaseViewModel() {
             repository.clearCurrentMatch(_playType, _tournamentId, 0)
             getCurrentMatch()
         }
-
-
     }
 }
