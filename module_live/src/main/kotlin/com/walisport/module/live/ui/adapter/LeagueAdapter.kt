@@ -6,6 +6,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.LeagueMatchCompare
@@ -44,15 +45,9 @@ class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
                 listener?.onItemClick(position)
             }
             if (item.matchId == matchID) {
-                mBinding.itemRoot.background = AppCompatResources.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.shape_bg_item_league_dark
-                )
+                mBinding.itemRoot.background = R.drawable.shape_bg_item_league_dark.getDrawable()
             } else {
-                mBinding.itemRoot.background = AppCompatResources.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.shape_bg_item_league
-                )
+                mBinding.itemRoot.background = R.drawable.shape_bg_item_league.getDrawable()
             }
             Glide.with(mBinding.root).load(item.homeLogo).into(mBinding.ivHomeLogo)
             Glide.with(mBinding.root).load(item.awayLogo).into(mBinding.ivAwayLogo)
