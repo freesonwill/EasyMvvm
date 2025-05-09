@@ -129,4 +129,11 @@
     <string name="live_betslip_bettips">如果部分已提前结算，金额则为剩余投注额</string>
     <string name="auto_bet_odds_reached">达到此赔率时自动投注</string>
     <string name="confirm">确定</string>
+    <string name="unsettled">未结算</string>
+    <string name="win">赢</string>
+    <string name="tie">和局</string>
+    <string name="lose">输</string>
+    <string name="lose_half">输一半</string>
+    <string name="win_half">赢一半</string>
+
 </resources>

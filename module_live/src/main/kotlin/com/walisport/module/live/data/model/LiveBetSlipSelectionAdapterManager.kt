@@ -344,7 +344,8 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                 LiveBetSlipResultOrderStatusEnum.LoseHalf -> {
                     it.iv1.isVisible = false
                     it.betSettledTvStatus1.isVisible = true
-                    it.betSettledTvStatus1.text = status.names
+                    it.betSettledTvStatus1.text =
+                        ContextCompat.getString(it.betSettledTvStatus1.context, status.names)
                 }
 
                 else -> {}
