@@ -39,6 +39,7 @@
     <string name="live_bet_rejection">拒单</string>
     <string name="live_bet_reserve_odds">预约赔率</string>
     <string name="live_bet_reserve_bet">预约投注</string>
+    <string name="live_bet_cross_border">串关方式</string>
     <string name="live_bet_except_max_win">预计最高可赢</string>
     <string name="live_bet_full_handicap">全场让球(%1$s-$2$s)</string>
     <string name="live_bet_cancel_reserve">取消预约</string>
