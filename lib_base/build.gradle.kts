@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
+
 android {
     namespace = "arch.cayenne.lib.base"
     compileSdk = 34
@@ -13,8 +14,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "TAG_DEFAULT", "\"${ project.findProperty("TAG_DEFAULT") ?: ""}\"")
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
