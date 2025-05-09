@@ -369,9 +369,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         destroyPlayer()
-        super.onDestroy()
+        super.onDestroyView()
     }
 
     private fun destroyPlayer() {
@@ -379,7 +379,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mBinding.videoView.release(true)
         mBinding.videoView.stopBackgroundPlay()
     }
-
 
     companion object {
         const val TAG = "LiveVideoFragment"
