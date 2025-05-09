@@ -9,7 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 
 class LiveMainRepository(
-    private val remoteManager: LiveRemoteManager,private val database: GameDatabase
+    private val remoteManager: LiveRemoteManager, private val database: GameDatabase
 ) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
@@ -17,14 +17,20 @@ class LiveMainRepository(
 
     // 500-1003: 获取比赛详情
     suspend fun getMatchRes(matchId: Long) {
-       var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
-        if (matchFullData!=null){
+        clearMatchCache()
+        var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
+        if (matchFullData != null) {
             database.liveMatchDao().insertFullMatch(
-                matches = matchFullData.match ,
-                markets = matchFullData.markets ,
+                matches = matchFullData.match,
+                markets = matchFullData.markets,
                 selections = matchFullData.selections,
             )
         }
     }
+
+    private fun clearMatchCache() {
+        database.liveMatchDao().clearAllMatch()
+    }
+
 }
 

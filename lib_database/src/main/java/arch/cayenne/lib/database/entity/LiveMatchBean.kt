@@ -28,10 +28,12 @@ data class LiveSelectionBean(
     @PrimaryKey val selectionId: Long,
     @Embedded(prefix = "detail_") val detail: LiveMarketDetailBean,
     val name: String,
-    val shortName: String?,
+    val shortName: String,
     val odds: Int,
     val active: Boolean,
-    val parlay: Boolean
+    val parlay: Boolean,
+    val marketId: Long,
+    val style :Int//0-默认 1-一列 2-两列 3-三列 4-波胆
 )
 
 /*

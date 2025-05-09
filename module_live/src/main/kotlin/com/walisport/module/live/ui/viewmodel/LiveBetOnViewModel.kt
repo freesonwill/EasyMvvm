@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.data.repository.LiveBetOnRepository
@@ -21,6 +22,9 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
 
+    private val _getLiveSelectionBean = MutableLiveData<Map<Long, List<LiveSelectionBean>>>()
+    val getLiveSelectionBean: LiveData<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
+
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
             repository.queryLiveMarketType(matchId)
@@ -28,22 +32,22 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     //获取所有
-     fun getMarketTypeAll() {
+    fun getMarketTypeAll() {
         viewModelScope.launch {
             _marketType.value = repository.queryLiveMarketTypeAll()
         }
     }
 
     //根据盘口分类code获取盘口列表
-    fun getMarketList(code: String){
-        if (code.isEmpty()){
+    fun getMarketList(code: String) {
+        if (code.isEmpty()) {
             val list: MutableList<MarketMenuBean> = mutableListOf()
             observeMarketType.value?.forEach {
                 list.addAll(it.marketMenuBean)
             }
             _getMarketList.value = list
-        }else{
-            _getMarketList.value = observeMarketType.value?.find { it.code==code }?.marketMenuBean
+        } else {
+            _getMarketList.value = observeMarketType.value?.find { it.code == code }?.marketMenuBean
         }
 
     }
@@ -53,6 +57,16 @@ class LiveBetOnViewModel : BaseViewModel() {
             repository.observeMarketTypeBean().collect {
                 _observeMarketType.value = it
             }
+        }
+    }
+
+    fun getLiveSelectionBean(marketIds: List<Long>) {
+        viewModelScope.launch {
+            var map: MutableMap<Long, List<LiveSelectionBean>> = mutableMapOf()
+            marketIds.forEach {
+                map[it] = repository.queryLiveSelectionBean(it)
+            }
+            _getLiveSelectionBean.value = map
         }
     }
 }

@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 
-#define DUCKGO_VERSION      6
+#define DUCKGO_VERSION      7
 #define SOCKET_BUFFER       102400
 typedef unsigned char       BYTE;
 typedef unsigned int        UINT32;
@@ -30,6 +30,7 @@ public:
      
      WORD mid = 1;
      WORD sid = 2;
+     WORD rid = 3;
      
      const char *pData = "json,proto";
      unsigned short wDataSize = len;
@@ -38,10 +39,11 @@ public:
      memset(cbDataBuffer, 0, SOCKET_BUFFER);
      
      unsigned short outLen = 0;
-     pack(mid, sid, pData, wDataSize, cbDataBuffer, &outLen);
+     pack(mid, sid, rid, pData, wDataSize, cbDataBuffer, &outLen);
      */
     int pack(unsigned short mid,
              unsigned short sid,
+             unsigned short rid,
              const char *data,
              unsigned int dataSize,
              
@@ -58,16 +60,18 @@ public:
      
      unsigned short mid = -1;
      unsigned short sid = -1;
+     unsigned short rid = -1;
      
      unsigned char *pDataBuffer = 0; // json, proto data, point to cbDataBuffer[?]
      unsigned int wDataSize = 0; // json,proto data size
-     unpack((unsigned char*)pData, len, &mid, &sid, cbDataBuffer, &pDataBuffer, &wDataSize);
+     unpack((unsigned char*)pData, len, &mid, &sid, &rid, cbDataBuffer, &pDataBuffer, &wDataSize);
      */
     int unpack(unsigned char *buf,
                unsigned int bufSize,
                
                unsigned short *mid,
                unsigned short *sid,
+               unsigned short *rid,
                unsigned char *data,
                unsigned char **pDataBuffer,
                unsigned int *dataBufferSize

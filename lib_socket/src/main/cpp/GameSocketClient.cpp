@@ -30,6 +30,7 @@ Java_arch_cayenne_lib_socket_NativeLib_pack(JNIEnv *env,
                                                       jobject thiz,
                                                       jshort mid,
                                                       jshort sid,
+                                                      jshort rid,
                                                       jstring data,
                                                       jint dataSize
 ) {
@@ -44,7 +45,7 @@ Java_arch_cayenne_lib_socket_NativeLib_pack(JNIEnv *env,
     unsigned short outDataSize = 0;
     const char *cstr = env->GetStringUTFChars(data, 0);
     unsigned int len = dataSize;
-    chiper->pack(mid, sid, cstr, len, outData, &outDataSize);
+    chiper->pack(mid, sid, rid,cstr, len, outData, &outDataSize);
 
 //    std::string hexStr;
 //    for (int i = 0; i < outDataSize; ++i) {
@@ -74,6 +75,7 @@ Java_arch_cayenne_lib_socket_NativeLib_newPack(JNIEnv *env,
                                                          jobject thiz,
                                                          jshort mid,
                                                          jshort sid,
+                                                         jshort rid,
                                                          jbyteArray data,
                                                          jint dataSize
 ) {
@@ -91,7 +93,7 @@ Java_arch_cayenne_lib_socket_NativeLib_newPack(JNIEnv *env,
     unsigned char outData[SOCKET_BUFFER];
     memset(outData, 0, SOCKET_BUFFER);
     unsigned short outDataSize = 0;
-    cipher->pack(mid, sid, reinterpret_cast<char *>(dataBytes), dataSize,
+    cipher->pack(mid, sid, rid, reinterpret_cast<char *>(dataBytes), dataSize,
                  outData, &outDataSize);
 
     env->ReleaseByteArrayElements(data, dataBytes, 0);
@@ -141,6 +143,7 @@ Java_arch_cayenne_lib_socket_NativeLib_unpack(JNIEnv *env,
 
     unsigned short mid = -1;
     unsigned short sid = -1;
+    unsigned short rid = -1;
 
     unsigned char cbDataBuffer[SOCKET_BUFFER];
     memset(cbDataBuffer, 0, SOCKET_BUFFER);
@@ -148,7 +151,8 @@ Java_arch_cayenne_lib_socket_NativeLib_unpack(JNIEnv *env,
     unsigned char *pDataBuffer = 0;
     unsigned int wDataSize = 0;
 
-    chiper->unpack(someUnsignedChar, len, &mid, &sid, cbDataBuffer, &pDataBuffer, &wDataSize);
+    chiper->unpack(someUnsignedChar, len, &mid, &sid, &rid, cbDataBuffer, &pDataBuffer, &wDataSize);
+
 
     std::string str;
     if (wDataSize) {
@@ -156,12 +160,13 @@ Java_arch_cayenne_lib_socket_NativeLib_unpack(JNIEnv *env,
     }
 
     // return value
-    jobjectArray retobjarr = (jobjectArray) env->NewObjectArray(3,
+    jobjectArray retobjarr = (jobjectArray) env->NewObjectArray(4,
                                                                 env->FindClass("java/lang/Object"),
                                                                 NULL);
     env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
     env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
-    env->SetObjectArrayElement(retobjarr, 2, env->NewStringUTF(str.data()));
+    env->SetObjectArrayElement(retobjarr, 2, NewInteger(env, rid));
+    env->SetObjectArrayElement(retobjarr, 3, env->NewStringUTF(str.data()));
 
     //LOGD(">.>%s: mid=%u,sid=%u,text=[%s],textSize=[%d]", __FUNCTION__, mid, sid, str.data(),
     //     wDataSize);
@@ -186,22 +191,24 @@ Java_arch_cayenne_lib_socket_NativeLib_newUnpack(JNIEnv *env, jobject thiz,
     env->GetByteArrayRegion(data, 0, len, reinterpret_cast<jbyte *>(someUnsignedChar));
     unsigned short mid = -1;
     unsigned short sid = -1;
+    unsigned short rid = -1;
     unsigned char cbDataBuffer[SOCKET_BUFFER] = {0}; // Initialize with 0
     unsigned char *pDataBuffer = nullptr;
     unsigned int wDataSize = 0;
 //    LOGD("before unpack");
     // Call unpack function
-    cipher->unpack(someUnsignedChar, len, &mid, &sid, cbDataBuffer, &pDataBuffer, &wDataSize);
+    cipher->unpack(someUnsignedChar, len, &mid, &sid, &rid,cbDataBuffer, &pDataBuffer, &wDataSize);
 //    LOGD("after unpack");
     // Create a jbyteArray to store pDataBuffer data
     jbyteArray dataBufferArray = env->NewByteArray(wDataSize);
     env->SetByteArrayRegion(dataBufferArray, 0, wDataSize, reinterpret_cast<jbyte *>(pDataBuffer));
 //    LOGD("before create object array ");
     // Create jobjectArray to contain results
-    jobjectArray retobjarr = env->NewObjectArray(3, env->FindClass("java/lang/Object"), nullptr);
+    jobjectArray retobjarr = env->NewObjectArray(4, env->FindClass("java/lang/Object"), nullptr);
     env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
     env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
-    env->SetObjectArrayElement(retobjarr, 2, dataBufferArray);
+    env->SetObjectArrayElement(retobjarr, 2, NewInteger(env, rid));
+    env->SetObjectArrayElement(retobjarr, 3, dataBufferArray);
 //    LOGD("before to string");
     // Log the results
     std::string str(reinterpret_cast<const char *>(pDataBuffer), wDataSize);
