@@ -2,8 +2,8 @@
 
 ## 开发文档
 // c端产品文档【更新：2025-03-05】
-https://87if81.axshare.com/?g=4
-
+https://npt0si.axshare.com/?g=4
+ 
 // figma地址
 https://www.figma.com/design/TiXWlyqWAI4iSddgSyz7pm/WaliSport_2.0?node-id=0-1&m=dev
 
