@@ -192,7 +192,7 @@ class HomeRepository(
                     playType = playType,
                     tournamentId = tournamentId,
                     page = page,
-                    startTime = 0,
+                    startTime = startTime,
                     matchId = match.matchId,
                     order = page * 100 + index
                 )

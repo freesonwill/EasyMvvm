@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
@@ -22,6 +23,10 @@ class LeaguePagerAdapter(
     }
     fun setPlayType(newPlayType: PlayType) {
         playType = newPlayType
+    }
+
+    override fun getItemId(position: Int): Long {
+        return playType.id * 10000L + position
     }
 
     override fun getItemCount(): Int = tournament?.size ?: 0

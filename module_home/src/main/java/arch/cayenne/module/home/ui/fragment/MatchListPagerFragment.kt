@@ -140,7 +140,7 @@ class MatchListPagerFragment :
         } else {
             mViewModel.setSelectedDate(date)
         }
-        mViewModel.getCurrentMatch()
+        mViewModel.getCurrentMatch(isClearOld = true)
     }
 
     override fun initData() {
@@ -149,7 +149,6 @@ class MatchListPagerFragment :
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
         }
-        mViewModel.getCurrentMatch()
     }
 
     companion object {

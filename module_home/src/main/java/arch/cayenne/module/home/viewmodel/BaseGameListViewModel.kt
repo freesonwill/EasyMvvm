@@ -96,34 +96,32 @@ abstract class BaseGameListViewModel: BaseViewModel() {
     fun loadNextPage() {
         if (isLoadingData.value == true) return
         page++
-        getCurrentMatch()
+        getCurrentMatch(isClearOld = false)
     }
 
     //取得分頁的比賽列表
-    fun getCurrentMatch() {
+    fun getCurrentMatch(isClearOld: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.Main) {
                 isLoadingData.value = true
             }
-            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
-            val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, 0)
+            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
+            val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, _selectedDate)
             withContext(Dispatchers.Main) {
-                if (list.isNotEmpty()) {
-                    matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
-                        //防呆，把重複的match id忽略
-                        val origin = matchListChange.value!!.toMutableList()
-                        list.forEach { matchWithMarkets ->
-                            val index = origin.indexOfFirst { it.match.matchId == matchWithMarkets.match.matchId }
-                            if (index == -1) {
-                                origin.add(matchWithMarkets)
-                            } else {
-                                origin[index] = matchWithMarkets
-                            }
+                matchListChange.value = if (matchListChange.value?.isNotEmpty() == true && !isClearOld) {
+                    //防呆，把重複的match id忽略
+                    val origin = matchListChange.value!!.toMutableList()
+                    list.forEach { matchWithMarkets ->
+                        val index = origin.indexOfFirst { it.match.matchId == matchWithMarkets.match.matchId }
+                        if (index == -1) {
+                            origin.add(matchWithMarkets)
+                        } else {
+                            origin[index] = matchWithMarkets
                         }
-                        origin
-                    } else {
-                        list
                     }
+                    origin
+                } else {
+                    list
                 }
                 isLoadingData.value = false
             }
@@ -179,10 +177,9 @@ abstract class BaseGameListViewModel: BaseViewModel() {
 
     fun reload() {
         page = 1
-        //TODO 補上開始時間
         viewModelScope.launch(Dispatchers.IO) {
-            repository.clearCurrentMatch(_playType, _tournamentId, 0)
-            getCurrentMatch()
+            repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate)
+            getCurrentMatch(isClearOld = true)
         }
     }
 }
