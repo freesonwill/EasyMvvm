@@ -278,21 +278,32 @@ message ReserveUpdateResp {
 
 // 500-1030: 搜索
 message SearchReq {
-    string word = 1; //required 搜索词
+    string word = 1;    //required 搜索词
+    int32 type = 2;     //required 1-普通词  2-热门词  10-球员id  11-球队id  12-联赛id
+    int64 start_time = 3;   //开始时间
+    int64 end_time = 4;     //结束时间
+    int32 page = 5;         //请求的页数,从1开始
+    int32 size = 6;         //每页显示数量,最大50
+    int32 time_zone = 7;    //时区，例如上海时间+8就传8, utc时间传0
 }
 
 message SearchResp {
-    galaxy.common.proto.Tournament tournament = 1;          //联赛
-    repeated galaxy.common.proto.MatchBasicInfo match = 2;  //比赛信息
+    int32 type = 1;     //0-无结果  1-结果列表  2-精准匹配球员  3-精准匹配球队 4-精准匹配联赛
+    galaxy.common.proto.SearchDataList data_list = 2;   //结果列表
+    galaxy.common.proto.Player player = 3;              //结果球员
+    galaxy.common.proto.Team team = 4;                  //结果球队
+    galaxy.common.proto.Tournament tournament = 5;      //结果联赛
+    repeated galaxy.common.proto.Match matches = 6;     //比赛信息， 不含盘口数据
+    int32 match_total = 7;                              //比赛数量
+    repeated galaxy.common.proto.DailyMatchCount daily_count = 8;    //每日比赛数量
 }
 
-// 500-1031: 历史搜索词
-message SearchHistoryReq {
+// 500-1031: 热门搜索词
+message SearchHotWordReq {
 }
 
-message SearchHistoryResp {
-    repeated string history = 1;//历史搜索词
-    repeated string hot = 2;    //热门搜索词
+message SearchHotWordResp {
+    repeated string word = 2;    //热门搜索词
 }
 
 // 500-1032: 搜索自动补充词汇
@@ -303,6 +314,7 @@ message SearchRecommendReq {
 message SearchRecommendResp {
     repeated string recommend = 1; //推荐词
 }
+
 
 // 500-1040: 添加收藏
 message AddCollectReq {
@@ -469,6 +481,8 @@ message MatchAnimationLiveResp {
     int64 match_id = 1; //required 比赛id
     string url = 2; // iframeUrl
 }
+
+
 
 
 

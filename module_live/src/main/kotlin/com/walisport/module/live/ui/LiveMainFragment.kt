@@ -53,12 +53,19 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             tvCompetitionName.clickNoRepeat {
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply { arguments.putInt("leagueID", leagueID) })
+                        .apply {
+                            arguments.putLong("matchID", args.matchId)
+                            arguments.putInt("leagueID", leagueID)
+                        })
             }
             ivLandscapeLeagueIcon.clickNoRepeat {
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply { arguments.putInt("leagueID", leagueID) })
+                        .apply {
+                            arguments.putLong("matchID", args.matchId)
+                            arguments.putInt("leagueID", leagueID)
+                        }
+                )
             }
         }
     }

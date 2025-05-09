@@ -64,7 +64,7 @@ class OddsCellViewHolder(
             }
 
             if ("trend" in diff) {
-                showOddsTrend(item.trend)
+                if (currentState == OddsCellState.VISIBLE) showOddsTrend(item.trend)
             }
         }
     }

@@ -377,7 +377,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             start()
                             this
                         }
-
                         mBinding.includedCtLoading.ctLoading.visibility = View.VISIBLE
                         mBinding.includedCtError.ctError.visibility = View.GONE
                     }
@@ -417,9 +416,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 //        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
         destroyPlayer()
+        super.onDestroyView()
     }
 
     private fun destroyPlayer() {
@@ -429,7 +428,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 //        mBinding.videoView.release(true)
 //        mBinding.videoView.stopBackgroundPlay()
     }
-
 
     companion object {
         const val TAG = "LiveVideoFragment"

@@ -68,18 +68,22 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     fun onDestroyView() {
-        //延迟一帧置空，避免子类调用binding为null
-        if(!keepViewOnNavigation) {
-            binding.root.post {
-                _binding = null
-                _viewModel = null
-            }
-        }
+        if(!keepViewOnNavigation) performDestroy()
     }
 
     fun onDestroy(){
-        _binding = null
-        _viewModel = null
+        performDestroy()
+    }
+
+    /**
+     * 销毁
+     */
+    private fun performDestroy(){
+        //延迟一帧置空，避免子类调用binding为null
+        binding.root.post {
+            _binding = null
+            _viewModel = null
+        }
     }
 
     /**
