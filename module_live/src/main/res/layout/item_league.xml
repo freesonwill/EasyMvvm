@@ -10,34 +10,52 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
+    <View
+        android:id="@+id/view_home"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_45"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <View
+        android:id="@+id/view_away"
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_45"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_home_logo"
-        android:layout_width="@dimen/dp_54"
-        android:layout_height="@dimen/dp_54"
-        android:layout_marginStart="@dimen/dp_42"
-        android:layout_marginTop="@dimen/dp_8"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_11"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="@+id/view_home"
+        app:layout_constraintEnd_toEndOf="@+id/view_home"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_home_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:maxWidth="@dimen/dp_120"
+        android:layout_marginTop="@dimen/dp_7"
+        android:maxWidth="@dimen/dp_100"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintEnd_toEndOf="@+id/iv_home_logo"
-        app:layout_constraintStart_toStartOf="@+id/iv_home_logo"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@+id/view_home"
+        app:layout_constraintEnd_toEndOf="@+id/view_home"
         app:layout_constraintTop_toBottomOf="@+id/iv_home_logo" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_time"
         android:layout_width="@dimen/dp_53"
         android:layout_height="@dimen/dp_28"
-        android:layout_marginTop="@dimen/dp_22"
+        android:layout_marginTop="@dimen/dp_21"
         android:background="@drawable/shape_bg_time"
         android:gravity="center"
         android:textColor="@color/white"
@@ -48,24 +66,26 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_away_logo"
-        android:layout_width="@dimen/dp_54"
-        android:layout_height="@dimen/dp_54"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginEnd="@dimen/dp_42"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_11"
+        android:scaleType="fitCenter"
+        app:layout_constraintStart_toStartOf="@+id/view_away"
+        app:layout_constraintEnd_toEndOf="@+id/view_away"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_away_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_7"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_14"
-        android:maxWidth="@dimen/dp_120"
+        android:maxWidth="@dimen/dp_100"
         android:ellipsize="end"
         android:maxLines="1"
-        app:layout_constraintEnd_toEndOf="@+id/iv_away_logo"
-        app:layout_constraintStart_toStartOf="@+id/iv_away_logo"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="@+id/view_away"
+        app:layout_constraintStart_toStartOf="@+id/view_away"
         app:layout_constraintTop_toBottomOf="@+id/iv_away_logo" />
 </androidx.constraintlayout.widget.ConstraintLayout>

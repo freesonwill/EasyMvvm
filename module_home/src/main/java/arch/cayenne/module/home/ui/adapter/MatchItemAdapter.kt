@@ -22,7 +22,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding.rvOddsGrid.removeAllViews()
         holder.init(item)
         holders.add(holder)
-        binding.layoutLiveEntry.setOnClickListener {
+        binding.clLeftInfoEntry.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
         binding.ivFavorite.setOnClickListener {

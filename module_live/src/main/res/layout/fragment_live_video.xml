@@ -75,8 +75,8 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <include layout="@layout/layout_match_not_started"
-            android:id="@+id/included_match_not_started"/>
+        <include layout="@layout/layout_match_not_in_progress"
+            android:id="@+id/included_match_not_in_progress"/>
 
     </LinearLayout>
 </layout>

@@ -52,6 +52,12 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchBean>
 
     @Transaction
+    @Query("delete " +
+            "FROM TournamentMatchRef " +
+            "WHERE playType = :playType AND tournamentId = :tournamentId AND startTime = :startTime")
+    abstract fun deleteCurrentTournamentMatchRef(playType: Int, tournamentId: Int, startTime: Long)
+
+    @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
             "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
@@ -165,6 +171,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         insertMarkets(markets)
         insertSelections(selections)
         insertMatchMarketCrossRef(marketCrossRef)
+        //盤口的selection有可能在推播時整個變更（例如兩個選項+0.5/-0.5 -> +1/-1），所以刪除之前的cross ref，把之前盤口和selection連結斷開再連接，避免query取得之前的盤口
+        deleteMarketSelectionCrossRef(marketCrossRef.map { it.matchId }, marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
     }
 

@@ -5,14 +5,14 @@
     android:id="@+id/item_match_card"
     android:layout_width="match_parent"
     android:layout_height="213dp"
-    android:background="@drawable/bg_match_item_card"
-    android:paddingHorizontal="12dp">
+    android:background="@drawable/bg_match_item_card">
 
     <!-- 頂部賽事名稱 -->
     <ImageView
         android:id="@+id/iv_tournament_icon"
         android:layout_width="21dp"
         android:layout_height="21dp"
+        android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_6"
         android:src="@drawable/ic_ucl"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,152 +32,212 @@
         app:layout_constraintTop_toTopOf="@id/iv_tournament_icon"
         tools:text="2026美加墨世界盃" />
 
-    <!-- 上下半場 + 比賽時間 -->
-    <TextView
-        android:id="@+id/tv_game_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginTop="@dimen/dp_16"
-        android:textColor="@color/secondary_text"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/iv_tournament_icon"
-        tools:text="加時下半場" />
-
-    <TextView
-        android:id="@+id/tv_game_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:textColor="@color/secondary_text"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_game_status"
-        app:layout_constraintStart_toEndOf="@+id/tv_game_status"
-        app:layout_constraintTop_toTopOf="@+id/tv_game_status"
-        tools:text="117’" />
-
-    <!-- 主隊區塊 -->
-    <LinearLayout
-        android:id="@+id/layout_home_team"
+    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+        android:id="@+id/cl_left_info_entry"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="26dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_game_time">
-
-        <ImageView
-            android:id="@+id/iv_home_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_baseball_active" />
-        <!-- TODO改隊名縮排限制長度 -->
-        <TextView
-            android:id="@+id/tv_home_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textColor="@color/main_text"
-            android:textSize="14sp"
-            tools:text="馬恩島" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tv_home_score"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_21"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:gravity="center_vertical"
-            android:textColor="@color/brand_color"
-            android:textSize="15sp"
-            tools:text="1" />
-    </LinearLayout>
-
-    <!-- 客隊區塊 -->
-    <LinearLayout
-        android:id="@+id/layout_away_team"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_home_team">
-
-        <ImageView
-            android:id="@+id/iv_away_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_baseball_active" />
-
-        <TextView
-            android:id="@+id/tv_away_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:textColor="@color/main_text"
-            android:textSize="14sp"
-            tools:text="阿根廷" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <TextView
-            android:id="@+id/tv_away_score"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_21"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:gravity="center_vertical"
-            android:textColor="@color/brand_color"
-            android:textSize="15sp"
-            tools:text="1" />
-    </LinearLayout>
-
-    <!-- 觀看人數/直播 -->
-    <LinearLayout
-        android:id="@+id/layout_live_entry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <ImageView
-            android:id="@+id/iv_live"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_live_video" />
-
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_tournament_icon">
+        <!-- 上下半場 + 比賽時間 -->
         <TextView
-            android:id="@+id/tv_watch_count"
+            android:id="@+id/tv_game_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_10"
-            android:textColor="@color/main_text"
+            android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            tools:text="127" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="加時下半場" />
 
-        <ImageView
-            android:id="@+id/iv_arrow"
-            android:layout_width="9dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_arrow" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_game_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:textColor="@color/secondary_text"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_game_status"
+            app:layout_constraintStart_toEndOf="@+id/tv_game_status"
+            app:layout_constraintTop_toTopOf="@+id/tv_game_status"
+            tools:text="117’" />
+
+        <!-- 主隊區塊 -->
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+            android:id="@+id/layout_home_team"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_game_time">
+
+            <ImageView
+                android:id="@+id/iv_home_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_baseball_active"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_home_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/main_text"
+                android:textSize="14sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_home_score"
+                app:layout_constraintStart_toEndOf="@id/iv_home_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="馬恩島" />
+
+            <TextView
+                android:id="@+id/tv_home_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:textColor="@color/brand_color"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1" />
+
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
+        <!-- 客隊區塊 -->
+        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+            android:id="@+id/layout_away_team"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layout_home_team">
+
+            <ImageView
+                android:id="@+id/iv_away_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_baseball_active"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_away_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:textColor="@color/main_text"
+                android:textSize="14sp"
+                app:layout_constrainedWidth="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_away_score"
+                app:layout_constraintStart_toEndOf="@id/iv_away_icon"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="阿根廷" />
+
+            <TextView
+                android:id="@+id/tv_away_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/dp_12"
+                android:gravity="center_vertical"
+                android:textColor="@color/brand_color"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1" />
+        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
+        <!--        <LinearLayout-->
+        <!--            android:id="@+id/layout_away_team"-->
+        <!--            android:layout_width="0dp"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="8dp"-->
+        <!--            android:gravity="center_vertical"-->
+        <!--            android:orientation="horizontal"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintTop_toBottomOf="@id/layout_home_team">-->
+
+        <!--            <ImageView-->
+        <!--                android:id="@+id/iv_away_icon"-->
+        <!--                android:layout_width="30dp"-->
+        <!--                android:layout_height="30dp"-->
+        <!--                android:src="@drawable/ic_baseball_active" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/tv_away_name"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:layout_marginStart="4dp"-->
+        <!--                android:textColor="@color/main_text"-->
+        <!--                android:textSize="14sp"-->
+        <!--                tools:text="阿根廷" />-->
+
+        <!--            <View-->
+        <!--                android:layout_width="0dp"-->
+        <!--                android:layout_height="0dp"-->
+        <!--                android:layout_weight="1" />-->
+
+        <!--            <TextView-->
+        <!--                android:id="@+id/tv_away_score"-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="@dimen/dp_21"-->
+        <!--                android:layout_marginEnd="@dimen/dp_12"-->
+        <!--                android:gravity="center_vertical"-->
+        <!--                android:textColor="@color/brand_color"-->
+        <!--                android:textSize="15sp"-->
+        <!--                tools:text="1" />-->
+        <!--        </LinearLayout>-->
+
+        <!-- 觀看人數/直播 -->
+        <LinearLayout
+            android:id="@+id/layout_live_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_live"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_live_video" />
+
+            <TextView
+                android:id="@+id/tv_watch_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textColor="@color/main_text"
+                android:textSize="12sp"
+                tools:text="127" />
+
+            <ImageView
+                android:id="@+id/iv_arrow"
+                android:layout_width="9dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_arrow" />
+        </LinearLayout>
+    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+
 
     <!-- 垂直分隔 guideline -->
     <androidx.constraintlayout.widget.Guideline
@@ -185,7 +245,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.44" />
+        app:layout_constraintGuide_percent="0.46" />
 
     <!-- 賠率標題 -->
     <GridLayout
@@ -194,6 +254,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="43dp"
         android:layout_marginBottom="8dp"
+        android:paddingEnd="@dimen/dp_14"
         android:columnCount="3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_vertical"
@@ -204,6 +265,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="9dp"
+        android:paddingEnd="@dimen/dp_14"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="false"
@@ -215,10 +277,11 @@
 
     <ImageView
         android:id="@+id/iv_favorite"
-        android:layout_width="@dimen/dp_34"
-        android:layout_height="@dimen/dp_30"
-        android:paddingEnd="@dimen/dp_2"
+        android:layout_width="@dimen/dp_46"
+        android:layout_height="@dimen/dp_34"
         android:paddingBottom="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_2"
+        android:paddingEnd="@dimen/dp_12"
         android:src="@drawable/selector_favorite_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
