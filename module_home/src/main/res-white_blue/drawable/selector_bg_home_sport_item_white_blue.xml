@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 已選擇的狀態 -->
+    <item android:state_selected="true">
+        <shape android:shape="oval">
+            <size android:width="34dp" android:height="34dp" />
+            <solid android:color="@color/bg_sport_selected_white_blue" />
+        </shape>
+    </item>
+
+    <!-- 預設未選擇狀態 -->
+    <item>
+        <shape android:shape="oval">
+            <size android:width="34dp" android:height="34dp" />
+            <solid android:color="@color/bg_sport_unselect_white_blue" />
+        </shape>
+    </item>
+</selector>
