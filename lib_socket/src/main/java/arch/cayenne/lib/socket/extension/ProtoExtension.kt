@@ -1,15 +1,15 @@
 package arch.cayenne.lib.socket.extension
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import com.google.protobuf.GeneratedMessageLite
 import arch.cayenne.lib.socket.WebSocketManager
 import arch.cayenne.lib.socket.WebSocketManager.Companion.responseTimeout
 import arch.cayenne.lib.socket.data.ApiCode
 import arch.cayenne.lib.socket.data.InvalidProtoTypeResponseError
 import arch.cayenne.lib.socket.data.ResponseTimeOutError
-import arch.cayenne.lib.socket.data.SocketRequestData
 import arch.cayenne.lib.socket.data.SocketOriginResponseData
+import arch.cayenne.lib.socket.data.SocketRequestData
 import arch.cayenne.lib.socket.data.SocketResponseData
+import com.google.protobuf.GeneratedMessageLite
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -19,12 +19,12 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
-import java.lang.Exception
 
-fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode) : SocketRequestData {
+fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode, rid: Short) : SocketRequestData {
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,
+        rid = rid,
         this.toByteArray()
     )
 }
@@ -43,6 +43,7 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
+                rid = it.rid,
                 data = proto,
             )
         } catch (e: Exception) {
@@ -50,6 +51,7 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
+                rid = it.rid,
                 data = null,
                 error = InvalidProtoTypeResponseError()
             )
@@ -60,6 +62,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
+    rid: Short = 0,
     timeout: Long? = null,
     request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> {
@@ -68,10 +71,11 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
             observeProtoMessage<T>(apiCode).first()
         }
     }
-    send(request.invoke().asRemoteRequest(apiCode))
+    send(request.invoke().asRemoteRequest(apiCode, rid))
     return deferred.await() ?: SocketResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
+        rid = rid,
         data = null,
         error = ResponseTimeOutError()
     )

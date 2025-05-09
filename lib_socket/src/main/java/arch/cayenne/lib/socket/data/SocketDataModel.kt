@@ -14,6 +14,7 @@ interface SocketResponseError {
 abstract class ISocketData {
     abstract val mid: Short
     abstract val sid: Short
+    abstract val rid: Short
 }
 
 sealed class ConnectState {
@@ -27,6 +28,7 @@ sealed class ConnectState {
 data class SocketRequestData(
     override val mid: Short,
     override val sid: Short,
+    override val rid: Short,
     val payloadByteArray: ByteArray?
 ): ISocketData(), IRequest
 
@@ -34,12 +36,14 @@ data class SocketRequestData(
 data class SocketOriginResponseData(
     override val mid: Short,
     override val sid: Short,
+    override val rid: Short,
     val originProto: ByteArray?
 ): ISocketData(), IResponse
 
 data class SocketResponseData<T: GeneratedMessageLite<*,*>>(
     override val mid: Short,
     override val sid: Short,
+    override val rid: Short,
     val data: T?,
     val error: SocketResponseError? = null,
 ): ISocketData(), IResponse
