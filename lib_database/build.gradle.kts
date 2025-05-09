@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
 }
+apply(from = rootProject.file("gradle/_sign.gradle"))
 
 android {
     namespace = "arch.cayenne.lib.database"
