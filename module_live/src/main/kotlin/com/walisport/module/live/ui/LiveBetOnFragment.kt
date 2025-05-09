@@ -1,6 +1,9 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
@@ -30,20 +34,16 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private var tabList: MutableList<String> = mutableListOf()
-    var itemDecoration: RecyclerView.ItemDecoration = LinearSpacingItemDecoration(8.dp2px, 0.dp2px)
     var tabPosition = 0
-    var liveBetOnAdapter: LiveBetOnAdapter = LiveBetOnAdapter()
+    lateinit var liveBetOnAdapter: LiveBetOnAdapter
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvBetList.apply {
             itemAnimator = null
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
-            adapter = liveBetOnAdapter.apply {
-                post {
-                    addItemDecoration(itemDecoration)
-                }
-            }
+            liveBetOnAdapter = LiveBetOnAdapter()
+            adapter = liveBetOnAdapter
         }
     }
 
@@ -51,15 +51,24 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         super.initData()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun showData(list: List<MarketMenuBean>?) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
-        liveBetOnAdapter.submitList(list)
-        liveBetOnAdapter.setHomeAway(
-            baseInfo?.homeTeam.toString(),
-            baseInfo?.homeTeamIcon.toString(),
-            baseInfo?.awayTeam.toString(),
-            baseInfo?.awayTeamIcon.toString()
-        )
+        var marketIds: MutableList<Long> = mutableListOf()
+        list?.forEach {
+            marketIds.add(it.marketId)
+        }
+        mViewModel.getLiveSelectionBean(marketIds)
+        mViewModel.getLiveSelectionBean.observe(viewLifecycleOwner) {
+            liveBetOnAdapter.setHomeAway(
+                baseInfo?.homeTeam.toString(),
+                baseInfo?.homeTeamIcon.toString(),
+                baseInfo?.awayTeam.toString(),
+                baseInfo?.awayTeamIcon.toString(), it
+            )
+            liveBetOnAdapter.submitList(list)
+        }
+
     }
 
     override fun initListener() {
@@ -173,5 +182,4 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
         }
     }
-
 }

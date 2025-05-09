@@ -1,7 +1,9 @@
 package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.dao.MarketTypeBeanDao
+import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.LiveRemoteManager
@@ -10,14 +12,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, private val remoteManager: LiveRemoteManager
+class LiveBetOnRepository (private val database: GameDatabase, private val remoteManager: LiveRemoteManager
 ) : BaseRepository(){
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeMarketTypeBean() = marketTypeBeanDao.observeMarketTypeBean()
+    fun observeMarketTypeBean() = database.marketTypeDao().observeMarketTypeBean()
     fun queryLiveMarketType(matchId: Long) {
         scope.launch {
             val resp = remoteManager.getMarketTypeReq(scope, matchId)
-            marketTypeBeanDao.deleteAll()
+            database.marketTypeDao().deleteAll()
             val data = resp?.mapIndexed { _, marketType ->
                 MarketTypeBean(
                     code = marketType.code,
@@ -25,7 +27,7 @@ class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, pri
                     marketMenuBean = getMarketMenuBean(marketType.marketBaseList)
                 )
             } ?: emptyList()
-            marketTypeBeanDao.insert(data)
+            database.marketTypeDao().insert(data)
         }
     }
 
@@ -37,6 +39,11 @@ class LiveBetOnRepository (private val marketTypeBeanDao: MarketTypeBeanDao, pri
         return marketBean
     }
     suspend fun queryLiveMarketTypeAll() : List<MarketTypeBean> {
-        return marketTypeBeanDao.getAllMarketTypeBean()
+        return database.marketTypeDao().getAllMarketTypeBean()
     }
+    suspend fun queryLiveSelectionBean(matchId: Long) : List<LiveSelectionBean> {
+        return database.liveMatchDao().getSelectionsByIds(matchId)
+    }
+
+
 }

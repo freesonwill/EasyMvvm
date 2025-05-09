@@ -1,20 +1,18 @@
 package com.walisport.module.live.ui.adapter
 
-import android.graphics.Rect
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.bumptech.glide.Glide
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
+import com.walisport.module.live.ui.widget.LiveBetListLayout
 
 class LiveBetOnAdapter() :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
@@ -24,6 +22,7 @@ class LiveBetOnAdapter() :
     private var homeLogo: String? = ""
     private var awayName: String? = ""
     private var awayLogo: String? = ""
+    private lateinit var map: Map<Long, List<LiveSelectionBean>>
 
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetItemLayoutBinding =
@@ -38,25 +37,46 @@ class LiveBetOnAdapter() :
         }
 
         fun updateItem(position: Int) {
-            if (position != 0) {
+            if (position == 0) {
+                viewBinding.clBet.visibility = View.VISIBLE
+                viewBinding.awayName.text = awayName
+                viewBinding.homeName.text = homeName
+                Glide.with(viewBinding.roots).load(homeLogo).into(viewBinding.awayLogo)
+                Glide.with(viewBinding.roots).load(awayLogo).into(viewBinding.homeLogo)
+            } else {
                 viewBinding.clBet.visibility = View.GONE
             }
-            viewBinding.awayName.text = awayName
-            viewBinding.homeName.text = homeName
-            Glide.with(viewBinding.roots).load(homeLogo).into(viewBinding.awayLogo)
-            Glide.with(viewBinding.roots).load(awayLogo).into(viewBinding.homeLogo)
+
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
+            var positions = 0
+            var lists = map[item.marketId]
+            viewBinding.lbBet.removeAllViews()
+            viewBinding.lbBet.viewInit()
+            lists?.forEach { listIt ->
+                viewBinding.lbBet.submitList(
+                    LiveBetListLayout.StatesArrange.getStates(listIt.style),
+                    positions,
+                    listIt.shortName,
+                    listIt.odds.getOdds().toString()
+                )
+                positions++
+            }
         }
     }
 
     fun setHomeAway(
-        homeName: String, homeLogo: String, awayName: String, awayLogo: String
-    ){
+        homeName: String,
+        homeLogo: String,
+        awayName: String,
+        awayLogo: String,
+        map: Map<Long, List<LiveSelectionBean>>
+    ) {
         this.homeName = homeName
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
+        this.map = map
     }
 
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
@@ -80,12 +100,13 @@ class LiveBetOnAdapter() :
         return holder
     }
 }
+
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
     override fun areItemsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return oldItem.marketName == newItem.marketName
+        return false
     }
 
     override fun areContentsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return oldItem == newItem
+        return false
     }
 }
