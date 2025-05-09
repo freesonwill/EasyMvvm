@@ -290,8 +290,8 @@ message SearchReq {
 message SearchResp {
     int32 type = 1;     //0-无结果  1-结果列表  2-精准匹配球员  3-精准匹配球队 4-精准匹配联赛
     galaxy.common.proto.SearchDataList data_list = 2;   //结果列表
-    galaxy.common.proto.Player player = 3;              //结果球员
-    galaxy.common.proto.Team team = 4;                  //结果球队
+    galaxy.common.proto.SearchPlayer player = 3;              //结果球员
+    galaxy.common.proto.SearchTeam team = 4;                  //结果球队
     galaxy.common.proto.Tournament tournament = 5;      //结果联赛
     repeated galaxy.common.proto.Match matches = 6;     //比赛信息， 不含盘口数据
     int32 match_total = 7;                              //比赛数量

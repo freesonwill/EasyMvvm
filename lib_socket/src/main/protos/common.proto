@@ -246,8 +246,8 @@ message MarketBase {
     string market_name = 2;   //盘口名称
 }
 
-//球员信息
-message Player {
+//搜索球员信息
+message SearchPlayer {
     int32 id = 1;
     string name = 2;        //名称
     string icon = 3;        //头像
@@ -258,25 +258,27 @@ message Player {
     int32 tournament_id = 8;    //联赛id
     string tournament_name = 9; //联赛名称
     string tournament_short_name = 10;  //联赛简称
+    string color = 11;       //联赛配色
 }
 
-//球队信息
-message Team {
+//搜索球队信息
+message SearchTeam {
     int32 id = 1;
     string name = 2;            //名称
     string icon = 3;            //图标
     int32 tournament_id = 4;    //联赛id
     string tournament_name = 5; //联赛名称
     string tournament_short_name = 6;   //联赛简称
-    int32 rank = 7;         //排名
-    int32 win = 8;          //获胜场次
-    int32 lose = 9;         //失败场次
+    string color = 7;      //联赛配色
+    int32 rank = 8;         //排名
+    int32 win = 9;          //获胜场次
+    int32 lose = 10;         //失败场次
 }
 
 //搜索结果列表
 message SearchDataList {
-    repeated Player player = 1; //球员
-    repeated Team team = 2;     //球队
+    repeated SearchPlayer player = 1; //球员
+    repeated SearchTeam team = 2;     //球队
     repeated Tournament tournament = 3; //联赛
 }
 
