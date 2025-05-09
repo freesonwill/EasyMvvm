@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+apply(from = rootProject.file("gradle/_sign.gradle"))
+
 android {
     namespace = "arch.cayenne.lib.qyplayer"
     compileSdk = 34
