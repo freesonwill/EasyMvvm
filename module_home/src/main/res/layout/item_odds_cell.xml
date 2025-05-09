@@ -8,7 +8,7 @@
     android:gravity="center"
     android:orientation="vertical">
     <!-- 灰色遮罩 -->
-    <View
+    <arch.cayenne.lib.skin.widget.SportView
         android:id="@+id/v_trend_highlight"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_short_name"
             style="@style/OddsShortNameStyle"
             android:layout_marginTop="@dimen/dp_4"
@@ -33,7 +33,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="主" />
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SportTextView
             android:id="@+id/tv_odds"
             style="@style/OddsTextStyle"
             android:layout_marginBottom="4dp"
@@ -43,7 +43,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_short_name"
             tools:text="1.33" />
 
-        <ImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/iv_lock"
             android:layout_width="17dp"
             android:layout_height="17dp"
@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
         <!-- 賠率上升圖示 -->
-        <ImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/iv_trend_up"
             android:layout_width="@dimen/dp_8"
             android:layout_height="@dimen/dp_8"
@@ -66,7 +66,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!-- 賠率下降圖示 -->
-        <ImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/iv_trend_down"
             android:layout_width="@dimen/dp_8"
             android:layout_height="@dimen/dp_8"

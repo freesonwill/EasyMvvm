@@ -22,6 +22,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -47,9 +48,10 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         UIBindDelegate(
             uiOwner = this,
             vmProvider = ::createVM,
-            vbProvider = ::createVB)
+            vbProvider = ::createVB,
+            keepViewOnNavigation = keepViewOnNavigation
+        )
     }
-
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -57,6 +59,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+    //navigation跳转时是否保留view（true:保留；false：销毁）
+    open val keepViewOnNavigation:Boolean = false
     //#endregion VB,VM
 
     //设置颜色，默认根据主题颜色设定
@@ -76,6 +80,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        "----->onViewCreated-->$this".logd(TAG)
         uiBind.onViewCreated(view,savedInstanceState)
     }
 
@@ -85,6 +90,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         uiBind.onDestroyView()
     }
 
+    @CallSuper
+    override fun onDestroy() {
+        super.onDestroy()
+        uiBind.onDestroy()
+    }
 
     override fun setStatusBar(config: StatusBarConfig) {
         statusBar.setStatusBar(config)

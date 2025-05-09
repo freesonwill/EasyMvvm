@@ -7,6 +7,7 @@ dependencies {
 }
 
 val jdkVersion = JavaVersion.current().majorVersion.toInt()
+logger.warn("${project.name} jdkVersion:$jdkVersion")
 kotlin {
     jvmToolchain {
         languageVersion.set(JavaLanguageVersion.of(jdkVersion)) // 使用 JDK 21 进行编译

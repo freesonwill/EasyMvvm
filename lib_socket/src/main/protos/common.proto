@@ -213,7 +213,9 @@ message Tournament {
     string icon = 4;        //联赛icon url
     int32 sport_id = 5;     //球类id
     bool hot = 6;           //是否热门
-    int32 weight = 7;           //权重
+    int32 weight = 7;       //权重
+    string color = 8;       //配色
+    string season = 9;      //赛季
 }
 
 //系统设置
@@ -222,8 +224,8 @@ message Setting {
     NotifyMatchType system_goal = 2;        //系统通知-进球
     NotifyMatchType system_kick_off = 3;    //系统通知-开球
     NotifyMatchType app_goal = 4;           //app内通知-开球
-    int32 background = 5; //背景设置
-    string lang = 6; //语言
+    int32 background = 5;   //背景设置
+    string lang = 6;        //语言
 }
 
 //需要发送系统通知的比赛类型
@@ -237,9 +239,52 @@ message NotifyMatchType {
 message MarketType {
     string code = 1; // code
     string name = 2; // name
-    repeated MarketBase marketBase = 3; //market基础信息
+    repeated MarketBase market_base = 3; //market基础信息
 }
 message MarketBase {
     int64 market_id = 1;      //盘口id
     string market_name = 2;   //盘口名称
 }
+
+//搜索球员信息
+message SearchPlayer {
+    int32 id = 1;
+    string name = 2;        //名称
+    string icon = 3;        //头像
+    int32 number = 4;       //球员号码
+    string position = 5;    // 球员位置，F-前锋、M-中场、D-后卫、G-守门员
+    int32 team_id = 6;      //球队id
+    string team_name = 7;   //球队名称
+    int32 tournament_id = 8;    //联赛id
+    string tournament_name = 9; //联赛名称
+    string tournament_short_name = 10;  //联赛简称
+    string color = 11;       //联赛配色
+}
+
+//搜索球队信息
+message SearchTeam {
+    int32 id = 1;
+    string name = 2;            //名称
+    string icon = 3;            //图标
+    int32 tournament_id = 4;    //联赛id
+    string tournament_name = 5; //联赛名称
+    string tournament_short_name = 6;   //联赛简称
+    string color = 7;      //联赛配色
+    int32 rank = 8;         //排名
+    int32 win = 9;          //获胜场次
+    int32 lose = 10;         //失败场次
+}
+
+//搜索结果列表
+message SearchDataList {
+    repeated SearchPlayer player = 1; //球员
+    repeated SearchTeam team = 2;     //球队
+    repeated Tournament tournament = 3; //联赛
+}
+
+//每日比赛数据
+message DailyMatchCount {
+    string day = 1;     //yyyy-MM-dd
+    int32 count = 2;    //比赛数量
+}
+

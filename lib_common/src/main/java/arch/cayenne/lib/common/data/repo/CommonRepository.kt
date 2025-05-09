@@ -36,6 +36,7 @@ class CommonRepository(
             return SocketResponseData(
                 mid = ApiCode.LOGIN.mid,
                 sid = ApiCode.LOGIN.sid,
+                rid = 0,
                 data = null,
                 error = LoginTokenFailedError()
             )

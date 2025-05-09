@@ -8,6 +8,7 @@ ext {
 apply plugin: 'androidx.navigation.safeargs.kotlin'
 apply plugin: 'kotlin-kapt'
 apply from: rootProject.file("gradle/_koin.gradle")
+apply from: rootProject.file("gradle/_sign.gradle")
 
 android{
 
@@ -15,10 +16,6 @@ android{
         buildConfig = true
         dataBinding = true
         viewBinding = true
-    }
-
-    defaultConfig {
-        buildConfigField "String", "TAG_DEFAULT", "\"${ project.findProperty("TAG_DEFAULT") ?: ""}\""
     }
 
     if (project.plugins.hasPlugin("com.android.application")) {
@@ -34,11 +31,11 @@ android{
             variant.assembleProvider.configure {
                 delete fileTree(dir: "$buildDir/outputs/aar", include: '**/*')
             }
-            variant.outputs.configureEach { output ->
+            /*variant.outputs.configureEach { output ->
                 def GIT_VERSION = getGitVersion()
                 def LIB_NAME = project.name
-                //outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
-            }
+                outputFileName = "${LIB_NAME}-${BUILD_TIME}-${SDK_PRODUCT}-${variant.name}-v${SDK_VERSION_NAME}-${GIT_VERSION}.aar"
+            }*/
         }
     }
 }

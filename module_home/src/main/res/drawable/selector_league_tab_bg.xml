@@ -12,7 +12,7 @@
         <shape android:shape="rectangle">
             <corners android:radius="20dp" />
             <solid android:color="@android:color/transparent"/>
-            <stroke android:width="0.5dp" android:color="@color/bg_league_item_unselect"/>
+            <stroke android:width="0.8dp" android:color="@color/bg_league_item_unselect" />
         </shape>
     </item>
 </selector>

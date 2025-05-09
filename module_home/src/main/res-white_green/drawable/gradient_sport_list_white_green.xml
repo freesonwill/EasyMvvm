@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="0"
+                android:endColor="@color/bg_card_white_green"
+                android:startColor="@color/bg_sport_list_gradient_start_white_green"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

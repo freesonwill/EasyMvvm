@@ -6,6 +6,7 @@ plugins {
     id("com.google.protobuf") version "0.9.4"
     id("kotlin-kapt")
 }
+apply(from = rootProject.file("gradle/_sign.gradle"))
 
 android {
     namespace = "arch.cayenne.lib.socket"

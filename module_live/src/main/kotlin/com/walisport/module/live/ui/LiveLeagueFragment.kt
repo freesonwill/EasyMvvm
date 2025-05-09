@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -25,8 +24,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
-    private var standsAdapter = LeagueAdapter()
-private var statusBarColor :Int = 0
+    private val standsAdapter = LeagueAdapter()
+    private var statusBarColor: Int = 0
+    private var leagueID: Int = 0
+
     class LeagueItemDecoration(
         private val spacing: Int = 12.dp2px,
         private val leftRight: Int = 8.dp2px,
@@ -50,8 +51,8 @@ private var statusBarColor :Int = 0
         StatusBarConfig.statusBarColor = arch.cayenne.lib.common.R.color.tran_0
         setStatusBar(StatusBarConfig)
         //获取联赛日程列表
-        val leagueID = arguments?.getInt("leagueID") ?: 0
-        mViewModel.getMatchLeagueData(leagueID)
+        val matchID = arguments?.getLong("matchID") ?: 0L
+        leagueID = arguments?.getInt("leagueID") ?: 0
         //初始化联赛列表
         mBinding.recyclerLeague.apply {
             itemAnimator = null
@@ -59,6 +60,7 @@ private var statusBarColor :Int = 0
             adapter = standsAdapter
             addItemDecoration(LeagueItemDecoration())
         }
+        standsAdapter.setMatchID(matchID)
         //点击列表Item跳转直播详情页
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId
@@ -72,6 +74,11 @@ private var statusBarColor :Int = 0
         }
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.getMatchLeagueData(leagueID)
+    }
+
     override fun initListener() {
         mBinding.ivLeagueClose.clickNoRepeat {
             findNavController().navigateUp()
@@ -79,7 +86,7 @@ private var statusBarColor :Int = 0
     }
 
     override fun onDestroyView() {
-        StatusBarConfig.statusBarColor =statusBarColor
+        StatusBarConfig.statusBarColor = statusBarColor
         setStatusBar(StatusBarConfig)
         super.onDestroyView()
     }

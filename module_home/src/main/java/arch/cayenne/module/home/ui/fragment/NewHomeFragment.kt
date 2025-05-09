@@ -155,17 +155,28 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
+
     //init DrawerLayout Content
     private fun initDrawerContent() {
         //蒙層顏色依照版型作變化
-        mBinding.drawerLayout.setScrimColor(SportSkinResourceManager.getColor(requireContext(), R.color.drawer_scrim_color))
+        mBinding.drawerLayout.setScrimColor(
+            SportSkinResourceManager.getColor(
+                requireContext(),
+                R.color.drawer_scrim_color
+            )
+        )
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
         }
         childFragmentManager.beginTransaction()
-            .replace(mBinding.fragmentDrawerContent.id, drawerContentFragment!!,DrawerContentFragment.TAG)
+            .replace(
+                mBinding.fragmentDrawerContent.id,
+                drawerContentFragment!!,
+                DrawerContentFragment.TAG
+            )
             .commitNow()
     }
+
     private fun updateDateTabs(
         tlDateList: TabLayout,
         dateTabs: List<Triple<String, String, Long>>
@@ -218,7 +229,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         ivLeagueIcon.visibility = View.GONE
                         tvLeagueName.text = getString(R.string.league_all)
                     } else {
-                        Glide.with(this@NewHomeFragment).load(tournament.icon).into(ivLeagueIcon)
+                        Glide.with(this@NewHomeFragment)
+                            .load(tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
+                            .placeholder(R.drawable.ic_default_tournament)
+                            .error(R.drawable.ic_default_tournament)
+                            .into(ivLeagueIcon)
                         tvLeagueName.text = tournament.simpleName
                         ivLeagueIcon.imageTintList = context?.let {
                             SportSkinResourceManager.getColorStateList(
@@ -263,7 +278,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initListener() {
         with(mBinding) {
             llWalletEntry.setOnClickListener {
-
+                navigate(R.id.homeFragment)
             }
 
             llFavoriteEntry.setOnClickListener {

@@ -1,6 +1,6 @@
 apply plugin: 'com.google.devtools.ksp'
 
-println "_koin.gradle applied in module: ${project.path}, ext.koinApplied:${ext.has("koinApplied")}"  // 如 :app、:featureA
+logger.warn "_koin.gradle applied in module: ${project.path}, ext.koinApplied:${ext.has("koinApplied")}"  // 如 :app、:featureA
 if (ext.has("koinApplied")) {
     return
 }
