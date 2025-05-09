@@ -1,5 +1,6 @@
 package com.walisport.module.live.data
 
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMarketDetailBean
@@ -71,6 +72,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
             detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                 selections.add(
                     LiveSelectionBean(
+                        marketId = market.marketId,
                         selectionId = selection.selectionId,
                         detail = LiveMarketDetailBean(
                             detailId = index,
@@ -83,8 +85,10 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                         odds = selection.odds.toOdds(),
                         active = selection.active,
                         parlay = selection.parlay,
+                        style = market.style
                     )
                 )
+                LogUtils.e("showDataMarketMenuBean------add---id${market.marketId}--name${market.marketName}----selection${selection.shortName}")
             }
         }
     }
