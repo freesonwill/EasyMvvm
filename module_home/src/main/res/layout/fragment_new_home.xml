@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <arch.cayenne.lib.skin.widget.SportLinearLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -29,7 +29,7 @@
             android:orientation="horizontal"
             android:paddingStart="10dp">
 
-            <ImageView
+            <arch.cayenne.lib.skin.widget.SportImageView
                 android:id="@+id/iv_home_sidebar"
                 android:layout_width="@dimen/dp_36"
                 android:layout_height="@dimen/dp_36"
@@ -42,7 +42,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <!-- 主導航 (包含 "今日"、"早盤"、"冠軍") -->
-            <com.google.android.material.tabs.TabLayout
+            <arch.cayenne.lib.skin.widget.SportTabLayout
                 android:id="@+id/tl_home"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -71,7 +71,7 @@
                 app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
                 app:tabTextColor="@color/secondary_text" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <arch.cayenne.lib.skin.widget.SportLinearLayout
                 android:id="@+id/ll_wallet_entry"
                 android:layout_width="wrap_content"
                 android:layout_height="28dp"
@@ -84,7 +84,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SportTextView
                     android:id="@+id/tv_wallet_balance"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/dp_18"
@@ -94,7 +94,7 @@
                     android:textSize="13sp"
                     tools:text="$1,100.00" />
 
-                <ImageView
+                <arch.cayenne.lib.skin.widget.SportImageView
                     android:id="@+id/iv_wallet_add"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
@@ -102,7 +102,7 @@
                     android:background="@drawable/bg_wallet_add"
                     android:padding="@dimen/dp_3"
                     android:src="@drawable/ic_wallet_add" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </arch.cayenne.lib.skin.widget.SportLinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SportConstraintLayout
@@ -110,7 +110,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_66">
             <!-- 球種選擇 (固定不變的二級導航) -->
-            <androidx.recyclerview.widget.RecyclerView
+            <arch.cayenne.lib.skin.widget.SportRecyclerView
                 android:id="@+id/rv_sports_list"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -125,7 +125,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SportView
                 android:layout_width="23dp"
                 android:layout_height="match_parent"
                 android:background="@drawable/gradient_sport_list"
@@ -156,7 +156,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_favorite" />
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SportTextView
                     android:id="@+id/tv_favorite_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -187,7 +187,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_search" />
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SportTextView
                     android:id="@+id/tv_search_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_home_bet" />
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SportTextView
                     android:id="@+id/tv_bet_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -231,7 +231,15 @@
         </arch.cayenne.lib.skin.widget.SportConstraintLayout>
         <include android:id="@+id/layout_container"
             layout="@layout/view_home_content" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <!-- 內容區域 (ViewPager2 負責載入 "今日"、"早盤"、"冠軍") -->
+<!--        <androidx.viewpager2.widget.ViewPager2-->
+<!--            android:id="@+id/vp_home"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1" />-->
+
+    </arch.cayenne.lib.skin.widget.SportLinearLayout>
+
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/floating_container"
