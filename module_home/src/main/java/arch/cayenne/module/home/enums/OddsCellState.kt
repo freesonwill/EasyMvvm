@@ -1,0 +1,7 @@
+package arch.cayenne.module.home.enums
+
+enum class OddsCellState {
+    VISIBLE,       // 正常顯示
+    DEACTIVATED,   // 鎖盤（無法投注）
+    HIDDEN         // 完全隱藏
+}

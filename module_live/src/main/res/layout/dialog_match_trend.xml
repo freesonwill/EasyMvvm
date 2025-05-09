@@ -61,7 +61,6 @@
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_25"
-        android:background="@mipmap/icon_country"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_dialog_home" />
 
@@ -71,7 +70,6 @@
         android:layout_height="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_25"
         android:layout_marginTop="@dimen/dp_63"
-        android:background="@mipmap/icon_country"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_dialog_home" />
 

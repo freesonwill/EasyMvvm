@@ -26,10 +26,10 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     abstract suspend fun insertSelections(selections: List<LiveSelectionBean>)
 
     @Transaction
-    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    @Query("SELECT * FROM LiveMatchBean WHERE matchId = :matchId")
     abstract suspend fun getMatchById(matchId: Long) : LiveMatchBean
 
-    @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
+    @Query("SELECT * FROM LiveMatchBean WHERE matchId = :matchId")
     abstract fun observeMatchById(matchId: Long): Flow<LiveMatchBean>
 
     @Transaction
@@ -37,20 +37,20 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     abstract suspend fun getMatchByIds(matchIds: List<Long>) : List<LiveMatchBean>
 
     @Transaction
-    @Query("SELECT * FROM LiveSelectionBean WHERE selectionId = :selectionId")
-    abstract suspend fun getSelectionById(selectionId: Long): LiveSelectionBean
+    @Query("SELECT * FROM LiveSelectionBean WHERE marketId = :marketId")
+    abstract suspend fun getSelectionById(marketId: Long): LiveSelectionBean
 
     @Transaction
-    @Query("SELECT * FROM LiveSelectionBean WHERE selectionId IN (:selectionIds)")
-    abstract suspend fun getSelectionsByIds(selectionIds: List<Long>): List<LiveSelectionBean>
+    @Query("SELECT * FROM LiveSelectionBean WHERE marketId =:marketId")
+    abstract suspend fun getSelectionsByIds(marketId: Long): List<LiveSelectionBean>
 
-    @Query("DELETE FROM MatchBean" )
+    @Query("DELETE FROM LiveMatchBean" )
     abstract fun deleteMatchBean()
 
-    @Query("DELETE FROM MarketBean" )
+    @Query("DELETE FROM LiveMarketBean" )
     abstract fun deleteMarketBean()
 
-    @Query("DELETE FROM SelectionBean" )
+    @Query("DELETE FROM LiveSelectionBean" )
     abstract fun deleteSelectionBean()
 
     @Transaction

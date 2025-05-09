@@ -60,6 +60,7 @@ dependencies {
     api(libs.autosize)
     implementation(libs.mmkv)
     implementation(libs.androidx.window)
+    api(libs.pullrefresh.kernel)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.runner)

@@ -13,11 +13,7 @@ class MatchCardItemDecoration(private val bottomSpacePx: Int) : RecyclerView.Ite
         val position = parent.getChildAdapterPosition(view)
         outRect.bottom = bottomSpacePx
         if (position == 0) {
-            outRect.top = 8.dp2px // 底部不加下方間隔
-        }
-
-        if (position == state.itemCount - 1) {
-            outRect.bottom = 0 // 底部不加下方間隔
+            outRect.top = 8.dp2px // 頂部不加下方間隔
         }
     }
 }

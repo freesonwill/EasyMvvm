@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.widget.SportLinearLayout
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -20,7 +20,7 @@ import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
 
 class TechnicalCountView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : LinearLayout(context, attrs, defStyleAttr) {
+) : SportLinearLayout(context, attrs, defStyleAttr) {
 
     private var clicklistener: OnClickListener? = null
 

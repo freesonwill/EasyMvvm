@@ -4,6 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,20 +29,20 @@ class MatchItemViewHolder(
 ) : BaseViewHolder(mBinding) {
     private lateinit var oddsColumnAdapter: OddsColumnAdapter
 
-
-    private lateinit var currentMatchWithMarkets: MatchWithMarkets
-
     fun init(data: MatchWithMarkets) {
-        oddsColumnAdapter = OddsColumnAdapter { selection, isSelected ->
-            onMatchItemClickListener?.onOddsCellClick(currentMatchWithMarkets, selection)
+        oddsColumnAdapter = OddsColumnAdapter { selection, _ ->
+            onMatchItemClickListener?.onOddsCellClick(data, selection)
         }
-        currentMatchWithMarkets = data
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
 
             //賽事資訊
-            Glide.with(binding.root).load(basicInfo.tournamentIcon).into(ivTournamentIcon)
+            setIconWithDefault(
+                basicInfo.tournamentIcon,
+                R.drawable.ic_default_tournament,
+                ivTournamentIcon
+            )
             tvTournamentName.text = basicInfo.tournamentName
             //TODO 階段與時間待確認
             if (basicInfo.status == 4) {
@@ -53,26 +54,28 @@ class MatchItemViewHolder(
                 tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
             }
 
-            Glide.with(binding.root).load(basicInfo.awayTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivAwayIcon)
+            //客隊
+            setIconWithDefault(basicInfo.awayTeamIcon, R.drawable.ic_default_team, ivAwayIcon)
             tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
             tvAwayScore.text = liveInfo.score.getAwayScore()
 
-            Glide.with(binding.root).load(basicInfo.homeTeamIcon).error(arch.cayenne.lib.res.R.color.color_333A45).into(ivHomeIcon)
+            //主隊
+            setIconWithDefault(basicInfo.homeTeamIcon, R.drawable.ic_default_team, ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()
             ivFavorite.isSelected = data.match.collect
 
-
-            val markets = data.markets
-                .filter { it.selections.isNotEmpty() }
-
-            val columnCount = markets.size
-            layoutOddsTitle.columnCount = columnCount
-
-            markets.forEachIndexed { index, bean ->
+            //右半盤口
+            val defaultTitleList = listOf(
+                R.string.match_title_win,
+                R.string.match_title_handicap,
+                R.string.match_title_over_under
+            )
+            layoutOddsTitle.columnCount = defaultTitleList.size
+            defaultTitleList.forEachIndexed { index, title ->
                 val titleView = TextView(binding.root.context).apply {
-                    text = bean.market.marketName
+                    text = getString(title)
                     setTextColor(
                         ContextCompat.getColorStateList(
                             context,
@@ -97,7 +100,9 @@ class MatchItemViewHolder(
                 adapter = oddsColumnAdapter
 
                 val spacing = 2.dp2px
-                if (itemDecorationCount > 0) { removeItemDecorationAt(0) }
+                if (itemDecorationCount > 0) {
+                    removeItemDecorationAt(0)
+                }
                 addItemDecoration(object : RecyclerView.ItemDecoration() {
                     override fun getItemOffsets(
                         outRect: Rect,
@@ -118,6 +123,14 @@ class MatchItemViewHolder(
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
         }
+    }
+
+    private fun setIconWithDefault(tournamentIcon: String, defaultIcon: Int, view: ImageView) {
+        Glide.with(binding.root)
+            .load(tournamentIcon.ifEmpty { defaultIcon })
+            .placeholder(defaultIcon) // 載入中預設圖
+            .error(defaultIcon)       // 載入失敗預設圖
+            .into(view)
     }
 
     fun bindPayload(item: MatchWithMarkets, payloads: List<Any>) {

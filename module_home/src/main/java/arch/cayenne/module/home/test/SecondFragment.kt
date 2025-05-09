@@ -29,6 +29,7 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
 
     override fun initListener() {
         mBinding.root.setOnClickListener {
+            "setOnClickListener--->".logd(TAG)
             navigate(SecondFragmentDirections.actionSecondFragmentToThirdFragment())
         }
     }
