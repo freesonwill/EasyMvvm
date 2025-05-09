@@ -32,16 +32,18 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     private lateinit var sheetContainer: View
     private var isDismissing = false
     //#region VB,VM
-    private val uiBind by lazy {
-        UIBindDelegate(
-            uiOwner = this,
-            vmProvider = ::createVM,
-            vbProvider = ::createVB)
-    }
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
+    private val uiBind by lazy {
+        UIBindDelegate(
+            uiOwner = this,
+            vmProvider = ::createVM,
+            vbProvider = ::createVB,
+            keepViewOnNavigation = keepViewOnNavigation
+        )
+    }
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -49,6 +51,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+    //navigation跳转时是否保留view（true:保留；false：销毁）
+    open val keepViewOnNavigation:Boolean = false
     //#endregion VB,VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -113,6 +117,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     override fun onDestroyView() {
         super.onDestroyView()
         uiBind.onDestroyView()
+    }
+
+    @CallSuper
+    override fun onDestroy() {
+        super.onDestroy()
+        uiBind.onDestroy()
     }
 
     private fun setScrollView() {

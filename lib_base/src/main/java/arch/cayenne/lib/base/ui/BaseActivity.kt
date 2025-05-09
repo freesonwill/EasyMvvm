@@ -44,9 +44,10 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         UIBindDelegate(
             uiOwner = this,
             vmProvider = ::createVM,
-            vbProvider = ::createVB)
+            vbProvider = ::createVB,
+            keepViewOnNavigation = keepViewOnNavigation
+        )
     }
-
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -54,6 +55,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+    //navigation跳转时是否保留view（true:保留；false：销毁）
+    open val keepViewOnNavigation:Boolean = false
     //#endregion VB,VM
 
     // 默认不启用键盘隐藏功能，子类可覆盖 edittext软键盘弹出后，点击外部虚拟键盘消失
@@ -74,6 +77,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroyView()
+        uiBind.onDestroy()
     }
 
     override fun setStatusBar(config: StatusBarConfig) {
