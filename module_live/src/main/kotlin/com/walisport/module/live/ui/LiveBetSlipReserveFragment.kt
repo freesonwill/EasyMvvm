@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -70,6 +71,13 @@ class LiveBetSlipReserveFragment :
             updateView(it)
         }
         mViewModel.cancelReserveLiveData.observe(this) {
+            showToast(if (it == true) "取消预约成功" else "取消预约失败")
+            if (it) {
+                mViewModel.getReserveOrder()
+            }
+        }
+        mViewModel.modifyOddsLiveData.observe(this){
+            showToast(if (it == true) "修改赔率成功" else "修改赔率失败")
             if (it) {
                 mViewModel.getReserveOrder()
             }

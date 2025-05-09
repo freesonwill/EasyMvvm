@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -30,11 +31,13 @@ class LiveBetSlipUnsettledFragment :
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
     }
+
     override fun initData() {
         super.initData()
         mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
         mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
     }
+
     override fun initListener() {
     }
 
@@ -46,7 +49,8 @@ class LiveBetSlipUnsettledFragment :
                 showEmpty()
             }
         }
-        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner){
+        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner) {
+            showToast(if (it == true) "提前结算成功" else "提前结算失败")
             mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
         }
     }
@@ -83,7 +87,7 @@ class LiveBetSlipUnsettledFragment :
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
                 item?.order?.let {
                     LiveEarlySettledKeyboardFragment.instance(
-                        it.betId
+                        it.betId,it.betAmount,it.earlyBetAmount
                     ).apply {
                         setOnEarlySettleListener { money, price ->
                             mViewModel.earlyPartSettled(it, money, price)

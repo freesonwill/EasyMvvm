@@ -7,7 +7,6 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.LiveBetSlipCompare
-import com.walisport.module.live.data.model.LiveBetSlipAdapterManager
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
@@ -16,6 +15,8 @@ import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
+import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipBaseAdapterManager
+import com.walisport.module.live.utils.LiveBetSlipAdapterMangerInterface
 import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Order
@@ -82,24 +83,14 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
     override fun createViewHolder(binding: ViewBinding, viewType: Int): LiveBetSlipViewHolder {
         val holder = LiveBetSlipViewHolder(binding)
         //监听投注项是否展开
-        holder.manager.init(object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
-            override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
-                val status =
-                    if (item == LiveBetSlipExpandedEnum.Fold) LiveBetSlipExpandedEnum.Expanded else LiveBetSlipExpandedEnum.Fold
-                currentList[position].expandedEnum = status
-                notifyItemChanged(position)
-            }
-        })
-        holder.earlySettled()
-        holder.reserveListener()
+        holder.manager?.createViewHolder()
+        holder.initListener()
         return holder
     }
 
 
     override fun convertPlus(holder: LiveBetSlipViewHolder, binding: ViewBinding, position: Int) {
-
-        val item = getItem(position)
-        holder.manager.updateView(position, getItem(position))
+        holder.manager?.covertPlus(position, getItem(position))
     }
 
     private fun getSelections(order: Common.Order) = order.selectionsList
@@ -109,34 +100,32 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
     private fun getEarlySettlePrice(order: Order) = order.earlySettlePrice
 
     inner class LiveBetSlipViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
+        val manager = LiveBetSlipBaseAdapterManager.initManager(binding,betSlipType)
 
-        val manager = LiveBetSlipAdapterManager(binding, betSlipType)
-
-        fun earlySettled() {
-            if (binding !is AdapterLiveBetSlipUnsettleBinding) {
-                return
-            }
-            val nBinding = binding as AdapterLiveBetSlipUnsettleBinding
-            nBinding.betUnsettledBtSettle.clickNoRepeat {
-                val position = it.tag as Int
-                if(getItem(position).order?.earlySupport == false){
-                    return@clickNoRepeat
+        fun initListener(){
+            manager?.expandedListener = object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
+                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
+                    val status =
+                        if (item == LiveBetSlipExpandedEnum.Fold) LiveBetSlipExpandedEnum.Expanded else LiveBetSlipExpandedEnum.Fold
+                    currentList[position].expandedEnum = status
+                    notifyItemChanged(position)
                 }
-                earlySettleListener?.onItemClick(getItem(position), position)
             }
-        }
-
-        fun reserveListener() {
-            if (binding !is AdapterLiveBetSlipReserveBinding) {
-                return
+            manager?.earlySettleSubmitListener = object :RecyclerItemListener<String>{
+                override fun onItemClick(item: String?, position: Int) {
+                    if (getItem(position).order?.earlySupport == false) {
+                        return
+                    }
+                    earlySettleListener?.onItemClick(getItem(position), position)
+                }
             }
-            (binding as AdapterLiveBetSlipReserveBinding).also {
-                it.betReserveBtCancel.clickNoRepeat {
-                    val position = it.tag as Int
+            manager?.cancelReserveSubmitListener = object :RecyclerItemListener<String>{
+                override fun onItemClick(item: String?, position: Int) {
                     cancelReserveListener?.onItemClick(getItem(position), position)
                 }
-                it.betReserveBtModify.clickNoRepeat {
-                    val position = it.tag as Int
+            }
+            manager?.reserveModifySubmitListener = object :RecyclerItemListener<String>{
+                override fun onItemClick(item: String?, position: Int) {
                     modifyReserveListener?.onItemClick(getItem(position), position)
                 }
             }
