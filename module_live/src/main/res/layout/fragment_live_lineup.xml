@@ -58,7 +58,8 @@
         tools:ignore="MissingConstraints">
       <ImageView
           android:id="@+id/ivNationalFlagTop"
-          android:layout_width="30dp"
+          android:layout_width="wrap_content"
+          android:scaleType="fitCenter"
           android:layout_height="20dp"
           app:layout_constraintTop_toTopOf="parent"
           app:layout_constraintBottom_toBottomOf="parent"
@@ -109,7 +110,8 @@
         tools:ignore="MissingConstraints">
       <ImageView
           android:id="@+id/ivNationalFlagBottom"
-          android:layout_width="30dp"
+          android:layout_width="wrap_content"
+          android:scaleType="fitCenter"
           android:layout_height="20dp"
           app:cornerRadius="4dp"
           app:layout_constraintTop_toTopOf="parent"
@@ -162,7 +164,8 @@
           tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/homeIncidentsLogo"
-            android:layout_width="30dp"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
             android:layout_height="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -195,7 +198,8 @@
           tools:ignore="MissingConstraints">
         <ImageView
             android:id="@+id/awayIncidentsLogo"
-            android:layout_width="30dp"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
             android:layout_height="20dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -254,7 +258,8 @@
                 tools:ignore="MissingConstraints">
               <ImageView
                   android:id="@+id/homeSubstituteLogo"
-                  android:layout_width="30dp"
+                  android:layout_width="wrap_content"
+                  android:scaleType="fitCenter"
                   android:layout_height="20dp"
                   app:layout_constraintTop_toTopOf="parent"
                   app:layout_constraintBottom_toBottomOf="parent"
@@ -293,7 +298,8 @@
                   tools:ignore="MissingConstraints" />
               <ImageView
                   android:id="@+id/awaySubstituteLogo"
-                  android:layout_width="30dp"
+                  android:layout_width="wrap_content"
+                  android:scaleType="fitCenter"
                   android:layout_height="20dp"
                   tools:ignore="MissingConstraints" />
             </androidx.appcompat.widget.LinearLayoutCompat>

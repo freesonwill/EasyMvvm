@@ -17,8 +17,10 @@
     <arch.cayenne.lib.skin.widget.SportImageView
         android:id="@+id/iv_landscape_league_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/title_league_icon" />
+        android:layout_height="22dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitCenter"
+        />
 
     <arch.cayenne.lib.skin.widget.SportImageView
         android:layout_width="10dp"
