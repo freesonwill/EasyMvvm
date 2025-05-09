@@ -41,8 +41,8 @@ class LiveBetOnAdapter() :
                 viewBinding.clBet.visibility = View.VISIBLE
                 viewBinding.awayName.text = awayName
                 viewBinding.homeName.text = homeName
-                Glide.with(viewBinding.roots).load(homeLogo).into(viewBinding.awayLogo)
-                Glide.with(viewBinding.roots).load(awayLogo).into(viewBinding.homeLogo)
+                Glide.with(viewBinding.roots).load(homeLogo).into(viewBinding.homeLogo)
+                Glide.with(viewBinding.roots).load(awayLogo).into(viewBinding.awayLogo)
             } else {
                 viewBinding.clBet.visibility = View.GONE
             }
