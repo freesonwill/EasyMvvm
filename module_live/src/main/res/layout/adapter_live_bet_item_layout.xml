@@ -76,7 +76,8 @@
 
             <ImageView
                 android:id="@+id/homeLogo"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
                 android:layout_height="20dp"
                 tools:ignore="MissingConstraints" />
 
@@ -121,7 +122,8 @@
 
             <ImageView
                 android:id="@+id/awayLogo"
-                android:layout_width="30dp"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
                 android:layout_height="20dp"
                 tools:ignore="MissingConstraints" />
         </androidx.appcompat.widget.LinearLayoutCompat>
