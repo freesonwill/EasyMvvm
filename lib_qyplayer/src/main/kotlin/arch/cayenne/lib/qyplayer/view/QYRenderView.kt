@@ -5,19 +5,20 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
-import com.supucloud.qyplayer.MediaInfo
-import com.supucloud.qyplayer.MirrorMode
-import com.supucloud.qyplayer.PlayerConfig
-import com.supucloud.qyplayer.PlayerMode
-import com.supucloud.qyplayer.QYPlayer
-import com.supucloud.qyplayer.RotateMode
-import com.supucloud.qyplayer.ScaleMode
-import com.supucloud.qyplayer.StateInfo
-import com.supucloud.qyplayer.ViewportRatioMode
-import com.supucloud.qyplayer.render.IRenderCallback
-import com.supucloud.qyplayer.render.IRenderView
-import com.supucloud.qyplayer.render.SurfaceRenderView
-import com.supucloud.qyplayer.render.TextureRenderView
+import com.xxx.qyplayer.DecryptMode
+import com.xxx.qyplayer.MediaInfo
+import com.xxx.qyplayer.MirrorMode
+import com.xxx.qyplayer.PlayerConfig
+import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.QYPlayer
+import com.xxx.qyplayer.RotateMode
+import com.xxx.qyplayer.ScaleMode
+import com.xxx.qyplayer.StateInfo
+import com.xxx.qyplayer.ViewportRatioMode
+import com.xxx.qyplayer.render.IRenderCallback
+import com.xxx.qyplayer.render.IRenderView
+import com.xxx.qyplayer.render.SurfaceRenderView
+import com.xxx.qyplayer.render.TextureRenderView
 
 enum class SurfaceType {
     /**
@@ -218,11 +219,11 @@ class QYRenderView @JvmOverloads constructor(
         mQYPlayer.setOnFirstDataReceivedListener(onFirstDataReceived)
     }
 
-    fun setAudioDecrypt(decrypt: Boolean): Int {
+    fun setAudioDecrypt(decrypt: DecryptMode): Int {
         return mQYPlayer.setAudioDecrypt(decrypt)
     }
 
-    fun setVideoDecrypt(decrypt: Boolean): Int {
+    fun setVideoDecrypt(decrypt: DecryptMode): Int {
         return mQYPlayer.setVideoDecrypt(decrypt)
     }
 

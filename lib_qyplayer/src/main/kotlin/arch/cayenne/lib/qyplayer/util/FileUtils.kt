@@ -10,7 +10,7 @@ import android.os.StatFs
 import android.provider.MediaStore
 import android.text.TextUtils
 import androidx.annotation.RequiresApi
-import com.supucloud.qyplayer.log.L
+import com.xxx.qyplayer.log.L
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File

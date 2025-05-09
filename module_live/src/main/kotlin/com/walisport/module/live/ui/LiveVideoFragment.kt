@@ -19,7 +19,7 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
-import com.supucloud.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerMode
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.data.constants.MatchStatus

@@ -8,7 +8,7 @@ import android.provider.Settings.SettingNotFoundException
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
-import com.supucloud.qyplayer.log.L
+import com.xxx.qyplayer.log.L
 
 /**
  * 屏幕相关的操作类

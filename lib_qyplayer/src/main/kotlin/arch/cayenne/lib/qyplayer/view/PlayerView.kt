@@ -27,14 +27,15 @@ import arch.cayenne.lib.qyplayer.util.FileUtils
 import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import arch.cayenne.lib.qyplayer.util.toast
-import com.supucloud.qyplayer.MediaInfo
-import com.supucloud.qyplayer.MirrorMode
-import com.supucloud.qyplayer.PlayerConfig
-import com.supucloud.qyplayer.PlayerMode
-import com.supucloud.qyplayer.PlayerState
-import com.supucloud.qyplayer.RotateMode
-import com.supucloud.qyplayer.ScaleMode
-import com.supucloud.qyplayer.ViewportRatioMode
+import com.xxx.qyplayer.DecryptMode
+import com.xxx.qyplayer.MediaInfo
+import com.xxx.qyplayer.MirrorMode
+import com.xxx.qyplayer.PlayerConfig
+import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerState
+import com.xxx.qyplayer.RotateMode
+import com.xxx.qyplayer.ScaleMode
+import com.xxx.qyplayer.ViewportRatioMode
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -697,11 +698,23 @@ class PlayerView @JvmOverloads constructor(
     }
 
     fun setAudioDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setAudioDecrypt(decrypt)
+        return mRenderView.setAudioDecrypt(
+            if (decrypt) {
+                DecryptMode.DECRYPT_MODE_INTERNAL
+            } else {
+                DecryptMode.DECRYPT_MODE_NONE
+            }
+        )
     }
 
     fun setVideoDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setVideoDecrypt(decrypt)
+        return mRenderView.setVideoDecrypt(
+            if (decrypt) {
+                DecryptMode.DECRYPT_MODE_INTERNAL
+            } else {
+                DecryptMode.DECRYPT_MODE_NONE
+            }
+        )
     }
 
     fun setDecryptKey(key: String): Int {

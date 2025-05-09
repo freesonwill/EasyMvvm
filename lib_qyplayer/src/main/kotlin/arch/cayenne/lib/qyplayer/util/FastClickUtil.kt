@@ -1,6 +1,6 @@
 package arch.cayenne.lib.qyplayer.util
 
-import com.supucloud.qyplayer.log.L
+import com.xxx.qyplayer.log.L
 
 /**
  * 限制快速点击多次触发的工具类

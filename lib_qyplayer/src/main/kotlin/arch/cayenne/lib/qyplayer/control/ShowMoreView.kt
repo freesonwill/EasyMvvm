@@ -17,14 +17,14 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import arch.cayenne.lib.qyplayer.util.toast
-import com.supucloud.qyplayer.MirrorMode
-import com.supucloud.qyplayer.RotateMode
-import com.supucloud.qyplayer.ScaleMode
-import com.supucloud.qyplayer.ViewportRatioMode
-import com.supucloud.qyplayer.transformToMirrorMode
-import com.supucloud.qyplayer.transformToRotateMode
-import com.supucloud.qyplayer.transformToScaleMode
-import com.supucloud.qyplayer.transformToSizeRatioMode
+import com.xxx.qyplayer.MirrorMode
+import com.xxx.qyplayer.RotateMode
+import com.xxx.qyplayer.ScaleMode
+import com.xxx.qyplayer.ViewportRatioMode
+import com.xxx.qyplayer.transformToMirrorMode
+import com.xxx.qyplayer.transformToRotateMode
+import com.xxx.qyplayer.transformToScaleMode
+import com.xxx.qyplayer.transformToSizeRatioMode
 
 typealias SwitchChangedListener = (isChecked: Boolean) -> Unit
 typealias ClickListener = () -> Unit

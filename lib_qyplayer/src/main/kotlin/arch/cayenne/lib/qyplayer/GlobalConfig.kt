@@ -2,7 +2,7 @@ package arch.cayenne.lib.qyplayer
 
 import android.content.Context
 import androidx.core.content.edit
-import com.supucloud.qyplayer.PlayerConfig
+import com.xxx.qyplayer.PlayerConfig
 import java.io.File
 
 /**
@@ -315,8 +315,8 @@ fun GlobalConfig.transformToPlayerConfig(): PlayerConfig = PlayerConfig().also {
     it.isClear = if (isClear) 1 else 0
     it.isMute = if (isMute) 1 else 0
     it.volume = volume
-    it.isAudioDecrypt = if (isAudioDecrypt) 1 else 0
-    it.isVideoDecrypt = if (isVideoDecrypt) 1 else 0
+    it.audioDecrypt = if (isAudioDecrypt) 1 else 0
+    it.videoDecrypt = if (isVideoDecrypt) 1 else 0
     it.render = render
     it.isSubtitles = if (isSubtitles) 1 else 0
     it.isDanmaku = if (isDanmaku) 1 else 0
@@ -337,8 +337,8 @@ fun GlobalConfig.transformFromPlayerConfig(cfg: PlayerConfig) {
     isClear = cfg.isClear != 0
     isMute = cfg.isMute != 0
     volume = cfg.volume
-    isAudioDecrypt = cfg.isAudioDecrypt != 0
-    isVideoDecrypt = cfg.isVideoDecrypt != 0
+    isAudioDecrypt = cfg.audioDecrypt != 0
+    isVideoDecrypt = cfg.videoDecrypt != 0
     render = cfg.render
     isSubtitles = cfg.isSubtitles != 0
     isDanmaku = cfg.isDanmaku != 0

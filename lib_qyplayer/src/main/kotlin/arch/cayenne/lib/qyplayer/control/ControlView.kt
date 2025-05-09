@@ -18,7 +18,7 @@ import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.util.NetworkUtil
 import arch.cayenne.lib.qyplayer.util.TimeFormater
-import com.supucloud.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerMode
 
 
 enum class PlayState {
@@ -199,6 +199,7 @@ class ControlView @JvmOverloads constructor(
             PlayerMode.FLUENCY -> "LIVE"
             PlayerMode.VOD -> "VOD"
             PlayerMode.FILE -> "FILE"
+            else -> "LIVE"
         }
     }
 
