@@ -147,6 +147,7 @@ class MatchListPagerFragment :
             mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
         mViewModel.startObserveMatch()
     }
@@ -155,12 +156,14 @@ class MatchListPagerFragment :
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
-        fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int): MatchListPagerFragment {
+        private const val ARG_POSITION = "arg_position"
+        fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int, position: Int): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
                     putInt(ARG_LEAGUE_ID, leagueId)
+                    putInt(ARG_POSITION, position)
                 }
             }
         }

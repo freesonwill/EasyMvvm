@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
@@ -35,6 +34,6 @@ class LeaguePagerAdapter(
         val list = tournament ?: throw IllegalStateException("tournament list is null")
         val sportId = list[position].sportId
         val leagueId = list[position].id
-        return MatchListPagerFragment.newInstance(sportId, playType.id, leagueId)
+        return MatchListPagerFragment.newInstance(sportId, playType.id, leagueId, position)
     }
 }

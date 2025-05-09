@@ -27,6 +27,7 @@ class MatchListViewModel : BaseViewModel() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
+    private var _position = -1
     private var _selectedDate: Long = 0
     var page: Int = 1
     var isPageEnd = false
@@ -91,6 +92,10 @@ class MatchListViewModel : BaseViewModel() {
         _selectedDate = id
     }
 
+    fun setPosition(position: Int) {
+        _position = position
+    }
+
     fun getPlayTypeId(): Int = _playType
 
     fun getTournamentId() = _tournamentId
@@ -132,7 +137,7 @@ class MatchListViewModel : BaseViewModel() {
             isLoadingData.value = true
             withContext(Dispatchers.IO) {
                 "KC_ 取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
-                isPageEnd = !repository.getAllMatch(_playType, _sportId, _tournamentId, page, _selectedDate)
+                isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate)
             }
             isLoadingData.value = false
         }
