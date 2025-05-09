@@ -161,12 +161,20 @@ class HomeRepository(
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * */
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
-        //先從DB拿取
-        val queryResult = queryFullMatch(playType, tournamentId, page, startTime)
-        if (queryResult.isNotEmpty()){
-            return queryResult
-        }
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : Boolean {
+//        val req = Client.ListMatchReq.newBuilder().apply {
+//            this.sportId = sportId
+//            this.playType = playType
+//            this.tournamentId = tournamentId
+//            this.page = page
+//            this.size = DEFAULT_MATCH_SIZE
+//            if (startTime != 0L){
+//                this.startTime = startTime
+//                this.endTime = startTime + ONE_DAY_TIME_STAMP
+//            }
+//        }.build()
+//        socketManager.send(req.asRemoteRequest(ApiCode.LIST_MATCH))
+        //-----------------------------------------
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -186,8 +194,13 @@ class HomeRepository(
         }
 
         if (resp.error == null && resp.data != null) {
+            if (resp.data!!.matchList.isNullOrEmpty()) {
+                return false
+            }
             val matchFullData = resp.data!!.matchList.toRoomData()
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
+
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
@@ -205,9 +218,9 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return queryFullMatch(playType, tournamentId, page, startTime)
+            return true
         }
-        return arrayListOf()
+        return false
     }
 
     /**
@@ -317,8 +330,12 @@ class HomeRepository(
      * 單純根據頁數和時間取得資料，用來第一次取得比賽和下一頁取得和時間區間取得比賽
      * @return 根據條件query的賽事資料
      * */
-    private suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
+    suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         return database.matchDao().getFullMatch(playType, tournamentId, page, startTime).setSelected()
+    }
+    suspend fun queryFullMatches(matchIds: List<Long>) : List<MatchWithMarkets> {
+        val result = database.matchDao().getOneMatchByIds(matchIds).setSelected()
+        return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
     /**
@@ -339,4 +356,19 @@ class HomeRepository(
     fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)
     }
+
+    fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {
+        //觀察後端的500-1002（获取比赛列表）回傳
+//        scope.launch(Dispatchers.IO) {
+//            socketManager.observeProtoMessage<Client.ListMatchResp>(apiCode = ApiCode.LIST_MATCH,)
+//                .filter { it.error == null && it.data != null }.collect {
+//
+//                }
+//        }
+
+
+        return matchDao.observeMatchChange(playType, tournamentId)
+    }
+
+
 }
