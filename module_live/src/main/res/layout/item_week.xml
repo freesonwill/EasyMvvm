@@ -7,7 +7,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_league_week"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_30"
+        android:layout_height="wrap_content"
         android:gravity="center|start"
         android:textColor="#80FFFFFF"
         android:textSize="@dimen/sp_14"
