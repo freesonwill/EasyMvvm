@@ -16,7 +16,7 @@ import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.MatchUpdateData
 import arch.cayenne.module.home.data.toRoomData
-import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
