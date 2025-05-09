@@ -40,8 +40,7 @@ class LiveBetSlipReserveFragment :
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
             ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.item_divide_live_bet_recycler
+                requireContext(), R.drawable.item_divide_live_bet_recycler
             )!!
         )
         adapter.setReserveListener(cancelListener = object : RecyclerItemListener<LiveBetSlipData> {
@@ -76,7 +75,7 @@ class LiveBetSlipReserveFragment :
                 mViewModel.getReserveOrder()
             }
         }
-        mViewModel.modifyOddsLiveData.observe(this){
+        mViewModel.modifyOddsLiveData.observe(this) {
             showToast(if (it == true) "修改赔率成功" else "修改赔率失败")
             if (it) {
                 mViewModel.getReserveOrder()
@@ -128,7 +127,7 @@ class LiveBetSlipReserveFragment :
 
         LiveBetSlipModifyOddsFragment.newInstance().also {
             it.setConfirmListener { odds ->
-                mViewModel.modifyReserve(order,odds)
+                mViewModel.modifyReserve(order, odds)
             }
             it.show(childFragmentManager)
         }

@@ -95,7 +95,7 @@ abstract class LiveBetSlipBaseItemManager(
         llMore: LinearLayout
     ) {
         line.isVisible = position != count - 1
-        group.isVisible = expandedEnum != LiveBetSlipExpandedEnum.Hide
+        group.isVisible = (count - 1) == position && expandedEnum != LiveBetSlipExpandedEnum.Hide
         llMore.tag = position
         if (expandedEnum != LiveBetSlipExpandedEnum.Hide) {
             tvMore.text = ContextCompat.getString(

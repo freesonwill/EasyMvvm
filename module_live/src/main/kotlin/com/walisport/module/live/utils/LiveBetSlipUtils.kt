@@ -1,23 +1,33 @@
 package com.walisport.module.live.utils
 
 import galaxy.common.proto.Common.Order
-import galaxy.common.proto.Common.ReserveOrder
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 object LiveBetSlipUtils {
-    fun expectMaxAmount(betAmount:String,odds:String): String {
-        return toBigDecimal(betAmount).multiply(toBigDecimal(odds)).toString()
+    /**
+     * 计算预计最高金额
+     * */
+    fun expectMaxAmount(betAmount: String, odds: String): String {
+        return toBigDecimal(betAmount).multiply(toBigDecimal(odds))
+            .setScale(2, RoundingMode.HALF_UP).toString()
     }
 
+    /**
+     * 计算输赢金额
+     * */
     fun winOrLoseAmount(order: Order): String {
         return toBigDecimal(order.betAmount).minus(toBigDecimal(order.earlyBetAmount)).minus(
-            toBigDecimal(order.returnAmount)
+            toBigDecimal(order.returnAmount).setScale(2, RoundingMode.HALF_UP)
         ).toString()
     }
 
-    fun earlySettlePrice(betAmount: String,odds:String,earlyBetAmount:String): String {
+    /***
+     * 提前结算金额
+     * */
+    fun earlySettlePrice(betAmount: String, odds: String, earlyBetAmount: String): String {
         return toBigDecimal(betAmount).multiply(toBigDecimal(odds))
-            .minus(toBigDecimal(earlyBetAmount)).toString()
+            .minus(toBigDecimal(earlyBetAmount)).setScale(2, RoundingMode.HALF_UP).toString()
     }
 
     private fun toBigDecimal(value: String): BigDecimal {

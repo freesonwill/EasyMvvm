@@ -20,18 +20,7 @@ class LiveBetSlipUnsettledAdapterManager(
 ) : LiveBetSlipBaseAdapterManager(binding, betSlipType) {
 
     override fun createViewHolder() {
-        val manager = LinearLayoutManager(binding.root.context)
-        val adapter = LiveBetSlipSelectionAdapter(betSlipType,
-            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
-                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
-                    expandedListener?.onItemClick(null, position)
-                }
-            })
-        binding.recyclerSelection.also {
-            it.layoutManager = manager
-            it.itemAnimator = null
-            it.adapter = adapter
-        }
+        initRecyclerView(binding.recyclerSelection, betSlipType)
         binding.betUnsettledBtSettle.clickNoRepeat {
             val position = it.tag as Int
             earlySettledSubmit(position)

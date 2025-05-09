@@ -1,17 +1,11 @@
 package com.walisport.module.live.ui.adapter.livebetslip
 
-import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
-import com.walisport.module.live.databinding.ItemTipsLayoutBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
 import com.walisport.module.live.utils.LiveBetSlipUtils.expectMaxAmount
 import com.walisport.module.live.utils.RecyclerItemListener
@@ -22,19 +16,7 @@ class LiveBetSlipConfirmAdapterManager(
 ) : LiveBetSlipBaseAdapterManager(binding, betSlipType) {
 
     override fun createViewHolder() {
-        val manager = LinearLayoutManager(binding.root.context)
-        val adapter = LiveBetSlipSelectionAdapter(
-            betSlipType,
-            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
-                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
-                    expandedListener?.onItemClick(null, position)
-                }
-            })
-        binding.recyclerSelection.also {
-            it.layoutManager = manager
-            it.itemAnimator = null
-            it.adapter = adapter
-        }
+       initRecyclerView(binding.recyclerSelection,betSlipType)
         binding.ivTip.clickNoRepeat {
             showBetTip(it)
         }

@@ -17,31 +17,18 @@ class LiveBetSlipReserveAdapterManager(
 ) : LiveBetSlipBaseAdapterManager(binding, betSlipType) {
 
     override fun createViewHolder() {
-        val manager = LinearLayoutManager(binding.root.context)
-        val adapter = LiveBetSlipSelectionAdapter(
-            betSlipType,
-            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
-                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
-                    expandedListener?.onItemClick(null, position)
-                }
-            })
-        binding.recyclerSelection.also {
-            it.layoutManager = manager
-            it.itemAnimator = null
-            it.adapter = adapter
+        initRecyclerView(binding.recyclerSelection, betSlipType)
+        binding.betReserveBtCancel.clickNoRepeat {
+            cancelReserveSubmit((it.tag as Int))
         }
-
-       binding. betReserveBtCancel.clickNoRepeat {
-           cancelReserveSubmit((it.tag as Int))
-       }
-       binding. betReserveBtModify.clickNoRepeat {
-           reserveUpdateSubmit((it.tag as Int))
-       }
+        binding.betReserveBtModify.clickNoRepeat {
+            reserveUpdateSubmit((it.tag as Int))
+        }
     }
 
     override fun covertPlus(position: Int, item: LiveBetSlipData) {
         item.reserve?.let {
-            updateReserveData(position,it)
+            updateReserveData(position, it)
             submitReserveAdapter(it)
         }
     }
@@ -50,13 +37,13 @@ class LiveBetSlipReserveAdapterManager(
      * 预约单数据更新
      * */
     private fun updateReserveData(
-        position: Int,order:ReserveOrder
+        position: Int, order: ReserveOrder
     ) {
         with(binding) {
             val selection = order.selection
             betReserveTvOddsValue.text = selection.odds
             betReserveTvBettingValue.text = order.betAmount
-            betReserveTvExceptValue.text = expectMaxAmount(order.betAmount,order.selection.odds)
+            betReserveTvExceptValue.text = expectMaxAmount(order.betAmount, order.selection.odds)
             betReserveBtCancel.tag = position
             betReserveBtModify.tag = position
         }

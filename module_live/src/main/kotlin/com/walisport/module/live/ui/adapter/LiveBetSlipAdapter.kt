@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.compare.LiveBetSlipCompare
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -106,7 +107,7 @@ class LiveBetSlipAdapter(type: LiveBetSlipEnum) :
             manager?.expandedListener = object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
                 override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
                     val status =
-                        if (item == LiveBetSlipExpandedEnum.Fold) LiveBetSlipExpandedEnum.Expanded else LiveBetSlipExpandedEnum.Fold
+                        if (getItem(position).expandedEnum == LiveBetSlipExpandedEnum.Fold) LiveBetSlipExpandedEnum.Expanded else LiveBetSlipExpandedEnum.Fold
                     currentList[position].expandedEnum = status
                     notifyItemChanged(position)
                 }

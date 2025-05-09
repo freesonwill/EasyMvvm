@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipConfirmBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
@@ -31,8 +32,13 @@ class LiveBetSlipConfirmFragment :
 
     private fun initRecycler() {
         val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.Confirming)
-        val divider = DividerItemDecoration(context,DividerItemDecoration.VERTICAL)
-        divider.setDrawable(ContextCompat.getDrawable(requireContext(),R.drawable.item_divide_live_bet_recycler)!!)
+        val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        divider.setDrawable(
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.item_divide_live_bet_recycler
+            )!!
+        )
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.addItemDecoration(divider)
@@ -60,7 +66,11 @@ class LiveBetSlipConfirmFragment :
     }
 
     private fun updateData(orders: List<Common.Order>) {
-        val list = orders.map { LiveBetSlipData(order = it) }.toList()
+        val list = orders.map {
+            val expandedEnum =
+                if (it.selectionsList.size <= 3) LiveBetSlipExpandedEnum.Hide else LiveBetSlipExpandedEnum.Fold
+            LiveBetSlipData(order = it, expandedEnum = expandedEnum)
+        }.toList()
         mBinding.recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipAdapter
             adapter.submitList(list)

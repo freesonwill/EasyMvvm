@@ -2,6 +2,7 @@ package com.walisport.module.live.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -53,16 +54,10 @@ class LiveBetSlipReserveItemManager(
         with(nBinding) {
             betReserveTvRace.text = match.matchName
             betReserveTvIntroduce.text = item.selectionName
-            betReserveTvAodds.text =
-                nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
-//                TODO 滚球不清楚
-            betReserveTvStatus.text = "滚球"
-            betReserveTvScore.text = ContextCompat.getString(
-                binding.root.context,
-                R.string.live_bet_full_handicap
-            ) + "  " + match.liveInfo.score
-            betReserveTvStart.text =
-                LiveDateUtil.getMDHm(match.startTime)
+            betReserveTvAodds.text = nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
+//            betReserveTvStatus.isVisible = item.inPlay
+            betReserveTvScore.text = item.marketName + "  " + match.liveInfo.score
+            betReserveTvStart.text = LiveDateUtil.getMDHm(match.startTime)
         }
     }
 

@@ -22,18 +22,7 @@ class LiveBetSlipInvalidAdapterManager(
 ) : LiveBetSlipBaseAdapterManager(binding, betSlipType) {
 
     override fun createViewHolder() {
-        val manager = LinearLayoutManager(binding.root.context)
-        val adapter = LiveBetSlipSelectionAdapter(betSlipType,
-            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
-                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
-                    expandedListener?.onItemClick(null, position)
-                }
-            })
-        binding.recyclerSelection.also {
-            it.layoutManager = manager
-            it.itemAnimator = null
-            it.adapter = adapter
-        }
+        initRecyclerView(binding.recyclerSelection,betSlipType)
     }
 
     override fun covertPlus(position: Int, item: LiveBetSlipData) {
@@ -85,16 +74,11 @@ class LiveBetSlipInvalidAdapterManager(
         with(binding) {
             betExpiredTvStatus.width = 34.dp2px
             betExpiredTvStatus.text = root.context.resources.getString(R.string.live_bet_rejection)
-            betExpiredTvStatus.setBackgroundResource(
-                SportSkinResourceManager.getTargetResourceId(
-                    root.context, R.drawable.live_bet_selection_status_normal
-                )
-            )
+            betExpiredTvStatus.setBackgroundResource(SportSkinResourceManager.getTargetResourceId(root.context, R.drawable.live_bet_selection_status_normal))
             tvUnit1.text = ContextCompat.getString(binding.root.context, R.string.live_bet_bet_num)
             tvUnit2.text = ContextCompat.getString(binding.root.context, R.string.live_bet_odds)
             tvUnit3.text = ContextCompat.getString(binding.root.context, R.string.live_bet_on)
-            tvUnit4.text =
-                ContextCompat.getString(binding.root.context, R.string.live_bet_except_max_win)
+            tvUnit4.text = ContextCompat.getString(binding.root.context, R.string.live_bet_except_max_win)
             tvUnit1Value.text = item.betId
             tvUnit2Value.text = item.odds
             tvUnit3Value.text = item.betAmount

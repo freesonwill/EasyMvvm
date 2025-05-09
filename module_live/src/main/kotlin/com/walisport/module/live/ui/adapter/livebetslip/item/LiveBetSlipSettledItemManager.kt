@@ -44,9 +44,7 @@ class LiveBetSlipSettledItemManager(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateData(
-        item: Common.OrderSelection?, isExpectedOdds: Boolean = false
-    ) {
+    private fun updateData(item: Common.OrderSelection?) {
         item?.let {
             val match = item.matchBasic
             with(binding) {
@@ -55,7 +53,7 @@ class LiveBetSlipSettledItemManager(
                 betSettledTvRace.text = match.matchName
                 betSettledTvIntroduce.text = item.selectionName
                 betSettledTvAodds.text = "@${item.odds}"
-                betSettledTvStatus.isVisible = it.inPlay
+//                betSettledTvStatus.isVisible = it.inPlay
                 betSettledTvScore.text = item.marketName + "  " + item.betScore
                 betSettledTvScore1.text = item.endScore
             }

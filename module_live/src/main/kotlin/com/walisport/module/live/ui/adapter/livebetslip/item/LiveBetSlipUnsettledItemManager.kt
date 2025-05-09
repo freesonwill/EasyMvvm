@@ -47,10 +47,7 @@ class LiveBetSlipUnsettledItemManager(
     }
 
     @SuppressLint("SetTextI18n")
-    private fun updateData(
-        item: Common.OrderSelection?,
-        isExpectedOdds: Boolean = false
-    ) {
+    private fun updateData(item: Common.OrderSelection?) {
         item?.let {
             val match = item.matchBasic
             with(binding) {
@@ -59,11 +56,9 @@ class LiveBetSlipUnsettledItemManager(
                 betUnsettledTvRace.text = match.matchName
                 betUnsettledTvIntroduce.text = item.selectionName
                 betUnsettledTvAodds.text = "@${item.odds}"
-//                TODO 滚球不清楚
-                betUnsettledTvStatus.isVisible = item.inPlay
+//                betUnsettledTvStatus.isVisible = item.inPlay
                 betUnsettledTvScore.text = item.marketName + "  " + item.betScore
-                betUnsettledTvStart.text =
-                    LiveDateUtil.getMDHm(match.startTime)
+                betUnsettledTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }
         }
     }

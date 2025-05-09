@@ -45,7 +45,7 @@ class LiveBetSlipConfirmItemManager(
 
     @SuppressLint("SetTextI18n")
     private fun updateData(
-        item: Common.OrderSelection?, isExpectedOdds: Boolean = false
+        item: Common.OrderSelection?
     ) {
         item?.let {
             with(binding) {
@@ -56,7 +56,7 @@ class LiveBetSlipConfirmItemManager(
                 betConfirmTvIntroduce.text = item.selectionName
                 betConfirmTvAodds.text =
                     binding.root.resources.getString(R.string.live_bet_except_odds, "@${item.odds}")
-                betConfirmTvStatus.isVisible = it.inPlay
+//                betConfirmTvStatus.isVisible = it.inPlay
                 betConfirmTvScore.text = item.marketName + "  " + item.betScore
                 betConfirmTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }

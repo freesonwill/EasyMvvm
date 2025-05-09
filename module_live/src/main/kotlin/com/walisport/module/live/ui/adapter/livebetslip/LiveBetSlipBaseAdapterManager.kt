@@ -5,8 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.PopupWindow
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
@@ -68,6 +70,22 @@ abstract class LiveBetSlipBaseAdapterManager(
         }
     }
 
+    fun initRecyclerView(recyclerView:RecyclerView,betSlip:LiveBetSlipEnum){
+        val manager = LinearLayoutManager(binding.root.context)
+        val adapter = LiveBetSlipSelectionAdapter(
+            betSlip,
+            object : RecyclerItemListener<LiveBetSlipExpandedEnum> {
+                override fun onItemClick(item: LiveBetSlipExpandedEnum?, position: Int) {
+                    expandedListener?.onItemClick(null, position)
+                }
+            })
+        recyclerView.also {
+            it.layoutManager = manager
+            it.itemAnimator = null
+            it.adapter = adapter
+        }
+    }
+
     /**
      * 投注单列表展示
      * */
@@ -76,13 +94,13 @@ abstract class LiveBetSlipBaseAdapterManager(
     ) {
         var list =
             data.order!!.selectionsList.map { LiveBetSlipSelectionData(selection = it) }.toList()
+
         recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipSelectionAdapter
             adapter.updateBasicData(data.expandedEnum, position)
             if (list.size > 3 && data.expandedEnum == LiveBetSlipExpandedEnum.Fold) {
-                list = list.subList(0, 2)
+                list = list.subList(0, 3)
             }
-            adapter.currentList.clear()
             adapter.submitList(list)
         }
     }

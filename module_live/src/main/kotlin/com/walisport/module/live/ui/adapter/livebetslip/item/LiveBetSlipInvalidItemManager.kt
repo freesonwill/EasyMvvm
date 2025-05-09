@@ -50,7 +50,6 @@ class LiveBetSlipInvalidItemManager(
     @SuppressLint("SetTextI18n")
     private fun updateData(
         item: Common.OrderSelection?,
-        isExpectedOdds: Boolean = false
     ) {
         item?.let {
             val match = item.matchBasic
@@ -59,14 +58,13 @@ class LiveBetSlipInvalidItemManager(
                     .into(betInvalidIvBall)
                 betInvalidTvRace.text = match.matchName
                 betInvalidTvIntroduce.text = item.selectionName
-                betInvalidTvAodds.text =  binding.root.resources.getString(
+                betInvalidTvAodds.text = binding.root.resources.getString(
                     R.string.live_bet_except_odds,
                     "@${item.odds}"
                 )
-                betInvalidTvMatchStatus.isVisible
+//                betInvalidTvMatchStatus.isVisible = item.inPlay
                 betInvalidTvScore.text = item.marketName + "  " + item.betScore
-                betInvalidTvStart.text =
-                    LiveDateUtil.getMDHm(match.startTime)
+                betInvalidTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }
         }
     }
