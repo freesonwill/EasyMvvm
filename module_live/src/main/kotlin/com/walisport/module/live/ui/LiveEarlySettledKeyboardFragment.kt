@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentEarlySettledNumberKeyboardBinding
 import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
+import com.walisport.module.live.utils.LiveBetSlipUtils.earlySettlePrice
 import kotlin.reflect.KClass
 
 /**
@@ -25,14 +26,19 @@ import kotlin.reflect.KClass
 class LiveEarlySettledKeyboardFragment private constructor() :
     BaseDialogFragment<LiveEarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
     private val betIdKey = "bet_id"
+    private val betAmountKey = "bet_amount"
+    private val betEarlySettleKey = "bet_early_settle"
     private var betId: String = ""
+
 
     companion object {
 
-        fun instance(price: String): LiveEarlySettledKeyboardFragment {
+        fun instance(betId: String,betAmount:String,betEarlySettle:String): LiveEarlySettledKeyboardFragment {
             return LiveEarlySettledKeyboardFragment().apply {
                 arguments = Bundle().apply {
-                    putString(betIdKey, price)
+                    putString(betIdKey, betId)
+                    putString(betAmountKey,betAmount)
+                    putString(betEarlySettleKey,betEarlySettle)
                 }
             }
         }
@@ -42,11 +48,12 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<LiveEarlySettledKeyboardViewModel>
         get() = LiveEarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((money: String,expectPrice:String) -> Unit)? = null
+    private var onEarlySettleClick: ((money: String, expectPrice: String) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         dialog?.setCanceledOnTouchOutside(true)
         betId = arguments?.getString(betIdKey) ?: ""
+
         mViewModel.earlySettledPrice(betId)
         with(mBinding) {
             initTab(tabLayout = llTab)
@@ -80,7 +87,8 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             btnCollapse.setOnClickListener { }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
-                    mViewModel.editNumber.value ?: "",mViewModel.prices.value?.price.toString() ?:""
+                    mViewModel.editNumber.value ?: "",
+                    mViewModel.prices.value?.price.toString() ?: ""
                 )
                 dismiss()
             }
@@ -146,7 +154,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
     override fun initListener() {
     }
 
-    fun setOnEarlySettleListener(listener: (money: String,expectPrice:String) -> Unit) {
+    fun setOnEarlySettleListener(listener: (money: String, expectPrice: String) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
@@ -156,7 +164,9 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             mBinding.etMoney.setSelection(it.length)
         }
         mViewModel.prices.observe(viewLifecycleOwner) {
-            mBinding.tvBetMoney.text = getString(R.string.refund_amount, it.price)
+            val betAmount = arguments?.getString(betAmountKey) ?: ""
+            val earlySettlePrice = arguments?.getString(betEarlySettleKey) ?:""
+            mBinding.tvBetMoney.text = getString(R.string.refund_amount, earlySettlePrice(betAmount,it.price,earlySettlePrice))
         }
     }
 }

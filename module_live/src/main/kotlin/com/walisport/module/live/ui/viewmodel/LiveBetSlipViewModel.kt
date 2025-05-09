@@ -30,6 +30,8 @@ class LiveBetSlipViewModel : BaseViewModel() {
     val earlySettledLiveData: LiveData<Boolean> = _earlySettledLiveData
     private val _cancelReserveLiveData: MutableLiveData<Boolean> = MutableLiveData()
     val cancelReserveLiveData: LiveData<Boolean> = _cancelReserveLiveData
+    private val _modifyOddsLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val modifyOddsLiveData: LiveData<Boolean> = _modifyOddsLiveData
 
 
     fun setIds(matchId: Long, sportId: Int) {
@@ -93,6 +95,7 @@ class LiveBetSlipViewModel : BaseViewModel() {
     fun modifyReserve(order: ReserveOrder,odds:String){
         viewModelScope.launch {
             val result = repository.reserveUpdate(order.reserveId,order.betAmount,odds)
+            _modifyOddsLiveData.value = result?.success ?: false
         }
     }
 

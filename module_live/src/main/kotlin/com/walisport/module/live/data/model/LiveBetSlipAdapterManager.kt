@@ -26,7 +26,8 @@ import com.walisport.module.live.databinding.AdapterLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
 import com.walisport.module.live.databinding.ItemTipsLayoutBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
-import com.walisport.module.live.utils.LiveBetSlipUtils.calculateMaxWin
+import com.walisport.module.live.utils.LiveBetSlipUtils.earlySettlePrice
+import com.walisport.module.live.utils.LiveBetSlipUtils.expectMaxAmount
 import com.walisport.module.live.utils.LiveBetSlipUtils.winOrLoseAmount
 import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common
@@ -238,11 +239,9 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
         tvCode?.text = order.betId
         tvOdds?.text = order.odds
         tvBet?.text = order.betAmount
-        tvExpectMaxWin?.text = calculateMaxWin(order.odds, order.betAmount).toString()
+        tvExpectMaxWin?.text = expectMaxAmount(order.betAmount,order.odds)
         tvPartEarlySettled?.text = order.earlySettlePrice.price
-        tvWinLoseAmount?.text = winOrLoseAmount(
-            order.betAmount, order.returnAmount
-        ).toString()
+        tvWinLoseAmount?.text = winOrLoseAmount(order)
         tvStatus?.let {
             val status = LiveBetSlipResultOrderStatusEnum.getStatus(order.status)
             status?.let { st ->
@@ -250,7 +249,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             }
         }
         tvEarlySettle?.let {
-            it.text = "$${order.earlySettlePrice.price}"
+            it.text = "$"+earlySettlePrice(order.betAmount,order.earlySettlePrice.price,order.earlyBetAmount)
         }
     }
 
@@ -301,7 +300,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 tvUnit1Value.text = item.betId
                 tvUnit2Value.text = item.odds
                 tvUnit3Value.text = item.betAmount
-                tvUnit4Value.text = calculateMaxWin(item.odds, item.betAmount).toString()
+                tvUnit4Value.text = expectMaxAmount(item.betAmount,item.odds)
             }
         }
     }
@@ -317,9 +316,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
             val selection = order.selection
             betReserveTvOddsValue.text = selection.odds
             betReserveTvBettingValue.text = order.betAmount
-            betReserveTvExceptValue.text = calculateMaxWin(
-                order.selection.odds, order.betAmount
-            ).toString()
+            betReserveTvExceptValue.text = expectMaxAmount(order.betAmount,order.selection.odds)
             betReserveBtCancel.tag = position
             betReserveBtModify.tag = position
         }
