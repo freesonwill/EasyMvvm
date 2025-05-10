@@ -1,11 +1,10 @@
 package com.walisport.module.live.ui.viewmodel
 
-import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -20,7 +19,7 @@ class LiveBetSlipViewModel : BaseViewModel() {
     private var matchId: Long = -1
     private var sportId: Int = -1
     private var page = 1
-    private var pageSize = 10
+    private val pageSize = 10
     private val repository: LiveBetRepository by inject { parametersOf(viewModelScope) }
     private val _orderLiveData = MutableLiveData<List<Common.Order>?>()
     val orderLiveData: LiveData<List<Common.Order>?> = _orderLiveData
@@ -91,11 +90,26 @@ class LiveBetSlipViewModel : BaseViewModel() {
     /**
      * 修改预约
      * */
-
-    fun modifyReserve(order: ReserveOrder,odds:String){
+    fun modifyReserve(order: ReserveOrder, odds: String) {
         viewModelScope.launch {
-            val result = repository.reserveUpdate(order.reserveId,order.betAmount,odds)
+            val result = repository.reserveUpdate(order.reserveId, order.betAmount, odds)
             _modifyOddsLiveData.value = result?.success ?: false
+        }
+    }
+
+    fun refreshOrder(status: LiveBetSlipEnum) {
+        page = 1
+        getOrders(status)
+    }
+
+    fun loadMoreOrder(status: LiveBetSlipEnum) {
+        viewModelScope.launch {
+            page++
+            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)
+            _orderLiveData.value = result
+            if (_orderLiveData.value?.isEmpty() == true) {
+                page--
+            }
         }
     }
 

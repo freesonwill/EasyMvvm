@@ -12,14 +12,22 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="@dimen/dp_359"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <arch.cayenne.lib.common.ui.view.PullRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            />
+            app:srlEnablePreviewInEditMode="true"
+            >
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                />
+        </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

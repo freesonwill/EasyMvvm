@@ -311,8 +311,6 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
             betReserveTvIntroduce.text = item.selectionName
             betReserveTvAodds.text =
                 nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
-//                TODO 滚球不清楚
-            betReserveTvStatus.text = "滚球"
             betReserveTvScore.text = ContextCompat.getString(
                 binding.root.context,
                 R.string.live_bet_full_handicap
@@ -344,7 +342,8 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
                 LiveBetSlipResultOrderStatusEnum.LoseHalf -> {
                     it.iv1.isVisible = false
                     it.betSettledTvStatus1.isVisible = true
-                    it.betSettledTvStatus1.text = status.names
+                    it.betSettledTvStatus1.text =
+                        ContextCompat.getString(it.betSettledTvStatus1.context, status.names)
                 }
 
                 else -> {}

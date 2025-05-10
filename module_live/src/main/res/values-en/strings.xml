@@ -81,4 +81,11 @@
     <string name="live_out_gy">-High pressure Time</string>
     <string name="live_out_know">I Know</string>
     <string name="live_out_dialog_tip">This chart gives you insight into the progress of the game. The bar chart shows the changing trend of the team\'s offensive in the game</string>
+    <string name="unsettled">unsettled</string>
+    <string name="win">win</string>
+    <string name="tie">tie</string>
+    <string name="lose">lose</string>
+    <string name="lose_half">loseHalf</string>
+    <string name="win_half">winHalf</string>
+
 </resources>

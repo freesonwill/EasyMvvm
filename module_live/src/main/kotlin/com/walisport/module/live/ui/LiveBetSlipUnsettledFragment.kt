@@ -31,6 +31,7 @@ class LiveBetSlipUnsettledFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
+        initLoadRefresh()
     }
 
     override fun initData() {
@@ -44,6 +45,8 @@ class LiveBetSlipUnsettledFragment :
 
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
             if (!it.isNullOrEmpty()) {
                 updateData(it)
             } else {
@@ -102,6 +105,15 @@ class LiveBetSlipUnsettledFragment :
 
             }
         })
+    }
+
+    private fun initLoadRefresh() {
+        mBinding.refreshLayout.setOnRefreshListener {
+            mViewModel.refreshOrder(LiveBetSlipEnum.UnSettled)
+        }
+        mBinding.refreshLayout.setOnLoadMoreListener {
+            mViewModel.loadMoreOrder(LiveBetSlipEnum.UnSettled)
+        }
     }
 
 
