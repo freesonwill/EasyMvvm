@@ -1,4 +1,4 @@
-package arch.cayenne.lib.qyplayer.view
+package com.walisport.module.live.ui.widget
 
 import android.app.Activity
 import android.content.Context
@@ -27,6 +27,8 @@ import arch.cayenne.lib.qyplayer.util.FileUtils
 import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import arch.cayenne.lib.qyplayer.util.toast
+import arch.cayenne.lib.qyplayer.view.QYRenderView
+import arch.cayenne.lib.qyplayer.view.SurfaceType
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.MediaInfo
 import com.xxx.qyplayer.MirrorMode
