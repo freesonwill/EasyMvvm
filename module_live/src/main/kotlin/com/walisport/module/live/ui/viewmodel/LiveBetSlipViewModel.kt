@@ -110,7 +110,6 @@ class LiveBetSlipViewModel : BaseViewModel() {
             if (_orderLiveData.value?.isEmpty() == true) {
                 page--
             }
-            "loadMore $page".logd("remote")
         }
     }
 
