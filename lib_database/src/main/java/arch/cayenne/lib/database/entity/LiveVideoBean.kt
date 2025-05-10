@@ -27,9 +27,9 @@ data class VideoSourceBean(
 ) {
 
     fun playUrl(): String {
-        return m3U8Url.takeIf { it.isNotEmpty() }
+        return flvUrl.takeIf { it.isNotEmpty() }
+            ?: m3U8Url.takeIf { it.isNotEmpty() }
             ?: rtmpUrl.takeIf { it.isNotEmpty() }
-            ?: flvUrl.takeIf { it.isNotEmpty() }
             ?: ""
     }
 
