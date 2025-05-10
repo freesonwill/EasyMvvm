@@ -18,8 +18,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
-import arch.cayenne.lib.qyplayer.control.ControlView
-import arch.cayenne.lib.qyplayer.control.PlayState
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
@@ -44,14 +42,13 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.io.File
 
-class PlayerView @JvmOverloads constructor(
+class LivePlayerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : RelativeLayout(context, attrs, defStyleAttr) {
     private var mRenderView = QYRenderView(context)
     private var mPauseIconView = ImageView(context)
-    private lateinit var mControlView: ControlView
     private lateinit var mGestureView: GestureView
 
     private var mOnOrientationChangeListener: ((from: Boolean, currentMode: ScreenMode) -> Unit)? =
@@ -88,22 +85,21 @@ class PlayerView @JvmOverloads constructor(
         initRenderView()
         initGestureView()
         initStateView()
-        initControlView()
     }
 
     private fun initListeners() {
         mOrientationWatchDog.setOnOrientationListener(object :
             OrientationWatchDog.OnOrientationListener {
             override fun changedToLandForwardScape(fromPort: Boolean) {
-                this@PlayerView.changedToLandForwardScape(fromPort)
+                this@LivePlayerView.changedToLandForwardScape(fromPort)
             }
 
             override fun changedToLandReverseScape(fromPort: Boolean) {
-                this@PlayerView.changedToLandReverseScape(fromPort)
+                this@LivePlayerView.changedToLandReverseScape(fromPort)
             }
 
             override fun changedToPortrait(fromLand: Boolean) {
-                this@PlayerView.changeToPortrait(fromLand)
+                this@LivePlayerView.changeToPortrait(fromLand)
             }
 
         })
@@ -130,12 +126,10 @@ class PlayerView @JvmOverloads constructor(
     }
 
     fun start() {
-        mControlView.setPlayState(PlayState.PLAYING)
         mRenderView.start()
     }
 
     private fun pause() {
-        mControlView.setPlayState(PlayState.NOT_PLAYING)
         mRenderView.pause()
     }
 
@@ -197,8 +191,6 @@ class PlayerView @JvmOverloads constructor(
             mCurrentScreenMode = finalScreenMode
         }
 
-        mControlView.setScreenModeStatus(finalScreenMode)
-
         if (context is Activity) {
             when (finalScreenMode) {
                 ScreenMode.FULL -> {
@@ -250,17 +242,10 @@ class PlayerView @JvmOverloads constructor(
                 setOnStateChangedListener {
                     (context as? Activity)?.runOnUiThread {
                         if (it.state == PlayerState.ERROR) {
-//                            "error occurs, code = ${it.code}".toast(context)
                         }
 
                         updatePauseIconView(it.state)
                         mCurrentPosition = it.position.toLong()
-                        if (it.total > 0) {
-                            mControlView.setMediaDuration(it.total)
-                        }
-                        if (it.position > 0) {
-                            mControlView.setVideoPosition(it.position)
-                        }
                     }
                 }
                 setOnSnapshotListener {
@@ -284,48 +269,7 @@ class PlayerView @JvmOverloads constructor(
         )
     }
 
-    private fun initControlView() {
-        mControlView = ControlView(context).apply {
-            setPlayMode(mPlayerMode)
-            setOnSeekListener { seekTo(it) }
-            setOnPlayStopClickListener { mRenderView.stop() }
-            setOnShowMoreClickListener { mOnShowMoreClickListener?.invoke() }
-            setOnShowQualityClickListener { mOnShowQualityClickListener?.invoke() }
-            setOnPlayStateClickListener { switchPlayerState() }
-            setOnRefreshClickListener {
-                val seekPosition: Int = mControlView.getVideoPosition()
-                mRenderView.reload()
-                seekTo(seekPosition)
-            }
-            setOnLockScreenClickListener { lockScreen(!mIsFullScreenLocked) }
-            setOnScreenShotClickListener {
-                mRenderView.snapshot(1, "")
-            }
-            setOnScreenModeClickListener {
-                when (mCurrentScreenMode) {
-                    ScreenMode.SMALL -> {
-                        changedToLandForwardScape(true)
-                    }
 
-                    ScreenMode.FULL -> {
-                        changeToPortrait(true)
-                    }
-                }
-            }
-            setOnBackClickListener {
-                when (mCurrentScreenMode) {
-                    ScreenMode.FULL -> {
-                        changeScreenMode(ScreenMode.SMALL, false)
-                    }
-
-                    ScreenMode.SMALL -> {
-                        (context as? Activity)?.finish()
-                    }
-                }
-            }
-        }
-        addView(mControlView)
-    }
 
     private fun initGestureView() {
         mGestureView = GestureView(context).apply {
@@ -349,15 +293,15 @@ class PlayerView @JvmOverloads constructor(
                             /*if (mPlayerState == PlayerState.PLAYING) {
                             }*/
                             inSeek = true
-                            mControlView.setMediaDuration(duration.toInt())
-                            mControlView.setVideoPosition(targetPosition)
+//                            mControlView.setMediaDuration(duration.toInt())
+//                            mControlView.setVideoPosition(targetPosition)
 
                             mGestureDialogManager.run {
-                                showSeekDialog(this@PlayerView, targetPosition)
+                                showSeekDialog(this@LivePlayerView, targetPosition)
                                 updateSeekDialog(duration, position, deltaPosition)
                             }
 
-                            mControlView.closeAutoHide()
+//                            mControlView.closeAutoHide()
                         }
 
                         else -> {
@@ -374,7 +318,7 @@ class PlayerView @JvmOverloads constructor(
                     val changePercent = (((nowY - downY) * 100) / height).toInt()
 
                     mGestureDialogManager.showBrightnessDialog(
-                        this@PlayerView,
+                        this@LivePlayerView,
                         if (mScreenBrightness <= 0) (ScreenUtils.getActivityBrightness(context as Activity) * 100).toInt() else mScreenBrightness
                     )
                     val brightness = mGestureDialogManager.updateBrightnessDialog(changePercent)
@@ -392,7 +336,7 @@ class PlayerView @JvmOverloads constructor(
                     // 右侧上下滑动调整音量
                     val changePercent = (((nowY - downY) * 100) / height).toInt()
                     mGestureDialogManager.showVolumeDialog(
-                        this@PlayerView,
+                        this@LivePlayerView,
                         (volume).toFloat()
                     )
                     val targetVolume = mGestureDialogManager.getTargetVolume(changePercent)
@@ -409,26 +353,26 @@ class PlayerView @JvmOverloads constructor(
                         return
                     }
                     if (inSeek) {
-                        val seekPosition: Int = mControlView.getVideoPosition()
-                        seekTo(seekPosition)
+//                        val seekPosition: Int = mControlView.getVideoPosition()
+//                        seekTo(seekPosition)
                         inSeek = false
                     }
                     if (isFastSpeed) {
                         mRenderView.setSpeed(100)
                         isFastSpeed = false
                     }
-                    mControlView.openAutoHide()
+//                    mControlView.openAutoHide()
                     mGestureDialogManager.dismissBrightnessDialog()
                     mGestureDialogManager.dismissVolumeDialog()
                     mGestureDialogManager.dismissSeekDialog()
                 }
 
                 override fun onSingleTap() {
-                    if (mControlView.visibility != VISIBLE) {
-                        mControlView.show()
-                    } else {
-                        mControlView.hide()
-                    }
+//                    if (mControlView.visibility != VISIBLE) {
+//                        mControlView.show()
+//                    } else {
+//                        mControlView.hide()
+//                    }
                 }
 
                 override fun onDoubleTap() {
@@ -464,7 +408,7 @@ class PlayerView @JvmOverloads constructor(
                 if (networkObject.has("audio_kbps")) networkObject.getInt("audio_kbps") else 0
             val videoSpeed =
                 if (networkObject.has("video_kbps")) networkObject.getInt("video_kbps") else 0
-            mControlView.setNetworkSpeed(audioSpeed + videoSpeed)
+//            mControlView.setNetworkSpeed(audioSpeed + videoSpeed)
         }
     }
 
@@ -483,7 +427,7 @@ class PlayerView @JvmOverloads constructor(
             }
 
             launch(Dispatchers.Main) {
-                "Picture has Saved".toast(this@PlayerView.context)
+                "Picture has Saved".toast(this@LivePlayerView.context)
             }
         }
     }
@@ -555,20 +499,20 @@ class PlayerView @JvmOverloads constructor(
         mPlayerState = state
         mPauseIconView.visibility = when (mPlayerState) {
             PlayerState.PLAYING -> {
-                mControlView.setPlayState(PlayState.PLAYING)
+//                mControlView.setPlayState(PlayState.PLAYING)
                 mPauseIconView.clearAnimation()
                 GONE
             }
 
             PlayerState.PAUSED -> {
-                mControlView.setPlayState(PlayState.NOT_PLAYING)
+//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 mPauseIconView.setImageResource(R.drawable.ic_play)
                 mPauseIconView.clearAnimation()
                 VISIBLE
             }
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
-                mControlView.setPlayState(PlayState.NOT_PLAYING)
+//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 mPauseIconView.setImageResource(R.drawable.ic_loading)
                 mPauseIconView.startAnimation(
                     RotateAnimation(
@@ -588,13 +532,13 @@ class PlayerView @JvmOverloads constructor(
             }
 
             PlayerState.STOPPED -> {
-                mControlView.setPlayState(PlayState.NOT_PLAYING)
+//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 mPauseIconView.clearAnimation()
                 GONE
             }
 
             else -> {
-                mControlView.setPlayState(PlayState.NOT_PLAYING)
+//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 mPauseIconView.clearAnimation()
                 GONE
             }
@@ -608,7 +552,7 @@ class PlayerView @JvmOverloads constructor(
      */
     fun lockScreen(lockScreen: Boolean) {
         mIsFullScreenLocked = lockScreen
-        mControlView.setScreenLockStatus(mIsFullScreenLocked)
+//        mControlView.setScreenLockStatus(mIsFullScreenLocked)
         mGestureView.setScreenLockStatus(mIsFullScreenLocked)
     }
 
@@ -618,7 +562,7 @@ class PlayerView @JvmOverloads constructor(
 
     fun setDataSource(url: String) {
         mPlayingPath = url
-        mControlView.updateTitle(url)
+//        mControlView.updateTitle(url)
         mRenderView.setDataSource(url)
     }
 
