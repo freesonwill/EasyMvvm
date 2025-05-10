@@ -96,12 +96,19 @@ enum class BetResultStatusEnum(val code: Int) {
     REJECT(2),
     CANCEL(3),
     SUCCESS_BET(4),
-    SETTLED(5);
+    SETTLED(5),
+    FAIL(100);
 
     companion object {
         fun getStatusByCode(code: Int): BetResultStatusEnum {
-            return entries.first { it.code == code }
+            return entries.find { it.code == code } ?: FAIL
         }
     }
 
 }
+
+data class BetResultLiteBean(
+    val matchName: List<String>,
+    val combo: Int = 1,
+    val isSuccessful: Boolean
+)

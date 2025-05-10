@@ -20,6 +20,8 @@ import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.math.atan2
 import kotlin.math.sqrt
 
@@ -27,7 +29,7 @@ class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
-
+    private val betOnViewModel: LiveBetOnViewModel by sharedViewModel<LiveBetOnViewModel, LiveBetOnFragment>()
     private var startX = 0f
     private var startY = 0f
     private var translationX = 0f
@@ -46,7 +48,7 @@ class LiveBetOnMenuFragment :
             if (it == null) return@observe
             mBinding.llc.removeAllViews()
             var currentIndex = 0
-            it.forEach { items ->
+            it.withIndex().forEach { (indexItems, items) ->
                 val binding = LiveBetMenuFlexboxLayoutBinding.inflate(
                     LayoutInflater.from(context),
                     mBinding.llc,
@@ -58,7 +60,7 @@ class LiveBetOnMenuFragment :
                     }
                     tvName.text = items.name
                 }
-                items.marketMenuBean.forEach {bean->
+                items.marketMenuBean.withIndex().forEach {(index, bean)->
                     val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
                         LayoutInflater.from(context),
                         mBinding.llc,
@@ -70,9 +72,13 @@ class LiveBetOnMenuFragment :
                     }
                     textBinding.apply {
                         tvContent.text = bean.marketName
-                        tvContent.isSelected = bean.isSelect
+                        betOnViewModel.observeMarketMenu.value?.let {
+                            if (indexItems== (it[0]-1)&&index==it[1]){
+                                tvContent.isSelected = true
+                            }
+                        }
                         tvContent.clickNoRepeat {
-                            mViewModel.setMarketSelect(items.code,bean.marketId, selectCode,selectId)
+                            betOnViewModel.setMarketMenuPosition((indexItems+1),index)
                             animateDismiss()
                         }
                     }
@@ -81,7 +87,6 @@ class LiveBetOnMenuFragment :
                 mBinding.llc.addView(binding.root)
                 currentIndex++
             }
-
         }
     }
 

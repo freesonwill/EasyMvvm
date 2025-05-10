@@ -5,7 +5,9 @@ import android.os.Bundle
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.walisport.app.R
 import arch.cayenne.lib.common.ui.BaseNavActivity
+import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.app.ui.viewmodel.MainViewModel
 import kotlin.reflect.KClass
 
@@ -20,6 +22,15 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
 
     override fun initData() {
         super.initData()
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        mViewModel.betResultListener.observe(this) {
+            val toast = BetResultToastView(this@MainActivity)
+            toast.setResult(it)
+            showToast(toast, 3_000L)
+        }
     }
 
 

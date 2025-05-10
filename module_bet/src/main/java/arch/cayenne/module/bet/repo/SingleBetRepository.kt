@@ -121,6 +121,14 @@ class SingleBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
                     val selection = betDao.getSelections(betId).first()
 
+                    val tempDetail = BetDetailBean(
+                        betId = betId,
+                        orderId = "",
+                        sumOdds = selection.odds,
+                        inputMoney = money,
+                        status = BetResultStatusEnum.CONFIRMING
+                    )
+                    betDao.insertDetail(tempDetail)
                     val resp = remoteManager.singleBet(selection, money)
                     val detailBean = if (resp != null && resp.isSuccessful) {
                         BetDetailBean(
@@ -136,7 +144,7 @@ class SingleBetRepository(
                             orderId = "",
                             sumOdds = selection.odds,
                             inputMoney = money,
-                            status = BetResultStatusEnum.REJECT
+                            status = BetResultStatusEnum.CONFIRMING
                         )
                     }
                     betDao.insertDetail(detailBean)

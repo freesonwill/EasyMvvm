@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_101010">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp">
+        <!-- 重置配置 -->
+        <TextView
+            android:id="@+id/tv_reset_config"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="恢复配置"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 亮度 -->
+        <TextView
+            android:id="@+id/tv_bright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="屏幕亮度"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_reset_config" />
+
+        <SeekBar
+            android:id="@+id/seekbar_light"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/color_FFBF6B"
+            android:thumbTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tv_bright_ratio"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/tv_bright"
+            app:layout_constraintTop_toTopOf="@+id/tv_bright" />
+
+        <TextView
+            android:id="@+id/tv_bright_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="67%"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_bright" />
+
+        <!-- 音量 -->
+        <TextView
+            android:id="@+id/tv_volume"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="设备音量"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_bright" />
+
+        <SeekBar
+            android:id="@+id/seekbar_volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/color_FFBF6B"
+            android:thumbTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tv_volume_ratio"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/tv_volume"
+            app:layout_constraintTop_toTopOf="@+id/tv_volume" />
+
+        <TextView
+            android:id="@+id/tv_volume_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="67%"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_volume" />
+
+        <!--小窗播放-->
+        <TextView
+            android:id="@+id/tv_pip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="小窗播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_volume" />
+
+        <Switch
+            android:id="@+id/swt_pip"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_pip" />
+
+        <!--硬解码-->
+        <TextView
+            android:id="@+id/tv_hardware"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="硬解码"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pip" />
+
+        <TextView
+            android:id="@+id/tv_hardware_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启后会降低功耗，提升流畅度"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_hardware" />
+
+        <Switch
+            android:id="@+id/swt_hardware"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_hardware" />
+
+        <!--自动播放-->
+        <TextView
+            android:id="@+id/tv_auto_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="自动播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_hardware_tips" />
+
+        <Switch
+            android:id="@+id/swt_auto_play"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_auto_play" />
+
+        <!--循环播放-->
+        <TextView
+            android:id="@+id/tv_loop_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="循环播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_auto_play" />
+
+        <Switch
+            android:id="@+id/swt_loop_play"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_loop_play" />
+
+        <!--静音-->
+        <TextView
+            android:id="@+id/tv_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="静音播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_loop_play" />
+
+        <Switch
+            android:id="@+id/swt_mute"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_mute" />
+
+        <!--后台播放-->
+        <TextView
+            android:id="@+id/tv_back_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="后台播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mute" />
+
+        <Switch
+            android:id="@+id/swt_back_play"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_back_play" />
+
+        <!--缓冲时长-->
+        <TextView
+            android:id="@+id/tv_buffer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="缓冲时长"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_back_play" />
+
+        <TextView
+            android:id="@+id/tv_buffer_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="直播中缓冲最大时长，提升流畅度"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_buffer" />
+
+        <SeekBar
+            android:id="@+id/seekbar_buffer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/color_FFBF6B"
+            android:thumbTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tv_buffer_time"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/tv_volume"
+            app:layout_constraintTop_toTopOf="@+id/tv_buffer" />
+
+        <TextView
+            android:id="@+id/tv_buffer_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5s"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_buffer" />
+
+        <!--动态追帧-->
+        <TextView
+            android:id="@+id/tv_auto_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="动态追帧"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_buffer_tips" />
+
+        <TextView
+            android:id="@+id/tv_auto_frame_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="开启后会优先保证直播实时性"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_auto_frame" />
+
+        <Switch
+            android:id="@+id/swt_auto_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_auto_frame" />
+
+        <!--自动重连-->
+        <TextView
+            android:id="@+id/tv_auto_reconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="20dp"
+            android:text="自动重连"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swt_auto_frame" />
+
+        <TextView
+            android:id="@+id/tv_auto_reconnect_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="重连间隔"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_auto_reconnect" />
+
+        <SeekBar
+            android:id="@+id/seekbar_auto_reconnect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:max="20"
+            android:min="3"
+            android:progressBackgroundTint="@color/white"
+            android:progressTint="@color/color_FFBF6B"
+            android:thumbTint="@color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tv_buffer_time"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/tv_volume"
+            app:layout_constraintTop_toTopOf="@+id/tv_auto_reconnect_tips" />
+
+        <Switch
+            android:id="@+id/swt_auto_reconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_auto_reconnect" />
+
+        <TextView
+            android:id="@+id/tv_auto_reconnect_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="5s"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/swt_auto_reconnect" />
+
+        <!--保留停止画面-->
+        <TextView
+            android:id="@+id/tv_keep_stop_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="保留停止画面"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_auto_reconnect_tips" />
+
+        <Switch
+            android:id="@+id/swt_keep_stop_frame"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_keep_stop_frame" />
+
+        <!--纯音频播放-->
+        <TextView
+            android:id="@+id/tv_only_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="纯音频播放"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_keep_stop_frame" />
+
+        <Switch
+            android:id="@+id/swt_only_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_only_audio"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <!--无音频秒开-->
+        <TextView
+            android:id="@+id/tv_no_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="无音频秒开"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_keep_stop_frame" />
+
+        <Switch
+            android:id="@+id/swt_no_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_no_audio"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <!--音频解密-->
+        <TextView
+            android:id="@+id/tv_audio_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="音频解密"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_no_audio" />
+
+        <Switch
+            android:id="@+id/swt_audio_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_audio_decrypt"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <!--视频解密-->
+        <TextView
+            android:id="@+id/tv_video_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="视频解密"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_audio_decrypt" />
+
+        <Switch
+            android:id="@+id/swt_video_decrypt"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:textOff="  "
+            android:textOn="  "
+            android:thumb="@drawable/switch_thumb"
+            android:track="@drawable/switch_track"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_video_decrypt"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        <!--画面镜像-->
+        <TextView
+            android:id="@+id/tv_mirror"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="6dp"
+            android:text="画面镜像"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_video_decrypt" />
+
+        <RadioGroup
+            android:id="@+id/mirror_group"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_mirror"
+            app:layout_constraintTop_toTopOf="@+id/tv_mirror">
+
+
+            <RadioButton
+                android:id="@+id/rb_mirror_none"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="无镜像"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_mirror_v"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="垂直镜像"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_mirror_h"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="水平镜像"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+
+        </RadioGroup>
+
+        <!--画面比例-->
+        <TextView
+            android:id="@+id/tv_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="6dp"
+            android:text="画面比例"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_mirror" />
+
+        <RadioGroup
+            android:id="@+id/scale_group"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_mirror"
+            app:layout_constraintTop_toTopOf="@+id/tv_scale">
+
+
+            <RadioButton
+                android:id="@+id/rb_scale_fit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="适应"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_scale_crop"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="填充"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_scale_scale"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="拉伸"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+
+        </RadioGroup>
+
+        <!--画面高宽比-->
+        <TextView
+            android:id="@+id/tv_size_ratio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="6dp"
+            android:text="画面高宽比"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_scale" />
+
+        <RadioGroup
+            android:id="@+id/size_ratio_group"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_mirror"
+            app:layout_constraintTop_toTopOf="@+id/tv_size_ratio">
+
+
+            <RadioButton
+                android:id="@+id/rb_size_ratio_default"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="默认"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_size_ratio_16_9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="16:9"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_size_ratio_4_3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="4:3"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+
+        <!--画面旋转-->
+        <TextView
+            android:id="@+id/tv_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="6dp"
+            android:text="画面旋转"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_size_ratio" />
+
+        <RadioGroup
+            android:id="@+id/rotate_group"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_mirror"
+            app:layout_constraintTop_toTopOf="@+id/tv_rotate">
+
+
+            <RadioButton
+                android:id="@+id/rb_rotate_none"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="无"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_rotate_90"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="顺90"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_rotate_180"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="顺180"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_rotate_270"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="顺270"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+        <!--背景色-->
+        <TextView
+            android:id="@+id/tv_clear_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:paddingVertical="6dp"
+            android:text="清屏色"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_rotate" />
+
+        <RadioGroup
+            android:id="@+id/color_group"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="30dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_mirror"
+            app:layout_constraintTop_toTopOf="@+id/tv_clear_color">
+
+
+            <RadioButton
+                android:id="@+id/rb_color_black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="黑色"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_color_white"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="白色"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+            <RadioButton
+                android:id="@+id/rb_color_red"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selector_text_round"
+                android:button="@null"
+                android:gravity="center"
+                android:text="红色"
+                android:textColor="@color/white"
+                android:textSize="14sp" />
+
+        </RadioGroup>
+
+        <!--媒体信息-->
+        <TextView
+            android:id="@+id/tv_media_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="媒体信息"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_clear_color" />
+
+
+        <!--统计信息-->
+        <TextView
+            android:id="@+id/tv_statistics_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="统计信息"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_media_info" />
+
+        <!--网络信息-->
+        <TextView
+            android:id="@+id/tv_network_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="网络信息"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_statistics_info" />
+
+        <!--解码信息-->
+        <TextView
+            android:id="@+id/tv_decoder_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="解码信息"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_network_info" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

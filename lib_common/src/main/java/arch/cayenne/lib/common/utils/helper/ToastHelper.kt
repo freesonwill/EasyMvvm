@@ -17,22 +17,31 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import java.lang.ref.WeakReference
 import kotlin.coroutines.resume
+
+
 
 internal class ToastHelper private constructor() {
     companion object {
         private const val TAG = "ToastHelper"
+        const val DEFAULT_DURATION = 2_000L
         val instance: ToastHelper by lazy { ToastHelper() }
     }
-
     private var toastJob: Job? = null
+    //方便cancelToast
+    private var viewHolder:WeakReference<View>? = null
+    private var view:View?
+        get() = viewHolder?.get()
+        set(value) { viewHolder = if(value == null) null else WeakReference(value) }
 
     /***
      * 預設toast
      * @param context
      * @param msg
      */
-    fun showDefaultToast(context: Context, msg: String, duration: Long) {
+    fun showDefaultToast(context: Context, msg: String, duration: Long = DEFAULT_DURATION) {
+        cancelToast(context)
         if (toastJob != null) {
             return
         }
@@ -47,14 +56,27 @@ internal class ToastHelper private constructor() {
      * 自定義toast
      * @param view 需先自行實作view
      */
-    fun showCustomToast(view: View, duration: Long) {
+    fun showCustomToast(view: View, duration: Long = DEFAULT_DURATION) {
+        cancelToast(view.context)
         if (toastJob != null) {
             return
         }
         showToast(view, duration)
     }
 
+    /**
+     * 取消Toast
+     */
+    fun cancelToast(context: Context){
+        toastJob?.cancel().let { toastJob = null }
+        view?.let {
+            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            wm.removeView(it).let { view = null }
+        }
+    }
+
     private fun showToast(view: View, duration: Long) {
+        this.view = view
         val wm = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = WindowManager.LayoutParams()
 
@@ -72,8 +94,7 @@ internal class ToastHelper private constructor() {
             playAnim(view, true)
             delay(duration)
             playAnim(view, false)
-            wm.removeView(view)
-            toastJob = null
+            cancelToast(view.context)
         }
     }
 
@@ -117,18 +138,18 @@ internal class ToastHelper private constructor() {
 
 }
 
-fun Fragment.showToast(msg: String, duration: Long = 2_000L) {
+fun Fragment.showToast(msg: String, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showDefaultToast(requireContext(), msg, duration)
 }
 
-fun Fragment.showToast(view: View, duration: Long = 2_000L) {
+fun Fragment.showToast(view: View, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showCustomToast(view, duration)
 }
 
-fun Activity.showToast(msg: String, duration: Long = 2_000L) {
+fun Activity.showToast(msg: String, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showDefaultToast(this, msg, duration)
 }
 
-fun Activity.showToast(view: View, duration: Long = 2_000L) {
+fun Activity.showToast(view: View, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showCustomToast(view, duration)
 }

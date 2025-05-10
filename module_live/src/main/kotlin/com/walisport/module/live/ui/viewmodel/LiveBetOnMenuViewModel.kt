@@ -20,14 +20,4 @@ class LiveBetOnMenuViewModel : BaseViewModel() {
             _marketType.value = repository.queryLiveMarketType()
         }
     }
-
-    //改变选择的颜色
-    fun setMarketSelect(nowCode:String,
-                          nowId: Long,
-                          beforeCode:String= "",
-                          beforeId: Long = 0,) {
-        viewModelScope.launch {
-            repository.updateMarketIdByMarketSelect(nowCode, nowId, beforeCode,beforeId)
-        }
-    }
 }
