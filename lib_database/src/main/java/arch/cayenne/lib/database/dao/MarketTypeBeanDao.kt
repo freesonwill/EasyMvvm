@@ -17,9 +17,6 @@ abstract class MarketTypeBeanDao : BaseDao<MarketTypeBean>(){
     @Query("SELECT * FROM MarketTypeBean WHERE code IN (:code, :nowCode)")
     abstract fun getMarketTypeByCode(code: String, nowCode: String): List<MarketTypeBean>
 
-    @Update
-    abstract fun updateMarketTypeBeans(marketTypeBeans: List<MarketTypeBean>)
-
     //查询所有
     @Query("SELECT * FROM MarketTypeBean")
     abstract suspend fun getAllMarketTypeBean(): List<MarketTypeBean>
