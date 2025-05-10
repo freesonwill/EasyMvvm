@@ -31,6 +31,7 @@ class LiveBetSlipReserveFragment :
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     private val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.Reserve)
+
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
     }
@@ -61,6 +62,7 @@ class LiveBetSlipReserveFragment :
             it.setRecycledViewPool(RecyclerView.RecycledViewPool())
         }
     }
+
 
     override fun initListener() {
     }
