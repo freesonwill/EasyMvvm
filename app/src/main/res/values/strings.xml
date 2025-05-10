@@ -3,5 +3,7 @@
     <string name="faedback_suggesions_title_name">帮助与反馈</string>
 
     <string name="splash_counter_down_skip">跳过 (%s)</string>
+    <string name="more_taps_to_exit">再次操作退出App</string>
+    <string name="more_taps_to_exit2">还需%1$s次操作退出App</string>
 
 </resources>

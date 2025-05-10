@@ -4,12 +4,16 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import androidx.fragment.app.FragmentActivity
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.CommonModuleInitializer
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.socket.SocketModuleInitializer
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.SplashRepository
@@ -28,13 +32,17 @@ import org.koin.dsl.module
  * @description:
  */
 class ModuleInitializer : DefaultInitializer<String> {
-    private val TAG = "ModuleInitializer"
+    private val TAG = this.javaClass.simpleName
     private var activityCount = 0
     private val activityLifecycleCallback by lazy {
         object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activityCount++
-                "Activity $activity has created. Count: $activityCount".logi(ModuleInitializer::class.java.simpleName)
+                "Activity $activity has created. Count: $activityCount".logi(TAG)
+                TimesExitOnBackPressedHelper(activity as FragmentActivity,2){ remain, times->
+                    activity.showToast(R.string.more_taps_to_exit.getString())
+                    //activity.showToast(R.string.more_taps_to_exit2.getString(remain))
+                }.attach()
             }
 
             override fun onActivityStarted(activity: Activity) {
@@ -43,7 +51,7 @@ class ModuleInitializer : DefaultInitializer<String> {
             override fun onActivityResumed(activity: Activity) {}
 
             override fun onActivityPaused(activity: Activity) {
-                "Activity $activity has pause. Count: $activityCount".logi(ModuleInitializer::class.java.simpleName)
+                "Activity $activity has pause. Count: $activityCount".logi(TAG)
             }
 
             override fun onActivityStopped(activity: Activity) {
@@ -53,7 +61,7 @@ class ModuleInitializer : DefaultInitializer<String> {
 
             override fun onActivityDestroyed(activity: Activity) {
                 activityCount--
-                "Activity $activity has destroyed. Count: $activityCount".logi(ModuleInitializer::class.java.simpleName)
+                "Activity $activity has destroyed. Count: $activityCount".logi(TAG)
                 if (activityCount == 0 && activity is BaseActivity<*,*>) {
                     activity.reset()
                 }
