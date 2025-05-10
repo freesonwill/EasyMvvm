@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
@@ -24,6 +25,7 @@ import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -34,7 +36,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private var tabList: MutableList<String> = mutableListOf()
-    var tabPosition = 0
+    private var tabPosition: List<Int> = mutableListOf()
+
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvBetList.apply {
@@ -68,7 +71,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             )
             liveBetOnAdapter.submitList(list)
         }
-
     }
 
     override fun initListener() {
@@ -131,9 +133,22 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mViewModel.observeMarketType.observe(viewLifecycleOwner) {
             mViewModel.getMarketTypeAll()
         }
+
+        mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
+            mBinding.tabLayout.getTabAt(it[0])?.select()
+            tabPosition = it
+            mBinding.rvBetList.post {
+                val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
+                }
+                smoothScroller.targetPosition = tabPosition[1]
+                mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+        }
     }
 
-    //获取code在tab的位置
 
     // 动态添加Tab的方法
     private fun addNewTab() {
@@ -145,8 +160,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.tabLayout.addTab(newTab)
         }
         reflexPadding(mBinding.tabLayout)
-        mBinding.tabLayout.getTabAt(tabPosition)?.select();
+        mBinding.tabLayout.getTabAt(0)?.select();
     }
+
 
     //设置tab之间的外边距
     private fun reflexPadding(tabLayout: TabLayout) {

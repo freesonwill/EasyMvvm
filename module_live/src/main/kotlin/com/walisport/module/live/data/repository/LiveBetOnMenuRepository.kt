@@ -12,37 +12,4 @@ class LiveBetOnMenuRepository(private val marketTypeBeanDao: MarketTypeBeanDao) 
     suspend fun queryLiveMarketType(): List<MarketTypeBean> {
         return marketTypeBeanDao.getAllMarketTypeBean()
     }
-
-    fun updateMarketIdByMarketSelect(
-        nowCode: String,
-        nowId: Long,
-        beforeCode: String = "",
-        beforeId: Long = 0
-    ) {
-        scope.launch {
-            val marketTypeBeans = marketTypeBeanDao.getMarketTypeByCode(nowCode, beforeCode)
-            val updatedBeans = marketTypeBeans.map { marketTypeBean ->
-                val updatedMarketMenu = marketTypeBean.marketMenuBean.map { menuBean ->
-                    when (menuBean.marketId) {
-                        nowId -> {
-                            menuBean.copy(isSelect = true)
-                        }
-
-                        beforeId -> {
-                            menuBean.copy(isSelect = false)
-                        }
-
-                        else -> menuBean
-
-                    }
-                }
-                marketTypeBean.copy(marketMenuBean = updatedMarketMenu)
-            }
-
-            if (updatedBeans.isNotEmpty()) {
-                marketTypeBeanDao.updateMarketTypeBeans(updatedBeans)
-            }
-        }
-
-    }
 }

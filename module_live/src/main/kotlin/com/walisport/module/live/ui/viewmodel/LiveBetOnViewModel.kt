@@ -25,10 +25,20 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getLiveSelectionBean = MutableLiveData<Map<Long, List<LiveSelectionBean>>>()
     val getLiveSelectionBean: LiveData<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
 
+    //监听盘口筛选变化
+    private val _observeMarketMenu = MutableLiveData<List<Int>>()
+    val observeMarketMenu: LiveData<List<Int>> = _observeMarketMenu
+
+
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
             repository.queryLiveMarketType(matchId)
         }
+    }
+
+    fun setMarketMenuPosition(titlePosition:Int,contentPosition:Int){
+        var position :List<Int> = listOf(titlePosition,contentPosition)
+        _observeMarketMenu.value  =position
     }
 
     //获取所有
@@ -49,6 +59,7 @@ class LiveBetOnViewModel : BaseViewModel() {
         } else {
             _getMarketList.value = observeMarketType.value?.find { it.code == code }?.marketMenuBean
         }
+
 
     }
 
