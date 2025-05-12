@@ -46,13 +46,27 @@ class LiveBetSlipConfirmFragment :
             it.setItemViewCacheSize(10)
             it.setRecycledViewPool(RecyclerView.RecycledViewPool())
         }
+        initLoadRefresh()
     }
+
+    private fun initLoadRefresh(){
+        mBinding.refreshLayout.setOnRefreshListener {
+            mViewModel.refreshOrder(LiveBetSlipEnum.Confirming)
+        }
+        mBinding.refreshLayout.setOnLoadMoreListener {
+            mViewModel.loadMoreOrder(LiveBetSlipEnum.Confirming)
+        }
+    }
+
+
 
     override fun initListener() {
     }
 
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
             if (!it.isNullOrEmpty()) {
                 updateData(it)
             } else {

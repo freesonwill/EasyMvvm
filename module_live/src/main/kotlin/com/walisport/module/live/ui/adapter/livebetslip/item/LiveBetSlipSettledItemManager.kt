@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -74,7 +75,7 @@ class LiveBetSlipSettledItemManager(
                 LiveBetSlipResultOrderStatusEnum.WinHalf, LiveBetSlipResultOrderStatusEnum.UnSettled, LiveBetSlipResultOrderStatusEnum.Cancel, LiveBetSlipResultOrderStatusEnum.Tie, LiveBetSlipResultOrderStatusEnum.LoseHalf -> {
                     it.iv1.isVisible = false
                     it.betSettledTvStatus1.isVisible = true
-                    it.betSettledTvStatus1.text = status.names
+                    it.betSettledTvStatus1.text = ContextCompat.getString(it.betSettledTvStatus1.context,status.names)
                 }
 
                 else -> {}
