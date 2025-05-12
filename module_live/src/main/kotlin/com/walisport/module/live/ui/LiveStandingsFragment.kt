@@ -31,7 +31,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
 
     class StandingsItemDecoration(
         private val spacing: Int = 12.dp2px,         // 常规间距大小（像素）
-        private val leftRight: Int = 8.dp2px,         // 左右边距（像素）
+        private val leftRight: Int = 8.dp2px,        // 左右边距（像素）
         private val bottomSpacing: Int = 20.dp2px,   // 最后一个 item 与底部的距离（像素）
     ) : ItemDecoration() {
         override fun getItemOffsets(
@@ -41,7 +41,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             state: RecyclerView.State
         ) {
             val position = parent.getChildAdapterPosition(view) // item 位置
-            val itemCount = parent.adapter?.itemCount ?: 0 // 总 item 数
+            val itemCount = parent.adapter?.itemCount ?: 0      // 总 item 数
             outRect.top = if (position == 0) spacing else spacing / 2
             outRect.bottom = if (position == itemCount - 1) bottomSpacing else spacing / 2
             outRect.left = leftRight
@@ -59,19 +59,24 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun initListener() {
-        mViewModel.getCompetitionData(mainViewModel.matchId.toInt())
     }
 
     override fun createObserver() {
         mViewModel.competitionTables.observe(this) {
-            if (it != null) {
-                mBinding.mainLayout.setVisibilityGone()
-                standsAdapter.submitList(it)
-            } else {
+            if (it.isEmpty()) {
                 mBinding.mainLayout.setState(
                     DynamicStateLayout.States.DATA_EMPTY,
                     R.string.standings_empty.getString()
                 )
+            } else {
+                mBinding.mainLayout.setVisibilityGone()
+                standsAdapter.submitList(it)
+            }
+        }
+        mainViewModel.mainMatch.observe(this) {
+            it?.let {
+                val leagueID = it.basicInfo.tournamentId
+                mViewModel.getCompetitionData(leagueID)
             }
         }
     }
