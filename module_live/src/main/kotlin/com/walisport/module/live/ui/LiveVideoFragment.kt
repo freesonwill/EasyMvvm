@@ -240,10 +240,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     if (it) R.drawable.shape_muted else R.drawable.shape_immuted
                 )
 
-                //todo： 静音设置
-//                if (mBinding.videoView.pla) {
-//                    mBinding.videoView.mediaPlayer.setVolume(if (it) 0f else 1f, if (it) 0f else 1f)
-//                }
+                mBinding.videoView.setMute(it)
             }
 
             //比赛状态的监听
