@@ -1,14 +1,11 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.view.View
 import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -17,15 +14,15 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.database.entity.LiveSelectionBean
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
+import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -45,7 +42,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
-            liveBetOnAdapter = LiveBetOnAdapter()
+            liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback{
+                override fun itemListCallback(marketI: Long) {
+                    showToast(marketI.toString())
+                }
+            })
             adapter = liveBetOnAdapter
         }
     }
