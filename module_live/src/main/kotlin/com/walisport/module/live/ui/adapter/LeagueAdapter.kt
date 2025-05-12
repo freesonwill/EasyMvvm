@@ -2,7 +2,6 @@ package com.walisport.module.live.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -49,8 +48,10 @@ class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
             } else {
                 mBinding.itemRoot.background = R.drawable.shape_bg_item_league.getDrawable()
             }
-            Glide.with(mBinding.root).load(item.homeLogo).into(mBinding.ivHomeLogo)
-            Glide.with(mBinding.root).load(item.awayLogo).into(mBinding.ivAwayLogo)
+            Glide.with(mBinding.root).load(item.homeLogo).error(R.drawable.icon_error_logo_big)
+                .placeholder(R.drawable.icon_error_logo_big).into(mBinding.ivHomeLogo)
+            Glide.with(mBinding.root).load(item.awayLogo).error(R.drawable.icon_error_logo_big)
+                .placeholder(R.drawable.icon_error_logo_big).into(mBinding.ivAwayLogo)
         } else if (mBinding is ItemWeekBinding) {
             mBinding.tvLeagueWeek.text = item.weekDay
         }

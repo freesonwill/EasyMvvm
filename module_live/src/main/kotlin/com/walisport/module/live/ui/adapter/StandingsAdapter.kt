@@ -53,7 +53,10 @@ class StandingsAdapter :
                 itemBinding.tvTeamName.text = temp.name
                 val index = i + 1
                 itemBinding.tvStandingsRank.text = index.toString()
-                Glide.with(holder.itemView.context).load(temp.logo).into(itemBinding.ivTeamLogo)
+                Glide.with(holder.itemView.context).load(temp.logo)
+                    .error(R.drawable.icon_error_logo_small)
+                    .placeholder(R.drawable.icon_error_logo_small)
+                    .into(itemBinding.ivTeamLogo)
                 itemBinding.tvTotal.text = temp.total.toString()
                 itemBinding.tvWonDrawLoss.text =
                     String.format("%d/%d/%d", temp.win, temp.draw, temp.loss)
