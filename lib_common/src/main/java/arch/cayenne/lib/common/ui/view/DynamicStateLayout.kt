@@ -35,15 +35,15 @@ class DynamicStateLayout @JvmOverloads constructor(
         currentState = state
         when (currentState) {
             States.DATA_EMPTY -> {
-                binding.ivIcon.background = R.drawable.icon_empty.getDrawable()
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
             }
 
             States.NETWORK_ANOMALY -> {
-                binding.ivIcon.background = R.drawable.icon_error_net.getDrawable()
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_error_net)
             }
 
             States.CLOSE -> {
-                binding.ivIcon.background = R.drawable.icon_close.getDrawable()
+                binding.ivIcon.setBackgroundResource(R.drawable.icon_close)
             }
 
             States.NULL -> {}
