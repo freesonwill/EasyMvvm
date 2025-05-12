@@ -144,8 +144,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     tlLeagueList.getTabAt(position)?.select()
-                    // 找到該聯賽目前記錄的日期 tab index
-                    updateDateTabs(tlDateList, dateTabs)
 
                     mViewModel.gameListPageIndex = position
                 }
@@ -221,6 +219,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
         mBinding.layoutContainer.apply {
             vpGameList.currentItem = 0
+            tlDateList.getTabAt(0)?.select()
             leagueAdapter.setData(tournaments)
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
                 val tournament = tournaments[position]

@@ -119,9 +119,7 @@ class MatchListPagerFragment :
 
     override fun createObserver() {
         homeViewModel.selectedDate.observe(viewLifecycleOwner) { date ->
-            if (homeViewModel.gameListPageIndex == mViewModel.getPosition()) {
-                refreshListByDate(date)
-            }
+            refreshListByDate(date)
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
