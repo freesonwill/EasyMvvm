@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.skin.widget.SportConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -16,40 +17,45 @@ class DynamicStateLayout @JvmOverloads constructor(
 
     //数据为空,网络异常,关闭
     val binding = LayoutEmptyErrorCloseBinding.inflate(LayoutInflater.from(context), this, false)
+
     enum class States {
         DATA_EMPTY,//数据为空
         NETWORK_ANOMALY,//网络异常
         CLOSE,//关闭含,聊天,盘口
         NULL,
     }
+
     private var currentState: States = States.NULL
 
     // 设置当前状态
-    fun setState(state: States,msg:String) {
-        if (currentState!=States.NULL){
+    fun setState(state: States, msg: String) {
+        if (currentState != States.NULL) {
             removeView(binding.root)
         }
         currentState = state
-        when(currentState){
-            States.DATA_EMPTY->{
+        when (currentState) {
+            States.DATA_EMPTY -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
             }
-            States.NETWORK_ANOMALY->{
+
+            States.NETWORK_ANOMALY -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_error_net)
             }
-            States.CLOSE->{
+
+            States.CLOSE -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_close)
             }
-            States.NULL ->{}
+
+            States.NULL -> {}
         }
-        binding.tvMessage.text=msg
-        if(!this.contains(binding.root)){
+        binding.tvMessage.text = msg
+        if (!this.contains(binding.root)) {
             addView(binding.root)
         }
     }
 
-    fun setVisibilityGone(){
-        if (currentState!=States.NULL){
+    fun setVisibilityGone() {
+        if (currentState != States.NULL) {
             removeView(binding.root)
             currentState = States.NULL
         }

@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <arch.cayenne.lib.skin.widget.SportImageView
             android:id="@+id/iv_team_logo"
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_16"
