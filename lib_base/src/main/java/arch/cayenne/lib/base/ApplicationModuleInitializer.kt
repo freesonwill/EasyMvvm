@@ -2,13 +2,12 @@ package arch.cayenne.lib.base
 
 import android.content.Context
 import androidx.startup.Initializer
+import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.data.repository.EmptyRepository
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
-import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -19,7 +18,7 @@ import org.koin.dsl.module
  * @date: 2025/3/14 18:20
  * @description:
  */
-class ApplicationModuleInitializer : Initializer<String> {
+class ApplicationModuleInitializer : DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context):String {
@@ -45,11 +44,12 @@ class ApplicationModuleInitializer : Initializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
+        super.dependencies()
         return emptyList()
     }
 
     private val viewModules = module {
-        viewModelOf(::EmptyViewModel)
+        includes(defaultModule)
     }
 
     private val repoModules = module {

@@ -6,4 +6,10 @@
 
     <color name="message_fill_color">#30303E</color>
     <color name="toast_text">#FFFFFF</color>
+    <color name="main_text">#FFFFFF</color>
+    <color name="keyboard_number">#D3D3D6</color>
+    <color name="keyboard_1">#3D3E4B</color>
+    <color name="keyboard_2">#232530</color>
+    <color name="keyboard_3">#161823</color>
+    <color name="dividing_line">#14FFFFFF</color>
 </resources>

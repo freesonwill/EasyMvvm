@@ -81,6 +81,19 @@ class Cat:Animal(){
 println(Cat())
 ```
 Cat的call()在父类的init中执行，此时其name还没有初始化，这样访问的name为null,name.length会报空指针
+
 正确的做法: 不要在构造中调用可被复写的方法，初始化完成之后再调用
 
+7. leaking 'this' in constructor
+```kotlin
+open class SportView : View {
+    private val backgroundTintHelper = SportSkinBackGroundHelper(this)
+}
+```
+```text
+❓为什么会报这个错：
+在 SportView 的构造函数还未执行完之前，你就将 this（还未完全构造好的对象）传给了 SportSkinBackGroundHelper。如果这个 helper 在构造过程中使用了 this，就可能访问未初始化的字段、方法或状态，从而导致崩溃或不可预期行为。
 
+安全的做法：
+backgroundTintHelper在SportView构造完之后再进行构造初始化
+```

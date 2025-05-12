@@ -22,6 +22,8 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 |-----------------|--------|--------|
 | lib_base        | 基础库    | 基类     |
 | lib_common      | 通用库    | 业务共用类  |
+| lib_skin       | 换肤库    | 换肤   |
+| lib_res        | 公共资源库  | 存放公共资源 |
 | module_login    | 登录模块   | 登录业务   |
 | module_home     | 首页模块   | 首页业务   |
 | module_setting  | 设置模块   | 设置业务   |

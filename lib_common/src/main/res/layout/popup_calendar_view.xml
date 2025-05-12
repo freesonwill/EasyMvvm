@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#292929">
+
+    <ImageView
+        android:id="@+id/ivLeftClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_15"
+        android:layout_marginTop="@dimen/dp_10"
+        android:padding="@dimen/dp_10"
+        android:src="@drawable/img_arrow_left"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivRightClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_15"
+        android:padding="@dimen/dp_10"
+        android:src="@drawable/img_arrow_right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvCurrentMonth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#C0C0C0"
+        android:textStyle="bold"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="@+id/ivLeftClick"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivLeftClick"
+        android:text="三月 2025" />
+
+    <com.haibin.calendarview.CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_40"
+        android:background="#292929"
+        app:calendar_height="46dp"
+        app:calendar_padding="10dp"
+        app:current_month_lunar_text_color="#CFCFCF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCurrentMonth"
+        app:min_year="2004"
+        app:current_day_text_color="#ffffff"
+        app:current_month_text_color="#C0C0C0"
+        app:month_view="arch.cayenne.lib.common.ui.view.SimpleMonthView"
+        app:month_view_scrollable="false"
+        app:other_month_text_color="#606060"
+        app:scheme_theme_color="@android:color/transparent"
+        app:selected_text_color="#ffffff"
+        app:selected_theme_color="#00B9D4"
+        app:week_background="#292929"
+        app:week_text_color="#C0C0C0"
+        app:week_view="arch.cayenne.lib.common.ui.view.SimpleWeekView"
+        app:week_view_scrollable="false"
+        app:year_view_scrollable="false" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
