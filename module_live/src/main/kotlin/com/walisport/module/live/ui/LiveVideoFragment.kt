@@ -35,8 +35,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
 
-    private var loadingAnim: ObjectAnimator? = null
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
@@ -47,7 +45,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
         mBinding.includedMatchNotInProgress.model = mViewModel
-
 
         mBinding.videoView.apply { init(mPlayerMode)
             keepScreenOn = true

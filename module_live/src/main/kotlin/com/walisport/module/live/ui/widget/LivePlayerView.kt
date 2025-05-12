@@ -3,8 +3,6 @@ package com.walisport.module.live.ui.widget
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -37,8 +35,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     private var mOnOrientationChangeListener: ((from: Boolean, currentMode: ScreenMode) -> Unit)? =
         null
-    private var mOnShowMoreClickListener: (() -> Unit)? = null
-    private var mOnShowQualityClickListener: (() -> Unit)? = null
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
 
@@ -84,21 +80,6 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initListeners() {
-//        mOrientationWatchDog.setOnOrientationListener(object :
-//            OrientationWatchDog.OnOrientationListener {
-//            override fun changedToLandForwardScape(fromPort: Boolean) {
-//                this@LivePlayerView.changedToLandForwardScape(fromPort)
-//            }
-//
-//            override fun changedToLandReverseScape(fromPort: Boolean) {
-//                this@LivePlayerView.changedToLandReverseScape(fromPort)
-//            }
-//
-//            override fun changedToPortrait(fromLand: Boolean) {
-//                this@LivePlayerView.changeToPortrait(fromLand)
-//            }
-//
-//        })
     }
 
     /**
@@ -124,106 +105,11 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     fun onResume() {
-        if (mIsFullScreenLocked) {
-            val orientation = resources.configuration.orientation
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                changeScreenMode(ScreenMode.SMALL, false)
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                changeScreenMode(ScreenMode.FULL, false)
-            }
-        }
-
         start()
     }
 
     fun onPause(){
         mRenderView.pause()
-    }
-
-    /**
-     * 屏幕方向变为横屏
-     *
-     * @param fromPort 是否从竖屏变过来
-     */
-    private fun changedToLandForwardScape(fromPort: Boolean) {
-        // 如果不是从竖屏变过来，也就是一直横屏的时候，就不用做后续操作了。比如通过传感器监测时会需要状态
-        if (!fromPort) {
-            return
-        }
-        changeScreenMode(ScreenMode.FULL, false)
-        mOnOrientationChangeListener?.invoke(fromPort, mCurrentScreenMode)
-    }
-
-    /**
-     * 屏幕方向变为横屏。
-     *
-     * @param fromPort 是否从竖屏变过来
-     */
-    private fun changedToLandReverseScape(fromPort: Boolean) {
-        //如果不是从竖屏变过来，也就是一直是横屏的时候，就不用操作了
-        if (!fromPort) {
-            return
-        }
-        changeScreenMode(ScreenMode.FULL, true)
-        mOnOrientationChangeListener?.invoke(fromPort, mCurrentScreenMode)
-    }
-
-    /**
-     * 改变屏幕模式
-     */
-    private fun changeScreenMode(targetMode: ScreenMode, isReverse: Boolean) {
-        var finalScreenMode = targetMode
-        if (mIsFullScreenLocked) {
-            finalScreenMode = ScreenMode.FULL
-        }
-
-        if (targetMode != mCurrentScreenMode) {
-            mCurrentScreenMode = finalScreenMode
-        }
-
-        if (context is Activity) {
-            when (finalScreenMode) {
-                ScreenMode.FULL -> {
-                    if (isReverse) {
-                        (context as Activity).requestedOrientation =
-                            ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-                    } else {
-                        (context as Activity).requestedOrientation =
-                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                    }
-                }
-
-                ScreenMode.SMALL -> {
-                    (context as Activity).requestedOrientation =
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
-            }
-        }
-    }
-
-    /**
-     * 屏幕方向变为竖屏
-     *
-     * @param fromLand 是否从横屏转过来
-     */
-    private fun changeToPortrait(fromLand: Boolean) {
-        //屏幕转为竖屏
-        if (mIsFullScreenLocked) {
-            return
-        }
-
-        if (mCurrentScreenMode === ScreenMode.FULL) {
-            //全屏情况转到了竖屏
-            if (fromLand) {
-                changeScreenMode(ScreenMode.SMALL, false)
-            } else {
-                //如果没有转到过横屏，就不让他转了。防止竖屏的时候点横屏之后，又立即转回来的现象
-            }
-
-        } else if (mCurrentScreenMode === ScreenMode.SMALL) {
-            //竖屏的情况转到了竖屏
-        }
-        mOnOrientationChangeListener?.invoke(fromLand, mCurrentScreenMode)
     }
 
     private fun initRenderView() {
@@ -519,18 +405,6 @@ class LivePlayerView @JvmOverloads constructor(
         mPlayingPath = url
 //        mControlView.updateTitle(url)
         mRenderView.setDataSource(url)
-    }
-
-    fun setOnUpdateStatisticsListener(onUpdateStatistics: (category: String, json: String) -> Unit) {
-        mOnUpdateStatisticsListener = onUpdateStatistics
-    }
-
-    fun setOnSurfaceCreatedListener(onSurfaceCreated: () -> Unit) {
-        mRenderView.setOnSurfaceCreatedListener(onSurfaceCreated)
-    }
-
-    fun setOnOrientationChangeListener(orientationChange: (from: Boolean, currentMode: ScreenMode) -> Unit) {
-        mOnOrientationChangeListener = orientationChange
     }
 
     fun setConfig(cfg: PlayerConfig) {
