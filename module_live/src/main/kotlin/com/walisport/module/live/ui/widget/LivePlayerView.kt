@@ -38,8 +38,6 @@ class LivePlayerView @JvmOverloads constructor(
     private lateinit var ctError: ConstraintLayout
     private lateinit var ivLoading: ImageView
 
-    private var mOnOrientationChangeListener: ((from: Boolean, currentMode: ScreenMode) -> Unit)? =
-        null
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
 
@@ -376,6 +374,7 @@ class LivePlayerView @JvmOverloads constructor(
 
                 // 启动协程，10秒超时
                 // 如果10秒后还在loading状态， 展示加载失败页面
+                bufferingTimeoutJob?.cancel()
                 bufferingTimeoutJob = coroutineScope.launch {
                     delay(10000)
                     ctLoading.visibility = GONE
