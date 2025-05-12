@@ -30,12 +30,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <include layout="@layout/layout_ct_loading"
-                android:id="@+id/included_ct_loading"/>
-
-            <include layout="@layout/layout_ct_error"
-                android:id="@+id/included_ct_error"/>
-
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_sound_toggle"

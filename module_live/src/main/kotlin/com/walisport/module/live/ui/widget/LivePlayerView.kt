@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui.widget
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -9,14 +10,11 @@ import android.media.AudioManager
 import android.media.MediaScannerConnection
 import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.Animation
+import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
 import android.widget.ImageView
 import android.widget.RelativeLayout
-import arch.cayenne.lib.qyplayer.R
+import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
@@ -46,10 +44,13 @@ class LivePlayerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var mRenderView = QYRenderView(context)
-    private var mPauseIconView = ImageView(context)
     private lateinit var mGestureView: GestureView
+
+    private lateinit var ctLoading: ConstraintLayout
+    private lateinit var ctError: ConstraintLayout
+    private lateinit var ivLoading: ImageView
 
     private var mOnOrientationChangeListener: ((from: Boolean, currentMode: ScreenMode) -> Unit)? =
         null
@@ -75,6 +76,9 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mPlayerMode: PlayerMode
 
+    private var loadingAnim: ObjectAnimator? = null
+
+
     fun init(playerMode: PlayerMode) {
         mPlayerMode = playerMode
         initViews()
@@ -82,6 +86,16 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initViews() {
+
+        // 使用 LayoutInflater 加载 XML 布局
+        LayoutInflater.from(context)
+            .inflate(com.walisport.module.live.R.layout.layout_live_player_view, this, true)
+
+        ctLoading = findViewById(com.walisport.module.live.R.id.ct_loading)
+        ctError = findViewById(com.walisport.module.live.R.id.ct_error)
+        ivLoading = findViewById(com.walisport.module.live.R.id.iv_video_loading)
+
+        // 初始化子视图
         initRenderView()
         initGestureView()
         initStateView()
@@ -103,12 +117,6 @@ class LivePlayerView @JvmOverloads constructor(
             }
 
         })
-
-        mPauseIconView.setOnClickListener {
-            if (mPlayerState == PlayerState.PAUSED) { // 暂停状态点击则开始播放
-                switchPlayerState()
-            }
-        }
     }
 
     /**
@@ -237,42 +245,41 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initRenderView() {
-        addView(
-            mRenderView.apply {
-                setOnStateChangedListener {
+        mRenderView = findViewById(com.walisport.module.live.R.id.renderView)
+
+        mRenderView.apply {
+            setOnStateChangedListener {
+                (context as? Activity)?.runOnUiThread {
+                    if (it.state == PlayerState.ERROR) {
+                    }
+
+                    updatePauseIconView(it.state)
+                    mCurrentPosition = it.position.toLong()
+                }
+            }
+            setOnSnapshotListener {
+                saveSnapshot(it)
+            }
+            setOnUpdateStatisticsListener { category, json ->
+                mOnUpdateStatisticsListener?.invoke(category, json)
+                if (category == "network") {
                     (context as? Activity)?.runOnUiThread {
-                        if (it.state == PlayerState.ERROR) {
-                        }
-
-                        updatePauseIconView(it.state)
-                        mCurrentPosition = it.position.toLong()
+                        processNetworkSpeed(json)
                     }
                 }
-                setOnSnapshotListener {
-                    saveSnapshot(it)
-                }
-                setOnUpdateStatisticsListener { category, json ->
-                    mOnUpdateStatisticsListener?.invoke(category, json)
-                    if (category == "network") {
-                        (context as? Activity)?.runOnUiThread {
-                            processNetworkSpeed(json)
-                        }
-                    }
-                }
+            }
 
-                init(mPlayerMode)
-                setSurfaceType(SurfaceType.SURFACE_VIEW)
-            }, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
+            init(mPlayerMode)
+            setSurfaceType(SurfaceType.SURFACE_VIEW)
+        }
+
     }
 
 
-
     private fun initGestureView() {
-        mGestureView = GestureView(context).apply {
+        mGestureView = findViewById(com.walisport.module.live.R.id.gesture_view)
+
+        mGestureView.apply {
             setOnGestureListener(object : GestureListener {
                 override fun onHorizontalDistance(downX: Float, nowX: Float) {
                     if (!isGestureEnable()) {
@@ -389,7 +396,6 @@ class LivePlayerView @JvmOverloads constructor(
 
             })
         }
-        addView(mGestureView)
 
         if (context is Activity) {
             mGestureDialogManager = GestureDialogManager(context as Activity)
@@ -481,15 +487,6 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initStateView() {
-        mPauseIconView.visibility = View.GONE
-        addView(
-            mPauseIconView, LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                addRule(CENTER_IN_PARENT)
-            }
-        )
     }
 
     private fun updatePauseIconView(state: PlayerState) {
@@ -497,50 +494,53 @@ class LivePlayerView @JvmOverloads constructor(
             return
         }
         mPlayerState = state
-        mPauseIconView.visibility = when (mPlayerState) {
+        when (mPlayerState) {
             PlayerState.PLAYING -> {
 //                mControlView.setPlayState(PlayState.PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
             }
 
             PlayerState.PAUSED -> {
 //                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.setImageResource(R.drawable.ic_play)
-                mPauseIconView.clearAnimation()
-                VISIBLE
+                //没有暂停按钮，
             }
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
 //                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.setImageResource(R.drawable.ic_loading)
-                mPauseIconView.startAnimation(
-                    RotateAnimation(
-                        0f,
-                        360f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                    ).apply {
-                        duration = 1000
-                        interpolator = LinearInterpolator()
-                        repeatMode = Animation.RESTART
-                        repeatCount = Animation.INFINITE
-                    })
-                VISIBLE
+                // 创建旋转动画
+                loadingAnim = ObjectAnimator.ofFloat(
+                    ivLoading,  // 目标 View
+                    "rotation",  // 属性名称
+                    0f, 360f // 从 0 度旋转到 360 度
+                ).run {
+                    // 设置动画属性
+                    setDuration(1000) // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    interpolator = LinearInterpolator() // 匀速旋转
+
+                    // 启动动画
+                    start()
+                    this
+                }
+
+                ctLoading.visibility = VISIBLE
+                ctError.visibility = GONE
             }
 
             PlayerState.STOPPED -> {
 //                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
             }
 
             else -> {
 //                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
             }
         }
     }
