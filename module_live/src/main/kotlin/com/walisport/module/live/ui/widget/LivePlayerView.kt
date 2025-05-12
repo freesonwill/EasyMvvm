@@ -15,7 +15,6 @@ import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
-import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import arch.cayenne.lib.qyplayer.view.QYRenderView
 import arch.cayenne.lib.qyplayer.view.SurfaceType
@@ -46,7 +45,6 @@ class LivePlayerView @JvmOverloads constructor(
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var mCurrentScreenMode = ScreenMode.SMALL
-    private val mOrientationWatchDog = OrientationWatchDog(context)
     private var mIsFullScreenLocked = false
     private var mCurrentPosition: Long = 0
     private var inSeek: Boolean = false
@@ -86,21 +84,21 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initListeners() {
-        mOrientationWatchDog.setOnOrientationListener(object :
-            OrientationWatchDog.OnOrientationListener {
-            override fun changedToLandForwardScape(fromPort: Boolean) {
-                this@LivePlayerView.changedToLandForwardScape(fromPort)
-            }
-
-            override fun changedToLandReverseScape(fromPort: Boolean) {
-                this@LivePlayerView.changedToLandReverseScape(fromPort)
-            }
-
-            override fun changedToPortrait(fromLand: Boolean) {
-                this@LivePlayerView.changeToPortrait(fromLand)
-            }
-
-        })
+//        mOrientationWatchDog.setOnOrientationListener(object :
+//            OrientationWatchDog.OnOrientationListener {
+//            override fun changedToLandForwardScape(fromPort: Boolean) {
+//                this@LivePlayerView.changedToLandForwardScape(fromPort)
+//            }
+//
+//            override fun changedToLandReverseScape(fromPort: Boolean) {
+//                this@LivePlayerView.changedToLandReverseScape(fromPort)
+//            }
+//
+//            override fun changedToPortrait(fromLand: Boolean) {
+//                this@LivePlayerView.changeToPortrait(fromLand)
+//            }
+//
+//        })
     }
 
     /**
@@ -126,7 +124,6 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     fun onResume() {
-        mOrientationWatchDog.startWatch()
         if (mIsFullScreenLocked) {
             val orientation = resources.configuration.orientation
             if (orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -559,6 +556,5 @@ class LivePlayerView @JvmOverloads constructor(
      */
     fun onDestroy() {
         mRenderView.release()
-        mOrientationWatchDog.destroy()
     }
 }
