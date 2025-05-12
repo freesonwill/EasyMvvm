@@ -5,40 +5,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.media.AudioManager
-import android.media.MediaScannerConnection
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
-import arch.cayenne.lib.qyplayer.util.FileUtils
 import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
-import arch.cayenne.lib.qyplayer.util.toast
 import arch.cayenne.lib.qyplayer.view.QYRenderView
 import arch.cayenne.lib.qyplayer.view.SurfaceType
-import com.xxx.qyplayer.DecryptMode
-import com.xxx.qyplayer.MediaInfo
-import com.xxx.qyplayer.MirrorMode
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
-import com.xxx.qyplayer.RotateMode
-import com.xxx.qyplayer.ScaleMode
-import com.xxx.qyplayer.ViewportRatioMode
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.io.File
 
 class LivePlayerView @JvmOverloads constructor(
     context: Context,
@@ -258,9 +242,7 @@ class LivePlayerView @JvmOverloads constructor(
                     mCurrentPosition = it.position.toLong()
                 }
             }
-            setOnSnapshotListener {
-                saveSnapshot(it)
-            }
+
             setOnUpdateStatisticsListener { category, json ->
                 mOnUpdateStatisticsListener?.invoke(category, json)
                 if (category == "network") {
@@ -419,31 +401,6 @@ class LivePlayerView @JvmOverloads constructor(
         }
     }
 
-    private fun saveSnapshot(bitmap: Bitmap) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val videoPath: String = FileUtils.getDir(context) + "snapShot" + File.separator
-            val bitmapPath: String = FileUtils.saveBitmap(bitmap, videoPath)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                FileUtils.saveImgToMediaStore(context.applicationContext, bitmapPath, "image/png")
-            } else {
-                MediaScannerConnection.scanFile(
-                    context.applicationContext,
-                    arrayOf(bitmapPath),
-                    arrayOf("image/png"), null
-                )
-            }
-
-            launch(Dispatchers.Main) {
-                "Picture has Saved".toast(this@LivePlayerView.context)
-            }
-        }
-    }
-
-    private fun seekTo(position: Int) {
-        mRenderView.start()
-        mRenderView.seekTo(position.toLong())
-    }
-
     /**
      * 目标位置计算算法
      *
@@ -584,108 +541,12 @@ class LivePlayerView @JvmOverloads constructor(
         mRenderView.setConfig(cfg)
     }
 
-    fun setAutoPlay(isAutoPlay: Boolean) {
-        mRenderView.setAutoPlay(isAutoPlay)
-    }
-
-    fun setLoopPlay(isLoopPlay: Boolean) {
-        mRenderView.setLoop(isLoopPlay)
-    }
-
     fun setMute(isMute: Boolean) {
         mRenderView.setMute(isMute)
     }
 
-    fun setHwDecode(isHwDecode: Boolean) {
-        mRenderView.setHwDecode(isHwDecode)
-    }
-
-    fun setAutoReconnectTime(intervalTime: Int) {
-        mRenderView.setReconnectTime(intervalTime)
-    }
-
-    fun setBufferedTime(intervalTime: Int) {
-        mRenderView.setBufferedTime(intervalTime)
-    }
-
-    fun setOnShowMoreClickListener(showMore: () -> Unit) {
-        mOnShowMoreClickListener = showMore
-    }
-
-    fun setOnShowQualityClickListener(showQuality: () -> Unit) {
-        mOnShowQualityClickListener = showQuality
-    }
-
-    fun setOnPlayStateBtnClickListener(onPlayBtnClick: () -> Unit) {
-        mOnPlayStateBtnClickListener = onPlayBtnClick
-    }
-
-    fun setOnPreparedListener(onPrepared: () -> Unit) {
-        mRenderView.setOnPreparedListener(onPrepared)
-    }
-
     fun getConfig(): PlayerConfig {
         return mRenderView.getConfig()
-    }
-
-    fun getMediaInfo(): MediaInfo {
-        return mRenderView.getMediaInfo()
-    }
-
-    fun setIsClearScreen(isClear: Boolean) {
-        mRenderView.setIsClearScreen(isClear)
-    }
-
-    fun setVideoBackgroundColor(color: Int): Int {
-        return mRenderView.setVideoBackgroundColor(color)
-    }
-
-    fun setOnlyAudio(isOnlyAudio: Boolean) {
-        mRenderView.setOnlyAudio(isOnlyAudio)
-    }
-
-    fun setAudioDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setAudioDecrypt(
-            if (decrypt) {
-                DecryptMode.DECRYPT_MODE_INTERNAL
-            } else {
-                DecryptMode.DECRYPT_MODE_NONE
-            }
-        )
-    }
-
-    fun setVideoDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setVideoDecrypt(
-            if (decrypt) {
-                DecryptMode.DECRYPT_MODE_INTERNAL
-            } else {
-                DecryptMode.DECRYPT_MODE_NONE
-            }
-        )
-    }
-
-    fun setDecryptKey(key: String): Int {
-        return mRenderView.setDecryptKey(key)
-    }
-
-    fun setNoAudio(noAudio: Boolean): Int {
-        return mRenderView.setNoAudio(noAudio)
-    }
-
-    fun setMirrorMode(mode: MirrorMode): Int {
-        return mRenderView.setMirrorMode(mode)
-    }
-
-    fun setRotateMode(mode: RotateMode): Int {
-        return mRenderView.setRotateMode(mode)
-    }
-
-    fun setScaleMode(mode: ScaleMode): Int {
-        return mRenderView.setScaleMode(mode)
-    }
-
-    fun setViewportRatioMode(mode: ViewportRatioMode): Int {
-        return mRenderView.setViewportRatioMode(mode)
     }
 
     fun onStop() {
