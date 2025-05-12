@@ -54,10 +54,9 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_video_landscape_tournament_icon"
-                android:layout_width="@dimen/dp_96"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_22"
-                android:scaleType="centerInside"
-                android:src="@drawable/title_league_icon" />
+                android:scaleType="fitCenter" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="1.3dp"
