@@ -2,13 +2,16 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.ViewTreeObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
@@ -82,6 +85,7 @@ class MatchListPagerFragment :
                         )
                     }
                 }
+
             })
 
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -121,6 +125,17 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            mBinding.apply {
+                if (matchList.isEmpty()) {
+                    clDynamics.visibility = View.VISIBLE
+                    clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                } else {
+                    clDynamics.visibility = View.GONE
+                }
+            }
             matchAdapter.submitList(matchList)
         }
 

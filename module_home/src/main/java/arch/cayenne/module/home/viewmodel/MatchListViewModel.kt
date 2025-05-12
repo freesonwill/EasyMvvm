@@ -147,7 +147,10 @@ class MatchListViewModel : BaseViewModel() {
                 "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
                 isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate.value)
                 if (isPageEnd && page == 1) {
-
+                    //沒有資料
+                    withContext(Dispatchers.Main) {
+                        matchListChange.value = arrayListOf()
+                    }
                 }
             }
             isLoadingData.value = false
