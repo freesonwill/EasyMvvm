@@ -53,6 +53,8 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
         currentPlayType = playType
+        sportsStatistical.value = arrayListOf()
+        tournaments.value = arrayListOf()
         getCurrentSportStatistical()
     }
 
