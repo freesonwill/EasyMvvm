@@ -2,12 +2,11 @@ package arch.cayenne.lib.common.ui.view
 
 import arch.cayenne.lib.common.R
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
 import arch.cayenne.lib.skin.widget.SportConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -36,18 +35,15 @@ class DynamicStateLayout @JvmOverloads constructor(
         currentState = state
         when (currentState) {
             States.DATA_EMPTY -> {
-                binding.ivIcon.background =
-                    SportSkinResourceManager.getDrawable(context, R.drawable.icon_empty)
+                binding.ivIcon.background = R.drawable.icon_empty.getDrawable()
             }
 
             States.NETWORK_ANOMALY -> {
-                binding.ivIcon.background =
-                    SportSkinResourceManager.getDrawable(context, R.drawable.icon_error_net)
+                binding.ivIcon.background = R.drawable.icon_error_net.getDrawable()
             }
 
             States.CLOSE -> {
-                binding.ivIcon.background =
-                    SportSkinResourceManager.getDrawable(context, R.drawable.icon_close)
+                binding.ivIcon.background = R.drawable.icon_close.getDrawable()
             }
 
             States.NULL -> {}
