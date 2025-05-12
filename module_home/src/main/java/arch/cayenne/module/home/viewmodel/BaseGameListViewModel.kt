@@ -105,8 +105,12 @@ abstract class BaseGameListViewModel: BaseViewModel() {
             withContext(Dispatchers.Main) {
                 isLoadingData.value = true
             }
-            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = 0".logi(this::class.java.name)
-            val list = repository.getAllMatch(_playType, _sportId, _tournamentId, page, 0)
+
+            "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(
+                this::class.java.name
+            )
+            val list =
+                repository.getAllMatch(_playType, _sportId, _tournamentId, page, _selectedDate)
             withContext(Dispatchers.Main) {
                 if (list.isNotEmpty()) {
                     matchListChange.value = if (matchListChange.value?.isNotEmpty() == true) {
