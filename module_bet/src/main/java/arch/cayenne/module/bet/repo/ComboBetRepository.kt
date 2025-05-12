@@ -121,6 +121,18 @@ class ComboBetRepository(
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
 
                     val selection = betDao.getSelections(betId)
+                    val tempDetail = multiBet.map { bean ->
+                        BetDetailBean(
+                            betId = betId,
+                            combo = bean.combo,
+                            orderId = "",
+                            sumOdds = bean.sumOdds,
+                            count = bean.count,
+                            inputMoney = bean.inputMoney,
+                            status = BetResultStatusEnum.CONFIRMING
+                        )
+                    }
+                    betDao.insertDetail(tempDetail)
 
                     val resp = remoteManager.comboBet(selection, multiBet)
                     val detailBean = if (resp != null && resp.isSuccessful) {
@@ -145,7 +157,7 @@ class ComboBetRepository(
                                 sumOdds = bean.sumOdds,
                                 count = bean.count,
                                 inputMoney = bean.inputMoney,
-                                status = BetResultStatusEnum.REJECT
+                                status = BetResultStatusEnum.FAIL
                             )
                         }
                     }

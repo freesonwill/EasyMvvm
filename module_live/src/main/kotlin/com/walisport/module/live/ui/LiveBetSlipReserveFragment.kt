@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -30,6 +31,7 @@ class LiveBetSlipReserveFragment :
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     private val adapter = LiveBetSlipAdapter(LiveBetSlipEnum.Reserve)
+
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
     }
@@ -39,8 +41,7 @@ class LiveBetSlipReserveFragment :
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
             ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.item_divide_live_bet_recycler
+                requireContext(), R.drawable.item_divide_live_bet_recycler
             )!!
         )
         adapter.setReserveListener(cancelListener = object : RecyclerItemListener<LiveBetSlipData> {
@@ -62,6 +63,7 @@ class LiveBetSlipReserveFragment :
         }
     }
 
+
     override fun initListener() {
     }
 
@@ -70,6 +72,13 @@ class LiveBetSlipReserveFragment :
             updateView(it)
         }
         mViewModel.cancelReserveLiveData.observe(this) {
+            showToast(if (it == true) "取消预约成功" else "取消预约失败")
+            if (it) {
+                mViewModel.getReserveOrder()
+            }
+        }
+        mViewModel.modifyOddsLiveData.observe(this) {
+            showToast(if (it == true) "修改赔率成功" else "修改赔率失败")
             if (it) {
                 mViewModel.getReserveOrder()
             }
@@ -120,7 +129,7 @@ class LiveBetSlipReserveFragment :
 
         LiveBetSlipModifyOddsFragment.newInstance().also {
             it.setConfirmListener { odds ->
-                mViewModel.modifyReserve(order,odds)
+                mViewModel.modifyReserve(order, odds)
             }
             it.show(childFragmentManager)
         }

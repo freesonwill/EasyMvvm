@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <tv.danmaku.ijk.media.example.widget.media.IjkVideoView
+            <com.walisport.module.live.ui.widget.LivePlayerView
                 android:id="@+id/videoView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -29,12 +29,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <include layout="@layout/layout_ct_loading"
-                android:id="@+id/included_ct_loading"/>
-
-            <include layout="@layout/layout_ct_error"
-                android:id="@+id/included_ct_error"/>
 
 
             <androidx.appcompat.widget.AppCompatImageView

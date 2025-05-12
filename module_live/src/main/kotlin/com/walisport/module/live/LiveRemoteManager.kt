@@ -104,7 +104,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.page = page
                 this.pageSize = pageSize
                 this.addSportId(sportId)
-                this.matchId = matchId
+//                this.matchId = matchId
                 startTime?.let { this.startTime = startTime }
                 endTime?.let { this.endTime = endTime }
             }.build()

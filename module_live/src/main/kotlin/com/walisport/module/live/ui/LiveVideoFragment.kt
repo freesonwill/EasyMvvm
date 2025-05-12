@@ -1,13 +1,10 @@
 package com.walisport.module.live.ui
 
 import android.animation.ObjectAnimator
-import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
@@ -15,19 +12,18 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.qyplayer.GlobalConfig
+import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
+import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
-import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.xxx.qyplayer.PlayerMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import tv.danmaku.ijk.media.player.IMediaPlayer
-import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import kotlin.reflect.KClass
 
 
@@ -38,109 +34,144 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
-    private val playingStatusLiveData: MutableLiveData<PlayStatus> =
-        MutableLiveData(PlayStatus.Loading)
 
     private var loadingAnim: ObjectAnimator? = null
 
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
+    private val mPlayerMode = PlayerMode.FLUENCY
+    private lateinit var mGlobalConfig: GlobalConfig
+
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
         mBinding.includedMatchNotInProgress.model = mViewModel
 
-        val mediaPlayer = mBinding.videoView.mediaPlayer
-        if (mediaPlayer is IjkMediaPlayer) {
-            mediaPlayer.setOption(
-                IjkMediaPlayer.OPT_CATEGORY_FORMAT,
-                "timeout",
-                10000000
-            ); // 10秒总超时（微秒）
-            mediaPlayer
-                .setOption(
-                    IjkMediaPlayer.OPT_CATEGORY_FORMAT,
-                    "connect_timeout",
-                    5000
-                ); // 5秒连接超时（毫秒）
-            mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 0); // 禁用自动重连
+
+        mBinding.videoView.apply { init(mPlayerMode)
+            keepScreenOn = true
+
         }
 
+        initPlayer()
 
-        mBinding.videoView.setOnInfoListener { mp, what, extra ->
-            when (what) {
-                IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
-                    // 视频开始缓冲（加载中）
-//                    "Buffering started".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Loading)
+       //todo: 设置超时时间
 
-                    // 启动协程，10秒超时
-                    bufferingTimeoutJob = coroutineScope.launch {
-                        delay(10000)
-                        playingStatusLiveData.postValue(PlayStatus.Error)
-                    }
+//        val mediaPlayer = mBinding.videoView.mediaPlayer
+//        if (mediaPlayer is IjkMediaPlayer) {
+//            mediaPlayer.setOption(
+//                IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+//                "timeout",
+//                10000000
+//            ); // 10秒总超时（微秒）
+//            mediaPlayer
+//                .setOption(
+//                    IjkMediaPlayer.OPT_CATEGORY_FORMAT,
+//                    "connect_timeout",
+//                    5000
+//                ); // 5秒连接超时（毫秒）
+//            mediaPlayer.setOption(IjkMediaPlayer.OPT_CATEGORY_FORMAT, "reconnect", 0); // 禁用自动重连
+//        }
 
-                }
 
-                IMediaPlayer.MEDIA_INFO_BUFFERING_END -> {
-                    // 视频缓冲结束（加载完成，可以播放）
-//                    "Buffering ended".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Playing)
-                    bufferingTimeoutJob?.cancel()
+        //todo: 加载状态监听
 
-                }
+//        mBinding.videoView.setOnInfoListener { mp, what, extra ->
+//            when (what) {
+//                IMediaPlayer.MEDIA_INFO_BUFFERING_START -> {
+//                    // 视频开始缓冲（加载中）
+////                    "Buffering started".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Loading)
+//
+//                    // 启动协程，10秒超时
+//                    bufferingTimeoutJob = coroutineScope.launch {
+//                        delay(10000)
+//                        playingStatusLiveData.postValue(PlayStatus.Error)
+//                    }
+//
+//                }
+//
+//                IMediaPlayer.MEDIA_INFO_BUFFERING_END -> {
+//                    // 视频缓冲结束（加载完成，可以播放）
+////                    "Buffering ended".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Playing)
+//                    bufferingTimeoutJob?.cancel()
+//
+//                }
+//
+//                IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
+//                    // 视频开始渲染（第一帧显示）
+////                    "Video rendering started".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Playing)
+//                    bufferingTimeoutJob?.cancel()
+//                }
+//
+//                IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START -> {
+//                    // 音频开始渲染
+//                    //  LogUtils.i(TAG, "Audio rendering started")
+//                }
+//
+//                else -> {
+//                    "player info. what:${what}".logd(TAG)
+//                }
+//            }
+//
+//            true
+//        }
 
-                IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
-                    // 视频开始渲染（第一帧显示）
-//                    "Video rendering started".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Playing)
-                    bufferingTimeoutJob?.cancel()
-                }
 
-                IMediaPlayer.MEDIA_INFO_AUDIO_RENDERING_START -> {
-                    // 音频开始渲染
-                    //  LogUtils.i(TAG, "Audio rendering started")
-                }
+        //todo: 加载失败监听
+//        mBinding.videoView.setOnErrorListener { mp, what, extra ->
+//            when (what) {
+//                IjkMediaPlayer.MEDIA_ERROR_IO -> {
+//                    "Error: Network I/O error (MEDIA_ERROR_IO), extra: $extra".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Error)
+//                }
+//
+//                IjkMediaPlayer.MEDIA_ERROR_MALFORMED -> {
+//                    "Error: Malformed stream (MEDIA_ERROR_MALFORMED), extra: $extra".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Error)
+//                }
+//
+//                IjkMediaPlayer.MEDIA_ERROR_UNSUPPORTED -> {
+//                    "Error: Unsupported format (MEDIA_ERROR_UNSUPPORTED), extra: $extra".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Error)
+//                }
+//
+//                IjkMediaPlayer.MEDIA_ERROR_TIMED_OUT -> {
+//                    "Error: Timeout (MEDIA_ERROR_TIMED_OUT), extra: $extra".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Error)
+//                }
+//
+//                else -> {
+//                    "Unknown error, what: $what, extra: $extra".logd(TAG)
+//                    playingStatusLiveData.postValue(PlayStatus.Error)
+//                }
+//            }
+//            // 返回 true 表示错误已处理，false 表示未处理
+//            true
+//        }
+    }
 
-                else -> {
-                    "player info. what:${what}".logd(TAG)
-                }
+    private fun initPlayer() {
+        mGlobalConfig = GlobalConfig(requireContext()).also {
+            if (!it.inited) { // 首次启动从本地播放器获取默认配置
+                it.transformFromPlayerConfig(mBinding.videoView.getConfig())
+
+                // 更改底层默认配置。默认加密流，需要开启解密
+                it.isAudioDecrypt = false
+                it.isVideoDecrypt = false
+                it.isHWDecode = false
+
+                it.inited = true
             }
-
-            true
         }
 
-        mBinding.videoView.setOnErrorListener { mp, what, extra ->
-            when (what) {
-                IjkMediaPlayer.MEDIA_ERROR_IO -> {
-                    "Error: Network I/O error (MEDIA_ERROR_IO), extra: $extra".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Error)
-                }
-
-                IjkMediaPlayer.MEDIA_ERROR_MALFORMED -> {
-                    "Error: Malformed stream (MEDIA_ERROR_MALFORMED), extra: $extra".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Error)
-                }
-
-                IjkMediaPlayer.MEDIA_ERROR_UNSUPPORTED -> {
-                    "Error: Unsupported format (MEDIA_ERROR_UNSUPPORTED), extra: $extra".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Error)
-                }
-
-                IjkMediaPlayer.MEDIA_ERROR_TIMED_OUT -> {
-                    "Error: Timeout (MEDIA_ERROR_TIMED_OUT), extra: $extra".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Error)
-                }
-
-                else -> {
-                    "Unknown error, what: $what, extra: $extra".logd(TAG)
-                    playingStatusLiveData.postValue(PlayStatus.Error)
-                }
-            }
-            // 返回 true 表示错误已处理，false 表示未处理
-            true
+        mBinding.videoView.run {
+            setConfig(mGlobalConfig.transformToPlayerConfig())
         }
+
     }
 
     override fun initListener() {
@@ -196,8 +227,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        mBinding.videoView.setVideoURI(Uri.parse(url))
-                        mBinding.videoView.start()
+                        "url:${url}".logd("LiveVideoFragment")
+                        mBinding.videoView.setDataSource(url)
+                        mBinding.videoView.prepare()
                     }
 
                 }
@@ -208,9 +240,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     if (it) R.drawable.shape_muted else R.drawable.shape_immuted
                 )
 
-                if (mBinding.videoView.isPlaying) {
-                    mBinding.videoView.mediaPlayer.setVolume(if (it) 0f else 1f, if (it) 0f else 1f)
-                }
+                //todo： 静音设置
+//                if (mBinding.videoView.pla) {
+//                    mBinding.videoView.mediaPlayer.setVolume(if (it) 0f else 1f, if (it) 0f else 1f)
+//                }
             }
 
             //比赛状态的监听
@@ -306,45 +339,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         }
 
-        //播放状态的监听
-        playingStatusLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    PlayStatus.Playing -> {
-                        loadingAnim?.cancel()
-
-                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Loading -> {
-                        // 创建旋转动画
-                        loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.includedCtLoading.ivVideoLoading,  // 目标 View
-                            "rotation",  // 属性名称
-                            0f, 360f // 从 0 度旋转到 360 度
-                        ).run {
-                            // 设置动画属性
-                            setDuration(1000) // 持续时间 1 秒
-                            repeatCount = ObjectAnimator.INFINITE // 无限循环
-                            interpolator = LinearInterpolator() // 匀速旋转
-
-                            // 启动动画
-                            start()
-                            this
-                        }
-                        mBinding.includedCtLoading.ctLoading.visibility = View.VISIBLE
-                        mBinding.includedCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Error -> {
-                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedCtError.ctError.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-        }
 
         val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.setMatchId(matchId)
@@ -359,14 +353,17 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun onPause() {
         super.onPause()
-        mBinding.videoView.pause()
+        //todo: onPause
+//        mBinding.videoView.pause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (!mBinding.videoView.isPlaying) {
-            mBinding.videoView.start()
-        }
+
+        //todo: onResume处理
+//        if (!mBinding.videoView.isPlaying) {
+//            mBinding.videoView.start()
+//        }
     }
 
     override fun onDestroyView() {
@@ -375,9 +372,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     private fun destroyPlayer() {
-        mBinding.videoView.stopPlayback()
-        mBinding.videoView.release(true)
-        mBinding.videoView.stopBackgroundPlay()
+
+        //todo: destroyPlayer
+//        mBinding.videoView.stopPlayback()
+//        mBinding.videoView.release(true)
+//        mBinding.videoView.stopBackgroundPlay()
     }
 
     companion object {

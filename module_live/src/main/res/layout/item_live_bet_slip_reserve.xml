@@ -59,6 +59,7 @@
         android:gravity="center"
         android:textColor="@color/color_15b264"
         android:textSize="@dimen/sp_13"
+        android:text="@string/live_bet_grounder"
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_introduce" />
 

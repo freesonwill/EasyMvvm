@@ -8,9 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
+import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
@@ -29,24 +31,30 @@ class LiveBetSlipUnsettledFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
+        initLoadRefresh()
     }
+
     override fun initData() {
         super.initData()
         mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
         mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
     }
+
     override fun initListener() {
     }
 
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
             if (!it.isNullOrEmpty()) {
                 updateData(it)
             } else {
                 showEmpty()
             }
         }
-        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner){
+        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner) {
+            showToast(if (it == true) "提前结算成功" else "提前结算失败")
             mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
         }
     }
@@ -56,7 +64,11 @@ class LiveBetSlipUnsettledFragment :
     }
 
     private fun updateData(orders: List<Common.Order>) {
-        val list = orders.map { LiveBetSlipData(order = it) }.toList()
+        val list = orders.map {
+            val expandedEnum =
+                if (it.selectionsList.size <= 3) LiveBetSlipExpandedEnum.Hide else LiveBetSlipExpandedEnum.Fold
+            LiveBetSlipData(order = it, expandedEnum = expandedEnum)
+        }.toList()
         mBinding.recyclerView.adapter?.let {
             val adapter = it as LiveBetSlipAdapter
             adapter.submitList(list)
@@ -83,7 +95,7 @@ class LiveBetSlipUnsettledFragment :
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
                 item?.order?.let {
                     LiveEarlySettledKeyboardFragment.instance(
-                        it.betId
+                        it.betId, it.betAmount, it.earlyBetAmount
                     ).apply {
                         setOnEarlySettleListener { money, price ->
                             mViewModel.earlyPartSettled(it, money, price)
@@ -93,6 +105,15 @@ class LiveBetSlipUnsettledFragment :
 
             }
         })
+    }
+
+    private fun initLoadRefresh() {
+        mBinding.refreshLayout.setOnRefreshListener {
+            mViewModel.refreshOrder(LiveBetSlipEnum.UnSettled)
+        }
+        mBinding.refreshLayout.setOnLoadMoreListener {
+            mViewModel.loadMoreOrder(LiveBetSlipEnum.UnSettled)
+        }
     }
 
 

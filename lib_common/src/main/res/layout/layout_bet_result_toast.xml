@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_broder_toast"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="14dp"
+        android:ellipsize="end"
+        android:gravity="start"
+        android:lines="1"
+        android:textColor="@color/main_text"
+        app:layout_constraintBottom_toTopOf="@id/cl_content"
+        app:layout_constraintEnd_toEndOf="@id/cl_content"
+        app:layout_constraintStart_toStartOf="@id/cl_content"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_combo"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/tv_failure_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_success_title">
+
+            <TextView
+                android:id="@+id/tv_success_combo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="3串1、3串2、3串4" />
+
+
+            <TextView
+                android:id="@+id/tv_failure_combo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="3串2" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <TextView
+            android:id="@+id/tv_success_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/main_text"
+            app:layout_constraintBottom_toBottomOf="@id/iv_success"
+            app:layout_constraintEnd_toStartOf="@id/iv_success"
+            app:layout_constraintStart_toEndOf="@id/cl_combo"
+            app:layout_constraintTop_toTopOf="@id/iv_success"
+            tools:text="投注成功" />
+
+        <ImageView
+            android:id="@+id/iv_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/icon_bet_result_success"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_failure_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/main_text"
+            app:layout_constraintBottom_toBottomOf="@id/iv_failure"
+            app:layout_constraintEnd_toStartOf="@id/iv_failure"
+            app:layout_constraintStart_toEndOf="@id/cl_combo"
+            app:layout_constraintTop_toTopOf="@id/iv_failure"
+            tools:text="投注失败" />
+
+        <ImageView
+            android:id="@+id/iv_failure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/icon_bet_result_fail"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_success" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_success"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="iv_success, tv_success_title" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_failure"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="iv_failure, tv_failure_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
