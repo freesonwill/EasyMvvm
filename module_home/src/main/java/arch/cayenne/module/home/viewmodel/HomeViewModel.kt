@@ -23,6 +23,7 @@ class HomeViewModel : BaseViewModel() {
         const val TOURNAMENT_ALL_ID = 0
     }
     private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
+    var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
@@ -52,6 +53,8 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
         currentPlayType = playType
+        sportsStatistical.value = arrayListOf()
+        tournaments.value = arrayListOf()
         getCurrentSportStatistical()
     }
 
