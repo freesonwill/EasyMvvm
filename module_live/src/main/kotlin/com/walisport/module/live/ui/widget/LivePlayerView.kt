@@ -152,10 +152,7 @@ class LivePlayerView @JvmOverloads constructor(
             }
         }
 
-        if (isActivityStopped) { // 压后台后会stop播放，回来后重新开始
-            isActivityStopped = false
-            start()
-        }
+        start()
     }
 
     fun onPause(){
