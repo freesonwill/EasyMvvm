@@ -160,7 +160,7 @@ class LiveVideoLandscapeFragment :
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
                         mBinding.videoView.setDataSource(url)
-                        mBinding.videoView.start()
+                        mBinding.videoView.prepare()
                     }
                 }
             }
