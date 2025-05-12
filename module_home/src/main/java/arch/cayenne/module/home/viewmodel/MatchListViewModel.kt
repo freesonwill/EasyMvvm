@@ -11,6 +11,8 @@ import arch.cayenne.module.home.enums.PlayType
 import arch.cayenne.module.home.enums.SportType
 import arch.cayenne.module.home.repository.HomeRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -28,7 +30,7 @@ class MatchListViewModel : BaseViewModel() {
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
-    private var _selectedDate: Long = 0
+    private var _selectedDate = MutableStateFlow<Long>(0)
     var page: Int = 1
     var isPageEnd = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
@@ -89,7 +91,8 @@ class MatchListViewModel : BaseViewModel() {
     }
 
     fun setSelectedDate(id: Long = 0) {
-        _selectedDate = id
+        _selectedDate.value = id
+//        getCurrentMatch()
     }
 
     fun setPosition(position: Int) {
@@ -100,16 +103,21 @@ class MatchListViewModel : BaseViewModel() {
 
     fun getTournamentId() = _tournamentId
 
+    fun getPosition() = _position
+
     fun startObserveMatch() {
         viewModelScope.launch {
-            repository.observeMatchChange(_playType, _tournamentId).distinctUntilChanged().collect { refs ->
-                "KC_ _playType $_playType _tournamentId $_tournamentId ref = ${refs.filter { it.page == page && it.startTime == _selectedDate }}".logi()
-                if (refs.isEmpty()) {
+            combine(
+                _selectedDate,
+                repository.observeMatchChange(_playType, _tournamentId).distinctUntilChanged()
+            ) { selectedDate, refs ->
+                selectedDate to refs
+            }.collect { (selectedDate, refs) ->
+                val currentDateRefs = refs.filter { it.startTime == selectedDate }
+                if (currentDateRefs.isEmpty()) {
                     getCurrentMatch()
                     return@collect
                 }
-
-                val currentDateRefs = refs.filter { it.startTime == _selectedDate }
                 //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
                 page = currentDateRefs.maxOfOrNull { it.page } ?: 0
                 //拿到ref後藉由ref拿到這個時間段的match id，再去資料庫把這些賽史資料串起來
@@ -136,8 +144,11 @@ class MatchListViewModel : BaseViewModel() {
         viewModelScope.launch {
             isLoadingData.value = true
             withContext(Dispatchers.IO) {
-                "KC_ 取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
-                isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate)
+                "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
+                isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate.value)
+                if (isPageEnd && page == 1) {
+
+                }
             }
             isLoadingData.value = false
         }
@@ -194,7 +205,7 @@ class MatchListViewModel : BaseViewModel() {
         isPageEnd = false
         page = 1
         viewModelScope.launch(Dispatchers.IO) {
-            repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate)
+            repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
             getCurrentMatch()
         }
     }

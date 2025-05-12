@@ -146,6 +146,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tlLeagueList.getTabAt(position)?.select()
                     // 找到該聯賽目前記錄的日期 tab index
                     updateDateTabs(tlDateList, dateTabs)
+
+                    mViewModel.gameListPageIndex = position
                 }
             })
             vpGameList.post {
