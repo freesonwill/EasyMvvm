@@ -13,13 +13,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/included_landscape_ct_loading"
-        layout="@layout/layout_landscape_ct_loading" />
-
-    <include
-        android:id="@+id/included_landscape_ct_error"
-        layout="@layout/layout_landscape_ct_error" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_area"
