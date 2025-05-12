@@ -2,7 +2,12 @@ package arch.cayenne.lib.common.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
+import androidx.annotation.IntDef
+import androidx.annotation.IntRange
+import androidx.annotation.IntegerRes
+import androidx.annotation.StringRes
 import dalvik.system.BaseDexClassLoader
 import dalvik.system.DexFile
 
@@ -62,4 +67,15 @@ object ContextUtils {
             .distinct()
             .sorted()
     }
+
+
+
+    /**
+     * 系统主题
+     * @param context
+     * @return
+     *  Configuration.UI_MODE_NIGHT_NO  // 浅色模式
+     *  Configuration.UI_MODE_NIGHT_YES // 深色模式
+     */
+    val Context.systemTheme: Int get() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 }
