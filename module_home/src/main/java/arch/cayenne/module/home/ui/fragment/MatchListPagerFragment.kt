@@ -77,7 +77,7 @@ class MatchListPagerFragment :
                     val lastVisible = layoutManager.findLastVisibleItemPosition()
 
                     if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                        mViewModel.subscribeMatch(
+                        mViewModel.compareSubscribeMatch(
                             matchAdapter.currentList
                                 .slice(firstVisible..lastVisible)
                                 .map { it.match.matchId }
@@ -101,7 +101,7 @@ class MatchListPagerFragment :
                             mViewModel.loadNextPage()
                         }
                         if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                            mViewModel.subscribeMatch(
+                            mViewModel.compareSubscribeMatch(
                                 matchAdapter.currentList
                                     .slice(firstVisible..lastVisible)
                                     .map { it.match.matchId }
@@ -166,6 +166,19 @@ class MatchListPagerFragment :
         }
         mViewModel.startObserveMatch()
     }
+
+    override fun onPause() {
+        super.onPause()
+        //暫時移除訂閱
+        mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //把暫時移除的訂閱加回來
+        mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
 
     companion object {
         private const val ARG_SPORT_ID = "sport_id"

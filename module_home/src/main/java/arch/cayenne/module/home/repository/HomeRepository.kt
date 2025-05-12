@@ -255,11 +255,7 @@ class HomeRepository(
                 this.addAllMatchId(ids)
             }.build()
         }
-        if (res.error == null && res.data != null) {
-//            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
-//            return res.data!!.success
-            return true
-        } else { return false }
+        return res.error == null && res.data != null
     }
 
     @Transaction

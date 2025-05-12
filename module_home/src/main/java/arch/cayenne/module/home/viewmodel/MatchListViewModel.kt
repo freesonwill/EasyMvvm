@@ -157,34 +157,44 @@ class MatchListViewModel : BaseViewModel() {
         }
     }
 
-    fun subscribeMatch(ids: Set<Long>) {
+    fun compareSubscribeMatch(ids: Set<Long>) {
         val subscribe = ids - subscribeMatchSet
         val cancel = subscribeMatchSet - ids
         subscribeMatchSet.clear()
         subscribeMatchSet.addAll(ids)
+        cancelSubscribeMatch(cancel)
+        subscribeMatch(subscribe)
+    }
+    fun subscribeMatch(subscribe: Set<Long>) {
         viewModelScope.launch(Dispatchers.IO) {
-            launch {
-                "取消訂閱比賽  $cancel".logi(this::class.java.name)
-                if (cancel.isNotEmpty()) {
-                    repository.cancelSubscribeMatch(cancel.toList())
+            "訂閱比賽  $subscribe".logi(this::class.java.name)
+            if (matchListChange.value != null && subscribe.isNotEmpty()) {
+                val matchWithMarkets = repository.subscribeMatch(subscribe.toList())
+                val old = matchListChange.value!!.toMutableList()
+                matchWithMarkets.forEach { matchWithMarket ->
+                    val index =
+                        old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                    if (index != -1) {
+                        old[index] = matchWithMarket
+                    }
                 }
-            }
-            launch {
-                "訂閱比賽  $subscribe".logi(this::class.java.name)
-                if (matchListChange.value != null && subscribe.isNotEmpty()) {
-                    val matchWithMarkets = repository.subscribeMatch(subscribe.toList())
-                    val old = matchListChange.value!!.toMutableList()
-                    matchWithMarkets.forEach { matchWithMarket ->
-                        val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                        if (index != -1) { old[index] = matchWithMarket }
-                    }
-                    withContext(Dispatchers.Main) {
-                        matchListChange.value = old
-                    }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = old
                 }
             }
         }
     }
+
+    fun cancelSubscribeMatch(cancel: Set<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            "取消訂閱比賽  $cancel".logi(this::class.java.name)
+            if (cancel.isNotEmpty()) {
+                repository.cancelSubscribeMatch(cancel.toList())
+            }
+        }
+    }
+
+    fun getCurrentSubscribeMatchSet() = subscribeMatchSet
 
     suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
         return betRepository.setSelection(matchId, selectionId)
