@@ -34,10 +34,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
-
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
-    private var bufferingTimeoutJob: Job? = null
-
     private val mPlayerMode = PlayerMode.FLUENCY
     private lateinit var mGlobalConfig: GlobalConfig
 
@@ -46,14 +42,15 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         mBinding.model = mViewModel
         mBinding.includedMatchNotInProgress.model = mViewModel
 
-        mBinding.videoView.apply { init(mPlayerMode)
+        mBinding.videoView.apply {
+            init(mPlayerMode)
             keepScreenOn = true
 
         }
 
         initPlayer()
 
-       //todo: 设置超时时间
+        //todo: 设置超时时间
 
 //        val mediaPlayer = mBinding.videoView.mediaPlayer
 //        if (mediaPlayer is IjkMediaPlayer) {

@@ -19,6 +19,11 @@ import arch.cayenne.lib.qyplayer.view.SurfaceType
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 
 class LivePlayerView @JvmOverloads constructor(
@@ -57,6 +62,10 @@ class LivePlayerView @JvmOverloads constructor(
     private var loadingAnim: ObjectAnimator? = null
 
 
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var bufferingTimeoutJob: Job? = null
+
+
     fun init(playerMode: PlayerMode) {
         mPlayerMode = playerMode
         initViews()
@@ -76,7 +85,6 @@ class LivePlayerView @JvmOverloads constructor(
         // 初始化子视图
         initRenderView()
         initGestureView()
-        initStateView()
     }
 
     private fun initListeners() {
@@ -88,10 +96,10 @@ class LivePlayerView @JvmOverloads constructor(
     private fun switchPlayerState() {
         mOnPlayStateBtnClickListener?.invoke()
         if (mPlayerState == PlayerState.PLAYING) {
-            updatePauseIconView(PlayerState.PAUSED)
+            updatePlayState(PlayerState.PAUSED)
             pause()
         } else {
-            updatePauseIconView(PlayerState.PLAYING)
+            updatePlayState(PlayerState.PLAYING)
             start()
         }
     }
@@ -121,7 +129,7 @@ class LivePlayerView @JvmOverloads constructor(
                     if (it.state == PlayerState.ERROR) {
                     }
 
-                    updatePauseIconView(it.state)
+                    updatePlayState(it.state)
                     mCurrentPosition = it.position.toLong()
                 }
             }
@@ -327,29 +335,26 @@ class LivePlayerView @JvmOverloads constructor(
         return targetPosition.toInt()
     }
 
-    private fun initStateView() {
-    }
 
-    private fun updatePauseIconView(state: PlayerState) {
+    private fun updatePlayState(state: PlayerState) {
         if (mPlayerState == state) {
             return
         }
         mPlayerState = state
         when (mPlayerState) {
             PlayerState.PLAYING -> {
-//                mControlView.setPlayState(PlayState.PLAYING)
                 loadingAnim?.cancel()
                 ctLoading.visibility = GONE
                 ctError.visibility = GONE
+
+                bufferingTimeoutJob?.cancel()
             }
 
             PlayerState.PAUSED -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 //没有暂停按钮，
             }
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 // 创建旋转动画
                 loadingAnim = ObjectAnimator.ofFloat(
                     ivLoading,  // 目标 View
@@ -368,17 +373,23 @@ class LivePlayerView @JvmOverloads constructor(
 
                 ctLoading.visibility = VISIBLE
                 ctError.visibility = GONE
+
+                // 启动协程，10秒超时
+                // 如果10秒后还在loading状态， 展示加载失败页面
+                bufferingTimeoutJob = coroutineScope.launch {
+                    delay(10000)
+                    ctLoading.visibility = GONE
+                    ctError.visibility = VISIBLE
+                }
             }
 
             PlayerState.STOPPED -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 loadingAnim?.cancel()
                 ctLoading.visibility = GONE
                 ctError.visibility = GONE
             }
 
             else -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
                 loadingAnim?.cancel()
                 ctLoading.visibility = GONE
                 ctError.visibility = GONE
