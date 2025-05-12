@@ -70,14 +70,12 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_MATCH
         ) {
             Client.GetMatchReq.newBuilder().apply {
-                this.addMatchId(matchId)
+                this.matchId=matchId
             }.build()
         }
         if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
-            return result.data!!.matchList.find {
-                it.matchId==matchId
-            }
+            return  result.data!!.match
         }
         return null
     }

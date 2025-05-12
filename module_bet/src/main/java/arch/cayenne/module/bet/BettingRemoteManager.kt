@@ -165,7 +165,7 @@ class BettingRemoteManager(
             apiCode = ApiCode.GET_SINGLE_RISK,
         ) {
             Client.GetSingleRiskReq.newBuilder().apply {
-                val risk = Common.RiskSelection.newBuilder().apply {
+                val risk = Common.SelectionBase.newBuilder().apply {
                     this.matchId = matchId
                     this.selectionId = selectionId
                 }.build()
@@ -196,7 +196,7 @@ class BettingRemoteManager(
         ) {
             Client.GetComboRiskReq.newBuilder().apply {
                 val risk = beans.map { bean ->
-                    Common.RiskSelection.newBuilder().apply {
+                    Common.SelectionBase.newBuilder().apply {
                         this.matchId = bean.matchId
                         this.selectionId = bean.selectionId
                     }.build()
@@ -219,12 +219,12 @@ class BettingRemoteManager(
     }
 
     suspend fun registerMatchNotify(matchIds: List<Long>) {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SUBSCRIBE_MATCH,
         ) {
-            Client.SubscribeMatchReq.newBuilder().apply {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(matchIds)
             }.build()
         }
@@ -237,12 +237,12 @@ class BettingRemoteManager(
 
     fun unregisterMatchNotify(matchIds: List<Long>) {
         scope.launch {
-            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
                 scope = scope,
                 dispatcher = Dispatchers.IO,
                 apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
             ) {
-                Client.CancelSubscribeMatchReq.newBuilder().apply {
+                Client.CancelSubscribeHomeMatchReq.newBuilder().apply {
                     this.addAllMatchId(matchIds)
                 }.build()
             }
