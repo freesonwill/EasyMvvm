@@ -158,6 +158,10 @@ class LivePlayerView @JvmOverloads constructor(
         }
     }
 
+    fun onPause(){
+        mRenderView.pause()
+    }
+
     /**
      * 屏幕方向变为横屏
      *
