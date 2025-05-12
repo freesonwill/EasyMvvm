@@ -1,13 +1,10 @@
 package com.walisport.module.live.ui
 
 import android.animation.ObjectAnimator
-import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
-import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
@@ -19,20 +16,14 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
-import com.xxx.qyplayer.PlayerMode
 import com.walisport.module.live.R
-import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.xxx.qyplayer.PlayerMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import okhttp3.internal.toLongOrDefault
-import tv.danmaku.ijk.media.player.IMediaPlayer
-import tv.danmaku.ijk.media.player.IjkMediaPlayer
 import kotlin.reflect.KClass
 
 
@@ -43,8 +34,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
-    private val playingStatusLiveData: MutableLiveData<PlayStatus> =
-        MutableLiveData(PlayStatus.Loading)
 
     private var loadingAnim: ObjectAnimator? = null
 
@@ -350,45 +339,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         }
 
-        //播放状态的监听
-        playingStatusLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    PlayStatus.Playing -> {
-                        loadingAnim?.cancel()
-
-                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Loading -> {
-                        // 创建旋转动画
-                        loadingAnim = ObjectAnimator.ofFloat(
-                            mBinding.includedCtLoading.ivVideoLoading,  // 目标 View
-                            "rotation",  // 属性名称
-                            0f, 360f // 从 0 度旋转到 360 度
-                        ).run {
-                            // 设置动画属性
-                            setDuration(1000) // 持续时间 1 秒
-                            repeatCount = ObjectAnimator.INFINITE // 无限循环
-                            interpolator = LinearInterpolator() // 匀速旋转
-
-                            // 启动动画
-                            start()
-                            this
-                        }
-                        mBinding.includedCtLoading.ctLoading.visibility = View.VISIBLE
-                        mBinding.includedCtError.ctError.visibility = View.GONE
-                    }
-
-                    PlayStatus.Error -> {
-                        mBinding.includedCtLoading.ctLoading.visibility = View.GONE
-                        mBinding.includedCtError.ctError.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-        }
 
         val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.setMatchId(matchId)
