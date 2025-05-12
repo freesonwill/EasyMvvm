@@ -26,17 +26,14 @@
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
     </style>
-
     <style name="CustomToolbarLine">
         <item name="android:layout_height">36dp</item>
         <item name="android:layout_width">0dp</item>
     </style>
-
     <style name="CustomToolbarEditStyle">
         <item name="android:layout_height">36dp</item>
         <item name="android:textSize">15sp</item>
     </style>
-
     <style name="NumberKeyboardButton">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">0dp</item>
@@ -48,4 +45,17 @@
         <item name="android:textColor">@color/keyboard_number</item>
         <item name="android:gravity">center</item>
     </style>
+    
+
+    <declare-styleable name="LetterIndex">
+        <attr name="text_size" format="integer" />
+        <attr name="text_color" format="color" />
+        <attr name="text_selected_color" format="color" />
+        <attr name="circle_padding" format="dimension" />
+        <attr name="circle_color" format="color" />
+        <attr name="item_space" format="dimension" />
+        <!--        选择的背景色是否随着触摸取消，而取消-->
+        <attr name="draw_circle_action_up" format="boolean" />
+        <attr name="show_pop" format="boolean" />
+    </declare-styleable>
 </resources>

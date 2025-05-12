@@ -3,16 +3,24 @@ package arch.cayenne.module.home.ui.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Gravity
+import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.view.BasePopup
+import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.extractDate
+import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
+import com.haibin.calendarview.Calendar
+import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -57,8 +65,52 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             //navigate(Uri.parse("walisport://login_activity?userId=lucy"))
         }
         mBinding.tv4.setOnClickListener {
-            navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("toFragmentInner"))
+            //navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("toFragmentInner"))
             //navigate(Uri.parse("walisport://module_login/loginSecondFragment"))
+            var selectedDate = "20250423"
+            val popup = BasePopup.Builder(requireContext(), PopupCalendarViewBinding::inflate)
+                .setWidth(ViewGroup.LayoutParams.MATCH_PARENT)
+                .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                .setFocusable(true)
+                .setOutsideTouchable(true)
+                //.setAnimationStyle(R.style.PopupAnimation)// 使用默认的动画即可，可以自定义
+                .setOnShowListener { vb ->
+                    // 通过 ViewBinding 初始化视图
+                    vb.ivRightClick.clickNoRepeat {
+                        vb.calendarView.scrollToNext(true)
+                    }
+                    vb.ivLeftClick.clickNoRepeat {
+                        vb.calendarView.scrollToPre(true)
+                    }
+                    val result = selectedDate.extractDate()
+                    result?.let {
+                        val (year, month, day) = it
+                        vb.calendarView.scrollToCalendar(year, month, day)
+                        vb.tvCurrentMonth.text = "${month.toChineseMonth()} $year"
+                    } ?: run {
+                        val currentYear = vb.calendarView.curYear
+                        val currentMonth = vb.calendarView.curMonth
+                        vb.calendarView.scrollToCurrent(true)
+                        vb.tvCurrentMonth.text = "${currentMonth.toChineseMonth()} $currentYear"
+                    }
+                    vb.calendarView.setOnCalendarSelectListener(object : OnCalendarSelectListener {
+                        override fun onCalendarOutOfRange(calendar: Calendar?) {
+
+                        }
+
+                        override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
+                            if (calendar == null) return
+                            selectedDate = "$calendar"
+                            vb.tvCurrentMonth.text = "${calendar.month.toChineseMonth()} ${calendar.year}"
+                        }
+                    })
+                }
+                .setOnDismissListener {
+                    // 弹窗消失时的操作，刷新数据等
+                    println("弹窗已销毁")
+                }
+                .build()
+            popup.show(mBinding.tv4, Gravity.BOTTOM, 0, 0)
         }
         mBinding.tv5.setOnClickListener {
             /*val request = NavDeepLinkRequest.Builder

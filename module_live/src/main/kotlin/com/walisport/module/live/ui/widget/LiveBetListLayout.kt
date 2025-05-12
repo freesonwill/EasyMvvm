@@ -5,11 +5,17 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SportLinearLayout
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutOneBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutThreeBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutTowBinding
 import com.walisport.module.live.databinding.LiveBetContentListItemLayoutBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class LiveBetListLayout @JvmOverloads constructor(
     context: Context,
@@ -41,7 +47,7 @@ class LiveBetListLayout @JvmOverloads constructor(
     }
 
     //请空,不需要懒加载
-    fun submitList(state: StatesArrange?, num: Int, name: String, odds: String) {
+    fun submitList(state: StatesArrange?, num: Int, name: String, odds: String, marketId:Long,callback: (Long) -> Unit) {
         if (num == 0) {
             binding.llcOneArrange.removeAllViews()
             binding.llcTowArrange.removeAllViews()
@@ -51,17 +57,17 @@ class LiveBetListLayout @JvmOverloads constructor(
         when (state?.code) {
             StatesArrange.DEFAULT_ARRANGE.code -> {
                 if (num == 0 || num % StatesArrange.DEFAULT_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(addViewOne(name, odds))
+                    binding.llcOneArrange.addView(addViewOne(name, odds,marketId,callback))
                 }
                 if (num == 1 || num % StatesArrange.DEFAULT_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(addViewTow(name, odds))
+                    binding.llcTowArrange.addView(addViewTow(name, odds,marketId,callback))
                 }
                 binding.llcTowArrange.visibility = VISIBLE
                 binding.llcThreeArrange.visibility = GONE
             }
 
             StatesArrange.ONE_ARRANGE.code -> {
-                binding.llcOneArrange.addView(addViewOne(name, odds))
+                binding.llcOneArrange.addView(addViewOne(name, odds,marketId,callback))
                 binding.llcTowArrange.visibility = GONE
                 binding.llcThreeArrange.visibility = GONE
             }
@@ -69,10 +75,10 @@ class LiveBetListLayout @JvmOverloads constructor(
             StatesArrange.TOW_ARRANGE.code -> {
                 binding.llcTowArrange.visibility = VISIBLE
                 if (num == 0 || num % StatesArrange.TOW_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(addViewOne(name, odds))
+                    binding.llcOneArrange.addView(addViewOne(name, odds,marketId,callback))
                 }
                 if (num == 1 || num % StatesArrange.TOW_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(addViewTow(name, odds))
+                    binding.llcTowArrange.addView(addViewTow(name, odds,marketId,callback))
                 }
                 binding.llcThreeArrange.visibility = GONE
             }
@@ -81,13 +87,13 @@ class LiveBetListLayout @JvmOverloads constructor(
                 binding.llcThreeArrange.visibility = VISIBLE
                 binding.llcTowArrange.visibility = VISIBLE
                 if (num == 0 || num % StatesArrange.THREE_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(addViewOne(name, odds))
+                    binding.llcOneArrange.addView(addViewOne(name, odds,marketId,callback))
                 }
                 if (num == 1 || num % StatesArrange.THREE_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(addViewTow(name, odds))
+                    binding.llcTowArrange.addView(addViewTow(name, odds,marketId,callback))
                 }
                 if (num == 2 || num % StatesArrange.THREE_ARRANGE.value == 2) {
-                    binding.llcThreeArrange.addView(addViewThree(name, odds))
+                    binding.llcThreeArrange.addView(addViewThree(name, odds,marketId,callback))
                 }
             }
 
@@ -98,27 +104,27 @@ class LiveBetListLayout @JvmOverloads constructor(
                     val right = parts[1].toIntOrNull() ?: return // If conversion fails, exit
                     when {
                         left > right -> {
-                            binding.llcOneArrange.addView(addViewOne(name, odds))
+                            binding.llcOneArrange.addView(addViewOne(name, odds,marketId,callback))
                         }
 
                         left == right -> {
                             binding.llcTowArrange.visibility = VISIBLE
-                            binding.llcTowArrange.addView(addViewTow(name, odds))
+                            binding.llcTowArrange.addView(addViewTow(name, odds,marketId,callback))
                         }
 
                         left < right -> {
                             binding.llcThreeArrange.visibility = VISIBLE
-                            binding.llcThreeArrange.addView(addViewThree(name, odds))
+                            binding.llcThreeArrange.addView(addViewThree(name, odds,marketId,callback))
                         }
                     }
                 } else {
-                    binding.llcOther.addView(addViewTow(name, odds))
+                    binding.llcOther.addView(addViewTow(name, odds,marketId,callback))
                 }
             }
         }
     }
 
-    fun addViewOne(name: String, odds: String): View {
+    fun addViewOne(name: String, odds: String,marketId:Long,callback: (Long) -> Unit): View {
         var itemBinding = LiveBetContentItemLayoutOneBinding.inflate(
             LayoutInflater.from(context),
             binding.root,
@@ -126,10 +132,17 @@ class LiveBetListLayout @JvmOverloads constructor(
         )
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclOne.clickNoRepeatSingle{
+            callback(marketId)
+            it.isSelected = true
+            delayExample{
+                it.isSelected = false
+            }
+        }
         return itemBinding.root
     }
 
-    fun addViewTow(name: String, odds: String): View {
+    fun addViewTow(name: String, odds: String,marketId:Long,callback: (Long) -> Unit): View {
         var itemBinding = LiveBetContentItemLayoutTowBinding.inflate(
             LayoutInflater.from(context),
             binding.root,
@@ -137,10 +150,17 @@ class LiveBetListLayout @JvmOverloads constructor(
         )
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclTow.clickNoRepeatSingle{
+            callback(marketId)
+            it.isSelected = true
+            delayExample{
+                it.isSelected = false
+            }
+        }
         return itemBinding.root
     }
 
-    fun addViewThree(name: String, odds: String): View {
+    fun addViewThree(name: String, odds: String,marketId:Long,callback: (Long) -> Unit): View {
         var itemBinding = LiveBetContentItemLayoutThreeBinding.inflate(
             LayoutInflater.from(context),
             binding.root,
@@ -148,6 +168,20 @@ class LiveBetListLayout @JvmOverloads constructor(
         )
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclThree.clickNoRepeatSingle{
+            callback(marketId)
+            it.isSelected = true
+            delayExample{
+                it.isSelected = false
+            }
+        }
         return itemBinding.root
+    }
+
+    fun delayExample(delayCallback: () -> Unit) {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(2000)
+            delayCallback()
+        }
     }
 }

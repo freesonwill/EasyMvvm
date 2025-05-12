@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import arch.cayenne.lib.common.R
 
-
+private var lastClickTime: Long = 0L
 /**
  * 将view转为bitmap
  */
@@ -46,7 +46,6 @@ fun View.toBitmap(scale: Float = 1f, config: Bitmap.Config = Bitmap.Config.ARGB_
  * @param action 执行方法
  */
 fun View.clickNoRepeat(
-    playSound: Boolean = true,
     interval: Long = 500,
     action: (view: View) -> Unit
 ) {
@@ -57,6 +56,24 @@ fun View.clickNoRepeat(
             return@setOnClickListener
         }
         setTag(R.id.tag_last_click_time, currentTime)
+        action(it)
+    }
+}
+/**
+ * 防止重复点击事件，0.5秒内所有控件不可同时触发
+ * @param interval 时间间隔 默认500毫秒（0.5秒）
+ * @param action 执行方法
+ */
+fun View.clickNoRepeatSingle(
+    interval: Long = 500,
+    action: (view: View) -> Unit
+) {
+    setOnClickListener {
+        val currentTime = System.currentTimeMillis()
+        if (lastClickTime != 0L && (currentTime - lastClickTime < interval)) {
+            return@setOnClickListener
+        }
+        lastClickTime = currentTime
         action(it)
     }
 }

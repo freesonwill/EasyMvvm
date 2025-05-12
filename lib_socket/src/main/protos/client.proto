@@ -91,11 +91,11 @@ message ListMatchResp {
 
 // 500-1003: 获取比赛详情
 message GetMatchReq {
-    repeated int64 match_id = 1; //required 比赛id
+   int64 match_id = 1; //required 比赛id
 }
 
 message GetMatchResp {
-    repeated galaxy.common.proto.Match match = 1;
+   galaxy.common.proto.Match match = 1;
 }
 
 // 500-1004: 获取球类信息
@@ -203,7 +203,7 @@ message GetOrderResp {
 
 //500-1013: 获取单关下注限额
 message GetSingleRiskReq {
-    repeated galaxy.common.proto.RiskSelection selection = 1; // 选项
+    repeated galaxy.common.proto.SelectionBase selection = 1; // 选项
 }
 
 message GetSingleRiskResp {
@@ -212,7 +212,7 @@ message GetSingleRiskResp {
 
 //500-1014: 获取窜关下注限额
 message GetComboRiskReq {
-    repeated galaxy.common.proto.RiskSelection selection = 1; // 选项
+    repeated galaxy.common.proto.SelectionBase selection = 1; // 选项
 }
 
 message GetComboRiskResp {
@@ -364,34 +364,82 @@ message UpdateSettingResp {
     bool success = 1;
 }
 
-// 500-1100: 订阅比赛
-message SubscribeMatchReq {
+// 500-1100: 订阅首页比赛
+message SubscribeHomeMatchReq {
     repeated int64 match_id = 1; //required 比赛id
 }
 
-message SubscribeMatchResp {
-    bool success = 1;
-    string message = 2;
+message SubscribeHomeMatchResp {
     repeated MatchNotify match_notify = 3;
 }
-
-// 500-1101: 取消订阅比赛
-message CancelSubscribeMatchReq {
-    repeated int64 match_id = 1; //required 比赛id
-}
-
-message CancelSubscribeMatchResp {
-    bool success = 1;
-    string message = 2;
-}
-
 
 // 600-1000: 比赛推送
 message MatchNotify {
     int64 match_id = 1;         //比赛id
     MatchBasicUpdate basic_update = 2;
     repeated galaxy.common.proto.Market market_update = 3; //只推送有变化的盘口
-    repeated galaxy.common.proto.Market home_market_update = 4; //只推送有变化的盘口
+}
+
+// 500-1101: 取消订阅首页比赛
+message CancelSubscribeHomeMatchReq {
+    repeated int64 match_id = 1; //required 比赛id
+}
+
+message CancelSubscribeHomeMatchResp {
+}
+
+// 500-1102: 订阅比赛详情
+message SubscribeMatchInfoReq {
+    int64 match_id = 1; //required 比赛id
+}
+
+message SubscribeMatchInfoResp {
+    MatchInfoNotify match_notify = 3;
+}
+
+// 600-1004: 比赛info推送
+message MatchInfoNotify {
+    int64 match_id = 1;         //比赛id
+    MatchBasicUpdate basic_update = 2;
+    repeated galaxy.common.proto.Market market_update = 3; //只推送有变化的盘口
+}
+
+// 500-1103: 取消订阅比赛详情
+message CancelSubscribeMatchInfoReq {
+    int64 match_id = 1; //required 比赛id
+}
+
+message CancelSubscribeMatchInfoResp {
+}
+
+// 500-1104: 订阅比赛盘口
+message SubscribeMatchMarketReq {
+   repeated MarketIdBase market = 1; //required 比赛盘口
+}
+
+message SubscribeMatchMarketResp {
+    repeated MatchNotify match_notify = 1;
+}
+
+// 600-1005: 比赛盘口推送
+message MatchMarketNotify {
+    int64 match_id = 1;         //比赛id
+    MatchBasicUpdate basic_update = 2;
+    repeated galaxy.common.proto.Market market_update = 3; //只推送有变化的盘口
+}
+
+// 500-1105: 取消订阅比赛盘口
+message CancelSubscribeMatchMarketReq {
+    repeated MarketIdBase market = 1; //required 比赛盘口
+}
+
+message CancelSubscribeMatchMarketResp {
+}
+
+//选项
+message MarketIdBase {
+    int64 match_id = 1;    //比赛id
+    repeated int64 market_id = 2;   //盘口id
 }
 
 // 比赛基本信息
@@ -421,6 +469,11 @@ message ReserveStatusNotify {
 message OrderStatus {
     string order_id = 1;
     int32 status = 2;   //2-拒单 4-接单成功
+}
+
+//600-1010: 异常推送
+message AberrantNotify {
+    int32 code = 1;   //状态 1:挤号
 }
 
 
