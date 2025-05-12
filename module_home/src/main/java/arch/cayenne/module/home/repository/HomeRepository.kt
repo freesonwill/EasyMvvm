@@ -229,16 +229,16 @@ class HomeRepository(
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
      * */
     suspend fun subscribeMatch(ids: List<Long>): List<MatchWithMarkets> {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SUBSCRIBE_MATCH,
         ) {
-            Client.SubscribeMatchReq.newBuilder().apply {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
             }.build()
         }
-        if (res.error == null && res.data != null && res.data!!.success) {
+        if (res.error == null && res.data != null) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
            return updateFullMath(matchUpdateData)
@@ -246,18 +246,19 @@ class HomeRepository(
     }
 
     suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
         ) {
-            Client.SubscribeMatchReq.newBuilder().apply {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
             }.build()
         }
-        if (res.error == null && res.data != null && res.data!!.success) {
-            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
-            return res.data!!.success
+        if (res.error == null && res.data != null) {
+//            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
+//            return res.data!!.success
+            return true
         } else { return false }
     }
 

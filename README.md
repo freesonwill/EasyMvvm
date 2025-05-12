@@ -2,8 +2,8 @@
 
 ## 开发文档
 // c端产品文档【更新：2025-03-05】
-https://87if81.axshare.com/?g=4
-
+https://npt0si.axshare.com/?g=4
+ 
 // figma地址
 https://www.figma.com/design/TiXWlyqWAI4iSddgSyz7pm/WaliSport_2.0?node-id=0-1&m=dev
 
@@ -22,6 +22,8 @@ https://docs.google.com/spreadsheets/d/1fRuB82X0Fmsgi54u52gEWbAgxl5t8CzJVqGr1USD
 |-----------------|--------|--------|
 | lib_base        | 基础库    | 基类     |
 | lib_common      | 通用库    | 业务共用类  |
+| lib_skin       | 换肤库    | 换肤   |
+| lib_res        | 公共资源库  | 存放公共资源 |
 | module_login    | 登录模块   | 登录业务   |
 | module_home     | 首页模块   | 首页业务   |
 | module_setting  | 设置模块   | 设置业务   |

@@ -151,7 +151,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                 )
             )
         )
-        matchNotify.homeMarketUpdateList.forEach { market ->
+        matchNotify.marketUpdateList.forEach { market ->
             val marketId = market.marketId
             markets.add(
                 MarketBean(

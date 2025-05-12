@@ -27,4 +27,10 @@
 
     <color name="message_fill_color">#F3F3F4</color>
     <color name="toast_text">#222222</color>
+
+    <color name="keyboard_number">#000000</color>
+    <color name="keyboard_1">#E8E8EA</color>
+    <color name="keyboard_2">#FFFFFF</color>
+    <color name="keyboard_3">#F3F3F4</color>
+    <color name="dividing_line">#FFFFFF</color>
 </resources>
