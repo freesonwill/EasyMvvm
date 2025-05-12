@@ -220,6 +220,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
         mBinding.layoutContainer.apply {
+            vpGameList.currentItem = 0
             leagueAdapter.setData(tournaments)
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
                 val tournament = tournaments[position]
@@ -268,7 +269,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-
         }
     }
 
