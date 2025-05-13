@@ -54,7 +54,9 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
     }
 
     fun updateTabBackground(tab: Tab) {
-        tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
+        if (checkResourceIdValid(tabBackground)) {
+            tab.view.setBackgroundResource(resourcesManager.getTargetResourceId(mView.context, tabBackground))
+        }
     }
 
     override fun updateLanguage(languageCode: String) {
