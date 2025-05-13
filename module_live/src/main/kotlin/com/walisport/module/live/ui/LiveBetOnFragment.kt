@@ -15,7 +15,9 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MarketMenuBean
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
@@ -43,8 +45,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback{
-                override fun itemListCallback(marketI: Long) {
-                    showToast(marketI.toString())
+                override fun itemListCallback(marketI: Long, selectionId: Long) {
+                    lifecycleScope.launch {
+                        val status = mViewModel.setSelection(marketI, selectionId)
+                        if (status == AddSelectionStatus.SINGLE) {
+                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                            showToast(getString(R.string.disabled_to_combo))
+                        }
+                    }
                 }
             })
             adapter = liveBetOnAdapter
