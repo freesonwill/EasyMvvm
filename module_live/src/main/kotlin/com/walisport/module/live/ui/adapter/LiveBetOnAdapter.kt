@@ -60,7 +60,7 @@ class LiveBetOnAdapter(var callback:LivBetListCallback) :
                     listIt.shortName,
                     listIt.odds.getOdds().toString(),listIt.selectionId
                 ) { it ->
-                    callback.itemListCallback(it)
+                    callback.itemListCallback(it,listIt.selectionId)
                 }
                 positions++
             }
@@ -104,7 +104,7 @@ class LiveBetOnAdapter(var callback:LivBetListCallback) :
 }
 
 interface LivBetListCallback{
-      fun itemListCallback(marketI:Long)
+      fun itemListCallback(marketI:Long,selectionId: Long)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
