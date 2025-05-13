@@ -41,6 +41,12 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     abstract suspend fun getSelectionById(marketId: Long): LiveSelectionBean
 
     @Transaction
+    @Query("SELECT * FROM LiveSelectionBean WHERE selectionId = :selectionId")
+    abstract suspend fun getSelectionBySelectionId(selectionId: Long): LiveSelectionBean
+
+
+
+    @Transaction
     @Query("SELECT * FROM LiveSelectionBean WHERE marketId =:marketId")
     abstract suspend fun getSelectionsByIds(marketId: Long): List<LiveSelectionBean>
 

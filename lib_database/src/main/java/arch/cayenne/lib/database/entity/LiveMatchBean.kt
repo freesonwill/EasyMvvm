@@ -33,6 +33,7 @@ data class LiveSelectionBean(
     val active: Boolean,
     val parlay: Boolean,
     val marketId: Long,
+    val marketName: String,
     val style :Int//0-默认 1-一列 2-两列 3-三列 4-波胆
 )
 

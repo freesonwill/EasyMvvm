@@ -47,7 +47,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback{
                 override fun itemListCallback(marketI: Long, selectionId: Long) {
                     lifecycleScope.launch {
-                        val status = mViewModel.setSelection(marketI, selectionId)
+                        val status = mViewModel.setSelection(mainViewModel.matchId, selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {

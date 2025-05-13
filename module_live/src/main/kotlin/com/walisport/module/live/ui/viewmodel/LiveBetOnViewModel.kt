@@ -65,10 +65,15 @@ class LiveBetOnViewModel : BaseViewModel() {
         }
 
     }
+        suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
+            val bean = repository.getSelectionInsertBean(matchId, selectionId)
+            return if (bean == null) {
+                AddSelectionStatus.FAIL
+            } else {
+                betRepository.setSelection(bean)
+            }
+        }
 
-    suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
-        return betRepository.setSelection(matchId, selectionId)
-    }
 
 
     fun observeMarketTypeBean() {
