@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 
-interface SportSkinResourceLoader {
+interface SkinnableResourceLoader {
 
     fun getColor(context: Context, @ColorRes resId: Int): Int
 

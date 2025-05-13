@@ -18,7 +18,7 @@
             android:paddingTop="13dp"
             android:paddingBottom="13dp">
 
-            <arch.cayenne.lib.skin.widget.SportTabLayout
+            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="0dp"
                 android:layout_height="32dp"

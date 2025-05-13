@@ -4,7 +4,7 @@ import android.util.AttributeSet
 import android.widget.ProgressBar
 import arch.cayenne.lib.skin.R
 
-class SportSkinProgressBarHelper(private val view: ProgressBar) : SportSkinHelper(view) {
+class SkinnableProgressBarHelper(private val view: ProgressBar) : SkinnableHelper(view) {
 
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val a = mView.context.obtainStyledAttributes(

@@ -1,15 +1,15 @@
 package arch.cayenne.lib.skin
 
 import android.content.Context
-import arch.cayenne.lib.skin.res.SportSkinAssetsResourceLoader
-import arch.cayenne.lib.skin.res.SportSkinBuildInResourceLoader
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableAssetsResourceLoader
+import arch.cayenne.lib.skin.res.SkinnableBuildInResourceLoader
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 class SportSkinManager {
-    private val resourcesManager = SportSkinResourceManager
+    private val resourcesManager = SkinnableResourceManager
     private val _skinFlow = MutableStateFlow("")
     private val _languageFlow = MutableStateFlow<Locale?>(null)
     val skinFlow: Flow<String> = _skinFlow
@@ -19,7 +19,7 @@ class SportSkinManager {
      * 加载后缀名皮肤
      * */
     suspend fun loadSkin(skinName: String) {
-        resourcesManager.initResource(SportSkinBuildInResourceLoader(skinName))
+        resourcesManager.initResource(SkinnableBuildInResourceLoader(skinName))
         _skinFlow.emit(skinName)
     }
 
@@ -27,7 +27,7 @@ class SportSkinManager {
      *加载皮肤包
      * */
     suspend fun loadSkinAsset(context: Context, skinName: String) {
-        resourcesManager.initResource(SportSkinAssetsResourceLoader(context, skinName))
+        resourcesManager.initResource(SkinnableAssetsResourceLoader(context, skinName))
         _skinFlow.emit(skinName)
     }
 
@@ -44,7 +44,7 @@ class SportSkinManager {
      *使用默认皮肤
      * */
     suspend fun restoreSkin() {
-        resourcesManager.initResource(SportSkinBuildInResourceLoader(""))
+        resourcesManager.initResource(SkinnableBuildInResourceLoader(""))
         _skinFlow.emit("")
     }
 

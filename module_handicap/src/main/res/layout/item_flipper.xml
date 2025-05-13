@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_251"
         android:background="@drawable/shape_bg_item">
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_type"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_45"
@@ -21,7 +21,7 @@
             android:textColor="@color/item_name"
             android:textSize="@dimen/sp_15" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_question_home"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -43,7 +43,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_home_team"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_question_home"
             app:layout_constraintTop_toBottomOf="@+id/iv_question_home" />
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_question_away"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -64,7 +64,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_away_team"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_question_away"
             app:layout_constraintTop_toBottomOf="@+id/iv_question_away" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportLinearLayout
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/lay_left"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
@@ -100,7 +100,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_left"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,15 +110,15 @@
                 android:textColor="@drawable/selector_answer_text"
                 android:textSize="@dimen/sp_14" />
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_left"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
                 android:layout_marginStart="@dimen/dp_5"
                 android:visibility="gone" />
-        </arch.cayenne.lib.skin.widget.SportLinearLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-        <arch.cayenne.lib.skin.widget.SportLinearLayout
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/lay_right"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_30"
@@ -132,7 +132,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_right"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -142,16 +142,16 @@
                 android:textColor="@drawable/selector_answer_text"
                 android:textSize="@dimen/sp_14"/>
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_right"
                 android:layout_width="@dimen/dp_14"
                 android:layout_height="@dimen/dp_14"
                 android:layout_marginStart="@dimen/dp_5"
                 android:visibility="gone" />
-        </arch.cayenne.lib.skin.widget.SportLinearLayout>
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-    <arch.cayenne.lib.skin.widget.SportLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/lay_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -159,13 +159,13 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_tip"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_marginTop="@dimen/dp_30"/>
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
             android:textColor="@color/item_name"
             android:textSize="@dimen/sp_15" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -184,7 +184,7 @@
             android:textColor="@color/color_929298"
             android:textSize="@dimen/sp_14" />
 
-        <arch.cayenne.lib.skin.widget.SportButton
+        <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_next"
             android:layout_width="@dimen/dp_207"
             android:layout_height="@dimen/dp_48"
@@ -193,5 +193,5 @@
             android:gravity="center"
             android:textColor="@color/item_name"
             android:textSize="@dimen/sp_15" />
-    </arch.cayenne.lib.skin.widget.SportLinearLayout>
-</arch.cayenne.lib.skin.widget.SportLinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

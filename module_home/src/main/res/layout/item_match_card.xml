@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_match_card"
@@ -8,7 +8,7 @@
     android:background="@drawable/bg_match_item_card">
 
     <!-- 頂部賽事名稱 -->
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_tournament_icon"
         android:layout_width="21dp"
         android:layout_height="21dp"
@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/secondary_text" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
         app:layout_constraintTop_toTopOf="@id/iv_tournament_icon"
         tools:text="2026美加墨世界盃" />
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_left_info_entry"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_tournament_icon">
         <!-- 上下半場 + 比賽時間 -->
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_game_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="加時下半場" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_game_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
             tools:text="117’" />
 
         <!-- 主隊區塊 -->
-        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/layout_home_team"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_game_time">
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_home_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -83,7 +83,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_home_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="馬恩島" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_home_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -110,10 +110,10 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
 
-        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <!-- 客隊區塊 -->
-        <arch.cayenne.lib.skin.widget.SportConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/layout_away_team"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -122,7 +122,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layout_home_team">
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_away_icon"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
@@ -130,7 +130,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_away_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="阿根廷" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_away_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="1" />
-        </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <!--        <LinearLayout-->
         <!--            android:id="@+id/layout_away_team"-->
@@ -211,13 +211,13 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_live"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_live_video" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_watch_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -227,14 +227,14 @@
                 android:textSize="12sp"
                 tools:text="127" />
 
-            <arch.cayenne.lib.skin.widget.SportImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_arrow"
                 android:layout_width="9dp"
                 android:layout_height="20dp"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_arrow" />
         </LinearLayout>
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 
     <!-- 垂直分隔 guideline -->
@@ -273,7 +273,7 @@
         app:layout_constraintTop_toBottomOf="@id/layout_odds_title"
         app:spanCount="3" />
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_favorite"
         android:layout_width="@dimen/dp_46"
         android:layout_height="@dimen/dp_34"
@@ -284,4 +284,4 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-</arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

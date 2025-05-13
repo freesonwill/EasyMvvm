@@ -24,7 +24,7 @@
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="554dp">
-  <arch.cayenne.lib.skin.widget.SportLinearLayout
+  <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
       android:layout_width="match_parent"
       android:layout_height="554dp"
       android:orientation="vertical"
@@ -40,7 +40,7 @@
         android:layout_height="277dp"
         android:id="@+id/sclLineupItemBottom"
         />
-  </arch.cayenne.lib.skin.widget.SportLinearLayout>
+  </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/clBetTitleTop"
       android:layout_marginStart="6dp"
@@ -50,7 +50,7 @@
       android:layout_height="wrap_content"
       tools:ignore="MissingConstraints">
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="wrap_content"
         android:padding="5dp"
         android:background="@drawable/lineup_compare_bg"
@@ -75,8 +75,8 @@
           app:layout_constraintLeft_toLeftOf="parent"
           android:layout_height="wrap_content"
           tools:ignore="MissingConstraints" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_marginTop="19dp"
         android:layout_width="wrap_content"
         android:padding="5dp"
@@ -92,7 +92,7 @@
           android:textColor="@color/white"
           android:layout_height="wrap_content"
           tools:ignore="MissingConstraints" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
   <androidx.constraintlayout.widget.ConstraintLayout
       android:id="@+id/clBetTitleBottom"
@@ -102,7 +102,7 @@
       android:layout_height="wrap_content"
       tools:ignore="MissingConstraints">
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="wrap_content"
         android:padding="5dp"
         android:background="@drawable/lineup_compare_bg"
@@ -128,13 +128,13 @@
           app:layout_constraintLeft_toLeftOf="parent"
           android:layout_height="wrap_content"
           tools:ignore="MissingConstraints" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
   </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>
 
 
 
-    <arch.cayenne.lib.skin.widget.SportLinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/sllIncidentsMain"
         android:layout_marginTop="10dp"
         android:paddingBottom="@dimen/dp_10"
@@ -143,7 +143,7 @@
         android:orientation="vertical"
         android:layout_height="wrap_content">
 
-      <arch.cayenne.lib.skin.widget.SportTextView
+      <arch.cayenne.lib.skin.widget.SkinnableTextView
           android:layout_margin="@dimen/dp_1"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
           android:textColor="@color/color_929298"
           tools:ignore="RtlSymmetry" />
 
-      <arch.cayenne.lib.skin.widget.SportConstraintLayout
+      <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
           android:layout_width="wrap_content"
           android:layout_marginStart="@dimen/dp_12"
           android:layout_marginTop="@dimen/dp_30"
@@ -170,7 +170,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="MissingConstraints" />
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/homeIncidentsName"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_width="wrap_content"
@@ -182,14 +182,14 @@
             android:textStyle="bold"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints" />
-      </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+      </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
       <androidx.appcompat.widget.LinearLayoutCompat
           android:id="@+id/llcHome"
           android:layout_marginTop="@dimen/dp_10"
           android:layout_width="match_parent"
           android:orientation="vertical"
           android:layout_height="wrap_content"/>
-      <arch.cayenne.lib.skin.widget.SportConstraintLayout
+      <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
           android:layout_width="wrap_content"
           android:layout_marginTop="@dimen/dp_30"
           android:layout_marginStart="@dimen/dp_12"
@@ -204,7 +204,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:ignore="MissingConstraints" />
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/awayIncidentsName"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_width="wrap_content"
@@ -216,15 +216,15 @@
             android:drawablePadding="8dp"
             android:layout_height="wrap_content"
             tools:ignore="MissingConstraints" />
-      </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+      </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
       <androidx.appcompat.widget.LinearLayoutCompat
           android:id="@+id/llcAway"
           android:layout_width="match_parent"
           android:orientation="vertical"
           android:layout_marginTop="@dimen/dp_10"
           android:layout_height="wrap_content"/>
-    </arch.cayenne.lib.skin.widget.SportLinearLayout>
-      <arch.cayenne.lib.skin.widget.SportLinearLayout
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+      <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
           android:id="@+id/sllSubstituteMain"
           android:layout_marginTop="10dp"
           android:paddingBottom="@dimen/dp_10"
@@ -233,7 +233,7 @@
           android:orientation="vertical"
           android:layout_height="wrap_content">
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_margin="@dimen/dp_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -264,7 +264,7 @@
                   app:layout_constraintTop_toTopOf="parent"
                   app:layout_constraintBottom_toBottomOf="parent"
                   tools:ignore="MissingConstraints" />
-              <arch.cayenne.lib.skin.widget.SportTextView
+              <arch.cayenne.lib.skin.widget.SkinnableTextView
                   android:id="@+id/homeSubstituteName"
                   android:layout_marginStart="@dimen/dp_12"
                   android:layout_width="wrap_content"
@@ -285,7 +285,7 @@
                 android:layout_marginBottom="@dimen/dp_6"
                 android:layout_height="wrap_content"
                 tools:ignore="MissingConstraints">
-              <arch.cayenne.lib.skin.widget.SportTextView
+              <arch.cayenne.lib.skin.widget.SkinnableTextView
                   android:id="@+id/awaySubstituteName"
                   android:layout_marginEnd="@dimen/dp_12"
                   android:layout_width="wrap_content"
@@ -325,7 +325,7 @@
               android:layout_height="wrap_content">
           </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-      </arch.cayenne.lib.skin.widget.SportLinearLayout>
+      </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
   </ScrollView>

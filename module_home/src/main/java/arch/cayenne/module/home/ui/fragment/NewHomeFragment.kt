@@ -17,7 +17,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
@@ -149,7 +149,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun initDrawerContent() {
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
-            SportSkinResourceManager.getColor(
+            SkinnableResourceManager.getColor(
                 requireContext(),
                 R.color.drawer_scrim_color
             )
@@ -233,7 +233,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             .into(ivLeagueIcon)
                         tvLeagueName.text = tournament.simpleName
                         ivLeagueIcon.imageTintList = context?.let {
-                            SportSkinResourceManager.getColorStateList(
+                            SkinnableResourceManager.getColorStateList(
                                 it,
                                 R.color.selector_league_tab_tint
                             )

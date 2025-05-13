@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="live_chat_recycler" />
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/live_chat_iv_status"
             android:layout_width="@dimen/dp_180"
             android:layout_height="@dimen/dp_180"
@@ -41,7 +41,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/live_chat_tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

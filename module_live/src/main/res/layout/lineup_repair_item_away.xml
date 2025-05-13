@@ -16,7 +16,7 @@
       android:gravity="right"
       android:orientation="vertical"
       android:layout_height="wrap_content">
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/stvName"
         android:layout_marginEnd="7dp"
         android:layout_width="wrap_content"

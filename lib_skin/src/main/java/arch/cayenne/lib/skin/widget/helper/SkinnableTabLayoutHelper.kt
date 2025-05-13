@@ -7,7 +7,7 @@ import arch.cayenne.lib.skin.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.Tab
 
-class SportSkinTabLayoutHelper(mView: TabLayout) : SportSkinHelper(mView) {
+class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
     private var indicatorColor: Int = INVALID_ID
     private var tabBackground: Int = INVALID_ID
     private var textColor: Int = INVALID_ID

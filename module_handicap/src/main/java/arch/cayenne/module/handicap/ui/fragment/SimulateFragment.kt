@@ -10,7 +10,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding
 import arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel
 import kotlin.reflect.KClass
@@ -120,12 +120,12 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
         isRight: Boolean
     ): Drawable? {
         return if (isRight)
-            SportSkinResourceManager.getDrawable(
+            SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.selector_submit_right
             )
         else
-            SportSkinResourceManager.getDrawable(
+            SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.selector_submit_wrong
             )

@@ -2,7 +2,7 @@ package com.walisport.module.live.ui.adapter.livebetslip
 
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
@@ -48,7 +48,7 @@ class LiveBetSlipSettledAdapterManager(
             status?.let { st ->
                 it.betSettledTvResult.text =  ContextCompat.getString(it.betSettledTvResult.context,st.names)
                 it.betSettledTvResult.background =
-                    SportSkinResourceManager.getDrawable(it.betSettledTvResult.context, st.resId)
+                    SkinnableResourceManager.getDrawable(it.betSettledTvResult.context, st.resId)
             }
         }
     }

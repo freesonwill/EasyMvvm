@@ -8,7 +8,7 @@
     android:gravity="center_vertical"
     android:orientation="horizontal">
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_back"
         style="@style/CustomToolbarImgStyle"
         android:gravity="center"
@@ -17,7 +17,7 @@
         android:textSize="16sp"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_name"
         style="@style/CustomToolbarTvStyle"
         android:layout_weight="1"
@@ -26,7 +26,7 @@
         android:textColor="@color/title_bar"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

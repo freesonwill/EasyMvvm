@@ -12,7 +12,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.widget.SportTabLayout
+import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentEarlySettledNumberKeyboardBinding
@@ -120,7 +120,7 @@ class LiveBetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    private fun initTab(tabLayout: SportTabLayout) {
+    private fun initTab(tabLayout: SkinnableTabLayout) {
         val array = resources.getStringArray(R.array.keyboard_percent)
         array.forEach { text ->
             // 添加新Tab

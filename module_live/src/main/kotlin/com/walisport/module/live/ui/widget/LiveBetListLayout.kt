@@ -4,10 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
-import arch.cayenne.lib.skin.widget.SportLinearLayout
+import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutOneBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutThreeBinding
 import com.walisport.module.live.databinding.LiveBetContentItemLayoutTowBinding
@@ -21,7 +19,7 @@ class LiveBetListLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : SportLinearLayout(context, attrs, defStyleAttr) {
+) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
 
     var binding =
         LiveBetContentListItemLayoutBinding.inflate(LayoutInflater.from(context), this, false)

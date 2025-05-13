@@ -3,7 +3,7 @@ package com.walisport.module.live.ui.adapter.livebetslip
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
@@ -45,7 +45,7 @@ class LiveBetSlipInvalidAdapterManager(
             betExpiredTvStatus.text =
                 root.context.resources.getString(R.string.live_bet_reserve_expired)
             betExpiredTvStatus.setBackgroundResource(
-                SportSkinResourceManager.getTargetResourceId(
+                SkinnableResourceManager.getTargetResourceId(
                     root.context, R.drawable.live_bet_selection_status_light
                 )
             )
@@ -68,7 +68,7 @@ class LiveBetSlipInvalidAdapterManager(
         with(binding) {
             betExpiredTvStatus.width = 34.dp2px
             betExpiredTvStatus.text = root.context.resources.getString(R.string.live_bet_rejection)
-            betExpiredTvStatus.setBackgroundResource(SportSkinResourceManager.getTargetResourceId(root.context, R.drawable.live_bet_selection_status_normal))
+            betExpiredTvStatus.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(root.context, R.drawable.live_bet_selection_status_normal))
             tvUnit1.text = ContextCompat.getString(binding.root.context, R.string.live_bet_bet_num)
             tvUnit2.text = ContextCompat.getString(binding.root.context, R.string.live_bet_odds)
             tvUnit3.text = ContextCompat.getString(binding.root.context, R.string.live_bet_on)

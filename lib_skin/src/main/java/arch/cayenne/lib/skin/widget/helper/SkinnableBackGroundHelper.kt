@@ -4,7 +4,7 @@ import android.util.AttributeSet
 import android.view.View
 import arch.cayenne.lib.skin.R
 
-class SportSkinBackGroundHelper(mView: View) : SportSkinHelper(mView) {
+class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
 
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val a = mView.context.obtainStyledAttributes(

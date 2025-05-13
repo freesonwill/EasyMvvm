@@ -7,14 +7,14 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/tv_sport_icon"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:background="@drawable/selector_bg_home_sport_item"
         android:scaleType="fitXY" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_sport_title"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_17"

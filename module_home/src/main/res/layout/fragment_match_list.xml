@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -47,7 +47,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/tl_league_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tl_league_list" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tl_date_list"
@@ -76,4 +76,4 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingHorizontal="@dimen/dp_8" />
-</arch.cayenne.lib.skin.widget.SportLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
