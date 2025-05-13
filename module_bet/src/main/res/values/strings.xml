@@ -41,4 +41,11 @@
 
     <string name="toast_over_remaining">余额不足</string>
     <string name="toast_over_max">投注超限</string>
+
+    <string name="date_picker_title">选择开始日期</string>
+    <string name="date_picker_all">全部</string>
+    <string name="date_picker_today">今天</string>
+    <string name="date_picker_yesterday">昨天</string>
+    <string name="date_picker_in_7_day">7天内</string>
+    <string name="date_picker_custom">自定义</string>
 </resources>
