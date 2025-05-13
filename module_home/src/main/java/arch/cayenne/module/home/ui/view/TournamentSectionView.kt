@@ -1,20 +1,23 @@
 package arch.cayenne.module.home.ui.view
 
 import android.content.Context
+import android.icu.text.Transliterator
+import android.os.Build
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.lib.res.R
-import arch.cayenne.lib.skin.widget.SportImageView
-import arch.cayenne.lib.skin.widget.SportTextView
+import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.databinding.ViewTournamentSectionBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
@@ -30,88 +33,146 @@ class TournamentSectionView @JvmOverloads constructor(
     private lateinit var adapter: TournamentSectionAdapter
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
-    var isExpanded: Boolean = true
-        private set
+    var onCollapse: (() -> Unit)? = null
+
+    /** ⭐ 外部點擊回調：回傳 tournamentId */
+    var onTournamentClick: ((Int) -> Unit)? = null
 
     init {
         binding.rvTournamentList.layoutManager = LinearLayoutManager(context)
+        binding.ivHomeLeagueCollapse.setOnClickListener {
+            collapseWithAnimation()
+        }
     }
 
-    fun toggleVisibility(expand: Boolean) {
-        isExpanded = expand
-        binding.rvTournamentList.visibility = if (expand) View.VISIBLE else View.GONE
-        binding.llIndexContainer.visibility = if (expand) View.VISIBLE else View.GONE
-    }
+    private fun setTournamentList(tournaments: List<TournamentDataModel>) {
+        "joseph tournaments:$tournaments".logd()
+        if (!::adapter.isInitialized) {
+            adapter = TournamentSectionAdapter { tournamentId ->
+                onTournamentClick?.invoke(tournamentId)
+            }
+            binding.rvTournamentList.adapter = adapter
+        }
 
-    fun setTournamentList(tournaments: List<TournamentDataModel>) {
-        "joseph sectionView setTournamentList: ${tournaments.size}".logd()
-        adapter = TournamentSectionAdapter()
-        binding.rvTournamentList.adapter = adapter
+        val transliterator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Transliterator.getInstance("Han-Latin/Names; Latin-ASCII")
+        } else {
+            TODO("VERSION.SDK_INT < Q")
+        }
+        val groupedMap = mutableMapOf<Char, MutableList<TournamentDataModel>>()
 
-        val grouped = tournaments.groupBy {
-            it.name.firstOrNull()?.uppercaseChar()?.takeIf { ch -> ch in 'A'..'Z' } ?: '#'
-        }.toSortedMap()
+        tournaments.forEach { tournament ->
+            val pinyin = transliterator.transliterate(tournament.name).trim()
+            val firstChar = pinyin.firstOrNull()?.uppercaseChar()
+            val groupKey = if (firstChar != null && firstChar in 'A'..'Z') firstChar else '#'
+            if (!groupedMap.containsKey('#')) {
+                groupedMap['#'] = mutableListOf(
+                    TournamentDataModel(
+                        id = -1,
+                        sportId = 1,
+                        name = "熱門",
+                        simpleName = "",
+                        icon = "",
+                        weight = 1
+                    )
+                )
+            }
+
+            groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
+        }
 
         val displayList = mutableListOf<TournamentListItem>()
-        grouped.forEach { (letter, list) ->
+        letterPositionMap.clear()
+
+        groupedMap.toSortedMap().forEach { (letter, list) ->
             letterPositionMap[letter] = displayList.size
             displayList.add(TournamentListItem.Header(letter))
             displayList.addAll(list.map { TournamentListItem.TournamentItem(it) })
         }
 
         adapter.submitList(displayList)
-
         setupAZIndex()
     }
 
     private fun setupAZIndex() {
         binding.llIndexContainer.removeAllViews()
 
-        // 熱門聯賽索引（ImageView）
-        val hotIcon = SportImageView(context).apply {
-            setImageResource(arch.cayenne.module.home.R.drawable.ic_hot_league_index)
-            layoutParams = ViewGroup.LayoutParams(20.dp2px, 18.dp2px)
-            setOnClickListener {
-                letterPositionMap['#']?.let {
-                    (binding.rvTournamentList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
-                        it,
-                        0
-                    )
-                }
-            }
+        val container = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
         }
-        binding.llIndexContainer.addView(hotIcon)
+        val hotIcon = ImageView(context).apply {
+            setImageResource(R.drawable.ic_hot_league_index)
+            layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
+            setOnClickListener { scrollToSection('#') }
+        }
+        container.addView(hotIcon)
+//        if (letterPositionMap.containsKey('#')) {
+//            val hotIcon = SkinnableImageView(context).apply {
+//                setImageResource(R.drawable.ic_hot_league_index)
+//                layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
+//                setOnClickListener { scrollToSection('#') }
+//            }
+//            container.addView(hotIcon)
+//        }
 
-        // A-Z 快捷索引
         ('A'..'Z').forEach { letter ->
-            val tv = SportTextView(context).apply {
-                text = letter.toString()
-                textSize = 11f
-                setTextColor(
-                    ContextCompat.getColorStateList(
-                        context,
-                        R.color.brand_color
-                    )
-                )
-                gravity = Gravity.CENTER
-                layoutParams = ViewGroup.LayoutParams(20.dp2px, 18.dp2px)
-                setOnClickListener {
-                    letterPositionMap[letter]?.let {
-                        (binding.rvTournamentList.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(
-                            it,
-                            0
+            if (letterPositionMap.containsKey(letter)) {
+                val tv = TextView(context).apply {
+                    text = letter.toString()
+                    textSize = 11f
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            R.color.brand_color
                         )
-                    }
+                    ) // 非 stateList
+                    setOnClickListener { scrollToSection(letter) }
                 }
-                setBackgroundColor(
-                    ContextCompat.getColor(
-                        binding.root.context,
-                        arch.cayenne.module.home.R.color.bg_card
-                    )
-                )
+                container.addView(tv)
             }
-            binding.llIndexContainer.addView(tv)
         }
+        container.isClickable = true
+        container.isFocusable = true
+
+        binding.llIndexContainer.addView(container)
     }
 
+    private fun scrollToSection(letter: Char) {
+        val position = letterPositionMap[letter] ?: return
+        val layoutManager = binding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
+        binding.rvTournamentList.smoothScrollToPosition(position)
+
+//        layoutManager.scrollToPositionWithOffset(position, 0)
+    }
+
+    fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
+        binding.rvTournamentList.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.rvTournamentList.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                setTournamentList(tournaments)
+            }
+        })
+    }
+
+    fun collapseWithAnimation() {
+        this.animate()
+            .translationY(-this.height.toFloat())
+            .setDuration(200)
+            .withEndAction {
+                onCollapse?.invoke()
+            }
+            .start()
+    }
+
+    interface OnChampionDropdownListener {
+        fun onRequestCollapseChampion()
+    }
 }

@@ -9,11 +9,10 @@ import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.databinding.ItemTournamentSectionBinding
 import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
-import arch.cayenne.module.home.ui.viewholder.TournamentHeaderViewHolder
-import arch.cayenne.module.home.ui.viewholder.TournamentItemViewHolder
 
-class TournamentSectionAdapter :
-    BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
+class TournamentSectionAdapter(
+    private val onTournamentClick: (Int) -> Unit
+) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
 
     companion object {
         private const val TYPE_HEADER = 0
@@ -52,7 +51,10 @@ class TournamentSectionAdapter :
                 position
             )
 
-            is TournamentItemViewHolder -> holder.bind(getItem(position) as TournamentListItem.TournamentItem)
+            is TournamentItemViewHolder -> holder.bind(
+                getItem(position) as TournamentListItem.TournamentItem,
+                onTournamentClick
+            )
         }
     }
 }

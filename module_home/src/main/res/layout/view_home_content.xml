@@ -38,15 +38,14 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_league_more"
-        android:layout_width="@dimen/dp_30"
+        android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:paddingTop="7dp"
-        android:paddingEnd="@dimen/dp_8"
-        android:paddingBottom="@dimen/dp_11"
-        android:src="@drawable/ic_league_tabs_more"
-        app:layout_constraintBottom_toBottomOf="@+id/tl_league_list"
+        android:paddingTop="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_11"
+        android:paddingBottom="@dimen/dp_4"
+        android:src="@drawable/ic_league_tabs_expand"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tl_league_list" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_date_list"
@@ -122,15 +121,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tl_date_list" />
-
-    <FrameLayout
-        android:id="@+id/fl_tournament_section_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_league_list" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

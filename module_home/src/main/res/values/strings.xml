@@ -49,4 +49,6 @@
 
     <string name="disabled_to_combo">当前赛事不支持串关</string>
     <string name="lineup_empty">暂无数据,请换个试一试</string>
+    <string name="tournament_section_title">选联赛</string>
+    <string name="tournament_section_title_hot">热门</string>
 </resources>

@@ -43,7 +43,7 @@
             android:layout_width="@dimen/dp_22"
             android:layout_height="@dimen/dp_22"
             android:layout_marginBottom="@dimen/dp_4"
-            android:src="@drawable/ic_league_tabs_more"
+            android:src="@drawable/ic_league_tabs_expand"
             app:layout_constraintBottom_toBottomOf="@+id/tl_league_list"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tl_league_list" />

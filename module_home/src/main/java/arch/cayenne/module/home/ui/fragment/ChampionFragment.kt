@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -11,6 +12,10 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
 import com.bumptech.glide.Glide
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.module.home.databinding.FragmentChampionBinding
+import arch.cayenne.module.home.ui.view.TournamentSectionView
+import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import kotlin.reflect.KClass
 import android.view.LayoutInflater
 import androidx.lifecycle.lifecycleScope
@@ -33,6 +38,8 @@ import kotlinx.coroutines.launch
 class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
 
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
+    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+    private var dropdownListener: TournamentSectionView.OnChampionDropdownListener? = null
     override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
     private val args: ChampionFragmentArgs by navArgs()
     private lateinit var championAdapter: ChampionItemAdapter
@@ -47,9 +54,14 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
         mViewModel.getChampionDetail()
         arguments?.apply {
             mViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
+            homeViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        dropdownListener = parentFragment as? TournamentSectionView.OnChampionDropdownListener
+    }
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             titleBar.loadDynamicsTitleBar(tittleBarBinding.root)
@@ -102,10 +114,23 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
 
 
         }
-        mViewModel.tournaments.observe(viewLifecycleOwner) {
-            "joseph observe tournaments:$it".logd()
-            if (it.isNullOrEmpty()) return@observe
-            initSectionLayout(it)
+        homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
+            "joseph observe tournaments:$list".logd()
+            if (!list.isNullOrEmpty()) {
+                mBinding.tsvContainer.postSetTournamentList(list)
+// 使用者點擊某聯賽
+                mBinding.tsvContainer.onTournamentClick = { id ->
+                    mViewModel.selectTournament(id)
+                    homeViewModel.setShowAllTournaments(false)
+                    mBinding.tsvContainer.collapseWithAnimation()
+                }
+
+                // 使用者點擊 collapse icon
+                mBinding.tsvContainer.onCollapse = {
+                    // 呼叫 parent fragment（NewHomeFragment）的 toggle 方法
+                    dropdownListener?.onRequestCollapseChampion()
+                }
+            }
         }
     }
 
@@ -118,15 +143,17 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
         mViewModel.cancelSubscribeMatch()
         super.onDestroyView()
     }
+    override fun onDetach() {
+        dropdownListener = null
+        super.onDetach()
+    }
     companion object {
         private const val ARG_SPORT_ID = "sport_id"
-        private const val ARG_PLAY_TYPE_ID = "play_type_id"
-        fun newInstance(sportId: Int, playTypeId: Int): ChampionFragment {
+        fun newInstance(sportId: Int): ChampionFragment {
             return ChampionFragment().apply {
                 "joseph new ChampionFragment:$sportId".logd()
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
-                    putInt(ARG_PLAY_TYPE_ID, playTypeId)
                 }
             }
         }

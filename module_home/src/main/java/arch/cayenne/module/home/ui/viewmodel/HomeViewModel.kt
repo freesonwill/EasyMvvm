@@ -31,13 +31,26 @@ class HomeViewModel : BaseViewModel() {
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
-
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
     val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
 
+    //TODO 需要換掉livedata
+    val tenTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 今日/早盤
+    val allTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 冠軍/更多
+
+
     private val _selectedDate = MutableLiveData<Long>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Long> = _selectedDate
+
+    private val _selectedTournamentId = MutableLiveData<Int>()
+    val selectedTournamentId: MutableLiveData<Int> get() = _selectedTournamentId
+
+    fun selectTournament(id: Int) {
+        if (_selectedTournamentId.value != id) {
+            _selectedTournamentId.value = id
+        }
+    }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -64,6 +77,8 @@ class HomeViewModel : BaseViewModel() {
     fun resetLiveData() {
         sportsStatistical.value = arrayListOf()
         tournaments.value = arrayListOf()
+        tenTournaments.value = arrayListOf()
+        allTournaments.value = arrayListOf()
     }
 
     fun getCurrentPlayType() = currentPlayType
@@ -86,22 +101,59 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
-        getCurrentTournament(sportId)
+        getCurrentTournament(sportId, false)
     }
 
-    private fun getCurrentTournament(sportId: Int) {
+    fun setShowAllTournaments(isShow: Boolean) {
+        getCurrentTournament(currentSportId, isShow)
+    }
+
+    fun getCurrentSportId() = currentSportId
+
+//    private fun getCurrentTournament(sportId: Int) {
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val list = repository.getTenTournaments(currentPlayType.id, sportId)
+//            "joseph getCurrentTournament playtype:$currentPlayType, list: $list".logd()
+//            if (list.isNullOrEmpty()) {
+//                //TODO 拿取聯賽錯誤
+//                "Get Tournament List failed!!".loge(this::class.java.simpleName)
+//            } else {
+//                withContext(Dispatchers.Main) {
+//                    tournaments.value = ArrayList<TournamentDataModel>().apply {
+//                        add(TournamentDataModel.createAllItem(sportId))
+//                        addAll(list)
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    private fun getCurrentTournament(sportId: Int, isShowAll: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getTenTournaments(currentPlayType.id, sportId)
-            "joseph getCurrentTournament list: $list".logd()
-            if (list.isNullOrEmpty()) {
-                //TODO 拿取聯賽錯誤
-                "Get Tournament List failed!!".loge(this::class.java.simpleName)
+            val playType = currentPlayType
+            val list = if (isShowAll) {
+                repository.getTournaments(playType.id, sportId)
             } else {
-                withContext(Dispatchers.Main) {
-                    tournaments.value = ArrayList<TournamentDataModel>().apply {
-                        add(TournamentDataModel.createAllItem(sportId))
-                        addAll(list)
-                    }
+                repository.getTenTournaments(playType.id, sportId)
+            }
+
+            if (list.isNullOrEmpty()) {
+                "Get Tournament List failed!!".loge(this::class.java.simpleName)
+                return@launch
+            }
+
+            val fullList = ArrayList<TournamentDataModel>().apply {
+                add(TournamentDataModel.createAllItem(sportId))
+                addAll(list)
+            }
+
+            withContext(Dispatchers.Main) {
+                if (isShowAll) {
+                    "joseph allTournaments list: $fullList".logd()
+                    allTournaments.value = fullList.filterNot { it.id == 0 }
+                } else {
+                    "joseph tenTournaments list: $fullList".logd()
+                    tenTournaments.value = fullList
                 }
             }
         }

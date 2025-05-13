@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -30,6 +32,7 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
+import arch.cayenne.module.home.ui.view.TournamentSectionView
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -38,10 +41,13 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
+class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
+    TournamentSectionView.OnChampionDropdownListener {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
@@ -54,10 +60,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-    private lateinit var leagueAdapter: LeaguePagerAdapter
     private var isExpanded = false
-    private var leagueList: List<TournamentDataModel> = emptyList()
-//    private lateinit var leagueAdapter: LeaguePagerAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -148,13 +151,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             ivHomeLeagueMore.clickNoRepeat {
-//                val isExpanded = !binding.tournamentSectionView.isExpanded
-//                binding.tournamentSectionView.toggleVisibility(isExpanded)
-//                binding.ivHomeLeagueMore.setImageResource(
-//                    if (isExpanded) R.drawable.ic_league_tabs_more_up else R.drawable.ic_league_tabs_more_down
-//                )
-                isExpanded = !isExpanded
-                toggleLeagueMoreSection(isExpanded)
+                mViewModel.setShowAllTournaments(true)
+                toggleLeagueMoreSection(true)
+                isExpanded = true
             }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
@@ -170,6 +169,54 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
+
+    private fun toggleLeagueMoreSection(expanded: Boolean) {
+        val tag = "champion_dropdown"
+        val fm = childFragmentManager
+
+        if (expanded) {
+            if (fm.findFragmentByTag(tag) != null) return
+
+            mBinding.llTournamentsDropdown.visibility = View.VISIBLE
+
+            val fragment = ChampionFragment.newInstance(mViewModel.getCurrentSportId())
+            fm.beginTransaction()
+                .add(R.id.ll_tournaments_dropdown, fragment, tag)
+                .commitAllowingStateLoss()
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(50)
+                val fragView = fm.findFragmentByTag(tag)?.view ?: return@launch
+                fragView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                    ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        fragView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        fragView.translationY = -fragView.height.toFloat()
+                        fragView.animate().translationY(0f).setDuration(300).start()
+                    }
+                })
+            }
+        } else {
+            val fragment = fm.findFragmentByTag(tag) ?: return
+            val fragView = fragment.view
+
+            if (fragView != null) {
+                fragView.animate()
+                    .translationY(-fragView.height.toFloat())
+                    .setDuration(200)
+                    .withEndAction {
+                        fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
+                        mBinding.llTournamentsDropdown.visibility = View.GONE
+                    }
+                    .start()
+            } else {
+                fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
+                mBinding.llTournamentsDropdown.visibility = View.GONE
+            }
+        }
+    }
+
+
     private fun showHomeCalendar(tabSelectedDate: String) {
         //設定標記紅色日期及可選取日期範圍
         fun setSchemeDate(calendarView:CalendarView) {
@@ -452,15 +499,27 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
 
-        mViewModel.tournaments.observe(viewLifecycleOwner) {
-//            if (it.isNullOrEmpty()) return@observe
-            leagueList = it
+        mViewModel.tenTournaments.observe(viewLifecycleOwner) {
+            "joseph tenTournaments".logd()
             setTournamentAndViewPagerLayout(it)
         }
-        //TODO 冠軍聯賽列表
+        //TODO 更多聯賽列表
+//        mViewModel.allTournaments.observe(viewLifecycleOwner) {
+//            "joseph champion allTournaments:$it".logd()
+//            setTournamentAndViewPagerLayout(it)
+//        }
+        mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
+            "joseph 使用者選取聯賽 ID: $id".logd()
+            // 更新頁面內容
+        }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
+    }
+
+    override fun onRequestCollapseChampion() {
+        toggleLeagueMoreSection(false)
+        isExpanded = false
     }
 }
