@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.compare
+package arch.cayenne.module.home.ui.adapter.compare
 
 import androidx.recyclerview.widget.DiffUtil
 import arch.cayenne.lib.database.entity.MarketBeanLite

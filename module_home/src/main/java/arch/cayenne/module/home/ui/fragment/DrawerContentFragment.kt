@@ -6,7 +6,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
-import arch.cayenne.module.home.viewmodel.DrawerContentViewModel
+import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
 import kotlin.reflect.KClass
 
 class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawerContentBinding>() {

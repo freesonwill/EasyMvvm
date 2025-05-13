@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.repository
+package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
@@ -14,9 +14,9 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.home.data.MatchUpdateData
-import arch.cayenne.module.home.data.toRoomData
-import arch.cayenne.module.home.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.data.model.MatchUpdateData
+import arch.cayenne.module.home.data.model.toRoomData
+import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -200,7 +200,8 @@ class HomeRepository(
                 return false
             }
             val matchFullData = resp.data!!.matchList.toRoomData()
-            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
+                HomeRepository::class.java.simpleName)
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
 
                 TournamentMatchRef(

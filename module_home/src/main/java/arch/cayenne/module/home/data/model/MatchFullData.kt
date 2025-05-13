@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.data
+package arch.cayenne.module.home.data.model
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
