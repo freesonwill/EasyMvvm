@@ -1,14 +1,14 @@
-package arch.cayenne.lib.socket.extension
+package arch.cayenne.lib.websocket.extension
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.WebSocketManager.Companion.responseTimeout
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.data.InvalidProtoTypeResponseError
-import arch.cayenne.lib.socket.data.ResponseTimeOutError
-import arch.cayenne.lib.socket.data.SocketOriginResponseData
-import arch.cayenne.lib.socket.data.SocketRequestData
-import arch.cayenne.lib.socket.data.SocketResponseData
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.WebSocketManager.Companion.responseTimeout
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.InvalidProtoTypeResponseError
+import arch.cayenne.lib.websocket.data.ResponseTimeOutError
+import arch.cayenne.lib.websocket.data.SocketOriginResponseData
+import arch.cayenne.lib.websocket.data.SocketRequestData
+import arch.cayenne.lib.websocket.data.SocketResponseData
 import com.google.protobuf.GeneratedMessageLite
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope

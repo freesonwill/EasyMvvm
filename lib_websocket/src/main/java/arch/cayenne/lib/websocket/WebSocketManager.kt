@@ -1,12 +1,12 @@
-package arch.cayenne.lib.socket
+package arch.cayenne.lib.websocket
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.data.ConnectState
-import arch.cayenne.lib.socket.data.IRequest
-import arch.cayenne.lib.socket.data.IResponse
-import arch.cayenne.lib.socket.data.ISocket
-import arch.cayenne.lib.socket.extension.asRemoteRequest
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.IRequest
+import arch.cayenne.lib.websocket.data.IResponse
+import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.extension.asRemoteRequest
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -11,8 +11,8 @@ import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.socket.data.LoginTokenFailedError
-import arch.cayenne.lib.socket.data.ResponseTimeOutError
+import arch.cayenne.lib.websocket.data.LoginTokenFailedError
+import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import kotlin.random.Random
 import kotlin.reflect.KClass
 

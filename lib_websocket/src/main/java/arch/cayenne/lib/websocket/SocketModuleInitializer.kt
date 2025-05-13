@@ -1,11 +1,11 @@
-package arch.cayenne.lib.socket
+package arch.cayenne.lib.websocket
 
 import android.app.Application
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.socket.data.ISecurity
-import arch.cayenne.lib.socket.data.ISocket
+import arch.cayenne.lib.websocket.data.ISecurity
+import arch.cayenne.lib.websocket.data.ISocket
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket.data
+package arch.cayenne.lib.websocket.data
 
 enum class SocketConnectState {
     None,
