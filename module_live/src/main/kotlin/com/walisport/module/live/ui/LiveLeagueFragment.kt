@@ -57,6 +57,9 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             refreshLayout.setOnRefreshListener {
                 mViewModel.getMatchLeagueData(leagueID)
             }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.getMoreMatchLeagueData(leagueID)
+            }
             recyclerLeague.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = standsAdapter
@@ -107,7 +110,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
                 )
                 gradientDrawable.shape = GradientDrawable.RECTANGLE
-                mBinding.root.background = gradientDrawable
+                mBinding.leagueRoot.background = gradientDrawable
                 //更新设置联赛LOGO
                 Glide.with(this).load(it.logo).into(mBinding.ivLeagueLogo)
                 //更新设置联赛名称
