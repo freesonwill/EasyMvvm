@@ -9,6 +9,6 @@
                  2.  value 为固定的 androidx.startup，用于提取 CustomInitializer 的路径
             -->
     <meta-data
-        android:name="arch.cayenne.lib.socket.SocketModuleInitializer"
+        android:name="arch.cayenne.lib.websocket.SocketModuleInitializer"
         android:value="androidx.startup" />
 </manifest>

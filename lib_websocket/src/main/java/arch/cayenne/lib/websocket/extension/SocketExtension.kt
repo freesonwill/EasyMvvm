@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket.extension
+package arch.cayenne.lib.websocket.extension
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

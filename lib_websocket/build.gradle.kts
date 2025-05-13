@@ -1,4 +1,5 @@
-import com.google.protobuf.gradle.*
+import com.google.protobuf.gradle.id
+import com.google.protobuf.gradle.proto
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
@@ -9,7 +10,7 @@ plugins {
 apply(from = rootProject.file("gradle/_sign.gradle"))
 
 android {
-    namespace = "arch.cayenne.lib.socket"
+    namespace = "arch.cayenne.lib.websocket"
     compileSdk = 34
 
     defaultConfig {

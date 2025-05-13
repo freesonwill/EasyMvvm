@@ -1,14 +1,14 @@
-package arch.cayenne.lib.socket
+package arch.cayenne.lib.websocket
 
 import android.util.Log
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.socket.data.IRequest
-import arch.cayenne.lib.socket.data.IResponse
-import arch.cayenne.lib.socket.data.ISecurity
-import arch.cayenne.lib.socket.data.InvalidDataResponseError
-import arch.cayenne.lib.socket.data.SocketOriginResponseData
-import arch.cayenne.lib.socket.data.SocketRequestData
+import arch.cayenne.lib.websocket.data.IRequest
+import arch.cayenne.lib.websocket.data.IResponse
+import arch.cayenne.lib.websocket.data.ISecurity
+import arch.cayenne.lib.websocket.data.InvalidDataResponseError
+import arch.cayenne.lib.websocket.data.SocketOriginResponseData
+import arch.cayenne.lib.websocket.data.SocketRequestData
 
 class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
     init {

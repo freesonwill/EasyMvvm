@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket.data
+package arch.cayenne.lib.websocket.data
 
 enum class ApiCode(val mid: Short, val sid: Short) {
     LOGIN(7,7),             // 7-7: 登录游戏服

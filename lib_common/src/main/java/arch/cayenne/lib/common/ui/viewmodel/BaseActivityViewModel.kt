@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.socket.data.ConnectState
-import arch.cayenne.lib.socket.data.SocketResponseError
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import kotlinx.coroutines.Dispatchers

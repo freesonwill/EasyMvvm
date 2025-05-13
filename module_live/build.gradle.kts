@@ -48,7 +48,7 @@ dependencies {
     implementation(project(":lib_ijkplayer"))
     implementation(project(":lib_qyplayer"))
     implementation(project(":lib_database"))
-    implementation(project(":lib_socket"))
+    implementation(project(":lib_websocket"))
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)

@@ -5,8 +5,8 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.data.ConnectState
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ConnectState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
