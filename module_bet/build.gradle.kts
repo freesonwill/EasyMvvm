@@ -40,7 +40,7 @@ dependencies {
     api(project(":lib_base"))
     api(project(":lib_database"))
     api(project(":lib_common"))
-    api(project(":lib_socket"))
+    api(project(":lib_websocket"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

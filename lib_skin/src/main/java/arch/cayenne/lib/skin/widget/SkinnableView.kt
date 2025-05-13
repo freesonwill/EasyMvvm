@@ -9,9 +9,9 @@ import arch.cayenne.lib.skin.SportSkinManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
- class SkinnableView :View {
+ open class SkinnableView :View {
 
-    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
+     private lateinit var backgroundTintHelper:SkinnableBackGroundHelper
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
     constructor(context: Context) : super(context) {
@@ -39,7 +39,9 @@ import org.koin.java.KoinJavaComponent.inject
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+        backgroundTintHelper =  SkinnableBackGroundHelper(this)
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
+
     }
 
 }

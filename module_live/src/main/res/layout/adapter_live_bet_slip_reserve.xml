@@ -28,7 +28,7 @@
         android:id="@+id/recycler_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_date"
+        app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_top"
         />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.socket
+package arch.cayenne.lib.websocket
 
 import android.app.Application
 import android.content.Context
@@ -6,13 +6,13 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.socket.data.ConnectState
-import arch.cayenne.lib.socket.data.IRequest
-import arch.cayenne.lib.socket.data.IResponse
-import arch.cayenne.lib.socket.data.ISecurity
-import arch.cayenne.lib.socket.data.ISocket
-import arch.cayenne.lib.socket.data.SocketConnectState
-import arch.cayenne.lib.socket.extension.collectFirstSubscribe
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.IRequest
+import arch.cayenne.lib.websocket.data.IResponse
+import arch.cayenne.lib.websocket.data.ISecurity
+import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.data.SocketConnectState
+import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow

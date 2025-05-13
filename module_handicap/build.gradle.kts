@@ -44,7 +44,7 @@ android {
 dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_res"))
-    implementation(project(":lib_socket"))
+    implementation(project(":lib_websocket"))
     implementation(project(":lib_skin"))
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)

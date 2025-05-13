@@ -25,13 +25,13 @@ object LiveBetSlipUtils {
     /***
      * 提前结算金额
      * */
-    fun earlySettlePrice(betAmount: String, odds: String, earlyBetAmount: String): String {
-        return toBigDecimal(betAmount).multiply(toBigDecimal(odds))
+    fun earlySettlePrice(betAmount: String, earlyPrice: String, earlyBetAmount: String): String {
+        return toBigDecimal(betAmount).multiply(toBigDecimal(earlyPrice))
             .minus(toBigDecimal(earlyBetAmount)).setScale(2, RoundingMode.HALF_UP).toString()
     }
 
-    private fun toBigDecimal(value: String): BigDecimal {
-        return value.toBigDecimalOrNull() ?: BigDecimal(0)
+    fun toBigDecimal(value: String?): BigDecimal {
+        return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }
 
 }

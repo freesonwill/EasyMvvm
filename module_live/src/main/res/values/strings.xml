@@ -135,5 +135,9 @@
     <string name="lose">输</string>
     <string name="lose_half">输一半</string>
     <string name="win_half">赢一半</string>
+    <string name="not_support_early_settle">该订单暂不支持提前结算</string>
+    <string name="network_abnormal">网络一场，请稍后重试</string>
+    <string name="early_settle_success">提前结算成功</string>
+    <string name="early_settle_faile">提前结算失败</string>
 
 </resources>

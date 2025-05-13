@@ -14,12 +14,14 @@
 
     <TextView
         android:id="@+id/bet_expired_tv_status"
-        android:layout_width="@dimen/dp_60"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_21"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
         android:text="@string/live_bet_reserve_expired"
+        android:paddingStart="3.5dp"
+        android:paddingEnd="4.5dp"
         android:background="@drawable/live_bet_selection_status_light"
         android:textColor="@color/color_2c3c3e"
         android:textSize="@dimen/sp_13"
@@ -43,7 +45,7 @@
        android:id="@+id/recycler_selection"
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       app:layout_constraintTop_toBottomOf="@id/bet_expired_tv_date"
+       app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_top"
        />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
