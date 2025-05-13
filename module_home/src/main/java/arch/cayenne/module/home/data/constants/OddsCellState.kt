@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.enums
+package arch.cayenne.module.home.data.constants
 
 enum class OddsCellState {
     VISIBLE,       // 正常顯示

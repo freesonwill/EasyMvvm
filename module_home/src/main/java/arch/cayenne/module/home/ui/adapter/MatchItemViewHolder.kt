@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.viewholder
+package arch.cayenne.module.home.ui.adapter
 
 import android.graphics.Rect
 import android.view.View
@@ -19,8 +19,6 @@ import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
-import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
-import arch.cayenne.module.home.ui.adapter.OddsColumnAdapter
 import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(

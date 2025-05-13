@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.viewholder
+package arch.cayenne.module.home.ui.adapter
 
 import android.animation.ValueAnimator
 import android.view.View
@@ -7,7 +7,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsCellBinding
-import arch.cayenne.module.home.enums.OddsCellState
+import arch.cayenne.module.home.data.constants.OddsCellState
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,

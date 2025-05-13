@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="arch.cayenne.module.home.ui.HomeActivity"
+            android:name="arch.cayenne.module.home.ui.activity.HomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             >

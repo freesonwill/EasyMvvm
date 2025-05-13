@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.enums
+package arch.cayenne.module.home.data.constants
 
 import android.content.Context
 import androidx.annotation.StringRes

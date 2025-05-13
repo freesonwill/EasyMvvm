@@ -22,12 +22,12 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
-import arch.cayenne.module.home.enums.PlayType
-import arch.cayenne.module.home.enums.SportType
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.utils.DateUtils
-import arch.cayenne.module.home.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener

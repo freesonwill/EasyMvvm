@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemSportsBinding
-import arch.cayenne.module.home.enums.SportType
+import arch.cayenne.module.home.data.constants.SportType
 
 class SportsListAdapter(
     private val onItemClick: (SportDataModel) -> Unit

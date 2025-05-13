@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.viewmodel
+package arch.cayenne.module.home.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import plugin.koin.KoinViewModel

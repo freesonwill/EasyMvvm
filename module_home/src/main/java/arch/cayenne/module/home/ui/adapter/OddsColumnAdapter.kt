@@ -6,8 +6,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
-import arch.cayenne.module.home.ui.compare.OddsDiffCallback
-import arch.cayenne.module.home.ui.viewholder.OddsColumnViewHolder
+import arch.cayenne.module.home.ui.adapter.compare.OddsDiffCallback
 
 class OddsColumnAdapter(
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
