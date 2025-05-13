@@ -170,7 +170,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.tabLayout.addTab(newTab)
         }
         reflexPadding(mBinding.tabLayout)
-        mBinding.tabLayout.getTabAt(0)?.select();
+        mBinding.tabLayout.getTabAt(0)?.select()
     }
 
 
