@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.LayoutRes
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
@@ -40,7 +41,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     private fun initVideoView() {
         mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY)
+            init(PlayerMode.FLUENCY, R.layout.layout_live_player_view)
             keepScreenOn = true
             setConfig(GlobalConfig(requireContext()).also {
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置

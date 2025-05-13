@@ -4,13 +4,10 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -23,7 +20,6 @@ import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.skin.res.SportSkinResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
-import com.walisport.module.live.data.PlayStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.PlayerMode
@@ -47,11 +43,6 @@ class LiveVideoLandscapeFragment :
 
     private var buttonsDisplaying = true
 
-    private val playingStatusLiveData: MutableLiveData<PlayStatus> =
-        MutableLiveData(PlayStatus.Loading)
-
-    private var loadingAnim: ObjectAnimator? = null
-
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
@@ -62,7 +53,7 @@ class LiveVideoLandscapeFragment :
 
     private fun initVideoView() {
         mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY)
+            init(PlayerMode.FLUENCY, R.layout.layout_live_player_view_landscape)
             keepScreenOn = true
             setConfig(GlobalConfig(requireContext()).also {
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置

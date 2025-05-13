@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
@@ -31,7 +32,7 @@ class LivePlayerView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private var mRenderView = QYRenderView(context)
+    private lateinit var mRenderView :QYRenderView
     private lateinit var mGestureView: GestureView
 
     private lateinit var ctLoading: ConstraintLayout
@@ -64,17 +65,17 @@ class LivePlayerView @JvmOverloads constructor(
     private var bufferingTimeoutJob: Job? = null
 
 
-    fun init(playerMode: PlayerMode) {
+    fun init(playerMode: PlayerMode, @LayoutRes layoutId: Int) {
         mPlayerMode = playerMode
-        initViews()
+        initViews(layoutId)
         initListeners()
     }
 
-    private fun initViews() {
+    private fun initViews(@LayoutRes layoutId: Int) {
 
         // 使用 LayoutInflater 加载 XML 布局
         LayoutInflater.from(context)
-            .inflate(com.walisport.module.live.R.layout.layout_live_player_view, this, true)
+            .inflate(layoutId, this, true)
 
         ctLoading = findViewById(com.walisport.module.live.R.id.ct_loading)
         ctError = findViewById(com.walisport.module.live.R.id.ct_error)
