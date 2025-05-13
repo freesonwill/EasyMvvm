@@ -37,8 +37,6 @@ class LiveVideoLandscapeFragment :
         FragmentLiveVideoLandscapeBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
-    private var mBackPressed = false
-
     private var videoViewFullScreen = true
 
     private var buttonsDisplaying = true
