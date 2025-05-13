@@ -7,13 +7,13 @@ import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Environment
 import androidx.core.content.res.ResourcesCompat
-import arch.cayenne.lib.skin.widget.helper.SportSkinHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
 
-class SportSkinAssetsResourceLoader(context: Context, private val _skinName: String) : SportSkinResourceLoader {
+class SkinnableAssetsResourceLoader(context: Context, private val _skinName: String) : SkinnableResourceLoader {
     val SKIN_DEPLOY_PATH = "skins"
     private var _resources: Resources? = null
 
@@ -31,7 +31,7 @@ class SportSkinAssetsResourceLoader(context: Context, private val _skinName: Str
 
 
     override fun getColor(context: Context, resId: Int): Int {
-        if (resId != SportSkinHelper.INVALID_ID) {
+        if (resId != SkinnableHelper.INVALID_ID) {
             _resources?.let {
                 try {
                     return ResourcesCompat.getColor(it, resId, context.theme)
@@ -40,11 +40,11 @@ class SportSkinAssetsResourceLoader(context: Context, private val _skinName: Str
                 }
             }
         }
-        return SportSkinHelper.INVALID_ID
+        return SkinnableHelper.INVALID_ID
     }
 
     override fun getColorStateList(context: Context, resId: Int): ColorStateList? {
-        if (resId != SportSkinHelper.INVALID_ID) {
+        if (resId != SkinnableHelper.INVALID_ID) {
             _resources?.let {
                 try {
                     return ResourcesCompat.getColorStateList(it, resId, context.theme)
@@ -58,7 +58,7 @@ class SportSkinAssetsResourceLoader(context: Context, private val _skinName: Str
     }
 
     override fun getDrawable(context: Context, resId: Int): Drawable? {
-        if (resId != SportSkinHelper.INVALID_ID) {
+        if (resId != SkinnableHelper.INVALID_ID) {
             _resources?.let {
                 try {
                     return ResourcesCompat.getDrawable(it, resId, context.theme)
@@ -71,7 +71,7 @@ class SportSkinAssetsResourceLoader(context: Context, private val _skinName: Str
     }
 
     override fun getTargetResourceId(context: Context, resId: Int): Int {
-        return SportSkinHelper.INVALID_ID
+        return SkinnableHelper.INVALID_ID
     }
 
     override fun getSkinName(): String {

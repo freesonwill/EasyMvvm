@@ -28,7 +28,7 @@ import androidx.core.view.MotionEventCompat
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.DimensionExt.sp2px
-import arch.cayenne.lib.skin.widget.SportView
+import arch.cayenne.lib.skin.widget.SkinnableView
 
 /**
  * @author: caomei
@@ -38,7 +38,7 @@ import arch.cayenne.lib.skin.widget.SportView
 class LetterIndexView @JvmOverloads constructor(
     private val mContext: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0) : SportView(mContext, attrs, defStyleAttr) {
+    defStyleAttr: Int = 0) : SkinnableView(mContext, attrs, defStyleAttr) {
     private val letterList: MutableList<String> = ArrayList()
 
     private var paint: Paint? = null

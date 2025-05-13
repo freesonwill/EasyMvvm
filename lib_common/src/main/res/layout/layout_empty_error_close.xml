@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportLinearLayout
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,13 +8,13 @@
     android:background="@color/app_bg"
    >
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/dp_180"
         android:layout_height="@dimen/dp_180"
         />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_message"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
@@ -23,4 +23,4 @@
         android:textColor="@color/dynamic_text"
         android:textSize="13sp" />
 
-</arch.cayenne.lib.skin.widget.SportLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

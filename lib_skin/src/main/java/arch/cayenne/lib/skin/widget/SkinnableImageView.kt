@@ -13,15 +13,15 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SportSkinImageHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 
-class SportImageView : AppCompatImageView{
-    private val backgroundHelper = SportSkinBackGroundHelper(this)
-    private val imageHelper = SportSkinImageHelper(this)
+class SkinnableImageView : AppCompatImageView{
+    private val backgroundHelper = SkinnableBackGroundHelper(this)
+    private val imageHelper = SkinnableImageHelper(this)
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null

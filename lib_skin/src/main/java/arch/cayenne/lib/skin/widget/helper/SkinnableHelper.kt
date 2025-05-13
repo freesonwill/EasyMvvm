@@ -2,12 +2,11 @@ package arch.cayenne.lib.skin.widget.helper
 
 import android.util.AttributeSet
 import android.view.View
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
-import org.koin.java.KoinJavaComponent.inject
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 
 
-abstract class SportSkinHelper (protected open val mView:View) {
-    val resourcesManager = SportSkinResourceManager
+abstract class SkinnableHelper (protected open val mView:View) {
+    val resourcesManager = SkinnableResourceManager
 
     protected var mSrcId: Int = INVALID_ID
 

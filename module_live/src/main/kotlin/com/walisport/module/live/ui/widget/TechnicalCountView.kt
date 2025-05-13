@@ -5,8 +5,8 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
-import arch.cayenne.lib.skin.widget.SportLinearLayout
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -20,7 +20,7 @@ import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
 
 class TechnicalCountView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
-) : SportLinearLayout(context, attrs, defStyleAttr) {
+) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
 
     private var clicklistener: OnClickListener? = null
 
@@ -185,30 +185,30 @@ class TechnicalCountView @JvmOverloads constructor(
     private fun getAttackBackground(home: Int, away: Int): Drawable? {
         return if (home < away) {
             if (home == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_attack_zero
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_attack_left
                 )
             }
         } else if (home > away) {
             if (away == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_attack_hundred
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_attack_right
                 )
             }
         } else {
-            SportSkinResourceManager.getDrawable(
+            SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.icon_attack
             )
@@ -218,30 +218,30 @@ class TechnicalCountView @JvmOverloads constructor(
     private fun getDangerAttackBackground(home: Int, away: Int): Drawable? {
         return if (home < away) {
             if (home == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_danger_attack_zero
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_danger_attack_left
                 )
             }
         } else if (home > away) {
             if (away == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_danger_attack_hundred
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_danger_attack_right
                 )
             }
         } else {
-            SportSkinResourceManager.getDrawable(
+            SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.icon_danger_attack
             )
@@ -251,30 +251,30 @@ class TechnicalCountView @JvmOverloads constructor(
     private fun getBallControlBackground(home: Int, away: Int): Drawable? {
         return if (home < away) {
             if (home == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_control_rate_zero
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_control_rate_left
                 )
             }
         } else if (home > away) {
             if (away == 0) {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_control_rate_hundred
                 )
             } else {
-                SportSkinResourceManager.getDrawable(
+                SkinnableResourceManager.getDrawable(
                     mBinding.root.context,
                     R.drawable.icon_control_rate_right
                 )
             }
         } else {
-            SportSkinResourceManager.getDrawable(
+            SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.icon_control_rate
             )

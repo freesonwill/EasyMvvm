@@ -10,7 +10,7 @@
             type="arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background">
@@ -36,5 +36,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

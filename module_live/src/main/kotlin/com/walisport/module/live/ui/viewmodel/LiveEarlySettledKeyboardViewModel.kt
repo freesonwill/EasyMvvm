@@ -6,33 +6,55 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.live.data.repository.LiveBetRepository
-import galaxy.common.proto.Common.EarlySettlePrice
-import kotlinx.coroutines.launch
+import com.walisport.module.live.utils.LiveBetSlipUtils.toBigDecimal
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 
 class LiveEarlySettledKeyboardViewModel : BaseViewModel() {
     private val _editNumber: MutableLiveData<String> = MutableLiveData()
     private val repository: LiveBetRepository by inject { parametersOf(viewModelScope) }
-    var prices: MutableLiveData<EarlySettlePrice> = MutableLiveData()
+    val earlySettlePriceLiveData: MutableLiveData<Double> = MutableLiveData(0.0)
     val editNumber: LiveData<String> = _editNumber.distinctUntilChanged()
+    var betId: String = ""
 
+    fun setArguments(betId: String, betAmount: Double) {
+        this.betId = betId
+        earlySettlePriceLiveData.value = betAmount
+    }
 
+    /**
+     * 添加数字，小于小数点后2位
+     * */
     fun addNumber(number: Int) {
         val current = _editNumber.value ?: ""
         if (current.contains(".")) {
             val lastValue = current.substringAfter(".")
             if (lastValue.length > 2) return
         }
-        _editNumber.value = current + number
+        val value = current + number
+        maxLimitValue(value.toDouble())
     }
 
     fun setNumber(number: Int) {
-        _editNumber.value = number.toString()
+        maxLimitValue(number.toDouble())
     }
 
+    /**
+     * 结算金额百分比
+     * */
+    fun setPercentNumber(percent: Double) {
+        val value =
+            toBigDecimal(earlySettlePriceLiveData.value.toString()).multiply(toBigDecimal(percent.toString()))
+                .setScale(2, RoundingMode.HALF_UP).toDouble()
+        maxLimitValue(value)
+    }
+
+    /**
+     *添加小数点
+     * */
     fun setDot() {
         val current = _editNumber.value ?: ""
         if (current.isEmpty()) {
@@ -58,6 +80,9 @@ class LiveEarlySettledKeyboardViewModel : BaseViewModel() {
         } ?: ""
     }
 
+    /**
+     * 清除数字
+     * */
     fun backNumber() {
         _editNumber.value = _editNumber.value?.let {
             if (it.length > 1) {
@@ -68,13 +93,14 @@ class LiveEarlySettledKeyboardViewModel : BaseViewModel() {
         }
     }
 
-    fun earlySettledPrice(betId: String) {
-        viewModelScope.launch {
-            val result = repository.earlySettledPrice(betId)
-            if (!result.isNullOrEmpty()) {
-                prices.value = result.first()
-            }
+    /**
+     * 输入的数字不能超过结算金额
+     * */
+    private fun maxLimitValue(value: Double) {
+        if (value > (earlySettlePriceLiveData.value ?: 0.0)) {
+            return
         }
+        _editNumber.value = value.toString()
     }
 
 

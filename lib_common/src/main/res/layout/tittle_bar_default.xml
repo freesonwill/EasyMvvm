@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/CustomToolbarStyle"
     android:background="@color/title_bg">
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
         app:srcCompat="@drawable/bg_left_arrow"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_name"
         style="@style/CustomToolbarTvStyle"
         android:textColor="@color/title_bar"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,4 +29,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="MissingConstraints" />
-</arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

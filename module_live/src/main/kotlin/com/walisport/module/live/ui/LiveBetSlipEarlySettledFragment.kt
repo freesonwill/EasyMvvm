@@ -12,33 +12,32 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.widget.SportTabLayout
+import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentEarlySettledNumberKeyboardBinding
 import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
 import com.walisport.module.live.utils.LiveBetSlipUtils.earlySettlePrice
+import java.math.BigDecimal
 import kotlin.reflect.KClass
 
 /**
  * 提前结算报价
  * */
-class LiveEarlySettledKeyboardFragment private constructor() :
+class LiveBetSlipEarlySettledFragment private constructor() :
     BaseDialogFragment<LiveEarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
     private val betIdKey = "bet_id"
     private val betAmountKey = "bet_amount"
-    private val betEarlySettleKey = "bet_early_settle"
-    private var betId: String = ""
-
 
     companion object {
-
-        fun instance(betId: String,betAmount:String,betEarlySettle:String): LiveEarlySettledKeyboardFragment {
-            return LiveEarlySettledKeyboardFragment().apply {
+        fun instance(
+            betId: String,
+            money: Double,
+        ): LiveBetSlipEarlySettledFragment {
+            return LiveBetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
                     putString(betIdKey, betId)
-                    putString(betAmountKey,betAmount)
-                    putString(betEarlySettleKey,betEarlySettle)
+                    putDouble(betAmountKey, money)
                 }
             }
         }
@@ -48,13 +47,13 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<LiveEarlySettledKeyboardViewModel>
         get() = LiveEarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((money: String, expectPrice: String) -> Unit)? = null
+    private var onEarlySettleClick: ((betId: String, money: Double) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        dialog?.setCanceledOnTouchOutside(true)
-        betId = arguments?.getString(betIdKey) ?: ""
+        val betId = arguments?.getString(betIdKey) ?: ""
+        val betAmount = arguments?.getDouble(betAmountKey) ?: 0.0
+        mViewModel.setArguments(betId, betAmount)
 
-        mViewModel.earlySettledPrice(betId)
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney)
@@ -87,13 +86,12 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             btnCollapse.setOnClickListener { }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
-                    mViewModel.editNumber.value ?: "",
-                    mViewModel.prices.value?.price.toString() ?: ""
+                    mViewModel.betId,
+                    mViewModel.earlySettlePriceLiveData.value ?: 0.0
                 )
                 dismiss()
             }
             btnCancel.setOnClickListener { dismiss() }
-            tvBetMoney.text = getString(R.string.refund_amount, mViewModel.prices.value?.price)
         }
     }
 
@@ -106,6 +104,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         get() = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black_65))
 
     private fun setDialogPosition() {
+        dialog?.setCanceledOnTouchOutside(true)
         dialog?.window?.apply {
             mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
@@ -121,7 +120,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
         }
     }
 
-    private fun initTab(tabLayout: SportTabLayout) {
+    private fun initTab(tabLayout: SkinnableTabLayout) {
         val array = resources.getStringArray(R.array.keyboard_percent)
         array.forEach { text ->
             // 添加新Tab
@@ -130,6 +129,25 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             tabLayout.addTab(newTab)
         }
         reflexPadding(tabLayout)
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                val position = tab?.position
+                val value: Double = when (position) {
+                    0 -> 1.0
+                    1 -> 0.25
+                    2 -> 0.5
+                    3 -> 0.75
+                    else -> 0.0
+                }
+                mViewModel.setPercentNumber(value)
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+            }
+        })
     }
 
     private fun reflexPadding(tabLayout: TabLayout) {
@@ -154,7 +172,7 @@ class LiveEarlySettledKeyboardFragment private constructor() :
     override fun initListener() {
     }
 
-    fun setOnEarlySettleListener(listener: (money: String, expectPrice: String) -> Unit) {
+    fun setOnEarlySettleListener(listener: (betId: String, money: Double) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
@@ -163,10 +181,10 @@ class LiveEarlySettledKeyboardFragment private constructor() :
             mBinding.etMoney.setText(it)
             mBinding.etMoney.setSelection(it.length)
         }
-        mViewModel.prices.observe(viewLifecycleOwner) {
-            val betAmount = arguments?.getString(betAmountKey) ?: ""
-            val earlySettlePrice = arguments?.getString(betEarlySettleKey) ?:""
-            mBinding.tvBetMoney.text = getString(R.string.refund_amount, earlySettlePrice(betAmount,it.price,earlySettlePrice))
+        mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
+            mBinding.tvBetMoney.text = getString(
+                R.string.refund_amount, it
+            )
         }
     }
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SportConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:ignore="MissingDefaultResource">
 
-    <arch.cayenne.lib.skin.widget.SportTabLayout
+    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_league_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
@@ -28,7 +28,7 @@
         app:tabSelectedTextColor="@color/league_tab_tint_select"
         app:tabTextColor="@color/league_tab_tint_unselect" />
 
-    <arch.cayenne.lib.skin.widget.SportView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="65dp"
         android:layout_height="40dp"
         android:background="@drawable/gradient_league_tab_more"
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tl_league_list" />
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_home_league_more"
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_40"
@@ -48,7 +48,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tl_league_list" />
 
-    <arch.cayenne.lib.skin.widget.SportTabLayout
+    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tl_date_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_62"
@@ -82,4 +82,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tl_date_list" />
 
-</arch.cayenne.lib.skin.widget.SportConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

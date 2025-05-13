@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.compare.BigSmallCompare
 import arch.cayenne.module.handicap.data.AnswerType
@@ -89,23 +89,23 @@ class BigSmallAdapter :
 
     private fun getBackground(context: Context, type: Int): Drawable? {
         return when (type) {
-            AnswerType.WIN_ALL.type -> SportSkinResourceManager.getDrawable(
+            AnswerType.WIN_ALL.type -> SkinnableResourceManager.getDrawable(
                 context,
                 R.drawable.bg_shape_win
             )
-            AnswerType.LOSE_ALL.type -> SportSkinResourceManager.getDrawable(
+            AnswerType.LOSE_ALL.type -> SkinnableResourceManager.getDrawable(
                 context,
                 R.drawable.bg_shape_lose
             )
-            AnswerType.WIN_HALF.type -> SportSkinResourceManager.getDrawable(
+            AnswerType.WIN_HALF.type -> SkinnableResourceManager.getDrawable(
                 context,
                 R.drawable.bg_shape_win
             )
-            AnswerType.LOSE_HALF.type -> SportSkinResourceManager.getDrawable(
+            AnswerType.LOSE_HALF.type -> SkinnableResourceManager.getDrawable(
                 context,
                 R.drawable.bg_shape_lose
             )
-            AnswerType.SEED_MONEY.type -> SportSkinResourceManager.getDrawable(
+            AnswerType.SEED_MONEY.type -> SkinnableResourceManager.getDrawable(
                 context,
                 R.drawable.bg_shape_half
             )
@@ -115,20 +115,20 @@ class BigSmallAdapter :
 
     private fun getBtnTextColor(context: Context, type: Int): Int {
         return when (type) {
-            AnswerType.WIN_ALL.type -> SportSkinResourceManager.getColor(
+            AnswerType.WIN_ALL.type -> SkinnableResourceManager.getColor(
                 context,
                 R.color.text_green
             )
-            AnswerType.LOSE_ALL.type -> SportSkinResourceManager.getColor(context, R.color.text_red)
-            AnswerType.WIN_HALF.type -> SportSkinResourceManager.getColor(
+            AnswerType.LOSE_ALL.type -> SkinnableResourceManager.getColor(context, R.color.text_red)
+            AnswerType.WIN_HALF.type -> SkinnableResourceManager.getColor(
                 context,
                 R.color.text_green
             )
-            AnswerType.LOSE_HALF.type -> SportSkinResourceManager.getColor(
+            AnswerType.LOSE_HALF.type -> SkinnableResourceManager.getColor(
                 context,
                 R.color.text_red
             )
-            AnswerType.SEED_MONEY.type -> SportSkinResourceManager.getColor(
+            AnswerType.SEED_MONEY.type -> SkinnableResourceManager.getColor(
                 context,
                 R.color.text_gray
             )

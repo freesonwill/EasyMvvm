@@ -6,14 +6,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDrawable
-import arch.cayenne.lib.skin.widget.SportConstraintLayout
+import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : SportConstraintLayout(context, attrs, defStyleAttr) {
+) : SkinnableConstraintLayout(context, attrs, defStyleAttr) {
 
     //数据为空,网络异常,关闭
     val binding = LayoutEmptyErrorCloseBinding.inflate(LayoutInflater.from(context), this, false)

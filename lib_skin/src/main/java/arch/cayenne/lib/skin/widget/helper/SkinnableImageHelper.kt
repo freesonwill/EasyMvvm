@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import arch.cayenne.lib.skin.R
 
-class SportSkinImageHelper(view: ImageView) : SportSkinHelper(view) {
+class SkinnableImageHelper(view: ImageView) : SkinnableHelper(view) {
     private var mSrcCompatResId = INVALID_ID
     private var _radius: Float = 0f
     override val mView: ImageView

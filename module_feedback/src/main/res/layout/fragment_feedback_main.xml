@@ -9,7 +9,7 @@
             type="com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/feedback_main_background">
@@ -29,7 +29,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -43,7 +43,7 @@
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/asterisk" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -54,7 +54,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <!-- 反馈类型 -->
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_96"
@@ -62,7 +62,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_96"
             android:text="@string/gameplay_issue"
@@ -70,7 +70,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_96"
             android:layout_marginEnd="@dimen/dp_20"
@@ -79,7 +79,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_142"
@@ -87,7 +87,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_142"
             android:text="@string/withdrawal_issue"
@@ -95,7 +95,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportCheckBox
+        <arch.cayenne.lib.skin.widget.SkinnableCheckBox
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_142"
             android:layout_marginEnd="@dimen/dp_20"
@@ -114,7 +114,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -128,7 +128,7 @@
                 android:layout_gravity="center_vertical"
                 app:srcCompat="@drawable/asterisk" />
 
-            <arch.cayenne.lib.skin.widget.SportTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
@@ -139,7 +139,7 @@
 
 
         <!-- 输入框 -->
-        <arch.cayenne.lib.skin.widget.SportEditText
+        <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/edit_feedback"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_200"
@@ -160,7 +160,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_edit_text_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
             app:layout_constraintEnd_toEndOf="@+id/edit_feedback" />
 
         <!-- 提交按钮 -->
-        <arch.cayenne.lib.skin.widget.SportButton
+        <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/button_submit"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_48"
@@ -187,5 +187,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

@@ -12,12 +12,12 @@ import java.util.Locale
 /**
  * 获取对应资源文件
  * */
- object SportSkinResourceManager {
-    private var resourceLoader: SportSkinResourceLoader = SportSkinBuildInResourceLoader("")
+ object SkinnableResourceManager {
+    private var resourceLoader: SkinnableResourceLoader = SkinnableBuildInResourceLoader("")
 
-    fun initResource(resourceLoader: SportSkinResourceLoader) {
-        SportSkinResourceManager.resourceLoader = resourceLoader
-        if(resourceLoader is SportSkinBuildInResourceLoader){
+    fun initResource(resourceLoader: SkinnableResourceLoader) {
+        SkinnableResourceManager.resourceLoader = resourceLoader
+        if(resourceLoader is SkinnableBuildInResourceLoader){
             resourceLoader.getSkinName()
         }
     }

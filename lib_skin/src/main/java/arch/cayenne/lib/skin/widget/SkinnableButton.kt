@@ -1,36 +1,42 @@
 package arch.cayenne.lib.skin.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
-import androidx.appcompat.widget.AppCompatEditText
+import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.widget.helper.SportSkinTextHelper
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-open class SportEditText : AppCompatEditText {
-    private val mTextHelper = SportSkinTextHelper(this)
-    private val mBackgroundTintHelper = SportSkinBackGroundHelper(this)
+
+@SuppressLint("CustomViewStyleable")
+class SkinnableButton : AppCompatButton {
+    private val mTextHelper: SkinnableTextHelper = SkinnableTextHelper(this)
+    private val mBackgroundTintHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
-    val textColorResId: Int
-        get() = mTextHelper.textColorResId
 
-    constructor(context: Context) : super(context){
+
+    constructor(context: Context) : super(context) {
         initView(context)
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        initView(context,attrs)
+        initView(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = androidx.appcompat.R.attr.editTextStyle)
+    constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyleAttr: Int = androidx.appcompat.R.attr.buttonStyle
+    )
             : super(context, attrs, defStyleAttr) {
-        initView(context,attrs,defStyleAttr)
+        initView(context, attrs, defStyleAttr)
     }
 
     override fun onAttachedToWindow() {
@@ -39,7 +45,8 @@ open class SportEditText : AppCompatEditText {
             launch {
                 sportSkinManager.skinFlow.collect {
                     mBackgroundTintHelper.updateSkin()
-                    mTextHelper.updateSkin()                    }
+                    mTextHelper.updateSkin()
+                }
             }
             launch {
                 sportSkinManager.languageFlow.collect {
@@ -51,7 +58,7 @@ open class SportEditText : AppCompatEditText {
         }
     }
 
-    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0){
+    private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
         mBackgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
         mTextHelper.loadFromAttributes(attrs, defStyleAttr)
     }
@@ -71,17 +78,32 @@ open class SportEditText : AppCompatEditText {
     }
 
     override fun setCompoundDrawablesRelativeWithIntrinsicBounds(
-        @DrawableRes start: Int, @DrawableRes top: Int, @DrawableRes end: Int, @DrawableRes bottom: Int
+        @DrawableRes start: Int,
+        @DrawableRes top: Int,
+        @DrawableRes end: Int,
+        @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
         mTextHelper.onSetCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
     }
 
     override fun setCompoundDrawablesWithIntrinsicBounds(
-        @DrawableRes left: Int, @DrawableRes top: Int, @DrawableRes right: Int, @DrawableRes bottom: Int
+        @DrawableRes left: Int,
+        @DrawableRes top: Int,
+        @DrawableRes right: Int,
+        @DrawableRes bottom: Int
     ) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
+
+
+
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+//        coroutineScope.cancel()
+    }
+
 
 }

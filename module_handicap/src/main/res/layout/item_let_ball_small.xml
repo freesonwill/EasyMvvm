@@ -11,7 +11,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_home_cloth"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -37,7 +37,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_home_cloth"
             app:layout_constraintTop_toBottomOf="@+id/iv_home_cloth" />
 
-        <arch.cayenne.lib.skin.widget.SportImageView
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_away_cloth"
             android:layout_width="@dimen/dp_36"
             android:layout_height="@dimen/dp_36"
@@ -63,7 +63,7 @@
             app:layout_constraintStart_toStartOf="@+id/iv_away_cloth"
             app:layout_constraintTop_toBottomOf="@+id/iv_away_cloth" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_game_score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <arch.cayenne.lib.skin.widget.SportTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_let_ball_msg"
             android:layout_width="@dimen/dp_120"
             android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_game_score" />
 
-        <arch.cayenne.lib.skin.widget.SportView
+        <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/item_line"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_1"

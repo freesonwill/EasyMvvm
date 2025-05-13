@@ -4,29 +4,26 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.StateListDrawable
-import android.util.Log
 import androidx.annotation.AnyRes
-import androidx.appcompat.graphics.drawable.StateListDrawableCompat
 import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.skin.util.ResUtils
-import arch.cayenne.lib.skin.widget.helper.SportSkinHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
 
-class SportSkinBuildInResourceLoader(val _skinName: String) : SportSkinResourceLoader {
+class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceLoader {
     private var _secondarySkinName: String = ""
     private var currentName = _skinName
 
     override fun getColor(context: Context, resId: Int): Int {
         val targetId = getTargetResourceId(context, resId)
-        if (targetId != SportSkinHelper.INVALID_ID) {
+        if (targetId != SkinnableHelper.INVALID_ID) {
             return ResourcesCompat.getColor(context.resources, targetId, context.theme)
         }
-        return SportSkinHelper.INVALID_ID
+        return SkinnableHelper.INVALID_ID
     }
 
     override fun getColorStateList(context: Context, resId: Int): ColorStateList? {
         val targetId = getTargetResourceId(context, resId)
-        if (targetId != SportSkinHelper.INVALID_ID) {
+        if (targetId != SkinnableHelper.INVALID_ID) {
             return ResourcesCompat.getColorStateList(context.resources, targetId, context.theme)
         }
         return null
@@ -34,7 +31,7 @@ class SportSkinBuildInResourceLoader(val _skinName: String) : SportSkinResourceL
 
     override fun getDrawable(context: Context, resId: Int): Drawable? {
         val targetId = getTargetResourceId(context, resId)
-        if (targetId != SportSkinHelper.INVALID_ID) {
+        if (targetId != SkinnableHelper.INVALID_ID) {
             val type = context.resources.getResourceTypeName(resId)
             if (type == "color") {
                 return ColorDrawable(context.getColor(targetId))
@@ -66,7 +63,7 @@ class SportSkinBuildInResourceLoader(val _skinName: String) : SportSkinResourceL
             return targetResId
         } catch (e: Exception) {
             e.printStackTrace()
-            SportSkinHelper.INVALID_ID
+            SkinnableHelper.INVALID_ID
         }
     }
 

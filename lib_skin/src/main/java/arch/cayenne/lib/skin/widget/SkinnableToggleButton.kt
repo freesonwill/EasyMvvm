@@ -7,15 +7,15 @@ import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SportSkinTextHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class SportToggleButton : AppCompatToggleButton {
+class SkinnableToggleButton : AppCompatToggleButton {
 
-    private val mTextHelper: SportSkinTextHelper = SportSkinTextHelper(this)
-    private val mBackgroundTintHelper: SportSkinBackGroundHelper = SportSkinBackGroundHelper(this)
+    private val mTextHelper: SkinnableTextHelper = SkinnableTextHelper(this)
+    private val mBackgroundTintHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
     constructor(context: Context) : super(context) {

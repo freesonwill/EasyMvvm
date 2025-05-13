@@ -6,29 +6,33 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_betslip_card">
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_settled_iv_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_37"
         android:src="@drawable/live_betslip_card_top"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_result"
-        android:layout_width="@dimen/dp_21"
-        android:layout_height="@dimen/dp_21"
-        android:layout_marginLeft="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/bet_settle_result"
         android:gravity="center"
         android:text="@string/live_bet_win"
+        android:paddingStart="3.5dp"
+        android:paddingEnd="4.5dp"
         android:textColor="@color/theme_text"
         android:textSize="@dimen/sp_13"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,9 +48,9 @@
         android:id="@+id/recycler_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_date" />
+        app:layout_constraintTop_toBottomOf="@id/bet_settled_iv_top" />
 
-    <arch.cayenne.lib.skin.widget.SportImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_settled_iv_avava"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_18"
@@ -57,7 +61,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recycler_selection" />
 
-    <arch.cayenne.lib.skin.widget.SportView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:layout_marginEnd="@dimen/dp_3.5"
@@ -67,7 +71,7 @@
         app:layout_constraintRight_toLeftOf="@id/bet_settled_iv_avava"
         app:layout_constraintTop_toTopOf="@id/bet_settled_iv_avava" />
 
-    <arch.cayenne.lib.skin.widget.SportView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/dp_8"
@@ -78,7 +82,7 @@
         app:layout_constraintTop_toTopOf="@id/bet_settled_iv_avava" />
 
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_betcode"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -89,7 +93,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_result"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_iv_avava" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_betcode_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -100,7 +104,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_betcode" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_odds"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -111,7 +115,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_result"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_betcode" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_odds_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -122,7 +126,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_odds" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_part"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -133,7 +137,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_result"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_odds" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_part_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -144,7 +148,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_part" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_betting"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -165,7 +169,7 @@
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_betting"
         app:srcCompat="@drawable/icon_betslip_question" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_betting_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -176,7 +180,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_betting" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_except"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -187,7 +191,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_result"
         app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_betting" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_except_value"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"

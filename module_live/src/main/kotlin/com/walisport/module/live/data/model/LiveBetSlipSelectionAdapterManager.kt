@@ -8,7 +8,7 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.skin.widget.SportView
+import arch.cayenne.lib.skin.widget.SkinnableView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
@@ -248,7 +248,7 @@ class LiveBetSlipSelectionAdapterManager(binding: ViewBinding, type: LiveBetSlip
 
     private fun configView(
         expandedEnum: LiveBetSlipExpandedEnum? = null,
-        line: SportView,
+        line: SkinnableView,
         group: Group,
         tvMore: TextView,
         ivArrow: ImageView,
