@@ -61,11 +61,7 @@ class BetRepository(
     private suspend fun checkBetBeanType(betId: Long) {
         val selection = betDao.getSelections(betId)
         if (selection.isEmpty()) {
-            betDao.removeBet(betId)
-        } else if (selection.size == 1) {
-            betDao.updateBetType(betId, BetTypeEnum.SINGLE)
-        } else {
-            betDao.updateBetType(betId, BetTypeEnum.COMBO)
+            betDao.removeCurrentBet()
         }
     }
 }
