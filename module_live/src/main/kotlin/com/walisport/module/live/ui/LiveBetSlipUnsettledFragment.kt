@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.live.R
@@ -17,6 +16,7 @@ import com.walisport.module.live.databinding.FragmentLiveBetslipUnsettledBinding
 import com.walisport.module.live.ui.adapter.LiveBetSlipAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.utils.LiveBetSlipUtils
 import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
@@ -53,10 +53,32 @@ class LiveBetSlipUnsettledFragment :
                 showEmpty()
             }
         }
-        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) "提前结算成功" else "提前结算失败")
+        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
+            showToast(if (it == true) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
             mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
         }
+        mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
+            val price = it.price.toDoubleOrNull()
+            if (price == null || price <= 0) {
+                showToast(getString(R.string.not_support_early_settle))
+                return@observe
+            }
+            mViewModel.selectOrder?.let { order ->
+                val money = LiveBetSlipUtils.earlySettlePrice(
+                    order.betId, price.toString(), order.earlyBetAmount
+                )
+                LiveBetSlipEarlySettledFragment.instance(it.betId, money.toDouble()).apply {
+                    setOnEarlySettleListener { betId, money ->
+                        mViewModel.earlyPartSettled(
+                            betId,
+                            money.toString(),
+                            mViewModel.earlySettlePriceLiveData.value?.price ?: "0"
+                        )
+                    }
+                }.show(childFragmentManager)
+            }
+        }
+
     }
 
     private fun showEmpty() {
@@ -80,8 +102,7 @@ class LiveBetSlipUnsettledFragment :
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
             ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.item_divide_live_bet_recycler
+                requireContext(), R.drawable.item_divide_live_bet_recycler
             )!!
         )
         mBinding.recyclerView.also {
@@ -94,15 +115,9 @@ class LiveBetSlipUnsettledFragment :
         adapter.setEarlySettleListener(object : RecyclerItemListener<LiveBetSlipData> {
             override fun onItemClick(item: LiveBetSlipData?, position: Int) {
                 item?.order?.let {
-                    LiveEarlySettledKeyboardFragment.instance(
-                        it.betId, it.betAmount, it.earlyBetAmount
-                    ).apply {
-                        setOnEarlySettleListener { money, price ->
-                            mViewModel.earlyPartSettled(it, money, price)
-                        }
-                    }.show(childFragmentManager)
+                    mViewModel.selectOrder = it
+                    mViewModel.earlySettledPrice(it.betId)
                 }
-
             }
         })
     }

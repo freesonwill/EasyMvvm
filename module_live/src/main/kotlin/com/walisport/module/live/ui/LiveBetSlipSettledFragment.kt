@@ -71,7 +71,7 @@ class LiveBetSlipSettledFragment :
                 showEmpty()
             }
         }
-        mViewModel.earlySettledLiveData.observe(viewLifecycleOwner) {
+        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
             mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
         }
     }
