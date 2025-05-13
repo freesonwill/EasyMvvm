@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -14,6 +15,7 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
@@ -22,6 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.withContext
 
 class HomeRepository(
     override val scope: CoroutineScope,
@@ -370,5 +373,33 @@ class HomeRepository(
         return matchDao.observeMatchChange(playType, tournamentId)
     }
 
+    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
+        val match = matchDao.getOneMatchById(matchId)
+        val selectionBean = matchDao.getSelectionById(selectionId)
+        matchSelectionInsertBean(match, selectionBean)
+    }
+
+    private fun matchSelectionInsertBean(
+        match: MatchWithMarkets,
+        selectionBean: SelectionBean
+    ): BetInsertBean? {
+        match.markets.find { market ->
+            market.selections.find { it.selectionId == selectionBean.selectionId } != null
+        }?.let { market ->
+            return BetInsertBean(
+                matchId = match.match.matchId,
+                marketName = market.market.marketName,
+                selectionId = selectionBean.selectionId,
+                name = selectionBean.name,
+                odds = selectionBean.odds,
+                leagueName = match.match.basicInfo.tournamentName,
+                matchName = match.match.basicInfo.matchName,
+                isActive = selectionBean.active,
+                isPlaying = match.match.basicInfo.status == 5,
+                isParlay = selectionBean.parlay
+            )
+        }
+        return null
+    }
 
 }
