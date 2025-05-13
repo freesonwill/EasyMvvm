@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+    <FrameLayout
+        android:id="@+id/fl_red_event"
+        android:layout_marginTop="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+
+    <arch.cayenne.lib.common.ui.view.BallControlView
+        android:id="@+id/ball_control_view"
+        android:layout_width="match_parent"
+        android:layout_height="82dp" />
+
+    <FrameLayout
+        android:id="@+id/fl_blue_event"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
+
+</LinearLayout>

@@ -2,13 +2,16 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 import android.view.ViewTreeObserver
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
@@ -74,7 +77,7 @@ class MatchListPagerFragment :
                     val lastVisible = layoutManager.findLastVisibleItemPosition()
 
                     if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                        mViewModel.subscribeMatch(
+                        mViewModel.compareSubscribeMatch(
                             matchAdapter.currentList
                                 .slice(firstVisible..lastVisible)
                                 .map { it.match.matchId }
@@ -82,6 +85,7 @@ class MatchListPagerFragment :
                         )
                     }
                 }
+
             })
 
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -97,7 +101,7 @@ class MatchListPagerFragment :
                             mViewModel.loadNextPage()
                         }
                         if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                            mViewModel.subscribeMatch(
+                            mViewModel.compareSubscribeMatch(
                                 matchAdapter.currentList
                                     .slice(firstVisible..lastVisible)
                                     .map { it.match.matchId }
@@ -119,6 +123,17 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            mBinding.apply {
+                if (matchList.isEmpty()) {
+                    clDynamics.visibility = View.VISIBLE
+                    clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                } else {
+                    clDynamics.visibility = View.GONE
+                }
+            }
             matchAdapter.submitList(matchList)
         }
 
@@ -140,7 +155,6 @@ class MatchListPagerFragment :
         } else {
             mViewModel.setSelectedDate(date)
         }
-        mViewModel.getCurrentMatch()
     }
 
     override fun initData() {
@@ -148,20 +162,36 @@ class MatchListPagerFragment :
             mViewModel.setTournamentId(this.getInt(ARG_LEAGUE_ID))
             mViewModel.setSportId(this.getInt(ARG_SPORT_ID))
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
+            mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
-        mViewModel.getCurrentMatch()
+        mViewModel.startObserveMatch()
     }
+
+    override fun onPause() {
+        super.onPause()
+        //暫時移除訂閱
+        mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //把暫時移除的訂閱加回來
+        mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
 
     companion object {
         private const val ARG_SPORT_ID = "sport_id"
         private const val ARG_PLAY_TYPE_ID = "play_type_id"
         private const val ARG_LEAGUE_ID = "arg_league_id"
-        fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int): MatchListPagerFragment {
+        private const val ARG_POSITION = "arg_position"
+        fun newInstance(sportId: Int, playTypeId: Int, leagueId: Int, position: Int): MatchListPagerFragment {
             return MatchListPagerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ARG_SPORT_ID, sportId)
                     putInt(ARG_PLAY_TYPE_ID, playTypeId)
                     putInt(ARG_LEAGUE_ID, leagueId)
+                    putInt(ARG_POSITION, position)
                 }
             }
         }

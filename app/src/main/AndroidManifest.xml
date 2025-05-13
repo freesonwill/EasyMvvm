@@ -16,6 +16,7 @@
         <activity
             android:name=".SplashActivity"
             android:theme="@style/Theme.Wsl.Android.Splash"
+            android:screenOrientation="portrait"
             android:exported="true">
 
             <intent-filter>
@@ -27,6 +28,7 @@
 
         <activity
             android:name=".ui.MainActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:launchMode="singleTask"
             android:configChanges="orientation|screenSize"/>

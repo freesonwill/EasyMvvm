@@ -49,7 +49,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-    private lateinit var leagueAdapter: LeaguePagerAdapter
+//    private lateinit var leagueAdapter: LeaguePagerAdapter
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -74,15 +74,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
-                        if (PlayType.entries[this] == PlayType.TODAY) {
-                            mBinding.layoutContainer.tlDateList.visibility = View.GONE
-                        } else if (PlayType.entries[this] == PlayType.EARLY) {
-                            mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
-                        }
+                        mBinding.layoutContainer.tlDateList.visibility = View.GONE
                         //看db, 點擊的不在matchBean中會爆掉
 
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
-                        leagueAdapter.setPlayType(PlayType.entries[this])
                     }
                 }
 
@@ -113,12 +108,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //聯賽
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
-            leagueAdapter = LeaguePagerAdapter(
-                childFragmentManager,
-                viewLifecycleOwner.lifecycle,
-                mViewModel.getCurrentPlayType()
-            )
-            vpGameList.adapter = leagueAdapter
 
             // 日期 Tab 設定
             updateDateTabs(tlDateList, dateTabs)
@@ -144,8 +133,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     tlLeagueList.getTabAt(position)?.select()
-                    // 找到該聯賽目前記錄的日期 tab index
-                    updateDateTabs(tlDateList, dateTabs)
+
+                    mViewModel.gameListPageIndex = position
                 }
             })
             vpGameList.post {
@@ -218,7 +207,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
         mBinding.layoutContainer.apply {
-            leagueAdapter.setData(tournaments)
+            vpGameList.currentItem = 0
+            tlDateList.getTabAt(0)?.select()
+            vpGameList.adapter = LeaguePagerAdapter(
+                fragmentManager = childFragmentManager,
+                lifecycle = viewLifecycleOwner.lifecycle,
+                tournament = tournaments,
+                playType = mViewModel.getCurrentPlayType()
+
+            )
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
                 val tournament = tournaments[position]
 
@@ -266,7 +263,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-
         }
     }
 
@@ -297,13 +293,21 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun createObserver() {
         mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
-            mViewModel.setCurrentSport(it[0].id)
+            if (it.isNotEmpty()) {
+                mViewModel.setCurrentSport(it[0].id)
+            }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
-            if (it.isNullOrEmpty()) return@observe
+//            if (it.isNullOrEmpty()) return@observe
+            //確定拿到聯賽資料後再決定要不要show出時間
+            if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                mBinding.layoutContainer.tlDateList.visibility = View.GONE
+            } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+                mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
+            }
             initLeaguesLayout(it)
         }
 

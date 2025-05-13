@@ -68,7 +68,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
 ): SocketResponseData<T> {
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
-            observeProtoMessage<T>(apiCode).first()
+            observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
     }
     send(request.invoke().asRemoteRequest(apiCode, rid))

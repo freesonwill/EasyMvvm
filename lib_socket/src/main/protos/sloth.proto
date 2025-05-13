@@ -95,6 +95,7 @@ message MatchLiveData {
   repeated Incident incidents = 4;    // 比赛事件字段说明，可能不存在
   repeated MatchHalfTeamStats team_stats = 5; //比赛球队半全场统计数据
   int64 id = 6;                       // 比赛Id
+  MatchTrendData match_trend_data = 7; // 比赛趋势信息，可能不存在
 }
 
 //比赛球队半全场统计数据

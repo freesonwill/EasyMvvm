@@ -43,4 +43,5 @@
     <string name="drawer_notification_message">通知消息</string>
 
     <string name="disabled_to_combo">当前赛事不支持串关</string>
+    <string name="lineup_empty">暂无数据,请换个试一试</string>
 </resources>

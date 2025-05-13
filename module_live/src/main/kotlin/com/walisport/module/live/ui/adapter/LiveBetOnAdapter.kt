@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 import com.walisport.module.live.ui.widget.LiveBetListLayout
 
-class LiveBetOnAdapter() :
+class LiveBetOnAdapter(var callback:LivBetListCallback) :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
         ItemDiffCallback()
     ) {
@@ -53,13 +53,15 @@ class LiveBetOnAdapter() :
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
-            lists?.forEach { listIt ->
+            lists?.withIndex()?.forEach { (index,listIt) ->
                 viewBinding.lbBet.submitList(
                     LiveBetListLayout.StatesArrange.getStates(listIt.style),
                     positions,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString()
-                )
+                    listIt.odds.getOdds().toString(),listIt.selectionId
+                ) { it ->
+                    callback.itemListCallback(it)
+                }
                 positions++
             }
         }
@@ -99,6 +101,10 @@ class LiveBetOnAdapter() :
         val holder = LiveBetOnViewHolder(binding)
         return holder
     }
+}
+
+interface LivBetListCallback{
+      fun itemListCallback(marketI:Long)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {

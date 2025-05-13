@@ -16,7 +16,7 @@ import arch.cayenne.lib.socket.extension.observeProtoMessage
 import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.MatchUpdateData
 import arch.cayenne.module.home.data.toRoomData
-import arch.cayenne.module.home.viewmodel.BaseGameListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -160,17 +160,27 @@ class HomeRepository(
 
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
+     * @param rid 主要用來資料回來時可以辨認用，因為有可能兩三個聯賽分頁同時拿取資料
      * */
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
-        //先從DB拿取
-        val queryResult = queryFullMatch(playType, tournamentId, page, startTime)
-        if (queryResult.isNotEmpty()){
-            return queryResult
-        }
+    suspend fun getAllMatch(rid: Int, playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : Boolean {
+//        val req = Client.ListMatchReq.newBuilder().apply {
+//            this.sportId = sportId
+//            this.playType = playType
+//            this.tournamentId = tournamentId
+//            this.page = page
+//            this.size = DEFAULT_MATCH_SIZE
+//            if (startTime != 0L){
+//                this.startTime = startTime
+//                this.endTime = startTime + ONE_DAY_TIME_STAMP
+//            }
+//        }.build()
+//        socketManager.send(req.asRemoteRequest(ApiCode.LIST_MATCH))
+        //-----------------------------------------
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.LIST_MATCH,
+            rid = rid.toShort(),
         ) {
             Client.ListMatchReq.newBuilder().apply {
                 this.sportId = sportId
@@ -186,13 +196,18 @@ class HomeRepository(
         }
 
         if (resp.error == null && resp.data != null) {
+            if (resp.data!!.matchList.isNullOrEmpty()) {
+                return false
+            }
             val matchFullData = resp.data!!.matchList.toRoomData()
+            "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(HomeRepository::class.java.simpleName)
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
+
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
                     page = page,
-                    startTime = 0,
+                    startTime = startTime,
                     matchId = match.matchId,
                     order = page * 100 + index
                 )
@@ -205,25 +220,25 @@ class HomeRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return queryFullMatch(playType, tournamentId, page, startTime)
+            return true
         }
-        return arrayListOf()
+        return false
     }
 
     /**
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
      * */
     suspend fun subscribeMatch(ids: List<Long>): List<MatchWithMarkets> {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SUBSCRIBE_MATCH,
         ) {
-            Client.SubscribeMatchReq.newBuilder().apply {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
             }.build()
         }
-        if (res.error == null && res.data != null && res.data!!.success) {
+        if (res.error == null && res.data != null) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
            return updateFullMath(matchUpdateData)
@@ -231,19 +246,16 @@ class HomeRepository(
     }
 
     suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
         ) {
-            Client.SubscribeMatchReq.newBuilder().apply {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
             }.build()
         }
-        if (res.error == null && res.data != null && res.data!!.success) {
-            "取消訂閱比賽成功?  ${res.data!!.success}".logi(this::class.java.name)
-            return res.data!!.success
-        } else { return false }
+        return res.error == null && res.data != null
     }
 
     @Transaction
@@ -317,8 +329,12 @@ class HomeRepository(
      * 單純根據頁數和時間取得資料，用來第一次取得比賽和下一頁取得和時間區間取得比賽
      * @return 根據條件query的賽事資料
      * */
-    private suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
+    suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         return database.matchDao().getFullMatch(playType, tournamentId, page, startTime).setSelected()
+    }
+    suspend fun queryFullMatches(matchIds: List<Long>) : List<MatchWithMarkets> {
+        val result = database.matchDao().getOneMatchByIds(matchIds).setSelected()
+        return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
     /**
@@ -339,4 +355,19 @@ class HomeRepository(
     fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)
     }
+
+    fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {
+        //觀察後端的500-1002（获取比赛列表）回傳
+//        scope.launch(Dispatchers.IO) {
+//            socketManager.observeProtoMessage<Client.ListMatchResp>(apiCode = ApiCode.LIST_MATCH,)
+//                .filter { it.error == null && it.data != null }.collect {
+//
+//                }
+//        }
+
+
+        return matchDao.observeMatchChange(playType, tournamentId)
+    }
+
+
 }

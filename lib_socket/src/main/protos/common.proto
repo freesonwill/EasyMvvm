@@ -33,6 +33,7 @@ message MatchBasicInfo {
     bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
     bool tournament_hot = 19;  //是否热门联赛
     int32 tournament_weight = 20;           //联赛权重
+    int32 match_type = 21;           //比赛类型： 1冠军 2常规体育
 }
 
 //比赛实时信息
@@ -96,8 +97,8 @@ message PlaceBetInfo {
     string order_status_msg = 5;  // 订单状态msg
 }
 
-//限额选项
-message RiskSelection {
+//选项
+message SelectionBase {
     int64 match_id = 1;       //比赛id
     int64 selection_id = 2;   //选项id
 }

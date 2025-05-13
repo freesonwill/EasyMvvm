@@ -1,67 +1,49 @@
 package com.walisport.module.live.ui.widget
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.content.res.Configuration
-import android.graphics.Bitmap
 import android.media.AudioManager
-import android.media.MediaScannerConnection
-import android.os.Build
 import android.util.AttributeSet
-import android.view.View
-import android.view.ViewGroup
-import android.view.animation.Animation
+import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
-import android.view.animation.RotateAnimation
 import android.widget.ImageView
-import android.widget.RelativeLayout
-import arch.cayenne.lib.qyplayer.R
+import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
-import arch.cayenne.lib.qyplayer.util.FileUtils
-import arch.cayenne.lib.qyplayer.util.OrientationWatchDog
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
-import arch.cayenne.lib.qyplayer.util.toast
 import arch.cayenne.lib.qyplayer.view.QYRenderView
 import arch.cayenne.lib.qyplayer.view.SurfaceType
-import com.xxx.qyplayer.DecryptMode
-import com.xxx.qyplayer.MediaInfo
-import com.xxx.qyplayer.MirrorMode
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
-import com.xxx.qyplayer.RotateMode
-import com.xxx.qyplayer.ScaleMode
-import com.xxx.qyplayer.ViewportRatioMode
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import java.io.File
 
 class LivePlayerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : RelativeLayout(context, attrs, defStyleAttr) {
+) : ConstraintLayout(context, attrs, defStyleAttr) {
     private var mRenderView = QYRenderView(context)
-    private var mPauseIconView = ImageView(context)
     private lateinit var mGestureView: GestureView
 
-    private var mOnOrientationChangeListener: ((from: Boolean, currentMode: ScreenMode) -> Unit)? =
-        null
-    private var mOnShowMoreClickListener: (() -> Unit)? = null
-    private var mOnShowQualityClickListener: (() -> Unit)? = null
+    private lateinit var ctLoading: ConstraintLayout
+    private lateinit var ctError: ConstraintLayout
+    private lateinit var ivLoading: ImageView
+
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
 
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var mCurrentScreenMode = ScreenMode.SMALL
-    private val mOrientationWatchDog = OrientationWatchDog(context)
     private var mIsFullScreenLocked = false
     private var mCurrentPosition: Long = 0
     private var inSeek: Boolean = false
@@ -75,6 +57,13 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mPlayerMode: PlayerMode
 
+    private var loadingAnim: ObjectAnimator? = null
+
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+    private var bufferingTimeoutJob: Job? = null
+
+
     fun init(playerMode: PlayerMode) {
         mPlayerMode = playerMode
         initViews()
@@ -82,33 +71,21 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initViews() {
+
+        // 使用 LayoutInflater 加载 XML 布局
+        LayoutInflater.from(context)
+            .inflate(com.walisport.module.live.R.layout.layout_live_player_view, this, true)
+
+        ctLoading = findViewById(com.walisport.module.live.R.id.ct_loading)
+        ctError = findViewById(com.walisport.module.live.R.id.ct_error)
+        ivLoading = findViewById(com.walisport.module.live.R.id.iv_video_loading)
+
+        // 初始化子视图
         initRenderView()
         initGestureView()
-        initStateView()
     }
 
     private fun initListeners() {
-        mOrientationWatchDog.setOnOrientationListener(object :
-            OrientationWatchDog.OnOrientationListener {
-            override fun changedToLandForwardScape(fromPort: Boolean) {
-                this@LivePlayerView.changedToLandForwardScape(fromPort)
-            }
-
-            override fun changedToLandReverseScape(fromPort: Boolean) {
-                this@LivePlayerView.changedToLandReverseScape(fromPort)
-            }
-
-            override fun changedToPortrait(fromLand: Boolean) {
-                this@LivePlayerView.changeToPortrait(fromLand)
-            }
-
-        })
-
-        mPauseIconView.setOnClickListener {
-            if (mPlayerState == PlayerState.PAUSED) { // 暂停状态点击则开始播放
-                switchPlayerState()
-            }
-        }
     }
 
     /**
@@ -117,10 +94,10 @@ class LivePlayerView @JvmOverloads constructor(
     private fun switchPlayerState() {
         mOnPlayStateBtnClickListener?.invoke()
         if (mPlayerState == PlayerState.PLAYING) {
-            updatePauseIconView(PlayerState.PAUSED)
+            updatePlayState(PlayerState.PAUSED)
             pause()
         } else {
-            updatePauseIconView(PlayerState.PLAYING)
+            updatePlayState(PlayerState.PLAYING)
             start()
         }
     }
@@ -134,145 +111,47 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     fun onResume() {
-        mOrientationWatchDog.startWatch()
-        if (mIsFullScreenLocked) {
-            val orientation = resources.configuration.orientation
-            if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                changeScreenMode(ScreenMode.SMALL, false)
-            } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                changeScreenMode(ScreenMode.FULL, false)
-            }
-        }
-
-        if (isActivityStopped) { // 压后台后会stop播放，回来后重新开始
-            isActivityStopped = false
-            start()
-        }
+        start()
     }
 
-    /**
-     * 屏幕方向变为横屏
-     *
-     * @param fromPort 是否从竖屏变过来
-     */
-    private fun changedToLandForwardScape(fromPort: Boolean) {
-        // 如果不是从竖屏变过来，也就是一直横屏的时候，就不用做后续操作了。比如通过传感器监测时会需要状态
-        if (!fromPort) {
-            return
-        }
-        changeScreenMode(ScreenMode.FULL, false)
-        mOnOrientationChangeListener?.invoke(fromPort, mCurrentScreenMode)
-    }
-
-    /**
-     * 屏幕方向变为横屏。
-     *
-     * @param fromPort 是否从竖屏变过来
-     */
-    private fun changedToLandReverseScape(fromPort: Boolean) {
-        //如果不是从竖屏变过来，也就是一直是横屏的时候，就不用操作了
-        if (!fromPort) {
-            return
-        }
-        changeScreenMode(ScreenMode.FULL, true)
-        mOnOrientationChangeListener?.invoke(fromPort, mCurrentScreenMode)
-    }
-
-    /**
-     * 改变屏幕模式
-     */
-    private fun changeScreenMode(targetMode: ScreenMode, isReverse: Boolean) {
-        var finalScreenMode = targetMode
-        if (mIsFullScreenLocked) {
-            finalScreenMode = ScreenMode.FULL
-        }
-
-        if (targetMode != mCurrentScreenMode) {
-            mCurrentScreenMode = finalScreenMode
-        }
-
-        if (context is Activity) {
-            when (finalScreenMode) {
-                ScreenMode.FULL -> {
-                    if (isReverse) {
-                        (context as Activity).requestedOrientation =
-                            ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE
-                    } else {
-                        (context as Activity).requestedOrientation =
-                            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                    }
-                }
-
-                ScreenMode.SMALL -> {
-                    (context as Activity).requestedOrientation =
-                        ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-                }
-            }
-        }
-    }
-
-    /**
-     * 屏幕方向变为竖屏
-     *
-     * @param fromLand 是否从横屏转过来
-     */
-    private fun changeToPortrait(fromLand: Boolean) {
-        //屏幕转为竖屏
-        if (mIsFullScreenLocked) {
-            return
-        }
-
-        if (mCurrentScreenMode === ScreenMode.FULL) {
-            //全屏情况转到了竖屏
-            if (fromLand) {
-                changeScreenMode(ScreenMode.SMALL, false)
-            } else {
-                //如果没有转到过横屏，就不让他转了。防止竖屏的时候点横屏之后，又立即转回来的现象
-            }
-
-        } else if (mCurrentScreenMode === ScreenMode.SMALL) {
-            //竖屏的情况转到了竖屏
-        }
-        mOnOrientationChangeListener?.invoke(fromLand, mCurrentScreenMode)
+    fun onPause(){
+        mRenderView.pause()
     }
 
     private fun initRenderView() {
-        addView(
-            mRenderView.apply {
-                setOnStateChangedListener {
+        mRenderView = findViewById(com.walisport.module.live.R.id.renderView)
+
+        mRenderView.apply {
+            setOnStateChangedListener {
+                (context as? Activity)?.runOnUiThread {
+                    if (it.state == PlayerState.ERROR) {
+                    }
+
+                    updatePlayState(it.state)
+                    mCurrentPosition = it.position.toLong()
+                }
+            }
+
+            setOnUpdateStatisticsListener { category, json ->
+                mOnUpdateStatisticsListener?.invoke(category, json)
+                if (category == "network") {
                     (context as? Activity)?.runOnUiThread {
-                        if (it.state == PlayerState.ERROR) {
-                        }
-
-                        updatePauseIconView(it.state)
-                        mCurrentPosition = it.position.toLong()
+                        processNetworkSpeed(json)
                     }
                 }
-                setOnSnapshotListener {
-                    saveSnapshot(it)
-                }
-                setOnUpdateStatisticsListener { category, json ->
-                    mOnUpdateStatisticsListener?.invoke(category, json)
-                    if (category == "network") {
-                        (context as? Activity)?.runOnUiThread {
-                            processNetworkSpeed(json)
-                        }
-                    }
-                }
+            }
 
-                init(mPlayerMode)
-                setSurfaceType(SurfaceType.SURFACE_VIEW)
-            }, ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        )
+            init(mPlayerMode)
+            setSurfaceType(SurfaceType.SURFACE_VIEW)
+        }
+
     }
 
 
-
     private fun initGestureView() {
-        mGestureView = GestureView(context).apply {
+        mGestureView = findViewById(com.walisport.module.live.R.id.gesture_view)
+
+        mGestureView.apply {
             setOnGestureListener(object : GestureListener {
                 override fun onHorizontalDistance(downX: Float, nowX: Float) {
                     if (!isGestureEnable()) {
@@ -389,7 +268,6 @@ class LivePlayerView @JvmOverloads constructor(
 
             })
         }
-        addView(mGestureView)
 
         if (context is Activity) {
             mGestureDialogManager = GestureDialogManager(context as Activity)
@@ -410,31 +288,6 @@ class LivePlayerView @JvmOverloads constructor(
                 if (networkObject.has("video_kbps")) networkObject.getInt("video_kbps") else 0
 //            mControlView.setNetworkSpeed(audioSpeed + videoSpeed)
         }
-    }
-
-    private fun saveSnapshot(bitmap: Bitmap) {
-        GlobalScope.launch(Dispatchers.IO) {
-            val videoPath: String = FileUtils.getDir(context) + "snapShot" + File.separator
-            val bitmapPath: String = FileUtils.saveBitmap(bitmap, videoPath)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                FileUtils.saveImgToMediaStore(context.applicationContext, bitmapPath, "image/png")
-            } else {
-                MediaScannerConnection.scanFile(
-                    context.applicationContext,
-                    arrayOf(bitmapPath),
-                    arrayOf("image/png"), null
-                )
-            }
-
-            launch(Dispatchers.Main) {
-                "Picture has Saved".toast(this@LivePlayerView.context)
-            }
-        }
-    }
-
-    private fun seekTo(position: Int) {
-        mRenderView.start()
-        mRenderView.seekTo(position.toLong())
     }
 
     /**
@@ -480,67 +333,65 @@ class LivePlayerView @JvmOverloads constructor(
         return targetPosition.toInt()
     }
 
-    private fun initStateView() {
-        mPauseIconView.visibility = View.GONE
-        addView(
-            mPauseIconView, LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            ).apply {
-                addRule(CENTER_IN_PARENT)
-            }
-        )
-    }
 
-    private fun updatePauseIconView(state: PlayerState) {
+    private fun updatePlayState(state: PlayerState) {
         if (mPlayerState == state) {
             return
         }
         mPlayerState = state
-        mPauseIconView.visibility = when (mPlayerState) {
+        when (mPlayerState) {
             PlayerState.PLAYING -> {
-//                mControlView.setPlayState(PlayState.PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
+
+                bufferingTimeoutJob?.cancel()
             }
 
             PlayerState.PAUSED -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.setImageResource(R.drawable.ic_play)
-                mPauseIconView.clearAnimation()
-                VISIBLE
+                //没有暂停按钮，
             }
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.setImageResource(R.drawable.ic_loading)
-                mPauseIconView.startAnimation(
-                    RotateAnimation(
-                        0f,
-                        360f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f,
-                        Animation.RELATIVE_TO_SELF,
-                        0.5f
-                    ).apply {
-                        duration = 1000
-                        interpolator = LinearInterpolator()
-                        repeatMode = Animation.RESTART
-                        repeatCount = Animation.INFINITE
-                    })
-                VISIBLE
+                // 创建旋转动画
+                loadingAnim = ObjectAnimator.ofFloat(
+                    ivLoading,  // 目标 View
+                    "rotation",  // 属性名称
+                    0f, 360f // 从 0 度旋转到 360 度
+                ).run {
+                    // 设置动画属性
+                    setDuration(1000) // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    interpolator = LinearInterpolator() // 匀速旋转
+
+                    // 启动动画
+                    start()
+                    this
+                }
+
+                ctLoading.visibility = VISIBLE
+                ctError.visibility = GONE
+
+                // 启动协程，10秒超时
+                // 如果10秒后还在loading状态， 展示加载失败页面
+                bufferingTimeoutJob?.cancel()
+                bufferingTimeoutJob = coroutineScope.launch {
+                    delay(10000)
+                    ctLoading.visibility = GONE
+                    ctError.visibility = VISIBLE
+                }
             }
 
             PlayerState.STOPPED -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
             }
 
             else -> {
-//                mControlView.setPlayState(PlayState.NOT_PLAYING)
-                mPauseIconView.clearAnimation()
-                GONE
+                loadingAnim?.cancel()
+                ctLoading.visibility = GONE
+                ctError.visibility = GONE
             }
         }
     }
@@ -566,125 +417,17 @@ class LivePlayerView @JvmOverloads constructor(
         mRenderView.setDataSource(url)
     }
 
-    fun setOnUpdateStatisticsListener(onUpdateStatistics: (category: String, json: String) -> Unit) {
-        mOnUpdateStatisticsListener = onUpdateStatistics
-    }
-
-    fun setOnSurfaceCreatedListener(onSurfaceCreated: () -> Unit) {
-        mRenderView.setOnSurfaceCreatedListener(onSurfaceCreated)
-    }
-
-    fun setOnOrientationChangeListener(orientationChange: (from: Boolean, currentMode: ScreenMode) -> Unit) {
-        mOnOrientationChangeListener = orientationChange
-    }
-
     fun setConfig(cfg: PlayerConfig) {
         mConfig = cfg
         mRenderView.setConfig(cfg)
-    }
-
-    fun setAutoPlay(isAutoPlay: Boolean) {
-        mRenderView.setAutoPlay(isAutoPlay)
-    }
-
-    fun setLoopPlay(isLoopPlay: Boolean) {
-        mRenderView.setLoop(isLoopPlay)
     }
 
     fun setMute(isMute: Boolean) {
         mRenderView.setMute(isMute)
     }
 
-    fun setHwDecode(isHwDecode: Boolean) {
-        mRenderView.setHwDecode(isHwDecode)
-    }
-
-    fun setAutoReconnectTime(intervalTime: Int) {
-        mRenderView.setReconnectTime(intervalTime)
-    }
-
-    fun setBufferedTime(intervalTime: Int) {
-        mRenderView.setBufferedTime(intervalTime)
-    }
-
-    fun setOnShowMoreClickListener(showMore: () -> Unit) {
-        mOnShowMoreClickListener = showMore
-    }
-
-    fun setOnShowQualityClickListener(showQuality: () -> Unit) {
-        mOnShowQualityClickListener = showQuality
-    }
-
-    fun setOnPlayStateBtnClickListener(onPlayBtnClick: () -> Unit) {
-        mOnPlayStateBtnClickListener = onPlayBtnClick
-    }
-
-    fun setOnPreparedListener(onPrepared: () -> Unit) {
-        mRenderView.setOnPreparedListener(onPrepared)
-    }
-
     fun getConfig(): PlayerConfig {
         return mRenderView.getConfig()
-    }
-
-    fun getMediaInfo(): MediaInfo {
-        return mRenderView.getMediaInfo()
-    }
-
-    fun setIsClearScreen(isClear: Boolean) {
-        mRenderView.setIsClearScreen(isClear)
-    }
-
-    fun setVideoBackgroundColor(color: Int): Int {
-        return mRenderView.setVideoBackgroundColor(color)
-    }
-
-    fun setOnlyAudio(isOnlyAudio: Boolean) {
-        mRenderView.setOnlyAudio(isOnlyAudio)
-    }
-
-    fun setAudioDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setAudioDecrypt(
-            if (decrypt) {
-                DecryptMode.DECRYPT_MODE_INTERNAL
-            } else {
-                DecryptMode.DECRYPT_MODE_NONE
-            }
-        )
-    }
-
-    fun setVideoDecrypt(decrypt: Boolean): Int {
-        return mRenderView.setVideoDecrypt(
-            if (decrypt) {
-                DecryptMode.DECRYPT_MODE_INTERNAL
-            } else {
-                DecryptMode.DECRYPT_MODE_NONE
-            }
-        )
-    }
-
-    fun setDecryptKey(key: String): Int {
-        return mRenderView.setDecryptKey(key)
-    }
-
-    fun setNoAudio(noAudio: Boolean): Int {
-        return mRenderView.setNoAudio(noAudio)
-    }
-
-    fun setMirrorMode(mode: MirrorMode): Int {
-        return mRenderView.setMirrorMode(mode)
-    }
-
-    fun setRotateMode(mode: RotateMode): Int {
-        return mRenderView.setRotateMode(mode)
-    }
-
-    fun setScaleMode(mode: ScaleMode): Int {
-        return mRenderView.setScaleMode(mode)
-    }
-
-    fun setViewportRatioMode(mode: ViewportRatioMode): Int {
-        return mRenderView.setViewportRatioMode(mode)
     }
 
     fun onStop() {
@@ -697,6 +440,5 @@ class LivePlayerView @JvmOverloads constructor(
      */
     fun onDestroy() {
         mRenderView.release()
-        mOrientationWatchDog.destroy()
     }
 }
