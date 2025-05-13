@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.live.data.model.LiveBetSlipData
 import com.walisport.module.live.data.repository.LiveBetRepository
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
-import galaxy.common.proto.Common
+import galaxy.common.proto.Common.EarlySettlePrice
+import galaxy.common.proto.Common.Order
 import galaxy.common.proto.Common.ReserveOrder
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -21,17 +21,26 @@ class LiveBetSlipViewModel : BaseViewModel() {
     private var page = 1
     private val pageSize = 10
     private val repository: LiveBetRepository by inject { parametersOf(viewModelScope) }
-    private val _orderLiveData = MutableLiveData<List<Common.Order>?>()
-    val orderLiveData: LiveData<List<Common.Order>?> = _orderLiveData
-    private val _reserveLiveData = MutableLiveData<List<Common.ReserveOrder>?>()
-    val reserveLiveData: LiveData<List<Common.ReserveOrder>?> = _reserveLiveData
-    private val _earlySettledLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val earlySettledLiveData: LiveData<Boolean> = _earlySettledLiveData
+    //普通注单
+    private val _orderLiveData = MutableLiveData<List<Order>?>()
+    val orderLiveData: LiveData<List<Order>?> = _orderLiveData
+    //预约注单
+    private val _reserveLiveData = MutableLiveData<List<ReserveOrder>?>()
+    val reserveLiveData: LiveData<List<ReserveOrder>?> = _reserveLiveData
+    //提前结算结果
+    private val _earlySettledResultLiveData: MutableLiveData<Boolean> = MutableLiveData()
+    val earlySettledResultLiveData: LiveData<Boolean> = _earlySettledResultLiveData
+    //取消预约
     private val _cancelReserveLiveData: MutableLiveData<Boolean> = MutableLiveData()
     val cancelReserveLiveData: LiveData<Boolean> = _cancelReserveLiveData
+    //修改赔率
     private val _modifyOddsLiveData: MutableLiveData<Boolean> = MutableLiveData()
     val modifyOddsLiveData: LiveData<Boolean> = _modifyOddsLiveData
-
+    //检查提前结算
+    private val _earlySettlePriceLiveData = MutableLiveData<EarlySettlePrice>()
+    val earlySettlePriceLiveData:LiveData<EarlySettlePrice> = _earlySettlePriceLiveData
+    //选择的提前结算注单
+    var selectOrder:Order? = null
 
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
@@ -61,8 +70,8 @@ class LiveBetSlipViewModel : BaseViewModel() {
 
 
     fun getTestList(): List<LiveBetSlipData> {
-        val order = Common.Order.newBuilder().setBetId("0").build()
-        val order1 = Common.Order.newBuilder().setBetId("1").build()
+        val order = Order.newBuilder().setBetId("0").build()
+        val order1 = Order.newBuilder().setBetId("1").build()
         val tmpList = arrayListOf(LiveBetSlipData(order), LiveBetSlipData(order1))
         return tmpList
     }
@@ -70,17 +79,17 @@ class LiveBetSlipViewModel : BaseViewModel() {
     /**
      * 部分提前结算
      * */
-    fun earlyPartSettled(order: Common.Order, money: String, expectPrice: String) {
+    fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
         viewModelScope.launch {
-            val result = repository.earlySettle(order.betId, money, expectPrice, false)
-            _earlySettledLiveData.value = result?.success ?: false
+            val result = repository.earlySettle(betId, money, expectPrice, false)
+            _earlySettledResultLiveData.value = result?.success ?: false
         }
     }
 
     /**
      * 取消预约
      * */
-    fun cancelReserve(order: Common.ReserveOrder) {
+    fun cancelReserve(order: ReserveOrder) {
         viewModelScope.launch {
             val result = repository.reserveCancel(order.reserveId)
             _cancelReserveLiveData.value = result?.success ?: false
@@ -109,6 +118,18 @@ class LiveBetSlipViewModel : BaseViewModel() {
             _orderLiveData.value = result
             if (_orderLiveData.value?.isEmpty() == true) {
                 page--
+            }
+        }
+    }
+
+    /**
+     * 检查是否支持提前结算
+     * */
+    fun earlySettledPrice(betId:String) {
+        viewModelScope.launch {
+            val result = repository.earlySettledPrice(betId)
+            if (!result.isNullOrEmpty()) {
+                _earlySettlePriceLiveData.value = result.first()
             }
         }
     }

@@ -4,10 +4,10 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.extension.observeProtoMessage
-import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetNotifySelectionBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.remote.ComboBetDataModel

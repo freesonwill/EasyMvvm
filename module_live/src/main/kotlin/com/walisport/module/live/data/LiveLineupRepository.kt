@@ -1,9 +1,9 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client
 import galaxy.client.proto.Sloth

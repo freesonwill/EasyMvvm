@@ -2,9 +2,9 @@ package com.walisport.module.live
 
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq

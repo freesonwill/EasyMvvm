@@ -32,7 +32,6 @@ class LiveBetSlipModifyOddsFragment private constructor() :
     override fun initView(savedInstanceState: Bundle?) {
         setDialogPosition()
 
-        dialog?.setCanceledOnTouchOutside(true)
         with(mBinding) {
             keyboardNumber.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
@@ -79,6 +78,7 @@ class LiveBetSlipModifyOddsFragment private constructor() :
         get() = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black_65))
 
     private fun setDialogPosition() {
+        dialog?.setCanceledOnTouchOutside(true)
         dialog?.window?.apply {
             mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {

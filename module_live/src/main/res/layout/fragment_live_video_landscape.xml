@@ -6,20 +6,13 @@
     android:background="@color/black">
 
 
-    <tv.danmaku.ijk.media.example.widget.media.IjkVideoView
+    <com.walisport.module.live.ui.widget.LivePlayerView
         android:id="@+id/videoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include
-        android:id="@+id/included_landscape_ct_loading"
-        layout="@layout/layout_landscape_ct_loading" />
-
-    <include
-        android:id="@+id/included_landscape_ct_error"
-        layout="@layout/layout_landscape_ct_error" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/top_area"
@@ -54,10 +47,9 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_video_landscape_tournament_icon"
-                android:layout_width="@dimen/dp_96"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_22"
-                android:scaleType="centerInside"
-                android:src="@drawable/title_league_icon" />
+                android:scaleType="fitCenter" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="1.3dp"

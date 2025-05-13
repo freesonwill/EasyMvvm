@@ -14,7 +14,7 @@ import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.socket.SocketModuleInitializer
+import arch.cayenne.lib.websocket.SocketModuleInitializer
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.SplashRepository
 import com.walisport.app.ui.viewmodel.MainViewModel

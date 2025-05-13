@@ -10,10 +10,10 @@ import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.database.entity.TournamentMatchRef
-import arch.cayenne.lib.socket.WebSocketManager
-import arch.cayenne.lib.socket.data.ApiCode
-import arch.cayenne.lib.socket.extension.observeProtoMessage
-import arch.cayenne.lib.socket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.MatchUpdateData
 import arch.cayenne.module.home.data.toRoomData
 import arch.cayenne.module.home.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
