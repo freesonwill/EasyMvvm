@@ -180,7 +180,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     //获取联赛日程列表数据
     suspend fun getMatchLeagueReq(
         scope: CoroutineScope,
-        tournamentId: Int
+        tournamentId: Int,
+        page: Int
     ): Client.TournamentMatchResp? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.TournamentMatchResp>(
             scope = scope,
@@ -189,8 +190,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         ) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
-                this.page = 1
-                this.size = 50
+                this.page = page
+                this.size = 20
             }.build()
         }
         if (result.error == null && result.data != null) {

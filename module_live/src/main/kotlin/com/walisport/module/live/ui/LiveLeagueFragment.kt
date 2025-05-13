@@ -53,15 +53,20 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         //获取联赛日程列表
         val matchID = arguments?.getLong("matchID") ?: 0L
         leagueID = arguments?.getInt("leagueID") ?: 0
-        //初始化联赛列表
-        mBinding.recyclerLeague.apply {
-            itemAnimator = null
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            adapter = standsAdapter
-            addItemDecoration(LeagueItemDecoration())
+        mBinding.apply {
+            refreshLayout.setOnRefreshListener {
+                mViewModel.getMatchLeagueData(leagueID)
+            }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.getMoreMatchLeagueData(leagueID)
+            }
+            recyclerLeague.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                adapter = standsAdapter
+                addItemDecoration(LeagueItemDecoration())
+            }
         }
         standsAdapter.setMatchID(matchID)
-        //点击列表Item跳转直播详情页
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId
             val sportId = standsAdapter.currentList[pos].sportId
@@ -93,6 +98,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun createObserver() {
         mViewModel.leagueData.observe(this) {
+            mBinding.refreshLayout.finishRefresh()
             if (it != null) {
                 //更新设置背景色
                 var startColor = Color.parseColor("#377c46")
@@ -104,7 +110,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
                 )
                 gradientDrawable.shape = GradientDrawable.RECTANGLE
-                mBinding.root.background = gradientDrawable
+                mBinding.leagueRoot.background = gradientDrawable
                 //更新设置联赛LOGO
                 Glide.with(this).load(it.logo).into(mBinding.ivLeagueLogo)
                 //更新设置联赛名称
