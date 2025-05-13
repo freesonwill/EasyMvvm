@@ -9,7 +9,6 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -74,9 +73,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
-                        mBinding.layoutContainer.tlDateList.visibility = View.GONE
                         //看db, 點擊的不在matchBean中會爆掉
-
+                        resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                     }
                 }
@@ -87,6 +85,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
 
         }
+    }
+
+    //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
+    private fun resetHomeView() {
+        mBinding.layoutContainer.tlDateList.visibility = View.GONE
+        mViewModel.resetLiveData()
     }
 
     //init 二級導航欄位
@@ -128,20 +132,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-
-            //ViewPager
-            vpGameList.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    tlLeagueList.getTabAt(position)?.select()
-
-                    mViewModel.gameListPageIndex = position
-                }
-            })
-            vpGameList.post {
-                vpGameList.currentItem = 0
-                tlLeagueList.getTabAt(0)?.select()
-                tlDateList.getTabAt(0)?.select()
-            }
         }
     }
 
@@ -205,7 +195,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    private fun initLeaguesLayout(tournaments: List<TournamentDataModel>) {
+    private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+        //確定拿到聯賽資料後再決定要不要show出時間
+        if (tournaments.isNotEmpty()) {
+            if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                mBinding.layoutContainer.tlDateList.visibility = View.GONE
+            } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+                mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
+            }
+        }
         mBinding.layoutContainer.apply {
             vpGameList.currentItem = 0
             tlDateList.getTabAt(0)?.select()
@@ -302,13 +300,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
 //            if (it.isNullOrEmpty()) return@observe
-            //確定拿到聯賽資料後再決定要不要show出時間
-            if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
-                mBinding.layoutContainer.tlDateList.visibility = View.GONE
-            } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
-                mBinding.layoutContainer.tlDateList.visibility = View.VISIBLE
-            }
-            initLeaguesLayout(it)
+            setTournamentAndViewPagerLayout(it)
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
