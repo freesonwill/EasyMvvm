@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.utils
+package arch.cayenne.module.home.ui.view.decoration
 
 import android.graphics.Rect
 import android.view.View

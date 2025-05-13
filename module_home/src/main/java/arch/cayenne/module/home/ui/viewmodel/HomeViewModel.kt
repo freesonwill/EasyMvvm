@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.viewmodel
+package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -7,9 +7,9 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
-import arch.cayenne.module.home.enums.PlayType
-import arch.cayenne.module.home.enums.SportType
-import arch.cayenne.module.home.repository.HomeRepository
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,9 +53,12 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
         currentPlayType = playType
+        getCurrentSportStatistical()
+    }
+
+    fun resetLiveData() {
         sportsStatistical.value = arrayListOf()
         tournaments.value = arrayListOf()
-        getCurrentSportStatistical()
     }
 
     fun getCurrentPlayType() = currentPlayType

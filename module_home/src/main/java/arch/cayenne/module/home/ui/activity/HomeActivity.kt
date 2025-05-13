@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui
+package arch.cayenne.module.home.ui.activity
 
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.ui.BaseNavActivity

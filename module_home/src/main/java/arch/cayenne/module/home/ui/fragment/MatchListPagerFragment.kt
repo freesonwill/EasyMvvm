@@ -21,9 +21,9 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
-import arch.cayenne.module.home.utils.MatchCardItemDecoration
-import arch.cayenne.module.home.viewmodel.HomeViewModel
-import arch.cayenne.module.home.viewmodel.MatchListViewModel
+import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 

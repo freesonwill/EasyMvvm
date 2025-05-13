@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.viewmodel
+package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -7,9 +7,9 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
-import arch.cayenne.module.home.enums.PlayType
-import arch.cayenne.module.home.enums.SportType
-import arch.cayenne.module.home.repository.HomeRepository
+import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
