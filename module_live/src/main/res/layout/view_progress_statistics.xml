@@ -4,7 +4,7 @@
     android:layout_height="@dimen/dp_47"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_progress_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_progress_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tv_progress_name"/>
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_progress_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SportProgressBar
+        <arch.cayenne.lib.skin.widget.SkinnableProgressBar
             android:id="@+id/pro_left"
             android:layout_width="@dimen/dp_160"
             android:layout_height="match_parent"
@@ -55,7 +55,7 @@
             style="?android:attr/progressBarStyleHorizontal"
             android:progressDrawable="@drawable/style_red_progress_bar"/>
 
-        <arch.cayenne.lib.skin.widget.SportProgressBar
+        <arch.cayenne.lib.skin.widget.SkinnableProgressBar
             android:id="@+id/pro_right"
             android:layout_width="@dimen/dp_160"
             android:layout_height="match_parent"

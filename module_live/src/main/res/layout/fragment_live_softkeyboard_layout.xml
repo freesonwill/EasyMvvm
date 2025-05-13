@@ -9,7 +9,7 @@
     </data>
 
 
-    <arch.cayenne.lib.skin.widget.SportConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/card_solid">
@@ -125,5 +125,5 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/line" />
-    </arch.cayenne.lib.skin.widget.SportConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

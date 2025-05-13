@@ -7,15 +7,15 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SportSkinTextHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 
-class SportTextView : AppCompatTextView {
-    private val textHelper = SportSkinTextHelper(this)
-    private val backgroundTintHelper = SportSkinBackGroundHelper(this)
+class SkinnableTextView : AppCompatTextView {
+    private val textHelper = SkinnableTextHelper(this)
+    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
     constructor(context: Context) : super(context) {

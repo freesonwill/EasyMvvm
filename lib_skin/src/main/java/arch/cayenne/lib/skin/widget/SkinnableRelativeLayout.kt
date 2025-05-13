@@ -6,12 +6,12 @@ import android.widget.RelativeLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SportSkinManager
-import arch.cayenne.lib.skin.widget.helper.SportSkinBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-class SportRelativeLayout:RelativeLayout {
-    private val backgroundTintHelper = SportSkinBackGroundHelper(this)
+class SkinnableRelativeLayout:RelativeLayout {
+    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
 
     constructor(context: Context) : super(context) {

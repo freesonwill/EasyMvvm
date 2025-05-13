@@ -68,7 +68,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <arch.cayenne.lib.skin.widget.SportEditText
+            <arch.cayenne.lib.skin.widget.SkinnableEditText
                 android:id="@+id/et_money"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <arch.cayenne.lib.skin.widget.SportTabLayout
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/ll_tab"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_36"

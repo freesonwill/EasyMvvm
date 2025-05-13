@@ -6,31 +6,16 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.skin.widget.SportView
+import arch.cayenne.lib.skin.widget.SkinnableView
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
 import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
-import com.walisport.module.live.data.model.LiveBetSlipData
-import com.walisport.module.live.data.model.LiveBetSlipSelectionData
-import com.walisport.module.live.databinding.AdapterLiveBetSlipConfirmBinding
-import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
-import com.walisport.module.live.databinding.AdapterLiveBetSlipReserveBinding
-import com.walisport.module.live.databinding.AdapterLiveBetSlipSettledBinding
-import com.walisport.module.live.databinding.AdapterLiveBetSlipUnsettleBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipConfirmBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipInvalidBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipReserveBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipSettledBinding
 import com.walisport.module.live.databinding.ItemLiveBetSlipUnsettleBinding
-import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipBaseAdapterManager
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipConfirmAdapterManager
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipInvalidAdapterManager
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipReserveAdapterManager
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipSettledAdapterManager
-import com.walisport.module.live.ui.adapter.livebetslip.LiveBetSlipUnsettledAdapterManager
 import com.walisport.module.live.utils.LiveBetSlipItemManagerInterface
 import com.walisport.module.live.utils.RecyclerItemListener
 
@@ -86,7 +71,7 @@ abstract class LiveBetSlipBaseItemManager(
 
     fun configView(
         expandedEnum: LiveBetSlipExpandedEnum? = null,
-        line: SportView,
+        line: SkinnableView,
         group: Group,
         tvMore: TextView,
         ivArrow: ImageView,

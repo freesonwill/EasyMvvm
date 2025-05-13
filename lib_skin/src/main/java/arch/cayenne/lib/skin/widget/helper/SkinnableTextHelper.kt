@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.annotation.DrawableRes
 import arch.cayenne.lib.skin.R
 
-open class SportSkinTextHelper(mView: TextView) : SportSkinHelper(mView) {
+open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
 
     var textColorResId = INVALID_ID
     private var mTextColorHintResId = INVALID_ID

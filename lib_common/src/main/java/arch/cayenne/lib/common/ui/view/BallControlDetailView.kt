@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ViewBallControlDetailCommonLayoutBinding
-import arch.cayenne.lib.skin.widget.SportImageView
-import arch.cayenne.lib.skin.widget.SportTextView
+import arch.cayenne.lib.skin.widget.SkinnableImageView
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import kotlin.properties.Delegates
 
 
@@ -63,7 +63,7 @@ class BallControlDetailView @JvmOverloads constructor(
         parent.removeAllViews()
         val list = if (isRed) redEvent else blueEvent
         list.forEach { item ->
-            val imageView = SportImageView(context).apply {
+            val imageView = SkinnableImageView(context).apply {
                 setImageResource(R.drawable.search_icon)
                 layoutParams = LayoutParams(
                     LayoutParams.WRAP_CONTENT,
@@ -162,7 +162,7 @@ class BallControlDetailView @JvmOverloads constructor(
                 }
             }
 
-            val textView = SportTextView(context).apply {
+            val textView = SkinnableTextView(context).apply {
                 text = textStr
                 layoutParams = LayoutParams(
                     LayoutParams.WRAP_CONTENT,

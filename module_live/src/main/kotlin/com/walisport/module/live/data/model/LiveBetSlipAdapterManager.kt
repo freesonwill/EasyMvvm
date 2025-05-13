@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.res.SportSkinResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipResultOrderStatusEnum
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
@@ -265,7 +265,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 betExpiredTvStatus.text =
                     root.context.resources.getString(R.string.live_bet_reserve_expired)
                 betExpiredTvStatus.setBackgroundResource(
-                    SportSkinResourceManager.getTargetResourceId(
+                    SkinnableResourceManager.getTargetResourceId(
                         root.context,
                         R.drawable.live_bet_selection_status_light
                     )
@@ -287,7 +287,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: LiveBetSlipEnum) {
                 betExpiredTvStatus.text =
                     root.context.resources.getString(R.string.live_bet_rejection)
                 betExpiredTvStatus.setBackgroundResource(
-                    SportSkinResourceManager.getTargetResourceId(
+                    SkinnableResourceManager.getTargetResourceId(
                         root.context,
                         R.drawable.live_bet_selection_status_normal
                     )

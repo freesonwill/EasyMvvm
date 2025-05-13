@@ -16,7 +16,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_race"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="@id/bet_reserve_iv_ball" />
 
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_introduce"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -39,7 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_iv_ball" />
 
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_aodds"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -50,7 +50,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_introduce" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_status"
         android:layout_width="@dimen/dp_42"
         android:layout_height="@dimen/dp_20"
@@ -63,7 +63,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_introduce" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_score"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -75,7 +75,7 @@
         app:layout_constraintLeft_toRightOf="@id/bet_reserve_tv_status"
         app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_status" />
 
-    <arch.cayenne.lib.skin.widget.SportTextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_start"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
@@ -85,7 +85,7 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_status"
         app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_status" />
 
-    <arch.cayenne.lib.skin.widget.SportView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
