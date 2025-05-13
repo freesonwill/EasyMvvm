@@ -5,7 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.module.home.enums.PlayType
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 
 class LeaguePagerAdapter(

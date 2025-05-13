@@ -1,8 +1,6 @@
-package arch.cayenne.module.home.ui.compare
+package arch.cayenne.module.home.ui.adapter.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.lib.database.entity.MatchBean
-import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 
 class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {

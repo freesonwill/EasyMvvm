@@ -3,7 +3,7 @@ package arch.cayenne.module.home
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.module.home.repository.HomeRepository
+import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module

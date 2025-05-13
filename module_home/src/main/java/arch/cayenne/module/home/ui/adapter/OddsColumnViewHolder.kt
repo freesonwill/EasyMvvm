@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.viewholder
+package arch.cayenne.module.home.ui.adapter
 
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.MarketBeanLite

@@ -6,8 +6,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
-import arch.cayenne.module.home.ui.compare.MatchItemCompare
-import arch.cayenne.module.home.ui.viewholder.MatchItemViewHolder
+import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
     BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
