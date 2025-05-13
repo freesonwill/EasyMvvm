@@ -44,7 +44,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private var mCurrentScreenMode = ScreenMode.SMALL
     private var mIsFullScreenLocked = false
     private var mCurrentPosition: Long = 0
     private var inSeek: Boolean = false
@@ -276,7 +275,7 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun isGestureEnable(): Boolean {
-        return mCurrentScreenMode == ScreenMode.FULL
+        return true
     }
 
     private fun processNetworkSpeed(json: String) {
