@@ -74,7 +74,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
                 android:background="@null"
-                android:cursorVisible="true"
                 android:inputType="numberDecimal"
                 android:textColor="@color/main_text"
                 android:textColorHint="@color/color_edittext_hint"
@@ -194,6 +193,14 @@
                 android:text="5000"
                 android:textSize="14sp" />
         </LinearLayout>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="ll_common_amount,number_keyboard,gl_other"
+            />
 
         <arch.cayenne.lib.common.ui.view.NumberKeyboardView
             android:id="@+id/number_keyboard"

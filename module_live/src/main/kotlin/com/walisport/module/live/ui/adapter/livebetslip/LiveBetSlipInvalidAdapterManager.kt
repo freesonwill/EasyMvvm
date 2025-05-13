@@ -2,19 +2,13 @@ package com.walisport.module.live.ui.adapter.livebetslip
 
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SportSkinResourceManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.LiveBetSlipEnum
-import com.walisport.module.live.data.constants.LiveBetSlipExpandedEnum
 import com.walisport.module.live.data.model.LiveBetSlipData
-import com.walisport.module.live.data.model.LiveBetSlipSelectionData
 import com.walisport.module.live.databinding.AdapterLiveBetSlipInvalidBinding
-import com.walisport.module.live.ui.adapter.LiveBetSlipSelectionAdapter
 import com.walisport.module.live.utils.LiveBetSlipUtils.expectMaxAmount
-import com.walisport.module.live.utils.RecyclerItemListener
 import galaxy.common.proto.Common.Order
 
 class LiveBetSlipInvalidAdapterManager(
