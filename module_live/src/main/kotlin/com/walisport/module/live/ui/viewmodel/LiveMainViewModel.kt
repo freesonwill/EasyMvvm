@@ -18,6 +18,7 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     var matchId: Long = 0
     var sportId: Int = 0
+     var leagueID: Int = 0
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
@@ -33,7 +34,6 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
                 }
             }
         }
-
     }
 
     fun getMainMatch(matchId: Long) {
@@ -41,6 +41,7 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
             repo.getMatchRes(matchId)
         }
     }
+
     fun observeMatchBean(matchId: Long) {
         viewModelScope.launch {
             repo.observeMatchBean(matchId).collect {
@@ -48,4 +49,18 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
             }
         }
     }
+
+    fun registerMatchInfoNotify(matchId: Long) {
+        viewModelScope.launch {
+            repo.registerMatchInfoNotify(matchId)
+            repo.observeMatchInfoNotify()
+        }
+    }
+
+    fun unregisterMatchInfoNotify(matchId: Long) {
+        viewModelScope.launch {
+            repo.unregisterMatchInfoNotify(matchId)
+        }
+    }
+
 }
