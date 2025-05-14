@@ -17,6 +17,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
+import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
@@ -64,7 +65,7 @@ class LiveVideoLandscapeFragment :
 
     private fun initVideoView() {
         mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY, R.layout.layout_live_player_view_landscape)
+            init(PlayerMode.FLUENCY, ScreenMode.FULL)
             keepScreenOn = true
             setConfig(GlobalConfig(requireContext()).also {
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置
