@@ -30,47 +30,56 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_sound_toggle"
-                android:layout_width="@dimen/dp_52"
-                android:layout_height="@dimen/dp_44"
-                android:paddingStart="@dimen/dp_12"
-                android:paddingTop="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_8"
-                android:src="@drawable/shape_immuted"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/bottom_area"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/video_operate_area_height"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent">
 
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_choose_source"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:src="@drawable/video_fragment_choose_source"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/iv_to_fullscreen" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sound_toggle"
+                    android:layout_width="@dimen/dp_52"
+                    android:layout_height="@dimen/dp_44"
+                    android:paddingStart="@dimen/dp_12"
+                    android:paddingTop="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_12"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:src="@drawable/shape_immuted"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
 
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_to_fullscreen"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:layout_marginEnd="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:src="@drawable/video_fragment_to_fullscreen"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_choose_source"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:src="@drawable/video_fragment_choose_source"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_to_fullscreen" />
+
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_to_fullscreen"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:src="@drawable/video_fragment_to_fullscreen"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <include layout="@layout/layout_match_not_in_progress"
-            android:id="@+id/included_match_not_in_progress"/>
+        <include
+            android:id="@+id/included_match_not_in_progress"
+            layout="@layout/layout_match_not_in_progress" />
 
     </LinearLayout>
 </layout>
