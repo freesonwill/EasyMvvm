@@ -66,6 +66,28 @@ class LiveVideoLandscapeFragment :
                 }
             }.transformToPlayerConfig())
 
+            setOnSingleTapListener {
+                if (videoViewFullScreen) {
+                    if (buttonsDisplaying) {
+                        buttonsDisplaying = false
+
+                        hideButtonsAnimated()
+                    } else {
+                        buttonsDisplaying = true
+
+                        showButtonsAnimated()
+                    }
+                } else {
+                    enlarge {
+                        showButtons()
+                        videoViewFullScreen = true
+                    }
+
+                    //隐藏子fragment
+                    hideFragment()
+                }
+            }
+
         }
 
     }

@@ -10,7 +10,6 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
-import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
@@ -32,7 +31,7 @@ class LivePlayerView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayout(context, attrs, defStyleAttr) {
-    private lateinit var mRenderView :QYRenderView
+    private lateinit var mRenderView: QYRenderView
     private lateinit var mGestureView: GestureView
 
     private lateinit var ctLoading: ConstraintLayout
@@ -42,6 +41,11 @@ class LivePlayerView @JvmOverloads constructor(
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
 
+    /**
+     * 单击事件处理
+     */
+    private var onSingleTapListener: (() -> Unit)? = null
+
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
     private var mIsFullScreenLocked = false
@@ -49,7 +53,6 @@ class LivePlayerView @JvmOverloads constructor(
     private var inSeek: Boolean = false
     private var mPlayerState = PlayerState.IDLE
     private var mScreenBrightness: Int = 0
-    private var isActivityStopped = false
     private var mPlayingPath: String? = null
     private var mConfig: PlayerConfig? = null
 
@@ -68,6 +71,10 @@ class LivePlayerView @JvmOverloads constructor(
         mPlayerMode = playerMode
         initViews(layoutId)
         initListeners()
+    }
+
+    fun setOnSingleTapListener(listener: (() -> Unit)) {
+        onSingleTapListener = listener
     }
 
     private fun initViews(@LayoutRes layoutId: Int) {
@@ -114,7 +121,7 @@ class LivePlayerView @JvmOverloads constructor(
         start()
     }
 
-    fun onPause(){
+    fun onPause() {
         mRenderView.pause()
     }
 
@@ -231,27 +238,28 @@ class LivePlayerView @JvmOverloads constructor(
                     if (!isGestureEnable()) {
                         return
                     }
-                    if (inSeek) {
+
+                    //直播不能做加速
+                    if (mPlayerMode == PlayerMode.VOD || mPlayerMode == PlayerMode.FILE) {
+
+                        if (inSeek) {
 //                        val seekPosition: Int = mControlView.getVideoPosition()
 //                        seekTo(seekPosition)
-                        inSeek = false
-                    }
-                    if (isFastSpeed) {
-                        mRenderView.setSpeed(100)
-                        isFastSpeed = false
-                    }
+                            inSeek = false
+                        }
+                        if (isFastSpeed) {
+                            mRenderView.setSpeed(100)
+                            isFastSpeed = false
+                        }
 //                    mControlView.openAutoHide()
-                    mGestureDialogManager.dismissBrightnessDialog()
-                    mGestureDialogManager.dismissVolumeDialog()
-                    mGestureDialogManager.dismissSeekDialog()
+                        mGestureDialogManager.dismissBrightnessDialog()
+                        mGestureDialogManager.dismissVolumeDialog()
+                        mGestureDialogManager.dismissSeekDialog()
+                    }
                 }
 
                 override fun onSingleTap() {
-//                    if (mControlView.visibility != VISIBLE) {
-//                        mControlView.show()
-//                    } else {
-//                        mControlView.hide()
-//                    }
+                    onSingleTapListener?.invoke()
                 }
 
                 override fun onDoubleTap() {
@@ -262,8 +270,15 @@ class LivePlayerView @JvmOverloads constructor(
                 }
 
                 override fun onLongPress() {
-                    isFastSpeed = true
-                    mRenderView.setSpeed(200)
+                    if (!isGestureEnable()) {
+                        return
+                    }
+
+                    //直播不要做加速
+                    if (mPlayerMode == PlayerMode.VOD || mPlayerMode == PlayerMode.FILE) {
+                        isFastSpeed = true
+                        mRenderView.setSpeed(200)
+                    }
                 }
 
             })
@@ -275,7 +290,7 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun isGestureEnable(): Boolean {
-        return true
+        return false
     }
 
     private fun processNetworkSpeed(json: String) {
@@ -432,7 +447,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     fun onStop() {
         mRenderView.stop()
-        isActivityStopped = true
     }
 
     /**

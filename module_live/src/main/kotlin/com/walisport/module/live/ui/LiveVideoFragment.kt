@@ -1,5 +1,7 @@
 package com.walisport.module.live.ui
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
@@ -19,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
+import com.walisport.module.live.ui.LiveVideoLandscapeFragment.Companion.ANIMATION_DURATION
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.PlayerMode
 import kotlin.reflect.KClass
@@ -31,6 +34,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
+    private var buttonsDisplaying = true
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
@@ -55,6 +59,19 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     it.inited = true
                 }
             }.transformToPlayerConfig())
+
+            setOnSingleTapListener {
+                //单击事件
+                if (buttonsDisplaying) {
+                    buttonsDisplaying = false
+
+                    hideButtonsAnimated()
+                } else {
+                    buttonsDisplaying = true
+
+                    showButtonsAnimated()
+                }
+            }
 
         }
 
@@ -260,6 +277,54 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 //        mBinding.videoView.stopPlayback()
 //        mBinding.videoView.release(true)
 //        mBinding.videoView.stopBackgroundPlay()
+    }
+
+    /**
+     * 隐藏底部操作栏
+     */
+    private fun hideButtonsAnimated(){
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(0f, operateAreaHeight)
+                ),
+                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+            )
+            setDuration(ANIMATION_DURATION)
+
+            start()
+        }
+    }
+
+    /**
+     * 展示底部操作栏
+     */
+    private fun showButtonsAnimated(){
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(operateAreaHeight, 0f)
+                ),
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "alpha",
+                    *floatArrayOf(0.5f, 1f)
+                ),
+
+                )
+            setDuration(ANIMATION_DURATION)
+            start()
+        }
     }
 
     companion object {
