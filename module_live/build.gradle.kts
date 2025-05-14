@@ -49,6 +49,7 @@ dependencies {
     implementation(project(":lib_qyplayer"))
     implementation(project(":lib_database"))
     implementation(project(":lib_websocket"))
+    implementation(project(":module_bet"))
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
