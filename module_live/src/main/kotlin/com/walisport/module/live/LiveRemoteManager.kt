@@ -123,6 +123,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
             .transform { res ->
                 if (res.error == null && res.data != null) {
+                    "observeMatchInfoNotify  result ${res.data}".logd(TAG)
                     emit(res.data!!)
                 }
             }
