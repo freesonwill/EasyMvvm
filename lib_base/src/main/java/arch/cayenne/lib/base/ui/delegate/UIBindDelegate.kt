@@ -40,8 +40,10 @@ class UIBindDelegate<UIOwner, VM, VB>(
     val viewModel: VM get() = _viewModel ?: error("viewModel is null")
     //是否第一次初始化
     private var firstInit: Boolean = false
+    private var destroyRunnable:Runnable? = null
 
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
+        destroyRunnable?.let { binding.root.removeCallbacks(it) }
         if(_binding == null || !keepViewOnNavigation) {
             firstInit = true
             _binding = vbProvider(container)
@@ -80,10 +82,12 @@ class UIBindDelegate<UIOwner, VM, VB>(
      */
     private fun performDestroy(){
         //延迟一帧置空，避免子类调用binding为null
-        binding.root.post {
+        destroyRunnable = Runnable{
             _binding = null
             _viewModel = null
+            destroyRunnable = null
         }
+        binding.root.post(destroyRunnable)
     }
 
     /**
