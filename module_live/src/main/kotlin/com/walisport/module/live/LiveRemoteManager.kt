@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
 import galaxy.client.proto.Client
@@ -19,6 +20,9 @@ import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
     private val TAG = LiveRemoteManager::class.java.simpleName
@@ -70,16 +74,59 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_MATCH
         ) {
             Client.GetMatchReq.newBuilder().apply {
-                this.matchId=matchId
+                this.matchId = matchId
             }.build()
         }
         if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
-            return  result.data!!.match
+            return result.data!!.match
         }
         return null
     }
 
+
+    // 500-1102: 订阅比赛详情
+    suspend fun registerMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchInfoResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH_INFO,
+        ) {
+            Client.SubscribeMatchInfoReq.newBuilder().apply {
+                this.matchId = matchIds
+            }.build()
+        }
+        if (res.error == null) {
+//            if (res.data != null&&res.data!!.matchNotify!= null){
+//                res.data!!.matchNotify
+//            }
+        }
+    }
+
+    // 500-1103: 取消订阅比赛详情
+    fun unregisterMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
+        scope.launch {
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
+            ) {
+                Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
+                    this.matchId = matchIds
+                }.build()
+            }
+        }
+    }
+
+    // 600-1004: 比赛INFO推送
+    fun observeMatchInfoNotify(): Flow<Client.MatchInfoNotify> {
+        return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
+            .transform { res ->
+                if (res.error == null && res.data != null) {
+                    emit(res.data!!)
+                }
+            }
+    }
 
     suspend fun getOrderReq(
         scope: CoroutineScope,
@@ -91,7 +138,9 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         startTime: Long? = null,
         endTime: Long? = null,
     ): List<Common.Order>? {
-        "getOrderReq params status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId".logd(TAG)
+        "getOrderReq params status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId".logd(
+            TAG
+        )
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -295,7 +344,11 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.odds = odds
             }.build()
         }
-        "reserveUpdateReq reserveId $reserveId amount $amount odds $odds  \n result ${Gson().toJson(result)}".logd(TAG)
+        "reserveUpdateReq reserveId $reserveId amount $amount odds $odds  \n result ${
+            Gson().toJson(
+                result
+            )
+        }".logd(TAG)
         if (result.error == null && result.data != null) {
             return result.data
         }
@@ -313,7 +366,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         "betId $betId earlySettlePrice  ${Gson().toJson(result)}".logd(TAG)
-        if(result.error == null && result.data != null){
+        if (result.error == null && result.data != null) {
             return result.data
         }
         return null
