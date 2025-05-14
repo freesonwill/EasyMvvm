@@ -26,7 +26,7 @@ enum class SurfaceType {
     TEXTURE_VIEW,
 
     /**
-     * SurfacView
+     * SurfaceView
      */
     SURFACE_VIEW
 }
