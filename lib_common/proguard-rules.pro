@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+# 日期组件start
+-keepclasseswithmembers class * {
+    public <init>(android.content.Context);
+}
+# 日期组件end

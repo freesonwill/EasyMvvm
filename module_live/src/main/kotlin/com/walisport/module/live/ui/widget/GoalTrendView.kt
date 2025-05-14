@@ -15,7 +15,6 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchTrendData
-import galaxy.client.proto.Sloth
 
 /**
  * 赛况页进球趋势View
@@ -48,7 +47,6 @@ class GoalTrendView @JvmOverloads constructor(
 
     private var eventList = ArrayList<Incidents>() //进攻事件列表
     private var trendList = ArrayList<Int>() //进攻趋势列表
-
 
     private val iconY = 93.dp2px //蓝队球赛事件图标y轴位置
     private val rectY = 14.dp2px.toFloat() //矩形背景y轴位置
@@ -113,9 +111,11 @@ class GoalTrendView @JvmOverloads constructor(
         canvas.drawRect(RectF(0f, 3 * rectH + rectY, viewWidth, 4 * rectH + rectY), fiveBlue)
         //绘制比赛趋势蜡柱图
         val trendSize = trendList.size
+        var lastCandle = 0f
         if (trendSize > 0) {
             for (i in 0..<trendSize) {
                 val left = i * unitWidth
+                lastCandle = left
                 val right = left + lineWidth - 3
                 val value = trendList[i]
                 if (value > 0) {
@@ -129,6 +129,11 @@ class GoalTrendView @JvmOverloads constructor(
                     canvas.drawRect(RectF(left, top, right, bottom), blue)
                 }
             }
+            //绘制最后一根绿柱
+            val top = rectY + 3
+            val right = lastCandle + lineWidth - 3
+            val bottom = 4 * rectH + rectY - 6
+            canvas.drawRect(RectF(lastCandle, top, right, bottom), green)
         }
         //绘制比赛事件图标
         val eventSize = eventList.size
