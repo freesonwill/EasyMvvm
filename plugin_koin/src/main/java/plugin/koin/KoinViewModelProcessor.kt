@@ -43,7 +43,7 @@ class KoinViewModelProcessor(
             Dependencies.ALL_FILES,
             //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
             //Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),*/
-            if(viewModels.isEmpty())
+            if(viewModels.isEmpty()) //generate empty file
                 Dependencies.ALL_FILES
             else
                 Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),

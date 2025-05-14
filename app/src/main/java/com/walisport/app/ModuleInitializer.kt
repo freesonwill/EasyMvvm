@@ -77,7 +77,11 @@ class ModuleInitializer : DefaultInitializer<String> {
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
-        return super.dependencies() + listOf(SocketModuleInitializer::class.java, CommonModuleInitializer::class.java, HomeModuleInitializer::class.java)
+        return super.dependencies() + listOf(
+            SocketModuleInitializer::class.java,
+            CommonModuleInitializer::class.java,
+            HomeModuleInitializer::class.java
+        )
     }
 
     private val viewModules = module {
