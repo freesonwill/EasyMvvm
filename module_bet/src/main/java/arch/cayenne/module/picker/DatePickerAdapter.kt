@@ -18,12 +18,11 @@ class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<
             listener.onCancelClick()
         }
         binding.root.setOnClickListener {
-            if (position == itemCount) {
+            if (position == itemCount - 1) {
                 listener.onCustomClick()
             } else {
                 listener.onDateClick(position)
             }
-            listener.onDateClick(position)
         }
 
     }

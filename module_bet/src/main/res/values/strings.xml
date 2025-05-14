@@ -48,4 +48,8 @@
     <string name="date_picker_yesterday">昨天</string>
     <string name="date_picker_in_7_day">7天内</string>
     <string name="date_picker_custom">自定义</string>
+
+    <string name="date_picker_year">%d年</string>
+    <string name="date_picker_month">%d月</string>
+    <string name="date_picker_day">%d日</string>
 </resources>

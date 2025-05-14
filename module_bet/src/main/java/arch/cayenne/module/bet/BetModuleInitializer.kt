@@ -18,6 +18,7 @@ import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import arch.cayenne.module.picker.DatePickerViewModel
+import arch.cayenne.module.picker.TimePickerViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -52,6 +53,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::ReserveViewModel)
         viewModelOf(::BetSheetViewModel)
         viewModelOf(::DatePickerViewModel)
+        viewModelOf(::TimePickerViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)

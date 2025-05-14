@@ -4,23 +4,33 @@ import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentDatePickerBinding
 import kotlin.reflect.KClass
 
-class DatePickerFragment private constructor(): BaseBottomSheetFragment<DatePickerViewModel, FragmentDatePickerBinding>() {
+class DatePickerFragment private constructor() :
+    BaseBottomSheetFragment<DatePickerViewModel, FragmentDatePickerBinding>() {
 
     companion object {
         fun newInstance(): DatePickerFragment {
             return DatePickerFragment()
         }
     }
+
     override val vbClass: KClass<FragmentDatePickerBinding> = FragmentDatePickerBinding::class
     override val vmClass: KClass<DatePickerViewModel> = DatePickerViewModel::class
 
     private val datePickerAdapter by lazy {
         DatePickerAdapter(object : DatePickerAdapter.OnDateClickListener {
             override fun onCustomClick() {
-
+                childFragmentManager.setFragmentResultListener(
+                    Config.KEY_RESULT,
+                    viewLifecycleOwner
+                ) { _, bundle ->
+                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                    val time = bundle.getLong(Config.VALUE_SELECTED_DATE)
+                }
+                TimePickerFragment.newInstance(1589447105978).show(childFragmentManager)
             }
 
             override fun onDateClick(position: Int) {
@@ -30,7 +40,7 @@ class DatePickerFragment private constructor(): BaseBottomSheetFragment<DatePick
             override fun onCancelClick() {
                 mViewModel.cancel()
             }
-        } )
+        })
     }
 
     override fun initView(savedInstanceState: Bundle?) {
