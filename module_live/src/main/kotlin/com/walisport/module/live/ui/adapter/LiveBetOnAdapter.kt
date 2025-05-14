@@ -58,7 +58,7 @@ class LiveBetOnAdapter(var callback:LivBetListCallback) :
                     LiveBetListLayout.StatesArrange.getStates(listIt.style),
                     positions,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString(),listIt.selectionId
+                    listIt.odds.getOdds().toString(),listIt.selectionId,listIt.active,
                 ) { it ->
                     callback.itemListCallback(it,listIt.selectionId)
                 }
