@@ -20,7 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.walisport.module.live.ui.widget.LivePlayerView
+            <arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
                 android:id="@+id/videoView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

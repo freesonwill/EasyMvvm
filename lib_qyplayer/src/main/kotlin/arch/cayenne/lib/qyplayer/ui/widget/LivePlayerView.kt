@@ -1,4 +1,4 @@
-package com.walisport.module.live.ui.widget
+package arch.cayenne.lib.qyplayer.ui.widget
 
 import android.animation.ObjectAnimator
 import android.app.Activity
@@ -10,6 +10,8 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import arch.cayenne.lib.qyplayer.R
+import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
@@ -67,9 +69,15 @@ class LivePlayerView @JvmOverloads constructor(
     private var bufferingTimeoutJob: Job? = null
 
 
-    fun init(playerMode: PlayerMode, @LayoutRes layoutId: Int) {
+    fun init(playerMode: PlayerMode, screenMode: ScreenMode) {
         mPlayerMode = playerMode
-        initViews(layoutId)
+        initViews(
+            if (screenMode == ScreenMode.FULL) {
+                R.layout.layout_live_player_view_landscape
+            } else {
+                R.layout.layout_live_player_view
+            }
+        )
         initListeners()
     }
 
@@ -83,9 +91,9 @@ class LivePlayerView @JvmOverloads constructor(
         LayoutInflater.from(context)
             .inflate(layoutId, this, true)
 
-        ctLoading = findViewById(com.walisport.module.live.R.id.ct_loading)
-        ctError = findViewById(com.walisport.module.live.R.id.ct_error)
-        ivLoading = findViewById(com.walisport.module.live.R.id.iv_video_loading)
+        ctLoading = findViewById(R.id.ct_loading)
+        ctError = findViewById(R.id.ct_error)
+        ivLoading = findViewById(R.id.iv_video_loading)
 
         // 初始化子视图
         initRenderView()
@@ -126,7 +134,7 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initRenderView() {
-        mRenderView = findViewById(com.walisport.module.live.R.id.renderView)
+        mRenderView = findViewById(R.id.renderView)
 
         mRenderView.apply {
             setOnStateChangedListener {
@@ -156,7 +164,7 @@ class LivePlayerView @JvmOverloads constructor(
 
 
     private fun initGestureView() {
-        mGestureView = findViewById(com.walisport.module.live.R.id.gesture_view)
+        mGestureView = findViewById(R.id.gesture_view)
 
         mGestureView.apply {
             setOnGestureListener(object : GestureListener {

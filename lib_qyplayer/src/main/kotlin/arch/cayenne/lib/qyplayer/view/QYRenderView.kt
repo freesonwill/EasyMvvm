@@ -36,7 +36,7 @@ class QYRenderView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val mQYPlayer = QYPlayer(context)
+    private val mQYPlayer: QYPlayer by lazy { QYPlayer(context.applicationContext) }
     private var mIRenderView: IRenderView? = null
     private var mSurface: Surface? = null
 
