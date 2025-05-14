@@ -29,8 +29,9 @@ class DatePickerFragment private constructor() :
                 ) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
                     val time = bundle.getLong(Config.VALUE_SELECTED_DATE)
+                    mViewModel.customTime = time
                 }
-                TimePickerFragment.newInstance(1589447105978).show(childFragmentManager)
+                TimePickerFragment.newInstance(mViewModel.customTime).show(childFragmentManager)
             }
 
             override fun onDateClick(position: Int) {
