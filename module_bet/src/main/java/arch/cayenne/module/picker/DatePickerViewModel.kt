@@ -8,11 +8,35 @@ import arch.cayenne.module.bet.R
 
 class DatePickerViewModel: BaseViewModel() {
 
-    private val _dateTitleListener = MutableLiveData<List<String>>()
-    val dateTitleListener: LiveData<List<String>> get() = _dateTitleListener
+    private val _dateTitleListener = MutableLiveData<List<DatePickerBean>>()
+    val dateTitleListener: LiveData<List<DatePickerBean>> get() = _dateTitleListener
 
     init {
-        val list = R.array.date_picker.getStringArray()
-        _dateTitleListener.value = list
+        val data = R.array.date_picker.getStringArray().map {
+            DatePickerBean(it)
+        }
+        _dateTitleListener.value = data
+    }
+
+    fun setSelected(position: Int) {
+        _dateTitleListener.value?.let {
+            val newList = it.mapIndexed { index, datePickerBean ->
+                if (index == position) {
+                    datePickerBean.copy(isSelected = true)
+                } else {
+                    datePickerBean.copy(isSelected = false)
+                }
+            }
+            _dateTitleListener.value = newList
+        }
+    }
+
+    fun cancel() {
+        _dateTitleListener.value?.let {
+            val newList = it.mapIndexed { _, datePickerBean ->
+                datePickerBean.copy(isSelected = false)
+            }
+            _dateTitleListener.value = newList
+        }
     }
 }
