@@ -1,7 +1,6 @@
 package arch.cayenne.lib.qyplayer.view
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
@@ -81,12 +80,6 @@ class QYRenderView @JvmOverloads constructor(
 
     fun setOnUpdateStatisticsListener(onUpdateStatistics: (category: String, json: String) -> Unit) {
         mQYPlayer.setOnUpdateStatisticsListener(onUpdateStatistics)
-    }
-
-    fun setOnSnapshotListener(onSnapshot: (bitmap: Bitmap) -> Unit) {
-        mQYPlayer.setOnSnapShotListener { bitmap ->
-            onSnapshot(bitmap)
-        }
     }
 
     fun prepare() {

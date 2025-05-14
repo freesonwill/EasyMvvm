@@ -3,10 +3,14 @@ package com.walisport.module.live.ui.widget
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout.LayoutParams
+import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -55,6 +59,11 @@ class TechnicalCountView @JvmOverloads constructor(
     //设置比赛趋势蜡烛图数据
     fun setTrendData(data: MatchTrendData) {
         mBinding.viewGoalTrend.setData(data)
+        val size = data.data.size
+        if (size > 90) {
+            //当比赛时间超过90分钟时需重新绘制时间栏
+            refreshTimeLayout(size)
+        }
     }
 
     //设置进攻数据
@@ -179,6 +188,45 @@ class TechnicalCountView @JvmOverloads constructor(
                 }
             }
             mBinding.layData.addView(progress)
+        }
+    }
+
+    private fun refreshTimeLayout(minute: Int) {
+        val color = mBinding.lastTime.currentTextColor
+        mBinding.layTime.removeAllViews()
+        for (index in 0..6) {
+            val textStr = when (index) {
+                0 -> "0'"
+                1 -> "15'"
+                2 -> "30'"
+                3 -> "45'"
+                4 -> "60'"
+                5 -> "75'"
+                6 -> "$minute'"
+                else -> {
+                    ""
+                }
+            }
+            val textView = AppCompatTextView(context).apply {
+                text = textStr
+                setTextColor(color)
+                layoutParams = android.widget.FrameLayout.LayoutParams(
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
+                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
+                )
+            }
+            mBinding.layTime.addView(textView)
+            textView.post {
+                val params = textView.layoutParams as android.widget.FrameLayout.LayoutParams
+                when (index) {
+                    0 -> params.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+                    6 -> params.gravity = Gravity.END or Gravity.CENTER_VERTICAL
+                    else -> {
+                        params.gravity = Gravity.CENTER
+                    }
+                }
+                textView.layoutParams = params
+            }
         }
     }
 

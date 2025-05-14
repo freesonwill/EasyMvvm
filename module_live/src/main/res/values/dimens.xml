@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="video_landscape_operate_area_height">@dimen/dp_100</dimen>
+    <dimen name="video_operate_area_height">@dimen/dp_100</dimen>
+
 </resources>
