@@ -1,14 +1,15 @@
 package com.walisport.module.live.ui
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.LayoutRes
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ThreadUtils.launchWithCustomContext
+import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -20,10 +21,14 @@ import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
-import com.walisport.module.live.ui.LiveVideoLandscapeFragment.Companion.ANIMATION_DURATION
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.PlayerMode
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -36,11 +41,17 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     private var buttonsDisplaying = true
 
+    /**
+     * 隐藏操作栏的定时Job
+     */
+    private var scheduledHideButtonsJob: Job? = null
+
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
         mBinding.includedMatchNotInProgress.model = mViewModel
 
         initVideoView()
+        scheduleHideButtons()
     }
 
     private fun initVideoView() {
@@ -322,9 +333,38 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 ),
 
                 )
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    scheduleHideButtons()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+            })
             setDuration(ANIMATION_DURATION)
+
             start()
         }
+    }
+
+    /**
+     * 设置定时任务，隐藏操作栏
+     */
+    private fun scheduleHideButtons() {
+        scheduledHideButtonsJob?.cancel()
+        scheduledHideButtonsJob = mainScope.launch {
+            delay(HIDE_BUTTONS_TIMER)
+
+            buttonsDisplaying = false
+            hideButtonsAnimated()
+        }
+
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
@@ -11,6 +12,7 @@ import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -20,9 +22,14 @@ import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.PlayerMode
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import me.jessyan.autosize.AutoSizeConfig
 import me.jessyan.autosize.internal.CancelAdapt
 import kotlin.reflect.KClass
@@ -41,12 +48,18 @@ class LiveVideoLandscapeFragment :
 
     private var buttonsDisplaying = true
 
+    /**
+     * 隐藏操作栏的定时Job
+     */
+    private var scheduledHideButtonsJob: Job? = null
+
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.setMatchId(matchId)
 
         initVideoView()
+        scheduleHideButtons()
     }
 
     private fun initVideoView() {
@@ -251,6 +264,20 @@ class LiveVideoLandscapeFragment :
 
                 )
             setDuration(ANIMATION_DURATION)
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    scheduleHideButtons()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+            })
             start()
         }
     }
@@ -281,6 +308,20 @@ class LiveVideoLandscapeFragment :
 
             start()
         }
+    }
+
+    /**
+     * 设置定时任务，隐藏操作栏
+     */
+    private fun scheduleHideButtons() {
+        scheduledHideButtonsJob?.cancel()
+        scheduledHideButtonsJob = mainScope.launch {
+            delay(HIDE_BUTTONS_TIMER)
+
+            buttonsDisplaying = false
+            hideButtonsAnimated()
+        }
+
     }
 
     /**
@@ -669,7 +710,6 @@ class LiveVideoLandscapeFragment :
     }
 
     companion object {
-        const val ANIMATION_DURATION = 300L
 
         const val LANDSCAPE_WIDTH = 812
         const val LANDSCAPE_HEIGHT = 375
