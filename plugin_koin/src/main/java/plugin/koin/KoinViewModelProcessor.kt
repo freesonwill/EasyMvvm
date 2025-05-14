@@ -28,9 +28,8 @@ class KoinViewModelProcessor(
     private val defaultModule by lazy { "defaultModule" }
     private var createFileCount:Int = 0
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        val symbols = resolver.getSymbolsWithAnnotation("plugin.koin.KoinViewModel")
+        val symbols = resolver.getSymbolsWithAnnotation(KoinViewModel::class.java.name)
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
-        logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size}")
         val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
         logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
         val fileName = defaultModule.replaceFirstChar { it.uppercaseChar() }
@@ -44,8 +43,8 @@ class KoinViewModelProcessor(
             Dependencies.ALL_FILES,
             //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
             //Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),*/
-            if(viewModels.isEmpty()) //generate empty file
-                Dependencies(false)
+            if(viewModels.isEmpty())
+                Dependencies.ALL_FILES
             else
                 Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),
             generatedPackage,
@@ -88,8 +87,8 @@ class KoinViewModelProcessor(
                         append("(")
                         var i = 0
                         isGets!!.forEachIndexed { index, b ->
-                            if(i > 0) append(",")
                             if(!b) {
+                                if(i > 0) append(",")
                                 val parameter = constructor?.parameters?.get(index)!!
                                 append("${parameter.name?.asString()}:${parameter.type.resolve().declaration.qualifiedName?.asString()}")
                                 i++

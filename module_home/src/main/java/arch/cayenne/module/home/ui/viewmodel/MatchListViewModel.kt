@@ -197,7 +197,12 @@ class MatchListViewModel : BaseViewModel() {
     fun getCurrentSubscribeMatchSet() = subscribeMatchSet
 
     suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
-        return betRepository.setSelection(matchId, selectionId)
+        val bean = repository.getSelectionInsertBean(matchId, selectionId)
+        return if (bean == null) {
+            AddSelectionStatus.FAIL
+        } else {
+            betRepository.setSelection(bean)
+        }
     }
 
     fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {

@@ -17,6 +17,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        flatDir {
+            dirs("lib_qyplayer/libs")
+        }
         maven(url = "https://jitpack.io")
         maven(url = "https://repo1.maven.org/maven2/")
         maven(url = "https://developer.huawei.com/repo/")

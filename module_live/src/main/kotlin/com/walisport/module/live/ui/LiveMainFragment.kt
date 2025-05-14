@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -15,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.module.betslip.ui.fragment.LiveBetSlipFragment
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
@@ -69,6 +71,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 )
             }
         }
+        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
     }
 
     @SuppressLint("SetTextI18n")
@@ -118,6 +126,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tabView.setOnClickListener {}
             }.attach()
+            mBinding.tabLayout.getTabAt(1)?.select()
+            mBinding.vpPage.setCurrentItem(1,false)
             tabLayout.removeAllTips()
         }
     }

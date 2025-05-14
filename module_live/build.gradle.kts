@@ -48,6 +48,7 @@ dependencies {
     implementation(project(":lib_ijkplayer"))
     implementation(project(":lib_qyplayer"))
     implementation(project(":lib_database"))
+    implementation(project(":module_bet"))
     implementation(project(":lib_websocket"))
     implementation(project(":module_bet"))
     implementation(libs.androidx.legacy.support.v4)
