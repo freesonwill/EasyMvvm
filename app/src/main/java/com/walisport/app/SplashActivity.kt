@@ -20,43 +20,43 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     //zhangsan
     //55468809
-    // token=NTU0Njg4MDlfMTc0Mjk2MDQ1ODA3MjpETVdiTUZXRVRkbWF3NE9j
+    // token=NTU0Njg4MDlfMTc0NzEyOTYzODM2Nzp1NzhzbW1ybHBiQlJqcUhJ
 
     //wangzai
     //55468810
-    // token=NTU0Njg4MTBfMTc0Mjk2MDM3MzAzODpVeEcwNmw4ZmxsV01lUmRF
+    // token=NTU0Njg4MTBfMTc0NzEyOTY4NDEyMTpwMHVDUHhoRnpzRnNkbXdx
 
     //xiaoyang
     //55468807
-    // token=NTU0Njg4MDdfMTc0Mjk2MDYzODE0ODpES1FFSkxKYWEydXNQY3pN
+    // token=NTU0Njg4MDdfMTc0NzEyOTQyODg1NDpGRmp2SUhhN2hsWThtMXZS
 
     //wenxi
     //55468811
-    // token=NTU0Njg4MTFfMTc0Mjk2MDUxMTA5ODplemdFTWdaN0FTZk0zNHRn
+    // token=NTU0Njg4MTFfMTc0NzEyOTcxNjYxMTpBZGp3WU1YVFd2OTBTUG83
 
     //aquan
     //55468812
-    // token=NTU0Njg4MTJfMTc0Mjk2MDU5Mzk3OTpzREp6dG1HeEY0UTlXYXZz
+    // token=NTU0Njg4MTJfMTc0NzEyOTc1ODE1ODpqd1BDVURxcTRkQWhzeWFy
 
     //kc
     //uid=55468808
-    //token=NTU0Njg4MDhfMTc0Mjk1OTUwNTkzMjpyS3gyZnNBYUp1cUdKcFRR
+    //token=NTU0Njg4MDhfMTc0NzEyOTc4ODA4MTpQYUNMcXFFbVVWVFBKak9M
 
     //link
     //55468813
-    // token=NTU0Njg4MTNfMTc0Mjk2MDk0MDU1ODpqSVZLbzkyOEtyTGZNdE05
+    // token=NTU0Njg4MTNfMTc0NzEyOTgyODE0OTp5blR0RXhvcFJTdEFrbURq
 
     //jeremy
     //55468814
-    // token=NTU0Njg4MTRfMTc0Mjk2MTE4NzgxMTpINlNOa2Vja0NRVUozeExj
+    // token=NTU0Njg4MTRfMTc0NzEyOTg2NDMyNjpFb004VEc1Y3FzeFlmWU12
 
     //joseph
     //55468815
-    // token=NTU0Njg4MTVfMTc0Mjk2MTI1ODE5MTpQZk9kb0NGTVUwWHlZaXEx
+    // token=NTU0Njg4MTVfMTc0NzEyOTg5MDc2NDoxQ3BMUGQzRkl4RG5qTUVT
 
     //ricky
     //55468816
-    // token=NTU0Njg4MTZfMTc0Mjk2MTQ1NzMzNjp3UGxVY1BJM0wxancwZGZm
+    // token=NTU0Njg4MTZfMTc0NzEyOTkzNTk1MTp0dm5oQ3lwcXhNeTR5Ykdu
 
     //android1
     //55468817

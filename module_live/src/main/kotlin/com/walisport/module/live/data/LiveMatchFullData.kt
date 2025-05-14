@@ -73,6 +73,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                 selections.add(
                     LiveSelectionBean(
                         marketId = market.marketId,
+                        marketName =market.marketName,
                         selectionId = selection.selectionId,
                         detail = LiveMarketDetailBean(
                             detailId = index,

@@ -92,7 +92,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
 
     fun saveToCombo() {
         onEditNumber.value?.let {
-            if (it.isEmpty()) return
+            if (it.isEmpty()) return@let
             val money = it.toMoney()
             betRepo.saveInputMoney(money)
         }
