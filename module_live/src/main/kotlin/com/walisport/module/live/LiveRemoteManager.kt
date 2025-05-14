@@ -241,7 +241,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
                 this.page = page
-                this.size = 20
+                this.size = 50
             }.build()
         }
         if (result.error == null && result.data != null) {
