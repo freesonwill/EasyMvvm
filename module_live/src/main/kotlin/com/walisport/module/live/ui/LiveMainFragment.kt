@@ -3,7 +3,6 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
-import androidx.core.view.get
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -14,6 +13,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -109,7 +109,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         with(mBinding) {
             val list =
-                listOf(PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment() },
+                listOf(PagerBean(R.string.live_note_order.getString()) { BetSlipFragment().apply { setArguments(args.matchId,args.sportId) } },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

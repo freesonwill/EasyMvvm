@@ -11,21 +11,21 @@ import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemLastEmojiLayoutBinding
-import com.walisport.module.live.utils.RecyclerItemListener
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 class LiveEmojiAdapter :
     BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(LiveEmojiCompare()) {
     private var type: Int = 0 //id 0 bid/soccer 1
     private val TYPE_NORMAL = 0
     private val TYPE_LAST = 1
-    private var itemListener: RecyclerItemListener<EmojiData>? = null
+    private var itemListener: arch.cayenne.module.betslip.utisl.RecyclerItemListener<EmojiData>? = null
 
 
     fun setType(type: Int) {
         this.type = type
     }
 
-    fun setItemListener(listener: RecyclerItemListener<EmojiData>?) {
+    fun setItemListener(listener: arch.cayenne.module.betslip.utisl.RecyclerItemListener<EmojiData>?) {
         this.itemListener = listener
     }
 

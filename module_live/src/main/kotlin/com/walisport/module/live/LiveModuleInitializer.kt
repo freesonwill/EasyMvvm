@@ -7,7 +7,7 @@ import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
 import com.walisport.module.live.data.repository.LiveBetOnRepository
-import com.walisport.module.live.data.repository.LiveBetRepository
+import arch.cayenne.module.betslip.data.repo.LiveBetRepository
 import com.walisport.module.live.data.repository.LiveLeagueRepository
 import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
@@ -16,7 +16,7 @@ import com.walisport.module.live.ui.viewmodel.EmojiViewModel
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
@@ -24,9 +24,8 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
-import com.walisport.module.live.ui.viewmodel.LiveEarlySettledKeyboardViewModel
-import com.walisport.module.live.ui.viewmodel.LiveBetSlipModifyOddsViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -46,7 +45,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         includes(defaultModule)
         viewModelOf(::LiveVideoViewModel)
-        viewModelOf(::LiveBetSlipViewModel)
+        viewModelOf(::BetSlipViewModel)
         viewModelOf(::LiveChatViewModel)
         viewModelOf(::LeagueViewModel)
         viewModelOf(::LiveOutsViewModel)
@@ -57,8 +56,8 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::EmojiViewModel)
         viewModelOf(::LiveBetOnMenuViewModel)
         viewModelOf(::LiveVideoSourceViewModel)
-        viewModelOf(::LiveEarlySettledKeyboardViewModel)
-        viewModelOf(::LiveBetSlipModifyOddsViewModel)
+        viewModelOf(::EarlySettledKeyboardViewModel)
+        viewModelOf(::BetSlipModifyOddsViewModel)
     }
 
     private val repoModules = module {

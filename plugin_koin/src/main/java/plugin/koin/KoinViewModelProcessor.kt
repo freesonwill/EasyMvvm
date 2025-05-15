@@ -30,6 +30,7 @@ class KoinViewModelProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(KoinViewModel::class.java.name)
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
+        if(viewModels.isEmpty()) return emptyList()
         val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
         logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
         val fileName = defaultModule.replaceFirstChar { it.uppercaseChar() }
