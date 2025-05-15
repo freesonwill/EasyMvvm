@@ -224,7 +224,7 @@ class TechnicalCountView @JvmOverloads constructor(
             }
             mBinding.layTime.addView(textView)
             textView.post {
-                var params: LayoutParams
+                val params: LayoutParams
                 if (textView.layoutParams is LayoutParams) {
                     params = textView.layoutParams as LayoutParams
                     when (index) {
