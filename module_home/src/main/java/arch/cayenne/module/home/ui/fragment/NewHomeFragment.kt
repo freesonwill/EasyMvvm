@@ -77,7 +77,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                         if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment())
+                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(matchId = 453144))
                         }
                     }
                 }

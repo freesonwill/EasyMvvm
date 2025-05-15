@@ -3,6 +3,7 @@ package arch.cayenne.module.home
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.module.home.data.repo.ChampionRepository
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules
@@ -29,6 +30,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
     }
     private val repoModules = module {
         factory { (scope: CoroutineScope) -> HomeRepository(scope, get(), get()) }
+        factory { (scope: CoroutineScope) -> ChampionRepository(scope, get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }

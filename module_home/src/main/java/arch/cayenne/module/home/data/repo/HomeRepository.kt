@@ -292,8 +292,6 @@ class HomeRepository(
         return null
     }
 
-    suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
-
     /**
     * 取得特定的match，藉由matchId
     * */

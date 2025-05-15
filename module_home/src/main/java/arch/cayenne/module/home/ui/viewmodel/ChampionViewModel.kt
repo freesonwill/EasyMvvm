@@ -1,9 +1,43 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.module.home.data.repo.ChampionRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class ChampionViewModel : BaseViewModel() {
+    private val championRepository: ChampionRepository  by inject { parametersOf(viewModelScope) }
+    private val balanceRepository: BalanceRepository by inject { parametersOf(viewModelScope) }
+
+    private var matchId: Long = 0
+    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+
+    override fun initViewModel() {
+        super.initViewModel()
+        viewModelScope.launch(Dispatchers.IO) {
+            balanceRepository.observeBalance().collect {
+                withContext(Dispatchers.Main) {
+                    currentBalanceChange.value = it
+                }
+            }
+        }
+    }
+
+    fun setMatchId(matchId: Long) {
+        this.matchId = matchId
+    }
+    fun getChampionDetail() {
+        viewModelScope.launch(Dispatchers.IO) {
+            championRepository.getChampionDetail(matchId)
+        }
+    }
 
 }

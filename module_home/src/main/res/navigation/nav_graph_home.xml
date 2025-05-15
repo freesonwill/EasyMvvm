@@ -117,7 +117,8 @@
             android:id="@+id/action_newHomeFragment_to_championFragment"
             app:destination="@id/championFragment"
             app:popUpToSaveState="true"
-            app:restoreState="true" />
+            app:restoreState="true" >
+        </action>
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
     </fragment>
@@ -138,5 +139,8 @@
         android:id="@+id/championFragment"
         android:name="arch.cayenne.module.home.ui.fragment.ChampionFragment"
         android:label="ChampionFragment">
+        <argument
+            android:name="matchId"
+            app:argType="long" />
     </fragment>
 </navigation>

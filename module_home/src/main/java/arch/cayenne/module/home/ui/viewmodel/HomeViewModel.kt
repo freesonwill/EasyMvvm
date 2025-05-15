@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
@@ -23,6 +24,7 @@ class HomeViewModel : BaseViewModel() {
         const val TOURNAMENT_ALL_ID = 0
     }
     private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
+    private val balanceRepository: BalanceRepository by inject { parametersOf(viewModelScope) }
     var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
@@ -41,7 +43,7 @@ class HomeViewModel : BaseViewModel() {
         super.initViewModel()
         //觀察餘額變化
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeBalance().collect {
+            balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
                 }

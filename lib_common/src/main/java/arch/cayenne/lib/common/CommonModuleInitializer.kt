@@ -3,7 +3,9 @@ package arch.cayenne.lib.common
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
+import arch.cayenne.lib.database.GameDatabase
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules
@@ -22,6 +24,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
 
     private val moduleList: List<Module> = listOf(module {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
+        factory { (scope: CoroutineScope) -> BalanceRepository(scope, get<GameDatabase>().infoDao()) }
         single { UserDataManager() }
     })
 }
