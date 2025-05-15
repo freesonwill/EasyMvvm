@@ -4,21 +4,16 @@ import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import com.google.gson.Gson
 import galaxy.client.proto.Client
-import galaxy.client.proto.Client.EarlySettlePriceReq
-import galaxy.client.proto.Client.EarlySettlePriceResp
-import galaxy.client.proto.Client.EarlySettleReq
-import galaxy.client.proto.Client.EarlySettleResp
-import galaxy.client.proto.Client.ReserveCancelReq
-import galaxy.client.proto.Client.ReserveCancelResp
-import galaxy.client.proto.Client.ReserveUpdateReq
-import galaxy.client.proto.Client.ReserveUpdateResp
 import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.launch
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
     private val TAG = LiveRemoteManager::class.java.simpleName
@@ -70,15 +65,61 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.GET_MATCH
         ) {
             Client.GetMatchReq.newBuilder().apply {
-                this.matchId=matchId
+                this.matchId = matchId
             }.build()
         }
         if (result.error == null && result.data != null) {
             LogUtils.dTag("result", "matchMainMatchresult----->${result}")
-            return  result.data!!.match
+            return result.data!!.match
         }
         return null
     }
+
+
+    // 500-1102: 订阅比赛详情
+    suspend fun registerMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchInfoResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH_INFO,
+        ) {
+            Client.SubscribeMatchInfoReq.newBuilder().apply {
+                this.matchId = matchIds
+            }.build()
+        }
+        if (res.error == null) {
+//            if (res.data != null&&res.data!!.matchNotify!= null){
+//                res.data!!.matchNotify
+//            }
+        }
+    }
+
+    // 500-1103: 取消订阅比赛详情
+    fun unregisterMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
+        scope.launch {
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
+            ) {
+                Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
+                    this.matchId = matchIds
+                }.build()
+            }
+        }
+    }
+
+    // 600-1004: 比赛INFO推送
+    fun observeMatchInfoNotify(): Flow<Client.MatchInfoNotify> {
+        return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
+            .transform { res ->
+                if (res.error == null && res.data != null) {
+                    "observeMatchInfoNotify  result ${res.data}".logd(TAG)
+                    emit(res.data!!)
+                }
+            }
+    }
+
 
     //获取比赛趋势的实时数据
     suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long): Sloth.MatchTrendData? {
@@ -128,7 +169,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
                 this.page = page
-                this.size = 20
+                this.size = 50
             }.build()
         }
         if (result.error == null && result.data != null) {

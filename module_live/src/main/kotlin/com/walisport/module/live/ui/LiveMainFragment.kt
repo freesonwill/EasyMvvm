@@ -32,7 +32,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private val args: LiveMainFragmentArgs by navArgs()
-    private var leagueID: Int = 0
 
     private val titleBarBinding: TittleBarLiveBinding by lazy {
         TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
@@ -43,10 +42,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         setVideoView()
         loadFragment()
-        val matchId = args.matchId
-        val sportId = args.sportId
-        mViewModel.matchId = matchId
-        mViewModel.sportId = sportId
+        mViewModel.matchId =args.matchId
+        mViewModel.sportId = args.sportId
     }
 
     override fun initListener() {
@@ -56,16 +53,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
                         .apply {
-                            arguments.putLong("matchID", args.matchId)
-                            arguments.putInt("leagueID", leagueID)
+                            arguments.putLong("matchID", mViewModel.matchId)
+                            arguments.putInt("leagueID", mViewModel.leagueID)
                         })
             }
             ivLandscapeLeagueIcon.clickNoRepeat {
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
                         .apply {
-                            arguments.putLong("matchID", args.matchId)
-                            arguments.putInt("leagueID", leagueID)
+                            arguments.putLong("matchID", mViewModel.matchId)
+                            arguments.putInt("leagueID", mViewModel.leagueID)
                         }
                 )
             }
@@ -85,7 +82,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
-                leagueID = it.basicInfo.tournamentId //联赛ID
+                mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
                 Glide.with(this).load(it.basicInfo.tournamentIcon)
                     .error(R.drawable.title_league_icon).into(titleBarBinding.ivLandscapeLeagueIcon)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
@@ -97,6 +94,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId)
         mViewModel.observeMatchBean(mViewModel.matchId)
+        mViewModel.registerMatchInfoNotify(mViewModel.matchId)
     }
 
     private fun setVideoView() {
@@ -129,5 +127,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mBinding.vpPage.setCurrentItem(1,false)
             tabLayout.removeAllTips()
         }
+    }
+
+    override fun onDestroyView() {
+        mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
+        super.onDestroyView()
     }
 }

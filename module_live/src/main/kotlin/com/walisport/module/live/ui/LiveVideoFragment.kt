@@ -1,25 +1,35 @@
 package com.walisport.module.live.ui
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ThreadUtils.launchWithCustomContext
+import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
+import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.PlayerMode
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -30,17 +40,24 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
+    private var buttonsDisplaying = true
+
+    /**
+     * 隐藏操作栏的定时Job
+     */
+    private var scheduledHideButtonsJob: Job? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
         mBinding.includedMatchNotInProgress.model = mViewModel
 
         initVideoView()
+        scheduleHideButtons()
     }
 
     private fun initVideoView() {
         mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY)
+            init(PlayerMode.FLUENCY, ScreenMode.SMALL)
             keepScreenOn = true
             setConfig(GlobalConfig(requireContext()).also {
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置
@@ -54,6 +71,19 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     it.inited = true
                 }
             }.transformToPlayerConfig())
+
+            setOnSingleTapListener {
+                //单击事件
+                if (buttonsDisplaying) {
+                    buttonsDisplaying = false
+
+                    hideButtonsAnimated()
+                } else {
+                    buttonsDisplaying = true
+
+                    showButtonsAnimated()
+                }
+            }
 
         }
 
@@ -106,6 +136,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun createObserver() {
+
+
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
@@ -259,6 +291,83 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 //        mBinding.videoView.stopPlayback()
 //        mBinding.videoView.release(true)
 //        mBinding.videoView.stopBackgroundPlay()
+    }
+
+    /**
+     * 隐藏底部操作栏
+     */
+    private fun hideButtonsAnimated(){
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(0f, operateAreaHeight)
+                ),
+                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+            )
+            setDuration(ANIMATION_DURATION)
+
+            start()
+        }
+    }
+
+    /**
+     * 展示底部操作栏
+     */
+    private fun showButtonsAnimated(){
+        val operateAreaHeight =
+            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+
+        with(AnimatorSet()) {
+            playTogether(
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "translationY",
+                    *floatArrayOf(operateAreaHeight, 0f)
+                ),
+                ObjectAnimator.ofFloat(
+                    mBinding.bottomArea,
+                    "alpha",
+                    *floatArrayOf(0.5f, 1f)
+                ),
+
+                )
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    scheduleHideButtons()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+            })
+            setDuration(ANIMATION_DURATION)
+
+            start()
+        }
+    }
+
+    /**
+     * 设置定时任务，隐藏操作栏
+     */
+    private fun scheduleHideButtons() {
+        scheduledHideButtonsJob?.cancel()
+        scheduledHideButtonsJob = mainScope.launch {
+            delay(HIDE_BUTTONS_TIMER)
+
+            buttonsDisplaying = false
+            hideButtonsAnimated()
+        }
+
     }
 
     companion object {
