@@ -91,6 +91,7 @@ class MatchListViewModel : BaseViewModel() {
     }
 
     fun setSelectedDate(id: Long = 0) {
+        page = 1
         _selectedDate.value = id
 //        getCurrentMatch()
     }

@@ -113,6 +113,11 @@
             app:destination="@id/homeFragment"
             app:popUpToSaveState="true"
             app:restoreState="true" />
+        <action
+            android:id="@+id/action_newHomeFragment_to_championFragment"
+            app:destination="@id/championFragment"
+            app:popUpToSaveState="true"
+            app:restoreState="true" />
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
     </fragment>
@@ -128,5 +133,10 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/championFragment"
+        android:name="arch.cayenne.module.home.ui.fragment.ChampionFragment"
+        android:label="ChampionFragment">
     </fragment>
 </navigation>

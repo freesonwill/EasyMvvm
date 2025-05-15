@@ -1,15 +1,15 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
+import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
 import kotlin.reflect.KClass
 
-class ChampionFragment: BaseFragment<EmptyViewModel, FragmentChampionBinding>(){
-    // TODO 待實作
+class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
+
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
     }
