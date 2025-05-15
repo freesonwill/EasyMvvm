@@ -37,7 +37,7 @@
         app:layout_constraintRight_toLeftOf="@id/fl1"
         app:layout_constraintTop_toTopOf="@id/fl1" />
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/fl1"
         android:layout_width="130dp"
         android:layout_height="@dimen/dp_36"
@@ -45,22 +45,30 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:background="@drawable/shape_8dp"
         android:backgroundTint="@color/input_box_2"
+        android:orientation="horizontal"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="\@"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:textSize="@dimen/sp_14"
+            android:textColor="@color/main_text"
+            />
         <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/et_odds"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_8"
+            android:text="1.82"
             android:textColor="@color/main_text"
             android:textFontWeight="500"
             android:textSize="@dimen/sp_14"
             tools:targetApi="p" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <arch.cayenne.lib.common.ui.view.NumberKeyboardView
         android:id="@+id/keyboard_number"

@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel" />
+            type="arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel" />
     </data>
 
 

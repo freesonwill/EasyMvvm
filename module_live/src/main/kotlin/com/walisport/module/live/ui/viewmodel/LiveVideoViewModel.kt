@@ -13,7 +13,7 @@ import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
-import arch.cayenne.module.betslip.utisl.LiveDateUtil
+import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -149,7 +149,7 @@ class LiveVideoViewModel(
                         matchStatus?.let {
                             when (it) {
                                 MatchStatus.NOT_STARTED -> {
-                                    val (date, time) = arch.cayenne.module.betslip.utisl.LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
+                                    val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
                                     _titleText.value = date
                                     _titleTextColor.value = arch.cayenne.lib.common.R.color.white
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
