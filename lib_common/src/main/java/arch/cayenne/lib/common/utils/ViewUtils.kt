@@ -1,19 +1,26 @@
 package arch.cayenne.lib.common.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
+import android.view.KeyEvent
+import android.view.MotionEvent
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.window.layout.WindowMetricsCalculator
 
 object ViewUtils {
 
-    fun hideKeyboard(context: Context, view: EditText) {
+    @SuppressLint("ClickableViewAccessibility")
+    fun hideKeyboard(context: Context, view: EditText, onClick:((v: View) -> Unit)? = null) {
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view.windowToken, 0)
-
         view.setOnTouchListener { v, event ->
+            if(event.action == MotionEvent.ACTION_UP){
+                onClick?.invoke(v)
+            }
             true
         }
     }
