@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
@@ -48,7 +49,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private var mIsFullScreenLocked = false
     private var mCurrentPosition: Long = 0
     private var inSeek: Boolean = false
     private var mPlayerState = PlayerState.IDLE
@@ -105,18 +105,22 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     fun start() {
+        "start".logd(TAG)
         mRenderView.start()
     }
 
     fun onResume() {
+        "onResume".logd(TAG)
         start()
     }
 
     fun onPause() {
+        "onPause".logd(TAG)
         mRenderView.pause()
     }
 
     fun onStop() {
+        "onStop".logd(TAG)
         mRenderView.stop()
     }
 
@@ -124,6 +128,7 @@ class LivePlayerView @JvmOverloads constructor(
      * Activity 销毁，释放资源
      */
     fun onDestroy() {
+        "onDestroy".logd(TAG)
         mRenderView.release()
     }
 
@@ -432,9 +437,7 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
 
-
     private fun initViews(@LayoutRes layoutId: Int) {
-
         // 使用 LayoutInflater 加载 XML 布局
         LayoutInflater.from(context)
             .inflate(layoutId, this, true)
@@ -449,5 +452,9 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     private fun initListeners() {
+    }
+
+    companion object {
+        const val TAG: String = "LivePlayerView"
     }
 }
