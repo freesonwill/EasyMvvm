@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/dp_359"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/shape_betslip_card">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/bet_expired_iv_top"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_37"
+        android:src="@mipmap/betslip_card_top"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bet_expired_tv_status"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_21"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:text="@string/live_bet_reserve_expired"
+        android:paddingStart="3.5dp"
+        android:paddingEnd="4.5dp"
+        android:textColor="@color/color_2c3c3e"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_top"
+        app:layout_constraintLeft_toLeftOf="@id/bet_expired_iv_top"
+        app:layout_constraintTop_toTopOf="@id/bet_expired_iv_top" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/bet_expired_tv_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_8"
+        android:text="2024/11/14 05:03"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_13"
+        app:layout_constraintBottom_toBottomOf="@id/bet_expired_tv_status"
+        app:layout_constraintLeft_toRightOf="@id/bet_expired_tv_status"
+        app:layout_constraintTop_toTopOf="@id/bet_expired_tv_status" />
+
+   <androidx.recyclerview.widget.RecyclerView
+       android:id="@+id/recycler_selection"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_top"
+       />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/bet_expired_iv_avava"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginTop="@dimen/dp_6"
+        android:scaleType="fitXY"
+        android:src="@mipmap/live_betslip_avava"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_selection" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_3.5"
+        android:background="@drawable/bet_line_left"
+        app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_avava"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/bet_expired_iv_avava"
+        app:layout_constraintTop_toTopOf="@id/bet_expired_iv_avava" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_8"
+        android:background="@drawable/bet_line_left"
+        app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_avava"
+        app:layout_constraintLeft_toRightOf="@id/bet_expired_iv_avava"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/bet_expired_iv_avava" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit1"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_12"
+        android:text="@string/live_bet_bet_num"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
+        app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_avava" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit1_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="2025021112000001"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit1" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit2"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/live_bet_reserve_odds"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit1"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit2_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="\@1.85"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit2" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit3"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/live_bet_reserve_bet"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@id/tv_unit2"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit2" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit3_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="$1000"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit3" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit4"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_10"
+        android:text="@string/live_bet_except_max_win"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintLeft_toLeftOf="@id/tv_unit2"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit3" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_unit4_value"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:text="$2312"
+        android:textColor="@color/main_text"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_unit4" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/tv_unit4"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
