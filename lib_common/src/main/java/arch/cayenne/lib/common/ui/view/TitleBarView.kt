@@ -1,42 +1,47 @@
 package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import arch.cayenne.lib.common.databinding.TittleBarDefaultBinding
-import arch.cayenne.lib.common.databinding.TittleBarDynamicsBinding
-import arch.cayenne.lib.common.databinding.TittleBarSearchBinding
+import arch.cayenne.lib.common.databinding.TitleBarDefaultBinding
+import arch.cayenne.lib.common.databinding.TitleBarDynamicsBinding
+import arch.cayenne.lib.common.databinding.TitleBarSearchBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.requireActivity
 
 class TitleBarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
-
+    //默认返回
+    private  val defaultOnBackPressedCallback by lazy {
+        { requireActivity().onBackPressedDispatcher.onBackPressed() }
+    }
     /**
      * 通用标题
-     * @param titleName 标题名称
-     * @param callback 返回
+     * @param title 标题名称
+     * @param onBack 返回
      */
     fun loadGeneralTitleBar(
-        titleName: String?,
-        callback: () -> Unit = { requireActivity().onBackPressedDispatcher.onBackPressed() },
-        callbackRight: (() -> Unit)? = null,
+        title: String?,
+        onBack: () -> Unit = defaultOnBackPressedCallback,
+        onRight: (() -> Unit)? = null,
         rightName: String? = null
     ) {
-        val binding = TittleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
+        val binding = TitleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
-            tvTitleName.text = titleName
+            tvTitleName.text = title
             ivBack.clickNoRepeat {
-                callback()
+                onBack()
             }
-            if (callbackRight != null) {
+            if (onRight != null) {
                 tvTitleRight.visibility = VISIBLE
                 tvTitleRight.text = rightName ?: ""
                 tvTitleRight.clickNoRepeat {
-                    callbackRight()
+                    onRight()
                 }
             }
         }
@@ -44,22 +49,36 @@ class TitleBarView @JvmOverloads constructor(
 
     /**
      * 搜索标题
-     * @param hintText 搜索框提示
-     * @param callback 返回
-     * @param callbackSearch 搜索
+     * @param hint 搜索框提示
+     * @param onBack 返回
+     * @param onSearch 搜索
      */
     fun loadSearchTitleBar(
-        hintText: String, callback: () -> Unit, callbackSearch: (String) -> Unit
+        hint: String,
+        onBack: () -> Unit = defaultOnBackPressedCallback,
+        beforeTextChanged: (text: CharSequence?, start: Int, count: Int, after: Int,binding:TitleBarSearchBinding) -> Unit = { _, _, _, _,_ -> },
+        onTextChanged: (text: CharSequence?, start: Int, before: Int, count: Int,binding:TitleBarSearchBinding) -> Unit = { _, _, _, _,_ -> },
+        afterTextChanged: (text: Editable?,binding:TitleBarSearchBinding) -> Unit = {_,_->},
+        onSearch: ((String,binding:TitleBarSearchBinding) -> Unit) = {_,_->}
     ) {
-        val binding = TittleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
+        val binding = TitleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
-            ceSearch.hint = hintText
-            ivBack.clickNoRepeat {
-                callback()
-            }
+            ceSearch.hint = hint
+            ivBack.clickNoRepeat { onBack() }
+            ceSearch.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    beforeTextChanged(s,start,count,after,binding)
+                }
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    onTextChanged(s,start,before,count,binding)
+                }
+                override fun afterTextChanged(s: Editable?) {
+                    afterTextChanged(s,binding)
+                }
+            })
             tvSearchText.clickNoRepeat {
                 //如果输入内容为空，传入hint内容
-                callbackSearch(ceSearch.text.toString().ifEmpty { hintText })
+                onSearch.invoke(ceSearch.text?.trim().toString().ifEmpty { hint },this)
                 //hint text 为空 提示请输入搜索内容
 //                if (hintText.isEmpty() && ceSearch.text.toString().isEmpty()) {
 //                    callbackSearch( ceSearch.text.toString())
@@ -72,14 +91,16 @@ class TitleBarView @JvmOverloads constructor(
     /**
      * 动态标题
      * @param view 传入布局view
-     * @param callback 返回 不传入Unit 默认不显示ivBack
+     * @param onBack 返回 不传入Unit 默认不显示ivBack
      */
-    fun loadDynamicsTitleBar(view: ViewGroup, callback: (() -> Unit)? = null) {
-        val binding = TittleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
-        if (callback != null) {
+    fun loadDynamicsTitleBar(view: ViewGroup,
+                             onBack: (() -> Unit)? = defaultOnBackPressedCallback
+    ) {
+        val binding = TitleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
+        if (onBack != null) {
             binding.ivBack.visibility = VISIBLE
             binding.ivBack.clickNoRepeat {
-                callback()
+                onBack()
             }
         }
         val parent = view.parent as ViewGroup?
@@ -107,7 +128,7 @@ class TitleBarView @JvmOverloads constructor(
 //    callback: () -> Unit,
 //    callbackCompetition: (Boolean) -> Unit
 //) {
-//    val binding = TittleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
+//    val binding = TitleBarLiveBinding.inflate(LayoutInflater.from(context), this, true)
 //    Glide.with(context).load(leagueImgUrl).override(96.dp2px, 22.dp2px)
 //        .error(R.drawable.title_league_icon)           // 加载失败时的占位符
 //        .into(binding.ivLandscapeLeagueIcon)
