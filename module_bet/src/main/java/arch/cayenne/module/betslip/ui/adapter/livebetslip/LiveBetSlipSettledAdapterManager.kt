@@ -47,8 +47,8 @@ class LiveBetSlipSettledAdapterManager(
             val status = LiveBetSlipResultOrderStatusEnum.getStatus(item.resultStatus)
             status?.let { st ->
                 it.betSettledTvResult.text =  ContextCompat.getString(it.betSettledTvResult.context,st.names)
-                it.betSettledTvResult.background =
-                    SkinnableResourceManager.getDrawable(it.betSettledTvResult.context, st.resId)
+                it.betSettledTvResult.background = ContextCompat.getDrawable(it.betSettledTvResult.context,st.resId)
+//                    SkinnableResourceManager.getDrawable(it.betSettledTvResult.context, st.resId)
             }
         }
     }

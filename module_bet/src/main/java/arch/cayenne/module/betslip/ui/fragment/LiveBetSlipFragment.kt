@@ -5,26 +5,43 @@ import android.widget.LinearLayout
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentLiveBetSlipLayoutBinding
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel
+import com.google.gson.Gson
 
 
 /**
  * 注单
  * */
-class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSlipLayoutBinding>() {
+class LiveBetSlipFragment :
+    BaseFragment<BetSlipPageViewModel, FragmentLiveBetSlipLayoutBinding>() {
+
     override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> =
         FragmentLiveBetSlipLayoutBinding::class
-    override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
+    override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
+    private var matchId:Long = 0
+    private var sportId:Int = 0
 
+    /**
+     * pagerAdapter重置arguments不能使用
+     * */
+    fun setArguments(matchId:Long,sportId:Int){
+        this.matchId = matchId
+        this.sportId = sportId
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mViewModel.matchId = matchId
+        mViewModel.sportId = sportId
         initMenu()
     }
 
@@ -86,8 +103,5 @@ class LiveBetSlipFragment : BaseFragment<LiveBetSlipViewModel, FragmentLiveBetSl
     override fun createObserver() {
     }
 
-    companion object {
-        val TAG = LiveBetSlipFragment::class.java.simpleName
-    }
 
 }

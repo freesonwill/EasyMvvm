@@ -9,10 +9,11 @@ import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipExpandedEnum
 
 class LiveBetSlipSettledItemManager(
-    private val binding: ItemLiveBetSlipSettledBinding, private val liveBetSlip: arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum
+    private val binding: ItemLiveBetSlipSettledBinding, private val liveBetSlip: LiveBetSlipEnum
 ) : LiveBetSlipBaseItemManager(binding, liveBetSlip) {
 
     override fun createViewHolder() {
@@ -54,7 +55,7 @@ class LiveBetSlipSettledItemManager(
                 betSettledTvIntroduce.text = item.selectionName
                 betSettledTvAodds.text = "@${item.odds}"
 //                betSettledTvStatus.isVisible = it.inPlay
-                betSettledTvScore.text = item.marketName + "  " + item.betScore
+                betSettledTvScore.text = item.marketName + "  (${item.betScore})"
                 betSettledTvScore1.text = item.endScore
             }
         }

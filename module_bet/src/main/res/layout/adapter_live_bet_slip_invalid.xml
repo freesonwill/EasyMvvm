@@ -22,7 +22,6 @@
         android:text="@string/live_bet_reserve_expired"
         android:paddingStart="3.5dp"
         android:paddingEnd="4.5dp"
-        android:background="@drawable/live_bet_selection_status_light"
         android:textColor="@color/color_2c3c3e"
         android:textSize="@dimen/sp_13"
         app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_top"

@@ -12,6 +12,7 @@ import kotlin.reflect.KClass
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipExpandedEnum
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel
 
 //注单失效
@@ -20,6 +21,7 @@ class LiveBetSlipInvalidFragment :
     override val vbClass: KClass<FragmentLiveBetslipInvalidBinding> =
         FragmentLiveBetslipInvalidBinding::class
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
+    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, LiveBetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -93,7 +95,7 @@ class LiveBetSlipInvalidFragment :
     override fun initData() {
         super.initData()
 //        TODO
-//        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
+        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
         mViewModel.getOrders(arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum.Invalid)
     }
 }

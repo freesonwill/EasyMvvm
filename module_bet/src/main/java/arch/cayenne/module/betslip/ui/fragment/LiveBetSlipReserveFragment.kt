@@ -15,6 +15,8 @@ import kotlin.reflect.KClass
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.data.model.LiveBetSlipData
+import arch.cayenne.module.betslip.ui.dialog.LiveBetSlipModifyOddsFragment
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
@@ -25,7 +27,7 @@ class LiveBetSlipReserveFragment :
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
-//    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, LiveBetSlipFragment>()
     private val adapter =
         arch.cayenne.module.betslip.ui.adapter.LiveBetSlipAdapter(arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum.Reserve)
 
@@ -109,8 +111,7 @@ class LiveBetSlipReserveFragment :
 
     override fun initData() {
         super.initData()
-//        TODO
-//        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
+        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
         mViewModel.getReserveOrder()
     }
 

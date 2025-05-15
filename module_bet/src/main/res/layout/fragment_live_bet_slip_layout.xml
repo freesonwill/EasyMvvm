@@ -7,7 +7,7 @@
 
         <variable
             name="betSlipViewModel"
-            type="arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel" />
+            type="arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

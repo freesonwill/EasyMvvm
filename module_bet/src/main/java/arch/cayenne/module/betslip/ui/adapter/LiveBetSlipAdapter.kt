@@ -110,9 +110,6 @@ class LiveBetSlipAdapter(type: arch.cayenne.module.betslip.data.constants.LiveBe
             }
             manager?.earlySettleSubmitListener = object :RecyclerItemListener<String>{
                 override fun onItemClick(item: String?, position: Int) {
-                    if (getItem(position).order?.earlySupport == false) {
-                        return
-                    }
                     earlySettleListener?.onItemClick(getItem(position), position)
                 }
             }

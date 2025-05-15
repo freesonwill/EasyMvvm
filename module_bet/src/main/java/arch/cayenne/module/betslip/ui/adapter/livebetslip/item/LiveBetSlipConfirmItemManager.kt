@@ -53,9 +53,9 @@ class LiveBetSlipConfirmItemManager(
                 betConfirmTvRace.text = match.matchName
                 betConfirmTvIntroduce.text = item.selectionName
                 betConfirmTvAodds.text =
-                    binding.root.resources.getString(R.string.live_bet_except_odds, "@${item.odds}")
+                    binding.root.resources.getString(R.string.live_bet_except_odds, item.odds)
 //                betConfirmTvStatus.isVisible = it.inPlay
-                betConfirmTvScore.text = item.marketName + "  " + item.betScore
+                betConfirmTvScore.text = item.marketName + "  (${item.betScore})"
                 betConfirmTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }
         }

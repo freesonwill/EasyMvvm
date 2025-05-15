@@ -53,7 +53,7 @@ class LiveBetSlipReserveItemManager(
             betReserveTvIntroduce.text = item.selectionName
             betReserveTvAodds.text = nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)
 //            betReserveTvStatus.isVisible = item.inPlay
-            betReserveTvScore.text = item.marketName + "  " + match.liveInfo.score
+            betReserveTvScore.text = item.marketName + "  (${ match.liveInfo.score})"
             betReserveTvStart.text = LiveDateUtil.getMDHm(match.startTime)
         }
     }

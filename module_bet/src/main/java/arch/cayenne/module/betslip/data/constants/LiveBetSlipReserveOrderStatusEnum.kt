@@ -3,10 +3,10 @@ import arch.cayenne.module.bet.R
 
 //注单结算中stauts
 enum class LiveBetSlipReserveOrderStatusEnum(val value: Int, val names:String, val rsId:Int) {
-    AppointmentProgress(0,"预约中",R.drawable.live_bet_selection_status_normal),
-    AppointmentSuccess(1,"预约成功",R.drawable.live_bet_selection_status_normal),
-    AppointmentFail(2,"预约失败",R.drawable.live_bet_selection_status_normal),
-    Cancel(3,"取消",R.drawable.live_bet_selection_status_normal);
+    AppointmentProgress(0,"预约中",R.drawable.bg_lose),
+    AppointmentSuccess(1,"预约成功",R.drawable.bg_early_settle),
+    AppointmentFail(2,"预约失败",R.drawable.bg_reser_expired),
+    Cancel(3,"取消",R.drawable.bg_rejection);
 
     companion object{
 

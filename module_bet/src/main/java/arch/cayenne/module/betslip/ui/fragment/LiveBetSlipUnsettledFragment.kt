@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
@@ -14,6 +16,8 @@ import arch.cayenne.module.bet.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.LiveBetSlipData
+import arch.cayenne.module.betslip.ui.dialog.LiveBetSlipEarlySettledFragment
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel
 import arch.cayenne.module.betslip.utisl.LiveBetSlipUtils
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
@@ -25,7 +29,7 @@ class LiveBetSlipUnsettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
-//    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, LiveBetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -34,9 +38,9 @@ class LiveBetSlipUnsettledFragment :
 
     override fun initData() {
         super.initData()
-//        TODO
-//        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
-        mViewModel.getOrders(arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum.UnSettled)
+        LogUtils.dTag("remote","matchId ${pageViewModel.matchId}")
+        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
+        mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
     }
 
     override fun initListener() {

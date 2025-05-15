@@ -56,10 +56,10 @@ class LiveBetSlipInvalidItemManager(
                 betInvalidTvIntroduce.text = item.selectionName
                 betInvalidTvAodds.text = binding.root.resources.getString(
                     R.string.live_bet_except_odds,
-                    "@${item.odds}"
+                    "${item.odds}"
                 )
 //                betInvalidTvMatchStatus.isVisible = item.inPlay
-                betInvalidTvScore.text = item.marketName + "  " + item.betScore
+                betInvalidTvScore.text = item.marketName + "  (${item.betScore})"
                 betInvalidTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }
         }

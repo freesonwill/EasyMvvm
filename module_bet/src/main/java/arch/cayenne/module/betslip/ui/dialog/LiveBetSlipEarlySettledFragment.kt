@@ -1,4 +1,4 @@
-package arch.cayenne.module.betslip.ui.fragment
+package arch.cayenne.module.betslip.ui.dialog
 
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable

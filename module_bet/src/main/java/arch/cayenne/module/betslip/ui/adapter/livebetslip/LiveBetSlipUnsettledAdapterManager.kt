@@ -66,7 +66,6 @@ class LiveBetSlipUnsettledAdapterManager(
             if (order.earlySupport) {
                 it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             }
-            it.groupBetcode.isVisible = order.selectionsList.size >= 3
         }
     }
 

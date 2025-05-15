@@ -266,7 +266,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: arch.cayenne.module.
                 betExpiredTvStatus.setBackgroundResource(
                     SkinnableResourceManager.getTargetResourceId(
                         root.context,
-                        R.drawable.live_bet_selection_status_light
+                        R.drawable.bg_reser_expired
                     )
                 )
                 tvUnit1.text =
@@ -288,7 +288,7 @@ class LiveBetSlipAdapterManager(binding: ViewBinding, type: arch.cayenne.module.
                 betExpiredTvStatus.setBackgroundResource(
                     SkinnableResourceManager.getTargetResourceId(
                         root.context,
-                        R.drawable.live_bet_selection_status_normal
+                        R.drawable.bg_rejection
                     )
                 )
                 tvUnit1.text = ContextCompat.getString(bind.root.context, R.string.live_bet_bet_num)

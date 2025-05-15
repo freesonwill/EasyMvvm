@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.bet.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipEnum
 import arch.cayenne.module.betslip.data.constants.LiveBetSlipExpandedEnum
@@ -14,6 +15,7 @@ import arch.cayenne.module.betslip.ui.viewmodel.LiveBetSlipViewModel
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 
 
 //注单确认‰‰
@@ -22,6 +24,7 @@ class LiveBetSlipConfirmFragment :
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
     override val vmClass: KClass<LiveBetSlipViewModel> = LiveBetSlipViewModel::class
+    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, LiveBetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -94,8 +97,7 @@ class LiveBetSlipConfirmFragment :
 
     override fun initData() {
         super.initData()
-//        TODO
-//        mViewModel.setIds(mainViewModel.matchId, sportId = mainViewModel.sportId)
+        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
         mViewModel.getOrders(LiveBetSlipEnum.UnSettled)
     }
 }

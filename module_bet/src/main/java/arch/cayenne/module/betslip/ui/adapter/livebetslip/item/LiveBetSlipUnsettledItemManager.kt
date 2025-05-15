@@ -53,7 +53,7 @@ class LiveBetSlipUnsettledItemManager(
                 betUnsettledTvIntroduce.text = item.selectionName
                 betUnsettledTvAodds.text = "@${item.odds}"
 //                betUnsettledTvStatus.isVisible = item.inPlay
-                betUnsettledTvScore.text = item.marketName + "  " + item.betScore
+                betUnsettledTvScore.text = item.marketName + "  (${item.betScore})"
                 betUnsettledTvStart.text = LiveDateUtil.getMDHm(match.startTime)
             }
         }

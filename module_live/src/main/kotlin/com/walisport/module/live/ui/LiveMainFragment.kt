@@ -9,6 +9,7 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -112,7 +113,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         with(mBinding) {
             val list =
-                listOf(PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment() },
+                listOf(PagerBean(R.string.live_note_order.getString()) { LiveBetSlipFragment().apply { setArguments(args.matchId,args.sportId) } },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

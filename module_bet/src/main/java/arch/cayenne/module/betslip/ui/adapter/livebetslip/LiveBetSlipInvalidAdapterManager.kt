@@ -40,12 +40,11 @@ class LiveBetSlipInvalidAdapterManager(
 
     private fun updateReserve(item: Order) {
         with(binding) {
-            betExpiredTvStatus.width = 60.dp2px
             betExpiredTvStatus.text =
                 root.context.resources.getString(R.string.live_bet_reserve_expired)
             betExpiredTvStatus.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
-                    root.context, R.drawable.live_bet_selection_status_light
+                    root.context, R.drawable.bg_reser_expired
                 )
             )
             tvUnit1.text =
@@ -65,9 +64,8 @@ class LiveBetSlipInvalidAdapterManager(
 
     private fun updateInvalid(item: Order) {
         with(binding) {
-            betExpiredTvStatus.width = 34.dp2px
             betExpiredTvStatus.text = root.context.resources.getString(R.string.live_bet_rejection)
-            betExpiredTvStatus.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(root.context, R.drawable.live_bet_selection_status_normal))
+            betExpiredTvStatus.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(root.context, R.drawable.bg_rejection))
             tvUnit1.text = ContextCompat.getString(binding.root.context, R.string.live_bet_bet_num)
             tvUnit2.text = ContextCompat.getString(binding.root.context, R.string.live_bet_odds)
             tvUnit3.text = ContextCompat.getString(binding.root.context, R.string.live_bet_on)
