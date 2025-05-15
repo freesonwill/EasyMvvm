@@ -79,6 +79,7 @@ class BetSlipEarlySettledFragment private constructor() :
                 }
 
                 override fun getOtherText(): String {
+                    mViewModel.setPercentNumber(1.0)
                     return ContextCompat.getString(requireContext(), R.string.keyboard_max)
                 }
             })

@@ -14,12 +14,20 @@
         android:layout_width="@dimen/dp_359"
         android:layout_height="wrap_content">
 
+
         <arch.cayenne.lib.common.ui.view.PullRefreshLayout
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:srlEnablePreviewInEditMode="true"
             >
+
+            <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+                android:id="@+id/empty_state"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"

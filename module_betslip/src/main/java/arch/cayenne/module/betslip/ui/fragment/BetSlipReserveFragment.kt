@@ -2,19 +2,24 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.ReserveOrder
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
@@ -29,7 +34,7 @@ class BetSlipReserveFragment :
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
     private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, BetSlipFragment>()
     private val adapter =
-        arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter(arch.cayenne.module.betslip.data.constants.BetSlipEnum.Reserve)
+        BetSlipAdapter(BetSlipEnum.Reserve)
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -87,21 +92,34 @@ class BetSlipReserveFragment :
     private fun updateView(list: List<ReserveOrder>?) {
         if (!list.isNullOrEmpty()) {
             updateData(list)
-        } else {
-            showEmpty()
         }
-
+        showEmpty()
     }
 
     private fun showEmpty() {
-
+        val flag = mBinding.recyclerView.adapter?.let {
+            val adapter = it as BetSlipAdapter
+            adapter.currentList.isEmpty()
+        } ?: true
+        if (flag) {
+            mBinding.emptyState.isVisible = true
+            mBinding.recyclerView.isVisible = false
+            mBinding.emptyState.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                getString(R.string.lineup_empty)
+            )
+        } else {
+            mBinding.emptyState.isVisible = false
+            mBinding.recyclerView.isVisible = true
+        }
     }
+
 
     private fun updateData(orders: List<Common.ReserveOrder>) {
         val list = orders.map { BetSlipData(reserve = it) }.toList()
         val recyclerViewState = mBinding.recyclerView.layoutManager?.onSaveInstanceState()
         mBinding.recyclerView.adapter?.let {
-            val adapter = it as arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
+            val adapter = it as BetSlipAdapter
             adapter.submitList(list) {
                 mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }

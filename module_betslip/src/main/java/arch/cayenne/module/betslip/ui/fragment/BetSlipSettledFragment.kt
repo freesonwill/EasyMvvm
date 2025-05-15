@@ -2,16 +2,20 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 
@@ -31,7 +35,7 @@ class BetSlipSettledFragment :
 
     private fun initRecycler() {
         val adapter =
-            arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter(arch.cayenne.module.betslip.data.constants.BetSlipEnum.Settled)
+            BetSlipAdapter(BetSlipEnum.Settled)
         val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         divider.setDrawable(
             ContextCompat.getDrawable(
@@ -50,10 +54,10 @@ class BetSlipSettledFragment :
 
     private fun initLoadRefresh() {
         mBinding.refreshLayout.setOnRefreshListener {
-            mViewModel.refreshOrder(arch.cayenne.module.betslip.data.constants.BetSlipEnum.Settled)
+            mViewModel.refreshOrder(BetSlipEnum.Settled)
         }
         mBinding.refreshLayout.setOnLoadMoreListener {
-            mViewModel.loadMoreOrder(arch.cayenne.module.betslip.data.constants.BetSlipEnum.Settled)
+            mViewModel.loadMoreOrder(BetSlipEnum.Settled)
         }
     }
 
@@ -66,17 +70,27 @@ class BetSlipSettledFragment :
             mBinding.refreshLayout.finishLoadMore()
             if (!it.isNullOrEmpty()) {
                 updateData(it)
-            } else {
-                showEmpty()
             }
+            showEmpty()
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
-            mViewModel.getOrders(arch.cayenne.module.betslip.data.constants.BetSlipEnum.UnSettled)
+            mViewModel.getOrders(BetSlipEnum.UnSettled)
         }
     }
 
     private fun showEmpty() {
-
+        val flag = mBinding.recyclerView.adapter?.let {
+            val adapter = it as BetSlipAdapter
+            adapter.currentList.isEmpty()
+        } ?: true
+        if (flag) {
+            mBinding.emptyState.isVisible = true
+            mBinding.recyclerView.isVisible = false
+            mBinding.emptyState.setState(DynamicStateLayout.States.DATA_EMPTY,getString(R.string.lineup_empty))
+        } else {
+            mBinding.emptyState.isVisible = false
+            mBinding.recyclerView.isVisible = true
+        }
     }
 
     private fun updateData(orders: List<Common.Order>) {
@@ -89,7 +103,7 @@ class BetSlipSettledFragment :
             )
         }.toList()
         mBinding.recyclerView.adapter?.let {
-            val adapter = it as arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
+            val adapter = it as BetSlipAdapter
             adapter.submitList(list)
         }
     }
@@ -97,6 +111,6 @@ class BetSlipSettledFragment :
     override fun initData() {
         super.initData()
         mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
-        mViewModel.getOrders(arch.cayenne.module.betslip.data.constants.BetSlipEnum.Settled)
+        mViewModel.getOrders(BetSlipEnum.Settled)
     }
 }
