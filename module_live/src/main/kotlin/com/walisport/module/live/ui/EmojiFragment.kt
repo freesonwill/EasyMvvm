@@ -18,7 +18,7 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
     override val vmClass: KClass<EmojiViewModel>
         get() = EmojiViewModel::class
     private var emojiType: Int = type
-    private var itemListener: arch.cayenne.module.betslip.utisl.RecyclerItemListener<EmojiData>? = null
+    private var itemListener: RecyclerItemListener<EmojiData>? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         initEmoji()

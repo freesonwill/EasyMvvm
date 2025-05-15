@@ -4,8 +4,9 @@ plugins {
 }
 
 apply(from = rootProject.file("gradle/flavor.gradle"))
+
 android {
-    namespace = "com.walisport.module.live"
+    namespace = "arch.cayenne.module.betslip"
     compileSdk = 34
 
     defaultConfig {
@@ -31,31 +32,22 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    sourceSets {
-        getByName("main") {
-            res.srcDirs(
-                "src/main/res", "src/main/res-black_blue", "src/main/res-black_red",
-                "src/main/res-classic", "src/main/res-white_blue", "src/main/res-white_green"
-            )
-        }
-    }
 }
 
 dependencies {
+    api(project(":lib_base"))
+    api(project(":lib_database"))
+    api(project(":lib_common"))
+    api(project(":lib_websocket"))
     implementation(project(":lib_res"))
-    implementation(project(":lib_skin"))
-    implementation(project(":lib_ijkplayer"))
-    implementation(project(":lib_qyplayer"))
-    implementation(project(":lib_database"))
-    implementation(project(":module_bet"))
-    implementation(project(":lib_websocket"))
-    implementation(project(":module_betslip"))
-    implementation(libs.androidx.legacy.support.v4)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.flexbox)
+
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.koin)
+    implementation(libs.startup)
     implementation(libs.gson)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
