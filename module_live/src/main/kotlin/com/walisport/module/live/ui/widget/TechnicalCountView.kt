@@ -6,11 +6,9 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout.LayoutParams
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -210,14 +208,11 @@ class TechnicalCountView @JvmOverloads constructor(
             val textView = AppCompatTextView(context).apply {
                 text = textStr
                 setTextColor(color)
-                layoutParams = android.widget.FrameLayout.LayoutParams(
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT,
-                    android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
-                )
+                layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
             }
             mBinding.layTime.addView(textView)
             textView.post {
-                val params = textView.layoutParams as android.widget.FrameLayout.LayoutParams
+                val params = textView.layoutParams as LayoutParams
                 when (index) {
                     0 -> params.gravity = Gravity.START or Gravity.CENTER_VERTICAL
                     6 -> params.gravity = Gravity.END or Gravity.CENTER_VERTICAL
