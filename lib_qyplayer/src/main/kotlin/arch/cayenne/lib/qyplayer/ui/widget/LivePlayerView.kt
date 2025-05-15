@@ -16,8 +16,6 @@ import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
-import arch.cayenne.lib.qyplayer.view.QYRenderView
-import arch.cayenne.lib.qyplayer.view.SurfaceType
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
