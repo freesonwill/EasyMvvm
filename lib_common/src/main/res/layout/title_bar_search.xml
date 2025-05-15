@@ -51,7 +51,7 @@
         android:id="@+id/tvSearchText"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textColor="@color/search_btn"
+        android:textColor="@color/search_btn_normal"
         android:text="搜索"
         android:gravity="center"
         android:paddingStart="8dp"
