@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -27,6 +28,7 @@ class TechnicalCountView @JvmOverloads constructor(
 ) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
 
     private var clicklistener: OnClickListener? = null
+    private var unitWidth: Float = 0f
 
     private var mBinding: ViewTechnicalStatisticsBinding =
         ViewTechnicalStatisticsBinding.inflate(LayoutInflater.from(context), this, true)
@@ -35,6 +37,12 @@ class TechnicalCountView @JvmOverloads constructor(
         mBinding.viewGoalTrend.setOnClickListener {
             clicklistener?.onClick()
         }
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        unitWidth = (width - 24.dp2px) / 90f
     }
 
     //全屏直播模式下的技术统计控件
@@ -63,8 +71,8 @@ class TechnicalCountView @JvmOverloads constructor(
         val size = data.data.size
         if (size > 90) {
             //当比赛时间超过90分钟时需重新绘制时间栏
-            mBinding.lastTime.text = "$size'"
-            //refreshTimeLayout(size)
+            //mBinding.lastTime.text = "$size'"
+            refreshTimeLayout(size)
         }
     }
 
@@ -216,17 +224,20 @@ class TechnicalCountView @JvmOverloads constructor(
             }
             mBinding.layTime.addView(textView)
             textView.post {
-                val params = textView.layoutParams as LayoutParams
-                when (index) {
-                    0 -> params.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-                    6 -> params.gravity = Gravity.END or Gravity.CENTER_VERTICAL
-                    else -> {
-                        val marginLeft = (15 * index * 2.dp2px - textView.width / 2f).toInt()
-                        params.setMargins(marginLeft, 0, 0, 0)
-                        params.gravity = Gravity.CENTER_VERTICAL
+                var params: LayoutParams
+                if (textView.layoutParams is LayoutParams) {
+                    params = textView.layoutParams as LayoutParams
+                    when (index) {
+                        0 -> params.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+                        6 -> params.gravity = Gravity.END or Gravity.CENTER_VERTICAL
+                        else -> {
+                            val marginLeft = (15 * index * unitWidth - textView.width / 2f).toInt()
+                            params.setMargins(marginLeft, 0, 0, 0)
+                            params.gravity = Gravity.CENTER_VERTICAL
+                        }
                     }
+                    textView.layoutParams = params
                 }
-                textView.layoutParams = params
             }
         }
     }
