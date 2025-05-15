@@ -11,17 +11,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_playing"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView"
         android:layout_width="@dimen/dp_21"
         android:layout_height="@dimen/dp_16"
-        android:src="@drawable/shape_playing_video"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/iv_thumb"
         app:layout_constraintEnd_toEndOf="@+id/iv_thumb"
         app:layout_constraintStart_toStartOf="@+id/iv_thumb"
-        app:layout_constraintTop_toTopOf="@+id/iv_thumb" />
-
+        app:layout_constraintTop_toTopOf="@+id/iv_thumb"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="playing_animation.json"
+        app:lottie_loop="true" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_title"
@@ -32,9 +33,9 @@
         android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_13"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_subtitle"

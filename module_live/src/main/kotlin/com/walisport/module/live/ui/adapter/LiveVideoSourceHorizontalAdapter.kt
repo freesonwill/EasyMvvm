@@ -33,7 +33,7 @@ class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourc
             viewBinding.tvTitle.text = item.title
             viewBinding.tvSubtitle.text = item.subTitle
 
-            viewBinding.ivPlaying.visibility = if (item.isPlaying) {
+            viewBinding.animationView.visibility = if (item.isPlaying) {
                 View.VISIBLE
             } else {
                 View.GONE
