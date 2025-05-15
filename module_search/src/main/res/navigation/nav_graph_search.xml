@@ -12,7 +12,7 @@
         android:label="SearchMainFragment"
         tools:layout="@layout/fragment_search_main">
 
-        <deepLink app:uri="walisport://module_search/searchFragment" />
+        <deepLink app:uri="@string/nav_module_search_fragment" />
 
     </fragment>
 </navigation>

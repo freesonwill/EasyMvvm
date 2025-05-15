@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources translatable="false">
-    
+    <string name="nav_module_search_fragment">walisport://module_search/searchFragment</string>
 </resources>
