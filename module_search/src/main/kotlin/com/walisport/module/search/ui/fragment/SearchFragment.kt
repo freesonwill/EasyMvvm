@@ -1,4 +1,4 @@
-package com.walisport.module.search.ui
+package com.walisport.module.search.ui.fragment
 
 import android.os.Bundle
 import android.text.TextUtils

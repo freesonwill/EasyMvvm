@@ -17,7 +17,7 @@ class TitleBarView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : Toolbar(context, attrs, defStyleAttr) {
     //默认返回
-    private  val defaultOnBackPressedCallback by lazy {
+    private  val defaultOnBack by lazy {
         { requireActivity().onBackPressedDispatcher.onBackPressed() }
     }
     /**
@@ -27,7 +27,7 @@ class TitleBarView @JvmOverloads constructor(
      */
     fun loadGeneralTitleBar(
         title: String?,
-        onBack: () -> Unit = defaultOnBackPressedCallback,
+        onBack: () -> Unit = defaultOnBack,
         onRight: (() -> Unit)? = null,
         rightName: String? = null
     ) {
@@ -55,7 +55,7 @@ class TitleBarView @JvmOverloads constructor(
      */
     fun loadSearchTitleBar(
         hint: String,
-        onBack: () -> Unit = defaultOnBackPressedCallback,
+        onBack: () -> Unit = defaultOnBack,
         beforeTextChanged: (text: CharSequence?, start: Int, count: Int, after: Int,binding:TitleBarSearchBinding) -> Unit = { _, _, _, _,_ -> },
         onTextChanged: (text: CharSequence?, start: Int, before: Int, count: Int,binding:TitleBarSearchBinding) -> Unit = { _, _, _, _,_ -> },
         afterTextChanged: (text: Editable?,binding:TitleBarSearchBinding) -> Unit = {_,_->},
@@ -94,7 +94,7 @@ class TitleBarView @JvmOverloads constructor(
      * @param onBack 返回 不传入Unit 默认不显示ivBack
      */
     fun loadDynamicsTitleBar(view: ViewGroup,
-                             onBack: (() -> Unit)? = defaultOnBackPressedCallback
+                             onBack: (() -> Unit)? = defaultOnBack
     ) {
         val binding = TitleBarDynamicsBinding.inflate(LayoutInflater.from(context), this, true)
         if (onBack != null) {
