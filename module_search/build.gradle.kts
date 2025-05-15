@@ -32,6 +32,8 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    sourceSets["main"].java.srcDirs("src/main/kotlin")
 }
 
 

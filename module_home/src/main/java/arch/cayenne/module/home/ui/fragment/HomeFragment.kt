@@ -131,7 +131,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
         }
 
         mBinding.tv11.clickNoRepeat {
-            navigate(Uri.parse("walisport://module_search/searchFragment"))
+            navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
         }
 
         mBinding.tv12.clickNoRepeat {

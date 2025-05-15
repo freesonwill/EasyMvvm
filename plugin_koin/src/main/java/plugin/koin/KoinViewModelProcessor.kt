@@ -30,9 +30,9 @@ class KoinViewModelProcessor(
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation(KoinViewModel::class.java.name)
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
-        if(viewModels.isEmpty()) return emptyList()
         val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
         logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
+        if(viewModels.isEmpty()) return emptyList()
         val fileName = defaultModule.replaceFirstChar { it.uppercaseChar() }
         //viewModels.isEmpty()第一次时创建空文件，第二次时返回，否则FileAlreadyExistsException
         if(createFileCount == 1 && viewModels.isEmpty()) return emptyList()
