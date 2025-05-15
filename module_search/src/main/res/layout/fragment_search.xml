@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/c_111111">
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/titleBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
+        android:id="@+id/rlTextDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintTop_toBottomOf="@+id/titleBar">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="历史记录"
+            android:textColor="@color/white"
+            android:textSize="15sp" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/ivClickShowDelete"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                app:srcCompat="@drawable/history_delete_icon" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/llShowCompleted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/txtDeleteAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="全部删除"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/white"
+                    android:text="|"
+                    android:textSize="15sp" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/txtCompletedAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="完成"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+        </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
+
+
+    </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
+
+    <com.walisport.module.search.ui.view.HistoryFoldLayout
+        android:id="@+id/hfList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flow_equally="false"
+        app:flow_fold="true"
+        app:flow_foldLines="2"
+        app:flow_horizontalSpacing="10dp"
+        app:flow_verticalSpacing="10dp"
+        app:layout_constraintTop_toBottomOf="@+id/rlTextDelete" />
+
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
