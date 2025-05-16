@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -30,6 +31,16 @@ class ChampionViewModel : BaseViewModel() {
             balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
+                }
+            }
+        }
+        //觀察投注單的變化，主要用來做selection變更
+        viewModelScope.launch(Dispatchers.IO) {
+            betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
+                if (matchWithMarketsChange.value == null) return@collect
+                val matchWithMarkets = championRepository.getOnCurrentMatch(matchId, betSelectionBeans.map { it.selectionId })
+                withContext(Dispatchers.Main) {
+                    matchWithMarketsChange.value = matchWithMarkets
                 }
             }
         }

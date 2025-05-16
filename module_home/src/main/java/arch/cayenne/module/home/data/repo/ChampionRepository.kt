@@ -52,6 +52,8 @@ class ChampionRepository(
         return null
     }
 
+    suspend fun getOnCurrentMatch(matchId: Long, selectedIds: List<Long>) : MatchWithMarkets? = matchDao.getOneMatchById(matchId).setSelected(betDao, selectedIds)
+
     suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
         val match = matchDao.getOneMatchById(matchId)
         val selectionBean = matchDao.getSelectionById(selectionId)
