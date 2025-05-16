@@ -21,8 +21,9 @@ class ChampionItemViewHolder(
         }
         with(mBinding) {
             tvMarketName.text = data.market.marketName
+            val spanCount = 2
             rvOddsGrid.apply {
-                layoutManager = GridLayoutManager(root.context, 2)
+                layoutManager = GridLayoutManager(root.context, spanCount)
                 adapter = oddsGridAdapter
                 val spacing = 7.dp2px
                 if (itemDecorationCount > 0) {
@@ -38,9 +39,12 @@ class ChampionItemViewHolder(
                         val position = parent.getChildAdapterPosition(view)
                         if (position == RecyclerView.NO_POSITION) return
 
-                        val column = position % 3
-                        outRect.left = spacing / 2
-                        outRect.right = spacing / 2
+                        val column = position % spanCount
+                        outRect.left = if(column == 0) { 0 } else { spacing / 2 }
+                        outRect.right = if(column == 0) { spacing / 2 } else { 0 }
+                        if (position >= spanCount) {
+                            outRect.top = spacing
+                        }
                     }
                 })
             }
