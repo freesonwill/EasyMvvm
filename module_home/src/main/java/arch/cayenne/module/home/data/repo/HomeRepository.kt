@@ -335,8 +335,9 @@ class HomeRepository(
     suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
         return matchDao.getFullMatch(playType, tournamentId, page, startTime).setSelected(betDao)
     }
-    suspend fun queryFullMatches(matchIds: List<Long>) : List<MatchWithMarkets> {
-        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao)
+
+    suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
+        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
