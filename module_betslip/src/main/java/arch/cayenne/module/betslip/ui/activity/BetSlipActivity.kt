@@ -27,6 +27,7 @@ class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        // TODO 待詳情解耦後補上
 //        val array = resources.getStringArray(R.array.bet_slip_menus)
 //        val list = listOf(
 //            PagerBean(array[0]) { BetSlipUnsettledFragment() },
@@ -43,6 +44,7 @@ class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
             finish()
         }
         mBinding.tvTitle.setOnClickListener {
+            // TODO 測試用
             DatePickerFragment.newInstance().show(supportFragmentManager)
         }
     }
