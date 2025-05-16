@@ -13,24 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_153"
-            android:background="@color/color_161823">
+            android:background="@color/video_source_fragment_bkg">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_10"
                 android:text="@string/choose_source"
-                android:textColor="@color/white"
+                android:textColor="@color/video_source_fragment_title_color"
                 android:textSize="@dimen/sp_13"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_close"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
@@ -48,7 +48,7 @@
                 app:layout_constraintStart_toStartOf="parent" />
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>
