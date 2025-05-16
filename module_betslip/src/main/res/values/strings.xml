@@ -56,5 +56,6 @@
     <string name="keyboard_double">双倍</string>
     <string name="btn_cancel">取消</string>
     <string name="lineup_empty">暂无数据,请换个试一试~</string>
+    <string name="title_betslip">注单</string>
 
 </resources>
