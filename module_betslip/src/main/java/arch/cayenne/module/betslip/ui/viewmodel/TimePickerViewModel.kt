@@ -1,4 +1,4 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.viewmodel
 
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 

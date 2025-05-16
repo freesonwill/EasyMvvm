@@ -1,4 +1,4 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.data.model
 
 data class DatePickerBean(
     val date: String,

@@ -1,6 +1,7 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
+import arch.cayenne.module.betslip.data.model.DatePickerBean
 
 class DatePickerCompare: DiffUtil.ItemCallback<DatePickerBean>() {
     override fun areItemsTheSame(oldItem: DatePickerBean, newItem: DatePickerBean): Boolean {

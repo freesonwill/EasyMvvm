@@ -1,13 +1,14 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.fragment
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.widget.NumberPicker
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.Config
-import arch.cayenne.module.bet.databinding.FragmentTimePickerBinding
+import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.Config
+import arch.cayenne.module.betslip.databinding.FragmentTimePickerBinding
+import arch.cayenne.module.betslip.ui.viewmodel.TimePickerViewModel
 import java.util.Calendar
 import kotlin.reflect.KClass
 

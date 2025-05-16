@@ -1,11 +1,12 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.module.bet.data.Config
-import arch.cayenne.module.bet.databinding.FragmentDatePickerBinding
+import arch.cayenne.module.betslip.data.constants.Config
+import arch.cayenne.module.betslip.databinding.FragmentDatePickerBinding
+import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import kotlin.reflect.KClass
 
 class DatePickerFragment private constructor() :
@@ -21,7 +22,8 @@ class DatePickerFragment private constructor() :
     override val vmClass: KClass<DatePickerViewModel> = DatePickerViewModel::class
 
     private val datePickerAdapter by lazy {
-        DatePickerAdapter(object : DatePickerAdapter.OnDateClickListener {
+        arch.cayenne.module.betslip.ui.adapter.DatePickerAdapter(object :
+            arch.cayenne.module.betslip.ui.adapter.DatePickerAdapter.OnDateClickListener {
             override fun onCustomClick() {
                 childFragmentManager.setFragmentResultListener(
                     Config.KEY_RESULT,

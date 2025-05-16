@@ -1,17 +1,17 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getStringArray
-import arch.cayenne.module.bet.R
+import arch.cayenne.module.betslip.R
 import java.util.Calendar
 
 class DatePickerViewModel: BaseViewModel() {
 
-    private val _dateTitleListener = MutableLiveData<List<DatePickerBean>>()
-    val dateTitleListener: LiveData<List<DatePickerBean>> get() = _dateTitleListener
+    private val _dateTitleListener = MutableLiveData<List<arch.cayenne.module.betslip.data.model.DatePickerBean>>()
+    val dateTitleListener: LiveData<List<arch.cayenne.module.betslip.data.model.DatePickerBean>> get() = _dateTitleListener
 
     private val dateArray = R.array.date_picker.getStringArray()
 
@@ -27,7 +27,7 @@ class DatePickerViewModel: BaseViewModel() {
 
     init {
         val data = dateArray.map {
-            DatePickerBean(it)
+            arch.cayenne.module.betslip.data.model.DatePickerBean(it)
         }
         _dateTitleListener.value = data
     }

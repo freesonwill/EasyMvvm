@@ -1,4 +1,4 @@
-package arch.cayenne.module.picker
+package arch.cayenne.module.betslip.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.bet.databinding.ItemDateBinding
+import arch.cayenne.module.betslip.data.model.DatePickerBean
+import arch.cayenne.module.betslip.databinding.ItemDateBinding
+import arch.cayenne.module.betslip.ui.compare.DatePickerCompare
 
 class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<DatePickerBean, BaseViewHolder, ItemDateBinding>(
     DatePickerCompare()

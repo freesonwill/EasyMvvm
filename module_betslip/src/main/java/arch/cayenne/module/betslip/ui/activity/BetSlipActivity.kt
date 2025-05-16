@@ -14,6 +14,7 @@ import arch.cayenne.module.betslip.ui.fragment.BetSlipInvalidFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipReserveFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipSettledFragment
 import arch.cayenne.module.betslip.ui.fragment.BetSlipUnsettledFragment
+import arch.cayenne.module.betslip.ui.fragment.DatePickerFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
@@ -40,6 +41,9 @@ class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
     override fun initListener() {
         mBinding.ivBack.setOnClickListener {
             finish()
+        }
+        mBinding.tvTitle.setOnClickListener {
+            DatePickerFragment.newInstance().show(supportFragmentManager)
         }
     }
 
