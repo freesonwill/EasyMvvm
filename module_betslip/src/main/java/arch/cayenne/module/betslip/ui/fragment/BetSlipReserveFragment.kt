@@ -32,7 +32,6 @@ class BetSlipReserveFragment :
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
-    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, BetSlipFragment>()
     private val adapter =
         BetSlipAdapter(BetSlipEnum.Reserve)
 
@@ -129,7 +128,9 @@ class BetSlipReserveFragment :
 
     override fun initData() {
         super.initData()
-        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
+        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
+        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
+        mViewModel.setIds(matchId, sportId = sportId)
         mViewModel.getReserveOrder()
     }
 

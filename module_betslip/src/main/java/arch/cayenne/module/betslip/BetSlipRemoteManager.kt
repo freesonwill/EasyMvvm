@@ -29,8 +29,8 @@ class BetSlipRemoteManager(
         status: Int,
         page: Int,
         pageSize: Int,
-        sportId: Int,
-        matchId: Long,
+        sportId: Int? = null,
+        matchId: Long? = null,
         startTime: Long? = null,
         endTime: Long? = null,
     ): List<Common.Order>? {
@@ -44,8 +44,8 @@ class BetSlipRemoteManager(
                 this.status = status
                 this.page = page
                 this.pageSize = pageSize
-                this.addSportId(sportId)
-//                this.matchId = matchId
+                sportId?.let { this.addSportId(sportId) }
+                matchId?.let { this.matchId = matchId }
                 startTime?.let { this.startTime = startTime }
                 endTime?.let { this.endTime = endTime }
             }.build()

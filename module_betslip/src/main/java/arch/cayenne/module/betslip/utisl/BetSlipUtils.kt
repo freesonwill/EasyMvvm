@@ -27,7 +27,6 @@ object BetSlipUtils {
      * 提前结算金额
      * */
     fun earlySettlePrice(betAmount: String, earlyPrice: String, earlyBetAmount: String): String {
-        " price2 betAmoun $betAmount earlyPrice $earlyPrice earlyBetAmount $earlyBetAmount".logd("aaa")
         return toBigDecimal(betAmount).multiply(toBigDecimal(earlyPrice))
             .minus(toBigDecimal(earlyBetAmount)).setScale(2, RoundingMode.HALF_UP).toString()
     }

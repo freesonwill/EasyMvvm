@@ -10,7 +10,6 @@ enum class BetSlipReserveOrderStatusEnum(val value: Int, val names:String, val r
 
     companion object{
 
-
         fun getStatus(value: Int): BetSlipReserveOrderStatusEnum? {
             return BetSlipReserveOrderStatusEnum.entries.find { it.value == value }
         }

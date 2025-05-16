@@ -24,20 +24,17 @@ class BetSlipFragment :
     override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> =
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
-    private var matchId:Long = 0
-    private var sportId:Int = 0
+    private var matchId: Long = -1
+    private var sportId: Int = -1
 
-    /**
-     * pagerAdapter重置arguments不能使用
-     * */
-    fun setArguments(matchId:Long,sportId:Int){
-        this.matchId = matchId
-        this.sportId = sportId
+    companion object {
+        val matchKey = "match_id"
+        val sportKey = "sport_id"
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.matchId = matchId
-        mViewModel.sportId = sportId
+        matchId = arguments?.getLong(matchKey,-1) ?: -1
+        sportId = arguments?.getInt(sportKey,-1) ?: -1
         initMenu()
     }
 
@@ -45,11 +42,46 @@ class BetSlipFragment :
         with(mBinding) {
             val array = resources.getStringArray(R.array.bet_slip_menus)
             val list = listOf(
-                PagerBean(array[0]) { BetSlipUnsettledFragment() },
-                PagerBean(array[1]) { BetSlipConfirmFragment() },
-                PagerBean(array[2]) { BetSlipSettledFragment() },
-                PagerBean(array[3]) { BetSlipReserveFragment() },
-                PagerBean(array[4]) { BetSlipInvalidFragment() },
+                PagerBean(array[0]) {
+                    BetSlipUnsettledFragment().apply {
+                        arguments = Bundle().apply {
+                            putLong(matchKey, matchId)
+                            putInt(sportKey, sportId)
+                        }
+                    }
+                },
+                PagerBean(array[1]) {
+                    BetSlipConfirmFragment().apply {
+                        arguments = Bundle().apply {
+                            putLong(matchKey, matchId)
+                            putInt(sportKey, sportId)
+                        }
+                    }
+                },
+                PagerBean(array[2]) {
+                    BetSlipSettledFragment().apply {
+                        arguments = Bundle().apply {
+                            putLong(matchKey, matchId)
+                            putInt(sportKey, sportId)
+                        }
+                    }
+                },
+                PagerBean(array[3]) {
+                    BetSlipReserveFragment().apply {
+                        arguments = Bundle().apply {
+                            putLong(matchKey, matchId)
+                            putInt(sportKey, sportId)
+                        }
+                    }
+                },
+                PagerBean(array[4]) {
+                    BetSlipInvalidFragment().apply {
+                        arguments = Bundle().apply {
+                            putLong(matchKey, matchId)
+                            putInt(sportKey, sportId)
+                        }
+                    }
+                },
             )
             viewPager.adapter = null
             viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)

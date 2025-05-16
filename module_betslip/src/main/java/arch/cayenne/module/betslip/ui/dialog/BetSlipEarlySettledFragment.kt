@@ -58,7 +58,6 @@ class BetSlipEarlySettledFragment private constructor() :
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney){v ->
-                "click ".logd("aaa")
                 if (!mBinding.groupKeyboard.isVisible) {
                     mBinding.groupKeyboard.isVisible = true
                 }
@@ -191,7 +190,6 @@ class BetSlipEarlySettledFragment private constructor() :
             mBinding.etMoney.setSelection(it.length)
         }
         mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
-            " price1 $it".logd("aaa")
             mBinding.tvBetMoney.text = getString(
                 R.string.refund_amount, it
             )
