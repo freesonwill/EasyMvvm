@@ -7,6 +7,8 @@
     <color name="video_source_item_title_color_classic">#FFFFFF</color>
     <color name="video_source_item_subtitle_color_classic">#929298</color>
     <color name="video_landscape_fragment_bkg_classic">#0E0F1A</color>
+    <color name="video_share_fragment_title_color_classic">#FFFFFF</color>
+    <color name="video_share_fragment_subtitle_color_classic">#929298</color>
 
 
 </resources>
