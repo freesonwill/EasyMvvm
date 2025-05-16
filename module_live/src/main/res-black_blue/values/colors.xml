@@ -6,6 +6,7 @@
     <color name="video_source_fragment_bkg_black_blue">#161823</color>
     <color name="video_source_item_title_color_black_blue">#FFFFFF</color>
     <color name="video_source_item_subtitle_color_black_blue">#929298</color>
+    <color name="video_landscape_fragment_bkg_black_blue">#0E0F1A</color>
 
 
 </resources>
