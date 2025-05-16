@@ -2,4 +2,8 @@
 <resources>
     <color name="live_main_tab_bg_black_blue">#0e0f19</color>
     <color name="tab_indicator_color_black_blue">#24ee8a</color>
+    <color name="video_source_fragment_title_color_black_blue">#FFFFFF</color>
+    <color name="video_source_fragment_bkg_black_blue">#161823</color>
+
+
 </resources>

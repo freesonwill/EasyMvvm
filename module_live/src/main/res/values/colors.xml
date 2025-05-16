@@ -60,5 +60,7 @@
     <color name="black_65">#59000000</color>
     <color name="message_fill_color">#30303e</color>
     <color name="keyboard_3">#3d3e4b</color>
+    <color name="video_source_fragment_title_color">#FFFFFF</color>
+    <color name="video_source_fragment_bkg">#161823</color>
 
 </resources>

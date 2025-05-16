@@ -8,4 +8,8 @@
     <color name="text_color_white_blue">#000000</color>
     <color name="menu_lin_white_blue">#e8e8ea</color>
     <color name="standing_text_white_blue">#222222</color>
+    <color name="video_source_fragment_title_color_white_blue">#222222</color>
+    <color name="video_source_fragment_bkg_white_blue">#FFFFFF</color>
+
+
 </resources>
