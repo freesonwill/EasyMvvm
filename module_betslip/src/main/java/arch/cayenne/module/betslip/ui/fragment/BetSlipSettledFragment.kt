@@ -1,21 +1,19 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
-import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
+import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 
 
 //注单已结算
@@ -31,30 +29,24 @@ class BetSlipSettledFragment :
     }
 
     private fun initRecycler() {
-        val adapter =
-            BetSlipAdapter(BetSlipEnum.Settled)
-        val divider = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-        divider.setDrawable(
-            ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.item_divide_live_bet_recycler
-            )!!
-        )
+        val adapter = BetSlipAdapter(BetSlipEnum.Settled)
+
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = adapter
-            it.setItemViewCacheSize(10)
-            it.addItemDecoration(divider)
-            it.setRecycledViewPool(RecyclerView.RecycledViewPool())
+            it.betSlipInit()
         }
     }
 
     private fun initLoadRefresh() {
-        mBinding.refreshLayout.setOnRefreshListener {
-            mViewModel.refreshOrder(BetSlipEnum.Settled)
-        }
-        mBinding.refreshLayout.setOnLoadMoreListener {
-            mViewModel.loadMoreOrder(BetSlipEnum.Settled)
+        mBinding.refreshLayout.also {
+            it.initLoadMore()
+            it.setOnRefreshListener {
+                mViewModel.refreshOrder(BetSlipEnum.Settled)
+            }
+            it.setOnLoadMoreListener {
+                mViewModel.loadMoreOrder(BetSlipEnum.Settled)
+            }
         }
     }
 
@@ -63,11 +55,11 @@ class BetSlipSettledFragment :
 
     override fun createObserver() {
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
             if (!it.isNullOrEmpty()) {
                 updateData(it)
             }
+            mBinding.refreshLayout.finishRefresh(300)
+            mBinding.refreshLayout.finishLoadMore(300)
             showEmpty()
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
@@ -80,35 +72,21 @@ class BetSlipSettledFragment :
             val adapter = it as BetSlipAdapter
             adapter.currentList.isEmpty()
         } ?: true
-        if (flag) {
-            mBinding.emptyState.isVisible = true
-            mBinding.refreshLayout.isVisible = false
-            mBinding.emptyState.setState(DynamicStateLayout.States.DATA_EMPTY,getString(R.string.lineup_empty))
-        } else {
-            mBinding.emptyState.isVisible = false
-            mBinding.refreshLayout.isVisible = true
-        }
+        mBinding.emptyState.showEmptyData(flag, mBinding.refreshLayout)
     }
 
     private fun updateData(orders: List<Common.Order>) {
-        val list = orders.map {
-            val expandedEnum =
-                if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
-            arch.cayenne.module.betslip.data.model.BetSlipData(
-                order = it,
-                expandedEnum = expandedEnum
-            )
-        }.toList()
+        val list = orders.toBetSlipData()
         mBinding.recyclerView.adapter?.let {
             val adapter = it as BetSlipAdapter
-            adapter.submitList(list)
+           mBinding.refreshLayout.loadMoreData(adapter,list)
         }
     }
 
     override fun initData() {
         super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
+        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
+        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
         mViewModel.setIds(matchId, sportId = sportId)
         mViewModel.getOrders(BetSlipEnum.Settled)
     }
