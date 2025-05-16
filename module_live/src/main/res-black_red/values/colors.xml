@@ -5,7 +5,7 @@
     <color name="video_source_fragment_title_color_black_red">#FFFFFF</color>
     <color name="video_source_fragment_bkg_black_red">#161823</color>
     <color name="video_source_item_title_color_black_red">#FFFFFF</color>
-    <color name="video_source_item_subtitle_color">#929298</color>
+    <color name="video_source_item_subtitle_color_black_red">#929298</color>
 
 
 </resources>
