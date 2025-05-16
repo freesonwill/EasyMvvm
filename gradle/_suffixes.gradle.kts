@@ -1,26 +1,17 @@
-
 tasks.register("addResourceSuffixes") {
     doLast {
         val projectDir = project.layout.projectDirectory.asFile
-        val blackBlueResDir = File(projectDir, "src/main/res-black_blue")
-        if (blackBlueResDir.exists()) {
-            processResources(blackBlueResDir, "_black_blue")
-        }
-        val blackRedResDir = File(projectDir, "src/main/res-black_red")
-        if (blackRedResDir.exists()) {
-            processResources(blackRedResDir, "_black_red")
-        }
-        val classicResDir = File(projectDir, "src/main/res-classic")
-        if (classicResDir.exists()) {
-            processResources(classicResDir, "_classic")
-        }
-        val whiteBlueResDir = File(projectDir, "src/main/res-white_blue")
-        if (whiteBlueResDir.exists()) {
-            processResources(whiteBlueResDir, "_white_blue")
-        }
-        val whiteGreenResDir = File(projectDir, "src/main/res-white_green")
-        if (whiteGreenResDir.exists()) {
-            processResources(whiteGreenResDir, "_white_green")
+        val themes: List<String> = (project.findProperty("Themes") as? String)
+            ?.split(",")
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() } // ✅ 忽略空项（防止末尾逗号导致的问题）
+            ?: emptyList()
+        println("addResourceSuffixes themes: $themes")
+        themes.forEach {
+            val dir = File(projectDir, "src/main/res-$it")
+            if (dir.exists()) {
+                processResources(dir, "_$it")
+            }
         }
     }
 }
@@ -38,7 +29,6 @@ fun processResources(resDir: File, suffix: String) {
             }
         }
     }
-//_light|_black
     // 处理 color 文件
     val colorDir = File(resDir, "values")
     if (colorDir.exists()) {

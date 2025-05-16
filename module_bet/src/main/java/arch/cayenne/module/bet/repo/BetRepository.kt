@@ -5,7 +5,6 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -40,14 +39,14 @@ class BetRepository(
         if (existing == null) {
 
             // 非讓分盤則無法加入組合單
-            if (!insertBean.isParlay) {
+            if (!insertBean.isParlay && selections.isNotEmpty()) {
                 return@withContext AddSelectionStatus.DISABLE_COMBO
             }
 
             val newBean = insertBean.toBetSelectionBean(betId)
             betDao.insertSelection(newBean)
             checkBetBeanType(betId)
-            return@withContext if (bet == null) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
+            return@withContext if (selections.isEmpty()) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
         }
 
         // 3. 同場次但不同 selection → 更新

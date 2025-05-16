@@ -80,7 +80,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "¥ ${it.getFormalMoney()}"
         }
-        mViewModel.mainMatch.observe(viewLifecycleOwner) {
+        mViewModel.observeMainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
                 Glide.with(this).load(it.basicInfo.tournamentIcon)
@@ -139,6 +139,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun onDestroyView() {
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
+        mViewModel.clearAllMatch()
         super.onDestroyView()
     }
 }

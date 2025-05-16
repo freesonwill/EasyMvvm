@@ -8,9 +8,6 @@ import androidx.room.Transaction
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
-import arch.cayenne.lib.database.entity.MarketBean
-import arch.cayenne.lib.database.entity.MatchBean
-import arch.cayenne.lib.database.entity.SelectionBean
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -31,6 +28,9 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
 
     @Query("SELECT * FROM LiveMatchBean WHERE matchId = :matchId")
     abstract fun observeMatchById(matchId: Long): Flow<LiveMatchBean>
+
+    @Query("SELECT * FROM LiveSelectionBean WHERE marketId IN (:marketIds)")
+    abstract fun observeSelectionByIds(marketIds: List<Long>): Flow<List<LiveSelectionBean>>
 
     @Transaction
     @Query("SELECT * FROM LiveMatchBean WHERE matchId IN (:matchIds)")
@@ -99,6 +99,14 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         insertMarkets(markets)
         insertSelections(selections)
     }
+
+    @Transaction
+    open suspend fun updateLiveSelectionBean(
+        selections: List<LiveSelectionBean>,
+    ) {
+        insertSelections(selections)
+    }
+
 
     @Transaction
     open fun clearAllMatch() {

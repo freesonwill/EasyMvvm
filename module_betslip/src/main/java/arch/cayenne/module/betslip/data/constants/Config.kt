@@ -1,0 +1,7 @@
+package arch.cayenne.module.betslip.data.constants
+
+internal object Config {
+
+    const val KEY_RESULT = "key_result"
+    const val VALUE_SELECTED_DATE = "value_selected_date"
+}

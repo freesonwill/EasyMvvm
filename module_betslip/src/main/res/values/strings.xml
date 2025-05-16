@@ -56,6 +56,8 @@
     <string name="keyboard_double">双倍</string>
     <string name="btn_cancel">取消</string>
     <string name="lineup_empty">暂无数据,请换个试一试~</string>
+    <string name="title_betslip">注单</string>
+
     <string name="cancel_reserve_success">取消预约成功</string>
     <string name="cancel_reserve_fail">取消预约失败</string>
     <string name="modify_odds_success">修改赔率成功</string>
@@ -64,4 +66,15 @@
     <string name="cancel_reserve">取消预约</string>
     <string name="not_yet">暂不</string>
 
+    <string name="date_picker_title">选择开始日期</string>
+    <string name="date_picker_all">全部</string>
+    <string name="date_picker_today">今天</string>
+    <string name="date_picker_yesterday">昨天</string>
+    <string name="date_picker_in_7_day">7天内</string>
+    <string name="date_picker_custom">自定义</string>
+
+    <string name="date_picker_year">%d年</string>
+    <string name="date_picker_month">%d月</string>
+    <string name="date_picker_day">%d日</string>
+    <string name="date_picker_date_before">%s及以前</string>
 </resources>
