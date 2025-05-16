@@ -4,6 +4,8 @@
     <color name="tab_indicator_color_classic">#24ee8a</color>
     <color name="video_source_fragment_title_color_classic">#FFFFFF</color>
     <color name="video_source_fragment_bkg_classic">#161823</color>
+    <color name="video_source_item_title_color_classic">#FFFFFF</color>
+    <color name="video_source_item_subtitle_color">#929298</color>
 
 
 </resources>
