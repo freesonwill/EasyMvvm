@@ -1,27 +1,21 @@
-package arch.cayenne.module.betslip.ui.activity
+package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
-import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.databinding.ActivityBetslipBinding
-import arch.cayenne.module.betslip.ui.fragment.BetSlipConfirmFragment
-import arch.cayenne.module.betslip.ui.fragment.BetSlipInvalidFragment
-import arch.cayenne.module.betslip.ui.fragment.BetSlipReserveFragment
-import arch.cayenne.module.betslip.ui.fragment.BetSlipSettledFragment
-import arch.cayenne.module.betslip.ui.fragment.BetSlipUnsettledFragment
-import arch.cayenne.module.betslip.ui.fragment.DatePickerFragment
+import arch.cayenne.module.betslip.databinding.FragmentHomeBetslipBinding
+import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
-class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
-    override val vbClass: KClass<ActivityBetslipBinding> = ActivityBetslipBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
+    override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
+    override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val viewPagerAnimHelper by lazy {
         ViewPagerAnimHelper()
     }
@@ -41,11 +35,11 @@ class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
 
     override fun initListener() {
         mBinding.ivBack.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
         mBinding.tvTitle.setOnClickListener {
             // TODO 測試用
-            DatePickerFragment.newInstance().show(supportFragmentManager)
+            DatePickerFragment.newInstance().show(childFragmentManager)
         }
     }
 
@@ -54,7 +48,7 @@ class BetSlipActivity: BaseActivity<EmptyViewModel, ActivityBetslipBinding>() {
     }
 
     private fun setPage(pager: List<PagerBean>) {
-        mBinding.viewPager.adapter = PagerAdapter(supportFragmentManager, lifecycle, pager)
+        mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, pager)
         TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
             tab.text = pager[position].title
         }.attach()
