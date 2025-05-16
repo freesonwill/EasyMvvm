@@ -164,14 +164,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun insertFullMatch(
-        tournamentMatchRefs: List<TournamentMatchRef>,
+        tournamentMatchRefs: List<TournamentMatchRef>?,
         matches: List<MatchBean>,
         markets: List<MarketBean>,
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
         ) {
-        insertTournamentMatchRef(tournamentMatchRefs)
+        tournamentMatchRefs?.apply { insertTournamentMatchRef(tournamentMatchRefs) }
         insertMatch(matches)
         insertMarkets(markets)
         insertSelections(selections)

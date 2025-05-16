@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +20,7 @@ class ChampionViewModel : BaseViewModel() {
 
     private var matchId: Long = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -36,7 +38,11 @@ class ChampionViewModel : BaseViewModel() {
     }
     fun getChampionDetail() {
         viewModelScope.launch(Dispatchers.IO) {
-            championRepository.getChampionDetail(matchId)
+            val matchWithMarkets = championRepository.getChampionDetail(matchId)
+            withContext(Dispatchers.Main) {
+                matchWithMarketsChange.value = matchWithMarkets
+            }
+
         }
     }
 

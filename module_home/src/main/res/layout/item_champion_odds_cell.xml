@@ -1,0 +1,81 @@
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll_odds_cell"
+    android:layout_width="match_parent"
+    android:layout_height="43dp"
+    android:background="@drawable/selector_match_odds_cell"
+    android:gravity="center"
+    android:orientation="vertical">
+    <!-- 灰色遮罩 -->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_trend_highlight"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/odds_highlight_overlay"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_short_name"
+            style="@style/OddsShortNameStyle"
+            android:textSize="14sp"
+            android:layout_marginStart="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="主" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_odds"
+            style="@style/OddsTextStyle"
+            android:textSize="14sp"
+            android:layout_marginEnd="@dimen/dp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:text="1.33" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_lock"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
+            android:src="@drawable/ic_market_lock"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!-- 賠率上升圖示 -->
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_trend_up"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginEnd="@dimen/dp_3"
+            android:src="@drawable/ic_odds_up"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- 賠率下降圖示 -->
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_trend_down"
+            android:layout_width="@dimen/dp_8"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_3"
+            android:layout_marginBottom="@dimen/dp_3"
+            android:src="@drawable/ic_odds_down"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+

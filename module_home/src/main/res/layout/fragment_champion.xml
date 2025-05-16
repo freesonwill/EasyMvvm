@@ -12,7 +12,7 @@
         android:layout_height="wrap_content" />
 
     <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
-
+        android:id="@+id/rv_champion"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
