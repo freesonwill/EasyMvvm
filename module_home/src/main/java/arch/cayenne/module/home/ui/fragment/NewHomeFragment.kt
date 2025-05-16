@@ -287,7 +287,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llBetEntry.setOnClickListener {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToBetSlipActivity(), null)
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
         }
     }

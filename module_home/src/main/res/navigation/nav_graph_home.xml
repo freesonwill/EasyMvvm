@@ -122,8 +122,8 @@
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
         <action
-            android:id="@+id/action_newHomeFragment_to_betSlipActivity"
-            app:destination="@id/betSlipActivity" />
+            android:id="@+id/action_newHomeFragment_to_homeBetSlipFragment"
+            app:destination="@id/homeBetSlipFragment" />
     </fragment>
 
     <fragment
@@ -146,8 +146,8 @@
             android:name="matchId"
             app:argType="long" />
     </fragment>
-    <activity
-        android:id="@+id/betSlipActivity"
-        android:name="arch.cayenne.module.betslip.ui.activity.BetSlipActivity"
-        android:label="BetSlipActivity" />
+    <fragment
+        android:id="@+id/homeBetSlipFragment"
+        android:name="arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment"
+        android:label="HomeBetSlipFragment" />
 </navigation>

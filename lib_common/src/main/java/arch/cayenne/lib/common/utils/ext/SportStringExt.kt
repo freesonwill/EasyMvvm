@@ -10,7 +10,7 @@ object SportStringExt {
      * @return 轉換後的整數值，若轉換失敗則返回 0, ex "1.23" -> 123, "0.5" -> 50
      */
     fun String.toMoney(): Long {
-        if (this == "0L") return 0 // 明確處理 0
+        if (this == "0L" || this.isEmpty()) return 0 // 明確處理 0
 
         val value = if (this.last() == '.') {
             this.substring(0, this.length - 1)
@@ -67,7 +67,7 @@ object SportStringExt {
      * @return 轉換後的整數值，若轉換失敗則返回 0, ex "123" -> 123L -> 實際上餘額為1.23元, "1.0E7" -> 10000000L -> 實際上餘額為100000元
      */
     fun String.balanceStringToLong(): Long {
-        if (this == "0L") return 0 // 明確處理 0
+        if (this == "0L" || this.isEmpty()) return 0 // 明確處理 0
         return try {
             BigDecimal(this)
                 .setScale(2, RoundingMode.DOWN)
@@ -78,7 +78,7 @@ object SportStringExt {
     }
 
     fun String.timeStringToInt(): Int {
-        if (this == "0") return 0
+        if (this == "0" || this.isEmpty()) return 0
         return try {
             this.toInt()
         } catch (e: NumberFormatException) {
