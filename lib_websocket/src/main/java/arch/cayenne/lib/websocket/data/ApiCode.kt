@@ -25,7 +25,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_MATCH(500,1003),    // 500-1003: 获取比赛详情
 
     SUBSCRIBE_MATCH_INFO(500,1102),      // 500-1102: 订阅比赛详情
-    MATCH_INFO_NOTIFY(500,1004),      // 600-1004: 比赛INFO推送
+    MATCH_INFO_NOTIFY(600,1004),      // 600-1004: 比赛INFO推送
     CANCEL_SUBSCRIBE_MATCH_INFO(500,1103),     // 500-1103: 取消订阅比赛详情
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额

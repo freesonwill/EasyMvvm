@@ -88,6 +88,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (res.error == null) {
+            "比赛详情订阅开始----  result ${res.data}".logd(TAG)
 //            if (res.data != null&&res.data!!.matchNotify!= null){
 //                res.data!!.matchNotify
 //            }
@@ -97,14 +98,22 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     // 500-1103: 取消订阅比赛详情
     fun unregisterMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
         scope.launch {
-            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
-                scope = scope,
-                dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
-            ) {
-                Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
-                    this.matchId = matchIds
-                }.build()
+            var res =
+                socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
+                    scope = scope,
+                    dispatcher = Dispatchers.IO,
+                    apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
+                ) {
+                    Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
+                        this.matchId = matchIds
+                    }.build()
+                }
+
+            if (res.error == null) {
+                "比赛详情订阅结束----  result ${res.data}".logd(TAG)
+//            if (res.data != null&&res.data!!.matchNotify!= null){
+//                res.data!!.matchNotify
+//            }
             }
         }
     }
@@ -113,8 +122,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     fun observeMatchInfoNotify(): Flow<Client.MatchInfoNotify> {
         return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
             .transform { res ->
+                "比赛详情订阅收到推送----  result res---${res.error},-----data${res.data}".logd(TAG)
                 if (res.error == null && res.data != null) {
-                    "observeMatchInfoNotify  result ${res.data}".logd(TAG)
                     emit(res.data!!)
                 }
             }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
@@ -12,13 +13,17 @@ import com.walisport.module.live.data.repository.LiveBetOnRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import arch.cayenne.module.bet.repo.BetRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
 
 class LiveBetOnViewModel : BaseViewModel() {
     private val repository: LiveBetOnRepository by inject()
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
-    private val _observeMarketType = MutableLiveData<List<MarketTypeBean>?>()
-    val observeMarketType: LiveData<List<MarketTypeBean>?> = _observeMarketType
+
+
+    private val _observeSelection = MutableLiveData<List<LiveSelectionBean>?>()
+    val observeSelection: LiveData<List<LiveSelectionBean>?> = _observeSelection
 
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
@@ -33,10 +38,12 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _observeMarketMenu = MutableLiveData<List<Int>>()
     val observeMarketMenu: LiveData<List<Int>> = _observeMarketMenu
 
-
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
-            repository.queryLiveMarketType(matchId)
+            repository.queryLiveMarketType(matchId){
+                _marketType.value = it
+            }
+
         }
     }
 
@@ -45,26 +52,39 @@ class LiveBetOnViewModel : BaseViewModel() {
         _observeMarketMenu.value  =position
     }
 
-    //获取所有
-    fun getMarketTypeAll() {
-        viewModelScope.launch {
-            _marketType.value = repository.queryLiveMarketTypeAll()
-        }
-    }
-
     //根据盘口分类code获取盘口列表
     fun getMarketList(code: String) {
         if (code.isEmpty()) {
             val list: MutableList<MarketMenuBean> = mutableListOf()
-            observeMarketType.value?.forEach {
+            marketType.value?.forEach {
                 list.addAll(it.marketMenuBean)
             }
             _getMarketList.value = list
         } else {
-            _getMarketList.value = observeMarketType.value?.find { it.code == code }?.marketMenuBean
+            _getMarketList.value = marketType.value?.find { it.code == code }?.marketMenuBean
         }
-
+        var marketIds: MutableList<Long> = mutableListOf()
+        _getMarketList.value?.forEach {
+            marketIds.add(it.marketId)
+        }
+        //监听盘口数据变化
+        LogUtils.e("observeSelection${marketIds}")
+        observeSelection(marketIds)
     }
+
+    fun observeSelectionGetMarketList(code: String) {
+        if (code.isEmpty()) {
+            val list: MutableList<MarketMenuBean> = mutableListOf()
+            marketType.value?.forEach {
+                list.addAll(it.marketMenuBean)
+            }
+            _getMarketList.value = list
+        } else {
+            _getMarketList.value = marketType.value?.find { it.code == code }?.marketMenuBean
+        }
+    }
+
+
         suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
             val bean = repository.getSelectionInsertBean(matchId, selectionId)
             return if (bean == null) {
@@ -74,23 +94,27 @@ class LiveBetOnViewModel : BaseViewModel() {
             }
         }
 
-
-
-    fun observeMarketTypeBean() {
-        viewModelScope.launch {
-            repository.observeMarketTypeBean().collect {
-                _observeMarketType.value = it
+    //监听盘口数据变化
+    fun observeSelection(marketIds: List<Long>) {
+        viewModelScope.launch (Dispatchers.IO){
+            repository.observeSelection(marketIds).collect {
+                withContext(Dispatchers.Main){
+                    _observeSelection.value = it
+                    LogUtils.e("比赛详情--------observeSelection${it}")
+                }
             }
         }
     }
 
     fun getLiveSelectionBean(marketIds: List<Long>) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             var map: MutableMap<Long, List<LiveSelectionBean>> = mutableMapOf()
             marketIds.forEach {
                 map[it] = repository.queryLiveSelectionBean(it)
             }
-            _getLiveSelectionBean.value = map
+            withContext(Dispatchers.Main) {
+                _getLiveSelectionBean.value = map
+            }
         }
     }
 }
