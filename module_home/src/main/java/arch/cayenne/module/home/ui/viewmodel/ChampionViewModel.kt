@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -27,6 +28,16 @@ class ChampionViewModel : BaseViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
+        // 觀察賽事訂閱後，後端主動送出的變化
+        viewModelScope.launch(Dispatchers.IO) {
+            championRepository.observeMatchNotify().collect { matchWithMarket ->
+                if (matchWithMarketsChange.value == null) return@collect
+                if (matchWithMarketsChange.value!!.match.matchId != matchWithMarket.match.matchId) return@collect
+                withContext(Dispatchers.Main) {
+                    matchWithMarketsChange.value = matchWithMarket
+                }
+            }
+        }
         viewModelScope.launch(Dispatchers.IO) {
             balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
@@ -55,7 +66,18 @@ class ChampionViewModel : BaseViewModel() {
             withContext(Dispatchers.Main) {
                 matchWithMarketsChange.value = matchWithMarkets
             }
+        }
+    }
 
+    fun subscribeMatch() {
+        viewModelScope.launch(Dispatchers.IO) {
+            championRepository.subscribeMatch(matchId)
+        }
+    }
+    fun cancelSubscribeMatch() {
+        viewModelScope.launch(Dispatchers.IO) {
+            "取消訂閱比賽  $matchId".logi(this::class.java.name)
+            championRepository.cancelSubscribeMatch(arrayListOf(matchId))
         }
     }
 

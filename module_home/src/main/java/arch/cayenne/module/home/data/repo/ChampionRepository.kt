@@ -8,13 +8,17 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetInsertBean
+import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.withContext
 
 class ChampionRepository(
@@ -81,5 +85,61 @@ class ChampionRepository(
             )
         }
         return null
+    }
+
+    suspend fun subscribeMatch(id: Long): Boolean {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
+                this.addAllMatchId(arrayListOf(id))
+            }.build()
+        }
+        return if (res.error == null && res.data != null) {
+            "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
+            true
+        } else {
+            false
+        }
+    }
+
+    suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+        ) {
+            Client.SubscribeHomeMatchReq.newBuilder().apply {
+                this.addAllMatchId(ids)
+            }.build()
+        }
+        return res.error == null && res.data != null
+    }
+
+    suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
+        return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
+            if (it.error == null && it.data != null) {
+                "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
+                val matchUpdateData = arrayListOf(it.data!!).toRoomData()
+                val list = updateFullMath(matchUpdateData)
+                list.forEach { matchWithMarket -> emit(matchWithMarket) }
+            }
+        }
+    }
+
+    /**
+     * 更新首頁賽事資料，開始訂閱比賽與訂閱後收到比賽更新訊息時使用
+     * @return 回傳更新後的賽事資料
+     * */
+    private suspend fun updateFullMath(updateData: MatchUpdateData): List<MatchWithMarkets> {
+        return matchDao.updateFullMatch(
+            updateData.matchLites,
+            updateData.markets,
+            updateData.selections,
+            updateData.matchMarketCrossRefs,
+            updateData.marketSelectCrossRefs
+        ).setSelected(betDao)
     }
 }

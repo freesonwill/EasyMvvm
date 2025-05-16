@@ -48,7 +48,9 @@ class MatchListViewModel : BaseViewModel() {
                 val old = matchListChange.value!!.toMutableList()
                 val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
                 if (index != -1) { old[index] = matchWithMarket }
+//                val matchWithMarkets = repository.queryFullMatches(matchListChange.value!!.map { it.match.matchId })
                 withContext(Dispatchers.Main) {
+//                    matchListChange.value = matchWithMarkets
                     matchListChange.value = old
                 }
             }

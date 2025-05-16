@@ -36,6 +36,7 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
     override fun initData() {
         super.initData()
         mViewModel.setMatchId(args.matchId)
+        mViewModel.subscribeMatch()
         mViewModel.getChampionDetail()
     }
 
@@ -78,9 +79,16 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
                 tittleBarBinding.tvCompetitionName.text = matchWithMarkets.match.basicInfo.matchName
 
                 championAdapter.submitList(matchWithMarkets.markets)
+            } else {
+                //TODO show no data
             }
 
         }
+    }
+
+    override fun onDestroyView() {
+        mViewModel.cancelSubscribeMatch()
+        super.onDestroyView()
     }
 
 }
