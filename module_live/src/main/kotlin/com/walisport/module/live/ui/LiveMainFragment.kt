@@ -109,7 +109,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         with(mBinding) {
             val list =
-                listOf(PagerBean(R.string.live_note_order.getString()) { BetSlipFragment().apply { setArguments(args.matchId,args.sportId) } },
+                listOf(
+                    PagerBean(R.string.live_note_order.getString()) {
+                        BetSlipFragment().apply {
+                            arguments = Bundle().apply {
+                                putLong(BetSlipFragment.matchKey, args.matchId)
+                                putInt(BetSlipFragment.sportKey, args.sportId)
+                            }
+                        }
+                    },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

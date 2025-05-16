@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import galaxy.common.proto.Common.EarlySettlePrice
 import galaxy.common.proto.Common.Order
 import galaxy.common.proto.Common.ReserveOrder
@@ -47,7 +48,7 @@ class BetSlipViewModel : BaseViewModel() {
     /**
      * 获取注单列表
      * */
-    fun getOrders(status: arch.cayenne.module.betslip.data.constants.BetSlipEnum) {
+    fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
             val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)
             _orderLiveData.value = result
@@ -106,12 +107,12 @@ class BetSlipViewModel : BaseViewModel() {
         }
     }
 
-    fun refreshOrder(status: arch.cayenne.module.betslip.data.constants.BetSlipEnum) {
+    fun refreshOrder(status: BetSlipEnum) {
         page = 1
         getOrders(status)
     }
 
-    fun loadMoreOrder(status: arch.cayenne.module.betslip.data.constants.BetSlipEnum) {
+    fun loadMoreOrder(status: BetSlipEnum) {
         viewModelScope.launch {
             page++
             val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)

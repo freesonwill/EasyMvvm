@@ -23,7 +23,6 @@ class EarlySettledKeyboardViewModel : BaseViewModel() {
     fun setArguments(betId: String, betAmount: Double) {
         this.betId = betId
         earlySettlePriceLiveData.value = betAmount
-        " price2 $betAmount".logd("aaa")
 
     }
 

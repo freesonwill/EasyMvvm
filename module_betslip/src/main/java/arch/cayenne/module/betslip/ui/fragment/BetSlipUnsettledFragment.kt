@@ -10,7 +10,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
@@ -21,7 +20,6 @@ import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
@@ -33,7 +31,6 @@ class BetSlipUnsettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
-    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, BetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -42,8 +39,9 @@ class BetSlipUnsettledFragment :
 
     override fun initData() {
         super.initData()
-        LogUtils.dTag("remote", "matchId ${pageViewModel.matchId}")
-        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
+        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
+        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
+        mViewModel.setIds(matchId, sportId = sportId)
         mViewModel.getOrders(BetSlipEnum.UnSettled)
     }
 
@@ -73,7 +71,6 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, price.toString(), order.earlyBetAmount
                 )
-                " price2 $money".logd("aaa")
                 BetSlipEarlySettledFragment.instance(it.betId, money.toDouble()).apply {
                     setOnEarlySettleListener { betId, money ->
                         mViewModel.earlyPartSettled(
@@ -94,14 +91,14 @@ class BetSlipUnsettledFragment :
         } ?: true
         if (flag) {
             mBinding.emptyState.isVisible = true
-            mBinding.recyclerView.isVisible = false
+            mBinding.refreshLayout.isVisible = false
             mBinding.emptyState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
                 getString(R.string.lineup_empty)
             )
         } else {
             mBinding.emptyState.isVisible = false
-            mBinding.recyclerView.isVisible = true
+            mBinding.refreshLayout.isVisible = true
         }
     }
 

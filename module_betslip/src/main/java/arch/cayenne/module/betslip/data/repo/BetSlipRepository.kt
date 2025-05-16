@@ -29,8 +29,8 @@ class BetSlipRepository(
             status,
             page,
             pageSize,
-            sportId,
-            matchId,
+            sportId = if(sportId == -1) null else sportId,
+            matchId = if(matchId == (-1).toLong()) null else matchId,
             startTime,
             endTime
         )

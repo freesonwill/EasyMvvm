@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
@@ -16,7 +15,6 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 
 
@@ -26,7 +24,6 @@ class BetSlipSettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> =
         FragmentLiveBetslipSettledLayoutBinding::class
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
-    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, BetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -85,11 +82,11 @@ class BetSlipSettledFragment :
         } ?: true
         if (flag) {
             mBinding.emptyState.isVisible = true
-            mBinding.recyclerView.isVisible = false
+            mBinding.refreshLayout.isVisible = false
             mBinding.emptyState.setState(DynamicStateLayout.States.DATA_EMPTY,getString(R.string.lineup_empty))
         } else {
             mBinding.emptyState.isVisible = false
-            mBinding.recyclerView.isVisible = true
+            mBinding.refreshLayout.isVisible = true
         }
     }
 
@@ -110,7 +107,9 @@ class BetSlipSettledFragment :
 
     override fun initData() {
         super.initData()
-        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
+        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
+        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
+        mViewModel.setIds(matchId, sportId = sportId)
         mViewModel.getOrders(BetSlipEnum.Settled)
     }
 }

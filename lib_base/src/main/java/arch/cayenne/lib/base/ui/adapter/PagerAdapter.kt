@@ -8,16 +8,20 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.adapter.FragmentViewHolder
 import arch.cayenne.lib.base.data.model.PagerBean
+
 class PagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     private val pages: List<PagerBean>
-) : FragmentStateAdapter(fragmentManager,lifecycle) {
+) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = pages.size
 
     override fun createFragment(position: Int): Fragment = pages[position].page.invoke().apply {
-        arguments = Bundle().apply {
+        arguments = arguments?.let {
+            it.putInt("pageIndex", position)
+            arguments
+        } ?: Bundle().apply {
             putInt("pageIndex", position)
         }
     }

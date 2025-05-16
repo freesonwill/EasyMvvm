@@ -27,7 +27,6 @@ class BetSlipConfirmFragment :
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
-    private val pageViewModel: BetSlipPageViewModel by sharedViewModel<BetSlipPageViewModel, BetSlipFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -85,11 +84,11 @@ class BetSlipConfirmFragment :
         } ?: true
         if (flag) {
             mBinding.emptyState.isVisible = true
-            mBinding.recyclerView.isVisible = false
+            mBinding.refreshLayout.isVisible = false
             mBinding.emptyState.setState(DynamicStateLayout.States.DATA_EMPTY,getString(R.string.lineup_empty))
         } else {
             mBinding.emptyState.isVisible = false
-            mBinding.recyclerView.isVisible = true
+            mBinding.refreshLayout.isVisible = true
         }
     }
 
@@ -110,7 +109,9 @@ class BetSlipConfirmFragment :
 
     override fun initData() {
         super.initData()
-        mViewModel.setIds(pageViewModel.matchId, sportId = pageViewModel.sportId)
+        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
+        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
+        mViewModel.setIds(matchId, sportId = sportId)
         mViewModel.getOrders(BetSlipEnum.UnSettled)
     }
 }
