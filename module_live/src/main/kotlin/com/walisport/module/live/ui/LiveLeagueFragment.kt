@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
@@ -49,6 +52,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         //浸入式背景
         statusBarColor = StatusBarConfig.statusBarColor
         StatusBarConfig.statusBarColor = arch.cayenne.lib.common.R.color.tran_0
+        StatusBarConfig.hideStatusBar = true
+
         setStatusBar(StatusBarConfig)
         //获取联赛日程列表
         val matchID = arguments?.getLong("matchID") ?: 0L
@@ -92,6 +97,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun onDestroyView() {
         StatusBarConfig.statusBarColor = statusBarColor
+        StatusBarConfig.hideStatusBar = false
         setStatusBar(StatusBarConfig)
         super.onDestroyView()
     }
@@ -99,24 +105,38 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     override fun createObserver() {
         mViewModel.leagueData.observe(this) {
             mBinding.refreshLayout.finishRefresh()
-            if (it != null) {
-                //更新设置背景色
-                var startColor = Color.parseColor("#377c46")
-                if (it.color.isNotEmpty()) {
-                    startColor = Color.parseColor(it.color)
+            mBinding.refreshLayout.finishLoadMore()
+            it?.let {
+                mBinding.leagueRoot.setVisibilityGone()
+                if (it.match.isEmpty()) {
+                    mBinding.leagueRoot.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                } else {
+                    //更新设置背景色
+                    var startColor = Color.parseColor("#377c46")
+                    if (it.color.isNotEmpty()) {
+                        startColor = Color.parseColor(it.color)
+                    }
+                    val endColor = Color.parseColor("#000000")
+                    val gradientDrawable = GradientDrawable(
+                        GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
+                    )
+                    gradientDrawable.shape = GradientDrawable.RECTANGLE
+                    mBinding.leagueRoot.background = gradientDrawable
+                    //更新设置联赛LOGO
+                    Glide.with(this).load(it.logo).into(mBinding.ivLeagueLogo)
+                    //更新设置联赛名称
+                    mBinding.tvLeagueName.text = it.tournamentName
+                    //更新联赛数据
+                    standsAdapter.submitList(it.match)
                 }
-                val endColor = Color.parseColor("#000000")
-                val gradientDrawable = GradientDrawable(
-                    GradientDrawable.Orientation.TOP_BOTTOM, intArrayOf(startColor, endColor)
+            } ?: run {
+                mBinding.leagueRoot.setState(
+                    DynamicStateLayout.States.DATA_EMPTY,
+                    R.string.lineup_empty.getString()
                 )
-                gradientDrawable.shape = GradientDrawable.RECTANGLE
-                mBinding.leagueRoot.background = gradientDrawable
-                //更新设置联赛LOGO
-                Glide.with(this).load(it.logo).into(mBinding.ivLeagueLogo)
-                //更新设置联赛名称
-                mBinding.tvLeagueName.text = it.tournamentName
-                //更新联赛数据
-                standsAdapter.submitList(it.match)
             }
         }
     }

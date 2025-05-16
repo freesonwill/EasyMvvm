@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -23,8 +22,8 @@ class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
     }
-    private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
-    private val balanceRepository: BalanceRepository by inject { parametersOf(viewModelScope) }
+    private val repository : HomeRepository by inject()
+    private val balanceRepository: BalanceRepository by inject()
     var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY

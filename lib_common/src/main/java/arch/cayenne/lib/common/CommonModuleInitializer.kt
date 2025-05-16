@@ -10,6 +10,7 @@ import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
 class CommonModuleInitializer : DefaultInitializer<String> {
@@ -24,7 +25,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
 
     private val moduleList: List<Module> = listOf(module {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
-        factory { (scope: CoroutineScope) -> BalanceRepository(scope, get<GameDatabase>().infoDao()) }
+        factoryOf(::BalanceRepository)
         single { UserDataManager() }
     })
 }

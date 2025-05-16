@@ -26,32 +26,6 @@
     <string name="standings_out_line">出线区</string>
     <string name="technical_statistics">技术统计</string>
 
-    <string-array name="bet_slip_menus">
-        <item>未结算</item>
-        <item>确认中</item>
-        <item>已结算</item>
-        <item>预约</item>
-        <item>失效</item>
-    </string-array>
-    <string name="live_bet_reserve_expired">预约失效</string>
-    <string name="live_bet_grounder">滚球</string>
-    <string name="live_bet_bet_num">注单号</string>
-    <string name="live_bet_rejection">拒单</string>
-    <string name="live_bet_reserve_odds">预约赔率</string>
-    <string name="live_bet_reserve_bet">预约投注</string>
-    <string name="live_bet_cross_border">串关方式</string>
-    <string name="live_bet_except_max_win">预计最高可赢</string>
-    <string name="live_bet_full_handicap">全场让球(%1$s-$2$s)</string>
-    <string name="live_bet_cancel_reserve">取消预约</string>
-    <string name="live_bet_modify_odds">修改赔率</string>
-    <string name="live_bet_odds">赔率</string>
-    <string name="live_bet_part_early_settle">部分提前结算</string>
-    <string name="live_bet_win_lose_amount">输赢金额</string>
-    <string name="live_bet_win">赢</string>
-    <string name="live_bet_except_odds">预计赔率@%1$s</string>
-    <string name="live_bet_early_settle">提前结算</string>
-    <string name="see_more">查看更多</string>
-    <string name="fold_up">向上收起</string>
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
     <string name="live_chat_talk">和大家聊聊...</string>
@@ -76,8 +50,6 @@
     <string name="live_starting_lineup">首发阵容</string>
     <string name="live_substitution_lineup">本场换人</string>
     <string name="live_repair_lineup">替补队员</string>
-    <string name="live_video_loading">加载中...</string>
-    <string name="live_video_error">加载失败</string>
     <string name="lineup_empty">暂无数据,请换个试一试~</string>
     <string name="standings_empty">积分榜数据为空</string>
     <string name="outs_empty">赛况数据为空</string>
@@ -112,32 +84,6 @@
     <string name="live_out_know">我知道了</string>
     <string name="live_out_dialog_tip">这个图表让你能洞悉比赛的进程，柱状显示的是球队在比赛中攻势的变化趋势</string>
     <string name="bet_stop">已停止投注,请换个试一试~</string>
-
-    <string name="keyboard_max">最高</string>
-    <string name="keyboard_clear">清空</string>
-    <string name="keyboard_double">双倍</string>
-    <string name="cancel">取消</string>
-    <string name="refund_amount">返还金额$%1$s</string>
-    <string name="want_settle_early">确定提前结算吗?</string>
     <string name="capital">本金</string>
-    <string-array name="keyboard_percent">
-        <item>全部</item>
-        <item>25%</item>
-        <item>50%</item>
-        <item>75%</item>
-    </string-array>
-    <string name="live_betslip_bettips">如果部分已提前结算，金额则为剩余投注额</string>
-    <string name="auto_bet_odds_reached">达到此赔率时自动投注</string>
-    <string name="confirm">确定</string>
-    <string name="unsettled">未结算</string>
-    <string name="win">赢</string>
-    <string name="tie">和局</string>
-    <string name="lose">输</string>
-    <string name="lose_half">输一半</string>
-    <string name="win_half">赢一半</string>
-    <string name="not_support_early_settle">该订单暂不支持提前结算</string>
-    <string name="network_abnormal">网络一场，请稍后重试</string>
-    <string name="early_settle_success">提前结算成功</string>
-    <string name="early_settle_faile">提前结算失败</string>
     <string name="disabled_to_combo">当前赛事不支持串关</string>
 </resources>

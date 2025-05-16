@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
@@ -18,7 +19,6 @@ import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBinding
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
-import com.walisport.module.live.utils.RecyclerItemListener
 import com.walisport.module.live.utils.SoftKeyboardStateHelper
 import kotlin.reflect.KClass
 

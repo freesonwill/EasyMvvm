@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +10,7 @@ import androidx.core.view.GravityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -283,11 +283,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llSearchEntry.setOnClickListener {
-                navigate(Uri.parse("walisport://module_search/searchFragment"))
+                navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
 
             llBetEntry.setOnClickListener {
-
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToBetSlipActivity(), null)
             }
         }
     }

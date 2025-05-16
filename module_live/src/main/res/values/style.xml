@@ -9,10 +9,4 @@
     </style>
 
 
-    <style name="KeyboardSideTextView">
-        <item name="android:textColor">@color/keyboard_number</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
 </resources>

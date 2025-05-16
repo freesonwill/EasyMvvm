@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
+import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import com.bumptech.glide.Glide
@@ -56,7 +57,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     private fun initVideoView() {
         mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY, R.layout.layout_live_player_view)
+            init(PlayerMode.FLUENCY, ScreenMode.SMALL)
             keepScreenOn = true
             setConfig(GlobalConfig(requireContext()).also {
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置
@@ -135,6 +136,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun createObserver() {
+
+
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {

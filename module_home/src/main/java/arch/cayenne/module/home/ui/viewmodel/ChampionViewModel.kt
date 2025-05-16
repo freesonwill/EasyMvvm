@@ -10,13 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class ChampionViewModel : BaseViewModel() {
-    private val championRepository: ChampionRepository  by inject { parametersOf(viewModelScope) }
-    private val balanceRepository: BalanceRepository by inject { parametersOf(viewModelScope) }
+    private val championRepository: ChampionRepository  by inject()
+    private val balanceRepository: BalanceRepository by inject()
 
     private var matchId: Long = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
