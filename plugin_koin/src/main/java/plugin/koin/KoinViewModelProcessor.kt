@@ -32,6 +32,7 @@ class KoinViewModelProcessor(
         val viewModels = symbols.filterIsInstance<KSClassDeclaration>().toList()
         val koinViewModelFiles = viewModels.mapNotNull { it.containingFile }
         logger.warn("Generating Koin ViewModel module...$generatedPackage,viewModels:${viewModels.size},koinViewModelFiles:${koinViewModelFiles.map { it.fileName }}")
+        if(viewModels.isEmpty()) return emptyList()
         val fileName = defaultModule.replaceFirstChar { it.uppercaseChar() }
         //viewModels.isEmpty()第一次时创建空文件，第二次时返回，否则FileAlreadyExistsException
         if(createFileCount == 1 && viewModels.isEmpty()) return emptyList()
@@ -43,7 +44,7 @@ class KoinViewModelProcessor(
             Dependencies.ALL_FILES,
             //✅ Correct: Only aggregate @KoinViewModel files for proper incremental build
             //Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),*/
-            if(viewModels.isEmpty())
+            if(viewModels.isEmpty()) //generate empty file
                 Dependencies.ALL_FILES
             else
                 Dependencies(aggregating = true, sources = koinViewModelFiles.toTypedArray()),

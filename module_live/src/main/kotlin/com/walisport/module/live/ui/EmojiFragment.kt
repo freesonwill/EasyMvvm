@@ -4,12 +4,13 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentSoftkeyboardEmojiBinding
 import com.walisport.module.live.ui.adapter.LiveEmojiAdapter
 import com.walisport.module.live.ui.viewmodel.EmojiViewModel
-import com.walisport.module.live.utils.RecyclerItemListener
 import kotlin.reflect.KClass
+
 
 class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboardEmojiBinding>() {
     override val vbClass: KClass<FragmentSoftkeyboardEmojiBinding>

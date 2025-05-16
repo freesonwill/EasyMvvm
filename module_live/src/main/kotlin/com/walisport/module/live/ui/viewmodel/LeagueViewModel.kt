@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.live.data.model.LeagueMatchBean
+import com.walisport.module.live.data.model.MatchBean
 import com.walisport.module.live.data.repository.LiveLeagueRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -16,11 +17,32 @@ class LeagueViewModel : BaseViewModel() {
 
     private val _leagueData = MutableLiveData<LeagueMatchBean?>()
     val leagueData: LiveData<LeagueMatchBean?> get() = _leagueData
+    private var page: Int = 1
 
     fun getMatchLeagueData(leagueId: Int) {
+        page = 1
         viewModelScope.launch {
-            val result = repository.getMatchLeagueData(leagueId)
+            val result = repository.getMatchLeagueData(leagueId, page)
             _leagueData.value = result
+        }
+    }
+
+    fun getMoreMatchLeagueData(leagueId: Int) {
+        page++
+        viewModelScope.launch {
+            val result = repository.getMatchLeagueData(leagueId, page)
+            val list = _leagueData.value!!.match.toMutableList()
+            val tmp = result?.let {
+                list.addAll(it.match)
+                LeagueMatchBean(
+                    match = list,
+                    tournamentName = it.tournamentName,
+                    tournamentShortName = it.tournamentShortName,
+                    logo = it.logo,
+                    color = it.color
+                )
+            }
+            _leagueData.value = tmp
         }
     }
 }

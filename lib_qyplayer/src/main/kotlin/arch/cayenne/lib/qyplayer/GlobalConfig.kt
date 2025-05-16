@@ -12,8 +12,6 @@ class GlobalConfig(private val context: Context) {
     private val kSPFileName = "player_config"
     private val kInited = "inited"
 
-    val SNAP_SHOT_PATH: String = "snapShot" + File.separator
-
     private val kBrightRatio = "bright_ratio"
     private val kAutoPlay = "auto_play"
     private val kLoop = "loop"

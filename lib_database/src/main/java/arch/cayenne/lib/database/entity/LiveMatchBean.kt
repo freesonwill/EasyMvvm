@@ -30,9 +30,10 @@ data class LiveSelectionBean(
     val name: String,
     val shortName: String,
     val odds: Int,
-    val active: Boolean,
+    val active: Boolean, //true - 可以投注  false - 不可投注
     val parlay: Boolean,
     val marketId: Long,
+    val marketName: String,
     val style :Int//0-默认 1-一列 2-两列 3-三列 4-波胆
 )
 

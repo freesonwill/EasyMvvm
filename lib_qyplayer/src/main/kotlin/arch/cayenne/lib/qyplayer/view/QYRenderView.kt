@@ -1,7 +1,6 @@
 package arch.cayenne.lib.qyplayer.view
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
@@ -27,7 +26,7 @@ enum class SurfaceType {
     TEXTURE_VIEW,
 
     /**
-     * SurfacView
+     * SurfaceView
      */
     SURFACE_VIEW
 }
@@ -37,7 +36,7 @@ class QYRenderView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val mQYPlayer = QYPlayer(context)
+    private val mQYPlayer: QYPlayer by lazy { QYPlayer(context.applicationContext) }
     private var mIRenderView: IRenderView? = null
     private var mSurface: Surface? = null
 
@@ -81,12 +80,6 @@ class QYRenderView @JvmOverloads constructor(
 
     fun setOnUpdateStatisticsListener(onUpdateStatistics: (category: String, json: String) -> Unit) {
         mQYPlayer.setOnUpdateStatisticsListener(onUpdateStatistics)
-    }
-
-    fun setOnSnapshotListener(onSnapshot: (bitmap: Bitmap) -> Unit) {
-        mQYPlayer.setOnSnapShotListener { bitmap ->
-            onSnapshot(bitmap)
-        }
     }
 
     fun prepare() {

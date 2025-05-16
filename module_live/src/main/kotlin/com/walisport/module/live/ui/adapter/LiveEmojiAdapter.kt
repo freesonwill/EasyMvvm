@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import com.walisport.module.live.compare.LiveEmojiCompare
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemLastEmojiLayoutBinding
-import com.walisport.module.live.utils.RecyclerItemListener
 
 class LiveEmojiAdapter :
     BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(LiveEmojiCompare()) {

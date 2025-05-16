@@ -1,0 +1,49 @@
+package arch.cayenne.module.betslip
+
+import android.content.Context
+import arch.cayenne.lib.base.data.DefaultInitializer
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.context.loadKoinModules
+import org.koin.core.module.Module
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
+import arch.cayenne.module.betslip.BetSlipRemoteManager
+import arch.cayenne.module.betslip.data.repo.BetSlipRepository
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
+
+import org.koin.dsl.module
+
+
+
+class BetSlipModuleInitializer: DefaultInitializer<String> {
+    private val TAG = this.javaClass.simpleName
+
+    override fun create(context: Context): String {
+        loadKoinModules(moduleList)
+        return TAG
+    }
+
+    private val managerModule = module {
+        factory {
+            CoroutineScope(Dispatchers.IO)
+        }
+        factoryOf(::BetSlipRemoteManager)
+    }
+
+    private val viewModules = module {
+        includes(defaultModule)
+        viewModelOf(::BetSlipViewModel)
+        viewModelOf(::BetSlipModifyOddsViewModel)
+        viewModelOf(::EarlySettledKeyboardViewModel)
+    }
+
+    private val repoModules = module {
+        factoryOf(::BetSlipRepository)
+    }
+
+    private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
+}

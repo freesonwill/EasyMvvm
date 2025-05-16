@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.utils.ext
 
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 
 /**
@@ -61,19 +62,24 @@ object NavResultExt {
     inline fun <reified T> Fragment.observeResultOnce(
         key: String,
         fromId: Int? = null,
-        crossinline onResult: (T) -> Unit
+        noinline onResult: (T) -> Unit
     ) {
         //移除，避免重复注册
-        removeObservers<T>(key)
+        removeObserver<T>(key, onResult, fromId)
         val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
         } else {
             navController.getBackStackEntry(fromId).savedStateHandle
         }
-        handle?.getLiveData<T>(key)?.observe(viewLifecycleOwner) { result ->
-            onResult(result)
-            handle.remove<T>(key) //移除
+        handle?.getLiveData<T>(key)?.apply {
+            observe(viewLifecycleOwner, onResult)
+            observe(viewLifecycleOwner,object :Observer<T>{
+                override fun onChanged(value: T) {
+                    removeObserver<T>(key, onResult, fromId)
+                    removeObserver(this)
+                }
+            })
         }
     }
 
@@ -92,7 +98,7 @@ object NavResultExt {
         noinline onResult: (T) -> Unit
     ) {
         //移除，避免重复注册
-        removeObservers<T>(key)
+        removeObserver<T>(key, onResult, fromId)
         val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
@@ -111,7 +117,11 @@ object NavResultExt {
      * @param onResult
      * @param fromId
      */
-    inline fun <reified T> Fragment.removeObserver(key: String, noinline onResult: (T) -> Unit, fromId: Int? = null) {
+    inline fun <reified T> Fragment.removeObserver(
+        key: String,
+        noinline onResult: (T) -> Unit,
+        fromId: Int? = null
+    ) {
         val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
