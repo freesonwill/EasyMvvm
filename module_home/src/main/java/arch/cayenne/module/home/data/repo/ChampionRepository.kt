@@ -5,14 +5,17 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ChampionRepository(
     override val scope: CoroutineScope,
@@ -45,6 +48,35 @@ class ChampionRepository(
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
             return matchDao.getOneMatchById(matchId).setSelected(betDao)
+        }
+        return null
+    }
+
+    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
+        val match = matchDao.getOneMatchById(matchId)
+        val selectionBean = matchDao.getSelectionById(selectionId)
+        matchSelectionInsertBean(match, selectionBean)
+    }
+
+    private fun matchSelectionInsertBean(
+        match: MatchWithMarkets,
+        selectionBean: SelectionBean
+    ): BetInsertBean? {
+        match.markets.find { market ->
+            market.selections.find { it.selectionId == selectionBean.selectionId } != null
+        }?.let { market ->
+            return BetInsertBean(
+                matchId = match.match.matchId,
+                marketName = market.market.marketName,
+                selectionId = selectionBean.selectionId,
+                name = selectionBean.name,
+                odds = selectionBean.odds,
+                leagueName = match.match.basicInfo.tournamentName,
+                matchName = match.match.basicInfo.matchName,
+                isActive = selectionBean.active,
+                isPlaying = match.match.basicInfo.status == 5,
+                isParlay = selectionBean.parlay
+            )
         }
         return null
     }

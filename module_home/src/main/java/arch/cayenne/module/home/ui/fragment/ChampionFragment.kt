@@ -2,18 +2,25 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.AddSelectionStatus
+import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
 import arch.cayenne.module.home.databinding.TitleBarChampionBinding
 import arch.cayenne.module.home.ui.adapter.ChampionItemAdapter
+import arch.cayenne.module.home.ui.adapter.OnChampionItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
 import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
@@ -36,7 +43,19 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
         mBinding.apply {
             titleBar.loadDynamicsTitleBar(tittleBarBinding.root)
             rvChampion.apply {
-                championAdapter = ChampionItemAdapter()
+                championAdapter = ChampionItemAdapter(object : OnChampionItemClickListener {
+                    override fun onOddsCellClick(selection: SelectionBeanLite) {
+                        lifecycleScope.launch {
+                            val status = mViewModel.setSelection(selection.selectionId)
+                            if (status == AddSelectionStatus.SINGLE) {
+                                BetSheetFragment.newInstance().show(parentFragmentManager)
+                            } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                                showToast(getString(R.string.disabled_to_combo))
+                            }
+                        }
+                    }
+                })
+
                 this.adapter = championAdapter
                 layoutManager = LinearLayoutManager(context)
                 addItemDecoration(MatchCardItemDecoration(12.dp2px))
