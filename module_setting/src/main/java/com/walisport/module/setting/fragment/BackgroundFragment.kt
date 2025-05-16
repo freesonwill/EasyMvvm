@@ -11,7 +11,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.data.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
-import com.walisport.module.setting.databinding.TittleBarBackgroundBinding
+import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import kotlin.reflect.KClass
 
 /**
@@ -29,7 +29,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         defaultImmColor =getStatusBarColor()
         skinType = mViewModel.getSkinData()
         changeSkinType(skinType)
-        val binding = TittleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
         binding.barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
         mBinding.titleBar.loadDynamicsTitleBar(binding.root)
         binding.apply {

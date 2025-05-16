@@ -6,26 +6,26 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import com.walisport.module.live.compare.LiveEmojiCompare
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemLastEmojiLayoutBinding
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 class LiveEmojiAdapter :
     BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(LiveEmojiCompare()) {
     private var type: Int = 0 //id 0 bid/soccer 1
     private val TYPE_NORMAL = 0
     private val TYPE_LAST = 1
-    private var itemListener: arch.cayenne.module.betslip.utisl.RecyclerItemListener<EmojiData>? = null
+    private var itemListener: RecyclerItemListener<EmojiData>? = null
 
 
     fun setType(type: Int) {
         this.type = type
     }
 
-    fun setItemListener(listener: arch.cayenne.module.betslip.utisl.RecyclerItemListener<EmojiData>?) {
+    fun setItemListener(listener: RecyclerItemListener<EmojiData>?) {
         this.itemListener = listener
     }
 

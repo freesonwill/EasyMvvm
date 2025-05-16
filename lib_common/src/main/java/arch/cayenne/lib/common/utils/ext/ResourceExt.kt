@@ -8,6 +8,7 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getStringArray
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**
@@ -23,6 +24,13 @@ object ResourceExt {
      */
     fun @receiver:StringRes Int.getString(vararg formatArgs: Any): String {
         return application.getString(this, *formatArgs)
+    }
+
+    /***
+     *  無Context狀態下取得String
+     */
+    fun @receiver:StringRes Int.getStringArray(): List<String> {
+        return application.resources.getStringArray(this).toList()
     }
 
 

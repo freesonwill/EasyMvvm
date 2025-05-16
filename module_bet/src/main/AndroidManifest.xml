@@ -11,10 +11,6 @@
             <meta-data
                 android:name="arch.cayenne.module.bet.BetModuleInitializer"
                 android:value="androidx.startup" />
-            <meta-data
-                android:name="arch.cayenne.module.betslip.BetSlipModuleInitializer"
-                android:value="androidx.startup"
-                />
         </provider>
     </application>
 

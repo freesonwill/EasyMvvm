@@ -19,7 +19,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
-import com.walisport.module.live.databinding.TittleBarLiveBinding
+import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlin.reflect.KClass
 
@@ -33,8 +33,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private val args: LiveMainFragmentArgs by navArgs()
 
-    private val titleBarBinding: TittleBarLiveBinding by lazy {
-        TittleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+    private val titleBarBinding: TitleBarLiveBinding by lazy {
+        TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
 
     @SuppressLint("SetTextI18n")
@@ -109,7 +109,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         with(mBinding) {
             val list =
-                listOf(PagerBean(R.string.live_note_order.getString()) { BetSlipFragment().apply { setArguments(args.matchId,args.sportId) } },
+                listOf(
+                    PagerBean(R.string.live_note_order.getString()) {
+                        BetSlipFragment().apply {
+                            arguments = Bundle().apply {
+                                putLong(BetSlipFragment.matchKey, args.matchId)
+                                putInt(BetSlipFragment.sportKey, args.sportId)
+                            }
+                        }
+                    },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },

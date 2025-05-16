@@ -8,7 +8,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.data.NumberOverEnum
-import arch.cayenne.module.bet.repo.BalanceRepository
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.module.bet.repo.ReserveRepository
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch

@@ -44,7 +44,7 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
                 mView.setSelectedTabIndicatorColor(color)
             }
         }
-        if (checkResourceIdValid(textColor)) {
+        if (checkResourceIdValid(textColor) && checkResourceIdValid(textSelectedColor)) {
             val normal = resourcesManager.getColor(context, textColor)
             val selectd = resourcesManager.getColor(context, textSelectedColor)
             if (checkResourceIdValid(normal) && checkResourceIdValid(selectd)) {

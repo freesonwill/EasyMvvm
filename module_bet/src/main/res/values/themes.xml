@@ -42,19 +42,4 @@
         <item name="android:inputType">numberDecimal</item>
         <item name="android:textCursorDrawable">@drawable/shape_edittext_cursor</item>
     </style>
-
-    <style name="CustomTabText" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">13sp</item> <!-- 设置字体大小 -->
-    </style>
-
-    <style name="KeyboardSideTextView">
-        <item name="android:textColor">@color/keyboard_number</item>
-        <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
-    <style name="betSlipTabText" parent="TextAppearance.AppCompat">
-        <item name="android:textSize">14sp</item> <!-- 设置字体大小 -->
-    </style>
-
 </resources>
