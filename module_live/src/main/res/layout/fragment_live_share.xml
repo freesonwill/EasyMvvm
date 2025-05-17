@@ -14,11 +14,11 @@
         android:layout_height="@dimen/dp_275"
         android:layout_gravity="center_vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/share"
-            android:textColor="@color/white"
+            android:textColor="@color/video_share_fragment_title_color"
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,7 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_54"
-            android:background="@color/black"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -38,12 +37,12 @@
                 android:layout_height="@dimen/dp_48"
                 android:src="@drawable/shape_copy_link" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:text="@string/share_link"
-                android:textColor="@color/color_929298"
+                android:textColor="@color/video_share_fragment_subtitle_color"
                 android:textSize="12sp" />
 
 
