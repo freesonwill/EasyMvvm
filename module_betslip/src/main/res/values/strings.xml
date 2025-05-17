@@ -58,6 +58,13 @@
     <string name="lineup_empty">暂无数据,请换个试一试~</string>
     <string name="title_betslip">注单</string>
 
+    <string name="cancel_reserve_success">取消预约成功</string>
+    <string name="cancel_reserve_fail">取消预约失败</string>
+    <string name="modify_odds_success">修改赔率成功</string>
+    <string name="modify_odds_fail">修改赔率失败</string>
+    <string name="confirm_cancel_reserve">确定取消预约?</string>
+    <string name="cancel_reserve">取消预约</string>
+    <string name="not_yet">暂不</string>
 
     <string name="date_picker_title">选择开始日期</string>
     <string name="date_picker_all">全部</string>

@@ -1,6 +1,9 @@
 package arch.cayenne.module.betslip.utisl
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
+import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Order
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -17,7 +20,7 @@ object BetSlipUtils {
     /**
      * 计算输赢金额
      * */
-    fun winOrLoseAmount(betAmount: String,earlyBetAmount: String,returnAmount:String,): String {
+    fun winOrLoseAmount(betAmount: String, earlyBetAmount: String, returnAmount: String): String {
         return toBigDecimal(betAmount).minus(toBigDecimal(earlyBetAmount)).minus(
             toBigDecimal(returnAmount).setScale(2, RoundingMode.HALF_UP)
         ).toString()
@@ -35,4 +38,13 @@ object BetSlipUtils {
         return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }
 
+    internal fun List<Common.Order>.toBetSlipData(): List<BetSlipData> {
+        return this.map {
+            val expandedEnum =
+                if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
+            BetSlipData(
+                order = it, expandedEnum = expandedEnum
+            )
+        }.toList()
+    }
 }
