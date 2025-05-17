@@ -36,6 +36,7 @@ class BetSlipFragment :
         matchId = arguments?.getLong(matchKey,-1) ?: -1
         sportId = arguments?.getInt(sportKey,-1) ?: -1
         initMenu()
+        mViewModel.setBetSlipDetail()
     }
 
     private fun initMenu() {

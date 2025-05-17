@@ -18,6 +18,7 @@ class BetSlipSettledItemManager(
 
     override fun createViewHolder() {
         initMoreListener(binding.ilMore.llMore)
+        showLiveArrow(binding.ivCircleArrow)
     }
 
     override fun covertPlus(

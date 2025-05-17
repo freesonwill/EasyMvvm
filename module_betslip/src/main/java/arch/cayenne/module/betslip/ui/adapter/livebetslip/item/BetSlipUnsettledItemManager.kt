@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import com.bumptech.glide.Glide
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
@@ -10,11 +11,12 @@ import galaxy.common.proto.Common
 
 class BetSlipUnsettledItemManager(
     private val binding: ItemLiveBetSlipUnsettleBinding,
-    private val liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+    private val liveBetSlip: BetSlipEnum
 ) : BetSlipBaseItemManager(binding, liveBetSlip) {
 
     override fun createViewHolder() {
         initMoreListener(binding.ilMore.llMore)
+        showLiveArrow(binding.ivCircleArrow)
     }
 
     override fun covertPlus(

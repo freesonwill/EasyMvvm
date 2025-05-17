@@ -16,8 +16,6 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.ui.adapter.livebetslip.BetSlipBaseAdapterManager
 import arch.cayenne.module.betslip.ui.compare.BetSlipCompare
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
-import galaxy.common.proto.Common
-import galaxy.common.proto.Common.Order
 
 class BetSlipAdapter(type: BetSlipEnum) :
     BaseAdapter<BetSlipData, BetSlipAdapter.LiveBetSlipViewHolder, ViewBinding>(BetSlipCompare()) {
@@ -76,12 +74,6 @@ class BetSlipAdapter(type: BetSlipEnum) :
     override fun convertPlus(holder: LiveBetSlipViewHolder, binding: ViewBinding, position: Int) {
         holder.manager?.covertPlus(position, getItem(position))
     }
-
-    private fun getSelections(order: Common.Order) = order.selectionsList
-
-    private fun getMatch(selection: Common.OrderSelection) = selection.matchBasic
-
-    private fun getEarlySettlePrice(order: Order) = order.earlySettlePrice
 
     inner class LiveBetSlipViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         val manager = BetSlipBaseAdapterManager.initManager(binding, betSlipType)

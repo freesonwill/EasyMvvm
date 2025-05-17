@@ -7,15 +7,17 @@ import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 
 class BetSlipReserveItemManager(
     private val binding: ItemLiveBetSlipReserveBinding,
-    private val liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+    private val liveBetSlip: BetSlipEnum
 ) : BetSlipBaseItemManager(binding, liveBetSlip) {
 
     override fun createViewHolder() {
         initMoreListener(binding.ilMore.llMore)
+        showLiveArrow(binding.ivCircleArrow)
     }
 
     override fun covertPlus(
