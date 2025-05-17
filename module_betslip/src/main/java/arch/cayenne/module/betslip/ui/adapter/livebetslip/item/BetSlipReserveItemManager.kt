@@ -2,7 +2,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
@@ -24,7 +24,7 @@ class BetSlipReserveItemManager(
         position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
-        item: LiveBetSlipSelectionData
+        item: BetSlipSelectionData
     ) {
         binding.also {
             configView(
@@ -41,6 +41,7 @@ class BetSlipReserveItemManager(
         item.reserve?.let {
             updateReserveData(it, binding)
         }
+        binding.ivCircleArrow.tag = position
     }
 
     @SuppressLint("SetTextI18n")

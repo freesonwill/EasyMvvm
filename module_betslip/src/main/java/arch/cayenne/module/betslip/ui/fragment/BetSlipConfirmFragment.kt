@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import galaxy.common.proto.Common
@@ -14,6 +15,7 @@ import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 
 //注单确认‰‰
@@ -30,6 +32,11 @@ class BetSlipConfirmFragment :
     private fun initRecycler() {
         val adapter =
             BetSlipAdapter(BetSlipEnum.Confirming)
+        adapter.setLiveListener(object :RecyclerItemListener<BetSlipSelectionData>{
+            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
+
+            }
+        })
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = adapter

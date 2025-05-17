@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
@@ -14,6 +15,7 @@ import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 //注单失效
 class BetSlipInvalidFragment :
@@ -30,6 +32,11 @@ class BetSlipInvalidFragment :
 
     private fun initRecycler() {
         val adapter = BetSlipAdapter(BetSlipEnum.Invalid)
+        adapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
+            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
+
+            }
+        })
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = adapter

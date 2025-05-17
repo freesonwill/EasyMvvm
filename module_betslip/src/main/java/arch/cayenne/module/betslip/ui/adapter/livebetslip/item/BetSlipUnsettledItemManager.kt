@@ -5,7 +5,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import com.bumptech.glide.Glide
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import galaxy.common.proto.Common
 
@@ -23,7 +23,7 @@ class BetSlipUnsettledItemManager(
         position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
-        item: LiveBetSlipSelectionData
+        item: BetSlipSelectionData
     ) {
         binding.also {
             configView(
@@ -40,7 +40,7 @@ class BetSlipUnsettledItemManager(
         item.selection?.let {
             updateData(it)
         }
-
+        binding.ivCircleArrow.tag = position
     }
 
     @SuppressLint("SetTextI18n")

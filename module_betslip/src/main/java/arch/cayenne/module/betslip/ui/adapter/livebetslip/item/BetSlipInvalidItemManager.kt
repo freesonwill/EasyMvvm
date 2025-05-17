@@ -7,7 +7,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 
 
@@ -25,7 +25,7 @@ class BetSlipInvalidItemManager(
         position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
-        item: LiveBetSlipSelectionData
+        item: BetSlipSelectionData
     ) {
         binding.also {
             configView(
@@ -42,6 +42,7 @@ class BetSlipInvalidItemManager(
         item.selection?.let {
             updateData(it)
         }
+        binding.ivCircleArrow.tag = position
     }
 
 

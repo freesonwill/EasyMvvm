@@ -12,14 +12,16 @@ import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.livebetslip.item.BetSlipBaseItemManager
 import arch.cayenne.module.betslip.ui.compare.BetSlipSelectionCompare
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 class BetSlipSelectionAdapter(
-    betSlipType: BetSlipEnum, val expandListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
-) : BaseAdapter<LiveBetSlipSelectionData, BetSlipSelectionAdapter.LiveBetSlipSelectionViewHolder, ViewBinding>(
+    betSlipType: BetSlipEnum,
+    val expandListener: RecyclerItemListener<BetSlipExpandedEnum>? = null,
+    val liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
+) : BaseAdapter<BetSlipSelectionData, BetSlipSelectionAdapter.LiveBetSlipSelectionViewHolder, ViewBinding>(
     BetSlipSelectionCompare()
 ) {
     private val betType = betSlipType
@@ -66,6 +68,11 @@ class BetSlipSelectionAdapter(
         holder.manager?.expandedListener = object : RecyclerItemListener<BetSlipExpandedEnum> {
             override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
                 expandListener?.onItemClick(expandEnum, parentPosition)
+            }
+        }
+        holder.manager?.liveListener = object : RecyclerItemListener<BetSlipSelectionData> {
+            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
+                liveListener?.onItemClick(getItem(position), position)
             }
         }
         return holder

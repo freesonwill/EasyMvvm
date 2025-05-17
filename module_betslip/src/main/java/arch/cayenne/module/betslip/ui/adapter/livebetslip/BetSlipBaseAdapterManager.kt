@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
@@ -15,26 +16,28 @@ import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 abstract class BetSlipBaseAdapterManager(
     private val binding: ViewBinding,
-    private val liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+    private val liveBetSlip: BetSlipEnum
 ) : BetSlipAdapterMangerInterface {
     var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
     var earlySettleSubmitListener: RecyclerItemListener<String>? = null
     var cancelReserveSubmitListener: RecyclerItemListener<String>? = null
     var reserveModifySubmitListener: RecyclerItemListener<String>? = null
+    var liveListener:RecyclerItemListener<BetSlipSelectionData>? = null
 
 
     companion object {
 
         fun initManager(
             binding: ViewBinding,
-            liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+            liveBetSlip: BetSlipEnum
         ): BetSlipBaseAdapterManager? {
             return when (binding) {
                 is AdapterLiveBetSlipUnsettleBinding -> BetSlipUnsettledAdapterManager(
@@ -67,15 +70,12 @@ abstract class BetSlipBaseAdapterManager(
         }
     }
 
-    fun initRecyclerView(recyclerView:RecyclerView,betSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum){
+    fun initRecyclerView(recyclerView:RecyclerView,betSlip: BetSlipEnum){
         val manager = LinearLayoutManager(binding.root.context)
         val adapter = BetSlipSelectionAdapter(
             betSlip,
-            object : RecyclerItemListener<BetSlipExpandedEnum> {
-                override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
-                    expandedListener?.onItemClick(null, position)
-                }
-            })
+            expandListener = expandedListener,
+            liveListener = liveListener)
         recyclerView.also {
             it.layoutManager = manager
             it.itemAnimator = null
@@ -87,10 +87,10 @@ abstract class BetSlipBaseAdapterManager(
      * 投注单列表展示
      * */
     fun submitAdapter(
-        recyclerView: RecyclerView, data: arch.cayenne.module.betslip.data.model.BetSlipData, position: Int
+        recyclerView: RecyclerView, data: BetSlipData, position: Int
     ) {
         var list =
-            data.order!!.selectionsList.map { LiveBetSlipSelectionData(selection = it) }.toList()
+            data.order!!.selectionsList.map { BetSlipSelectionData(selection = it) }.toList()
 
         recyclerView.adapter?.let {
             val adapter = it as BetSlipSelectionAdapter

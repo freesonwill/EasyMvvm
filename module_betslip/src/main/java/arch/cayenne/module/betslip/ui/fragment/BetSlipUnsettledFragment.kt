@@ -10,6 +10,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
@@ -113,6 +114,11 @@ class BetSlipUnsettledFragment :
                     mViewModel.selectOrder = it
                     mViewModel.earlySettledPrice(it.betId)
                 }
+            }
+        })
+        adapter.setLiveListener(object :RecyclerItemListener<BetSlipSelectionData>{
+            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
+
             }
         })
     }

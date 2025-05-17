@@ -20,6 +20,7 @@ import arch.cayenne.module.betslip.utisl.BetSlipItemManagerInterface
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import org.koin.java.KoinJavaComponent.inject
 
 
@@ -29,6 +30,7 @@ abstract class BetSlipBaseItemManager(
 ) : BetSlipItemManagerInterface {
     private val userManager: UserDataManager by inject(UserDataManager::class.java)
     var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
+    var liveListener:RecyclerItemListener<BetSlipSelectionData>? = null
 
 
     companion object {
@@ -101,6 +103,10 @@ abstract class BetSlipBaseItemManager(
     fun showLiveArrow(ivArrow: ImageView) {
         val isDetail: Boolean = userManager.getValue(UserDataKey.KEY_BETSLIP_DETAIL, false)
         ivArrow.isVisible = isDetail
+        ivArrow.setOnClickListener {
+            val position = it.tag as Int
+            liveListener?.onItemClick(null,position)
+        }
     }
 
 
