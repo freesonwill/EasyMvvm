@@ -1,0 +1,28 @@
+def themes = project.findProperty("Themes")
+    ?.toString()
+    ?.split(",")
+    ?.collect { it.trim() }
+    ?.findAll { !it.isEmpty() }
+    ?: []
+def themeResDirs = themes.collect { "src/main/res-$it" }
+//println "🎨 Themes: $themes"
+//println "📁 Theme resource dirs: $themeResDirs"
+
+android {
+    sourceSets{
+        main {
+            res.srcDirs = ["src/main/res"] + themeResDirs
+        }
+    }
+}
+
+/*
+// 打印 sourceSets 配置
+afterEvaluate {
+    println "✅ Final res.srcDirs:"
+    android.sourceSets.main.res.srcDirs.each {
+        println " - $it"
+    }
+}
+*/
+
