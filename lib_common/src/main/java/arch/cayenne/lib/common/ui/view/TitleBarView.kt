@@ -78,12 +78,8 @@ class TitleBarView @JvmOverloads constructor(
             })
             tvSearchText.clickNoRepeat {
                 //如果输入内容为空，传入hint内容
-                onSearch.invoke(ceSearch.text?.trim().toString().ifEmpty { hint },this)
-                //hint text 为空 提示请输入搜索内容
-//                if (hintText.isEmpty() && ceSearch.text.toString().isEmpty()) {
-//                    callbackSearch( ceSearch.text.toString())
-//                } else {
-//                }
+                onSearch.invoke(ceSearch.text?.trim().toString(),this)
+                ceSearch.setText("")
             }
         }
     }

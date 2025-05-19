@@ -10,10 +10,10 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.search.R
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.databinding.FragmentSearchBinding
-import com.walisport.module.search.utils.FoldUtils
 import com.walisport.module.search.viewmodel.SearchViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
+
 /**
  * @author: caomei
  * @date: 2025/4/24 16:31
@@ -30,7 +30,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadSearchTitleBar(getString(R.string.please_input_content),
-            afterTextChanged = { text,  binding ->
+            afterTextChanged = { text, binding ->
                 val count = text?.length ?: 0
                 val color = if (count > 0) Rc.color.search_btn
                 else Rc.color.search_btn_normal
@@ -42,16 +42,26 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     return@loadSearchTitleBar
                 }
                 historyAdapter?.addData(content)
+                mViewModel.addOneRecord(content)
             })
         historyAdapter = SearchHistoryAdapter(closeAction = { position ->
             historyAdapter?.deleteData(position)
+            mViewModel.deleteOneRecord(position)
         })
-        historyAdapter?.setNewData(FoldUtils.getHistoryList().toMutableList())
+        historyAdapter?.setNewData(mViewModel.getRecordByUID().toMutableList())
         mBinding.hfList.setAdapter(historyAdapter)
+        //删除图标，点击进入删除模式
         mBinding.ivClickShowDelete.clickNoRepeat {
             setButton()
         }
+        //完成按钮
         mBinding.txtCompletedAll.clickNoRepeat {
+            setButton()
+        }
+        //全部删除按钮
+        mBinding.txtDeleteAll.clickNoRepeat {
+            mViewModel.deleteAllData()
+            historyAdapter?.deleteAllData()
             setButton()
         }
     }
@@ -76,6 +86,4 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     override fun createObserver() {
 
     }
-
-
 }

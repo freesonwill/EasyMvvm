@@ -9,5 +9,6 @@ enum class UserDataKey(val key: String) {
     KEY_FAVORITE("Favorite"),
     KEY_UID("UID"),
     KEY_TOKEN("Token"),
-    KEY_BETSLIP_DETAIL("BetSlipDetail")
+    KEY_BETSLIP_DETAIL("BetSlipDetail"),
+    KEY_RECORD("Record")
 }
