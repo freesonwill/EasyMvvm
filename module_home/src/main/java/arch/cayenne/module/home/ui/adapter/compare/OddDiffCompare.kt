@@ -20,4 +20,15 @@ class OddDiffCompare : DiffUtil.ItemCallback<SelectionBeanLite>(){
                 oldItem.trend == newItem.trend &&
                 oldItem.isSelected == newItem.isSelected
     }
+
+    override fun getChangePayload(oldItem: SelectionBeanLite, newItem: SelectionBeanLite): Any? {
+        val diff = mutableSetOf<String>()
+        if (oldItem.odds != newItem.odds) diff.add("odds")
+        if (oldItem.shortName != newItem.shortName) diff.add("shortName")
+        if (oldItem.active != newItem.active) diff.add("active")
+        if (oldItem.parlay != newItem.parlay) diff.add("parlay")
+        if (oldItem.trend != newItem.trend) diff.add("trend")
+        if (oldItem.isSelected != newItem.isSelected) diff.add("isSelected")
+        return if (diff.isEmpty()) null else diff
+    }
 }

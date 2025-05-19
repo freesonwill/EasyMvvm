@@ -41,12 +41,16 @@ class ChampionItemCompare : DiffUtil.ItemCallback<MarketWithSelections>() {
         }
 
         oldSelections.zip(newSelections).forEach { (old, new) ->
-            if (old.odds != new.odds) diff.add("odds")
-            if (old.shortName != new.shortName) diff.add("shortName")
-            if (old.active != new.active) diff.add("active")
-            if (old.parlay != new.parlay) diff.add("parlay")
-            if (old.trend != new.trend) diff.add("trend")
-            if (old.isSelected != new.isSelected) diff.add("isSelected")
+            if (old.odds != new.odds ||
+                old.active != new.active ||
+                old.shortName != new.shortName ||
+                old.parlay != new.parlay ||
+                old.isSelected != new.isSelected ||
+                old.trend != new.trend
+            ) {
+                diff.add("odds") // 如果有其中任何一個不同就記錄 odds
+                return@forEach
+            }
         }
         return if (diff.isEmpty()) null else diff
     }
