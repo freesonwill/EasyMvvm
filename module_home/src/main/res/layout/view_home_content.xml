@@ -74,11 +74,11 @@
     <!--因為其他日期按扭是固定，先加上陰影，待figma規格更新再調整效果-->
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="23dp"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@drawable/gradient_sport_list"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/tl_date_list"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toStartOf="@id/ll_other_date"
+        app:layout_constraintTop_toTopOf="@id/ll_other_date" />
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/ll_other_date"
         android:layout_width="@dimen/dp_56"
