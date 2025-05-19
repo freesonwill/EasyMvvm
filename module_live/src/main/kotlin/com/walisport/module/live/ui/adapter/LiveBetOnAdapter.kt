@@ -11,10 +11,11 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 import com.walisport.module.live.ui.widget.LiveBetListLayout
 
-class LiveBetOnAdapter(var callback:LivBetListCallback) :
+class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
         ItemDiffCallback()
     ) {
@@ -37,30 +38,35 @@ class LiveBetOnAdapter(var callback:LivBetListCallback) :
         }
 
         fun updateItem(position: Int) {
-            if (position == 0) {
-                viewBinding.clBet.visibility = View.VISIBLE
-                viewBinding.awayName.text = awayName
-                viewBinding.homeName.text = homeName
-                Glide.with(viewBinding.roots).load(homeLogo).into(viewBinding.homeLogo)
-                Glide.with(viewBinding.roots).load(awayLogo).into(viewBinding.awayLogo)
-            } else {
-                viewBinding.clBet.visibility = View.GONE
-            }
-
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
             var positions = 0
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
-            lists?.withIndex()?.forEach { (index,listIt) ->
+            lists?.withIndex()?.forEach { (index, listIt) ->
+                if (position==0||(positions==0||listIt.style == LiveBetListLayout.StatesArrange.BO_DIAN.code)){
+                        viewBinding.clBet.visibility = View.VISIBLE
+                        viewBinding.awayName.text = awayName
+                        viewBinding.homeName.text = homeName
+                        Glide.with(viewBinding.roots).load(homeLogo)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
+                            .into(viewBinding.homeLogo)
+                        Glide.with(viewBinding.roots).load(awayLogo)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
+                            .into(viewBinding.awayLogo)
+                        viewBinding.andName.visibility =
+                            if (lists?.get(0)?.style == LiveBetListLayout.StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
+                    } else {
+                        viewBinding.clBet.visibility = View.GONE
+                    }
                 viewBinding.lbBet.submitList(
                     LiveBetListLayout.StatesArrange.getStates(listIt.style),
                     positions,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString(),listIt.selectionId,listIt.active,
+                    listIt.odds.getOdds().toString(), listIt.selectionId, listIt.active,
                 ) { it ->
-                    callback.itemListCallback(it,listIt.selectionId)
+                    callback.itemListCallback(it, listIt.selectionId)
                 }
                 positions++
             }
@@ -103,8 +109,8 @@ class LiveBetOnAdapter(var callback:LivBetListCallback) :
     }
 }
 
-interface LivBetListCallback{
-      fun itemListCallback(marketI:Long,selectionId: Long)
+interface LivBetListCallback {
+    fun itemListCallback(marketI: Long, selectionId: Long)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {

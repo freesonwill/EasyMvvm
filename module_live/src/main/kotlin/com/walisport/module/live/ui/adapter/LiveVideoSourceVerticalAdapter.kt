@@ -17,6 +17,9 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemLayoutBinding
 
 
+/**
+ * 视频横屏播放时的选择数据源页, RecyclerView使用的Adapter
+ */
 class LiveVideoSourceVerticalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
     BaseAdapter<VideoSourceBean, LiveVideoSourceVerticalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare

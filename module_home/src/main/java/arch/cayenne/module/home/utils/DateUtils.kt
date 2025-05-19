@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.utils
 
+import android.text.format.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -26,5 +27,11 @@ object DateUtils {
         }
 
         return dateList
+    }
+    fun getDate(timestamp: Long,dateFormat: String = "MMdd") :String {
+        val calendar = Calendar.getInstance(Locale.ENGLISH)
+        calendar.timeInMillis = timestamp
+        val date = DateFormat.format(dateFormat,calendar).toString()
+        return date
     }
 }

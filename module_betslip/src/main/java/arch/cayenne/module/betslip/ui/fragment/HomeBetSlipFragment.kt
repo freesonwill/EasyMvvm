@@ -31,6 +31,7 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
 //            PagerBean(array[4]) { BetSlipInvalidFragment() },
 //        )
         setPage(emptyList())
+        mViewModel.setBetSlipDetail()
     }
 
     override fun initListener() {

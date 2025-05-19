@@ -1,12 +1,12 @@
 package arch.cayenne.module.betslip.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 
-class BetSlipSelectionCompare : DiffUtil.ItemCallback<LiveBetSlipSelectionData>() {
+class BetSlipSelectionCompare : DiffUtil.ItemCallback<BetSlipSelectionData>() {
     override fun areItemsTheSame(
-        oldItem: LiveBetSlipSelectionData,
-        newItem: LiveBetSlipSelectionData
+        oldItem: BetSlipSelectionData,
+        newItem: BetSlipSelectionData
     ): Boolean {
         if (oldItem.selection != null) {
             return oldItem.selection.selectionId == newItem.selection?.selectionId
@@ -17,8 +17,8 @@ class BetSlipSelectionCompare : DiffUtil.ItemCallback<LiveBetSlipSelectionData>(
     }
 
     override fun areContentsTheSame(
-        oldItem: LiveBetSlipSelectionData,
-        newItem: LiveBetSlipSelectionData
+        oldItem: BetSlipSelectionData,
+        newItem: BetSlipSelectionData
     ): Boolean {
         if (oldItem.selection != null) {
             return oldItem.selection.selectionId == newItem.selection?.selectionId

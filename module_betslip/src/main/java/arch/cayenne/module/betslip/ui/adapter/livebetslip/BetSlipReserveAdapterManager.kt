@@ -3,7 +3,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 import galaxy.common.proto.Common.ReserveOrder
@@ -51,7 +51,7 @@ class BetSlipReserveAdapterManager(
     private fun submitReserveAdapter(
         reserve: ReserveOrder,
     ) {
-        val list = arrayListOf(LiveBetSlipSelectionData(reserve = reserve.selection))
+        val list = arrayListOf(BetSlipSelectionData(reserve = reserve.selection))
         binding.recyclerSelection.adapter?.let {
             val adapter = it as BetSlipSelectionAdapter
             adapter.submitList(list)
