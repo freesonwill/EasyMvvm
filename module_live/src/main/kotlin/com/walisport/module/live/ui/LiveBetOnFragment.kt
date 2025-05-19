@@ -69,7 +69,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 })
                 adapter = liveBetOnAdapter
             }
-            LogUtils.e("getLiveSelectionBean${list}")
+            LogUtils.e("getLiveSelectionBean${it}")
             liveBetOnAdapter.setHomeAway(
                 baseInfo?.homeTeam.toString(),
                 baseInfo?.homeTeamIcon.toString(),

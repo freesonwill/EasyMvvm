@@ -19,9 +19,11 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     var matchId: Long = 0
     var sportId: Int = 0
      var leagueID: Int = 0
+    //首次加载
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
 
+    //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
