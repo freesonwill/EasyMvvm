@@ -21,6 +21,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
+import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
@@ -40,7 +41,7 @@ class MatchListPagerFragment :
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
             }
-            matchAdapter = MatchItemAdapter(object : MatchItemAdapter.OnMatchItemClickListener {
+            matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
                 }

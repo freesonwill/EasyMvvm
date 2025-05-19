@@ -198,3 +198,77 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
         marketSelectCrossRef,
     )
 }
+
+//把MatchInfoNotify整理成可以丟進資料庫的形式
+fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
+    val matchLites = arrayListOf<MatchBeanLite>()
+    val markets = mutableListOf<MarketBean>()
+    val selections = mutableListOf<SelectionBean>()
+    val matchMarketCrossRefs = mutableListOf<MatchMarketCrossRef>()
+    val marketSelectCrossRef = mutableListOf<MarketSelectCrossRef>()
+
+    val matchId = this.matchId
+    matchLites.add(
+        MatchBeanLite(
+            matchId = this.matchId,
+            status = this.basicUpdate.status,
+            betStop = this.basicUpdate.betStop,
+            startTime = this.basicUpdate.startTime,
+            liveInfo = MatchLiveInfoBean(
+                clock = this.basicUpdate.liveInfo.clock,
+                rollClock = this.basicUpdate.liveInfo.rollClock,
+                period = this.basicUpdate.liveInfo.period,
+                score = this.basicUpdate.liveInfo.score,
+                liveVideo = this.basicUpdate.liveInfo.liveVideo,
+                charRoom = this.basicUpdate.liveInfo.chatRoom,
+                viewerCount = this.basicUpdate.liveInfo.viewerCount,
+                clockModified = this.basicUpdate.liveInfo.clockModified
+            )
+        )
+    )
+    this.marketUpdateList.forEach { market ->
+        val marketId = market.marketId
+        markets.add(
+            MarketBean(
+                marketId = market.marketId,
+                marketName = market.marketName,
+                status = market.status
+            )
+        )
+        var selectionCount = 0
+        market.marketDetailList.forEachIndexed { index, detail ->
+            selectionCount += detail.selectionList.size
+            detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
+                val selectionId = selection.selectionId
+                selections.add(
+                    SelectionBean(
+                        selectionId = selection.selectionId,
+                        detail = MarketDetailBean(
+                            detailId = index,
+                            specifier = detail.specifier,
+                            active = detail.active,
+                            parlay = detail.parlay,
+                        ),
+                        name = selection.name,
+                        shortName = selection.shortName,
+                        odds = selection.odds.toOdds(),
+                        active = selection.active,
+                        parlay = selection.parlay,
+                    )
+                )
+                marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
+            }
+        }
+        matchMarketCrossRefs.add(
+            MatchMarketCrossRef(matchId,marketId,selectionCount)
+        )
+    }
+
+    return MatchUpdateData(
+        matchLites,
+        markets,
+        selections,
+        matchMarketCrossRefs,
+        marketSelectCrossRef,
+    )
+}

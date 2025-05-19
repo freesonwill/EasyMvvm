@@ -220,7 +220,7 @@ class BettingRemoteManager(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_MATCH,
+            apiCode = ApiCode.SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(matchIds)
@@ -238,7 +238,7 @@ class BettingRemoteManager(
             socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
                 scope = scope,
                 dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_HOME_MATCH,
             ) {
                 Client.CancelSubscribeHomeMatchReq.newBuilder().apply {
                     this.addAllMatchId(matchIds)
