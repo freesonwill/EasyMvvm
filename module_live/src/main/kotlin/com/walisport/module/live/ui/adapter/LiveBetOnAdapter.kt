@@ -45,7 +45,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
             lists?.withIndex()?.forEach { (index, listIt) ->
-                if (position==0||(index==0&&listIt.style == StatesArrange.BO_DIAN.code)){
+                if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
                         viewBinding.clBet.visibility = View.VISIBLE
                         viewBinding.awayName.text = awayName
                         viewBinding.homeName.text = homeName
