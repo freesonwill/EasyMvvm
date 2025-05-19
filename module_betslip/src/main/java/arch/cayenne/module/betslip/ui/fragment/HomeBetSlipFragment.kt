@@ -45,13 +45,16 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
                     viewLifecycleOwner
                 ) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
-                        val date = BetSlipDateFilterEnum.valueOf(result)
-                        if (date == BetSlipDateFilterEnum.CUSTOM) {
-                            val time = bundle.getLong(Config.VALUE_SELECTED_MILLISECOND)
-                            mViewModel.customTime = time
-                        } else {
-                            mViewModel.setDateFilter(date)
+                    if (bundle.containsKey(Config.VALUE_SELECTED_DATE)) {
+                        bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
+                            val date = BetSlipDateFilterEnum.valueOf(result)
+                            if (date == BetSlipDateFilterEnum.CUSTOM) {
+                                val time = bundle.getLong(Config.VALUE_SELECTED_MILLISECOND)
+                                mViewModel.customTime = time
+                            } else {
+                                mViewModel.setDateFilter(date)
+                            }
+                            updateDateData(date)
                         }
                     }
                 }
@@ -93,5 +96,14 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
             }
         })
         mBinding.tabLayout.removeAllTips()
+    }
+
+    private fun updateDateData(date: BetSlipDateFilterEnum) {
+        childFragmentManager.setFragmentResult(Config.KEY_UPDATE, Bundle().apply {
+            val startTime = date.startTime() ?: -1
+            val endTime = date.endTime() ?: -1
+            putLong(Config.VALUE_START_TIME, startTime)
+            putLong(Config.VALUE_END_TIME, endTime)
+        })
     }
 }

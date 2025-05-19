@@ -74,6 +74,7 @@ class DatePickerFragment private constructor() :
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {

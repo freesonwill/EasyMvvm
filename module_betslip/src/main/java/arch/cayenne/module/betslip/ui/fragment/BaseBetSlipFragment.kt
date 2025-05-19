@@ -22,7 +22,7 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
     abstract fun getBetSlipEnum(): BetSlipEnum?
 
     override fun updateByTime(startTime: Long?, endTime: Long?) {
-//        mViewModel.setTime(startTime, endTime)
+        mViewModel.setTime(startTime, endTime)
         loadData()
     }
 
