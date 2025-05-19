@@ -2,11 +2,14 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
@@ -73,15 +76,23 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
             tittleBarBinding.tvMoney.text = it.getFormalMoney()
         }
         mViewModel.matchWithMarketsChange.observe(viewLifecycleOwner) { matchWithMarkets ->
-            if (matchWithMarkets != null) {
-                Glide.with(this).load(matchWithMarkets.match.basicInfo.tournamentIcon)
-                    .error(R.drawable.title_league_icon).into(tittleBarBinding.ivLandscapeLeagueIcon)
-                tittleBarBinding.tvCompetitionName.text = matchWithMarkets.match.basicInfo.matchName
+            with(mBinding) {
+                if (matchWithMarkets != null && matchWithMarkets.markets.isNotEmpty()) {
+                    clDynamics.visibility = View.GONE
+                    Glide.with(this@ChampionFragment).load(matchWithMarkets.match.basicInfo.tournamentIcon)
+                        .error(R.drawable.title_league_icon).into(tittleBarBinding.ivLandscapeLeagueIcon)
+                    tittleBarBinding.tvCompetitionName.text = matchWithMarkets.match.basicInfo.matchName
 
-                championAdapter.submitList(matchWithMarkets.markets)
-            } else {
-                //TODO show no data
+                    championAdapter.submitList(matchWithMarkets.markets)
+                } else {
+                    clDynamics.visibility = View.VISIBLE
+                    clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                }
             }
+
 
         }
     }
