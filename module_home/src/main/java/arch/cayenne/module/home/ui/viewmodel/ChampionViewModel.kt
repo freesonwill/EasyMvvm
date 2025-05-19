@@ -77,7 +77,7 @@ class ChampionViewModel : BaseViewModel() {
     fun cancelSubscribeMatch() {
         viewModelScope.launch(Dispatchers.IO) {
             "取消訂閱比賽  $matchId".logi(this::class.java.name)
-            championRepository.cancelSubscribeMatch(arrayListOf(matchId))
+            championRepository.cancelSubscribeMatch(matchId)
         }
     }
 

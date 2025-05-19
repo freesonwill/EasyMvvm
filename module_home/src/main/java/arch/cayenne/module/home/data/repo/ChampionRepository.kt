@@ -88,41 +88,41 @@ class ChampionRepository(
     }
 
     suspend fun subscribeMatch(id: Long): Boolean {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchInfoResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_MATCH,
+            apiCode = ApiCode.SUBSCRIBE_MATCH_INFO,
         ) {
-            Client.SubscribeHomeMatchReq.newBuilder().apply {
-                this.addAllMatchId(arrayListOf(id))
+            Client.SubscribeMatchInfoReq.newBuilder().apply {
+                this.matchId = id
             }.build()
         }
         return if (res.error == null && res.data != null) {
-            "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
+            "訂閱比賽成功  $id".logi(this::class.java.name)
             true
         } else {
             false
         }
     }
 
-    suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
+    suspend fun cancelSubscribeMatch(id: Long): Boolean {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
         ) {
-            Client.SubscribeHomeMatchReq.newBuilder().apply {
-                this.addAllMatchId(ids)
+            Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
+                this.matchId = id
             }.build()
         }
         return res.error == null && res.data != null
     }
 
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
-        return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
+        return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY).transform {
             if (it.error == null && it.data != null) {
                 "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
-                val matchUpdateData = arrayListOf(it.data!!).toRoomData()
+                val matchUpdateData = it.data!!.toRoomData()
                 val list = updateFullMath(matchUpdateData)
                 list.forEach { matchWithMarket -> emit(matchWithMarket) }
             }
