@@ -2,7 +2,6 @@ package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
@@ -10,7 +9,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 
-class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewModel() {
+class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFilterViewModel() {
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
@@ -36,6 +35,10 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewMod
             title = dateFilter.title,
             date = dateFilter
         )
+        setDateTimeFilter(
+            startTime = dateFilter.startTime(),
+            endTime = dateFilter.endTime()
+        )
     }
 
     private fun setDateFilter(millisecond: Long) {
@@ -44,6 +47,10 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewMod
         _onDateFilter.value = DateFilterBean(
             title = title,
             date = BetSlipDateFilterEnum.CUSTOM
+        )
+        setDateTimeFilter(
+            startTime = null,
+            endTime = customTime
         )
     }
 }
