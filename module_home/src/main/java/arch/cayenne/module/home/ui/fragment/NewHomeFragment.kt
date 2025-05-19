@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -97,14 +97,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-
-
         }
     }
 
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
+        mBinding.llTournamentsDropdown.visibility = View.GONE
         with (mBinding.layoutContainer) {
+        ivHomeLeagueMore.isEnabled = true
            tlDateList.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
@@ -173,46 +173,45 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
     private fun toggleLeagueMoreSection(expanded: Boolean) {
         val tag = "champion_dropdown"
         val fm = childFragmentManager
+        val dropdown = mBinding.llTournamentsDropdown
+        val offsetY = mBinding.clFirstNavbar.height + mBinding.clSecondNavbar.height
 
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
 
-            mBinding.llTournamentsDropdown.visibility = View.VISIBLE
-
             val fragment = ChampionFragment.newInstance(mViewModel.getCurrentSportId())
             fm.beginTransaction()
-                .add(R.id.ll_tournaments_dropdown, fragment, tag)
-                .commitAllowingStateLoss()
+                .replace(R.id.ll_tournaments_dropdown, fragment, tag)
+                .commitNowAllowingStateLoss()
 
-            viewLifecycleOwner.lifecycleScope.launch {
-                delay(50)
-                val fragView = fm.findFragmentByTag(tag)?.view ?: return@launch
-                fragView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                    ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        fragView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        fragView.translationY = -fragView.height.toFloat()
-                        fragView.animate().translationY(0f).setDuration(300).start()
-                    }
-                })
+            dropdown.post {
+                // ✅ 正確設定 topMargin 為 offsetY，讓 layout 出現在 navbar 下方
+                val layoutParams = dropdown.layoutParams as ViewGroup.MarginLayoutParams
+                layoutParams.topMargin = 0
+                dropdown.layoutParams = layoutParams
+
+                // ✅ 設定初始位置：從上方滑入
+                dropdown.translationY = -dropdown.measuredHeight.toFloat()
+                dropdown.visibility = View.VISIBLE
+
+                dropdown.animate()
+                    .translationY(0f)
+                    .setDuration(300)
+                    .setInterpolator(DecelerateInterpolator())
+                    .start()
             }
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
-            val fragView = fragment.view
 
-            if (fragView != null) {
-                fragView.animate()
-                    .translationY(-fragView.height.toFloat())
-                    .setDuration(200)
-                    .withEndAction {
-                        fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
-                        mBinding.llTournamentsDropdown.visibility = View.GONE
-                    }
-                    .start()
-            } else {
-                fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
-                mBinding.llTournamentsDropdown.visibility = View.GONE
-            }
+            dropdown.animate()
+                .translationY(-dropdown.height.toFloat())
+                .setDuration(250)
+                .setInterpolator(AccelerateInterpolator())
+                .withEndAction {
+                    fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
+                    dropdown.visibility = View.GONE
+                }
+                .start()
         }
     }
 

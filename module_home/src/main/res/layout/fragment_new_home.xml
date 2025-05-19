@@ -23,6 +23,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/cl_first_navbar"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_52"
                 android:orientation="horizontal"
@@ -229,17 +230,31 @@
                         android:textSize="12sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/ll_tournaments_dropdown"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:visibility="gone" />
 
             <include
                 android:id="@+id/layout_container"
                 layout="@layout/view_home_content" />
+
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+        <!--        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout-->
+        <!--            android:id="@+id/ll_tournaments_dropdown"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_marginTop="118dp"-->
+        <!--            android:visibility="gone"-->
+        <!--            android:clipChildren="false"-->
+        <!--            android:clipToPadding="false"-->
+        <!--            app:layout_constraintStart_toStartOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent"-->
+        <!--            app:layout_constraintTop_toTopOf="parent"/>-->
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/floating_container"

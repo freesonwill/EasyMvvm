@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.view
 
 import android.content.Context
+import android.graphics.PointF
 import android.icu.text.Transliterator
 import android.os.Build
 import android.util.AttributeSet
@@ -14,6 +15,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -147,9 +149,15 @@ class TournamentSectionView @JvmOverloads constructor(
     private fun scrollToSection(letter: Char) {
         val position = letterPositionMap[letter] ?: return
         val layoutManager = binding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
-        binding.rvTournamentList.smoothScrollToPosition(position)
 
-//        layoutManager.scrollToPositionWithOffset(position, 0)
+        val scroller = object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+            override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+                return layoutManager.computeScrollVectorForPosition(targetPosition)
+            }
+        }
+        scroller.targetPosition = position
+        layoutManager.startSmoothScroll(scroller)
     }
 
     fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
@@ -160,6 +168,16 @@ class TournamentSectionView @JvmOverloads constructor(
                 setTournamentList(tournaments)
             }
         })
+    }
+    fun expandWithData(tournaments: List<TournamentDataModel>) {
+        this.alpha = 0f
+        postSetTournamentList(tournaments) // 原本已有的方法，會填資料並排版
+        post {
+            this.animate()
+                .alpha(1f)
+                .setDuration(200)
+                .start()
+        }
     }
 
     fun collapseWithAnimation() {
