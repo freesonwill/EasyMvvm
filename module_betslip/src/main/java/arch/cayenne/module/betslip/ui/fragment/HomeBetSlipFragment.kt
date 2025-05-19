@@ -92,7 +92,6 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
                         } else {
                             mViewModel.setDateFilter(date)
                         }
-                        updateDateData(date)
                     }
                 }
             }
@@ -107,11 +106,5 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
 
     private fun showSportFilter() {
 
-    }
-
-    private fun updateDateData(date: BetSlipDateFilterEnum) {
-        val startTime = date.startTime() ?: -1
-        val endTime = (if (date == BetSlipDateFilterEnum.CUSTOM) mViewModel.customTime else date.endTime()) ?: -1
-        mViewModel.saveDateTime(startTime, endTime)
     }
 }

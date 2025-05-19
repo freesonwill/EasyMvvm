@@ -15,9 +15,6 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewMod
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
 
-    private val _onDateTime = MutableLiveData<Pair<Long, Long>>()
-    val onDateTime: LiveData<Pair<Long, Long>> get() = _onDateTime
-
     var customTime: Long? = null
         set(value) {
             field = value
@@ -48,9 +45,5 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewMod
             title = title,
             date = BetSlipDateFilterEnum.CUSTOM
         )
-    }
-
-    fun saveDateTime(startTime: Long, endTime: Long) {
-        _onDateTime.value = Pair(startTime, endTime)
     }
 }

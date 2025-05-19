@@ -35,7 +35,7 @@ enum class BetSlipDateFilterEnum(val title: String): DateSelectListener {
         }
 
         override fun endTime(): Long {
-            return getToday()
+            return getToday() - 1
         }
     },
     IN_SEVEN_DAYS(R.string.date_picker_in_7_day.getString()) {
@@ -45,7 +45,7 @@ enum class BetSlipDateFilterEnum(val title: String): DateSelectListener {
             c.set(Calendar.MINUTE, 0)
             c.set(Calendar.SECOND, 0)
             c.set(Calendar.MILLISECOND, 0)
-            c.add(Calendar.DAY_OF_MONTH, 7)
+            c.add(Calendar.DAY_OF_MONTH, -7)
             return c.timeInMillis
         }
 
