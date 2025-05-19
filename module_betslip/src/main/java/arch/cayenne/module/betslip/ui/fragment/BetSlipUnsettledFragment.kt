@@ -20,29 +20,19 @@ import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 
 //注单未结算
 class BetSlipUnsettledFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipUnsettledBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipUnsettledBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
         initLoadRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.UnSettled)
     }
 
     override fun initListener() {
@@ -153,5 +143,7 @@ class BetSlipUnsettledFragment :
         }
     }
 
-
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.UnSettled
+    }
 }

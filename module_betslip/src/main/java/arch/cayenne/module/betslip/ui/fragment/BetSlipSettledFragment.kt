@@ -20,10 +20,9 @@ import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 
 //注单已结算
 class BetSlipSettledFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipSettledLayoutBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipSettledLayoutBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> =
         FragmentLiveBetslipSettledLayoutBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -105,11 +104,7 @@ class BetSlipSettledFragment :
         }
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.Settled)
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.Settled
     }
 }

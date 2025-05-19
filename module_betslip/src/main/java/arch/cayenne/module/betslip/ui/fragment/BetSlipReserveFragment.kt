@@ -6,32 +6,26 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
+import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
+import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import galaxy.common.proto.Common
 import galaxy.common.proto.Common.ReserveOrder
 import kotlin.reflect.KClass
-import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 
 
 //注单预约
 class BetSlipReserveFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipReserveBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
     private val adapter =
         BetSlipAdapter(BetSlipEnum.Reserve)
 
@@ -125,15 +119,6 @@ class BetSlipReserveFragment :
         }
     }
 
-
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getReserveOrder()
-    }
-
     private fun cancelReserve(order: Common.ReserveOrder) {
         CommonDialog.newInstance("", "确定取消预约?", "取消预约", "暂不").also {
             it.setOnOkClickListener {
@@ -151,5 +136,9 @@ class BetSlipReserveFragment :
             }
             it.show(childFragmentManager)
         }
+    }
+
+    override fun getBetSlipEnum(): BetSlipEnum? {
+        return null
     }
 }

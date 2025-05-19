@@ -6,26 +6,21 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
+import galaxy.common.proto.Common
+import kotlin.reflect.KClass
 
 //注单失效
 class BetSlipInvalidFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipInvalidBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipInvalidBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipInvalidBinding> =
         FragmentLiveBetslipInvalidBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -108,12 +103,7 @@ class BetSlipInvalidFragment :
         }
     }
 
-
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?:-1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.Invalid)
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.Invalid
     }
 }
