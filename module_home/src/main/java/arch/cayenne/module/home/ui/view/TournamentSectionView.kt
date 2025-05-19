@@ -16,7 +16,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.R
@@ -37,7 +36,6 @@ class TournamentSectionView @JvmOverloads constructor(
 
     var onCollapse: (() -> Unit)? = null
 
-    /** ⭐ 外部點擊回調：回傳 tournamentId */
     var onTournamentClick: ((Int) -> Unit)? = null
 
     init {
@@ -48,7 +46,6 @@ class TournamentSectionView @JvmOverloads constructor(
     }
 
     private fun setTournamentList(tournaments: List<TournamentDataModel>) {
-        "joseph tournaments:$tournaments".logd()
         if (!::adapter.isInitialized) {
             adapter = TournamentSectionAdapter { tournamentId ->
                 onTournamentClick?.invoke(tournamentId)
@@ -113,6 +110,7 @@ class TournamentSectionView @JvmOverloads constructor(
             setOnClickListener { scrollToSection('#') }
         }
         container.addView(hotIcon)
+        //TODO 串接熱門資料
 //        if (letterPositionMap.containsKey('#')) {
 //            val hotIcon = SkinnableImageView(context).apply {
 //                setImageResource(R.drawable.ic_hot_league_index)
@@ -160,7 +158,7 @@ class TournamentSectionView @JvmOverloads constructor(
         layoutManager.startSmoothScroll(scroller)
     }
 
-    fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
+    private fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
         binding.rvTournamentList.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -171,7 +169,7 @@ class TournamentSectionView @JvmOverloads constructor(
     }
     fun expandWithData(tournaments: List<TournamentDataModel>) {
         this.alpha = 0f
-        postSetTournamentList(tournaments) // 原本已有的方法，會填資料並排版
+        postSetTournamentList(tournaments)
         post {
             this.animate()
                 .alpha(1f)

@@ -1,20 +1,34 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.AddSelectionStatus
+import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentChampionBinding
-import arch.cayenne.module.home.ui.view.TournamentSectionView
-import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.databinding.TitleBarChampionBinding
+import arch.cayenne.module.home.ui.adapter.ChampionItemAdapter
+import arch.cayenne.module.home.ui.adapter.OnChampionItemClickListener
+import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
+import arch.cayenne.module.home.ui.viewmodel.ChampionViewModel
+import com.bumptech.glide.Glide
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
+class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding>() {
 
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
-    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
-    private var dropdownListener: TournamentSectionView.OnChampionDropdownListener? = null
     override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
     private val args: ChampionFragmentArgs by navArgs()
     private lateinit var championAdapter: ChampionItemAdapter
@@ -22,21 +36,14 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
     private val tittleBarBinding: TitleBarChampionBinding by lazy {
         TitleBarChampionBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
+
     override fun initData() {
         super.initData()
         mViewModel.setMatchId(args.matchId)
         mViewModel.subscribeMatch()
         mViewModel.getChampionDetail()
-        arguments?.apply {
-            mViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
-            homeViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
-        }
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        dropdownListener = parentFragment as? TournamentSectionView.OnChampionDropdownListener
-    }
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             titleBar.loadDynamicsTitleBar(tittleBarBinding.root)
@@ -73,9 +80,12 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
             with(mBinding) {
                 if (matchWithMarkets != null && matchWithMarkets.markets.isNotEmpty()) {
                     clDynamics.visibility = View.GONE
-                    Glide.with(this@ChampionFragment).load(matchWithMarkets.match.basicInfo.tournamentIcon)
-                        .error(R.drawable.title_league_icon).into(tittleBarBinding.ivLandscapeLeagueIcon)
-                    tittleBarBinding.tvCompetitionName.text = matchWithMarkets.match.basicInfo.matchName
+                    Glide.with(this@ChampionFragment)
+                        .load(matchWithMarkets.match.basicInfo.tournamentIcon)
+                        .error(R.drawable.title_league_icon)
+                        .into(tittleBarBinding.ivLandscapeLeagueIcon)
+                    tittleBarBinding.tvCompetitionName.text =
+                        matchWithMarkets.match.basicInfo.matchName
 
                     championAdapter.submitList(matchWithMarkets.markets)
                 } else {
@@ -89,50 +99,11 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
 
 
         }
-        homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
-            "joseph observe tournaments:$list".logd()
-            if (!list.isNullOrEmpty()) {
-//                mBinding.tsvContainer.postSetTournamentList(list)
-                mBinding.tsvContainer.expandWithData(list)
-// 使用者點擊某聯賽
-                mBinding.tsvContainer.onTournamentClick = { id ->
-                    mViewModel.selectTournament(id)
-                    homeViewModel.setShowAllTournaments(false)
-                    mBinding.tsvContainer.collapseWithAnimation()
-                }
-
-                // 使用者點擊 collapse icon
-                mBinding.tsvContainer.onCollapse = {
-                    // 呼叫 parent fragment（NewHomeFragment）的 toggle 方法
-                    dropdownListener?.onRequestCollapseChampion()
-                }
-            }
-        }
     }
 
-    override fun initData() {
-        super.initData()
-        arguments?.apply {
-            homeViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
-        }
-    }
     override fun onDestroyView() {
         mViewModel.cancelSubscribeMatch()
         super.onDestroyView()
     }
-    override fun onDetach() {
-        dropdownListener = null
-        super.onDetach()
-    }
-    companion object {
-        private const val ARG_SPORT_ID = "sport_id"
-        fun newInstance(sportId: Int): ChampionFragment {
-            return ChampionFragment().apply {
-                "joseph new ChampionFragment:$sportId".logd()
-                arguments = Bundle().apply {
-                    putInt(ARG_SPORT_ID, sportId)
-                }
-            }
-        }
-    }
+
 }

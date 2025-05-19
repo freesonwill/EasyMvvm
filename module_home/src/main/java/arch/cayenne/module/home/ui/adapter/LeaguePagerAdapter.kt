@@ -6,7 +6,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.ui.fragment.ChampionFragment
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 
 class LeaguePagerAdapter(
@@ -20,23 +19,12 @@ class LeaguePagerAdapter(
         return playType.id * 10000L + position
     }
 
-    override fun getItemCount(): Int {
-        return if (playType == PlayType.CHAMPION) 1 else tournament.size
-    }
-
-    override fun containsItem(itemId: Long): Boolean {
-        return true // 保守做法，讓所有 item 都保留
-    }
+    override fun getItemCount(): Int = tournament.size ?: 0
 
     override fun createFragment(position: Int): Fragment {
-        return if (playType == PlayType.CHAMPION) {
-            val sportId = tournament.firstOrNull()?.sportId ?: 0 // 安全取得
-            ChampionFragment.newInstance(sportId)
-        } else {
-            val list = tournament
-            val sportId = list[position].sportId
-            val leagueId = list[position].id
-            MatchListPagerFragment.newInstance(sportId, playType.id, leagueId, position)
-        }
+        val list = tournament
+        val sportId = list[position].sportId
+        val leagueId = list[position].id
+        return MatchListPagerFragment.newInstance(sportId, playType.id, leagueId, position)
     }
 }

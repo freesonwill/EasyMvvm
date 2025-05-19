@@ -35,9 +35,8 @@ class HomeViewModel : BaseViewModel() {
 
     val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
 
-    //TODO 需要換掉livedata
     val tenTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 今日/早盤
-    val allTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 冠軍/更多
+    val allTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 更多
 
 
     private val _selectedDate = MutableLiveData<Long>() // Pair<leagueId, date>
@@ -47,8 +46,32 @@ class HomeViewModel : BaseViewModel() {
     val selectedTournamentId: MutableLiveData<Int> get() = _selectedTournamentId
 
     fun selectTournament(id: Int) {
-        if (_selectedTournamentId.value != id) {
-            _selectedTournamentId.value = id
+        val currentList = tenTournaments.value.orEmpty()
+        val existsInCurrent = currentList.any { it.id == id }
+
+        if (existsInCurrent) {
+            _selectedTournamentId.postValue(id)
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                val playType = currentPlayType
+                //TODO 需實作
+                val tournament = repository.getTournamentById(playType.id, currentSportId, id)
+                if (tournament != null) {
+                    val updatedList = currentList.toMutableList()
+                    updatedList.add(tournament) // 👉 加到尾端
+                    val fullList = ArrayList<TournamentDataModel>().apply {
+                        add(TournamentDataModel.createAllItem(currentSportId))
+                        addAll(updatedList)
+                    }
+                    "selectTournament list: $fullList".logd()
+                    withContext(Dispatchers.Main) {
+                        tenTournaments.value = fullList
+                        _selectedTournamentId.value = id
+                    }
+                } else {
+                    "Tournament ID:$id not found".loge(this::class.java.simpleName)
+                }
+            }
         }
     }
 
@@ -67,7 +90,6 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
-        "joseph setCurrentPlayType: $playType".logd()
         currentPlayType = playType
         if (playType != PlayType.CHAMPION) {
             getCurrentSportStatistical()
@@ -110,24 +132,6 @@ class HomeViewModel : BaseViewModel() {
 
     fun getCurrentSportId() = currentSportId
 
-//    private fun getCurrentTournament(sportId: Int) {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list = repository.getTenTournaments(currentPlayType.id, sportId)
-//            "joseph getCurrentTournament playtype:$currentPlayType, list: $list".logd()
-//            if (list.isNullOrEmpty()) {
-//                //TODO 拿取聯賽錯誤
-//                "Get Tournament List failed!!".loge(this::class.java.simpleName)
-//            } else {
-//                withContext(Dispatchers.Main) {
-//                    tournaments.value = ArrayList<TournamentDataModel>().apply {
-//                        add(TournamentDataModel.createAllItem(sportId))
-//                        addAll(list)
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun getCurrentTournament(sportId: Int, isShowAll: Boolean = false) {
         viewModelScope.launch(Dispatchers.IO) {
             val playType = currentPlayType
@@ -149,10 +153,8 @@ class HomeViewModel : BaseViewModel() {
 
             withContext(Dispatchers.Main) {
                 if (isShowAll) {
-                    "joseph allTournaments list: $fullList".logd()
                     allTournaments.value = fullList.filterNot { it.id == 0 }
                 } else {
-                    "joseph tenTournaments list: $fullList".logd()
                     tenTournaments.value = fullList
                 }
             }

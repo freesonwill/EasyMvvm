@@ -19,6 +19,7 @@ import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -95,11 +96,11 @@ class HomeRepository(
         sportDao.clearSports()
     }
     @Transaction
-    suspend fun getTenTournaments(playType: Int, sportId: Int,
+    suspend fun getTournaments(
+        playType: Int, sportId: Int,
                                   limit: Int? = null): List<TournamentDataModel>? {
         clearTournamentCache()
         clearMatchCache()
-        //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
 //        if (queryResult.isNotEmpty()) {
@@ -122,6 +123,19 @@ class HomeRepository(
         } else {
             null
         }
+    }
+
+    // HomeRepository.kt
+    suspend fun getTournamentById(
+        playTypeId: Int,
+        sportId: Int,
+        tournamentId: Int
+    ): TournamentDataModel? {
+        //TODO 需要實作根據tournamentId取得賽事列表資料的repo function
+//        val list = getTournaments(playTypeId, sportId)
+//        "getTournamentById: $tournamentId, list: $list".logd()
+//        return list?.find { it.id == tournamentId }
+        return null
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
