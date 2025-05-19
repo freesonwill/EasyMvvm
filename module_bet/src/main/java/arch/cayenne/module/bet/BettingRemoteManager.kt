@@ -68,7 +68,6 @@ class BettingRemoteManager(
                 data.message,
                 data.orderId,
                 data.orderStatus,
-                data.orderStatusMsg,
             )
         } else {
             null
@@ -142,7 +141,6 @@ class BettingRemoteManager(
                     orderId = it.orderId,
                     comboValue = if (it.serialValue == 0) 1 else it.serialValue,
                     orderStatus = it.orderStatus,
-                    orderStatusMsg = it.orderStatusMsg
                 )
             }
             ComboBetDataModel(
