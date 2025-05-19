@@ -26,9 +26,14 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_short_name"
             style="@style/OddsShortNameStyle"
+            android:layout_width="0dp"
             android:textSize="14sp"
+            android:gravity="left"
+            android:lines="1"
+            android:ellipsize="end"
             android:layout_marginStart="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tv_odds"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="主" />
