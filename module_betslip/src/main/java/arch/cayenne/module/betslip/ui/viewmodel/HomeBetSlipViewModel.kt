@@ -8,8 +8,19 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
+import org.koin.java.KoinJavaComponent.inject
 
 class HomeBetSlipViewModel: BaseViewModel() {
+
+
+    private val userManager: UserDataManager by inject(UserDataManager::class.java)
+
+    //设置是否注单详情
+    fun setBetSlipDetail() {
+        userManager.setKeyValue(UserDataKey.KEY_BETSLIP_DETAIL, true)
+    }
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter

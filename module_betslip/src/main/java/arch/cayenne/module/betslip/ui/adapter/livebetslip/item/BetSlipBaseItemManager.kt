@@ -7,6 +7,8 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.skin.widget.SkinnableView
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
@@ -18,19 +20,24 @@ import arch.cayenne.module.betslip.utisl.BetSlipItemManagerInterface
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import org.koin.java.KoinJavaComponent.inject
 
 
 abstract class BetSlipBaseItemManager(
     private val binding: ViewBinding,
     private val liveBetSlip: BetSlipEnum
 ) : BetSlipItemManagerInterface {
+    private val userManager: UserDataManager by inject(UserDataManager::class.java)
     var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
+    var liveListener:RecyclerItemListener<BetSlipSelectionData>? = null
+
 
     companion object {
 
         fun initManager(
             binding: ViewBinding,
-            liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+            liveBetSlip: BetSlipEnum
         ): BetSlipBaseItemManager? {
             return when (binding) {
                 is ItemLiveBetSlipUnsettleBinding -> BetSlipUnsettledItemManager(
@@ -75,10 +82,10 @@ abstract class BetSlipBaseItemManager(
         line: SkinnableView,
         group: ConstraintLayout,
         tvMore: TextView,
-        ivArrow: ImageView,
+        ivMoreArrow: ImageView,
         position: Int,
         count: Int,
-        llMore: LinearLayout
+        llMore: LinearLayout,
     ) {
         line.isVisible = position != count - 1
         group.isVisible = (count - 1) == position && expandedEnum != BetSlipExpandedEnum.Hide
@@ -89,7 +96,16 @@ abstract class BetSlipBaseItemManager(
                 if (expandedEnum == BetSlipExpandedEnum.Fold) R.string.see_more else R.string.fold_up
             )
 
-            ivArrow.setImageResource(if (expandedEnum == BetSlipExpandedEnum.Fold) R.drawable.icon_cricle_arrrow_down else R.drawable.icon_cricle_arrrow_up)
+            ivMoreArrow.setImageResource(if (expandedEnum == BetSlipExpandedEnum.Fold) R.drawable.icon_cricle_arrrow_down else R.drawable.icon_cricle_arrrow_up)
+        }
+    }
+
+    fun showLiveArrow(ivArrow: ImageView) {
+        val isDetail: Boolean = userManager.getValue(UserDataKey.KEY_BETSLIP_DETAIL, false)
+        ivArrow.isVisible = isDetail
+        ivArrow.setOnClickListener {
+            val position = it.tag as Int
+            liveListener?.onItemClick(null,position)
         }
     }
 

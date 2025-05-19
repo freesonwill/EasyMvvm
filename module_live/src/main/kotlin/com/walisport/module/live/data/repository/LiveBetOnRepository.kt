@@ -19,7 +19,8 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
 ) : BaseRepository(){
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeMarketTypeBean() = database.marketTypeDao().observeMarketTypeBean()
-    fun queryLiveMarketType(matchId: Long) {
+    fun observeSelection(marketIds: List<Long>) = database.liveMatchDao().observeSelectionByIds(marketIds)
+    fun queryLiveMarketType(matchId: Long,callback: (List<MarketTypeBean>) -> Unit) {
         scope.launch {
             val resp = remoteManager.getMarketTypeReq(scope, matchId)
             database.marketTypeDao().deleteAll()
@@ -31,6 +32,9 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
                 )
             } ?: emptyList()
             database.marketTypeDao().insert(data)
+            scope.launch(Dispatchers.Main){
+                callback(data)
+            }
         }
     }
 
@@ -41,9 +45,7 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
         }
         return marketBean
     }
-    suspend fun queryLiveMarketTypeAll() : List<MarketTypeBean> {
-        return database.marketTypeDao().getAllMarketTypeBean()
-    }
+
     suspend fun queryLiveSelectionBean(matchId: Long) : List<LiveSelectionBean> {
         return database.liveMatchDao().getSelectionsByIds(matchId)
     }
