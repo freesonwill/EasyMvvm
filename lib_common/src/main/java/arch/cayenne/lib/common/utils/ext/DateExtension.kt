@@ -57,3 +57,20 @@ fun String.extractDate(pattern: String = "yyyyMMdd"): Triple<Int, Int, Int>? {
         null
     }
 }
+
+/**
+ * 将Long类型的时间戳转换为格式化的日期字符串, 且去零
+ * @receiver Long 时间戳
+ * @param pattern 日期格式，默认为"yyyy/MM/dd"
+ * @return String 格式化后的日期字符串
+ */
+fun Long.getFormatDate(): String {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    return "$year/$month/$day"
+}

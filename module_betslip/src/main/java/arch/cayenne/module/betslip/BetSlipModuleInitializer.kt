@@ -9,6 +9,7 @@ import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
+import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
@@ -46,6 +47,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
     }
 
     private val repoModules = module {
+        factoryOf(::HomeBetSlipRepository)
         factoryOf(::BetSlipRepository)
     }
 

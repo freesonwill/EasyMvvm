@@ -2,31 +2,28 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.helper.showToast
-import galaxy.common.proto.Common
-import galaxy.common.proto.Common.ReserveOrder
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import galaxy.common.proto.Common
+import galaxy.common.proto.Common.ReserveOrder
+import kotlin.reflect.KClass
 
 
 //注单预约
 class BetSlipReserveFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipReserveBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
     private val adapter =
         BetSlipAdapter(BetSlipEnum.Reserve)
 
@@ -62,6 +59,7 @@ class BetSlipReserveFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.reserveLiveData.observe(this) {
             updateView(it)
         }
@@ -137,5 +135,9 @@ class BetSlipReserveFragment :
             }
             it.show(childFragmentManager)
         }
+    }
+
+    override fun getBetSlipEnum(): BetSlipEnum? {
+        return null
     }
 }

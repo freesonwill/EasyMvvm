@@ -17,6 +17,8 @@ import org.koin.core.parameter.parametersOf
 class BetSlipViewModel : BaseViewModel() {
     private var matchId: Long = -1
     private var sportId: Int = -1
+    private var startTime: Long? = null
+    private var endTime: Long? = null
     private var page = 1
     private val pageSize = 10
     private val repository: BetSlipRepository by inject {
@@ -62,7 +64,7 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
-            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)
+            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)
             _orderLiveData.value = result
         }
     }
@@ -72,7 +74,7 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getReserveOrder() {
         viewModelScope.launch {
-            val result = repository.getReserveOrder(sportId, matchId)
+            val result = repository.getReserveOrder(sportId, matchId, startTime, endTime)
             _reserveLiveData.value = result
         }
     }
@@ -126,7 +128,7 @@ class BetSlipViewModel : BaseViewModel() {
     fun loadMoreOrder(status: BetSlipEnum) {
         viewModelScope.launch {
             page++
-            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId)
+            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)
             _orderLiveData.value = result
             if (_orderLiveData.value?.isEmpty() == true) {
                 page--
@@ -146,4 +148,16 @@ class BetSlipViewModel : BaseViewModel() {
         }
     }
 
+    fun setTime(startTime: Long?, endTime: Long?) {
+        this.startTime = startTime
+        this.endTime = endTime
+    }
+
+    fun loadData(status: BetSlipEnum?) {
+        status?.let {
+            getOrders(it)
+        } ?: run {
+            getReserveOrder()
+        }
+    }
 }

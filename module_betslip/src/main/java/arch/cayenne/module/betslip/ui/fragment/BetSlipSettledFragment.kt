@@ -2,28 +2,25 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import galaxy.common.proto.Common
+import kotlin.reflect.KClass
 
 
 //注单已结算
 class BetSlipSettledFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipSettledLayoutBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipSettledLayoutBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> =
         FragmentLiveBetslipSettledLayoutBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -60,6 +57,7 @@ class BetSlipSettledFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 updateData(it)
@@ -89,11 +87,7 @@ class BetSlipSettledFragment :
         }
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.Settled)
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.Settled
     }
 }
