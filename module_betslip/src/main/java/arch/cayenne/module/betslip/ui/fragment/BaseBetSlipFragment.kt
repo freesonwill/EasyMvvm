@@ -1,53 +1,38 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import kotlin.reflect.KClass
 
-abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewModel, VB>(), BetSlipUpdateListener {
+abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewModel, VB>() {
 
     override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
+    private val homeSlipViewModel: HomeBetSlipViewModel? by lazy {
+        try {
+            ViewModelProvider(requireParentFragment())[HomeBetSlipViewModel::class.java]
+        } catch (e: Exception) {
+            null
+        }
+    }
 
     override fun initData() {
         super.initData()
         val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?: -1
         val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
         mViewModel.setIds(matchId, sportId = sportId)
-        loadData()
+        mViewModel.loadData(getBetSlipEnum())
     }
 
     abstract fun getBetSlipEnum(): BetSlipEnum?
 
-    override fun updateByTime(startTime: Long?, endTime: Long?) {
-        mViewModel.setTime(startTime, endTime)
-        loadData()
-    }
-
-    override fun updateBySport(sportId: Int) {
-        mViewModel.setIds(-1, sportId)
-        loadData()
-    }
-
-    private fun loadData() {
-        getBetSlipEnum()?.let {
-            mViewModel.getOrders(it)
-        } ?: mViewModel.getReserveOrder()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        parentFragmentManager.setFragmentResultListener(Config.KEY_UPDATE, viewLifecycleOwner) { _, bundle ->
-            val startTime = bundle.getLong(Config.VALUE_START_TIME, -1)
-            val endTime = bundle.getLong(Config.VALUE_END_TIME, -1)
-            updateByTime(if (startTime == -1L) null else startTime, if (endTime == -1L) null else endTime)
+    override fun createObserver() {
+        homeSlipViewModel?.onDateTime?.observe(viewLifecycleOwner) {
+            mViewModel.setTime(it.first, it.second)
+            mViewModel.loadData(getBetSlipEnum())
         }
     }
-}
-
-interface BetSlipUpdateListener {
-    fun updateByTime(startTime: Long?, endTime: Long?)
-    fun updateBySport(sportId: Int)
 }

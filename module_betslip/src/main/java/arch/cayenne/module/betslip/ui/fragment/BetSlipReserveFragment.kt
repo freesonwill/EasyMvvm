@@ -59,6 +59,7 @@ class BetSlipReserveFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.reserveLiveData.observe(this) {
             updateView(it)
         }

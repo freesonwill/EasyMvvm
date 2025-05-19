@@ -32,7 +32,6 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
             PagerBean(array[4]) { BetSlipInvalidFragment() },
         )
         setPage(list)
-        mViewModel.setBetSlipDetail()
     }
 
     override fun initListener() {
@@ -40,32 +39,10 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
             findNavController().navigateUp()
         }
         mBinding.tvDateFilter.setOnClickListener {
-            mViewModel.onDateFilter.value?.let {
-                childFragmentManager.setFragmentResultListener(
-                    Config.KEY_RESULT,
-                    viewLifecycleOwner
-                ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    if (bundle.containsKey(Config.VALUE_SELECTED_DATE)) {
-                        bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
-                            val date = BetSlipDateFilterEnum.valueOf(result)
-                            if (date == BetSlipDateFilterEnum.CUSTOM) {
-                                val time = bundle.getLong(Config.VALUE_SELECTED_MILLISECOND)
-                                mViewModel.customTime = time
-                            } else {
-                                mViewModel.setDateFilter(date)
-                            }
-                            updateDateData(date)
-                        }
-                    }
-                }
-                val time = if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
-                    mViewModel.customTime
-                } else {
-                    null
-                }
-                DatePickerFragment.newInstance(it.date, time).show(childFragmentManager)
-            }
+            showDateFilter()
+        }
+        mBinding.tvSportFilter.setOnClickListener {
+            showSportFilter()
         }
     }
 
@@ -99,12 +76,42 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
         mBinding.tabLayout.removeAllTips()
     }
 
+    private fun showDateFilter() {
+        mViewModel.onDateFilter.value?.let {
+            childFragmentManager.setFragmentResultListener(
+                Config.KEY_RESULT,
+                viewLifecycleOwner
+            ) { _, bundle ->
+                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                if (bundle.containsKey(Config.VALUE_SELECTED_DATE)) {
+                    bundle.getString(Config.VALUE_SELECTED_DATE)?.let { result ->
+                        val date = BetSlipDateFilterEnum.valueOf(result)
+                        if (date == BetSlipDateFilterEnum.CUSTOM) {
+                            val time = bundle.getLong(Config.VALUE_SELECTED_MILLISECOND)
+                            mViewModel.customTime = time
+                        } else {
+                            mViewModel.setDateFilter(date)
+                        }
+                        updateDateData(date)
+                    }
+                }
+            }
+            val time = if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
+                mViewModel.customTime
+            } else {
+                null
+            }
+            DatePickerFragment.newInstance(it.date, time).show(childFragmentManager)
+        }
+    }
+
+    private fun showSportFilter() {
+
+    }
+
     private fun updateDateData(date: BetSlipDateFilterEnum) {
-        childFragmentManager.setFragmentResult(Config.KEY_UPDATE, Bundle().apply {
-            val startTime = date.startTime() ?: -1
-            val endTime = date.endTime() ?: -1
-            putLong(Config.VALUE_START_TIME, startTime)
-            putLong(Config.VALUE_END_TIME, endTime)
-        })
+        val startTime = date.startTime() ?: -1
+        val endTime = (if (date == BetSlipDateFilterEnum.CUSTOM) mViewModel.customTime else date.endTime()) ?: -1
+        mViewModel.saveDateTime(startTime, endTime)
     }
 }

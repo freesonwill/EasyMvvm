@@ -36,6 +36,7 @@ class BetSlipUnsettledFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()

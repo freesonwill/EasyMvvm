@@ -65,6 +65,20 @@
         app:layout_constraintTop_toBottomOf="@id/tab_layout">
 
         <TextView
+            android:id="@+id/tv_sport_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_filter"
+            android:drawablePadding="4dp"
+            android:paddingVertical="6dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="11dp"
+            app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/tv_date_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

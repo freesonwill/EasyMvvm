@@ -57,6 +57,7 @@ class BetSlipSettledFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             if (!it.isNullOrEmpty()) {
                 updateData(it)

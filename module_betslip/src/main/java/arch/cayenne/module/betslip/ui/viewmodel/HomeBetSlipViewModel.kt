@@ -8,22 +8,15 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
-import arch.cayenne.lib.common.data.constants.UserDataKey
-import arch.cayenne.lib.common.data.manager.UserDataManager
-import org.koin.java.KoinJavaComponent.inject
+import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 
-class HomeBetSlipViewModel: BaseViewModel() {
-
-
-    private val userManager: UserDataManager by inject(UserDataManager::class.java)
-
-    //设置是否注单详情
-    fun setBetSlipDetail() {
-        userManager.setKeyValue(UserDataKey.KEY_BETSLIP_DETAIL, true)
-    }
+class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository): BaseViewModel() {
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
+
+    private val _onDateTime = MutableLiveData<Pair<Long, Long>>()
+    val onDateTime: LiveData<Pair<Long, Long>> get() = _onDateTime
 
     var customTime: Long? = null
         set(value) {
@@ -38,6 +31,7 @@ class HomeBetSlipViewModel: BaseViewModel() {
             title = BetSlipDateFilterEnum.ALL.title,
             date = BetSlipDateFilterEnum.ALL
         )
+        repo.setDetail()
     }
 
     fun setDateFilter(dateFilter: BetSlipDateFilterEnum) {
@@ -54,5 +48,9 @@ class HomeBetSlipViewModel: BaseViewModel() {
             title = title,
             date = BetSlipDateFilterEnum.CUSTOM
         )
+    }
+
+    fun saveDateTime(startTime: Long, endTime: Long) {
+        _onDateTime.value = Pair(startTime, endTime)
     }
 }
