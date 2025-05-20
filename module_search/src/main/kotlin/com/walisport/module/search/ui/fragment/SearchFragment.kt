@@ -10,7 +10,7 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.search.R
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.databinding.FragmentSearchBinding
-import com.walisport.module.search.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
