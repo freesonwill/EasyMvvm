@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -32,32 +31,22 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
         FragmentTournamentListBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
 
-    //    private var dropdownListener: TournamentSectionView.OnChampionDropdownListener? = null
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
     private val transliterator : Transliterator by inject()
 
-    private var onReadyCallback: (() -> Unit)? = null
-
-    fun setOnReadyCallback(callback: () -> Unit) {
-        onReadyCallback = callback
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             rvTournamentList.layoutManager = LinearLayoutManager(context)
-            root.doOnPreDraw {
-                onReadyCallback?.invoke()
-            }
+
             ivHomeLeagueCollapse.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
             }
             adapter = TournamentSectionAdapter { tournamentId ->
-//                onTournamentClick?.invoke(tournamentId)
                 mViewModel.selectTournament(tournamentId)
-                homeViewModel.setShowAllTournaments(false)
                 homeViewModel.requestCollapseTournamentDropdown()
             }
             rvTournamentList.adapter = adapter

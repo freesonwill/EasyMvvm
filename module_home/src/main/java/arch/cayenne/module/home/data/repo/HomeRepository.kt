@@ -123,11 +123,7 @@ class HomeRepository(
         return arrayListOf()
     }
     @Transaction
-    suspend fun getTournaments(
-        playType: Int,
-        sportId: Int,
-        limit: Int? = null
-    ): List<TournamentDataModel>? {
+    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         clearTournamentCache()
         clearMatchCache()
         //先從DB拿取
@@ -148,30 +144,16 @@ class HomeRepository(
             }.build()
         }
         return if (res.error == null && res.data != null) {
-            saveTournaments(playType, sportId, res.data!!, limit)
+            saveTournaments(playType, sportId, res.data!!)
         } else {
             null
         }
     }
 
-    // HomeRepository.kt
-    fun getTournamentById(
-        tournamentId: Int
-    ): TournamentDataModel? {
-        val model = tournamentDao.getTournamentById(tournamentId)
-        "getTournamentById: $tournamentId, list: $model".logd()
-        return model
-    }
-
-    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
-        return getTournaments(playType, sportId, limit = 10)
-    }
-
     private fun saveTournaments(
         playType: Int,
         sportId: Int,
-        data: Client.ListTournamentResp,
-        limit: Int? = null
+        data: Client.ListTournamentResp
     ): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
 //        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
@@ -200,11 +182,21 @@ class HomeRepository(
         }
         tournamentDao.insert(tournamentList)
 //        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
-        return if (limit != null) {
-            tournamentDao.queryTournamentWithLimit(limit)
-        } else {
-            tournamentDao.queryTournament()
-        }
+        return tournamentDao.queryTournamentWithLimit(10)
+    }
+
+
+    // HomeRepository.kt
+    fun getTournamentById(
+        tournamentId: Int
+    ): TournamentDataModel? {
+        val model = tournamentDao.getTournamentById(tournamentId)
+        "getTournamentById: $tournamentId, list: $model".logd()
+        return model
+    }
+
+    fun getAllTournaments(): List<TournamentDataModel> {
+        return tournamentDao.queryTournament()
     }
 
     private fun clearTournamentCache() {

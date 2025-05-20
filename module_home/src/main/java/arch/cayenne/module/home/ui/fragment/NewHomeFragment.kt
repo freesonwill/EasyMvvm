@@ -54,7 +54,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-//    private val tournamentListFragment  = TournamentListFragment.newInstance()
+
+    //    private var tournamentListFragment: TournamentListFragment? = null
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -149,10 +150,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
-                "joseph ivHomeLeagueMore click".logd()
-                mViewModel.setShowAllTournaments(true)
+                "ivHomeLeagueMore click".logd()
+                mViewModel.getAllTournament()
                 toggleTournamentMoreSection(true)
-                isExpanded = true
             }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
@@ -169,22 +169,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
+
     private fun toggleTournamentMoreSection(expanded: Boolean) {
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
-
+        isExpanded = expanded
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.INVISIBLE
 
             val tournamentListFragment = TournamentListFragment.newInstance()
 
-            tournamentListFragment.setOnReadyCallback {
-                // 渲染完成才顯示容器，避免先顯示空白畫面
-                container.post {
-                    container.visibility = View.VISIBLE
-                }
+            container.post {
+                container.visibility = View.VISIBLE
             }
             fm.beginTransaction()
                 .setCustomAnimations(
@@ -210,20 +208,36 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun showHomeCalendar(tabSelectedDate: String) {
         //設定標記紅色日期及可選取日期範圍
-        fun setSchemeDate(calendarView:CalendarView) {
+        fun setSchemeDate(calendarView: CalendarView) {
             val map: MutableMap<String, Calendar> = HashMap()
             //設定可以標記為紅色字的日期區間，目前設定為30天
             for (date in getFutureThirtyDays()) {
-                val dateArray = DateUtils.getDate(date.third ,"yyyy-MM-dd").split("-")
-                map[getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt()).toString()] =
-                    getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+                val dateArray = DateUtils.getDate(date.third, "yyyy-MM-dd").split("-")
+                map[getSchemeCalendar(
+                    dateArray[0].toInt(),
+                    dateArray[1].toInt(),
+                    dateArray[2].toInt()
+                ).toString()] =
+                    getSchemeCalendar(
+                        dateArray[0].toInt(),
+                        dateArray[1].toInt(),
+                        dateArray[2].toInt()
+                    )
 
             }
             val endDateTriple = getFutureThirtyDays()
                 .getOrNull(mBinding.layoutContainer.tlDateList.tabCount - 2)
-            val endDateArray = DateUtils.getDate(endDateTriple?.third ?: 0L ,"yyyy-MM-dd").split("-")
+            val endDateArray =
+                DateUtils.getDate(endDateTriple?.third ?: 0L, "yyyy-MM-dd").split("-")
             //設定可以選取的日期區間，目前設定為30天
-            calendarView.setRange(calendarView.curYear,calendarView.curMonth,calendarView.curDay,endDateArray[0].toInt(),endDateArray[1].toInt(),endDateArray[2].toInt())
+            calendarView.setRange(
+                calendarView.curYear,
+                calendarView.curMonth,
+                calendarView.curDay,
+                endDateArray[0].toInt(),
+                endDateArray[1].toInt(),
+                endDateArray[2].toInt()
+            )
             calendarView.setSchemeDate(map)
         }
 
@@ -234,11 +248,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (tabSelectedDate == "0") {
                 vb.calendarView.scrollToCurrent(true)
                 vb.tvCurrentMonth.text = "${currentMonth.toChineseMonth()} $currentYear"
-            }else{
+            } else {
                 val result = tabSelectedDate.extractDate()
                 result?.let {
                     val (year, month, day) = it
-                    with (vb) {
+                    with(vb) {
                         calendarView.scrollToCalendar(year, month, day)
                         tvCurrentMonth.text = "${month.toChineseMonth()} $year"
                     }
@@ -252,7 +266,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         }
         // 使用 Builder 創建 Popup
-        val customPopup = HomeCalendarPopupWindow.Builder(requireContext(), HomeTourPopupCalendarViewBinding::inflate)
+        val customPopup = HomeCalendarPopupWindow.Builder(
+            requireContext(),
+            HomeTourPopupCalendarViewBinding::inflate
+        )
             .build()
         with(customPopup.binding) {
             // 獲取當前日期
@@ -276,7 +293,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 customPopup.dismiss()
             }
             setSchemeDate(calendarView)
-            setCurrentDate(customPopup.binding,tabSelectedDate)
+            setCurrentDate(customPopup.binding, tabSelectedDate)
             calendarView.setOnCalendarSelectListener(object :
                 CalendarView.OnCalendarSelectListener {
                 override fun onCalendarOutOfRange(calendar: Calendar?) {
@@ -289,10 +306,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tvCurrentMonth.text =
                         "${calendar.month.toChineseMonth()} ${calendar.year}"
                     //控制左右按鈕的enabled
-                    if(calendar.month > calendarView.curMonth) {
+                    if (calendar.month > calendarView.curMonth) {
                         ivRightClick.isEnabled = false
                         ivLeftClick.isEnabled = true
-                    }else{
+                    } else {
                         ivRightClick.isEnabled = true
                         ivLeftClick.isEnabled = false
                     }
@@ -302,11 +319,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         // 顯示 Popup
         customPopup.showAsDropDown(mBinding.layoutContainer.tlDateList)
     }
+
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(selectedDate:String) {
+    private fun setSelectedDateTab(selectedDate: String) {
         with(mBinding.layoutContainer) {
             val dateIndex = getFutureThirtyDays().indexOfFirst {
-                DateUtils.getDate(it.third,"yyyyMMdd") == selectedDate
+                DateUtils.getDate(it.third, "yyyyMMdd") == selectedDate
             } + 1
             tlDateList.getTabAt(dateIndex)?.select()
         }
@@ -325,6 +343,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         calendar.drawIndex = 0
         return calendar
     }
+
     //init DrawerLayout Content
     private fun initDrawerContent() {
         //蒙層顏色依照版型作變化
@@ -384,9 +403,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+        "setTournamentAndViewPagerLayout: ${tournaments.size}".logd()
         //確定拿到聯賽資料後再決定要不要show出時間
         if (tournaments.isNotEmpty()) {
-            with (mBinding.layoutContainer) {
+            with(mBinding.layoutContainer) {
                 if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
                     tlDateList.visibility = View.GONE
                     llOtherDate.visibility = View.GONE
@@ -489,22 +509,27 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
 
-        mViewModel.tenTournaments.observe(viewLifecycleOwner) {
+        mViewModel.tournaments.observe(viewLifecycleOwner) {
             setTournamentAndViewPagerLayout(it)
         }
+
         mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
-            "joseph 使用者選取聯賽 ID: $id".logd()
-            val list = mViewModel.tenTournaments.value.orEmpty()
+            "使用者選取聯賽 ID: $id".logd()
+            val list = mViewModel.tournaments.value.orEmpty()
+            "使用者選取聯賽 tournaments: ${list.size}".logd()
             val index = list.indexOfFirst { it.id == id }
             if (index != -1) {
-                mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
+                "使用者選取聯賽 index select(): $index".logd()
+                mBinding.layoutContainer.tlLeagueList.post {
+                    mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
+                }
             }
         }
 
         mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
             if (shouldCollapse == true && isExpanded) {
                 toggleTournamentMoreSection(false)
-                isExpanded = false
+//                isExpanded = false
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
