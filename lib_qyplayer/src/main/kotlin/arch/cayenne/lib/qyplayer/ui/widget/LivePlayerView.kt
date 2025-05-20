@@ -10,14 +10,13 @@ import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
 import arch.cayenne.lib.qyplayer.util.ScreenUtils
-import arch.cayenne.lib.qyplayer.view.QYRenderView
-import arch.cayenne.lib.qyplayer.view.SurfaceType
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
@@ -50,7 +49,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    private var mIsFullScreenLocked = false
     private var mCurrentPosition: Long = 0
     private var inSeek: Boolean = false
     private var mPlayerState = PlayerState.IDLE
@@ -64,10 +62,8 @@ class LivePlayerView @JvmOverloads constructor(
 
     private var loadingAnim: ObjectAnimator? = null
 
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
-
 
     fun init(playerMode: PlayerMode, screenMode: ScreenMode) {
         mPlayerMode = playerMode
@@ -85,22 +81,55 @@ class LivePlayerView @JvmOverloads constructor(
         onSingleTapListener = listener
     }
 
-    private fun initViews(@LayoutRes layoutId: Int) {
-
-        // 使用 LayoutInflater 加载 XML 布局
-        LayoutInflater.from(context)
-            .inflate(layoutId, this, true)
-
-        ctLoading = findViewById(R.id.ct_loading)
-        ctError = findViewById(R.id.ct_error)
-        ivLoading = findViewById(R.id.iv_video_loading)
-
-        // 初始化子视图
-        initRenderView()
-        initGestureView()
+    fun setDataSource(url: String) {
+        mPlayingPath = url
+//        mControlView.updateTitle(url)
+        mRenderView.setDataSource(url)
     }
 
-    private fun initListeners() {
+    fun setConfig(cfg: PlayerConfig) {
+        mConfig = cfg
+        mRenderView.setConfig(cfg)
+    }
+
+    fun getConfig(): PlayerConfig {
+        return mRenderView.getConfig()
+    }
+
+    fun setMute(isMute: Boolean) {
+        mRenderView.setMute(isMute)
+    }
+
+    fun prepare() {
+        mRenderView.prepare()
+    }
+
+    fun start() {
+        "start".logd(TAG)
+        mRenderView.start()
+    }
+
+    fun onResume() {
+        "onResume".logd(TAG)
+        start()
+    }
+
+    fun onPause() {
+        "onPause".logd(TAG)
+        mRenderView.pause()
+    }
+
+    fun onStop() {
+        "onStop".logd(TAG)
+        mRenderView.stop()
+    }
+
+    /**
+     * Activity 销毁，释放资源
+     */
+    fun onDestroy() {
+        "onDestroy".logd(TAG)
+        mRenderView.release()
     }
 
     /**
@@ -117,19 +146,7 @@ class LivePlayerView @JvmOverloads constructor(
         }
     }
 
-    fun start() {
-        mRenderView.start()
-    }
-
     private fun pause() {
-        mRenderView.pause()
-    }
-
-    fun onResume() {
-        start()
-    }
-
-    fun onPause() {
         mRenderView.pause()
     }
 
@@ -321,7 +338,7 @@ class LivePlayerView @JvmOverloads constructor(
      * @param deltaPosition   与当前位置相差的时长
      * @return
      */
-    fun getTargetPosition(duration: Long, currentPosition: Long, deltaPosition: Long): Int {
+    private fun getTargetPosition(duration: Long, currentPosition: Long, deltaPosition: Long): Int {
         // seek步长
         val finalDeltaPosition: Long
         // 根据视频时长，决定seek步长
@@ -419,48 +436,25 @@ class LivePlayerView @JvmOverloads constructor(
         }
     }
 
-    /**
-     * 锁定屏幕。锁定屏幕后，只有锁会显示，其他都不会显示。手势也不可用
-     *
-     * @param lockScreen 是否锁住
-     */
-    fun lockScreen(lockScreen: Boolean) {
-        mIsFullScreenLocked = lockScreen
-//        mControlView.setScreenLockStatus(mIsFullScreenLocked)
-        mGestureView.setScreenLockStatus(mIsFullScreenLocked)
+
+    private fun initViews(@LayoutRes layoutId: Int) {
+        // 使用 LayoutInflater 加载 XML 布局
+        LayoutInflater.from(context)
+            .inflate(layoutId, this, true)
+
+        ctLoading = findViewById(R.id.ct_loading)
+        ctError = findViewById(R.id.ct_error)
+        ivLoading = findViewById(R.id.iv_video_loading)
+
+        // 初始化子视图
+        initRenderView()
+        initGestureView()
     }
 
-    fun prepare() {
-        mRenderView.prepare()
+    private fun initListeners() {
     }
 
-    fun setDataSource(url: String) {
-        mPlayingPath = url
-//        mControlView.updateTitle(url)
-        mRenderView.setDataSource(url)
-    }
-
-    fun setConfig(cfg: PlayerConfig) {
-        mConfig = cfg
-        mRenderView.setConfig(cfg)
-    }
-
-    fun setMute(isMute: Boolean) {
-        mRenderView.setMute(isMute)
-    }
-
-    fun getConfig(): PlayerConfig {
-        return mRenderView.getConfig()
-    }
-
-    fun onStop() {
-        mRenderView.stop()
-    }
-
-    /**
-     * Activity 销毁，释放资源
-     */
-    fun onDestroy() {
-        mRenderView.release()
+    companion object {
+        const val TAG: String = "LivePlayerView"
     }
 }

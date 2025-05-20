@@ -1,9 +1,10 @@
-package arch.cayenne.lib.qyplayer.view
+package arch.cayenne.lib.qyplayer.ui.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
+import arch.cayenne.lib.qyplayer.cache.PlayerCache
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.MediaInfo
 import com.xxx.qyplayer.MirrorMode
@@ -36,7 +37,18 @@ class QYRenderView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val mQYPlayer: QYPlayer by lazy { QYPlayer(context.applicationContext) }
+    private val mQYPlayer: QYPlayer by lazy {
+//        // 从缓存获取或创建新的 QYPlayer 实例
+//        PlayerCache.keys.firstOrNull()?.also { player ->
+//            // 增加引用计数，安全处理 null
+//            val count = PlayerCache.get(player)?.plus(1) ?: 1
+//            PlayerCache.put(player, count)
+//        } ?: QYPlayer(context.applicationContext).also { player ->
+//            PlayerCache.put(player, 1)
+//        }
+
+        QYPlayer(context.applicationContext)
+    }
     private var mIRenderView: IRenderView? = null
     private var mSurface: Surface? = null
 
