@@ -24,14 +24,25 @@ data class TournamentBean(
 //    val weight: Int,
 //)
 
+abstract class BaseTournamentData {
+    abstract val id: Int
+    abstract val sportId: Int
+    abstract val name: String
+    abstract val simpleName: String
+    abstract val icon: String
+    abstract val hot: Boolean
+    abstract val weight: Int
+}
+
 data class TournamentDataModel(
-    val id: Int,
-    val sportId: Int,
-    val name: String,
-    val simpleName: String,
-    val icon: String,
-    val weight: Int,
-) {
+    override val id: Int,
+    override val sportId: Int,
+    override val name: String,
+    override val simpleName: String,
+    override val icon: String,
+    override val hot: Boolean,
+    override val weight: Int,
+) : BaseTournamentData() {
     companion object {
         fun createAllItem(sportId: Int): TournamentDataModel {
             return TournamentDataModel(
@@ -40,8 +51,20 @@ data class TournamentDataModel(
                 name = "ALL",
                 simpleName = "ALL",
                 icon = "",
+                hot = false,
                 weight = Int.MAX_VALUE
             )
         }
     }
 }
+
+data class ChampionTournamentDataModel(
+    val championMatchId: Long,
+    override val id: Int,
+    override val sportId: Int,
+    override val name: String,
+    override val simpleName: String,
+    override val icon: String,
+    override val hot: Boolean,
+    override val weight: Int,
+): BaseTournamentData()
