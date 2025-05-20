@@ -15,8 +15,9 @@ import com.walisport.module.search.ui.view.FlowAdapter
  * @date: 2025/4/22 16:01
  * @description: 测试适配器
  */
-class SearchHistoryAdapter(var closeAction:(position: Int)->Unit): FlowAdapter<String?>() {
-    var isDelete:Boolean=false
+class SearchHistoryAdapter(var closeAction: (position: Int, text: String?) -> Unit) :
+    FlowAdapter<String?>() {
+    var isDelete: Boolean = false
 
     override fun getView(parent: ViewGroup?, item: String?, position: Int): View {
         return LayoutInflater.from(parent?.context).inflate(R.layout.item_search_history, null)
@@ -25,13 +26,13 @@ class SearchHistoryAdapter(var closeAction:(position: Int)->Unit): FlowAdapter<S
     override fun initView(view: View?, item: String?, position: Int) {
         val textView = view?.findViewById<AppCompatTextView>(R.id.item_tv)
         val ivClose = view?.findViewById<SkinnableImageView>(R.id.ivClose)
-        if(isDelete){
-            ivClose?.visibility=View.VISIBLE
-        }else{
-            ivClose?.visibility=View.GONE
+        if (isDelete) {
+            ivClose?.visibility = View.VISIBLE
+        } else {
+            ivClose?.visibility = View.GONE
         }
         ivClose?.clickNoRepeat {
-            closeAction.invoke(position)
+            closeAction.invoke(position, item)
         }
         textView?.text = item
         textView?.setOnClickListener { v: View? ->
