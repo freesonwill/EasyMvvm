@@ -38,14 +38,16 @@ class QYRenderView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private val mQYPlayer: QYPlayer by lazy {
-        // 从缓存获取或创建新的 QYPlayer 实例
-        PlayerCache.keys.firstOrNull()?.also { player ->
-            // 增加引用计数，安全处理 null
-            val count = PlayerCache.get(player)?.plus(1) ?: 1
-            PlayerCache.put(player, count)
-        } ?: QYPlayer(context.applicationContext).also { player ->
-            PlayerCache.put(player, 1)
-        }
+//        // 从缓存获取或创建新的 QYPlayer 实例
+//        PlayerCache.keys.firstOrNull()?.also { player ->
+//            // 增加引用计数，安全处理 null
+//            val count = PlayerCache.get(player)?.plus(1) ?: 1
+//            PlayerCache.put(player, count)
+//        } ?: QYPlayer(context.applicationContext).also { player ->
+//            PlayerCache.put(player, 1)
+//        }
+
+        QYPlayer(context.applicationContext)
     }
     private var mIRenderView: IRenderView? = null
     private var mSurface: Surface? = null
