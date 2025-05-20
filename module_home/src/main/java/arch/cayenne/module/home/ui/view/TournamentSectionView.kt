@@ -72,7 +72,8 @@ class TournamentSectionView @JvmOverloads constructor(
                         name = "熱門",
                         simpleName = "",
                         icon = "",
-                        weight = 1
+                        weight = 1,
+                        hot = false,
                     )
                 )
             }

@@ -95,10 +95,38 @@ class HomeRepository(
     private fun clearSportCache() {
         sportDao.clearSports()
     }
+
+    suspend fun getChampionTournament(sportId: Int): List<TournamentDataModel> { //先暫時用TournamentDataModel
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.LIST_OUTRIGHT_MATCH,
+        ) {
+            Client.ListOutrightMatchReq.newBuilder().apply {
+                this.sportId = sportId
+            }.build()
+        }
+        if (res.error == null && res.data != null) {
+            return res.data!!.outrightMatchOrBuilderList.map {
+                TournamentDataModel(
+                    id = it.tournamentId,
+                    sportId = it.sportId,
+                    name = it.tournamentName,
+                    simpleName = "",
+                    icon = it.tournamentIcon,
+                    weight = it.weight,
+                    hot = it.hot
+                )
+            }
+        }
+        return arrayListOf()
+    }
     @Transaction
     suspend fun getTournaments(
-        playType: Int, sportId: Int,
-                                  limit: Int? = null): List<TournamentDataModel>? {
+        playType: Int,
+        sportId: Int,
+        limit: Int? = null
+    ): List<TournamentDataModel>? {
         clearTournamentCache()
         clearMatchCache()
         //先從DB拿取
@@ -126,16 +154,8 @@ class HomeRepository(
     }
 
     // HomeRepository.kt
-    suspend fun getTournamentById(
-        playTypeId: Int,
-        sportId: Int,
-        tournamentId: Int
-    ): TournamentDataModel? {
-        //TODO 需要實作根據tournamentId取得賽事列表資料的repo function
-//        val list = getTournaments(playTypeId, sportId)
-//        "getTournamentById: $tournamentId, list: $list".logd()
-//        return list?.find { it.id == tournamentId }
-        return null
+    fun getTournamentById(tournamentId: Int): TournamentDataModel? {
+        return tournamentDao.getTournamentById(tournamentId)
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {

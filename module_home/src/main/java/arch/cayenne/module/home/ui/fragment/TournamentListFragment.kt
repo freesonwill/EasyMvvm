@@ -48,9 +48,6 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
 
     override fun initData() {
         super.initData()
-        arguments?.apply {
-            homeViewModel.setCurrentSport(this.getInt(ARG_SPORT_ID))
-        }
     }
 
     override fun onDetach() {
@@ -62,13 +59,8 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
     }
 
     companion object {
-        private const val ARG_SPORT_ID = "sport_id"
-        fun newInstance(sportId: Int): TournamentListFragment {
-            return TournamentListFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SPORT_ID, sportId)
-                }
-            }
+        fun newInstance(): TournamentListFragment {
+            return TournamentListFragment()
         }
     }
 }

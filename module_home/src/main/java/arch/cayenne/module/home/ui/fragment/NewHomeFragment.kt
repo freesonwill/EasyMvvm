@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -58,6 +57,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
             ).show()
         }
     }
+    private val tournamentListFragment by lazy {  TournamentListFragment.newInstance() }
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -87,7 +87,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
                         resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                         if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(matchId = 464046))
+                            toggleTournamentMoreSection(true)
+//                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(matchId = 464046))
+                        } else {
+                            toggleTournamentMoreSection(false)
                         }
                     }
                 }
@@ -176,9 +179,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
 
-            val fragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId())
             fm.beginTransaction()
-                .replace(R.id.ll_tournaments_dropdown, fragment, tag)
+                .replace(R.id.ll_tournaments_dropdown, TournamentListFragment.newInstance(), tag)
                 .commitNowAllowingStateLoss()
 
             dropdown.post {
@@ -198,24 +200,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
-            mBinding.llTournamentsDropdown.animate()
-                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
-                .alpha(0f)
-                .setDuration(250)
-                .setInterpolator(AccelerateInterpolator())
-                .withEndAction {
-                    // 清理動畫狀態
-                    mBinding.llTournamentsDropdown.alpha = 1f
-                    mBinding.llTournamentsDropdown.visibility = View.GONE
-
-                    // 延遲移除 Fragment，避免畫面殘影
-                    mBinding.llTournamentsDropdown.postDelayed({
+//            mBinding.llTournamentsDropdown.animate()
+//                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
+//                .alpha(0f)
+//                .setDuration(250)
+//                .setInterpolator(AccelerateInterpolator())
+//                .withEndAction {
+//                    // 清理動畫狀態
+//                    mBinding.llTournamentsDropdown.alpha = 1f
+//                    mBinding.llTournamentsDropdown.visibility = View.GONE
+//
+//                    // 延遲移除 Fragment，避免畫面殘影
+//                    mBinding.llTournamentsDropdown.postDelayed({
                         fm.findFragmentByTag(tag)?.let {
                             fm.beginTransaction().remove(it).commitAllowingStateLoss()
                         }
-                    }, 50)
-                }
-                .start()
+//                    }, 50)
+//                }
+//                .start()
         }
     }
 

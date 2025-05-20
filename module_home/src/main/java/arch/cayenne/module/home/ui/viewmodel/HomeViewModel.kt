@@ -93,6 +93,18 @@ class HomeViewModel : BaseViewModel() {
         currentPlayType = playType
         if (playType != PlayType.CHAMPION) {
             getCurrentSportStatistical()
+        } else {
+            getChampionTournament()
+        }
+    }
+
+    private fun getChampionTournament() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repository.getChampionTournament(currentSportId)
+            withContext(Dispatchers.Main) {
+                "KC_ ${list.map { it.name }}".loge()
+                allTournaments.value = list
+            }
         }
     }
 
@@ -120,6 +132,7 @@ class HomeViewModel : BaseViewModel() {
         }
 
     }
+
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
