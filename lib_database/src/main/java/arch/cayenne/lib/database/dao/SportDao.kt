@@ -25,4 +25,7 @@ abstract class SportDao : BaseDao<SportBean>() {
 
     @Query("SELECT * FROM SportBean")
     abstract fun getAllSports(): List<SportBean>
+
+    @Query("SELECT * FROM SportBean WHERE sportId = :id")
+    abstract fun getSportById(id: Int): SportBean?
 }

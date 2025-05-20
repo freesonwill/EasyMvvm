@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentSportPickerBinding
@@ -24,6 +25,7 @@ class SportPickerFragment: BaseFragment<SportPickerViewModel, FragmentSportPicke
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rvSport.adapter = sportAdapter
+        (mBinding.rvSport.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     override fun initData() {
@@ -40,7 +42,6 @@ class SportPickerFragment: BaseFragment<SportPickerViewModel, FragmentSportPicke
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
                 putInt(Config.VALUE_SELECTED_SPORT, id)
             })
-
         }
     }
 

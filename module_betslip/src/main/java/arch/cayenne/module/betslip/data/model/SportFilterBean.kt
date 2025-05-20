@@ -12,7 +12,8 @@ data class SportFilterBean(
         fun getAllTypeBean(): SportFilterBean {
             return SportFilterBean(
                 sportId = -1,
-                sportName = R.string.sport_picker_all.getString()
+                sportName = R.string.sport_picker_all.getString(),
+                isSelected = true
             )
         }
     }

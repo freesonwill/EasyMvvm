@@ -13,18 +13,32 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
     private val _onSportListener = MutableLiveData<List<SportFilterBean>>()
     val onSportListener: LiveData<List<SportFilterBean>> get() = _onSportListener
 
+    private var pendingSelectedId: Int? = null
+
     init {
         viewModelScope.launch {
-            _onSportListener.value = repo.getAllSports()
+            val sports = repo.getAllSports()
+            _onSportListener.value = sports
+
+            // 如果初始化之前有選取請求，就處理它
+            pendingSelectedId?.let {
+                setSelectedById(it)
+            }
         }
     }
 
     fun setSelectedById(id: Int) {
+        val current = _onSportListener.value
+        if (current == null) {
+            // 尚未載入完，先暫存選擇 ID
+            pendingSelectedId = id
+            return
+        }
         _onSportListener.value?.let { data ->
-            _onSportListener.value = if (id == -1 ) {
-                data.onEach { it.isSelected = false }
+            _onSportListener.value = if (id == -1) {
+                data.map { it.copy(isSelected = false) }
             } else {
-                data.onEach { it.isSelected = it.sportId == id }
+                data.map { it.copy(isSelected = it.sportId == id) }
             }
         }
     }

@@ -35,6 +35,10 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
                 mViewModel.setTime(it.first, it.second)
                 mViewModel.loadData(getBetSlipEnum())
             }
+            onSportIdFilter.observe(viewLifecycleOwner) {
+                mViewModel.setIds(-1, it)
+                mViewModel.loadData(getBetSlipEnum())
+            }
         }
     }
 }

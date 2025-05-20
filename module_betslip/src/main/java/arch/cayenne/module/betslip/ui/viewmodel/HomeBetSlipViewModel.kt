@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
@@ -9,6 +10,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
 import arch.cayenne.module.betslip.data.model.SportFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
+import kotlinx.coroutines.launch
 
 class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFilterViewModel() {
 
@@ -59,8 +61,17 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFil
         )
     }
 
-    fun setSportFilter(sportFilter: SportFilterBean) {
-        _onSportFilter.value = sportFilter
-        setSportIdFilter(sportFilter.sportId)
+    fun setSportFilter(id: Int) {
+        if (id == -1) {
+            _onSportFilter.value = SportFilterBean.getAllTypeBean()
+            setSportIdFilter(-1)
+        } else {
+            viewModelScope.launch {
+                repo.getSportById(id)?.let {
+                    _onSportFilter.value = it
+                    setSportIdFilter(id)
+                }
+            }
+        }
     }
 }
