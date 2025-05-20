@@ -1,6 +1,7 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.LiveRemoteManager
@@ -80,5 +81,18 @@ class LiveMainRepository(
         }
     }
 
+    suspend fun registerMatchStaticsNotify(matchId: Long) {
+        remoteManager.registerMatchStaticsNotify(scope, matchId)
+    }
+
+    suspend fun unregisterStatisticsNotify() {
+        remoteManager.registerMatchStaticsNotify(scope, -1)
+    }
+
+    suspend fun observeMatchStaticsNotify() {
+        remoteManager.observeMatchStaticsNotify().collect {
+            "收到推送数据111111111".loge("测试")
+        }
+    }
 }
 

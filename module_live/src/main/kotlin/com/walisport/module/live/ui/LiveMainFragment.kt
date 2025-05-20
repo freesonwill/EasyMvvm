@@ -94,6 +94,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId)
         mViewModel.observeMatchBean(mViewModel.matchId)
+        mViewModel.registerStatisticsNotify(123456L)
         mViewModel.registerMatchInfoNotify(mViewModel.matchId)
     }
 
@@ -138,6 +139,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
+        mViewModel.unregisterStatisticsNotify()
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()

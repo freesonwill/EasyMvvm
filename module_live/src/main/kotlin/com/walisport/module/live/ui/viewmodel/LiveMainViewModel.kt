@@ -5,8 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
-import arch.cayenne.lib.database.entity.MarketTypeBean
-import arch.cayenne.lib.database.entity.MatchBean
 import com.walisport.module.live.data.LiveMainRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -72,6 +70,21 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     fun clearAllMatch(){
         viewModelScope.launch {
             repo.clearAllMatch()
+        }
+    }
+
+    //订阅并接收比赛技术统计推送
+    fun registerStatisticsNotify(matchId: Long) {
+        viewModelScope.launch {
+            repo.registerMatchStaticsNotify(matchId)
+            repo.observeMatchStaticsNotify()
+        }
+    }
+
+    //取消订阅比赛技术统计推送
+    fun unregisterStatisticsNotify() {
+        viewModelScope.launch {
+            repo.unregisterStatisticsNotify()
         }
     }
 }
