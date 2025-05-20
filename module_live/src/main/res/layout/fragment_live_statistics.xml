@@ -10,7 +10,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingStart="0dp"
+        android:paddingEnd="@dimen/dp_37">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -21,7 +23,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_32"
-                android:layout_marginStart="@dimen/dp_12"
                 android:text="@string/statistics"
                 android:textColor="@color/video_source_fragment_title_color"
                 android:textSize="17sp" />
@@ -30,7 +31,6 @@
                 android:id="@+id/view_tech_static"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginEnd="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_16"/>
         </LinearLayout>
