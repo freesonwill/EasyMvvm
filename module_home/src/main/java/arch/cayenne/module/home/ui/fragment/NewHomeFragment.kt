@@ -54,7 +54,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-    private val tournamentListFragment  = TournamentListFragment.newInstance()
+//    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -177,6 +177,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.INVISIBLE
+
+            val tournamentListFragment = TournamentListFragment.newInstance()
 
             tournamentListFragment.setOnReadyCallback {
                 // 渲染完成才顯示容器，避免先顯示空白畫面
