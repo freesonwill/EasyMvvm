@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.chatwebsocket.ChatSocketModuleInitializer
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
@@ -80,7 +81,8 @@ class ModuleInitializer : DefaultInitializer<String> {
         return super.dependencies() + listOf(
             SocketModuleInitializer::class.java,
             CommonModuleInitializer::class.java,
-            HomeModuleInitializer::class.java
+            HomeModuleInitializer::class.java,
+            ChatSocketModuleInitializer::class.java,
         )
     }
 

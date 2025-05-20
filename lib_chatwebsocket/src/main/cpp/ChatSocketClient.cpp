@@ -1,7 +1,6 @@
 #include <jni.h>
 #include <string>
-#include <cstring>
-#include <stdexcept>
+
 #include <android/log.h>
 
 #include "libduckgo/duckgo.h"
@@ -9,222 +8,251 @@
 #define  LOG_TAG    "duckgo"
 #define  LOGD(...)  __android_log_print(ANDROID_LOG_DEBUG,LOG_TAG,__VA_ARGS__)
 
-
-// 私有实现类
-class CCSPayloadCipher_p {
-public:
-    int cipherType = 0; // 1:pb, 2:json
-    bool initialized = false;
-};
-
-CCSPayloadCipher::CCSPayloadCipher() : _p(new CCSPayloadCipher_p()) {}
-CCSPayloadCipher::~CCSPayloadCipher() { delete _p; }
-
-void CCSPayloadCipher::init(int cipherType) {
-    if (_p) {
-        _p->cipherType = cipherType;
-        _p->initialized = true;
-        LOGD("Cipher initialized with type: %d", cipherType);
-    }
+// https://stackoverflow.com/a/49566764
+jobject NewInteger(JNIEnv *env, int value) {
+    jclass integerClass = env->FindClass("java/lang/Integer");
+    jmethodID integerConstructor = env->GetMethodID(integerClass, "<init>", "(I)V");
+    return env->NewObject(integerClass, integerConstructor, static_cast<jint>(value));
 }
 
-void CCSPayloadCipher::reset() {
-    if (_p) {
-        _p->initialized = false;
-        _p->cipherType = 0;
-    }
+static CCSPayloadCipher *getChipper(JNIEnv *env, jobject thiz) {
+    jclass jc = env->GetObjectClass(thiz);
+    jfieldID fid = env->GetFieldID(jc, "mNativePtr", "J");
+    jlong p = (jlong) env->GetLongField(thiz, fid);
+    CCSPayloadCipher *chiper = (CCSPayloadCipher *) p;
+    return chiper;
 }
 
-int CCSPayloadCipher::pack(unsigned short mid,
-                           unsigned short sid,
-                           unsigned short rid,
-                           const char *data,
-                           unsigned int dataSize,
-                           unsigned char *outData,
-                           unsigned short *outDataSize) {
-    if (!_p || !_p->initialized || !data || !outData || !outDataSize) {
-        return -1;
-    }
-
-    if (dataSize == 0 || dataSize > SOCKET_BUFFER - 10) {
-        return -2;
-    }
-
-    // 协议头 (10字节)
-    unsigned char *ptr = outData;
-
-    // 版本 (2字节)
-    *ptr++ = DUCKGO_VERSION & 0xFF;
-    *ptr++ = (DUCKGO_VERSION >> 8) & 0xFF;
-
-    // 消息头 (6字节)
-    *ptr++ = mid & 0xFF;
-    *ptr++ = (mid >> 8) & 0xFF;
-
-    *ptr++ = sid & 0xFF;
-    *ptr++ = (sid >> 8) & 0xFF;
-
-    *ptr++ = rid & 0xFF;
-    *ptr++ = (rid >> 8) & 0xFF;
-
-    // 数据长度 (2字节)
-    *ptr++ = dataSize & 0xFF;
-    *ptr++ = (dataSize >> 8) & 0xFF;
-
-    // 数据体
-    memcpy(ptr, data, dataSize);
-    ptr += dataSize;
-
-    *outDataSize = static_cast<unsigned short>(ptr - outData);
-
-    return 0;
-}
-
-int CCSPayloadCipher::unpack(unsigned char *buf,
-                             unsigned int bufSize,
-                             unsigned short *mid,
-                             unsigned short *sid,
-                             unsigned short *rid,
-                             unsigned char *data,
-                             unsigned char **pDataBuffer,
-                             unsigned int *dataBufferSize) {
-    if (!_p || !_p->initialized || !buf || bufSize < 10 ||
-        !mid || !sid || !rid || !data || !pDataBuffer || !dataBufferSize) {
-        return -1;
-    }
-
-    // 检查版本
-    unsigned short version = buf[0] | (buf[1] << 8);
-    if (version != DUCKGO_VERSION) {
-        return -2;
-    }
-
-    // 解析消息头
-    *mid = buf[2] | (buf[3] << 8);
-    *sid = buf[4] | (buf[5] << 8);
-    *rid = buf[6] | (buf[7] << 8);
-
-    // 获取数据长度
-    unsigned short size = buf[8] | (buf[9] << 8);
-    if (size > SOCKET_BUFFER || size > bufSize - 10) {
-        return -3;
-    }
-
-    // 设置数据指针
-    memcpy(data, buf + 10, size);
-    *pDataBuffer = data;
-    *dataBufferSize = size;
-
-    return 0;
-}
-
-// ================= JNI 绑定 =================
-extern "C" {
-
-JNIEXPORT jlong JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_createCipher(JNIEnv *, jobject) {
-    return reinterpret_cast<jlong>(new CCSPayloadCipher());
-}
-
+extern "C"
 JNIEXPORT void JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_initCipher(
-        JNIEnv *, jobject, jlong handle, jint cipherType) {
-    auto cipher = reinterpret_cast<CCSPayloadCipher*>(handle);
-    if (cipher) cipher->init(static_cast<int>(cipherType));
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_init(JNIEnv *env, jobject thiz, jint cipher_type) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+    LOGD("init chipper=%p with type=%d", chiper, cipher_type);
+    chiper->init(cipher_type);
 }
 
-JNIEXPORT void JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_destroyCipher(
-        JNIEnv *, jobject, jlong handle) {
-    delete reinterpret_cast<CCSPayloadCipher*>(handle);
-}
-
-JNIEXPORT void JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_resetCipher(
-        JNIEnv *, jobject, jlong handle) {
-    auto cipher = reinterpret_cast<CCSPayloadCipher*>(handle);
-    if (cipher) cipher->reset();
-}
-
+extern "C"
 JNIEXPORT jbyteArray JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_packData(
-        JNIEnv *env, jobject, jlong handle,
-        jshort mid, jshort sid, jshort rid,
-        jbyteArray data) {
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_pack(JNIEnv *env,
+                                                       jobject thiz,
+                                                       jshort mid,
+                                                       jshort sid,
+                                                       jshort rid,
+                                                       jstring data,
+                                                       jint dataSize
+) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+    LOGD("get chiper %p", chiper);
 
-    auto cipher = reinterpret_cast<CCSPayloadCipher*>(handle);
-    if (!cipher) return nullptr;
+    unsigned char outData[SOCKET_BUFFER];
+    memset(outData, 0, SOCKET_BUFFER);
+    unsigned short outDataSize = 0;
+    const char *cstr = env->GetStringUTFChars(data, 0);
+    unsigned int len = dataSize;
+    chiper->pack(mid, sid, rid, cstr, len, outData, &outDataSize);
 
-    jsize length = env->GetArrayLength(data);
-    BYTE buffer[SOCKET_BUFFER];
-    unsigned short outLen = 0;
+    env->ReleaseStringUTFChars(data, cstr);
 
-    jbyte* inputData = env->GetByteArrayElements(data, nullptr);
-    int result = cipher->pack(
-            static_cast<unsigned short>(mid),
-            static_cast<unsigned short>(sid),
-            static_cast<unsigned short>(rid),
-            reinterpret_cast<const char*>(inputData),
-            static_cast<unsigned int>(length),
-            buffer,
-            &outLen
-    );
-    env->ReleaseByteArrayElements(data, inputData, JNI_ABORT);
+    jbyteArray jarrRet = env->NewByteArray(outDataSize);
+    env->SetByteArrayRegion(jarrRet, 0, outDataSize, (jbyte *) outData);
 
-    if (result != 0) {
-        LOGD("Pack failed with error: %d", result);
+    return jarrRet;
+}
+
+extern "C"
+JNIEXPORT jbyteArray JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_newPack(JNIEnv *env,
+                                                          jobject thiz,
+                                                          jshort mid,
+                                                          jshort sid,
+                                                          jshort rid,
+                                                          jbyteArray data,
+                                                          jint dataSize
+) {
+    CCSPayloadCipher *cipher = getChipper(env, thiz);
+    if (cipher == nullptr) {
         return nullptr;
     }
 
-    jbyteArray ret = env->NewByteArray(outLen);
-    env->SetByteArrayRegion(ret, 0, outLen, reinterpret_cast<jbyte*>(buffer));
-    return ret;
-}
-
-JNIEXPORT jobject JNICALL
-Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_unpackData(
-        JNIEnv *env, jobject, jlong handle, jbyteArray data) {
-
-    auto cipher = reinterpret_cast<CCSPayloadCipher*>(handle);
-    if (!cipher) return nullptr;
-
-    jsize length = env->GetArrayLength(data);
-    BYTE buffer[SOCKET_BUFFER];
-    BYTE* pDataBuffer = nullptr;
-    unsigned short mid, sid, rid;
-    unsigned int dataSize = 0;
-
-    jbyte* inputData = env->GetByteArrayElements(data, nullptr);
-    int result = cipher->unpack(
-            reinterpret_cast<unsigned char*>(inputData),
-            static_cast<unsigned int>(length),
-            &mid, &sid, &rid,
-            buffer,
-            &pDataBuffer,
-            &dataSize
-    );
-    env->ReleaseByteArrayElements(data, inputData, JNI_ABORT);
-
-    if (result != 0) {
-        LOGD("Unpack failed with error: %d", result);
+    jbyte *dataBytes = env->GetByteArrayElements(data, nullptr);
+    if (dataBytes == nullptr) {
         return nullptr;
     }
 
-    // 获取Kotlin类引用
-    jclass resultClass = env->FindClass("arch/cayenne/lib/chatwebsocket/ChatNativeLib$UnpackResult");
-    jmethodID constructor = env->GetMethodID(resultClass, "<init>", "(SSS[B)V");
+    unsigned char outData[SOCKET_BUFFER];
+    memset(outData, 0, SOCKET_BUFFER);
+    unsigned short outDataSize = 0;
+    cipher->pack(mid, sid, rid, reinterpret_cast<char *>(dataBytes), dataSize,
+                 outData, &outDataSize);
 
-    // 创建返回对象
-    jbyteArray payload = env->NewByteArray(dataSize);
-    env->SetByteArrayRegion(payload, 0, dataSize, reinterpret_cast<jbyte*>(pDataBuffer));
+    env->ReleaseByteArrayElements(data, dataBytes, 0);
 
-    return env->NewObject(
-            resultClass, constructor,
-            static_cast<jshort>(mid),
-            static_cast<jshort>(sid),
-            static_cast<jshort>(rid),
-            payload
-    );
+    jbyteArray jarrRet = env->NewByteArray(outDataSize);
+    if (jarrRet == nullptr) {
+        return nullptr;
+    }
+    env->SetByteArrayRegion(jarrRet, 0, outDataSize, reinterpret_cast<jbyte *>(outData));
+    return jarrRet;
 }
 
-} // extern "C"
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_nativeCreateChiper(JNIEnv *env, jobject thiz) {
+    CCSPayloadCipher *chiper = new CCSPayloadCipher();
+    LOGD("create chipper=%p", chiper);
+    return (jlong) chiper;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_reset(JNIEnv *env, jobject thiz) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+    LOGD("reset chipper=%p", chiper);
+    chiper->reset();
+}
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_unpack(JNIEnv *env,
+                                                         jobject thiz,
+                                                         jbyteArray data
+) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+
+    jsize len = env->GetArrayLength(data);
+    jbyte *body = env->GetByteArrayElements(data, 0);
+    unsigned char *someUnsignedChar = new unsigned char[len];
+    for (jint i = 0; i < len; i++) {
+        someUnsignedChar[i] = (unsigned char) body[i];
+    }
+
+    unsigned short mid = -1;
+    unsigned short sid = -1;
+    unsigned short rid = -1;
+
+    unsigned char cbDataBuffer[SOCKET_BUFFER];
+    memset(cbDataBuffer, 0, SOCKET_BUFFER);
+
+    unsigned char *pDataBuffer = 0;
+    unsigned int wDataSize = 0;
+
+    chiper->unpack(someUnsignedChar, len, &mid, &sid, &rid, cbDataBuffer, &pDataBuffer, &wDataSize);
+
+    std::string str;
+    if (wDataSize) {
+        str.assign((const char *) pDataBuffer, wDataSize);
+    }
+
+    jobjectArray retobjarr = (jobjectArray) env->NewObjectArray(4,
+                                                                env->FindClass("java/lang/Object"),
+                                                                NULL);
+    env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
+    env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
+    env->SetObjectArrayElement(retobjarr, 2, NewInteger(env, rid));
+    env->SetObjectArrayElement(retobjarr, 3, env->NewStringUTF(str.data()));
+
+    env->ReleaseByteArrayElements(data, body, 0);
+    delete[] someUnsignedChar;
+    return retobjarr;
+}
+
+//extern "C"
+//JNIEXPORT jobjectArray JNICALL
+//Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_newUnpack(JNIEnv *env, jobject thiz,
+//                                                    jbyteArray data) {
+//    CCSPayloadCipher *cipher = getChipper(env, thiz);
+//
+//    jsize len = env->GetArrayLength(data);
+//    jbyte *body = env->GetByteArrayElements(data, nullptr);
+//    unsigned char *someUnsignedChar = new unsigned char[len];
+//    env->GetByteArrayRegion(data, 0, len, reinterpret_cast<jbyte *>(someUnsignedChar));
+//
+//    unsigned short mid = -1;
+//    unsigned short sid = -1;
+//    unsigned short rid = -1;
+//    unsigned char cbDataBuffer[SOCKET_BUFFER] = {0};
+//    unsigned char *pDataBuffer = nullptr;
+//    unsigned int wDataSize = 0;
+//
+//    cipher->unpack(someUnsignedChar, len, &mid, &sid, &rid, cbDataBuffer, &pDataBuffer, &wDataSize);
+//
+//    jbyteArray dataBufferArray = env->NewByteArray(wDataSize);
+//    env->SetByteArrayRegion(dataBufferArray, 0, wDataSize, reinterpret_cast<jbyte *>(pDataBuffer));
+//
+//    jobjectArray retobjarr = env->NewObjectArray(4, env->FindClass("java/lang/Object"), nullptr);
+//    env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
+//    env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
+//    env->SetObjectArrayElement(retobjarr, 2, NewInteger(env, rid));
+//    env->SetObjectArrayElement(retobjarr, 3, dataBufferArray);
+//
+//    env->DeleteLocalRef(dataBufferArray);
+//    env->ReleaseByteArrayElements(data, body, 0);
+//    delete[] someUnsignedChar;
+//    return retobjarr;
+//}
+
+extern "C"
+JNIEXPORT jobjectArray JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_newUnpack(JNIEnv *env, jobject thiz,
+                                                            jbyteArray data) {
+    CCSPayloadCipher *cipher = getChipper(env, thiz);
+    if (cipher == nullptr) {
+        return nullptr;
+    }
+
+    jsize len = env->GetArrayLength(data);
+    jbyte *body = env->GetByteArrayElements(data, nullptr);
+    if (body == nullptr) {
+        return nullptr;
+    }
+
+    unsigned short mid = -1;
+    unsigned short sid = -1;
+    unsigned short rid = -1;
+    unsigned char cbDataBuffer[SOCKET_BUFFER] = {0};
+    unsigned char *pDataBuffer = nullptr;
+    unsigned int wDataSize = 0;
+
+    int result = cipher->unpack(reinterpret_cast<unsigned char*>(body), len,
+                                &mid, &sid, &rid,
+                                cbDataBuffer, &pDataBuffer, &wDataSize);
+
+    env->ReleaseByteArrayElements(data, body, 0);
+
+    if (result != 0 || wDataSize == 0) { // 假设返回0表示成功
+        return nullptr;
+    }
+
+    // 创建返回数组
+    jobjectArray retobjarr = env->NewObjectArray(4, env->FindClass("java/lang/Object"), nullptr);
+    if (retobjarr == nullptr) {
+        return nullptr;
+    }
+
+    // 设置MID
+    env->SetObjectArrayElement(retobjarr, 0, NewInteger(env, mid));
+    // 设置SID
+    env->SetObjectArrayElement(retobjarr, 1, NewInteger(env, sid));
+    // 设置RID
+    env->SetObjectArrayElement(retobjarr, 2, NewInteger(env, rid));
+
+    // 设置数据
+    jbyteArray dataArray = env->NewByteArray(wDataSize);
+    env->SetByteArrayRegion(dataArray, 0, wDataSize, reinterpret_cast<jbyte*>(pDataBuffer));
+    env->SetObjectArrayElement(retobjarr, 3, dataArray);
+    env->DeleteLocalRef(dataArray);
+
+    return retobjarr;
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_arch_cayenne_lib_chatwebsocket_ChatNativeLib_nativeFinalizer(JNIEnv *env, jobject thiz,
+                                                                  jlong ptr) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+    LOGD("delete chipper=%p", chiper);
+    if (chiper) {
+        delete chiper;
+    }
+}

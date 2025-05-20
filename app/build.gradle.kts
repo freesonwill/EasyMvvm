@@ -61,6 +61,7 @@ dependencies {
     implementation(project(":lib_websocket"))
     implementation(project(":lib_ijkplayer"))
     implementation(project(":lib_base"))
+    implementation(project(":lib_chatwebsocket"))
     implementation(project(":module_home"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))

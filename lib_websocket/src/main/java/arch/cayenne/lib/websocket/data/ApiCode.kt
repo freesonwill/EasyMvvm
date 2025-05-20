@@ -43,5 +43,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     ORDER_STATUS_NOTIFY(600, 1001),     //600-1001: 订单状态推送(被動)
     GET_MARKET_TYPE(500, 1007)  ,   // 500-1007: 盘口分类
 
-    EARLY_SETTLE_PRICE(500,1016) //500-1016: 提前结算报价
+    EARLY_SETTLE_PRICE(500,1016), //500-1016: 提前结算报价
+
+    CHAT_PING(0,2), //0 -2 聊天心跳
+    CHAT_LOGIN(90,1101), //7-7 聊天登陆
 }

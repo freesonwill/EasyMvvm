@@ -1,99 +1,103 @@
 package arch.cayenne.lib.chatwebsocket
 
+
+import android.util.Log
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.chatwebsocket.data.ChatISecurity
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
-import arch.cayenne.lib.websocket.data.ISecurity
 import arch.cayenne.lib.websocket.data.InvalidDataResponseError
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 
-class ChatNativeLib : ISecurity<IRequest, ByteArray, IResponse> {
-    private val TAG = ChatNativeLib::class.java.simpleName
-    private val CIPHER_TYPE_PB = 1
-    private val CIPHER_TYPE_JSON = 2
-    private var cipherHandler: Long = -1
-
+class ChatNativeLib : ChatISecurity<IRequest, ByteArray, IResponse> {
     companion object {
-        init {
-            System.loadLibrary("chatlib")
-        }
+        const val CIPHER_TYPE_PB = 1
+        const val CIPHER_TYPE_JSON = 2
     }
 
     init {
-        createNativeCipher()
+        System.loadLibrary("chatlib")
+        createChiper()
     }
 
-    // Native方法
-    external fun createCipher(): Long
-    external fun initCipher(handle: Long, cipherType: Int)
-    external fun destroyCipher(handle: Long)
-    external fun resetCipher(handle: Long)
-    external fun packData(handle: Long, mid: Short, sid: Short, rid: Short, data: ByteArray): ByteArray?
-    external fun unpackData(handle: Long, data: ByteArray): UnpackResult?
+    external fun init(cipherType: Int)
+    external fun pack(mid: Short, sid: Short, rid: Short, data: String?, dataSize: Int): ByteArray?
+    external fun newPack(mid: Short, sid: Short, rid: Short, data: ByteArray?, dataSize: Int): ByteArray?
+    external fun unpack(data: ByteArray?): Array<Any?>?
+    external fun newUnpack(data: ByteArray?): Array<Any?>?
+    external fun nativeCreateChiper(): Long
+    external fun nativeFinalizer(ptr: Long)
+    external fun reset()
 
-    private fun createNativeCipher() {
-        cipherHandler = createCipher()
-        initCipher(cipherHandler, CIPHER_TYPE_JSON)
+    private var mNativePtr: Long = 0
+
+    private fun createChiper() {
+        mNativePtr = 0
+        Log.d("ChatNativeLib", "createChiper1:$mNativePtr")
+        mNativePtr = nativeCreateChiper()
+        Log.d("ChatNativeLib", "createChiper2:$mNativePtr")
+        init(CIPHER_TYPE_JSON) // Default to JSON cipher type
     }
 
-    override fun encrypt(data: IRequest): ByteArray? {
-        if (data !is SocketRequestData) return null
-        "Request加密 -> mid = ${data.mid}, sid = ${data.sid} data = ${data.payloadByteArray}".logi(TAG)
-        return packData(
-            cipherHandler,
-            mid = data.mid,
-            sid = data.sid,
-            rid = data.rid,
-            data = data.payloadByteArray ?: byteArrayOf()
-        )
+    protected fun finalize() {
+        Log.d("ChatNativeLib", "finalize:$mNativePtr")
+        kotlin.runCatching {
+            nativeFinalizer(mNativePtr)
+        }
     }
 
     override fun decrypt(data: ByteArray): IResponse {
         try {
-            val unpack = unpackData(cipherHandler, data) ?: return InvalidDataResponseError()
-            val mid = unpack.mid
-            val sid = unpack.sid
-            val rid = unpack.rid
-            val jsonPayload = unpack.payload
-            "封包解密 mid=$mid, sid=$sid proto=${String(jsonPayload)}".logi(TAG)
-            return SocketOriginResponseData(
-                mid = mid,
-                sid = sid,
-                rid = rid,
-                originProto = jsonPayload
-            )
+            val unpack = newUnpack(data)
+            "封包解密 ${unpack?.size}  ${unpack?.toList()}  \n ${unpack?.get(0) !is Int} ${unpack?.get(1) !is Int}  ${unpack?.get(2) !is Int} ${unpack?.get(3) !is ByteArray}".logi(ChatNativeLib::class.java.simpleName)
+
+            return if (unpack == null
+                || unpack.size != 4
+                || unpack[0] !is Int
+                || unpack[1] !is Int
+                || unpack[2] !is Int
+                || unpack[3] !is ByteArray) {
+                InvalidDataResponseError()
+            } else {
+                val mid = (unpack[0] as Int).toShort()
+                val sid = (unpack[1] as Int).toShort()
+                val rid = (unpack[2] as Int).toShort()
+                val jsonPayload = unpack[3] as ByteArray
+                "封包解密1 mid=$mid, sid=$sid size ${jsonPayload.size} proto=${jsonPayload}".logi(ChatNativeLib::class.java.simpleName)
+                SocketOriginResponseData(
+                    mid = mid,
+                    sid = sid,
+                    rid = rid,
+                    originProto = jsonPayload
+                )
+            }
         } catch (e: Exception) {
-            "message decrypt failed".loge(TAG)
+            "message decrypt failed".loge(ChatNativeLib::class.java.simpleName)
             return InvalidDataResponseError()
         }
     }
 
+    override fun encrypt(data: IRequest): ByteArray? {
+        if (data !is SocketRequestData) return null
+        "Request加密 -> mid = ${data.mid}, sid = ${data.sid} data = ${data.payloadByteArray}".logi(
+            ChatNativeLib::class.java.simpleName)
+        return newPack(
+            mid = data.mid,
+            sid = data.sid,
+            rid = data.rid,
+            data = data.payloadByteArray ?: byteArrayOf(),
+            dataSize = data.payloadByteArray?.size ?: 0
+        )
+    }
+
+    override fun destroySecurity() {
+
+    }
+
     override fun resetSecurity() {
-        resetCipher(cipherHandler)
+        reset()
+        init(CIPHER_TYPE_JSON) // Default to JSON cipher type
     }
-
-    data class UnpackResult(
-        val mid: Short,
-        val sid: Short,
-        val rid: Short,
-        val payload: ByteArray
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is UnpackResult) return false
-            return mid == other.mid && sid == other.sid && rid == other.rid &&
-                    payload.contentEquals(other.payload)
-        }
-
-        override fun hashCode(): Int {
-            var result = mid.toInt()
-            result = 31 * result + sid.toInt()
-            result = 31 * result + rid.toInt()
-            result = 31 * result + payload.contentHashCode()
-            return result
-        }
-    }
-
 }
