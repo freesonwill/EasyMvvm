@@ -8,11 +8,9 @@ class BalanceRepository(
     override val scope: CoroutineScope,
     private val infoDao: InfoDao
 ): BaseRepository() {
-
     fun observeBalance() = infoDao.observeBalance()
 
     suspend fun getBalance(): Long {
         return infoDao.getBalance()
     }
-
 }

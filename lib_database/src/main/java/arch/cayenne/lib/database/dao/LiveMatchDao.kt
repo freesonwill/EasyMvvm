@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
+import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -21,6 +22,9 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelections(selections: List<LiveSelectionBean>)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertSelectionsRecord(selections: List<LiveSelectionBeanRecord>)
 
     @Transaction
     @Query("SELECT * FROM LiveMatchBean WHERE matchId = :matchId")
@@ -36,6 +40,7 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("SELECT * FROM LiveMatchBean WHERE matchId IN (:matchIds)")
     abstract suspend fun getMatchByIds(matchIds: List<Long>): List<LiveMatchBean>
 
+
     @Transaction
     @Query("SELECT * FROM LiveSelectionBean WHERE marketId = :marketId")
     abstract suspend fun getSelectionById(marketId: Long): LiveSelectionBean
@@ -48,6 +53,10 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("SELECT * FROM LiveSelectionBean WHERE marketId =:marketId")
     abstract suspend fun getSelectionsByIds(marketId: Long): List<LiveSelectionBean>
 
+    @Transaction
+    @Query("SELECT * FROM LiveSelectionBeanRecord")
+    abstract suspend fun getSelectionsRecord(): List<LiveSelectionBeanRecord>
+
     @Query("DELETE FROM LiveMatchBean")
     abstract fun deleteMatchBean()
 
@@ -56,6 +65,9 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
 
     @Query("DELETE FROM LiveSelectionBean")
     abstract fun deleteSelectionBean()
+
+    @Query("DELETE FROM LiveSelectionBeanRecord")
+    abstract fun deleteSelectionBeanRecord()
 
     //收到notify更新数据
     @Query(
@@ -94,17 +106,21 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         matches: List<LiveMatchBean>,
         markets: List<LiveMarketBean>,
         selections: List<LiveSelectionBean>,
+        selectionsRecord :List<LiveSelectionBeanRecord>,
     ) {
         insertMatch(matches)
         insertMarkets(markets)
         insertSelections(selections)
+        insertSelectionsRecord(selectionsRecord)
     }
 
     @Transaction
     open suspend fun updateLiveSelectionBean(
         selections: List<LiveSelectionBean>,
+        selectionsRecord: List<LiveSelectionBeanRecord>,
     ) {
         insertSelections(selections)
+        insertSelectionsRecord(selectionsRecord)
     }
 
 
@@ -113,5 +129,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         deleteMatchBean()
         deleteMarketBean()
         deleteSelectionBean()
+        deleteSelectionBeanRecord()
     }
 }

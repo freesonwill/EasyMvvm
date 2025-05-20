@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 import com.walisport.module.live.ui.widget.LiveBetListLayout
 
@@ -40,12 +41,11 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
-            var positions = 0
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
             lists?.withIndex()?.forEach { (index, listIt) ->
-                if (position==0||(positions==0||listIt.style == LiveBetListLayout.StatesArrange.BO_DIAN.code)){
+                if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
                         viewBinding.clBet.visibility = View.VISIBLE
                         viewBinding.awayName.text = awayName
                         viewBinding.homeName.text = homeName
@@ -56,19 +56,18 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                             .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
                             .into(viewBinding.awayLogo)
                         viewBinding.andName.visibility =
-                            if (lists?.get(0)?.style == LiveBetListLayout.StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
+                            if (lists[0].style == StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
                     } else {
                         viewBinding.clBet.visibility = View.GONE
                     }
                 viewBinding.lbBet.submitList(
-                    LiveBetListLayout.StatesArrange.getStates(listIt.style),
-                    positions,
+                    StatesArrange.getStates(listIt.style),
+                    index,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString(), listIt.selectionId, listIt.active,
+                    listIt.odds.getOdds().toString(), listIt.selectionId, listIt.active,listIt.oddsStatus,
                 ) { it ->
                     callback.itemListCallback(it, listIt.selectionId)
                 }
-                positions++
             }
         }
     }

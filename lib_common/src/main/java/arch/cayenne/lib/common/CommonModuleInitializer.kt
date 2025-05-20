@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
+import arch.cayenne.lib.database.GameDatabase
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.core.context.loadKoinModules

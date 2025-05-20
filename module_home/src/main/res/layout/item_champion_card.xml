@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_match_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_champion_item_card">
+
+    <!-- 頂部賽事名稱 -->
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_market_name"
+        android:layout_width="wrap_content"
+        android:layout_height="21dp"
+        android:layout_marginTop="@dimen/dp_6"
+        android:layout_marginStart="24dp"
+        android:textColor="@color/secondary_text"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="2026美加墨世界盃" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_odds_grid"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="43dp"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:spanCount="2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

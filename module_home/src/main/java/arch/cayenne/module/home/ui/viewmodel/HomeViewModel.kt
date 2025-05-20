@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
+import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.module.bet.repo.BetRepository
@@ -14,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -22,7 +22,8 @@ class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
     }
-    private val repository : HomeRepository by inject { parametersOf(viewModelScope) }
+    private val repository : HomeRepository by inject()
+    private val balanceRepository: BalanceRepository by inject()
     var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
     private var currentPlayType : PlayType = PlayType.TODAY
@@ -41,7 +42,7 @@ class HomeViewModel : BaseViewModel() {
         super.initViewModel()
         //觀察餘額變化
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeBalance().collect {
+            balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
                 }
@@ -53,7 +54,9 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
         currentPlayType = playType
-        getCurrentSportStatistical()
+        if (playType != PlayType.CHAMPION) {
+            getCurrentSportStatistical()
+        }
     }
 
     fun resetLiveData() {

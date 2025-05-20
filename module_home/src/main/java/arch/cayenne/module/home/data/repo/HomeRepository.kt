@@ -19,6 +19,7 @@ import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -216,7 +217,7 @@ class HomeRepository(
                     order = page * 100 + index
                 )
             }
-            database.matchDao().insertFullMatch(
+            matchDao.insertFullMatch(
                 tournamentMatchRefs = tournamentMatchRefs,
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
@@ -236,7 +237,7 @@ class HomeRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_MATCH,
+            apiCode = ApiCode.SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
@@ -253,7 +254,7 @@ class HomeRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
@@ -292,13 +293,11 @@ class HomeRepository(
         return null
     }
 
-    suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
-
     /**
     * 取得特定的match，藉由matchId
     * */
     suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
-        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected().firstOrNull()
+        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected(betDao).firstOrNull()
     }
 
     /**
@@ -326,7 +325,7 @@ class HomeRepository(
             updateData.selections,
             updateData.matchMarketCrossRefs,
             updateData.marketSelectCrossRefs
-        ).setSelected()
+        ).setSelected(betDao)
     }
 
     /**
@@ -334,27 +333,15 @@ class HomeRepository(
      * @return 根據條件query的賽事資料
      * */
     suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
-        return database.matchDao().getFullMatch(playType, tournamentId, page, startTime).setSelected()
+        return matchDao.getFullMatch(playType, tournamentId, page, startTime).setSelected(betDao)
     }
-    suspend fun queryFullMatches(matchIds: List<Long>) : List<MatchWithMarkets> {
-        val result = database.matchDao().getOneMatchByIds(matchIds).setSelected()
+
+    suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
+        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
-    /**
-     * 找出投注單中未投注的selection，把它設為點擊狀態
-     * */
-    private suspend fun List<MatchWithMarkets>.setSelected(): List<MatchWithMarkets> {
-        val betSelections = betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
-        this.forEach { match ->
-            match.markets.forEach { market ->
-                market.selections.forEach {
-                    it.isSelected = betSelections.contains(it.selectionId)
-                }
-            }
-        }
-        return this
-    }
+
 
     fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)

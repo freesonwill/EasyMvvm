@@ -28,6 +28,7 @@ class LiveMainRepository(
                     matches = matchFullData.match,
                     markets = matchFullData.markets,
                     selections = matchFullData.selections,
+                    selectionsRecord = matchFullData.selectionsRecord,
                 )
             }
     }
@@ -65,17 +66,15 @@ class LiveMainRepository(
             viewerCount = marketInfo.liveInfo.viewerCount,
             clockModified = marketInfo.liveInfo.clockModified,
         )
-        var selections = marketUpdate.selectionsToRoomData()
-        database.liveMatchDao().updateLiveSelectionBean(selections =selections.selections )
-
-
+        var selections = marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
+        database.liveMatchDao().updateLiveSelectionBean(selections =selections.selections,selections.selectionsRecord )
     }
 
-    suspend fun unregisterMatchInfoNotify(matchId: Long) {
+     fun unregisterMatchInfoNotify(matchId: Long) {
         remoteManager.unregisterMatchInfoNotify(scope, matchId)
     }
 
-    suspend fun clearAllMatch(){
+     fun clearAllMatch(){
         scope.launch(Dispatchers.IO){
             database.clearAllTables()
         }

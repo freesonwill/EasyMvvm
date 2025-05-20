@@ -23,7 +23,7 @@ import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
-    private val onMatchItemClickListener: MatchItemAdapter.OnMatchItemClickListener?
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
     private lateinit var oddsColumnAdapter: OddsColumnAdapter
 

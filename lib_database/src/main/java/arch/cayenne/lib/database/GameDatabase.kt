@@ -30,6 +30,8 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
+import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+
 @Database(
     entities = [
         InfoBean::class,
@@ -48,7 +50,8 @@ import arch.cayenne.lib.database.entity.LiveSelectionBean
         MarketTypeBean::class,
         LiveMatchBean::class,
         LiveMarketBean::class,
-        LiveSelectionBean::class
+        LiveSelectionBean::class,
+        LiveSelectionBeanRecord::class
     ],
     version = 1,
     exportSchema = false

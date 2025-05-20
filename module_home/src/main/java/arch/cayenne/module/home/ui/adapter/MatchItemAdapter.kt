@@ -56,10 +56,12 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
             super.onBindViewHolder(holder, position, payloads)
         }
     }
+}
 
-    interface OnMatchItemClickListener {
-        fun onLiveEntryClick(item: MatchWithMarkets)
-        fun onFavoriteClick(item: MatchWithMarkets)
-        fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
-    }
+
+
+interface OnMatchItemClickListener {
+    fun onLiveEntryClick(item: MatchWithMarkets)
+    fun onFavoriteClick(item: MatchWithMarkets)
+    fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
 }
