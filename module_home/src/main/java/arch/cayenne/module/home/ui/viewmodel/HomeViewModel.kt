@@ -55,7 +55,7 @@ class HomeViewModel : BaseViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 val playType = currentPlayType
                 //TODO 需實作
-                val tournament = repository.getTournamentById(playType.id, currentSportId, id)
+                val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
                     val updatedList = currentList.toMutableList()
                     updatedList.add(tournament) // 👉 加到尾端
