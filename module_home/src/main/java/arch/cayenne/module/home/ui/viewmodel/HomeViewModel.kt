@@ -111,7 +111,6 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getChampionTournament(currentSportId)
             withContext(Dispatchers.Main) {
-                "KC_ ${list.map { it.name }}".loge()
                 allTournaments.value = list
             }
         }
