@@ -45,6 +45,16 @@ class HomeViewModel : BaseViewModel() {
     private val _selectedTournamentId = MutableLiveData<Int>()
     val selectedTournamentId: MutableLiveData<Int> get() = _selectedTournamentId
 
+    private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
+    val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
+
+    fun requestCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = true
+    }
+
+    fun consumeCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = false
+    }
     fun selectTournament(id: Int) {
         val currentList = tenTournaments.value.orEmpty()
         val existsInCurrent = currentList.any { it.id == id }
