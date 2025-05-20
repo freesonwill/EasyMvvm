@@ -109,23 +109,25 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
 
     private fun showSportFilter() {
         mViewModel.onSportFilter.value?.let {
-            val f = SportPickerFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(Config.VALUE_SELECTED_SPORT, it.sportId)
-                }
-            }
-            childFragmentManager.setFragmentResultListener(Config.KEY_RESULT, viewLifecycleOwner) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                if (bundle.containsKey(Config.VALUE_SELECTED_SPORT)) {
-                    bundle.getInt(Config.VALUE_SELECTED_SPORT).let { id ->
-                        mViewModel.setSportFilter(id)
+            val lastFragment = childFragmentManager.findFragmentByTag(SportPickerFragment.TAG)
+            if (lastFragment == null) {
+                val f = SportPickerFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt(Config.VALUE_SELECTED_SPORT, it.sportId)
                     }
                 }
-                childFragmentManager.beginTransaction().remove(f).commit()
+                childFragmentManager.setFragmentResultListener(Config.KEY_RESULT, viewLifecycleOwner) { _, bundle ->
+                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                    if (bundle.containsKey(Config.VALUE_SELECTED_SPORT)) {
+                        bundle.getInt(Config.VALUE_SELECTED_SPORT).let { id ->
+                            mViewModel.setSportFilter(id)
+                        }
+                    }
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentContainer.id, f, f.javaClass.simpleName)
+                    .commit()
             }
-            childFragmentManager.beginTransaction()
-                .replace(mBinding.fragmentContainer.id, f, f.javaClass.simpleName)
-                .commit()
         }
     }
 }
