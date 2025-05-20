@@ -137,7 +137,7 @@ class BetSlipReserveFragment :
         }
     }
 
-    override fun getBetSlipEnum(): BetSlipEnum? {
-        return null
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.Reserve
     }
 }

@@ -153,11 +153,11 @@ class BetSlipViewModel : BaseViewModel() {
         this.endTime = endTime
     }
 
-    fun loadData(status: BetSlipEnum?) {
-        status?.let {
-            getOrders(it)
-        } ?: run {
+    fun loadData(status: BetSlipEnum) {
+        if (status == BetSlipEnum.Reserve) {
             getReserveOrder()
+        } else {
+            getOrders(status)
         }
     }
 }
