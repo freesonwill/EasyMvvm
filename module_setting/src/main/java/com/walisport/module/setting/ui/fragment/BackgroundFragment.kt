@@ -1,4 +1,4 @@
-package com.walisport.module.setting.fragment
+package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.setting.data.BackgroundViewModel
+import com.walisport.module.setting.ui.viewmodel.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
 import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
 import kotlin.reflect.KClass
