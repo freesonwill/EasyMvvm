@@ -17,7 +17,7 @@ import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.utisl.BetSlipItemManagerInterface
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
@@ -30,7 +30,7 @@ abstract class BetSlipBaseItemManager(
 ) : BetSlipItemManagerInterface {
     private val userManager: UserDataManager by inject(UserDataManager::class.java)
     var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
-    var liveListener:RecyclerItemListener<BetSlipSelectionData>? = null
+    var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
 
 
     companion object {

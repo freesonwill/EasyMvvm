@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import com.walisport.module.live.compare.LiveEmojiCompare
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding
