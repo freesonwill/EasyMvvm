@@ -10,7 +10,7 @@
     <color name="secondary_title">@color/secondary_text</color>
     <color name="date_text_select">#000000</color>
     <color name="date_text_unselect">#929298</color>
-    <color name="bg_card_gradient_start">#16182300</color>
+    <color name="bg_card_gradient_start">#00161823</color>
     <color name="tab_indicator_color">#24EE8A</color>
     <color name="bg_sport_selected">#1BAF6A</color>
     <color name="bg_sport_unselect">#3F434B</color>

@@ -34,14 +34,13 @@ class TournamentSectionView @JvmOverloads constructor(
     private lateinit var adapter: TournamentSectionAdapter
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
-    var onCollapse: (() -> Unit)? = null
-
+    var onCollapseClick: (() -> Unit)? = null
     var onTournamentClick: ((Int) -> Unit)? = null
 
     init {
         binding.rvTournamentList.layoutManager = LinearLayoutManager(context)
         binding.ivHomeLeagueCollapse.setOnClickListener {
-            collapseWithAnimation()
+            onCollapseClick?.invoke()
         }
     }
 
@@ -72,8 +71,8 @@ class TournamentSectionView @JvmOverloads constructor(
                         name = "熱門",
                         simpleName = "",
                         icon = "",
-                        weight = 1,
-                        hot = false,
+                        hot = true,
+                        weight = 1
                     )
                 )
             }
@@ -159,7 +158,7 @@ class TournamentSectionView @JvmOverloads constructor(
         layoutManager.startSmoothScroll(scroller)
     }
 
-    private fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
+    fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
         binding.rvTournamentList.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -167,26 +166,6 @@ class TournamentSectionView @JvmOverloads constructor(
                 setTournamentList(tournaments)
             }
         })
-    }
-    fun expandWithData(tournaments: List<TournamentDataModel>) {
-        this.alpha = 0f
-        postSetTournamentList(tournaments)
-        post {
-            this.animate()
-                .alpha(1f)
-                .setDuration(200)
-                .start()
-        }
-    }
-
-    fun collapseWithAnimation() {
-        this.animate()
-            .translationY(-this.height.toFloat())
-            .setDuration(200)
-            .withEndAction {
-                onCollapse?.invoke()
-            }
-            .start()
     }
 
     interface OnChampionDropdownListener {

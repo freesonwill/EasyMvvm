@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.content.Context
 import android.os.Bundle
+import androidx.core.view.doOnPreDraw
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -17,9 +18,30 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var dropdownListener: TournamentSectionView.OnChampionDropdownListener? = null
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
+
+    private var onCollapseCallback: (() -> Unit)? = null
+    private var onReadyCallback: (() -> Unit)? = null
+
+    fun setOnReadyCallback(callback: () -> Unit) {
+        onReadyCallback = callback
+    }
+
+    fun setCollapseCallback(callback: () -> Unit) {
+        onCollapseCallback = callback
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         dropdownListener = parentFragment as? TournamentSectionView.OnChampionDropdownListener
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.tsvContainer.doOnPreDraw {
+            onReadyCallback?.invoke()
+        }
+        mBinding.tsvContainer.onCollapseClick = {
+            onCollapseCallback?.invoke()
+        }
     }
 
     override fun initListener() {
@@ -29,16 +51,15 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
         homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
             "observe tournaments:$list".logd()
             if (!list.isNullOrEmpty()) {
-//                mBinding.tsvContainer.postSetTournamentList(list)
-                mBinding.tsvContainer.expandWithData(list)
+                mBinding.tsvContainer.postSetTournamentList(list)
                 mBinding.tsvContainer.onTournamentClick = { id ->
                     mViewModel.selectTournament(id)
                     homeViewModel.setShowAllTournaments(false)
-                    mBinding.tsvContainer.collapseWithAnimation()
+                    onCollapseCallback?.invoke()
                 }
 
                 // 使用者點擊 collapse icon
-                mBinding.tsvContainer.onCollapse = {
+                mBinding.tsvContainer.onCollapseClick = {
                     // 呼叫 parent fragment（NewHomeFragment）的 toggle 方法
                     dropdownListener?.onRequestCollapseChampion()
                 }
@@ -46,16 +67,10 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
         }
     }
 
-    override fun initData() {
-        super.initData()
-    }
 
     override fun onDetach() {
         dropdownListener = null
         super.onDetach()
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
     }
 
     companion object {

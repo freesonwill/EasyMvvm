@@ -54,7 +54,6 @@ class HomeViewModel : BaseViewModel() {
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val playType = currentPlayType
-                //TODO 需實作
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
                     val updatedList = currentList.toMutableList()
@@ -140,7 +139,8 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun setShowAllTournaments(isShow: Boolean) {
-        getCurrentTournament(currentSportId, isShow)
+        //TODO 做一個getAllTournament的方法
+        if (isShow) getCurrentTournament(currentSportId, isShow)
     }
 
     fun getCurrentSportId() = currentSportId
