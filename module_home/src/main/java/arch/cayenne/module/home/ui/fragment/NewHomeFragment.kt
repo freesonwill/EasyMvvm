@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -200,24 +201,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
-//            mBinding.llTournamentsDropdown.animate()
-//                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
-//                .alpha(0f)
-//                .setDuration(250)
-//                .setInterpolator(AccelerateInterpolator())
-//                .withEndAction {
-//                    // 清理動畫狀態
-//                    mBinding.llTournamentsDropdown.alpha = 1f
-//                    mBinding.llTournamentsDropdown.visibility = View.GONE
-//
-//                    // 延遲移除 Fragment，避免畫面殘影
-//                    mBinding.llTournamentsDropdown.postDelayed({
+            mBinding.llTournamentsDropdown.animate()
+                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
+                .alpha(0f)
+                .setDuration(250)
+                .setInterpolator(AccelerateInterpolator())
+                .withEndAction {
+                    // 清理動畫狀態
+                    mBinding.llTournamentsDropdown.alpha = 1f
+                    mBinding.llTournamentsDropdown.visibility = View.GONE
+
+                    // 延遲移除 Fragment，避免畫面殘影
+                    mBinding.llTournamentsDropdown.postDelayed({
                         fm.findFragmentByTag(tag)?.let {
                             fm.beginTransaction().remove(it).commitAllowingStateLoss()
                         }
-//                    }, 50)
-//                }
-//                .start()
+                    }, 50)
+                }
+                .start()
         }
     }
 
