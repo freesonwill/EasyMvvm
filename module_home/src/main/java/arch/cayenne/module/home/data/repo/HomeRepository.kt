@@ -2,6 +2,7 @@ package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -154,8 +155,12 @@ class HomeRepository(
     }
 
     // HomeRepository.kt
-    fun getTournamentById(tournamentId: Int): TournamentDataModel? {
-        return tournamentDao.getTournamentById(tournamentId)
+    fun getTournamentById(
+        tournamentId: Int
+    ): TournamentDataModel? {
+        val model = tournamentDao.getTournamentById(tournamentId)
+        "getTournamentById: $tournamentId, list: $model".logd()
+        return model
     }
 
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
