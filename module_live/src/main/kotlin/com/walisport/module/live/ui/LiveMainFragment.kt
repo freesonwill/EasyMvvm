@@ -139,6 +139,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun onDestroyView() {
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
+        mViewModel.clearAllMatch()
         super.onDestroyView()
     }
 }

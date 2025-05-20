@@ -19,6 +19,7 @@ import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
+import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -94,11 +95,40 @@ class HomeRepository(
     private fun clearSportCache() {
         sportDao.clearSports()
     }
+
+    suspend fun getChampionTournament(sportId: Int): List<TournamentDataModel> { //先暫時用TournamentDataModel
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.LIST_OUTRIGHT_MATCH,
+        ) {
+            Client.ListOutrightMatchReq.newBuilder().apply {
+                this.sportId = sportId
+            }.build()
+        }
+        if (res.error == null && res.data != null) {
+            return res.data!!.outrightMatchOrBuilderList.map {
+                TournamentDataModel(
+                    id = it.tournamentId,
+                    sportId = it.sportId,
+                    name = it.tournamentName,
+                    simpleName = "",
+                    icon = it.tournamentIcon,
+                    weight = it.weight,
+                    hot = it.hot
+                )
+            }
+        }
+        return arrayListOf()
+    }
     @Transaction
-    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+    suspend fun getTournaments(
+        playType: Int,
+        sportId: Int,
+        limit: Int? = null
+    ): List<TournamentDataModel>? {
         clearTournamentCache()
         clearMatchCache()
-        //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
 //        if (queryResult.isNotEmpty()) {
@@ -117,13 +147,27 @@ class HomeRepository(
             }.build()
         }
         return if (res.error == null && res.data != null) {
-            saveTournaments(playType, sportId, res.data!!)
+            saveTournaments(playType, sportId, res.data!!, limit)
         } else {
             null
         }
     }
 
-    private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentDataModel> {
+    // HomeRepository.kt
+    fun getTournamentById(tournamentId: Int): TournamentDataModel? {
+        return tournamentDao.getTournamentById(tournamentId)
+    }
+
+    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+        return getTournaments(playType, sportId, limit = 10)
+    }
+
+    private fun saveTournaments(
+        playType: Int,
+        sportId: Int,
+        data: Client.ListTournamentResp,
+        limit: Int? = null
+    ): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
 //        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
         data.tournamentList.forEach { tournament ->
@@ -151,7 +195,11 @@ class HomeRepository(
         }
         tournamentDao.insert(tournamentList)
 //        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
-        return tournamentDao.queryTournamentWithLimit(10)
+        return if (limit != null) {
+            tournamentDao.queryTournamentWithLimit(limit)
+        } else {
+            tournamentDao.queryTournament()
+        }
     }
 
     private fun clearTournamentCache() {
@@ -216,7 +264,7 @@ class HomeRepository(
                     order = page * 100 + index
                 )
             }
-            database.matchDao().insertFullMatch(
+            matchDao.insertFullMatch(
                 tournamentMatchRefs = tournamentMatchRefs,
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
@@ -228,7 +276,6 @@ class HomeRepository(
         }
         return false
     }
-
     /**
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
      * */
@@ -236,7 +283,7 @@ class HomeRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_MATCH,
+            apiCode = ApiCode.SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
@@ -253,7 +300,7 @@ class HomeRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+            apiCode = ApiCode.CANCEL_SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(ids)
@@ -292,13 +339,11 @@ class HomeRepository(
         return null
     }
 
-    suspend fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
-
     /**
     * 取得特定的match，藉由matchId
     * */
     suspend fun getOneMatchById(matchId: Long): MatchWithMarkets? {
-        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected().firstOrNull()
+        return matchDao.getOneMatchByIds(arrayListOf(matchId)).setSelected(betDao).firstOrNull()
     }
 
     /**
@@ -326,7 +371,7 @@ class HomeRepository(
             updateData.selections,
             updateData.matchMarketCrossRefs,
             updateData.marketSelectCrossRefs
-        ).setSelected()
+        ).setSelected(betDao)
     }
 
     /**
@@ -334,27 +379,15 @@ class HomeRepository(
      * @return 根據條件query的賽事資料
      * */
     suspend fun queryFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchWithMarkets> {
-        return database.matchDao().getFullMatch(playType, tournamentId, page, startTime).setSelected()
+        return matchDao.getFullMatch(playType, tournamentId, page, startTime).setSelected(betDao)
     }
-    suspend fun queryFullMatches(matchIds: List<Long>) : List<MatchWithMarkets> {
-        val result = database.matchDao().getOneMatchByIds(matchIds).setSelected()
+
+    suspend fun queryFullMatches(matchIds: List<Long>, selectedIds: List<Long>? = null) : List<MatchWithMarkets> {
+        val result = matchDao.getOneMatchByIds(matchIds).setSelected(betDao, selectedIds)
         return matchIds.mapNotNull { id -> result.find { it.match.matchId == id } }
     }
 
-    /**
-     * 找出投注單中未投注的selection，把它設為點擊狀態
-     * */
-    private suspend fun List<MatchWithMarkets>.setSelected(): List<MatchWithMarkets> {
-        val betSelections = betDao.getCurrentSelectionIds().toSet()  //在投注單內的內容
-        this.forEach { match ->
-            match.markets.forEach { market ->
-                market.selections.forEach {
-                    it.isSelected = betSelections.contains(it.selectionId)
-                }
-            }
-        }
-        return this
-    }
+
 
     fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
         matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)

@@ -8,5 +8,7 @@ enum class UserDataKey(val key: String) {
     KEY_BETTING("Betting"),
     KEY_FAVORITE("Favorite"),
     KEY_UID("UID"),
-    KEY_TOKEN("Token")
+    KEY_TOKEN("Token"),
+    KEY_BETSLIP_DETAIL("BetSlipDetail"),
+    KEY_RECORD("Record") //搜索历史
 }

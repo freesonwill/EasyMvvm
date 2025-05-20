@@ -5,7 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
@@ -18,13 +18,14 @@ class BetSlipSettledItemManager(
 
     override fun createViewHolder() {
         initMoreListener(binding.ilMore.llMore)
+        showLiveArrow(binding.ivCircleArrow)
     }
 
     override fun covertPlus(
         position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
-        item: LiveBetSlipSelectionData
+        item: BetSlipSelectionData
     ) {
         binding.also {
             configView(
@@ -42,6 +43,7 @@ class BetSlipSettledItemManager(
             updateData(it)
             settledStatus(it)
         }
+        binding.ivCircleArrow.tag = position
     }
 
     @SuppressLint("SetTextI18n")

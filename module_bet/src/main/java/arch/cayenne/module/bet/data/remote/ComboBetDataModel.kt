@@ -10,5 +10,4 @@ data class ComboMultiBetInfo(
     val orderId: String,
     val comboValue: Int,
     val orderStatus: Int,
-    val orderStatusMsg: String
 )

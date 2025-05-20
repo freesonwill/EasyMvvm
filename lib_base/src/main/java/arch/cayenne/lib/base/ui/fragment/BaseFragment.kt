@@ -80,7 +80,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        "----->onViewCreated-->$this".logd(TAG)
         uiBind.onViewCreated(view,savedInstanceState)
     }
 

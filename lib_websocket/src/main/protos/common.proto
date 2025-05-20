@@ -94,7 +94,6 @@ message PlaceBetInfo {
     string order_id = 1;
     int32 serial_value = 2;     // 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
     int32 order_status = 3;     // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
-    string order_status_msg = 5;  // 订单状态msg
 }
 
 //选项

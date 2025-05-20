@@ -113,11 +113,17 @@
             app:destination="@id/homeFragment"
             app:popUpToSaveState="true"
             app:restoreState="true" />
+        <action
+            android:id="@+id/action_newHomeFragment_to_championFragment"
+            app:destination="@id/championFragment"
+            app:popUpToSaveState="true"
+            app:restoreState="true" >
+        </action>
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
         <action
-            android:id="@+id/action_newHomeFragment_to_betSlipActivity"
-            app:destination="@id/betSlipActivity" />
+            android:id="@+id/action_newHomeFragment_to_homeBetSlipFragment"
+            app:destination="@id/homeBetSlipFragment" />
     </fragment>
 
     <fragment
@@ -132,8 +138,16 @@
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
     </fragment>
-    <activity
-        android:id="@+id/betSlipActivity"
-        android:name="arch.cayenne.module.betslip.ui.activity.BetSlipActivity"
-        android:label="BetSlipActivity" />
+    <fragment
+        android:id="@+id/championFragment"
+        android:name="arch.cayenne.module.home.ui.fragment.ChampionFragment"
+        android:label="ChampionFragment">
+        <argument
+            android:name="matchId"
+            app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/homeBetSlipFragment"
+        android:name="arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment"
+        android:label="HomeBetSlipFragment" />
 </navigation>

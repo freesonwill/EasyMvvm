@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.module.handicap.R
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder

@@ -32,8 +32,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
-    sourceSets["main"].java.srcDirs("src/main/kotlin")
+    sourceSets {
+        getByName("main") {
+            java.srcDirs("src/main/kotlin")
+        }
+    }
 }
 
 
@@ -46,6 +49,7 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

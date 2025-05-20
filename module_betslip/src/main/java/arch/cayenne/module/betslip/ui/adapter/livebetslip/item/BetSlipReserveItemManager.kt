@@ -2,27 +2,29 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
-import arch.cayenne.module.betslip.data.model.LiveBetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 
 class BetSlipReserveItemManager(
     private val binding: ItemLiveBetSlipReserveBinding,
-    private val liveBetSlip: arch.cayenne.module.betslip.data.constants.BetSlipEnum
+    private val liveBetSlip: BetSlipEnum
 ) : BetSlipBaseItemManager(binding, liveBetSlip) {
 
     override fun createViewHolder() {
         initMoreListener(binding.ilMore.llMore)
+        showLiveArrow(binding.ivCircleArrow)
     }
 
     override fun covertPlus(
         position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
-        item: LiveBetSlipSelectionData
+        item: BetSlipSelectionData
     ) {
         binding.also {
             configView(
@@ -39,6 +41,7 @@ class BetSlipReserveItemManager(
         item.reserve?.let {
             updateReserveData(it, binding)
         }
+        binding.ivCircleArrow.tag = position
     }
 
     @SuppressLint("SetTextI18n")

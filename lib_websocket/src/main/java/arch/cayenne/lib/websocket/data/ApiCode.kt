@@ -9,8 +9,9 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     STATISTICAL(500, 1000), // 500-1000: 获取赛事统计
     TOURNAMENT(500, 1001),  // 500-1001: 获取联赛信息
     LIST_MATCH(500, 1002),   //500-1002: 获取比赛列表，盘口信息只返回热门盘口
-    SUBSCRIBE_MATCH(500, 1100),  //500-1100: 订阅比赛
-    CANCEL_SUBSCRIBE_MATCH(500, 1101),  //500-1101: 取消订阅比赛
+    SUBSCRIBE_HOME_MATCH(500, 1100),  //500-1100: 订阅比赛
+    CANCEL_SUBSCRIBE_HOME_MATCH(500, 1101),  //500-1101: 取消订阅比赛
+    LIST_OUTRIGHT_MATCH(500, 1008), // 500-1008: 获取首页冠军赛列表
     ADD_COLLECT(500, 1040),     //500-1040: 添加收藏
     REMOVE_COLLECT(500, 1041),  //500-1041: 移除收藏
     MATCH_NOTIFY(600, 1000),   //600-1000: 比赛推送
@@ -25,7 +26,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_MATCH(500,1003),    // 500-1003: 获取比赛详情
 
     SUBSCRIBE_MATCH_INFO(500,1102),      // 500-1102: 订阅比赛详情
-    MATCH_INFO_NOTIFY(500,1004),      // 600-1004: 比赛INFO推送
+    MATCH_INFO_NOTIFY(600,1004),      // 600-1004: 比赛INFO推送
     CANCEL_SUBSCRIBE_MATCH_INFO(500,1103),     // 500-1103: 取消订阅比赛详情
 
     GET_SINGLE_RISK(500,1013),    //500-1013: 获取单关下注限额

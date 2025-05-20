@@ -16,7 +16,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.AdapterLiveVideoSourceItemHorizontalLayoutBinding
 
-
+/**
+ * 竖屏播放时的视频源页面，RecyclerView使用的Adapter
+ */
 class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourceBean>) :
     BaseAdapter<VideoSourceBean, LiveVideoSourceHorizontalAdapter.LiveVideoSourceViewHolder, ViewBinding>(
         compare

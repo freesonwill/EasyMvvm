@@ -76,7 +76,7 @@
 
             <ImageView
                 android:id="@+id/homeLogo"
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:scaleType="fitCenter"
                 android:layout_height="20dp"
                 tools:ignore="MissingConstraints" />
@@ -96,23 +96,39 @@
                 tools:ignore="MissingConstraints" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/andName"
+            android:visibility="gone"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:text="@string/and"
+            android:gravity="center_horizontal"
+            android:textColor="@color/substitution_text_color"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            tools:ignore="MissingConstraints" />
+
+
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginEnd="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6"
             android:layout_marginBottom="@dimen/dp_6"
             android:layout_weight="1"
-            android:gravity="end"
             tools:ignore="MissingConstraints">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/awayName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_6"
                 android:drawablePadding="8dp"
-                android:gravity="center_vertical"
+                android:gravity="center_vertical|end"
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/substitution_text_color"
@@ -122,7 +138,7 @@
 
             <ImageView
                 android:id="@+id/awayLogo"
-                android:layout_width="wrap_content"
+                android:layout_width="20dp"
                 android:scaleType="fitCenter"
                 android:layout_height="20dp"
                 tools:ignore="MissingConstraints" />

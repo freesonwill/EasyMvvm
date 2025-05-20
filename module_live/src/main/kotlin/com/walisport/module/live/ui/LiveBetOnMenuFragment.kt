@@ -19,6 +19,8 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
+import android.view.animation.AccelerateDecelerateInterpolator
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
@@ -36,13 +38,14 @@ class LiveBetOnMenuFragment :
     private var isSwipingDialog = false
     private var isHorizontalSwipe = false
     private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
-    private val swipeThreshold = 0.3f // 滑动阈值，30% 宽度
-    private val angleTolerance = 30.0 // 允许的偏差角度（度）
+    private val angleTolerance = 80 // 角度容忍范围
+    private val swipeThreshold = 0.3f // 滑动距离阈值，占宽度的比例
     //选择中颜色的ID
     private var selectCode: String = ""
     private var selectId: Long = 0
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
+        setStatusBar(StatusBarConfig)
         mViewModel.getMarketType()
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe
@@ -90,6 +93,8 @@ class LiveBetOnMenuFragment :
         }
     }
 
+
+
     override fun initListener() {
     }
 
@@ -125,6 +130,8 @@ class LiveBetOnMenuFragment :
                     translationX = mBinding.root.translationX
                     isSwipingDialog = false
                     isHorizontalSwipe = false
+                    // 阻止父容器拦截触摸事件
+                    mBinding.main.requestDisallowInterceptTouchEvent(true)
                     true
                 }
 
@@ -133,24 +140,23 @@ class LiveBetOnMenuFragment :
                     val deltaY = event.rawY - startY
                     val distance = sqrt(deltaX * deltaX + deltaY * deltaY)
 
-                    // 仅在滑动距离超过 touchSlop 时判断方向
                     if (!isSwipingDialog && distance > touchSlop) {
                         isSwipingDialog = true
-                        // 计算滑动角度（相对于水平方向）
                         val angle = Math.toDegrees(atan2(deltaY.toDouble(), deltaX.toDouble()))
-                        // 水平滑动：角度接近 0° 或 180°，允许 ±angleTolerance 偏差
-                        isHorizontalSwipe =
-                            abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
+                        isHorizontalSwipe = abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
+                        // 如果是垂直滑动，允许父容器处理
+                        if (!isHorizontalSwipe) {
+                            mBinding.main.requestDisallowInterceptTouchEvent(false)
+                        }
                     }
 
-                    // 处理滑动
                     if (isSwipingDialog && isHorizontalSwipe) {
                         if (deltaX >= 0) {
                             mBinding.root.translationX = translationX + deltaX
                         }
-                        true // 消费水平滑动事件
+                        true
                     } else {
-                        false // 允许垂直滑动事件传递
+                        false
                     }
                 }
 
@@ -165,6 +171,8 @@ class LiveBetOnMenuFragment :
                     }
                     isSwipingDialog = false
                     isHorizontalSwipe = false
+                    // 恢复父容器的触摸拦截
+                    mBinding.main.requestDisallowInterceptTouchEvent(false)
                     true
                 }
 
@@ -175,8 +183,9 @@ class LiveBetOnMenuFragment :
 
     private fun animateDismiss() {
         mBinding.root.animate()
-            .translationX(mBinding.root.width.toFloat())
+            .translationX(mBinding.root.width * 0.8f)
             .setDuration(200)
+            .setInterpolator(AccelerateDecelerateInterpolator())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     dismiss()
@@ -189,9 +198,9 @@ class LiveBetOnMenuFragment :
         mBinding.root.animate()
             .translationX(0f)
             .setDuration(200)
+            .setInterpolator(AccelerateDecelerateInterpolator())
             .setListener(null)
             .start()
     }
-
 
 }

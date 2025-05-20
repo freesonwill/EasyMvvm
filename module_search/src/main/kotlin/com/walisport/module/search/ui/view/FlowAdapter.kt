@@ -97,6 +97,14 @@ abstract class FlowAdapter<T> {
     }
 
     /**
+     * 删除所有item
+     */
+    fun deleteAllData() {
+        this.data!!.clear()
+        notifyDataChanged()
+    }
+
+    /**
      * 添加数据
      *
      * @param index
@@ -116,11 +124,14 @@ abstract class FlowAdapter<T> {
      *
      * @param data
      */
-    fun addData(data: T) {
+    fun addData(temp: T) {
         if (this.data == null) {
             this.data = ArrayList()
         }
-        this.data!!.add(data)
+        if (this.data!!.contains(temp)) {
+            return
+        }
+        this.data!!.add(temp)
         notifyDataChanged()
     }
 

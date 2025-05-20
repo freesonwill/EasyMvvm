@@ -8,7 +8,6 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getStringArray
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**

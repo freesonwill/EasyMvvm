@@ -21,8 +21,8 @@ class BetSlipRepository(
         pageSize: Int,
         sportId: Int,
         matchId: Long,
-        startTime: Long? = null,
-        endTime: Long? = null,
+        startTime: Long?,
+        endTime: Long?,
     ): List<Common.Order>? {
         val resp = remoteManager.getOrderReq(
             scope,

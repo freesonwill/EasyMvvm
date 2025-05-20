@@ -16,8 +16,7 @@ class HistoryFoldLayout @JvmOverloads constructor(
     context: Context?,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) :
-    FlowListView(context, attrs, defStyleAttr) {
+) : FlowListView(context, attrs, defStyleAttr) {
     private var upFoldView: View ?=null
     private var downFoldView:View ?=null
     private var canFold = false
@@ -26,21 +25,16 @@ class HistoryFoldLayout @JvmOverloads constructor(
     private var surplusWidth = 0
 
     init {
-        upFoldView  = LayoutInflater.from(context).inflate(R.layout.view_item_fold_up, null)
-        downFoldView  = LayoutInflater.from(context).inflate(R.layout.view_item_fold_down, null)
-
-
-
+        upFoldView = LayoutInflater.from(context).inflate(R.layout.view_item_fold_up, null)
+        downFoldView = LayoutInflater.from(context).inflate(R.layout.view_item_fold_down, null)
         upFoldView?.setOnClickListener { v: View? ->
             mFold = false
             flowAdapter.notifyDataChanged()
         }
-
         downFoldView?.setOnClickListener { v: View? ->
             mFold = true
             flowAdapter.notifyDataChanged()
         }
-
         setOnFoldChangedListener { canFold: Boolean, fold: Boolean, index: Int, surplusWidth: Int ->
             this.canFold = canFold
             this.fold = fold
@@ -53,19 +47,18 @@ class HistoryFoldLayout @JvmOverloads constructor(
     /**
      * isEditor true 是编辑  false不是
      */
-    fun setEditor(isEditor:Boolean){
-        if(isEditor){
-            upFoldView?.visibility= INVISIBLE
-            downFoldView?.visibility= INVISIBLE
+    fun setEditor(isEditor: Boolean) {
+        if (isEditor) {
+            upFoldView?.visibility = INVISIBLE
+            downFoldView?.visibility = INVISIBLE
             mFold = false
             flowAdapter.notifyDataChanged()
-        }else{
-            upFoldView?.visibility= VISIBLE
-            downFoldView?.visibility= VISIBLE
+        } else {
+            upFoldView?.visibility = VISIBLE
+            downFoldView?.visibility = VISIBLE
             mFold = true
             flowAdapter.notifyDataChanged()
         }
-
     }
 
     override fun updateView() {

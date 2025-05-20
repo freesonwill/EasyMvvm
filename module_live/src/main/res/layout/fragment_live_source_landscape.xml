@@ -15,11 +15,11 @@
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/choose_commentary"
-            android:textColor="@color/white"
+            android:textColor="@color/video_source_fragment_title_color"
             android:textSize="17sp" />
 
         <androidx.recyclerview.widget.RecyclerView

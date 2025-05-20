@@ -49,6 +49,10 @@ class TimePickerFragment private constructor() :
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+            calendar.set(Calendar.MILLISECOND, 999)
             val time = calendar.timeInMillis
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
                 putLong(Config.VALUE_SELECTED_DATE, time)
