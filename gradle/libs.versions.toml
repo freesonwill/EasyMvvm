@@ -43,6 +43,7 @@ legacySupportV4 = "1.0.0"
 fragmentKtx = "1.5.6"
 startupRuntime = "1.2.0"
 pullrefresh = "3.0.0-alpha"
+icu4j = "74.2"
 # 其他库的版本
 calendarview = "3.7.1.43"
 brv = "1.6.1"
@@ -101,6 +102,7 @@ flexbox = {group = "com.google.android", name = "flexbox", version.ref = "flexbo
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 pullrefresh-kernel = { group = "io.github.scwang90",name = "refresh-layout-kernel", version.ref = "pullrefresh" }
+icu4j = { group = "com.ibm.icu",name = "icu4j", version.ref = "icu4j" }
 # 其他库依赖
 calendarview = { module = "com.github.angcyo:CalendarView", version.ref = "calendarview" }
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }

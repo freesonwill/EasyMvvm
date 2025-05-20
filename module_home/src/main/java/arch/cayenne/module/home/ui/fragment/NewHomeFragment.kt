@@ -54,7 +54,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-    private val tournamentListFragment by lazy {  TournamentListFragment.newInstance() }
+    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -178,21 +178,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.INVISIBLE
 
-            val fragment = TournamentListFragment.newInstance()
-
-            fragment.setOnReadyCallback {
+            tournamentListFragment.setOnReadyCallback {
                 // 渲染完成才顯示容器，避免先顯示空白畫面
                 container.post {
                     container.visibility = View.VISIBLE
                 }
             }
-
             fm.beginTransaction()
                 .setCustomAnimations(
                     R.anim.slide_in_from_top,
                     R.anim.slide_out_to_top
                 )
-                .replace(R.id.ll_tournaments_dropdown, fragment, tag)
+                .replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
                 .commitAllowingStateLoss()
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
