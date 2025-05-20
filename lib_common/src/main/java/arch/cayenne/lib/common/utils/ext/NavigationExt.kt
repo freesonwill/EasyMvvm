@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.R
  * @description: Navigation的扩展
  */
 object NavigationExt {
+    private const val TAG = "NavigationExt"
     private val defaultNavOptions by lazy {
         NavOptions.Builder()
             .setEnterAnim(R.anim.slide_in_right)  // 新页面进入动画 从右划入
@@ -47,11 +48,19 @@ object NavigationExt {
             //directions没有navOptions用navOptions
             val dNavOptions = navController.currentDestination?.getAction(directions.actionId)?.navOptions ?: return@let navOptions
             val mergedOptions = NavOptions.Builder().apply {
+                //优先用 directions 中的，再 navOptions中的
+                val isSet = dNavOptions.let { it.enterAnim != -1 || it.exitAnim != -1 || it.popEnterAnim != -1 || it.popExitAnim != -1 }
+                val animOption = if(isSet) dNavOptions else navOptions
+                val enterAnim = animOption.enterAnim
+                val exitAnim = animOption.exitAnim
+                val popEnterAnim = animOption.popEnterAnim
+                val popExitAnim = animOption.popExitAnim
                 // 动画合并
-                setEnterAnim(navOptions.enterAnim)
-                setExitAnim(navOptions.exitAnim)
-                setPopEnterAnim(navOptions.popEnterAnim)
-                setPopExitAnim(navOptions.popExitAnim)
+                setEnterAnim(enterAnim)
+                setExitAnim(exitAnim)
+                setPopEnterAnim(popEnterAnim)
+                setPopExitAnim(popExitAnim)
+
                 //合并popUpTo、isPopUpToInclusive
                 navOptions.takeIf { it.popUpToId != -1 }?.let {
                     setPopUpTo(it.popUpToId, it.isPopUpToInclusive())
