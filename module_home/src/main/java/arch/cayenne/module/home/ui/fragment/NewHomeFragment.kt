@@ -30,7 +30,6 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
-import arch.cayenne.module.home.ui.view.TournamentSectionView
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -42,8 +41,7 @@ import com.haibin.calendarview.CalendarView
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
-    TournamentSectionView.OnChampionDropdownListener {
+class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
@@ -504,13 +502,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
             }
         }
 
+        mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
+            if (shouldCollapse == true && isExpanded) {
+                toggleTournamentMoreSection(false)
+                isExpanded = false
+                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
+            }
+        }
+
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
-    }
-
-    override fun onRequestCollapseChampion() {
-        toggleTournamentMoreSection(false)
-        isExpanded = false
     }
 }
