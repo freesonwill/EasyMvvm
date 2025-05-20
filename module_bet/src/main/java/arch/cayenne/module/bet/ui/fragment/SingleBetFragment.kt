@@ -53,7 +53,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
-            mViewModel.removeBet()
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -145,5 +144,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun dismiss(key: String, value: String) {
         sendResult(key, value, R.id.singleBetFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mViewModel.removeSingleBet()
     }
 }
