@@ -7,12 +7,16 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
+import arch.cayenne.module.betslip.data.model.SportFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 
 class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFilterViewModel() {
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
+
+    private val _onSportFilter = MutableLiveData<SportFilterBean>()
+    val onSportFilter: LiveData<SportFilterBean> get() = _onSportFilter
 
     var customTime: Long? = null
         set(value) {
@@ -27,6 +31,7 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFil
             title = BetSlipDateFilterEnum.ALL.title,
             date = BetSlipDateFilterEnum.ALL
         )
+        _onSportFilter.value = SportFilterBean.getAllTypeBean()
         repo.setDetail()
     }
 
@@ -52,5 +57,10 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFil
             startTime = null,
             endTime = customTime
         )
+    }
+
+    fun setSportFilter(sportFilter: SportFilterBean) {
+        _onSportFilter.value = sportFilter
+        setSportIdFilter(sportFilter.sportId)
     }
 }

@@ -50,6 +50,9 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
         mViewModel.onDateFilter.observe(viewLifecycleOwner) {
             mBinding.tvDateFilter.text = it.title
         }
+        mViewModel.onSportFilter.observe(viewLifecycleOwner) {
+            mBinding.tvSportFilter.text = it.sportName
+        }
     }
 
     private fun setPage(pager: List<PagerBean>) {
@@ -105,6 +108,8 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
     }
 
     private fun showSportFilter() {
+        mViewModel.onSportFilter.value?.let {
 
+        }
     }
 }

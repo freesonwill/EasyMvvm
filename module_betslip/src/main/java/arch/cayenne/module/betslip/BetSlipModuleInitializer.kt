@@ -10,6 +10,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
+import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
@@ -49,6 +50,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
     private val repoModules = module {
         factoryOf(::HomeBetSlipRepository)
         factoryOf(::BetSlipRepository)
+        factoryOf(::SportPickerRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)
