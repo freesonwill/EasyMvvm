@@ -95,11 +95,40 @@ class HomeRepository(
     private fun clearSportCache() {
         sportDao.clearSports()
     }
+
+    suspend fun getChampionTournament(sportId: Int): List<TournamentDataModel> { //先暫時用TournamentDataModel
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.LIST_OUTRIGHT_MATCH,
+        ) {
+            Client.ListOutrightMatchReq.newBuilder().apply {
+                this.sportId = sportId
+            }.build()
+        }
+        if (res.error == null && res.data != null) {
+            return res.data!!.outrightMatchOrBuilderList.map {
+                TournamentDataModel(
+                    id = it.tournamentId,
+                    sportId = it.sportId,
+                    name = it.tournamentName,
+                    simpleName = "",
+                    icon = it.tournamentIcon,
+                    weight = it.weight,
+                    hot = it.hot
+                )
+            }
+        }
+        return arrayListOf()
+    }
     @Transaction
-    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+    suspend fun getTournaments(
+        playType: Int,
+        sportId: Int,
+        limit: Int? = null
+    ): List<TournamentDataModel>? {
         clearTournamentCache()
         clearMatchCache()
-        //TODO 如果更多頁點擊了不在這十個之中的tab則會新增於tab list(ui層, 不存db)
         //先從DB拿取
 //        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
 //        if (queryResult.isNotEmpty()) {
@@ -118,13 +147,27 @@ class HomeRepository(
             }.build()
         }
         return if (res.error == null && res.data != null) {
-            saveTournaments(playType, sportId, res.data!!)
+            saveTournaments(playType, sportId, res.data!!, limit)
         } else {
             null
         }
     }
 
-    private fun saveTournaments(playType: Int, sportId: Int, data: Client.ListTournamentResp): List<TournamentDataModel> {
+    // HomeRepository.kt
+    fun getTournamentById(tournamentId: Int): TournamentDataModel? {
+        return tournamentDao.getTournamentById(tournamentId)
+    }
+
+    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
+        return getTournaments(playType, sportId, limit = 10)
+    }
+
+    private fun saveTournaments(
+        playType: Int,
+        sportId: Int,
+        data: Client.ListTournamentResp,
+        limit: Int? = null
+    ): List<TournamentDataModel> {
         val tournamentList = arrayListOf<TournamentBean>()
 //        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
         data.tournamentList.forEach { tournament ->
@@ -152,7 +195,11 @@ class HomeRepository(
         }
         tournamentDao.insert(tournamentList)
 //        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
-        return tournamentDao.queryTournamentWithLimit(10)
+        return if (limit != null) {
+            tournamentDao.queryTournamentWithLimit(limit)
+        } else {
+            tournamentDao.queryTournament()
+        }
     }
 
     private fun clearTournamentCache() {
@@ -229,7 +276,6 @@ class HomeRepository(
         }
         return false
     }
-
     /**
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
      * */

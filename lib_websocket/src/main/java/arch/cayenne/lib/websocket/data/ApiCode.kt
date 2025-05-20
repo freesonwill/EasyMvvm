@@ -11,6 +11,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     LIST_MATCH(500, 1002),   //500-1002: 获取比赛列表，盘口信息只返回热门盘口
     SUBSCRIBE_HOME_MATCH(500, 1100),  //500-1100: 订阅比赛
     CANCEL_SUBSCRIBE_HOME_MATCH(500, 1101),  //500-1101: 取消订阅比赛
+    LIST_OUTRIGHT_MATCH(500, 1008), // 500-1008: 获取首页冠军赛列表
     ADD_COLLECT(500, 1040),     //500-1040: 添加收藏
     REMOVE_COLLECT(500, 1041),  //500-1041: 移除收藏
     MATCH_NOTIFY(600, 1000),   //600-1000: 比赛推送

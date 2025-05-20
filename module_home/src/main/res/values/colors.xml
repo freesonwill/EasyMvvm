@@ -31,4 +31,5 @@
     <color name="drawer_common_function_text">#929298</color>
     <color name="drawer_bottom_function_text">#929298</color>
     <color name="odds_highlight_overlay">#353848</color>
+    <color name="list_separator">#1D1F2A</color>
 </resources>
