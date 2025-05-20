@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.walisport.module.setting.fragment.SettingFragment"
+        android:name="com.walisport.module.setting.ui.fragment.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting">
 
@@ -32,16 +32,16 @@
 
     <fragment
         android:id="@+id/noticedFragment"
-        android:name="com.walisport.module.setting.fragment.NoticeFragment"
+        android:name="com.walisport.module.setting.ui.fragment.NoticeFragment"
         android:label="NoticeFragment" />
 
     <fragment
         android:id="@+id/backgroundFragment"
-        android:name="com.walisport.module.setting.fragment.BackgroundFragment"
+        android:name="com.walisport.module.setting.ui.fragment.BackgroundFragment"
         android:label="BackgroundFragment" />
 
     <fragment
         android:id="@+id/languageFragment"
-        android:name="com.walisport.module.setting.fragment.LanguageFragment"
+        android:name="com.walisport.module.setting.ui.fragment.LanguageFragment"
         android:label="LanguageFragment" />
 </navigation>

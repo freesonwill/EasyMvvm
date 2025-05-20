@@ -1,4 +1,4 @@
-package com.walisport.module.setting.fragment
+package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
@@ -7,7 +7,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.LanguageType
-import com.walisport.module.setting.data.LanguageViewModel
+import com.walisport.module.setting.ui.viewmodel.LanguageViewModel
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
 import kotlin.reflect.KClass
 
