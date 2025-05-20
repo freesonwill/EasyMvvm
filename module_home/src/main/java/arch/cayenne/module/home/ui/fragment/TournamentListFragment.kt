@@ -64,7 +64,7 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
             }
         }
     }
-    
+
     private fun setTournamentList(tournaments: List<TournamentDataModel>) {
 //        val transliterator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
 //            Transliterator.getInstance("Han-Latin/Names; Latin-ASCII")
