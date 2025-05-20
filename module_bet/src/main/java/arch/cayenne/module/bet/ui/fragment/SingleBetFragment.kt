@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -52,7 +53,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
-            mViewModel.removeBet()
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -105,7 +105,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     odds = it.odds
                 ).show(childFragmentManager)
             }
-
         }
     }
 
@@ -140,9 +139,15 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
         mBinding.btnCollusion.isEnabled = data.isParlay
         mBinding.clBet.isEnabled = data.isActive
+        mBinding.layoutBet.ivDelete.isVisible = false
     }
 
     override fun dismiss(key: String, value: String) {
         sendResult(key, value, R.id.singleBetFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mViewModel.removeSingleBet()
     }
 }

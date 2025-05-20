@@ -65,7 +65,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
+        val dialog = object : BottomSheetDialog(requireContext(), theme) {
+            override fun onBackPressed() {
+                this@BaseBottomSheetFragment.dismiss()
+                super.onBackPressed()
+            }
+        }
 
         dialog.setOnShowListener {
             val d = it as BottomSheetDialog
