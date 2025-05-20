@@ -12,7 +12,7 @@ abstract class BetSlipFilterViewModel: BaseViewModel() {
     private val _onSportIdFilter = MutableLiveData<Int>()
     val onSportIdFilter: LiveData<Int> get() = _onSportIdFilter
 
-    protected fun setDateTimeFilter(startTime: Long?, endTime: Long?) {
+    fun setDateTimeFilter(startTime: Long?, endTime: Long?) {
         _onDateTimeFilter.value = Pair(startTime, endTime)
     }
 
