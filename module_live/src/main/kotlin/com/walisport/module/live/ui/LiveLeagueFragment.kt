@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,12 +50,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        //浸入式背景
-        statusBarColor = StatusBarConfig.statusBarColor
-        StatusBarConfig.statusBarColor = arch.cayenne.lib.common.R.color.tran_0
-        StatusBarConfig.hideStatusBar = true
-
-        setStatusBar(StatusBarConfig)
+        requireActivity().window?.apply {
+            setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) // Avoid affecting navigation bar
+        }
         //获取联赛日程列表
         val matchID = arguments?.getLong("matchID") ?: 0L
         leagueID = arguments?.getInt("leagueID") ?: 0
@@ -96,9 +95,9 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun onDestroyView() {
-        StatusBarConfig.statusBarColor = statusBarColor
-        StatusBarConfig.hideStatusBar = false
-        setStatusBar(StatusBarConfig)
+        requireActivity().window?.apply {
+            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+        }
         super.onDestroyView()
     }
 
