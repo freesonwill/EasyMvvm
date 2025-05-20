@@ -35,8 +35,8 @@ class LiveBetOnViewModel : BaseViewModel() {
     val getLiveSelectionBean: LiveData<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
 
     //监听盘口筛选变化
-    private val _observeMarketMenu = MutableLiveData<List<Int>>()
-    val observeMarketMenu: LiveData<List<Int>> = _observeMarketMenu
+    private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
+    val observeMarketMenu: LiveData<MutableList<Int>> = _observeMarketMenu
 
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
@@ -48,7 +48,7 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     fun setMarketMenuPosition(titlePosition:Int,contentPosition:Int){
-        var position :List<Int> = listOf(titlePosition,contentPosition)
+        var position :MutableList<Int> = mutableListOf(titlePosition,contentPosition)
         _observeMarketMenu.value  =position
     }
 
