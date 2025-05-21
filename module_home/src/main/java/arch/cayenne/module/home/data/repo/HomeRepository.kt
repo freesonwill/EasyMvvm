@@ -19,7 +19,6 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
-import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -37,9 +36,10 @@ class HomeRepository(
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
     private val betDao = database.betDao()
-
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
+        const val DEFAULT_MATCH_SIZE = 10
+
     }
 
     @Transaction
