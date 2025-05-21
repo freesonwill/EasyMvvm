@@ -7,27 +7,22 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-        android:id="@+id/main"
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bg_card"
-        android:orientation="vertical"
-        android:paddingEnd="@dimen/dp_8"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/bg_card">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_first_navbar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_52"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_home_sidebar"
@@ -103,12 +98,16 @@
                     android:padding="@dimen/dp_3"
                     android:src="@drawable/ic_wallet_add" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_second_navbar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_66">
+            android:layout_height="@dimen/dp_66"
+            android:paddingEnd="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_first_navbar">
             <!-- 球種選擇 (固定不變的二級導航) -->
             <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
                 android:id="@+id/rv_sports_list"
@@ -227,37 +226,65 @@
                     android:textColor="@color/secondary_title"
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-        <include android:id="@+id/layout_container"
-            layout="@layout/view_home_content" />
-        <!-- 內容區域 (ViewPager2 負責載入 "今日"、"早盤"、"冠軍") -->
-<!--        <androidx.viewpager2.widget.ViewPager2-->
-<!--            android:id="@+id/vp_home"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="0dp"-->
-<!--            android:layout_weight="1" />-->
-
-    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/floating_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        <include
+            android:id="@+id/layout_container"
+            layout="@layout/view_home_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_home_league_more"
+            android:layout_width="65dp"
+            android:layout_height="@dimen/dp_48"
+            android:background="@drawable/gradient_league_tab_more"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_14"
+            android:src="@drawable/ic_league_tabs_expand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+
+        <FrameLayout
+            android:id="@+id/ll_tournaments_dropdown"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/floating_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="300dp"
         android:layout_height="match_parent"
-        app:drawerLayoutCornerSize="0dp"
-        android:layout_gravity="start">
+        android:layout_gravity="start"
+        app:drawerLayoutCornerSize="0dp">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_drawer_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_drawer_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </com.google.android.material.navigation.NavigationView>
 </arch.cayenne.module.home.ui.view.ScrollDrawerLayout>

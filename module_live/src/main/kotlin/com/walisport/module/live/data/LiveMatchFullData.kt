@@ -8,18 +8,21 @@ import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveMatchLiveInfoBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
+import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
 import galaxy.common.proto.Common
 
 data class LiveMatchFullData(
     val match: List<LiveMatchBean>,
     val markets: List<LiveMarketBean>,
     val selections: List<LiveSelectionBean>,
+    val selectionsRecord: List<LiveSelectionBeanRecord>,
 )
 
 fun Common.Match.toRoomData(): LiveMatchFullData {
     val matches = mutableListOf<LiveMatchBean>()
     val markets = mutableListOf<LiveMarketBean>()
     val selections = mutableListOf<LiveSelectionBean>()
+    val selectionsRecord = mutableListOf<LiveSelectionBeanRecord>()
     matches.add(
         LiveMatchBean(
             matchId = this.matchId,
@@ -86,9 +89,15 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                         odds = selection.odds.toOdds(),
                         active = selection.active,
                         parlay = selection.parlay,
-                        style = market.style
+                        style = market.style,
+                        oddsStatus = 3
                     )
                 )
+                selectionsRecord.add(LiveSelectionBeanRecord(
+                    marketId = market.marketId,
+                    selectionId = selection.selectionId,
+                    odds = selection.odds.toOdds(),
+                ))
                 LogUtils.e("showDataMarketMenuBean------add---id${market.marketId}--name${market.marketName}----selection${selection.shortName}")
             }
         }
@@ -97,6 +106,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
         matches,
         markets,
         selections,
+        selectionsRecord,
     )
 
 }

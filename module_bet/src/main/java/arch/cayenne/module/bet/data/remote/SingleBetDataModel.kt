@@ -5,5 +5,4 @@ data class SingleBetDataModel(
     val message: String,
     val orderId: String,
     val orderStatus: Int,
-    val orderStatusMsg: String
 )

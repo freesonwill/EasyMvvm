@@ -6,8 +6,8 @@ import androidx.core.animation.addListener
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.SelectionBeanLite
-import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 import arch.cayenne.module.home.data.constants.OddsCellState
+import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
@@ -76,11 +76,10 @@ class OddsCellViewHolder(
             ivTrendDown.visibility = View.GONE
             vTrendHighlight.clearAnimation()
             vTrendHighlight.visibility = View.GONE
-
             val trendView = when {
                 trendDelta == null || trendDelta == 0 -> null
-                trendDelta < 0 -> ivTrendUp   // 賠率下降 → 變好
-                trendDelta > 0 -> ivTrendDown // 賠率上升 → 變差
+                trendDelta < 0 -> ivTrendDown   // 賠率下降 → 變差
+                trendDelta > 0 -> ivTrendUp // 賠率上升 → 變好
                 else -> null
             }
             // 同步閃爍 trendView 和 overlay

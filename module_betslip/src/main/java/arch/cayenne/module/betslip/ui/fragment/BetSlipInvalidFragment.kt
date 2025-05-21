@@ -2,27 +2,24 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import galaxy.common.proto.Common
+import kotlin.reflect.KClass
 
 //注单失效
 class BetSlipInvalidFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipInvalidBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipInvalidBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipInvalidBinding> =
         FragmentLiveBetslipInvalidBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -60,6 +57,7 @@ class BetSlipInvalidFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -86,11 +84,7 @@ class BetSlipInvalidFragment :
         }
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.Invalid)
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.Invalid
     }
 }

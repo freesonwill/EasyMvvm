@@ -97,6 +97,14 @@ abstract class FlowAdapter<T> {
     }
 
     /**
+     * 删除所有item
+     */
+    fun deleteAllData() {
+        this.data!!.clear()
+        notifyDataChanged()
+    }
+
+    /**
      * 添加数据
      *
      * @param index
@@ -116,11 +124,19 @@ abstract class FlowAdapter<T> {
      *
      * @param data
      */
-    fun addData(data: T) {
+    fun addData(temp: T) {
         if (this.data == null) {
             this.data = ArrayList()
         }
-        this.data!!.add(data)
+        if (this.data!!.contains(temp)) {
+            return
+        }
+        this.data!!.add(temp)
+        if (this.data!!.size > 20) {//超过20条就截取最新20条
+            val list = this.data!!.takeLast(20)
+            this.data!!.clear()
+            this.data!!.addAll(list)
+        }
         notifyDataChanged()
     }
 

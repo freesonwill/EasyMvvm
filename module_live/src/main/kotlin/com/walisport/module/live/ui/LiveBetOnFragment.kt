@@ -25,6 +25,11 @@ import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -33,7 +38,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-
+    private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0,0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
@@ -69,7 +74,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 })
                 adapter = liveBetOnAdapter
             }
-            LogUtils.e("getLiveSelectionBean${list}")
+            LogUtils.e("getLiveSelectionBean${it}")
             liveBetOnAdapter.setHomeAway(
                 baseInfo?.homeTeam.toString(),
                 baseInfo?.homeTeamIcon.toString(),
@@ -155,8 +160,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         return SNAP_TO_START
                     }
                 }
-                smoothScroller.targetPosition = tabPosition[1]
-                mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+                scope.launch {
+                    delay(200)
+                    smoothScroller.targetPosition = tabPosition[1]
+                    mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+                }
             }
         }
 
@@ -217,5 +225,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 e.printStackTrace()
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 }

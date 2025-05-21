@@ -15,7 +15,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.livebetslip.item.BetSlipBaseItemManager
 import arch.cayenne.module.betslip.ui.compare.BetSlipSelectionCompare
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 
 class BetSlipSelectionAdapter(
     betSlipType: BetSlipEnum,

@@ -68,7 +68,6 @@ class BettingRemoteManager(
                 data.message,
                 data.orderId,
                 data.orderStatus,
-                data.orderStatusMsg,
             )
         } else {
             null
@@ -142,7 +141,6 @@ class BettingRemoteManager(
                     orderId = it.orderId,
                     comboValue = if (it.serialValue == 0) 1 else it.serialValue,
                     orderStatus = it.orderStatus,
-                    orderStatusMsg = it.orderStatusMsg
                 )
             }
             ComboBetDataModel(
@@ -222,7 +220,7 @@ class BettingRemoteManager(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_MATCH,
+            apiCode = ApiCode.SUBSCRIBE_HOME_MATCH,
         ) {
             Client.SubscribeHomeMatchReq.newBuilder().apply {
                 this.addAllMatchId(matchIds)
@@ -240,7 +238,7 @@ class BettingRemoteManager(
             socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
                 scope = scope,
                 dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_HOME_MATCH,
             ) {
                 Client.CancelSubscribeHomeMatchReq.newBuilder().apply {
                     this.addAllMatchId(matchIds)

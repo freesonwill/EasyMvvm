@@ -35,10 +35,13 @@ class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourc
             viewBinding.tvTitle.text = item.title
             viewBinding.tvSubtitle.text = item.subTitle
 
-            viewBinding.ivPlaying.visibility = if (item.isPlaying) {
-                View.VISIBLE
+
+            if (item.isPlaying) {
+                viewBinding.animationView.visibility = View.VISIBLE
+                viewBinding.animationView.playAnimation()
             } else {
-                View.GONE
+                viewBinding.animationView.visibility = View.GONE
+                viewBinding.animationView.pauseAnimation()
             }
 
             Glide.with(viewBinding.ivThumb).load(item.thumb)

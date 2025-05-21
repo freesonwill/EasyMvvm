@@ -2,28 +2,26 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
-import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import galaxy.common.proto.Common
+import kotlin.reflect.KClass
 
 
 //注单确认‰‰
 class BetSlipConfirmFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipConfirmBinding>() {
+
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -32,7 +30,7 @@ class BetSlipConfirmFragment :
     private fun initRecycler() {
         val adapter =
             BetSlipAdapter(BetSlipEnum.Confirming)
-        adapter.setLiveListener(object :RecyclerItemListener<BetSlipSelectionData>{
+        adapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
             override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
 
             }
@@ -62,6 +60,7 @@ class BetSlipConfirmFragment :
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -89,11 +88,7 @@ class BetSlipConfirmFragment :
         }
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.UnSettled)
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.UnSettled
     }
 }

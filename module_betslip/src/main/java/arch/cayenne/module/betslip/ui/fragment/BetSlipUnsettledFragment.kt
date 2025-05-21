@@ -2,51 +2,41 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.helper.showToast
-import galaxy.common.proto.Common
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import galaxy.common.proto.Common
+import kotlin.reflect.KClass
 
 
 //注单未结算
 class BetSlipUnsettledFragment :
-    BaseFragment<BetSlipViewModel, FragmentLiveBetslipUnsettledBinding>() {
+    BaseBetSlipFragment<FragmentLiveBetslipUnsettledBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
         initLoadRefresh()
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getOrders(BetSlipEnum.UnSettled)
-    }
-
     override fun initListener() {
     }
 
     override fun createObserver() {
+        super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -116,7 +106,7 @@ class BetSlipUnsettledFragment :
                 }
             }
         })
-        adapter.setLiveListener(object :RecyclerItemListener<BetSlipSelectionData>{
+        adapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
             override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
 
             }
@@ -135,4 +125,7 @@ class BetSlipUnsettledFragment :
         }
     }
 
+    override fun getBetSlipEnum(): BetSlipEnum {
+        return BetSlipEnum.UnSettled
+    }
 }

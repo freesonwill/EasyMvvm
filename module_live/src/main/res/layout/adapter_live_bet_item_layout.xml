@@ -98,6 +98,7 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/andName"
+            android:visibility="gone"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_10"

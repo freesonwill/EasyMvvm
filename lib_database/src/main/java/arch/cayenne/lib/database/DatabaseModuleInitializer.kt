@@ -22,6 +22,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().liveVideoDao() }
         factory { get<GameDatabase>().marketTypeDao() }
         factory { get<GameDatabase>().liveMatchDao() }
+        factory { get<GameDatabase>().sportDao() }
     }
 
     private val moduleList: List<Module> = listOf(module {

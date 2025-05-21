@@ -22,10 +22,6 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class MatchListViewModel : BaseViewModel() {
-    companion object {
-        const val DEFAULT_MATCH_SIZE = 3
-    }
-
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
@@ -48,7 +44,9 @@ class MatchListViewModel : BaseViewModel() {
                 val old = matchListChange.value!!.toMutableList()
                 val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
                 if (index != -1) { old[index] = matchWithMarket }
+//                val matchWithMarkets = repository.queryFullMatches(matchListChange.value!!.map { it.match.matchId })
                 withContext(Dispatchers.Main) {
+//                    matchListChange.value = matchWithMarkets
                     matchListChange.value = old
                 }
             }
@@ -57,22 +55,12 @@ class MatchListViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
                 if (matchListChange.value == null) return@collect
-                val origin = matchListChange.value!!.toMutableList()
-                val allSelections = origin.flatMap { it.markets }.flatMap { it.selections }  //把所有內部的selection展開
-                val betSelectionSet = betSelectionBeans.map { it.selectionId }.toSet()
-                allSelections.forEach { selectionBean ->
-                    //當在目前注單中，但是沒有選取，或是不在目前的注單中，但是卻選取中的match，重新再從DB同步一次
-                    if ((betSelectionSet.contains(selectionBean.selectionId) && !selectionBean.isSelected)
-                        || (!betSelectionSet.contains(selectionBean.selectionId) && selectionBean.isSelected)) {
-                        val matchWithMarket = repository.getOneMatchById(selectionBean.matchId)
-                        matchWithMarket?.apply {
-                            val index = origin.indexOfFirst { it.match.matchId == this.match.matchId }
-                            if (index != -1) { origin[index] = this }
-                        }
-                    }
-                }
+                val matchWithMarkets = repository.queryFullMatches(
+                    matchListChange.value!!.map { it.match.matchId },
+                    betSelectionBeans.map { it.selectionId }
+                )
                 withContext(Dispatchers.Main) {
-                    matchListChange.value = origin
+                    matchListChange.value = matchWithMarkets
                 }
             }
         }
@@ -91,6 +79,7 @@ class MatchListViewModel : BaseViewModel() {
     }
 
     fun setSelectedDate(id: Long = 0) {
+        page = 1
         _selectedDate.value = id
 //        getCurrentMatch()
     }

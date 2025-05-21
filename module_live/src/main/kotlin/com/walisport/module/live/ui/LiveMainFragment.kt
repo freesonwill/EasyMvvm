@@ -80,7 +80,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "¥ ${it.getFormalMoney()}"
         }
-        mViewModel.observeMainMatch.observe(viewLifecycleOwner) {
+        mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
                 Glide.with(this).load(it.basicInfo.tournamentIcon)

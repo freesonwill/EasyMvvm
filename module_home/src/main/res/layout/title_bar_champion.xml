@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:background="@color/title_bg"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    tools:ignore="MissingDefaultResource">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_back"
+        style="@style/CustomToolbarImgStyle"
+        app:srcCompat="@drawable/bg_left_arrow"
+        tools:ignore="MissingConstraints" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_landscape_league_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="22dp"
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitCenter"
+        />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:layout_width="10dp"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:src="@drawable/title_landscape_separator" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_weight="1">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_competition_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/dp_5"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/title_bar"
+            android:textSize="15sp"
+            tools:ignore="MissingConstraints" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_wallet_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:background="@drawable/bg_wallet_entry"
+        android:gravity="center_vertical|end"
+        android:minWidth="97dp"
+        android:orientation="horizontal"
+        android:paddingEnd="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tvMoney"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginEnd="7dp"
+            android:textColor="@color/main_text"
+            android:textSize="13sp"
+            tools:text="$1,100.00" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_wallet_add"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_gravity="center_vertical|end"
+            android:background="@drawable/bg_wallet_add"
+            android:padding="@dimen/dp_3"
+            android:src="@drawable/ic_wallet_add" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

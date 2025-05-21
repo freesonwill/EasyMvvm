@@ -4,16 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getStringArray
+import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
-import java.util.Calendar
+import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
+import arch.cayenne.module.betslip.data.model.DateFilterBean
 
-class DatePickerViewModel: BaseViewModel() {
+class DatePickerViewModel : BaseViewModel() {
 
-    private val _dateTitleListener = MutableLiveData<List<arch.cayenne.module.betslip.data.model.DatePickerBean>>()
-    val dateTitleListener: LiveData<List<arch.cayenne.module.betslip.data.model.DatePickerBean>> get() = _dateTitleListener
-
-    private val dateArray = R.array.date_picker.getStringArray()
+    private val _dateTitleListener = MutableLiveData<List<DateFilterBean>>()
+    val dateTitleListener: LiveData<List<DateFilterBean>> get() = _dateTitleListener
 
     var customTime: Long? = null
         set(value) {
@@ -26,8 +25,11 @@ class DatePickerViewModel: BaseViewModel() {
         }
 
     init {
-        val data = dateArray.map {
-            arch.cayenne.module.betslip.data.model.DatePickerBean(it)
+        val data = BetSlipDateFilterEnum.entries.map {
+            DateFilterBean(
+                it.title,
+                it
+            )
         }
         _dateTitleListener.value = data
     }
@@ -40,11 +42,13 @@ class DatePickerViewModel: BaseViewModel() {
             val newList = it.mapIndexed { index, datePickerBean ->
                 when (index) {
                     it.lastIndex -> {
-                        datePickerBean.copy(date = getFormatDate(), isSelected = index == position)
+                        datePickerBean.copy(title = getFormatDate(), isSelected = index == position)
                     }
+
                     position -> {
                         datePickerBean.copy(isSelected = true)
                     }
+
                     else -> {
                         datePickerBean.copy(isSelected = false)
                     }
@@ -56,16 +60,9 @@ class DatePickerViewModel: BaseViewModel() {
 
     private fun getFormatDate(): String {
         return customTime?.let {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = customTime!!
-
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH) + 1
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val time = "$year/$month/$day"
-            R.string.date_picker_date_before.getString(time)
-        } ?: dateArray.last()
+            val date = it.getFormatDate()
+            R.string.date_picker_date_before.getString(date)
+        } ?: BetSlipDateFilterEnum.entries.last().title
     }
 
     fun cancel() {
@@ -73,12 +70,25 @@ class DatePickerViewModel: BaseViewModel() {
         _dateTitleListener.value?.let {
             val newList = it.mapIndexed { index, datePickerBean ->
                 if (index == it.lastIndex) {
-                    datePickerBean.copy(date = getFormatDate(), isSelected = false)
+                    datePickerBean.copy(title = getFormatDate(), isSelected = false)
                 } else {
                     datePickerBean.copy(isSelected = false)
                 }
             }
             _dateTitleListener.value = newList
         }
+    }
+
+    fun getSelectedDate(): BetSlipDateFilterEnum {
+        _dateTitleListener.value?.let {
+            val selected = it.firstOrNull { datePickerBean -> datePickerBean.isSelected }
+            if (selected != null) {
+                val index = it.indexOf(selected)
+                if (index != -1) {
+                    return BetSlipDateFilterEnum.entries[index]
+                }
+            }
+        }
+        return BetSlipDateFilterEnum.ALL
     }
 }

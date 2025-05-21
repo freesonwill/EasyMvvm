@@ -34,15 +34,6 @@ message LoginResp {
     string message = 2;
 }
 
-// 7-9: 切换语言
-message ChangeLangReq {
-    string lang = 1; //required client端语言
-}
-
-message ChangeLangResp {
-    bool success = 1;
-}
-
 // 7-10: 离开游戏（无携带消息）
 message LogoutReq {
 }
@@ -89,13 +80,33 @@ message ListMatchResp {
     int32 total = 2;   // 总比赛数量
 }
 
+// 500-1008: 获取首页冠军赛列表
+message ListOutrightMatchReq {
+    int32 sport_id = 1;
+}
+
+message ListOutrightMatchResp {
+    repeated SimpleOutrightMatch outright_match = 1;
+}
+
+message SimpleOutrightMatch {
+    int64 match_id = 1; //冠军赛id
+    int32 tournament_id = 2;        //联赛名称
+    string tournament_name = 3;        //联赛名称
+    string tournament_icon = 4;        //联赛icon url
+    int32 sport_id = 5;     //球类id
+    bool hot = 6;           //是否热门
+    int32 weight = 7;       //权重
+    string season = 8;      //赛季
+}
+
 // 500-1003: 获取比赛详情
 message GetMatchReq {
-   int64 match_id = 1; //required 比赛id
+    int64 match_id = 1; //required 比赛id
 }
 
 message GetMatchResp {
-   galaxy.common.proto.Match match = 1;
+    galaxy.common.proto.Match match = 1;
 }
 
 // 500-1004: 获取球类信息
@@ -154,7 +165,6 @@ message SingleBetResp {
     string message = 2;  // 例如："Bet placed successfully."
     string order_id = 3;
     int32 order_status = 4;  // 订单状态 0创建成功，1确认中，2拒单，3取消订单，4接单成功，5已结算
-    string order_status_msg = 5;  // 订单状态msg
 }
 
 // 500-1010: 多关下注
@@ -414,11 +424,11 @@ message CancelSubscribeMatchInfoResp {
 
 // 500-1104: 订阅比赛盘口
 message SubscribeMatchMarketReq {
-   repeated MarketIdBase market = 1; //required 比赛盘口
+    repeated MarketIdBase market = 1; //required 比赛盘口
 }
 
 message SubscribeMatchMarketResp {
-    repeated MatchNotify match_notify = 1;
+    repeated MatchMarketNotify match_notify = 1;
 }
 
 // 600-1005: 比赛盘口推送
@@ -455,7 +465,7 @@ message OrderStatusNotify {
     repeated OrderStatus order_status = 1;
 }
 
-//600-1002: 订单余额推送
+//600-1002: 余额推送
 message BalanceNotify {
     string balance = 1; //余额
 }

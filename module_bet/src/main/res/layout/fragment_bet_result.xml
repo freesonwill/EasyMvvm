@@ -23,8 +23,7 @@
             <ImageView
                 android:id="@+id/iv_title"
                 android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@mipmap/icon_bet_result_pending" />
+                android:layout_height="20dp" />
 
             <TextView
                 android:id="@+id/tv_title"
