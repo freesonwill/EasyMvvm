@@ -47,6 +47,8 @@ class HomeViewModel : BaseViewModel() {
 
     private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
     val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
+    private val _appendTournament = MutableLiveData<TournamentDataModel?>()
+    val appendTournament: MutableLiveData<TournamentDataModel?> = _appendTournament
 
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = true
@@ -59,25 +61,23 @@ class HomeViewModel : BaseViewModel() {
     fun selectTournament(id: Int) {
         val currentList = tournaments.value.orEmpty()
         val existsInCurrent = currentList.any { it.id == id }
-//        _selectedTournamentId.value = null
         if (existsInCurrent) {
             _selectedTournamentId.postValue(id)
         } else {
             viewModelScope.launch(Dispatchers.IO) {
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
-                    val updatedList = currentList.toMutableList()
-                    updatedList.add(tournament) // 👉 加到尾端
-                    val fullList = ArrayList<TournamentDataModel>().apply {
-                        add(TournamentDataModel.createAllItem(currentSportId))
-                        addAll(updatedList)
-                    }
-                    "selectTournament list: $fullList".logd()
+                    val updatedList = currentList
+                        .filterNot { it.id == TOURNAMENT_ALL_ID }
+                        .toMutableList()
+                        .apply { add(tournament) }
+
+                    val fullList = listOf(TournamentDataModel.createAllItem(currentSportId)) +
+                            updatedList.distinctBy { it.id }
                     withContext(Dispatchers.Main) {
                         tournaments.value = fullList
-                        "try emit id: $id to _selectedTournamentId".logd()
+                        _appendTournament.value = tournament
                         _selectedTournamentId.postValue(id)
-                        "emitted to _selectedTournamentId: $id".logd()
                     }
                 } else {
                     "Tournament ID:$id not found".loge(this::class.java.simpleName)
