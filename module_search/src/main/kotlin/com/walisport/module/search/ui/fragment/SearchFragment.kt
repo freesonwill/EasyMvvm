@@ -43,12 +43,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 }
                 historyAdapter?.addData(content)
                 mViewModel.addOneRecord(content)
+                mViewModel.getRecordByUID()
             })
-        historyAdapter = SearchHistoryAdapter(closeAction = { position ->
+        historyAdapter = SearchHistoryAdapter(closeAction = { position, text ->
             historyAdapter?.deleteData(position)
-            mViewModel.deleteOneRecord(position)
+            mViewModel.deleteOneRecord(text)
         })
-        historyAdapter?.setNewData(mViewModel.getRecordByUID().toMutableList())
         mBinding.hfList.setAdapter(historyAdapter)
         //删除图标，点击进入删除模式
         mBinding.ivClickShowDelete.clickNoRepeat {
@@ -64,6 +64,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             historyAdapter?.deleteAllData()
             setButton()
         }
+        //获取搜索记录
+        mViewModel.getRecordByUID()
     }
 
     private fun setButton() {
@@ -84,6 +86,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     override fun createObserver() {
-
+        mViewModel.searchRecord.observe(viewLifecycleOwner) {
+            historyAdapter?.setNewData(it.toMutableList())
+        }
     }
 }

@@ -132,6 +132,11 @@ abstract class FlowAdapter<T> {
             return
         }
         this.data!!.add(temp)
+        if (this.data!!.size > 20) {//超过20条就截取最新20条
+            val list = this.data!!.takeLast(20)
+            this.data!!.clear()
+            this.data!!.addAll(list)
+        }
         notifyDataChanged()
     }
 
