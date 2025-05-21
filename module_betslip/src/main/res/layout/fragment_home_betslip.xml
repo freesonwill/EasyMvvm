@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background">
@@ -41,18 +42,20 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
+        app:tabGravity="fill"
         app:tabIndicator="@drawable/bg_indicator"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="#00D271"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="14dp"
+        app:tabIndicatorHeight="12dp"
         app:tabMode="fixed"
         app:tabPaddingBottom="0dp"
-        app:tabPaddingEnd="18dp"
-        app:tabPaddingStart="18dp"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
         app:tabPaddingTop="0dp"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/main_text"
+        app:tabTextAppearance="@style/BetSlipTabTextStyle"
         app:tabTextColor="@color/secondary_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -73,6 +76,7 @@
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
+            android:textColor="@color/main_text"
             app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,6 +91,7 @@
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
+            android:textColor="@color/main_text"
             app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,11 +114,4 @@
         app:layout_constraintEnd_toEndOf="@id/view_pager"
         app:layout_constraintStart_toStartOf="@id/view_pager"
         app:layout_constraintTop_toTopOf="@id/view_pager" />
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_filter"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

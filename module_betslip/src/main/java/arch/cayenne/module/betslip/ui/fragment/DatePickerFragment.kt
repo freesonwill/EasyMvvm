@@ -30,6 +30,9 @@ class DatePickerFragment private constructor() :
 
     override val vbClass: KClass<FragmentDatePickerBinding> = FragmentDatePickerBinding::class
     override val vmClass: KClass<DatePickerViewModel> = DatePickerViewModel::class
+    private val resultBundle by lazy {
+        Bundle()
+    }
 
     private val datePickerAdapter by lazy {
         DatePickerAdapter(object :
@@ -74,19 +77,23 @@ class DatePickerFragment private constructor() :
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {
             val date = mViewModel.getSelectedDate()
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
+            resultBundle.apply {
                 putString(Config.VALUE_SELECTED_DATE, date.name)
                 if (date == BetSlipDateFilterEnum.CUSTOM) {
                     putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.customTime ?: 0L)
                 }
-            })
+            }
             dismiss()
         }
+    }
+
+    override fun dismiss() {
+        parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+        super.dismiss()
     }
 
     override fun initData() {
