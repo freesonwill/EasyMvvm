@@ -41,18 +41,20 @@
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
+        app:tabGravity="fill"
         app:tabIndicator="@drawable/bg_indicator"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="#00D271"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="14dp"
+        app:tabIndicatorHeight="12dp"
         app:tabMode="fixed"
         app:tabPaddingBottom="0dp"
-        app:tabPaddingEnd="18dp"
-        app:tabPaddingStart="18dp"
+        app:tabPaddingEnd="0dp"
+        app:tabPaddingStart="0dp"
         app:tabPaddingTop="0dp"
         app:tabRippleColor="@null"
         app:tabSelectedTextColor="@color/main_text"
+        app:tabTextAppearance="@style/BetSlipTabTextStyle"
         app:tabTextColor="@color/secondary_text" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -115,5 +117,5 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_filter"/>
+        app:layout_constraintTop_toBottomOf="@id/cl_filter" />
 </androidx.constraintlayout.widget.ConstraintLayout>
