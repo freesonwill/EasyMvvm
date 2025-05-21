@@ -15,7 +15,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
-class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
+class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val viewPagerAnimHelper by lazy {
@@ -98,36 +98,33 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
                     }
                 }
             }
-            val time = if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
-                mViewModel.customTime
-            } else {
-                null
-            }
+            val time =
+                if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
+                    mViewModel.customTime
+                } else {
+                    null
+                }
             DatePickerFragment.newInstance(it.date, time).show(childFragmentManager)
         }
     }
 
     private fun showSportFilter() {
         mViewModel.onSportFilter.value?.let {
-            val lastFragment = childFragmentManager.findFragmentByTag(SportPickerFragment.TAG)
-            if (lastFragment == null) {
-                val f = SportPickerFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(Config.VALUE_SELECTED_SPORT, it.sportId)
+            childFragmentManager.setFragmentResultListener(
+                Config.KEY_RESULT,
+                viewLifecycleOwner
+            ) { _, bundle ->
+                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                if (bundle.containsKey(Config.VALUE_SELECTED_SPORT)) {
+                    bundle.getInt(Config.VALUE_SELECTED_SPORT).let { id ->
+                        mViewModel.setSportFilter(id)
                     }
                 }
-                childFragmentManager.setFragmentResultListener(Config.KEY_RESULT, viewLifecycleOwner) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    if (bundle.containsKey(Config.VALUE_SELECTED_SPORT)) {
-                        bundle.getInt(Config.VALUE_SELECTED_SPORT).let { id ->
-                            mViewModel.setSportFilter(id)
-                        }
-                    }
-                }
-                childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentContainer.id, f, f.javaClass.simpleName)
-                    .commit()
             }
+            SportPickerFragment.newInstance(
+                mBinding.clTitle.height + mBinding.clFilter.height + mBinding.tabLayout.height,
+                it.sportId
+            ).show(childFragmentManager, mBinding.main.id)
         }
     }
 }
