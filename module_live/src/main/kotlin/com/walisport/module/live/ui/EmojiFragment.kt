@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentSoftkeyboardEmojiBinding
 import com.walisport.module.live.ui.adapter.LiveEmojiAdapter
