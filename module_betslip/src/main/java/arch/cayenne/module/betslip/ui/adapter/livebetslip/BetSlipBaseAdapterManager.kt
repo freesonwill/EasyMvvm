@@ -20,7 +20,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 
 abstract class BetSlipBaseAdapterManager(
     private val binding: ViewBinding,
@@ -30,7 +30,7 @@ abstract class BetSlipBaseAdapterManager(
     var earlySettleSubmitListener: RecyclerItemListener<String>? = null
     var cancelReserveSubmitListener: RecyclerItemListener<String>? = null
     var reserveModifySubmitListener: RecyclerItemListener<String>? = null
-    var liveListener:RecyclerItemListener<BetSlipSelectionData>? = null
+    var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
 
 
     companion object {

@@ -67,7 +67,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     }
 
     override fun initData() {
-        val sportId = arguments?.getInt(Config.VALUE_SELECTED_SPORT, -1) ?: -1
+        val sportId = arguments?.getInt(Config.VALUE_SELECTED_SPORT_ID, -1) ?: -1
         mViewModel.setSelectedById(sportId)
     }
 
@@ -76,8 +76,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
             mViewModel.setSelectedById(-1)
         }
         mBinding.tvConfirm.setOnClickListener {
-            val id = mViewModel.getSelectedSportId()
-            resultBundle.putInt(Config.VALUE_SELECTED_SPORT, id)
+            val bean = mViewModel.getSelectedSportBean()
+            resultBundle.putInt(Config.VALUE_SELECTED_SPORT_ID, bean.sportId)
+            resultBundle.putString(Config.VALUE_SELECTED_SPORT_NAME, bean.sportName)
             collapseView()
         }
         mBinding.maskView.setOnClickListener {

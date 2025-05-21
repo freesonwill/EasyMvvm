@@ -36,7 +36,6 @@ android {
 dependencies {
     implementation(project(":lib_res"))
     implementation(project(":lib_skin"))
-    implementation(project(":lib_ijkplayer"))
     implementation(project(":lib_qyplayer"))
     implementation(project(":lib_database"))
     implementation(project(":module_bet"))

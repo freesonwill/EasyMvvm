@@ -41,8 +41,6 @@ class ChampionRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = listOf(resp.data!!.match).toRoomData()
-            "KC_ ${resp.data!!.match.basicInfo.matchName}".logi()
-            "KC_ ${resp.data!!.match.marketList}".logi()
             matchDao.insertFullMatch(
                 tournamentMatchRefs = null,
                 matches = matchFullData.match,

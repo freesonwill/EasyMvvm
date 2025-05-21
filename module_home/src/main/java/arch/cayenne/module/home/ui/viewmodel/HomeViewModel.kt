@@ -23,19 +23,19 @@ class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
     }
-    private val repository : HomeRepository by inject()
+
+    private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
-    private var currentPlayType : PlayType = PlayType.TODAY
+    private var currentPlayType: PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
-    val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
+    val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 今日/早盤
 
-    val tenTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 今日/早盤
     val allTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 更多
 
 
@@ -43,18 +43,27 @@ class HomeViewModel : BaseViewModel() {
     val selectedDate: MutableLiveData<Long> = _selectedDate
 
     private val _selectedTournamentId = MutableLiveData<Int>()
-    val selectedTournamentId: MutableLiveData<Int> get() = _selectedTournamentId
+    val selectedTournamentId: MutableLiveData<Int> = _selectedTournamentId
+
+    private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
+    val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
+
+    fun requestCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = true
+    }
+
+    fun consumeCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = false
+    }
 
     fun selectTournament(id: Int) {
-        val currentList = tenTournaments.value.orEmpty()
+        val currentList = tournaments.value.orEmpty()
         val existsInCurrent = currentList.any { it.id == id }
-
+//        _selectedTournamentId.value = null
         if (existsInCurrent) {
             _selectedTournamentId.postValue(id)
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                val playType = currentPlayType
-                //TODO 需實作
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
                     val updatedList = currentList.toMutableList()
@@ -65,8 +74,10 @@ class HomeViewModel : BaseViewModel() {
                     }
                     "selectTournament list: $fullList".logd()
                     withContext(Dispatchers.Main) {
-                        tenTournaments.value = fullList
-                        _selectedTournamentId.value = id
+                        tournaments.value = fullList
+                        "try emit id: $id to _selectedTournamentId".logd()
+                        _selectedTournamentId.postValue(id)
+                        "emitted to _selectedTournamentId: $id".logd()
                     }
                 } else {
                     "Tournament ID:$id not found".loge(this::class.java.simpleName)
@@ -102,7 +113,6 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getChampionTournament(currentSportId)
             withContext(Dispatchers.Main) {
-                "KC_ ${list.map { it.name }}".loge()
                 allTournaments.value = list
             }
         }
@@ -111,7 +121,6 @@ class HomeViewModel : BaseViewModel() {
     fun resetLiveData() {
         sportsStatistical.value = arrayListOf()
         tournaments.value = arrayListOf()
-        tenTournaments.value = arrayListOf()
         allTournaments.value = arrayListOf()
     }
 
@@ -136,39 +145,38 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
-        getCurrentTournament(sportId, false)
+        getCurrentTournament(sportId)
     }
 
-    fun setShowAllTournaments(isShow: Boolean) {
-        getCurrentTournament(currentSportId, isShow)
-    }
-
-    fun getCurrentSportId() = currentSportId
-
-    private fun getCurrentTournament(sportId: Int, isShowAll: Boolean = false) {
+    fun getAllTournament() {
         viewModelScope.launch(Dispatchers.IO) {
-            val playType = currentPlayType
-            val list = if (isShowAll) {
-                repository.getTournaments(playType.id, sportId)
-            } else {
-                repository.getTenTournaments(playType.id, sportId)
-            }
-
-            if (list.isNullOrEmpty()) {
-                "Get Tournament List failed!!".loge(this::class.java.simpleName)
-                return@launch
-            }
+            val list = repository.getAllTournaments()
+            "getAllTournament list: $list".logd()
 
             val fullList = ArrayList<TournamentDataModel>().apply {
-                add(TournamentDataModel.createAllItem(sportId))
+                add(TournamentDataModel.createAllItem(currentSportId))
                 addAll(list)
             }
 
             withContext(Dispatchers.Main) {
-                if (isShowAll) {
-                    allTournaments.value = fullList.filterNot { it.id == 0 }
-                } else {
-                    tenTournaments.value = fullList
+                allTournaments.value = fullList.filterNot { it.id == 0 }
+            }
+        }
+    }
+
+    private fun getCurrentTournament(sportId: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repository.getTenTournaments(currentPlayType.id, sportId)
+            "getCurrentTournament list: $list".logd()
+            if (list.isNullOrEmpty()) {
+                //TODO 拿取聯賽錯誤
+                "Get Tournament List failed!!".loge(this::class.java.simpleName)
+            } else {
+                withContext(Dispatchers.Main) {
+                    tournaments.value = ArrayList<TournamentDataModel>().apply {
+                        add(TournamentDataModel.createAllItem(sportId))
+                        addAll(list)
+                    }
                 }
             }
         }

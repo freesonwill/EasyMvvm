@@ -6,11 +6,14 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import arch.cayenne.module.home.data.repo.HomeRepository
+import com.ibm.icu.text.Transliterator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
+import org.koin.java.KoinJavaComponent.getKoin
 
 /**
  * @author: zhangsan
@@ -22,6 +25,14 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
     override fun create(context: Context) {
         "$TAG create ....".logd(TAG)
         loadKoinModules(moduleList)
+        preloadTransliterator()
+    }
+
+    private fun preloadTransliterator() {
+        CoroutineScope(Dispatchers.IO).launch {
+            // 強制觸發初始化（背景執行）
+            getKoin().get<Transliterator>()
+        }
     }
 
     private val viewModules = module {
@@ -36,6 +47,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         }
         factory { HomeRepository(get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao()) }
+        single(createdAtStart = true) { Transliterator.getInstance("Han-Latin/Names; Latin-ASCII") }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }

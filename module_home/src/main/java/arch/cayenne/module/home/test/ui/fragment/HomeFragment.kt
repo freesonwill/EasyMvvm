@@ -1,4 +1,4 @@
-package arch.cayenne.module.home.ui.fragment
+package arch.cayenne.module.home.test.ui.fragment
 
 import android.content.Intent
 import android.net.Uri
