@@ -97,31 +97,6 @@ class HomeRepository(
         sportDao.clearSports()
     }
 
-    suspend fun getChampionTournament(sportId: Int): List<TournamentDataModel> { //先暫時用TournamentDataModel
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.LIST_OUTRIGHT_MATCH,
-        ) {
-            Client.ListOutrightMatchReq.newBuilder().apply {
-                this.sportId = sportId
-            }.build()
-        }
-        if (res.error == null && res.data != null) {
-            return res.data!!.outrightMatchOrBuilderList.map {
-                TournamentDataModel(
-                    id = it.tournamentId,
-                    sportId = it.sportId,
-                    name = it.tournamentName,
-                    simpleName = "",
-                    icon = it.tournamentIcon,
-                    weight = it.weight,
-                    hot = it.hot
-                )
-            }
-        }
-        return arrayListOf()
-    }
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         clearTournamentCache()
@@ -193,10 +168,6 @@ class HomeRepository(
         val model = tournamentDao.getTournamentById(tournamentId)
         "getTournamentById: $tournamentId, list: $model".logd()
         return model
-    }
-
-    fun getAllTournaments(): List<TournamentDataModel> {
-        return tournamentDao.queryTournament()
     }
 
     private fun clearTournamentCache() {
