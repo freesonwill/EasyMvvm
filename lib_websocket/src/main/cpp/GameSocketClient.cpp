@@ -23,6 +23,16 @@ static CCSPayloadCipher *getChipper(JNIEnv *env, jobject thiz) {
     return chiper;
 }
 
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_arch_cayenne_lib_websocket_NativeLib_init(JNIEnv *env, jobject thiz, jint cipher_type) {
+    CCSPayloadCipher *chiper = getChipper(env, thiz);
+    LOGD("init chipper=%p with type=%d", chiper, cipher_type);
+    chiper->init(cipher_type);
+}
+
+
 extern "C"
 JNIEXPORT jbyteArray JNICALL
 

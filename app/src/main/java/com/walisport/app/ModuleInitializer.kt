@@ -82,7 +82,6 @@ class ModuleInitializer : DefaultInitializer<String> {
             SocketModuleInitializer::class.java,
             CommonModuleInitializer::class.java,
             HomeModuleInitializer::class.java,
-            ChatSocketModuleInitializer::class.java,
         )
     }
 

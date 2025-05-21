@@ -5,14 +5,13 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager
 import arch.cayenne.lib.chatwebsocket.data.ChatLoginRequestData
 import arch.cayenne.lib.chatwebsocket.data.ChatLoginResponseData
+import arch.cayenne.lib.chatwebsocket.data.ChatResponseCode
 import arch.cayenne.lib.chatwebsocket.extension.chatSendAndWaitProtoMessageResponse
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -39,7 +38,8 @@ class LiveRemoteChatManager(
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
             scope,
             Dispatchers.IO,
-            ApiCode.CHAT_LOGIN
+            ApiCode.CHAT_LOGIN,
+            responseCode = ChatResponseCode.LOGIN
         ) {
             ChatLoginRequestData(uid.toLong(), token, 5)
         }

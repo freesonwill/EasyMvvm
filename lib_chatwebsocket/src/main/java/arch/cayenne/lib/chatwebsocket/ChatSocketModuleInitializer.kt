@@ -4,8 +4,7 @@ import android.app.Application
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.chatwebsocket.data.ChatISecurity
-import arch.cayenne.lib.chatwebsocket.data.ChatISocket
+import arch.cayenne.lib.websocket.data.ISocket
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -22,8 +21,7 @@ class ChatSocketModuleInitializer : DefaultInitializer<String> {
     }
 
     private val socketModules = module {
-        factory<ChatISocket<*, *, *>> { ChatSocketClientService(context = WeakReference(androidContext() as Application), get()) }
-        factory<ChatISecurity<*, *, *>> { ChatNativeLib() }
+        factory<ChatSocketClientService> { ChatSocketClientService(context = WeakReference(androidContext() as Application), get()) }
         single { ChatWebSocketManager(get()) }
     }
 

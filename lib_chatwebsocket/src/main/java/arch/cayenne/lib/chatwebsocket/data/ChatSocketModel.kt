@@ -6,7 +6,7 @@ import arch.cayenne.lib.websocket.data.SocketResponseError
 import com.google.gson.Gson
 
 
-interface ChatDataToJson {
+interface ChatRequestData {
     fun toJson(): String {
         return Gson().toJson(this)
     }
@@ -21,9 +21,9 @@ data class ChatResponseData<T>(
 ): ISocketData(), IResponse
 
 
-data class ChatLoginRequestData(val uid: Long, val token: String, val platform: Int) : ChatDataToJson
+data class ChatLoginRequestData(val uid: Long, val token: String, val platform: Int) : ChatRequestData
 
-data class ChatPinRequestData(val data: String) : ChatDataToJson
+data class ChatPinRequestData(val data: String) : ChatRequestData
 
 data class ChatLoginResponseData(
     val code: Int? = null,

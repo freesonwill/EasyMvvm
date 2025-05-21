@@ -8,8 +8,7 @@ import android.util.Log
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.data.ChatISecurity
-import arch.cayenne.lib.chatwebsocket.data.ChatISocket
+import arch.cayenne.lib.websocket.NativeLib
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
@@ -35,18 +34,18 @@ import java.util.concurrent.TimeUnit
 
 class ChatSocketClientService(
     private val context: WeakReference<Application>,
-    private val security: ChatISecurity<IRequest, ByteArray, IResponse>
-) : ChatISocket<IRequest, IResponse, ConnectState> {
-    private var currentState : SocketConnectState = SocketConnectState.None
+    private val security: ISecurity<IRequest, ByteArray, IResponse>
+) : ISocket<IRequest, IResponse, ConnectState> {
+    private var currentState: SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
-    private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
+    private val connectStateFlow: MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 5,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
         )
     }
-    private val socketResponseFlow : MutableSharedFlow<IResponse> by lazy {
+    private val socketResponseFlow: MutableSharedFlow<IResponse> by lazy {
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 10,
@@ -76,7 +75,7 @@ class ChatSocketClientService(
         val request = Request.Builder()
             .url(host)
             .build()
-        security.resetSecurity()
+        security.resetSecurity(NativeLib.CIPHER_TYPE_JSON)
         client.newWebSocket(request, object : WebSocketListener() {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
@@ -123,7 +122,9 @@ class ChatSocketClientService(
 
                         }
                         val data = security.decrypt(byteArray)
-                        "onMessage ${data} \n result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
+                        "onMessage ${data} \n result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(
+                            this@ChatSocketClientService::class.java.simpleName
+                        )
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {
@@ -135,10 +136,10 @@ class ChatSocketClientService(
 
     }
 
-    override fun disConnect():Boolean {
-        val result =   webSocket?.close(1001, null) ?: false
+    override fun disConnect(): Boolean {
+        val result = webSocket?.close(1001, null) ?: false
         currentState = SocketConnectState.Closed
-      return result
+        return result
     }
 
     override fun reconnect() {

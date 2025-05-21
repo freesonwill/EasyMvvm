@@ -5,7 +5,8 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.chatwebsocket.ChatSocketClientService
 import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager
 import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager.Companion.responseTimeout
-import arch.cayenne.lib.chatwebsocket.data.ChatDataToJson
+import arch.cayenne.lib.chatwebsocket.data.ChatRequestData
+import arch.cayenne.lib.chatwebsocket.data.ChatResponseCode
 import arch.cayenne.lib.chatwebsocket.data.ChatResponseData
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.IResponse
@@ -24,12 +25,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
 
-fun ChatDataToJson.chatAsRemoteRequest(
+fun ChatRequestData.chatAsRemoteRequest(
     apiCode: ApiCode,
     rid: Short
 ): SocketRequestData {
     val json = toJson()
-    "json $json".logd(ChatSocketClientService::class.java.simpleName)
+    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,
@@ -39,15 +40,15 @@ fun ChatDataToJson.chatAsRemoteRequest(
 }
 
 inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
-    apiCode: ApiCode
+    responseCode: ChatResponseCode
 ): Flow<ChatResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
+    .filter { it.mid == responseCode.mid && it.sid == responseCode.sid }
     .map {
         "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
             val proto = it.originProto?.let { byteArray ->
-//                val json = String(byteArray)
-                Gson().fromJson(String(byteArray),T::class.java)
+                Gson().fromJson(String(byteArray), T::class.java)
             }
             "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
             return@map ChatResponseData(
@@ -72,13 +73,14 @@ suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitP
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
+    responseCode: ChatResponseCode,
     rid: Short = 0,
     timeout: Long? = null,
-    request: () -> ChatDataToJson
+    request: () -> ChatRequestData
 ): ChatResponseData<T> {
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
-            chatObserveProtoMessage<T>(apiCode).filter {
+            chatObserveProtoMessage<T>(responseCode).filter {
                 it.rid == rid
             }.first()
         }

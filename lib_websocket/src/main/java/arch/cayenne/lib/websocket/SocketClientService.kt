@@ -129,8 +129,8 @@ class SocketClientService(
 
     }
 
-    override fun disConnect() {
-        webSocket?.close(1001, null)
+    override fun disConnect():Boolean {
+      return  webSocket?.close(1001, null) ?: true
     }
 
     override fun reconnect() {

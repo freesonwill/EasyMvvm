@@ -1,13 +1,13 @@
 package arch.cayenne.lib.chatwebsocket
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.data.ChatISocket
 import arch.cayenne.lib.chatwebsocket.data.ChatPinRequestData
 import arch.cayenne.lib.chatwebsocket.extension.chatAsRemoteRequest
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
+import arch.cayenne.lib.websocket.data.ISocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 class ChatWebSocketManager(
-    private val socket : ChatISocket<IRequest, IResponse, ConnectState>
+    private val socket : ChatSocketClientService
 ) {
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
@@ -37,6 +37,7 @@ class ChatWebSocketManager(
         const val responseTimeout: Long = 5000
     }
     init {
+        "${socket}".logi("webchat")
         observeState()
     }
 
