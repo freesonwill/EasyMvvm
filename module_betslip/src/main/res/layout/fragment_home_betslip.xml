@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
     android:background="@color/main_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,6 +76,7 @@
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
+            android:textColor="@color/main_text"
             app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -90,6 +91,7 @@
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
+            android:textColor="@color/main_text"
             app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

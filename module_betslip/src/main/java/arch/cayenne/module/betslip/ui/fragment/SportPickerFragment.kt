@@ -35,6 +35,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
 
     override val vbClass: KClass<FragmentSportPickerBinding> = FragmentSportPickerBinding::class
     override val vmClass: KClass<SportPickerViewModel> = SportPickerViewModel::class
+    private val resultBundle by lazy {
+        Bundle()
+    }
 
     private val sportAdapter: SportPickerAdapter by lazy {
         SportPickerAdapter(object : SportPickerAdapter.SportPickerListener {
@@ -74,9 +77,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         }
         mBinding.tvConfirm.setOnClickListener {
             val id = mViewModel.getSelectedSportId()
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
-                putInt(Config.VALUE_SELECTED_SPORT, id)
-            })
+            resultBundle.putInt(Config.VALUE_SELECTED_SPORT, id)
             collapseView()
         }
         mBinding.maskView.setOnClickListener {
@@ -100,13 +101,14 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     }
 
     fun dismiss() {
-        mBinding.clFilter.visibility = View.INVISIBLE
-        parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
-        mBinding.clFilter.post {
-            parentFragmentManager.beginTransaction()
-                .setReorderingAllowed(true) // 避免 layout 重新整理過猛
-                .remove(this)
-                .commitAllowingStateLoss()
+        if (parentFragment != null) {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+            mBinding.clFilter.post {
+                parentFragmentManager.beginTransaction()
+                    .setReorderingAllowed(true) // 避免 layout 重新整理過猛
+                    .remove(this)
+                    .commitAllowingStateLoss()
+            }
         }
     }
 
@@ -140,7 +142,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         val targetHeight = clFilter.height
 
         // 用 ValueAnimator 動畫拉高
-        val animator = ValueAnimator.ofInt(targetHeight, 0)
+        val animator = ValueAnimator.ofInt(targetHeight, 1)
         animator.addUpdateListener { valueAnimator ->
             val value = valueAnimator.animatedValue as Int
             val lp = clFilter.layoutParams
@@ -150,7 +152,10 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         animator.duration = 300
         animator.interpolator = DecelerateInterpolator()
         animator.doOnEnd {
-            dismiss()
+            mBinding.clFilter.visibility = View.INVISIBLE
+            mBinding.root.postDelayed({
+                dismiss()
+            }, 300L)
         }
         animator.start()
     }

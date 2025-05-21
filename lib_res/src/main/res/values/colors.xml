@@ -59,4 +59,5 @@
     <color name="tab_bg">#3d404d</color>
     <color name="tab_text">#cbd8eb</color>
 
+    <color name="green_for_white_bg">#00D271</color>
 </resources>
