@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import arch.cayenne.module.home.data.repo.HomeRepository
+import arch.cayenne.module.home.data.repo.TournamentListRepository
 import com.ibm.icu.text.Transliterator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
 
     private val viewModules = module {
         includes(defaultModule)
+        single(createdAtStart = true) { Transliterator.getInstance("Han-Latin/Names; Latin-ASCII") }
     }
     private val daoModule = module {
 //        factory { get<GameDatabase>().sportDao() }
@@ -47,7 +49,8 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         }
         factory { HomeRepository(get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao()) }
-        single(createdAtStart = true) { Transliterator.getInstance("Han-Latin/Names; Latin-ASCII") }
+        factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao()) }
+
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }

@@ -5,13 +5,14 @@ import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.databinding.ItemTournamentSectionBinding
 import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
 
 class TournamentSectionAdapter(
-    private val onTournamentClick: (Int) -> Unit
+    private val onTournamentClick: (BaseTournamentData) -> Unit
 ) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
 
     companion object {

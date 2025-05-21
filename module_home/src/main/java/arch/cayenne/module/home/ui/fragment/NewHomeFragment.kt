@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -38,6 +41,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
+import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -84,12 +88,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         //看db, 點擊的不在matchBean中會爆掉
                         resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
-                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                            toggleTournamentMoreSection(true)
-//                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(matchId = 464046))
-                        } else {
-                            toggleTournamentMoreSection(false)
-                        }
                     }
                 }
 
@@ -150,8 +148,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
                 "ivHomeLeagueMore click".logd()
-                mViewModel.getAllTournament()
-                toggleTournamentMoreSection(true)
+                toggleTournamentMoreSection(true, TournamentListType.MORE)
             }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
@@ -169,40 +166,49 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
 
-    private fun toggleTournamentMoreSection(expanded: Boolean) {
+    private fun toggleTournamentMoreSection(expanded: Boolean, type: TournamentListType) {
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
         isExpanded = expanded
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
-            container.visibility = View.INVISIBLE
+            container.visibility = View.VISIBLE
 
-            val tournamentListFragment = TournamentListFragment.newInstance()
+            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId(), type)
 
-            container.post {
-                container.visibility = View.VISIBLE
+            fm.beginTransaction().apply {
+                if (type == TournamentListType.MORE) {
+                    setCustomAnimations(
+                        R.anim.slide_in_from_top,
+                        R.anim.slide_out_to_top
+                    )
+                }
+                replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
+                commitAllowingStateLoss()
             }
-            fm.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in_from_top,
-                    R.anim.slide_out_to_top
-                )
-                .replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
-                .commitAllowingStateLoss()
+
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
-            fm.beginTransaction()
-                .setCustomAnimations(0, R.anim.slide_out_to_top)
-                .remove(fragment)
-                .commitAllowingStateLoss()
+            fm.beginTransaction().apply {
+                if (type == TournamentListType.MORE){
+                    setCustomAnimations(0, R.anim.slide_out_to_top)
+                }
+                remove(fragment)
+                commitAllowingStateLoss()
+            }
 
+            //TODO 把進出的anim優化
             container.postDelayed({
                 mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
                 container.visibility = View.GONE
             }, 200)
         }
+    }
+
+    override fun onCreateAnimator(transit: Int, enter: Boolean, nextAnim: Int): Animator? {
+        return super.onCreateAnimator(transit, enter, nextAnim)
     }
 
     private fun showHomeCalendar(tabSelectedDate: String) {
@@ -485,6 +491,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
+            if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
+            } else {
+                toggleTournamentMoreSection(false, TournamentListType.CHAMPION)
+            }
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) {
@@ -506,7 +517,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
             if (shouldCollapse == true && isExpanded) {
-                toggleTournamentMoreSection(false)
+                toggleTournamentMoreSection(false, TournamentListType.MORE)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
@@ -514,5 +525,31 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
+
+        lifecycleScope.launch {
+            mViewModel.navigationToChampion.collect { data ->
+                val navController = findNavController()
+                if (navController.currentDestination?.id == R.id.newHomeFragment) {
+                    navigate(
+                        NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+                            matchId = data.championMatchId,
+                            name = data.name,
+                            icon = data.icon
+                        )
+                    )
+                }
+            }
+        }
+//        mViewModel.navigationToChampion.observe(viewLifecycleOwner) { data ->
+//            if (data == null) return@observe
+//            navigate(
+//                NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+//                        matchId = data.championMatchId,
+//                        name = data.name,
+//                        icon = data.icon
+//                )
+//            )
+//            mViewModel.resetNavigationToChampion()
+//        }
     }
 }

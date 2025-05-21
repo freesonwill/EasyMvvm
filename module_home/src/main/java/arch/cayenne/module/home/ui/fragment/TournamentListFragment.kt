@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.graphics.PointF
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
@@ -9,33 +10,51 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
+import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.ibm.icu.text.Transliterator
 import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
-class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentListBinding>() {
+class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTournamentListBinding>() {
 
     override val vbClass: KClass<FragmentTournamentListBinding> =
         FragmentTournamentListBinding::class
-    override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
+    override val vmClass: KClass<TournamentListViewModel> = TournamentListViewModel::class
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
     private val transliterator : Transliterator by inject()
+
+    override fun initData() {
+        arguments?.apply {
+            val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                getSerializable(ARG_TOURNAMENT_TYPE, TournamentListType::class.java)
+            } else {
+                getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
+            }
+            mViewModel.setSportId(getInt(ARG_SPORT_ID))
+            type?.apply {
+                mViewModel.setType(this)
+                mBinding.ivHomeLeagueCollapse.isVisible = this == TournamentListType.MORE
+                mViewModel.getTournaments()
+            }
+        }
+
+    }
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -46,8 +65,10 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
                 homeViewModel.requestCollapseTournamentDropdown()
             }
             adapter = TournamentSectionAdapter { tournamentId ->
-                mViewModel.selectTournament(tournamentId)
-                homeViewModel.requestCollapseTournamentDropdown()
+                homeViewModel.onTournamentListSelected(tournamentId)
+                if (mViewModel.getType() == TournamentListType.MORE) {
+                    homeViewModel.requestCollapseTournamentDropdown()
+                }
             }
             rvTournamentList.adapter = adapter
         }
@@ -57,22 +78,16 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
     }
 
     override fun createObserver() {
-        homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
-            "observe tournaments:$list".logd()
+        mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
             if (!list.isNullOrEmpty()) {
                 setTournamentList(list)
             }
         }
     }
 
-    private fun setTournamentList(tournaments: List<TournamentDataModel>) {
-//        val transliterator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-//            Transliterator.getInstance("Han-Latin/Names; Latin-ASCII")
-//        } else {
-//            TODO("VERSION.SDK_INT < Q")
-//        }
-        val groupedMap = mutableMapOf<Char, MutableList<TournamentDataModel>>()
-        val hotList = mutableListOf<TournamentDataModel>()
+    private fun setTournamentList(tournaments: List<BaseTournamentData>) {
+        val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
+        val hotList = mutableListOf<BaseTournamentData>()
         tournaments.forEach { tournament ->
             val pinyin = transliterator.transliterate(tournament.name).trim()
             val firstChar = pinyin.firstOrNull()?.uppercaseChar()
@@ -160,8 +175,19 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
     }
 
     companion object {
-        fun newInstance(): TournamentListFragment {
-            return TournamentListFragment()
+        private const val ARG_TOURNAMENT_TYPE = "tournament_type"
+        private const val ARG_SPORT_ID = "sport_id"
+        fun newInstance(sportId: Int, type: TournamentListType): TournamentListFragment {
+            return TournamentListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(ARG_SPORT_ID, sportId)
+                    putSerializable(ARG_TOURNAMENT_TYPE, type)
+                }
+            }
         }
     }
+}
+
+enum class TournamentListType {
+    MORE, CHAMPION
 }
