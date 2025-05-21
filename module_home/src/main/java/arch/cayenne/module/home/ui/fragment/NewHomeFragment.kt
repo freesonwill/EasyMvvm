@@ -151,7 +151,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
-                "joseph ivHomeLeagueMore click".logd()
                 mViewModel.getAllTournament()
                 toggleTournamentMoreSection(true)
             }
