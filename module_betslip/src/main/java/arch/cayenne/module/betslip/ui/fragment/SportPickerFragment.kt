@@ -27,7 +27,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
             return SportPickerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ANCHOR_Y, anchorY)
-                    putInt(Config.VALUE_SELECTED_SPORT, sportId)
+                    putInt(Config.VALUE_SELECTED_SPORT_ID, sportId)
                 }
             }
         }
@@ -67,7 +67,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     }
 
     override fun initData() {
-        val sportId = arguments?.getInt(Config.VALUE_SELECTED_SPORT_ID, -1) ?: -1
+        val sportId = requireArguments().getInt(Config.VALUE_SELECTED_SPORT_ID, -1)
         mViewModel.setSelectedById(sportId)
     }
 
