@@ -1,13 +1,13 @@
-package arch.cayenne.lib.chatwebsocket.extension
+package arch.cayenne.lib.websocket.chat.extension
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.ChatSocketClientService
-import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager
-import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager.Companion.responseTimeout
-import arch.cayenne.lib.chatwebsocket.data.ChatRequestData
-import arch.cayenne.lib.chatwebsocket.data.ChatResponseCode
-import arch.cayenne.lib.chatwebsocket.data.ChatResponseData
+import arch.cayenne.lib.websocket.chat.ChatSocketClientService
+import arch.cayenne.lib.websocket.chat.ChatWebSocketManager
+import arch.cayenne.lib.websocket.chat.ChatWebSocketManager.Companion.responseTimeout
+import arch.cayenne.lib.websocket.chat.data.ChatRequestData
+import arch.cayenne.lib.websocket.chat.data.ChatResponseCode
+import arch.cayenne.lib.websocket.chat.data.ChatResponseData
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.InvalidProtoTypeResponseError

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.chatwebsocket.data
+package arch.cayenne.lib.websocket.chat.data
 
 enum class ChatResponseCode(val sid: Short, val mid: Short = 500) {
 

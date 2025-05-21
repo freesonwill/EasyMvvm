@@ -1,4 +1,4 @@
-package arch.cayenne.lib.chatwebsocket.data
+package arch.cayenne.lib.websocket.chat.data
 
 import kotlinx.coroutines.flow.SharedFlow
 

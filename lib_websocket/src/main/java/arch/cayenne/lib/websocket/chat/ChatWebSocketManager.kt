@@ -1,13 +1,12 @@
-package arch.cayenne.lib.chatwebsocket
+package arch.cayenne.lib.websocket.chat
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.data.ChatPinRequestData
-import arch.cayenne.lib.chatwebsocket.extension.chatAsRemoteRequest
+import arch.cayenne.lib.websocket.chat.data.ChatPinRequestData
+import arch.cayenne.lib.websocket.chat.extension.chatAsRemoteRequest
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
-import arch.cayenne.lib.websocket.data.ISocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher

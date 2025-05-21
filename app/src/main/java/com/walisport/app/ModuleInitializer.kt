@@ -10,7 +10,6 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.ChatSocketModuleInitializer
 import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper

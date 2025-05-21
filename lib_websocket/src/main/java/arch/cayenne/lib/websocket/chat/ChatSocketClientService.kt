@@ -1,11 +1,9 @@
-package arch.cayenne.lib.chatwebsocket
+package arch.cayenne.lib.websocket.chat
 
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
-import android.util.Log
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.NativeLib
@@ -122,7 +120,7 @@ class ChatSocketClientService(
 
                         }
                         val data = security.decrypt(byteArray)
-                        "onMessage ${data} \n result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(
+                        "result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(
                             this@ChatSocketClientService::class.java.simpleName
                         )
                         workingScope.launch { socketResponseFlow.emit(data) }

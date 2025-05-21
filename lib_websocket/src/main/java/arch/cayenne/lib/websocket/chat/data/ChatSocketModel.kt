@@ -1,4 +1,4 @@
-package arch.cayenne.lib.chatwebsocket.data
+package arch.cayenne.lib.websocket.chat.data
 
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocketData
@@ -21,7 +21,8 @@ data class ChatResponseData<T>(
 ): ISocketData(), IResponse
 
 
-data class ChatLoginRequestData(val uid: Long, val token: String, val platform: Int) : ChatRequestData
+data class ChatLoginRequestData(val uid: Long, val token: String, val platform: Int) :
+    ChatRequestData
 
 data class ChatPinRequestData(val data: String) : ChatRequestData
 
