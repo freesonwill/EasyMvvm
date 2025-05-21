@@ -57,9 +57,10 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun selectTournament(id: Int) {
+        "joseph selectTournament id: $id".logd()
         val currentList = tournaments.value.orEmpty()
         val existsInCurrent = currentList.any { it.id == id }
-//        _selectedTournamentId.value = null
+        _selectedTournamentId.value = 0
         if (existsInCurrent) {
             _selectedTournamentId.postValue(id)
         } else {
@@ -72,12 +73,12 @@ class HomeViewModel : BaseViewModel() {
                         add(TournamentDataModel.createAllItem(currentSportId))
                         addAll(updatedList)
                     }
-                    "selectTournament list: $fullList".logd()
+                    "joseph selectTournament list: $fullList".logd()
                     withContext(Dispatchers.Main) {
                         tournaments.value = fullList
-                        "try emit id: $id to _selectedTournamentId".logd()
+                        "joseph try emit id: $id to _selectedTournamentId".logd()
                         _selectedTournamentId.postValue(id)
-                        "emitted to _selectedTournamentId: $id".logd()
+                        "joseph emitted to _selectedTournamentId: $id".logd()
                     }
                 } else {
                     "Tournament ID:$id not found".loge(this::class.java.simpleName)

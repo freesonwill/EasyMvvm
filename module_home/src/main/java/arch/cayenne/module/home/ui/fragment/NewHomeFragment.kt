@@ -149,7 +149,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
-                "ivHomeLeagueMore click".logd()
+                "joseph ivHomeLeagueMore click".logd()
                 mViewModel.getAllTournament()
                 toggleTournamentMoreSection(true)
             }
@@ -381,7 +381,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
-        "setTournamentAndViewPagerLayout: ${tournaments.size}".logd()
+        "joseph setTournamentAndViewPagerLayout: ${tournaments.size}".logd()
         //確定拿到聯賽資料後再決定要不要show出時間
         if (tournaments.isNotEmpty()) {
             with (mBinding.layoutContainer) {
@@ -492,12 +492,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
-            "使用者選取聯賽 ID: $id".logd()
+            "joseph 使用者選取聯賽 ID: $id".logd()
             val list = mViewModel.tournaments.value.orEmpty()
-            "使用者選取聯賽 tournaments: ${list.size}".logd()
+            "joseph 使用者選取聯賽 tournaments: ${list.size}".logd()
             val index = list.indexOfFirst { it.id == id }
             if (index != -1) {
-                "使用者選取聯賽 index select(): $index".logd()
+                "joseph 使用者選取聯賽 index select(): $index".logd()
                 mBinding.layoutContainer.tlLeagueList.post {
                     mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
                 }

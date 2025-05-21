@@ -58,7 +58,7 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
 
     override fun createObserver() {
         homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
-            "observe tournaments:$list".logd()
+            "joseph observe tournaments:$list".logd()
             if (!list.isNullOrEmpty()) {
                 setTournamentList(list)
             }
