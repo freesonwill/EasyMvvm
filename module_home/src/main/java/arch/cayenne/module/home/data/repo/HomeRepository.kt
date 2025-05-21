@@ -2,6 +2,7 @@ package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
