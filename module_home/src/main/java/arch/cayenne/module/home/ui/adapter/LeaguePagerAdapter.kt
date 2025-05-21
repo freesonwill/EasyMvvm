@@ -11,7 +11,7 @@ import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val tournament: List<TournamentDataModel>,
+    private var tournament: List<TournamentDataModel>,
     private val playType: PlayType
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 

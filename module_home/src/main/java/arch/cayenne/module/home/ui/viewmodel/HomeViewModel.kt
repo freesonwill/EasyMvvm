@@ -67,12 +67,13 @@ class HomeViewModel : BaseViewModel() {
             viewModelScope.launch(Dispatchers.IO) {
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
-                    val updatedList = currentList.toMutableList()
-                    updatedList.add(tournament)
-                    val fullList = ArrayList<TournamentDataModel>().apply {
-                        add(TournamentDataModel.createAllItem(currentSportId))
-                        addAll(updatedList)
-                    }
+                    val updatedList = currentList
+                        .filterNot { it.id == TOURNAMENT_ALL_ID }
+                        .toMutableList()
+                        .apply { add(tournament) }
+
+                    val fullList = listOf(TournamentDataModel.createAllItem(currentSportId)) +
+                            updatedList.distinctBy { it.id }
                     withContext(Dispatchers.Main) {
                         tournaments.value = fullList
                         _appendTournament.value = tournament
