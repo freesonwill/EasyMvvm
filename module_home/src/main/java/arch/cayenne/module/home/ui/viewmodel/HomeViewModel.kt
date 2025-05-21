@@ -47,6 +47,8 @@ class HomeViewModel : BaseViewModel() {
 
     private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
     val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
+    private val _appendTournament = MutableLiveData<TournamentDataModel?>()
+    val appendTournament: MutableLiveData<TournamentDataModel?> = _appendTournament
 
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = true
@@ -57,10 +59,8 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun selectTournament(id: Int) {
-        "joseph selectTournament id: $id".logd()
         val currentList = tournaments.value.orEmpty()
         val existsInCurrent = currentList.any { it.id == id }
-        _selectedTournamentId.value = 0
         if (existsInCurrent) {
             _selectedTournamentId.postValue(id)
         } else {
@@ -68,17 +68,15 @@ class HomeViewModel : BaseViewModel() {
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
                     val updatedList = currentList.toMutableList()
-                    updatedList.add(tournament) // 👉 加到尾端
+                    updatedList.add(tournament)
                     val fullList = ArrayList<TournamentDataModel>().apply {
                         add(TournamentDataModel.createAllItem(currentSportId))
                         addAll(updatedList)
                     }
-                    "joseph selectTournament list: $fullList".logd()
                     withContext(Dispatchers.Main) {
                         tournaments.value = fullList
-                        "joseph try emit id: $id to _selectedTournamentId".logd()
+                        _appendTournament.value = tournament
                         _selectedTournamentId.postValue(id)
-                        "joseph emitted to _selectedTournamentId: $id".logd()
                     }
                 } else {
                     "Tournament ID:$id not found".loge(this::class.java.simpleName)

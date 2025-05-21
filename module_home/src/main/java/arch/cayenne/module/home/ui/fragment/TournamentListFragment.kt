@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -46,7 +45,7 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
                 homeViewModel.requestCollapseTournamentDropdown()
             }
             adapter = TournamentSectionAdapter { tournamentId ->
-                mViewModel.selectTournament(tournamentId)
+                homeViewModel.selectTournament(tournamentId)
                 homeViewModel.requestCollapseTournamentDropdown()
             }
             rvTournamentList.adapter = adapter
@@ -58,7 +57,6 @@ class TournamentListFragment : BaseFragment<HomeViewModel, FragmentTournamentLis
 
     override fun createObserver() {
         homeViewModel.allTournaments.observe(viewLifecycleOwner) { list ->
-            "joseph observe tournaments:$list".logd()
             if (!list.isNullOrEmpty()) {
                 setTournamentList(list)
             }

@@ -1,7 +1,6 @@
 package arch.cayenne.module.home.ui.adapter
 
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.databinding.ItemTournamentSectionBinding
@@ -19,7 +18,6 @@ class TournamentItemViewHolder(
                 .into(tvSectionIcon)
             tvSectionName.text = item.tournament.name
             root.setOnClickListener {
-                "joseph TournamentItemViewHolder click".logd()
                 onClick(item.tournament.id)
             }
         }
