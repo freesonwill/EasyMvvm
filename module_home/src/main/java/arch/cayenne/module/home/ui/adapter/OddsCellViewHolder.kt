@@ -76,11 +76,10 @@ class OddsCellViewHolder(
             ivTrendDown.visibility = View.GONE
             vTrendHighlight.clearAnimation()
             vTrendHighlight.visibility = View.GONE
-            //TODO 賠率反過來了要改
             val trendView = when {
                 trendDelta == null || trendDelta == 0 -> null
-                trendDelta < 0 -> ivTrendUp   // 賠率下降 → 變好
-                trendDelta > 0 -> ivTrendDown // 賠率上升 → 變差
+                trendDelta < 0 -> ivTrendDown   // 賠率下降 → 變差
+                trendDelta > 0 -> ivTrendUp // 賠率上升 → 變好
                 else -> null
             }
             // 同步閃爍 trendView 和 overlay
