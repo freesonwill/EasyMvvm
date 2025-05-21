@@ -140,14 +140,14 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_share"
-        android:layout_width="@dimen/dp_253"
+        android:layout_width="@dimen/video_landscape_share_fragment_width"
         android:layout_height="match_parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_choose_source"
-        android:layout_width="@dimen/dp_253"
+        android:layout_width="@dimen/video_landscape_share_fragment_width"
         android:layout_height="match_parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -155,7 +155,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_statistics"
-        android:layout_width="@dimen/dp_372"
+        android:layout_width="@dimen/video_landscape_statistics_fragment_width"
         android:layout_height="match_parent"
         app:layout_constraintStart_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
