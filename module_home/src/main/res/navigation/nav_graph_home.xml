@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="arch.cayenne.module.home.ui.fragment.HomeFragment"
+        android:name="arch.cayenne.module.home.test.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
