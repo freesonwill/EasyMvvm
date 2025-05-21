@@ -41,6 +41,7 @@ dependencies {
     implementation(project(":lib_websocket"))
     implementation(project(":module_bet"))
     implementation(project(":module_betslip"))
+    implementation(libs.icu4j)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -1,8 +1,9 @@
-package com.walisport.module.setting.data
+package com.walisport.module.setting.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.SportSkinManager
+import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf

@@ -25,6 +25,7 @@ class ChampionItemViewHolder(
             rvOddsGrid.apply {
                 layoutManager = GridLayoutManager(root.context, spanCount)
                 adapter = oddsGridAdapter
+                val spacingOutSide = 12.dp2px
                 val spacing = 7.dp2px
                 if (itemDecorationCount > 0) {
                     removeItemDecorationAt(0)
@@ -40,8 +41,8 @@ class ChampionItemViewHolder(
                         if (position == RecyclerView.NO_POSITION) return
 
                         val column = position % spanCount
-                        outRect.left = if(column == 0) { 0 } else { spacing / 2 }
-                        outRect.right = if(column == 0) { spacing / 2 } else { 0 }
+                        outRect.left = if(column == 0) { spacingOutSide } else { spacing / 2 }
+                        outRect.right = if(column == 0) { spacing / 2 } else { spacingOutSide }
                         if (position >= spanCount) {
                             outRect.top = spacing
                         }

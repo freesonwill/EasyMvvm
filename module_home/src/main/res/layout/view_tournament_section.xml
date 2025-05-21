@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/ll_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_card">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_tournament_section_title"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_48"
+            android:layout_marginStart="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/tournament_section_title"
+            android:textColor="@color/main_text"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_home_league_collapse"
+            android:layout_width="65dp"
+            android:layout_height="@dimen/dp_48"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_10"
+            android:src="@drawable/ic_league_tabs_collapse"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_tournament_list"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_tournament_section_title" />
+
+        <FrameLayout
+            android:id="@+id/ll_index_container"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_52"
+            android:layout_marginEnd="@dimen/dp_11"
+            android:gravity="center_horizontal"
+            android:paddingBottom="4dp"
+            android:scrollbars="none"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+</FrameLayout>

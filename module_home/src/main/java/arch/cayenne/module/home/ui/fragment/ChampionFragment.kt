@@ -26,7 +26,7 @@ import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>(){
+class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding>() {
 
     override val vbClass: KClass<FragmentChampionBinding> = FragmentChampionBinding::class
     override val vmClass: KClass<ChampionViewModel> = ChampionViewModel::class
@@ -36,6 +36,7 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
     private val tittleBarBinding: TitleBarChampionBinding by lazy {
         TitleBarChampionBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
+
     override fun initData() {
         super.initData()
         mViewModel.setMatchId(args.matchId)
@@ -79,9 +80,12 @@ class ChampionFragment: BaseFragment<ChampionViewModel, FragmentChampionBinding>
             with(mBinding) {
                 if (matchWithMarkets != null && matchWithMarkets.markets.isNotEmpty()) {
                     clDynamics.visibility = View.GONE
-                    Glide.with(this@ChampionFragment).load(matchWithMarkets.match.basicInfo.tournamentIcon)
-                        .error(R.drawable.title_league_icon).into(tittleBarBinding.ivLandscapeLeagueIcon)
-                    tittleBarBinding.tvCompetitionName.text = matchWithMarkets.match.basicInfo.matchName
+                    Glide.with(this@ChampionFragment)
+                        .load(matchWithMarkets.match.basicInfo.tournamentIcon)
+                        .error(R.drawable.title_league_icon)
+                        .into(tittleBarBinding.ivLandscapeLeagueIcon)
+                    tittleBarBinding.tvCompetitionName.text =
+                        matchWithMarkets.match.basicInfo.matchName
 
                     championAdapter.submitList(matchWithMarkets.markets)
                 } else {

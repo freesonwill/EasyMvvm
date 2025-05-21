@@ -48,6 +48,7 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.flexbox)
     implementation(libs.gson)
+    implementation(libs.lottie)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

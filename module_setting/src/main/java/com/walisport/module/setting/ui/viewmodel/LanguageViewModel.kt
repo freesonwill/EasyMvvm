@@ -1,8 +1,10 @@
-package com.walisport.module.setting.data
+package com.walisport.module.setting.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.setting.data.LanguageType
+import com.walisport.module.setting.data.SettingRepository
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel

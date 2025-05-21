@@ -1,4 +1,4 @@
-package com.walisport.module.search.viewmodel
+package com.walisport.module.search.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel

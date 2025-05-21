@@ -10,5 +10,5 @@ enum class UserDataKey(val key: String) {
     KEY_UID("UID"),
     KEY_TOKEN("Token"),
     KEY_BETSLIP_DETAIL("BetSlipDetail"),
-    KEY_RECORD("Record")
+    KEY_RECORD("Record") //搜索历史
 }

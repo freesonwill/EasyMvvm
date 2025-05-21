@@ -13,10 +13,12 @@ import com.walisport.module.search.utils.FoldUtils
  * @description: 折叠
  */
 class HistoryFoldLayout @JvmOverloads constructor(
-    context: Context?, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context?,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
 ) : FlowListView(context, attrs, defStyleAttr) {
-    private var upFoldView: View? = null
-    private var downFoldView: View? = null
+    private var upFoldView: View ?=null
+    private var downFoldView:View ?=null
     private var canFold = false
     private var fold = false
     private var index = 0

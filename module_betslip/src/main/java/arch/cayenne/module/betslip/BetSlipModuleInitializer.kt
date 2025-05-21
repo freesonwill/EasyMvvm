@@ -10,11 +10,13 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
+import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.TimePickerViewModel
 
 import org.koin.dsl.module
@@ -44,11 +46,13 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::DatePickerViewModel)
         viewModelOf(::TimePickerViewModel)
         viewModelOf(::HomeBetSlipViewModel)
+        viewModelOf(::SportPickerViewModel)
     }
 
     private val repoModules = module {
         factoryOf(::HomeBetSlipRepository)
         factoryOf(::BetSlipRepository)
+        factoryOf(::SportPickerRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)

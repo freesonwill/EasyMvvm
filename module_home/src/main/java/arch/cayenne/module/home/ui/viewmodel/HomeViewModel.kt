@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.SportDataModel
@@ -22,21 +23,68 @@ class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
     }
-    private val repository : HomeRepository by inject()
+
+    private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     var gameListPageIndex = 0
     private val betRepository: BetRepository by inject()
-    private var currentPlayType : PlayType = PlayType.TODAY
+    private var currentPlayType: PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
 
-
     val sportsStatistical by lazy { MutableLiveData<List<SportDataModel>>() }
 
-    val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() }
+    val tournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 今日/早盤
+
+    val allTournaments by lazy { MutableLiveData<List<TournamentDataModel>>() } // 更多
+
 
     private val _selectedDate = MutableLiveData<Long>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Long> = _selectedDate
+
+    private val _selectedTournamentId = MutableLiveData<Int>()
+    val selectedTournamentId: MutableLiveData<Int> = _selectedTournamentId
+
+    private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
+    val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
+
+    fun requestCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = true
+    }
+
+    fun consumeCollapseTournamentDropdown() {
+        _collapseTournamentDropdown.value = false
+    }
+
+    fun selectTournament(id: Int) {
+        val currentList = tournaments.value.orEmpty()
+        val existsInCurrent = currentList.any { it.id == id }
+//        _selectedTournamentId.value = null
+        if (existsInCurrent) {
+            _selectedTournamentId.postValue(id)
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                val tournament = repository.getTournamentById(id)
+                if (tournament != null) {
+                    val updatedList = currentList.toMutableList()
+                    updatedList.add(tournament) // 👉 加到尾端
+                    val fullList = ArrayList<TournamentDataModel>().apply {
+                        add(TournamentDataModel.createAllItem(currentSportId))
+                        addAll(updatedList)
+                    }
+                    "selectTournament list: $fullList".logd()
+                    withContext(Dispatchers.Main) {
+                        tournaments.value = fullList
+                        "try emit id: $id to _selectedTournamentId".logd()
+                        _selectedTournamentId.postValue(id)
+                        "emitted to _selectedTournamentId: $id".logd()
+                    }
+                } else {
+                    "Tournament ID:$id not found".loge(this::class.java.simpleName)
+                }
+            }
+        }
+    }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -56,16 +104,27 @@ class HomeViewModel : BaseViewModel() {
         currentPlayType = playType
         if (playType != PlayType.CHAMPION) {
             getCurrentSportStatistical()
+        } else {
+            getChampionTournament()
+        }
+    }
+
+    private fun getChampionTournament() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repository.getChampionTournament(currentSportId)
+            withContext(Dispatchers.Main) {
+                allTournaments.value = list
+            }
         }
     }
 
     fun resetLiveData() {
         sportsStatistical.value = arrayListOf()
         tournaments.value = arrayListOf()
+        allTournaments.value = arrayListOf()
     }
 
     fun getCurrentPlayType() = currentPlayType
-
     private fun getCurrentSportStatistical() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getSportStatistical()?.filter {
@@ -82,15 +141,33 @@ class HomeViewModel : BaseViewModel() {
         }
 
     }
+
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
         getCurrentTournament(sportId)
     }
 
+    fun getAllTournament() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repository.getAllTournaments()
+            "getAllTournament list: $list".logd()
+
+            val fullList = ArrayList<TournamentDataModel>().apply {
+                add(TournamentDataModel.createAllItem(currentSportId))
+                addAll(list)
+            }
+
+            withContext(Dispatchers.Main) {
+                allTournaments.value = fullList.filterNot { it.id == 0 }
+            }
+        }
+    }
+
     private fun getCurrentTournament(sportId: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getTenTournaments(currentPlayType.id, sportId)
+            "getCurrentTournament list: $list".logd()
             if (list.isNullOrEmpty()) {
                 //TODO 拿取聯賽錯誤
                 "Get Tournament List failed!!".loge(this::class.java.simpleName)

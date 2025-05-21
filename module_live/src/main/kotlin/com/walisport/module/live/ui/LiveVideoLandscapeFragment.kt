@@ -475,6 +475,7 @@ class LiveVideoLandscapeFragment :
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.hideStatusBar = true
         setStatusBar(StatusBarConfig)
+        mBinding.videoView.onResume()
 
     }
 
@@ -485,6 +486,7 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
+        mBinding.videoView.onPause()
     }
 
     override fun onDestroy() {

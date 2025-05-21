@@ -9,6 +9,7 @@ junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
+lottie = "6.6.0"
 material = "1.12.0"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.1"
@@ -42,6 +43,7 @@ legacySupportV4 = "1.0.0"
 fragmentKtx = "1.5.6"
 startupRuntime = "1.2.0"
 pullrefresh = "3.0.0-alpha"
+icu4j = "74.2"
 # 其他库的版本
 calendarview = "3.7.1.43"
 brv = "1.6.1"
@@ -54,6 +56,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -99,6 +102,7 @@ flexbox = {group = "com.google.android", name = "flexbox", version.ref = "flexbo
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 pullrefresh-kernel = { group = "io.github.scwang90",name = "refresh-layout-kernel", version.ref = "pullrefresh" }
+icu4j = { group = "com.ibm.icu",name = "icu4j", version.ref = "icu4j" }
 # 其他库依赖
 calendarview = { module = "com.github.angcyo:CalendarView", version.ref = "calendarview" }
 brv = { module = "com.github.liangjingkanji:BRV", version.ref = "brv" }

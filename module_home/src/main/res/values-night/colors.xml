@@ -22,4 +22,5 @@
     <color name="balance_background">#0A000000</color>
     <color name="balance_background_icon">#99FFFFFF</color>
     <color name="odds_highlight_overlay">#e8e8e8</color>
+    <color name="list_separator">#f6f6f6</color>
 </resources>

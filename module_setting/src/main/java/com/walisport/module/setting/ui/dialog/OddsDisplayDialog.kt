@@ -1,4 +1,4 @@
-package com.walisport.module.setting.dialog
+package com.walisport.module.setting.ui.dialog
 
 import android.graphics.Color
 import android.os.Bundle
