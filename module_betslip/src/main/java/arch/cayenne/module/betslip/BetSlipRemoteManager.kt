@@ -10,6 +10,8 @@ import galaxy.client.proto.Client.EarlySettlePriceReq
 import galaxy.client.proto.Client.EarlySettlePriceResp
 import galaxy.client.proto.Client.EarlySettleReq
 import galaxy.client.proto.Client.EarlySettleResp
+import galaxy.client.proto.Client.ListSportReq
+import galaxy.client.proto.Client.ListSportResp
 import galaxy.client.proto.Client.ReserveCancelReq
 import galaxy.client.proto.Client.ReserveCancelResp
 import galaxy.client.proto.Client.ReserveUpdateReq
@@ -169,4 +171,17 @@ class BetSlipRemoteManager(
         return null
     }
 
+    suspend fun getSportList(): List<Common.Sport> {
+        val result = socketManager.sendAndWaitProtoMessageResponse<ListSportResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.LIST_SPORT
+        ) {
+            ListSportReq.newBuilder().build()
+        }
+        if(result.error == null && result.data != null){
+            return result.data!!.sportList
+        }
+        return emptyList()
+    }
 }

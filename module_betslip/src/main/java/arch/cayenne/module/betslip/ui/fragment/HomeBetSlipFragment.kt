@@ -113,15 +113,15 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
             if (lastFragment == null) {
                 val f = SportPickerFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(Config.VALUE_SELECTED_SPORT, it.sportId)
+                        putInt(Config.VALUE_SELECTED_SPORT_ID, it.sportId)
                     }
                 }
                 childFragmentManager.setFragmentResultListener(Config.KEY_RESULT, viewLifecycleOwner) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    if (bundle.containsKey(Config.VALUE_SELECTED_SPORT)) {
-                        bundle.getInt(Config.VALUE_SELECTED_SPORT).let { id ->
-                            mViewModel.setSportFilter(id)
-                        }
+                    if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
+                        val id = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
+                        val name = bundle.getString(Config.VALUE_SELECTED_SPORT_NAME)!!
+                        mViewModel.setSportFilter(id, name)
                     }
                 }
                 childFragmentManager.beginTransaction()
