@@ -2,6 +2,7 @@ package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteChatManager
 import kotlinx.coroutines.CoroutineScope
@@ -18,7 +19,7 @@ class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
         return remote.disConnect()
     }
 
-    suspend fun login() {
-        remote.login(scope)
+    suspend fun login(): ChatLoginResponseData? {
+        return remote.login(scope)
     }
 }

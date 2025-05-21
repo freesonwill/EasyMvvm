@@ -50,7 +50,7 @@ class ChatWebSocketManager(
                 when(state) {
                     is ConnectState.ConnectSuccess -> {
                         stopReconnect()
-//                        startHeartbeat()
+                        startHeartbeat()
                     }
                     is ConnectState.ConnectClosed -> Unit
                     else -> {
@@ -64,7 +64,8 @@ class ChatWebSocketManager(
     }
 
     fun disconnect():Boolean {
-       return socket.disConnect()
+        stopHeartbeat()
+        return socket.disConnect()
     }
 
     private fun reconnect() {
@@ -109,7 +110,7 @@ class ChatWebSocketManager(
                 delay(heartbeatInterval)
                 "Send Heartbeat!".logi(this.javaClass.simpleName)
                 socket.send(
-                   ChatPinRequestData("1234567").chatAsRemoteRequest(ApiCode.PING, 0)
+                   ChatPinRequestData("1234567").chatAsRemoteRequest(ApiCode.CHAT_PING, 0)
                 )
             }
         }

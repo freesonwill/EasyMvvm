@@ -19,6 +19,7 @@ import org.koin.java.KoinJavaComponent.inject
 class LiveRemoteChatManager(
     val socketManager: ChatWebSocketManager,
 ) {
+    private val TAG = this.javaClass.simpleName
     private val userDataManager: UserDataManager by inject(UserDataManager::class.java)
 
     suspend fun startSocket(): ConnectState {
@@ -30,7 +31,7 @@ class LiveRemoteChatManager(
     }
 
 
-    suspend fun login(scope: CoroutineScope) {
+    suspend fun login(scope: CoroutineScope): ChatLoginResponseData? {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 
@@ -42,7 +43,12 @@ class LiveRemoteChatManager(
         ) {
             ChatLoginRequestData(uid.toLong(), token, 5)
         }
-        "ChatSocketClientService login uid:$uid  token:$token   request ${Gson().toJson(logResp)}".logd()
+
+        if (logResp.error != null && logResp.data != null) {
+            return logResp.data
+        }
+        "login uid:$uid  token:$token   result ${Gson().toJson(logResp)}".logd(TAG)
+        return null
     }
 
 }

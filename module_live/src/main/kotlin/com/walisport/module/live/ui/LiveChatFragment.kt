@@ -94,30 +94,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatGroupChat.isVisible = true
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        "onDetach ".logd(this::class.java.simpleName)
-    }
-
     override fun onDestroyView() {
         mViewModel.disConnectChatServer()
         super.onDestroyView()
-        "onDestroyView ".logd(this::class.java.simpleName)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        "onStop ".logd(this::class.java.simpleName)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        "onCreate ".logd(this::class.java.simpleName)
-
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        "onDestroy ".logd(this::class.java.simpleName)
     }
 
 
