@@ -3,10 +3,7 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.chatwebsocket.ChatNativeLib
 import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.data.SocketRequestData
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -25,20 +22,6 @@ class LiveChatViewModel : BaseViewModel() {
                 startLogin()
             }
         }
-
-//        val native = NativeLib()
-//        val data = SocketRequestData(1,2,3,str.toByteArray())
-//         val result = native.encrypt(data)
-//        val deresult = native.decrypt(result!!)
-
-//        val str = "123456"
-//        val data = SocketRequestData(1,2,3,str.toByteArray(Charsets.UTF_8))
-//        val chatNative = ChatNativeLib()
-//        val chatResult = chatNative.encrypt(data)
-//        val chatdeResult = chatNative.decrypt(chatResult!!)
-////
-//        "result   chatResult $chatResult chatderesult $chatdeResult".logi("liveChat")
-
     }
 
     fun disConnectChatServer() {

@@ -116,13 +116,12 @@ class ChatSocketClientService(
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
-                    "onMessage bytes $bytes".logi(this@ChatSocketClientService::class.java.simpleName)
+//                    "onMessage bytes $bytes".logi(this@ChatSocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         workingScope.launch(Dispatchers.Main) {
 
                         }
-
                         val data = security.decrypt(byteArray)
                         "onMessage ${data} \n result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
                         workingScope.launch { socketResponseFlow.emit(data) }
@@ -149,7 +148,7 @@ class ChatSocketClientService(
     }
 
     override fun reset() {
-        "reset webSocket to init state".logi(this::class.java.simpleName)
+//        "reset webSocket to init state".logi(this::class.java.simpleName)
         webSocket?.close(1001, SocketConnectState.None.name)
     }
 
@@ -158,11 +157,7 @@ class ChatSocketClientService(
         val byteArray = security.encrypt(data)
         if (byteArray != null) {
             val flag = webSocket?.send(byteArray.toByteString())
-
-//            val decode = security.decrypt(byteArray)
-
-//            val flag = webSocket?.send(String(byteArray))
-            "sendResult $flag  flag2  ".logi(this::class.java.simpleName)
+//            "sendResult $flag  flag2  ".logi(this::class.java.simpleName)
         }
     }
 

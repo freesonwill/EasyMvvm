@@ -1,15 +1,13 @@
 package arch.cayenne.lib.chatwebsocket
 
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.chatwebsocket.data.ChatISocket
+import arch.cayenne.lib.chatwebsocket.data.ChatPinRequestData
 import arch.cayenne.lib.chatwebsocket.extension.chatAsRemoteRequest
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
-import arch.cayenne.lib.websocket.data.ISocket
-import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
@@ -36,7 +34,6 @@ class ChatWebSocketManager(
     companion object {
         private const val heartbeatInterval: Long = 10000
         private const val reconnectInterval: Long = 5000
-
         const val responseTimeout: Long = 5000
     }
     init {
@@ -111,14 +108,8 @@ class ChatWebSocketManager(
             while (true) {
                 delay(heartbeatInterval)
                 "Send Heartbeat!".logi(this.javaClass.simpleName)
-
-//                socket.send(
-//                    Client.PingBackReq.newBuilder().apply {
-//                        this.data = "1234567"
-//                    }.build().chatAsRemoteRequest(ApiCode.PING, 0)
-//                )
                 socket.send(
-                   "1234567".chatAsRemoteRequest(ApiCode.CHAT_PING, 0)
+                   ChatPinRequestData("1234567").chatAsRemoteRequest(ApiCode.PING, 0)
                 )
             }
         }

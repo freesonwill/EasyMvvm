@@ -2,17 +2,18 @@ package arch.cayenne.lib.chatwebsocket.extension
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.chatwebsocket.ChatSocketClientService
 import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager
-import arch.cayenne.lib.websocket.WebSocketManager
-import arch.cayenne.lib.websocket.WebSocketManager.Companion.responseTimeout
+import arch.cayenne.lib.chatwebsocket.ChatWebSocketManager.Companion.responseTimeout
+import arch.cayenne.lib.chatwebsocket.data.ChatDataToJson
+import arch.cayenne.lib.chatwebsocket.data.ChatResponseData
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.InvalidProtoTypeResponseError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
-import arch.cayenne.lib.websocket.data.SocketResponseData
-import com.google.gson.JsonObject
-import com.google.protobuf.GeneratedMessageLite
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
@@ -23,30 +24,33 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
 
-fun String.chatAsRemoteRequest(apiCode: ApiCode, rid: Short): SocketRequestData {
-
-    "json $this".logd("chatsocket")
+fun ChatDataToJson.chatAsRemoteRequest(
+    apiCode: ApiCode,
+    rid: Short
+): SocketRequestData {
+    val json = toJson()
+    "json $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,
         rid = rid,
-        this.toByteArray()
+        json.toByteArray()
     )
 }
 
-inline fun <reified T : GeneratedMessageLite<*, *>> ChatWebSocketManager.chatObserveProtoMessage(
+inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     apiCode: ApiCode
-): Flow<SocketResponseData<T>> = getSocketFlow()
+): Flow<ChatResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
-    .filter { it.mid == apiCode.mid && it.sid == apiCode.sid }
     .map {
+        "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
             val proto = it.originProto?.let { byteArray ->
-                T::class.java.getMethod("parseFrom", ByteArray::class.java)
-                    .invoke(null, byteArray) as T
+//                val json = String(byteArray)
+                Gson().fromJson(String(byteArray),T::class.java)
             }
-            "observeProtoMessage map proto success sid -> ${it.sid}".logi(WebSocketManager::class.java.simpleName)
-            return@map SocketResponseData(
+            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
+            return@map ChatResponseData(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
@@ -54,7 +58,7 @@ inline fun <reified T : GeneratedMessageLite<*, *>> ChatWebSocketManager.chatObs
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            return@map SocketResponseData(
+            return@map ChatResponseData(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
@@ -64,21 +68,23 @@ inline fun <reified T : GeneratedMessageLite<*, *>> ChatWebSocketManager.chatObs
         }
     }
 
-suspend inline fun <reified T : GeneratedMessageLite<*, *>> ChatWebSocketManager.chatSendAndWaitProtoMessageResponse(
+suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitProtoMessageResponse(
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
     rid: Short = 0,
     timeout: Long? = null,
-    request: String
-): SocketResponseData<T> {
+    request: () -> ChatDataToJson
+): ChatResponseData<T> {
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
-            chatObserveProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
+            chatObserveProtoMessage<T>(apiCode).filter {
+                it.rid == rid
+            }.first()
         }
     }
-    send(request.chatAsRemoteRequest(apiCode, rid))
-    return deferred.await() ?: SocketResponseData(
+    send(request.invoke().chatAsRemoteRequest(apiCode, rid))
+    return deferred.await() ?: ChatResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
         rid = rid,
