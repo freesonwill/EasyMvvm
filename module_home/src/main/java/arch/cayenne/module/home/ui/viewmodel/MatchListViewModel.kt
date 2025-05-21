@@ -22,10 +22,6 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class MatchListViewModel : BaseViewModel() {
-    companion object {
-        const val DEFAULT_MATCH_SIZE = 3
-    }
-
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
