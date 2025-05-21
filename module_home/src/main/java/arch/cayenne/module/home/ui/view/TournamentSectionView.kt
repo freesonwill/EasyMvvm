@@ -8,7 +8,6 @@ import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -34,18 +33,17 @@ class TournamentSectionView @JvmOverloads constructor(
     private lateinit var adapter: TournamentSectionAdapter
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
-    var onCollapse: (() -> Unit)? = null
-
+    var onCollapseClick: (() -> Unit)? = null
     var onTournamentClick: ((Int) -> Unit)? = null
 
     init {
         binding.rvTournamentList.layoutManager = LinearLayoutManager(context)
         binding.ivHomeLeagueCollapse.setOnClickListener {
-            collapseWithAnimation()
+            onCollapseClick?.invoke()
         }
     }
 
-    private fun setTournamentList(tournaments: List<TournamentDataModel>) {
+    fun setTournamentList(tournaments: List<TournamentDataModel>) {
         if (!::adapter.isInitialized) {
             adapter = TournamentSectionAdapter { tournamentId ->
                 onTournamentClick?.invoke(tournamentId)
@@ -59,26 +57,24 @@ class TournamentSectionView @JvmOverloads constructor(
             TODO("VERSION.SDK_INT < Q")
         }
         val groupedMap = mutableMapOf<Char, MutableList<TournamentDataModel>>()
+        val hotList = mutableListOf<TournamentDataModel>()
 
         tournaments.forEach { tournament ->
             val pinyin = transliterator.transliterate(tournament.name).trim()
             val firstChar = pinyin.firstOrNull()?.uppercaseChar()
             val groupKey = if (firstChar != null && firstChar in 'A'..'Z') firstChar else '#'
-            if (!groupedMap.containsKey('#')) {
-                groupedMap['#'] = mutableListOf(
-                    TournamentDataModel(
-                        id = -1,
-                        sportId = 1,
-                        name = "熱門",
-                        simpleName = "",
-                        icon = "",
-                        weight = 1,
-                        hot = false,
-                    )
-                )
-            }
 
+            // 歸類進字母列表
             groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
+            // 歸類進熱門列表
+            if (tournament.hot) {
+                hotList.add(tournament)
+            }
+        }
+
+        // 將熱門歸類進 '#' 區塊
+        if (hotList.isNotEmpty()) {
+            groupedMap['#'] = hotList
         }
 
         val displayList = mutableListOf<TournamentListItem>()
@@ -111,15 +107,6 @@ class TournamentSectionView @JvmOverloads constructor(
             setOnClickListener { scrollToSection('#') }
         }
         container.addView(hotIcon)
-        //TODO 串接熱門資料
-//        if (letterPositionMap.containsKey('#')) {
-//            val hotIcon = SkinnableImageView(context).apply {
-//                setImageResource(R.drawable.ic_hot_league_index)
-//                layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
-//                setOnClickListener { scrollToSection('#') }
-//            }
-//            container.addView(hotIcon)
-//        }
 
         ('A'..'Z').forEach { letter ->
             if (letterPositionMap.containsKey(letter)) {
@@ -157,36 +144,6 @@ class TournamentSectionView @JvmOverloads constructor(
         }
         scroller.targetPosition = position
         layoutManager.startSmoothScroll(scroller)
-    }
-
-    private fun postSetTournamentList(tournaments: List<TournamentDataModel>) {
-        binding.rvTournamentList.viewTreeObserver.addOnGlobalLayoutListener(object :
-            ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                binding.rvTournamentList.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                setTournamentList(tournaments)
-            }
-        })
-    }
-    fun expandWithData(tournaments: List<TournamentDataModel>) {
-        this.alpha = 0f
-        postSetTournamentList(tournaments)
-        post {
-            this.animate()
-                .alpha(1f)
-                .setDuration(200)
-                .start()
-        }
-    }
-
-    fun collapseWithAnimation() {
-        this.animate()
-            .translationY(-this.height.toFloat())
-            .setDuration(200)
-            .withEndAction {
-                onCollapse?.invoke()
-            }
-            .start()
     }
 
     interface OnChampionDropdownListener {
