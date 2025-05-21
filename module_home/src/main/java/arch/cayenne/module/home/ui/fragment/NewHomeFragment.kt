@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
@@ -31,7 +30,6 @@ import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
 import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
-import arch.cayenne.module.home.ui.view.TournamentSectionView
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -43,8 +41,7 @@ import com.haibin.calendarview.CalendarView
 import java.util.Locale
 import kotlin.reflect.KClass
 
-class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
-    TournamentSectionView.OnChampionDropdownListener {
+class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
@@ -57,7 +54,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
             ).show()
         }
     }
-    private val tournamentListFragment by lazy {  TournamentListFragment.newInstance() }
+
+//    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -104,9 +102,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
         mBinding.llTournamentsDropdown.visibility = View.GONE
-        with (mBinding.layoutContainer) {
-        ivHomeLeagueMore.isEnabled = true
-           tlDateList.visibility = View.GONE
+        with(mBinding.layoutContainer) {
+            tlDateList.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
         mViewModel.resetLiveData()
@@ -151,10 +148,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-            ivHomeLeagueMore.clickNoRepeat {
-                mViewModel.setShowAllTournaments(true)
+            mBinding.ivHomeLeagueMore.clickNoRepeat {
+                "ivHomeLeagueMore click".logd()
+                mViewModel.getAllTournament()
                 toggleTournamentMoreSection(true)
-                isExpanded = true
             }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
@@ -171,95 +168,43 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
         }
     }
 
+
     private fun toggleTournamentMoreSection(expanded: Boolean) {
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
-        val dropdown = mBinding.llTournamentsDropdown
-
+        val container = mBinding.llTournamentsDropdown
+        isExpanded = expanded
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
+            container.visibility = View.INVISIBLE
 
-            fm.beginTransaction()
-                .replace(R.id.ll_tournaments_dropdown, TournamentListFragment.newInstance(), tag)
-                .commitNowAllowingStateLoss()
+            val tournamentListFragment = TournamentListFragment.newInstance()
 
-            dropdown.post {
-
-                // 初始狀態：透明 + 從上方滑入
-                dropdown.alpha = 0f
-                dropdown.translationY = -dropdown.measuredHeight.toFloat()
-                dropdown.visibility = View.VISIBLE
-
-                dropdown.animate()
-                    .translationY(0f)
-                    .alpha(1f)
-                    .setDuration(300)
-                    .setInterpolator(DecelerateInterpolator())
-                    .start()
+            container.post {
+                container.visibility = View.VISIBLE
             }
+            fm.beginTransaction()
+                .setCustomAnimations(
+                    R.anim.slide_in_from_top,
+                    R.anim.slide_out_to_top
+                )
+                .replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
+                .commitAllowingStateLoss()
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
-//            mBinding.llTournamentsDropdown.animate()
-//                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
-//                .alpha(0f)
-//                .setDuration(250)
-//                .setInterpolator(AccelerateInterpolator())
-//                .withEndAction {
-//                    // 清理動畫狀態
-//                    mBinding.llTournamentsDropdown.alpha = 1f
-//                    mBinding.llTournamentsDropdown.visibility = View.GONE
-//
-//                    // 延遲移除 Fragment，避免畫面殘影
-//                    mBinding.llTournamentsDropdown.postDelayed({
-                        fm.findFragmentByTag(tag)?.let {
-                            fm.beginTransaction().remove(it).commitAllowingStateLoss()
-                        }
-//                    }, 50)
-//                }
-//                .start()
+            fm.beginTransaction()
+                .setCustomAnimations(0, R.anim.slide_out_to_top)
+                .remove(fragment)
+                .commitAllowingStateLoss()
+
+            container.postDelayed({
+                mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
+                container.visibility = View.GONE
+            }, 200)
         }
     }
 
-    //    private fun toggleTournamentMoreSection(expanded: Boolean) {
-//        val tag = "tournament_dropdown"
-//        val fm = childFragmentManager
-//        val dropdown = mBinding.llTournamentsDropdown
-//
-//        if (expanded) {
-//            if (fm.findFragmentByTag(tag) != null) return
-//
-//            val fragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId())
-//            fm.beginTransaction()
-//                .replace(R.id.ll_tournaments_dropdown, fragment, tag)
-//                .commitNowAllowingStateLoss()
-//
-//            dropdown.post {
-//
-//                // 設定初始位置：從上方滑入
-//                dropdown.translationY = -dropdown.measuredHeight.toFloat()
-//                dropdown.visibility = View.VISIBLE
-//
-//                dropdown.animate()
-//                    .translationY(0f)
-//                    .setDuration(300)
-//                    .setInterpolator(DecelerateInterpolator())
-//                    .start()
-//            }
-//        } else {
-//            val fragment = fm.findFragmentByTag(tag) ?: return
-//
-//            mBinding.llTournamentsDropdown.animate()
-//                .translationY(-mBinding.llTournamentsDropdown.height.toFloat())
-//                .setDuration(250)
-//                .setInterpolator(AccelerateInterpolator())
-//                .withEndAction {
-//                    fm.beginTransaction().remove(fragment).commitAllowingStateLoss()
-//                    mBinding.llTournamentsDropdown.visibility = View.GONE
-//                }
-//                .start()
-//        }
-//    }
     private fun showHomeCalendar(tabSelectedDate: String) {
         //設定標記紅色日期及可選取日期範圍
         fun setSchemeDate(calendarView:CalendarView) {
@@ -436,6 +381,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+        "setTournamentAndViewPagerLayout: ${tournaments.size}".logd()
         //確定拿到聯賽資料後再決定要不要show出時間
         if (tournaments.isNotEmpty()) {
             with (mBinding.layoutContainer) {
@@ -541,25 +487,32 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>(),
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
 
-        mViewModel.tenTournaments.observe(viewLifecycleOwner) {
+        mViewModel.tournaments.observe(viewLifecycleOwner) {
             setTournamentAndViewPagerLayout(it)
         }
+
         mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
             "使用者選取聯賽 ID: $id".logd()
-            val list = mViewModel.tenTournaments.value.orEmpty()
+            val list = mViewModel.tournaments.value.orEmpty()
+            "使用者選取聯賽 tournaments: ${list.size}".logd()
             val index = list.indexOfFirst { it.id == id }
             if (index != -1) {
-                mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
+                "使用者選取聯賽 index select(): $index".logd()
+                mBinding.layoutContainer.tlLeagueList.post {
+                    mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
+                }
+            }
+        }
+
+        mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
+            if (shouldCollapse == true && isExpanded) {
+                toggleTournamentMoreSection(false)
+                mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
-    }
-
-    override fun onRequestCollapseChampion() {
-        toggleTournamentMoreSection(false)
-        isExpanded = false
     }
 }

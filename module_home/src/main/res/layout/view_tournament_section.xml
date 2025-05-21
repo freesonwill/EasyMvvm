@@ -24,11 +24,11 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_home_league_collapse"
-            android:layout_width="@dimen/dp_40"
+            android:layout_width="65dp"
             android:layout_height="@dimen/dp_48"
-            android:paddingTop="10dp"
-            android:paddingEnd="@dimen/dp_11"
+            android:paddingStart="@dimen/dp_20"
             android:paddingBottom="@dimen/dp_14"
+            android:paddingTop="@dimen/dp_10"
             android:src="@drawable/ic_league_tabs_collapse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
