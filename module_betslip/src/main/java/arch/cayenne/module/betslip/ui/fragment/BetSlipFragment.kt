@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -12,6 +13,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetSlipLayoutBinding
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
 
 
@@ -24,6 +26,7 @@ class BetSlipFragment :
     override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> =
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
+    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModels()
     private var matchId: Long = -1
     private var sportId: Int = -1
 
@@ -35,6 +38,7 @@ class BetSlipFragment :
     override fun initView(savedInstanceState: Bundle?) {
         matchId = arguments?.getLong(matchKey,-1) ?: -1
         sportId = arguments?.getInt(sportKey,-1) ?: -1
+        betSlipFilterViewModel.setIds(matchId, sportId)
         initMenu()
         mViewModel.setBetSlipDetail()
     }
@@ -44,44 +48,19 @@ class BetSlipFragment :
             val array = resources.getStringArray(R.array.bet_slip_menus)
             val list = listOf(
                 PagerBean(array[0]) {
-                    BetSlipUnsettledFragment().apply {
-                        arguments = Bundle().apply {
-                            putLong(matchKey, matchId)
-                            putInt(sportKey, sportId)
-                        }
-                    }
+                    BetSlipUnsettledFragment()
                 },
                 PagerBean(array[1]) {
-                    BetSlipConfirmFragment().apply {
-                        arguments = Bundle().apply {
-                            putLong(matchKey, matchId)
-                            putInt(sportKey, sportId)
-                        }
-                    }
+                    BetSlipConfirmFragment()
                 },
                 PagerBean(array[2]) {
-                    BetSlipSettledFragment().apply {
-                        arguments = Bundle().apply {
-                            putLong(matchKey, matchId)
-                            putInt(sportKey, sportId)
-                        }
-                    }
+                    BetSlipSettledFragment()
                 },
                 PagerBean(array[3]) {
-                    BetSlipReserveFragment().apply {
-                        arguments = Bundle().apply {
-                            putLong(matchKey, matchId)
-                            putInt(sportKey, sportId)
-                        }
-                    }
+                    BetSlipReserveFragment()
                 },
                 PagerBean(array[4]) {
-                    BetSlipInvalidFragment().apply {
-                        arguments = Bundle().apply {
-                            putLong(matchKey, matchId)
-                            putInt(sportKey, sportId)
-                        }
-                    }
+                    BetSlipInvalidFragment()
                 },
             )
             viewPager.adapter = null

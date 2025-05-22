@@ -24,16 +24,6 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
         BetSlipAdapter(getBetSlipEnum())
     }
 
-    override fun initData() {
-        super.initData()
-        if (filterViewModel == null) {
-            val matchId = arguments?.getLong(BetSlipFragment.matchKey,-1) ?: -1
-            val sportId = arguments?.getInt(BetSlipFragment.sportKey,-1) ?: -1
-            mViewModel.setIds(matchId, sportId = sportId)
-            mViewModel.loadData(getBetSlipEnum())
-        }
-    }
-
     abstract fun getBetSlipEnum(): BetSlipEnum
 
     override fun createObserver() {
