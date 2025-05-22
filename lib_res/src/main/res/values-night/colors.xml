@@ -19,4 +19,6 @@
     <color name="reserve_bg">#31333F</color>
 
     <color name="list_separator">#1D1F2A</color>
+
+    <color name="tab_fill_color">#1B1D2A</color>
 </resources>
