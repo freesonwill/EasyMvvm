@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
@@ -9,13 +10,10 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
-import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import galaxy.common.proto.Common
-import galaxy.common.proto.Common.ReserveOrder
 import kotlin.reflect.KClass
 
 
@@ -24,15 +22,13 @@ class BetSlipReserveFragment :
     BaseBetSlipFragment<FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
-    private val adapter =
-        BetSlipAdapter(BetSlipEnum.Reserve)
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
     }
 
     private fun initRecycler() {
-        adapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipData> {
+        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipData> {
             override fun onItemClick(item: BetSlipData?, position: Int) {
                 item?.reserve?.let { cancelReserve(it) }
             }
@@ -41,7 +37,7 @@ class BetSlipReserveFragment :
                 item?.reserve?.let { modifyReserve(it) }
             }
         })
-        adapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
+        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
             override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
 
             }
@@ -49,7 +45,7 @@ class BetSlipReserveFragment :
 
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
-            it.adapter = adapter
+            it.adapter = betSlipAdapter
             it.betSlipInit()
         }
     }
@@ -61,7 +57,11 @@ class BetSlipReserveFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.reserveLiveData.observe(this) {
-            updateView(it)
+            val recyclerViewState = mBinding.recyclerView.layoutManager?.onSaveInstanceState()
+            betSlipAdapter.submitList(it) {
+                mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            }
+            showEmpty(it.isEmpty())
         }
         mViewModel.cancelReserveLiveData.observe(this) {
             showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
@@ -77,33 +77,9 @@ class BetSlipReserveFragment :
         }
     }
 
-    private fun updateView(list: List<ReserveOrder>?) {
-        if (!list.isNullOrEmpty()) {
-            updateData(list)
-        }
-        showEmpty()
+    private fun showEmpty(isEmpty: Boolean) {
+        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
-
-    private fun showEmpty() {
-        val flag = mBinding.recyclerView.adapter?.let {
-            val adapter = it as BetSlipAdapter
-            adapter.currentList.isEmpty()
-        } ?: true
-        mBinding.emptyState.showEmptyData(flag, mBinding.recyclerView)
-    }
-
-
-    private fun updateData(orders: List<Common.ReserveOrder>) {
-        val list = orders.map { BetSlipData(reserve = it) }.toList()
-        val recyclerViewState = mBinding.recyclerView.layoutManager?.onSaveInstanceState()
-        mBinding.recyclerView.adapter?.let {
-            val adapter = it as BetSlipAdapter
-            adapter.submitList(list) {
-                mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
-            }
-        }
-    }
-
 
     override fun initData() {
         super.initData()
