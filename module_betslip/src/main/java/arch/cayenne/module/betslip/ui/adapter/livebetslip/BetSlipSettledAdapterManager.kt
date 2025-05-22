@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip
 
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -35,6 +36,7 @@ class BetSlipSettledAdapterManager(
      */
     private fun updateData(order: Order) {
         binding.also {
+            it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
             it.betSettledTvBettingValue.text = order.betAmount
