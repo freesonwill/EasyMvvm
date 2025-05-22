@@ -19,12 +19,12 @@ import org.koin.core.parameter.parametersOf
 class BetSlipViewModel : BaseViewModel() {
 
     private var ids: Pair<Long, Int> = Pair(-1, -1)
-    val matchId: Long get() = ids.first
-    val sportId: Int get() = ids.second
+    private val matchId: Long get() = ids.first
+    private val sportId: Int get() = ids.second
 
     private var times: Pair<Long?, Long?> = Pair(null, null)
-    val startTime: Long? get() = times.first
-    val endTime: Long? get() = times.second
+    private val startTime: Long? get() = times.first
+    private val endTime: Long? get() = times.second
 
     private var page = 1
     private val pageSize = 10
@@ -60,6 +60,7 @@ class BetSlipViewModel : BaseViewModel() {
 
     //选择的提前结算注单
     var selectOrder: Order? = null
+        private set
 
     fun setIds(matchId: Long, sportId: Int) {
         this.ids = Pair(matchId, sportId)
@@ -124,6 +125,11 @@ class BetSlipViewModel : BaseViewModel() {
     }
 
     fun loadMoreOrder(status: BetSlipEnum) {
+        val list = _orderLiveData.value
+        // 如果列表为空或者不是整页数据，则不加载更多
+        if (list.isNullOrEmpty() || list.size % pageSize != 0) {
+            return
+        }
         viewModelScope.launch {
             repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let {  result ->
                 if (result.isNotEmpty()) {
@@ -142,9 +148,10 @@ class BetSlipViewModel : BaseViewModel() {
     /**
      * 检查是否支持提前结算
      * */
-    fun earlySettledPrice(betId: String) {
+    fun earlySettledPrice(order: Order) {
+        selectOrder = order
         viewModelScope.launch {
-            val result = repository.earlySettledPrice(betId)
+            val result = repository.earlySettledPrice(order.betId)
             if (!result.isNullOrEmpty()) {
                 _earlySettlePriceLiveData.value = result.first()
             }
