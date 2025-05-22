@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -16,7 +17,7 @@ import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 import com.walisport.module.live.ui.widget.LiveBetListLayout
 
-class LiveBetOnAdapter(var callback: LivBetListCallback) :
+class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView: RecyclerView) :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
         ItemDiffCallback()
     ) {
@@ -25,7 +26,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayName: String? = ""
     private var awayLogo: String? = ""
     private lateinit var map: Map<Long, List<LiveSelectionBean>>
-
+    private var isNotify = false
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetItemLayoutBinding =
             binding as AdapterLiveBetItemLayoutBinding
@@ -44,6 +45,21 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
+            // 判断 ViewHolder 是否在屏幕内
+            fun isVisibleOnScreen(): Boolean {
+                val location = IntArray(2)
+                itemView.getLocationOnScreen(location)
+
+                val screenHeight = recyclerView.resources.displayMetrics.heightPixels
+                val screenWidth = recyclerView.resources.displayMetrics.widthPixels
+
+                // 检查视图是否完全或部分在屏幕内
+                return location[1] >= 0 && // 顶部在屏幕内
+                        location[1] + itemView.height <= screenHeight && // 底部在屏幕内
+                        location[0] >= 0 && // 左边在屏幕内
+                        location[0] + itemView.width <= screenWidth // 右边在屏幕内
+            }
+
             lists?.withIndex()?.forEach { (index, listIt) ->
                 if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
                         viewBinding.clBet.visibility = View.VISIBLE
@@ -64,7 +80,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     StatesArrange.getStates(listIt.style),
                     index,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString(), listIt.selectionId, listIt.active,listIt.oddsStatus,
+                    listIt.odds, listIt.selectionId, listIt.active,listIt.oddsStatus,isVisibleOnScreen(),isNotify
                 ) { it ->
                     callback.itemListCallback(it, listIt.selectionId)
                 }
@@ -77,15 +93,21 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         homeLogo: String,
         awayName: String,
         awayLogo: String,
-        map: Map<Long, List<LiveSelectionBean>>
+        map: Map<Long, List<LiveSelectionBean>>,
+        isNotify : Boolean
     ) {
         this.homeName = homeName
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
         this.map = map
+        this.isNotify = isNotify
     }
 
+
+    fun setIsNotify( isNotify : Boolean){
+        this.isNotify = isNotify
+    }
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
         holder.updateItem(position)
     }
