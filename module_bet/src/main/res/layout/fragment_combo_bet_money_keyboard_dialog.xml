@@ -63,7 +63,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_100"
-                style="@style/TextViewStyle"
+                android:textColor="@color/keyboard_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -81,7 +81,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_500"
-                style="@style/TextViewStyle"
+                android:textColor="@color/keyboard_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -99,7 +99,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_1000"
-                style="@style/TextViewStyle"
+                android:textColor="@color/keyboard_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -117,7 +117,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_2000"
-                style="@style/TextViewStyle"
+                android:textColor="@color/keyboard_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -135,7 +135,7 @@
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_5000"
-                style="@style/TextViewStyle"
+                android:textColor="@color/keyboard_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
