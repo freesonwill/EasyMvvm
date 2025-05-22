@@ -4,7 +4,6 @@
     <color name="bg_main">#0E0F1A</color>
     <color name="bg_card">#161823</color>
     <color name="data_bg">#1D1F2A</color>
-    <color name="main_text">#FFFFFF</color>
     <color name="card_odds_background">#232530</color>
     <color name="secondary_text">#929298</color>
     <color name="secondary_title">@color/secondary_text</color>
