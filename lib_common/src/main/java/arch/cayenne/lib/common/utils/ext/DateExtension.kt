@@ -74,3 +74,17 @@ fun Long.getFormatDate(): String {
 
     return "$year/$month/$day"
 }
+
+fun Long.getDetailFormatDate(): String {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1
+    val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+    val hour = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+
+    return "$year/$month/$day $hour:$minute"
+}

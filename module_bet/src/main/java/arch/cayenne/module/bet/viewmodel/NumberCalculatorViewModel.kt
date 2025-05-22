@@ -13,7 +13,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     val onEditNumber: LiveData<String> get() =  _onEditNumber
 
 
-    private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>()
+    private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>(Pair(0, 0))
     /***
      * @param first min number
      * @param second max number

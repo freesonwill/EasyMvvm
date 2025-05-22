@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip
 import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.earlySettlePrice
@@ -41,6 +42,7 @@ class BetSlipUnsettledAdapterManager(
         position: Int
     ) {
         binding.also {
+            it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betUnsettledBtSettle.alpha = if (order.earlySupport) 1f else 0.5f
             it.betUnsettledBtSettle.tag = position
             it.betUnsettledTvBetcodeValue.text = order.betId
