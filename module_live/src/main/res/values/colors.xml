@@ -52,7 +52,6 @@
     <color name="color_edittext_hint">#929298</color>
     <color name="black_20">#99000000</color>
     <color name="black_65">#59000000</color>
-    <color name="message_fill_color">#30303e</color>
     <color name="video_source_fragment_title_color">#FFFFFF</color>
     <color name="video_source_fragment_bkg">#161823</color>
     <color name="video_source_item_title_color">#FFFFFF</color>

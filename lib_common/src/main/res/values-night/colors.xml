@@ -11,4 +11,5 @@
     <color name="keyboard_2">#232530</color>
     <color name="keyboard_3">#161823</color>
     <color name="dividing_line">#14FFFFFF</color>
+    <color name="main_text">#FFFFFF</color>
 </resources>

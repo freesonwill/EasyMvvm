@@ -34,5 +34,5 @@
     <color name="keyboard_2">#FFFFFF</color>
     <color name="keyboard_3">#F3F3F4</color>
     <color name="dividing_line">#FFFFFF</color>
-
+    <color name="main_text">#222222</color>
 </resources>
