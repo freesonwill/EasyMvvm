@@ -83,8 +83,7 @@ class BetSlipUnsettledFragment :
                 item: BetSlipData?, position: Int
             ) {
                 item?.order?.let {
-                    mViewModel.selectOrder = it
-                    mViewModel.earlySettledPrice(it.betId)
+                    mViewModel.earlySettledPrice(it)
                 }
             }
         })

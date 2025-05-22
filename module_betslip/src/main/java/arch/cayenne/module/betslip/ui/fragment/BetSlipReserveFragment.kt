@@ -81,14 +81,6 @@ class BetSlipReserveFragment :
         mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
-    override fun initData() {
-        super.initData()
-        val matchId = arguments?.getLong(BetSlipFragment.matchKey, -1) ?: -1
-        val sportId = arguments?.getInt(BetSlipFragment.sportKey, -1) ?: -1
-        mViewModel.setIds(matchId, sportId = sportId)
-        mViewModel.getReserveOrder()
-    }
-
     private fun cancelReserve(order: Common.ReserveOrder) {
         CommonDialog.newInstance(
             "",
