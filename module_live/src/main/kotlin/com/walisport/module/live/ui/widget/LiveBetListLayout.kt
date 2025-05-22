@@ -43,7 +43,6 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isVisibleOnScreen: Boolean,
         isNotify:Boolean,
         callback: (Long) -> Unit
     ) {
@@ -64,7 +63,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -77,7 +75,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -94,7 +91,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                         marketId,
                         active,
                         oddStatus,
-                        isVisibleOnScreen,
                         callback
                     )
                 )
@@ -112,7 +108,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -125,7 +120,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -144,7 +138,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -157,7 +150,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -170,7 +162,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -191,7 +182,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     marketId,
                                     active,
                                     oddStatus,
-                                    isVisibleOnScreen,
                                     callback
                                 )
                             )
@@ -206,7 +196,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     marketId,
                                     active,
                                     oddStatus,
-                                    isVisibleOnScreen,
                                     callback
                                 )
                             )
@@ -221,7 +210,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     marketId,
                                     active,
                                     oddStatus,
-                                    isVisibleOnScreen,
                                     callback
                                 )
                             )
@@ -235,7 +223,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                             marketId,
                             active,
                             oddStatus,
-                            isVisibleOnScreen,
                             callback
                         )
                     )
@@ -250,7 +237,6 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isVisibleOnScreen: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutOneBinding.inflate(
@@ -258,7 +244,7 @@ class LiveBetListLayout @JvmOverloads constructor(
             binding.root,
             false
         )
-        if (active&&isVisibleOnScreen) {
+        if (active) {
             isOddsStatus(
                 oddStatus,
                 itemBinding.imgTop,
@@ -287,7 +273,6 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isVisibleOnScreen: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutTowBinding.inflate(
@@ -295,7 +280,7 @@ class LiveBetListLayout @JvmOverloads constructor(
             binding.root,
             false
         )
-        if (active&&isVisibleOnScreen) {
+        if (active) {
             isOddsStatus(
                 oddStatus,
                 itemBinding.imgTop,
@@ -358,7 +343,6 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isVisibleOnScreen: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutThreeBinding.inflate(
@@ -366,7 +350,7 @@ class LiveBetListLayout @JvmOverloads constructor(
             binding.root,
             false
         )
-        if (active&&isVisibleOnScreen) {
+        if (active) {
             isOddsStatus(
                 oddStatus,
                 itemBinding.imgTop,

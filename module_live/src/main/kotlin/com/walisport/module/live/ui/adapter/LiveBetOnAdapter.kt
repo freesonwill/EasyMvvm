@@ -34,7 +34,21 @@ class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView
         init {
             setOnClickListener()
         }
-
+//
+//        // 判断 ViewHolder 是否在屏幕内
+//        fun isVisibleOnScreen(): Boolean {
+//            val location = IntArray(2)
+//            itemView.getLocationOnScreen(location)
+//
+//            val screenHeight = recyclerView.resources.displayMetrics.heightPixels
+//            val screenWidth = recyclerView.resources.displayMetrics.widthPixels
+//
+//            // 检查视图是否完全或部分在屏幕内
+//            return location[1] >= 0 && // 顶部在屏幕内
+//                    location[1] + itemView.height <= screenHeight && // 底部在屏幕内
+//                    location[0] >= 0 && // 左边在屏幕内
+//                    location[0] + itemView.width <= screenWidth // 右边在屏幕内
+//        }
         private fun setOnClickListener() {
 
         }
@@ -45,20 +59,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
-            // 判断 ViewHolder 是否在屏幕内
-            fun isVisibleOnScreen(): Boolean {
-                val location = IntArray(2)
-                itemView.getLocationOnScreen(location)
-
-                val screenHeight = recyclerView.resources.displayMetrics.heightPixels
-                val screenWidth = recyclerView.resources.displayMetrics.widthPixels
-
-                // 检查视图是否完全或部分在屏幕内
-                return location[1] >= 0 && // 顶部在屏幕内
-                        location[1] + itemView.height <= screenHeight && // 底部在屏幕内
-                        location[0] >= 0 && // 左边在屏幕内
-                        location[0] + itemView.width <= screenWidth // 右边在屏幕内
-            }
 
             lists?.withIndex()?.forEach { (index, listIt) ->
                 if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
@@ -80,7 +80,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView
                     StatesArrange.getStates(listIt.style),
                     index,
                     listIt.shortName,
-                    listIt.odds, listIt.selectionId, listIt.active,listIt.oddsStatus,isVisibleOnScreen(),isNotify
+                    listIt.odds, listIt.selectionId, listIt.active,listIt.oddsStatus,isNotify
                 ) { it ->
                     callback.itemListCallback(it, listIt.selectionId)
                 }
