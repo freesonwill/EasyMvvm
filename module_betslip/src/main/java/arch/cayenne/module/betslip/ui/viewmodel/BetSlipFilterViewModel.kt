@@ -6,10 +6,10 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 
 abstract class BetSlipFilterViewModel: BaseViewModel() {
 
-    private val _onDateTimeFilter = MutableLiveData<Pair<Long?, Long?>>()
+    private val _onDateTimeFilter = MutableLiveData<Pair<Long?, Long?>>(Pair(null, null))
     val onDateTimeFilter: LiveData<Pair<Long?, Long?>> get() = _onDateTimeFilter
 
-    private val _onSportIdFilter = MutableLiveData<Int>()
+    private val _onSportIdFilter = MutableLiveData(-1)
     val onSportIdFilter: LiveData<Int> get() = _onSportIdFilter
 
     fun setDateTimeFilter(startTime: Long?, endTime: Long?) {
