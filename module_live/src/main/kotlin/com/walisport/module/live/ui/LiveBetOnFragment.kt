@@ -69,7 +69,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         }
                     }
                 }
-            }, mBinding.rvBetList)
+            })
             adapter = liveBetOnAdapter
         }
     }

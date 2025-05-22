@@ -17,7 +17,7 @@ import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 import com.walisport.module.live.ui.widget.LiveBetListLayout
 
-class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView: RecyclerView) :
+class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
         ItemDiffCallback()
     ) {
@@ -34,21 +34,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback,private val recyclerView
         init {
             setOnClickListener()
         }
-//
-//        // 判断 ViewHolder 是否在屏幕内
-//        fun isVisibleOnScreen(): Boolean {
-//            val location = IntArray(2)
-//            itemView.getLocationOnScreen(location)
-//
-//            val screenHeight = recyclerView.resources.displayMetrics.heightPixels
-//            val screenWidth = recyclerView.resources.displayMetrics.widthPixels
-//
-//            // 检查视图是否完全或部分在屏幕内
-//            return location[1] >= 0 && // 顶部在屏幕内
-//                    location[1] + itemView.height <= screenHeight && // 底部在屏幕内
-//                    location[0] >= 0 && // 左边在屏幕内
-//                    location[0] + itemView.width <= screenWidth // 右边在屏幕内
-//        }
         private fun setOnClickListener() {
 
         }
