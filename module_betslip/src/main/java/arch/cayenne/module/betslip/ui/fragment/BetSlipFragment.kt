@@ -27,8 +27,6 @@ class BetSlipFragment :
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModels()
-    private var matchId: Long = -1
-    private var sportId: Int = -1
 
     companion object {
         val matchKey = "match_id"
@@ -36,11 +34,15 @@ class BetSlipFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        matchId = arguments?.getLong(matchKey,-1) ?: -1
-        sportId = arguments?.getInt(sportKey,-1) ?: -1
-        betSlipFilterViewModel.setIds(matchId, sportId)
         initMenu()
         mViewModel.setBetSlipDetail()
+    }
+
+    override fun initData() {
+        super.initData()
+        val matchId = arguments?.getLong(matchKey,-1) ?: -1
+        val sportId = arguments?.getInt(sportKey,-1) ?: -1
+        betSlipFilterViewModel.setIds(matchId, sportId)
     }
 
     private fun initMenu() {
