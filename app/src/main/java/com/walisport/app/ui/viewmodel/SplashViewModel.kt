@@ -3,7 +3,7 @@ package com.walisport.app.ui.viewmodel
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.SplashRepository
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +15,7 @@ class SplashViewModel : BaseActivityViewModel() {
 
     val homeTimeSeconds: MutableLiveData<Int> = MutableLiveData()
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
-    private val skinManager: SportSkinManager by inject { parametersOf(viewModelScope) }
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     val jumpToMainOrLogin = MediatorLiveData<Boolean>().apply {
         addSource(homeTimeSeconds) {
             if (it == 0) {

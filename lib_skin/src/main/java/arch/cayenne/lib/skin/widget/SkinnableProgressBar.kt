@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.ProgressBar
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableProgressBarHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
@@ -13,7 +13,7 @@ import org.koin.java.KoinJavaComponent.inject
 class SkinnableProgressBar : ProgressBar {
 
     private val backgroundTintHelper = SkinnableProgressBarHelper(this)
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
 
     constructor(context: Context) : super(context) {
         initView(context)

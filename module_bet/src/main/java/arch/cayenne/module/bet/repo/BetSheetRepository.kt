@@ -2,7 +2,7 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.bet.BettingRemoteManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -12,7 +12,7 @@ class BetSheetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
     private val remoteManager: BettingRemoteManager,
-    private val skinManager: SportSkinManager
+    private val skinManager: SkinnableManager
 ): BaseRepository() {
 
     init {
