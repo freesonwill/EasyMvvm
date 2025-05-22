@@ -8,4 +8,24 @@
     <color name="search_text_white_blue">#000000</color>
     <color name="app_bg_white_blue">#F3F3F4</color>
     <color name="dynamic_text_white_blue">#666666</color>
+    <color name="text_on_theme_color">#000000</color>
+    <color name="brand_color">#24EE8A</color>
+    <color name="green_for_white_bg">#00d271</color>
+    <color name="money_color">#FF7700</color>
+    <color name="win_color">#06E35F</color>
+    <color name="lose_color">#FF3019</color>
+    <color name="blue_team">#4150F6</color>
+    <color name="main_text">#222222</color>
+    <color name="secondary_title">#222222</color>
+    <color name="secondary_text">#666666</color>
+    <color name="search_text">#222222</color>
+    <color name="explanation_text">#929292</color>
+    <color name="navigation_bar">#222222</color>
+    <color name="navigation_lin">#222222</color>
+    <color name="tab_bg">#EAEFF7</color>
+    <color name="event_tags">#C4FFD2</color>
+
+
+
+
 </resources>

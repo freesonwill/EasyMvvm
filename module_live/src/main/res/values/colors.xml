@@ -43,7 +43,6 @@
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="video_tab_text_color">#929298</color>
     <color name="text_color">#ffffff</color>
-    <color name="lose_color">#FF3019</color>
     <color name="live_video_mask">#ff121321</color>
     <color name="standing_text">#ffffff</color>
     <color name="text_dialog_gy">#FE3666</color>
