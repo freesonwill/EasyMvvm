@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.view.contains
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -27,7 +28,7 @@ class DynamicStateLayout @JvmOverloads constructor(
     private var currentState: States = States.NULL
 
     // 设置当前状态
-    fun setState(state: States, msg: String) {
+    fun setState(state: States, msg: String,onRefresh: (() -> Unit)? = null) {
         if (currentState != States.NULL) {
             removeView(binding.root)
         }
@@ -35,14 +36,18 @@ class DynamicStateLayout @JvmOverloads constructor(
         when (currentState) {
             States.DATA_EMPTY -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
+                binding.btnRefresh.visibility = GONE
             }
 
             States.NETWORK_ANOMALY -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_error_net)
+                binding.btnRefresh.visibility = VISIBLE
+                binding.btnRefresh.clickNoRepeat{ onRefresh?.invoke() }
             }
 
             States.CLOSE -> {
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_close)
+                binding.btnRefresh.visibility = GONE
             }
 
             States.NULL -> {}
