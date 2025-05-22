@@ -37,10 +37,10 @@ class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourc
 
 
             if (item.isPlaying) {
-                viewBinding.animationView.visibility = View.VISIBLE
+                viewBinding.playingBkg.visibility = View.VISIBLE
                 viewBinding.animationView.playAnimation()
             } else {
-                viewBinding.animationView.visibility = View.GONE
+                viewBinding.playingBkg.visibility = View.GONE
                 viewBinding.animationView.pauseAnimation()
             }
 

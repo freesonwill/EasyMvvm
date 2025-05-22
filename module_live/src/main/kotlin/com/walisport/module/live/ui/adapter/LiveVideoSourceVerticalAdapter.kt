@@ -37,10 +37,10 @@ class LiveVideoSourceVerticalAdapter(compare: DiffUtil.ItemCallback<VideoSourceB
             viewBinding.tvSubtitle.text = item.subTitle
 
             if (item.isPlaying) {
-                viewBinding.animationView.visibility = View.VISIBLE
+                viewBinding.playingBkg.visibility = View.VISIBLE
                 viewBinding.animationView.playAnimation()
             } else {
-                viewBinding.animationView.visibility = View.GONE
+                viewBinding.playingBkg.visibility = View.GONE
                 viewBinding.animationView.pauseAnimation()
             }
 
