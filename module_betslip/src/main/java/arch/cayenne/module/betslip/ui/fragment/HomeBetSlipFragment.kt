@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -13,6 +14,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentHomeBetslipBinding
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -21,6 +23,7 @@ import kotlin.reflect.KClass
 class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
+    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModels()
     private val viewPagerAnimHelper by lazy {
         ViewPagerAnimHelper()
     }
@@ -95,9 +98,17 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                         val date = BetSlipDateFilterEnum.valueOf(result)
                         if (date == BetSlipDateFilterEnum.CUSTOM) {
                             val time = bundle.getLong(Config.VALUE_SELECTED_MILLISECOND)
-                            mViewModel.customTime = time
+                            mViewModel.setDateFilter(time)
+                            betSlipFilterViewModel.setDateTime(
+                                startTime = null,
+                                endTime = time
+                            )
                         } else {
                             mViewModel.setDateFilter(date)
+                            betSlipFilterViewModel.setDateTime(
+                                startTime = date.startTime(),
+                                endTime = date.endTime()
+                            )
                         }
                     }
                 }
@@ -125,6 +136,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     val id = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
                     val name = bundle.getString(Config.VALUE_SELECTED_SPORT_NAME)!!
                     mViewModel.setSportFilter(id, name)
+                    betSlipFilterViewModel.setIds(-1, id)
                 }
                 setFilterText(mBinding.tvSportFilter, false)
             }
