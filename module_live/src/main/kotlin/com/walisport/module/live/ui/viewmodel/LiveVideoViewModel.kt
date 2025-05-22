@@ -28,6 +28,9 @@ class LiveVideoViewModel(
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
 
+    private val _mainMatch = MutableLiveData<LiveMatchBean>()
+    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
+
     //比赛状态
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
     val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
@@ -123,6 +126,8 @@ class LiveVideoViewModel(
     fun unMute() {
         viewModelScope.launch { muteManager.unMute() }
     }
+
+    var leagueID = 0
 
     fun matchId() = repo.matchId
 
@@ -222,4 +227,11 @@ class LiveVideoViewModel(
         repo.queryLiveStream()
     }
 
+    fun getMainMatch(matchId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepo.getMatchRes(matchId) {
+                _mainMatch.value = it
+            }
+        }
+    }
 }
