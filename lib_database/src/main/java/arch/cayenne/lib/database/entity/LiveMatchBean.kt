@@ -29,7 +29,7 @@ data class LiveSelectionBean(
     @Embedded(prefix = "detail_") val detail: LiveMarketDetailBean,
     val name: String,
     val shortName: String,
-    val odds: Int,
+    val odds: String,
     val active: Boolean, //true - 可以投注  false - 不可投注
     val parlay: Boolean,
     val marketId: Long,
@@ -42,7 +42,7 @@ data class LiveSelectionBean(
 @Entity
 data class LiveSelectionBeanRecord(
     @PrimaryKey val selectionId: Long,
-    val odds: Int,
+    val odds: String,
     val marketId: Long,
 )
 

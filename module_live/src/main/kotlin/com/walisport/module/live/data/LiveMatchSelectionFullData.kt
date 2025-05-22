@@ -1,10 +1,12 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.LiveMarketDetailBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+import com.walisport.module.live.data.LiveOddsStatusEnum
 import com.xxx.qyplayer.log.extension.logTag
 import galaxy.common.proto.Common.Market
 
@@ -20,18 +22,18 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
         market.marketDetailList.forEachIndexed { index, detail ->
             detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                 var data = rec.find { it.selectionId == selection.selectionId }
-                LogUtils.e("selectionsToRoomData-----oddsRecord=${data?.odds}-----odds${selection?.odds?.toOdds()}")
-                var status = if(data==null){ LiveOddsStatusEnum.SAME.status} else if (data.odds > selection.odds.toOdds()) {
-                    LiveOddsStatusEnum.DOWN.status
-                } else if (data.odds <selection.odds.toOdds()) {
+                var status = if(data==null){ LiveOddsStatusEnum.SAME.status} else if (data.odds.toDouble() < selection.odds.toDouble()) {
                     LiveOddsStatusEnum.UP.status
+                } else if (data.odds.toDouble() >selection.odds.toDouble()) {
+                    LiveOddsStatusEnum.DOWN.status
                 } else {
                     LiveOddsStatusEnum.SAME.status
                 }
+                LogUtils.e("selectionsToRoomData-----name${selection.shortName}------oddsRecord=${data?.odds?.toDouble()}-----odds${selection?.odds?.toDouble()}-----status =${status}")
                 selectionsRecord.add(
                     LiveSelectionBeanRecord(
                         marketId = market.marketId,
-                        odds = selection.odds.toOdds(),
+                        odds = selection.odds,
                         selectionId = selection.selectionId
                     )
                 )
@@ -48,7 +50,7 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                         ),
                         name = selection.name,
                         shortName = selection.shortName,
-                        odds = selection.odds.toOdds(),
+                        odds = selection.odds,
                         active = selection.active,
                         parlay = selection.parlay,
                         style = market.style,
