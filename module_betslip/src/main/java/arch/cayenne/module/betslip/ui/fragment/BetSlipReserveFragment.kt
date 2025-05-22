@@ -60,16 +60,16 @@ class BetSlipReserveFragment :
 
     override fun createObserver() {
         super.createObserver()
-        mViewModel.reserveLiveData.observe(this) {
+        mViewModel.reserveLiveData.observe(viewLifecycleOwner) {
             updateView(it)
         }
-        mViewModel.cancelReserveLiveData.observe(this) {
+        mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
             if (it) {
                 mViewModel.getReserveOrder()
             }
         }
-        mViewModel.modifyOddsLiveData.observe(this) {
+        mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
             if (it) {
                 mViewModel.getReserveOrder()

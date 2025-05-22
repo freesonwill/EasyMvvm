@@ -59,7 +59,7 @@ class HandicapLetBallFragment :
     }
 
     override fun createObserver() {
-        mViewModel.letBallData.observe(this) {
+        mViewModel.letBallData.observe(viewLifecycleOwner) {
             if (it != null) {
                 letBallAdapter.submitList(it)
             }
