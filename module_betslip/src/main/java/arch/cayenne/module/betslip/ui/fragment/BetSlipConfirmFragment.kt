@@ -70,6 +70,6 @@ class BetSlipConfirmFragment :
     }
 
     override fun getBetSlipEnum(): BetSlipEnum {
-        return BetSlipEnum.UnSettled
+        return BetSlipEnum.Confirming
     }
 }
