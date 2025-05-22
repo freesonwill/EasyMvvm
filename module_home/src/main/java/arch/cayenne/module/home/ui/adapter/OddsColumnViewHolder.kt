@@ -17,11 +17,15 @@ class OddsColumnViewHolder(
     )
 
     fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
-        // 判斷是否強制鎖盤, 會出現defaultSelectionCount = 3, 但是selections為空的情況
+        // 判斷是否強制鎖盤, 會出現defaultSelectionCount = 3, 但是selections為空的情況, 固定強制鎖盤時也顯示3,2,2盤口
         val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
         if (forceLocked) {
-            oddsCells.forEach { cell ->
-                cell.deActivate()
+            oddsCells.forEachIndexed { index, cell ->
+                when {
+                    market.marketId == 1L -> cell.deActivate()
+                    index < 2 -> cell.deActivate()
+                    else -> cell.hideView()
+                }
             }
         } else {
             oddsCells.forEachIndexed { index, cell ->
