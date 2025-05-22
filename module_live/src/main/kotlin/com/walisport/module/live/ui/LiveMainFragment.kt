@@ -94,8 +94,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId)
         mViewModel.observeMatchBean(mViewModel.matchId)
-        mViewModel.registerStatisticsNotify(123456L)
         mViewModel.registerMatchInfoNotify(mViewModel.matchId)
+        mViewModel.registerStatisticsNotify(123456L)
+        mViewModel.observeMatchStaticsNotify()
     }
 
     private fun setVideoView() {

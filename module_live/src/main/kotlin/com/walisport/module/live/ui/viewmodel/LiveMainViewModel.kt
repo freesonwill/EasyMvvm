@@ -16,7 +16,8 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     var matchId: Long = 0
     var sportId: Int = 0
-     var leagueID: Int = 0
+    var leagueID: Int = 0
+
     //首次加载
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
@@ -41,7 +42,7 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     fun getMainMatch(matchId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.getMatchRes(matchId){
+            repo.getMatchRes(matchId) {
                 _mainMatch.value = it
             }
         }
@@ -67,17 +68,17 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
             repo.unregisterMatchInfoNotify(matchId)
         }
     }
-    fun clearAllMatch(){
+
+    fun clearAllMatch() {
         viewModelScope.launch {
             repo.clearAllMatch()
         }
     }
 
-    //订阅并接收比赛技术统计推送
+    //订阅比赛技术统计推送
     fun registerStatisticsNotify(matchId: Long) {
         viewModelScope.launch {
             repo.registerMatchStaticsNotify(matchId)
-            repo.observeMatchStaticsNotify()
         }
     }
 
@@ -85,6 +86,14 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     fun unregisterStatisticsNotify() {
         viewModelScope.launch {
             repo.unregisterStatisticsNotify()
+        }
+    }
+
+    //监听比赛技术统计推送
+    fun observeMatchStaticsNotify() {
+        viewModelScope.launch {
+            repo.observeMatchStaticsNotify().collect {
+            }
         }
     }
 }

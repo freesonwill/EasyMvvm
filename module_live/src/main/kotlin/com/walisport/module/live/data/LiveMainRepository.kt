@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.LiveRemoteManager
+import galaxy.client.proto.Client
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
@@ -89,10 +90,8 @@ class LiveMainRepository(
         remoteManager.registerMatchStaticsNotify(scope, -1)
     }
 
-    suspend fun observeMatchStaticsNotify() {
-        remoteManager.observeMatchStaticsNotify().collect {
-            "收到推送数据111111111".loge("测试")
-        }
+    suspend fun observeMatchStaticsNotify():Flow<Client.SubscribeMatchLiveResp> {
+        return remoteManager.observeMatchStaticsNotify()
     }
 }
 

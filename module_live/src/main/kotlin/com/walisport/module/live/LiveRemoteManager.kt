@@ -2,7 +2,6 @@ package com.walisport.module.live
 
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
@@ -221,7 +220,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
     //700-1100: 订阅比赛统计数据推送
     suspend fun registerMatchStaticsNotify(scope: CoroutineScope, matchIds: Long) {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
+        socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.MATCH_STATICS,
@@ -236,7 +235,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     fun observeMatchStaticsNotify(): Flow<Client.SubscribeMatchLiveResp> {
         return socketManager.observeProtoMessage<Client.SubscribeMatchLiveResp>(ApiCode.MATCH_STATICS)
             .transform { res ->
-                "收到技术统计数据推送${res.data}".loge("测试")
                 if (res.error == null && res.data != null) {
                     emit(res.data!!)
                 }
