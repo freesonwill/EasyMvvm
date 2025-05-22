@@ -40,6 +40,11 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         setPage(list)
     }
 
+    override fun initData() {
+        super.initData()
+        betSlipFilterViewModel.init()
+    }
+
     override fun initListener() {
         mBinding.ivBack.setOnClickListener {
             findNavController().navigateUp()

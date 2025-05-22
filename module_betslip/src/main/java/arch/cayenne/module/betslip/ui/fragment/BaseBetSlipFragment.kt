@@ -28,12 +28,9 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
 
     override fun createObserver() {
         filterViewModel?.apply {
-            onDateTimeFilter.observe(viewLifecycleOwner) {
-                mViewModel.setTime(it.first, it.second)
-                mViewModel.loadData(getBetSlipEnum())
-            }
-            onMatchSportIdFilter.observe(viewLifecycleOwner) {
-                mViewModel.setIds(it.first, it.second)
+            onFilterChangeListener.observe(viewLifecycleOwner) {
+                mViewModel.setIds(it.matchId, it.sportId)
+                mViewModel.setTime(it.startTime, it.endTime)
                 mViewModel.loadData(getBetSlipEnum())
             }
         }
