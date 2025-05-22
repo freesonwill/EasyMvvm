@@ -3,7 +3,6 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.os.Bundle
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -18,12 +17,13 @@ import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
-    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModels()
+    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
     private val viewPagerAnimHelper by lazy {
         ViewPagerAnimHelper()
     }

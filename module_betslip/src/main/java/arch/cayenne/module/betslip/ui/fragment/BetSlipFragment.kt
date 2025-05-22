@@ -2,7 +2,6 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.fragment.app.viewModels
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -15,6 +14,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetSlipLayoutBinding
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
@@ -26,7 +26,7 @@ class BetSlipFragment :
     override val vbClass: KClass<FragmentLiveBetSlipLayoutBinding> =
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
-    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModels()
+    private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
 
     companion object {
         val matchKey = "match_id"
