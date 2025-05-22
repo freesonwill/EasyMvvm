@@ -46,6 +46,9 @@ message MatchLiveInfo {
     bool chat_room = 6;    //是否开启了聊天室
     int32 viewer_count = 7;    //观看数量
     int64 clock_modified = 8;  //走表修改时间
+    int32 home_score = 9;
+    int32 away_score = 10;
+    string period_name = 11;  //阶段名称
 }
 
 //盘口
@@ -288,3 +291,6 @@ message DailyMatchCount {
     int32 count = 2;    //比赛数量
 }
 
+//空数据
+message Empty {
+}
