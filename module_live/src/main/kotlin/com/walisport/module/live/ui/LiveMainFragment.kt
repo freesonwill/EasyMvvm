@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -108,6 +109,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     private fun loadFragment() {
         with(mBinding) {
+            mBinding.tabLayout.removeAllTabs()
             val list =
                 listOf(
                     PagerBean(R.string.live_note_order.getString()) {
@@ -141,5 +143,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()
+    }
+
+    override fun onResume() {
+        StatusBarConfig.hideStatusBar =false
+        setStatusBar(StatusBarConfig)
+        super.onResume()
     }
 }

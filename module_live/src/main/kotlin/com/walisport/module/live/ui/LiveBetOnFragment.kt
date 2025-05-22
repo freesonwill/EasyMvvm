@@ -45,7 +45,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var isNotify = false
     override fun initView(savedInstanceState: Bundle?) {
-        tabList.clear()
+        initAdapter()
     }
 
     override fun initData() {
@@ -190,7 +190,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mViewModel.observeSelection.collect {
                 isNotify = true
                 mViewModel.observeSelectionGetMarketList(
-                    (if (mBinding.tabLayout.selectedTabPosition == 0) "" else mViewModel.marketType.value?.get(
+                    (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
                         mBinding.tabLayout.selectedTabPosition - 1
                     )?.code).toString()
                 )
