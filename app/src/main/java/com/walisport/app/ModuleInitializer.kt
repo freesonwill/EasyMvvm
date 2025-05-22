@@ -72,7 +72,7 @@ class ModuleInitializer : DefaultInitializer<String> {
 
     override fun create(context: Context): String {
         "$TAG create ....".logd(TAG)
-//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         loadKoinModules(moduleList)
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
         return TAG
