@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -25,7 +26,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayName: String? = ""
     private var awayLogo: String? = ""
     private lateinit var map: Map<Long, List<LiveSelectionBean>>
-
+    private var isNotify = false
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetItemLayoutBinding =
             binding as AdapterLiveBetItemLayoutBinding
@@ -33,7 +34,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         init {
             setOnClickListener()
         }
-
         private fun setOnClickListener() {
 
         }
@@ -44,6 +44,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
+
             lists?.withIndex()?.forEach { (index, listIt) ->
                 if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
                         viewBinding.clBet.visibility = View.VISIBLE
@@ -64,7 +65,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     StatesArrange.getStates(listIt.style),
                     index,
                     listIt.shortName,
-                    listIt.odds.getOdds().toString(), listIt.selectionId, listIt.active,listIt.oddsStatus,
+                    listIt.odds, listIt.selectionId, listIt.active,listIt.oddsStatus,isNotify
                 ) { it ->
                     callback.itemListCallback(it, listIt.selectionId)
                 }
@@ -77,15 +78,21 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         homeLogo: String,
         awayName: String,
         awayLogo: String,
-        map: Map<Long, List<LiveSelectionBean>>
+        map: Map<Long, List<LiveSelectionBean>>,
+        isNotify : Boolean
     ) {
         this.homeName = homeName
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
         this.map = map
+        this.isNotify = isNotify
     }
 
+
+    fun setIsNotify( isNotify : Boolean){
+        this.isNotify = isNotify
+    }
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
         holder.updateItem(position)
     }

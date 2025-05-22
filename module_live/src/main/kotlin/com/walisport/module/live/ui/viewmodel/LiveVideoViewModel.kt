@@ -101,10 +101,27 @@ class LiveVideoViewModel(
 
     fun mutedData() = muteManager.mutedLiveData
 
+    /**
+     * 改变静音状态
+     */
     fun changeMuteStatus() {
         viewModelScope.launch {
             muteManager.changeMuteStatus()
         }
+    }
+
+    /**
+     * 设置静音
+     */
+    fun mute() {
+        viewModelScope.launch { muteManager.mute() }
+    }
+
+    /**
+     * 取消静音
+     */
+    fun unMute() {
+        viewModelScope.launch { muteManager.unMute() }
     }
 
     fun matchId() = repo.matchId

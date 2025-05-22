@@ -199,7 +199,7 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-        mViewModel.tournamentIcon.observe(this) {
+        mViewModel.tournamentIcon.observe(viewLifecycleOwner) {
 //            "tournamentIcon: $it".logd("matchIssue")
 
             it?.takeIf { it.isNotEmpty() }?.let { url ->
@@ -211,7 +211,7 @@ class LiveVideoLandscapeFragment :
 
         }
 
-        mViewModel.matchName.observe(this) {
+        mViewModel.matchName.observe(viewLifecycleOwner) {
             it?.takeIf { it.isNotEmpty() }?.let { name ->
                 mBinding.tvMatchName.text = name
             }

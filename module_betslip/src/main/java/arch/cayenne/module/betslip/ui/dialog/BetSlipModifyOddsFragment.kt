@@ -70,7 +70,7 @@ class BetSlipModifyOddsFragment private constructor() :
     }
 
     override fun createObserver() {
-        mViewModel.editNumber.observe(this) {
+        mViewModel.editNumber.observe(viewLifecycleOwner) {
             mBinding.etOdds.setText(it)
         }
     }

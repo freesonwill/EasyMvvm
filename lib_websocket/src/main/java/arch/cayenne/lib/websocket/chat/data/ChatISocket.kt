@@ -1,9 +1,8 @@
-package arch.cayenne.lib.websocket.data
+package arch.cayenne.lib.websocket.chat.data
 
 import kotlinx.coroutines.flow.SharedFlow
 
-interface ISocket<REQ, RES, State> {
-
+interface ChatISocket <REQ, RES, State>{
     suspend fun connect(host: String): SharedFlow<State>
 
     fun disConnect():Boolean

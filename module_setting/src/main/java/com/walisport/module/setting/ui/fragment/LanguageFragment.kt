@@ -53,7 +53,7 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
     }
 
     override fun createObserver() {
-        mViewModel.languageType.observe(this) {
+        mViewModel.languageType.observe(viewLifecycleOwner) {
             changeLanguageType(it)
         }
     }

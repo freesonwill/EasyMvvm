@@ -94,11 +94,10 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
             val groupKey = if (firstChar != null && firstChar in 'A'..'Z') firstChar else '#'
 
             // 歸類進字母列表
-
-            groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
-            // 歸類進熱門列表
             if (tournament.hot) {
                 hotList.add(tournament)
+            } else {
+                groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
             }
         }
         // 將熱門歸類進 '#' 區塊

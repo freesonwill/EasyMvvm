@@ -14,7 +14,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import arch.cayenne.module.bet.repo.BetRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import org.koin.core.parameter.parametersOf
 
 class LiveBetOnViewModel : BaseViewModel() {
@@ -22,8 +23,8 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
 
-    private val _observeSelection = MutableLiveData<List<LiveSelectionBean>?>()
-    val observeSelection: LiveData<List<LiveSelectionBean>?> = _observeSelection
+    private val _observeSelection = MutableSharedFlow<List<LiveSelectionBean>?>(replay = 1)
+    val observeSelection: Flow<List<LiveSelectionBean>?> = _observeSelection
 
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
@@ -31,8 +32,9 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
 
-    private val _getLiveSelectionBean = MutableLiveData<Map<Long, List<LiveSelectionBean>>>()
-    val getLiveSelectionBean: LiveData<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
+    private val _getLiveSelectionBean =
+        MutableSharedFlow<Map<Long, List<LiveSelectionBean>>>(replay = 1)
+    val getLiveSelectionBean: Flow<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
 
     //监听盘口筛选变化
     private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
@@ -40,16 +42,16 @@ class LiveBetOnViewModel : BaseViewModel() {
 
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
-            repository.queryLiveMarketType(matchId){
+            repository.queryLiveMarketType(matchId) {
                 _marketType.value = it
             }
 
         }
     }
 
-    fun setMarketMenuPosition(titlePosition:Int,contentPosition:Int){
-        var position :MutableList<Int> = mutableListOf(titlePosition,contentPosition)
-        _observeMarketMenu.value  =position
+    fun setMarketMenuPosition(titlePosition: Int, contentPosition: Int) {
+        var position: MutableList<Int> = mutableListOf(titlePosition, contentPosition)
+        _observeMarketMenu.value = position
     }
 
     //根据盘口分类code获取盘口列表
@@ -85,23 +87,21 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
 
-        suspend fun setSelection(matchId: Long, selectionId: Long) : AddSelectionStatus {
-            val bean = repository.getSelectionInsertBean(matchId, selectionId)
-            return if (bean == null) {
-                AddSelectionStatus.FAIL
-            } else {
-                betRepository.setSelection(bean)
-            }
+    suspend fun setSelection(matchId: Long, selectionId: Long): AddSelectionStatus {
+        val bean = repository.getSelectionInsertBean(matchId, selectionId)
+        return if (bean == null) {
+            AddSelectionStatus.FAIL
+        } else {
+            betRepository.setSelection(bean)
         }
+    }
 
     //监听盘口数据变化
     fun observeSelection(marketIds: List<Long>) {
-        viewModelScope.launch (Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             repository.observeSelection(marketIds).collect {
-                withContext(Dispatchers.Main){
-                    _observeSelection.value = it
-                    LogUtils.e("比赛详情--------observeSelection${it}")
-                }
+                _observeSelection.tryEmit(it)
+                LogUtils.e("比赛详情--------observeSelection${it}")
             }
         }
     }
@@ -112,9 +112,10 @@ class LiveBetOnViewModel : BaseViewModel() {
             marketIds.forEach {
                 map[it] = repository.queryLiveSelectionBean(it)
             }
-            withContext(Dispatchers.Main) {
-                _getLiveSelectionBean.value = map
-            }
+            LogUtils.e("getLiveSelectionBean-----map---${map}")
+            _getLiveSelectionBean.tryEmit(map)
         }
     }
+
+
 }
