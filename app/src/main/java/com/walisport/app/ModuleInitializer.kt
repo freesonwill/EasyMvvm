@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.FragmentActivity
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
@@ -72,7 +71,6 @@ class ModuleInitializer : DefaultInitializer<String> {
 
     override fun create(context: Context): String {
         "$TAG create ....".logd(TAG)
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         loadKoinModules(moduleList)
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
         return TAG
