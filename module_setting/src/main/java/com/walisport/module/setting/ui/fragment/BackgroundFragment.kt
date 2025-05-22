@@ -31,7 +31,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         changeSkinType(skinType)
         val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
         binding.barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-        mBinding.titleBar.loadDynamicsTitleBar(binding.root)
+        mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
             tvBack.clickNoRepeat {
                 findNavController().navigateUp()
