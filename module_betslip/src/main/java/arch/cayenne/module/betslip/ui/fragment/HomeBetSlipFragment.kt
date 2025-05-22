@@ -1,12 +1,15 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentHomeBetslipBinding
@@ -15,7 +18,7 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
 
-class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
+class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val viewPagerAnimHelper by lazy {
@@ -23,7 +26,7 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val array = resources.getStringArray(arch.cayenne.module.betslip.R.array.bet_slip_menus)
+        val array = resources.getStringArray(R.array.bet_slip_menus)
         val list = listOf(
             PagerBean(array[0]) { BetSlipUnsettledFragment() },
             PagerBean(array[1]) { BetSlipConfirmFragment() },
@@ -81,6 +84,7 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
 
     private fun showDateFilter() {
         mViewModel.onDateFilter.value?.let {
+            setFilterText(mBinding.tvDateFilter, true)
             childFragmentManager.setFragmentResultListener(
                 Config.KEY_RESULT,
                 viewLifecycleOwner
@@ -97,37 +101,61 @@ class HomeBetSlipFragment: BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsli
                         }
                     }
                 }
+                setFilterText(mBinding.tvDateFilter, false)
             }
-            val time = if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
-                mViewModel.customTime
-            } else {
-                null
-            }
+            val time =
+                if (it.date == BetSlipDateFilterEnum.CUSTOM && mViewModel.customTime != null) {
+                    mViewModel.customTime
+                } else {
+                    null
+                }
             DatePickerFragment.newInstance(it.date, time).show(childFragmentManager)
         }
     }
 
     private fun showSportFilter() {
         mViewModel.onSportFilter.value?.let {
-            val lastFragment = childFragmentManager.findFragmentByTag(SportPickerFragment.TAG)
-            if (lastFragment == null) {
-                val f = SportPickerFragment().apply {
-                    arguments = Bundle().apply {
-                        putInt(Config.VALUE_SELECTED_SPORT_ID, it.sportId)
-                    }
+            setFilterText(mBinding.tvSportFilter, true)
+            childFragmentManager.setFragmentResultListener(
+                Config.KEY_RESULT,
+                viewLifecycleOwner
+            ) { _, bundle ->
+                childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
+                if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
+                    val id = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
+                    val name = bundle.getString(Config.VALUE_SELECTED_SPORT_NAME)!!
+                    mViewModel.setSportFilter(id, name)
                 }
-                childFragmentManager.setFragmentResultListener(Config.KEY_RESULT, viewLifecycleOwner) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
-                        val id = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
-                        val name = bundle.getString(Config.VALUE_SELECTED_SPORT_NAME)!!
-                        mViewModel.setSportFilter(id, name)
-                    }
-                }
-                childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentContainer.id, f, f.javaClass.simpleName)
-                    .commit()
+                setFilterText(mBinding.tvSportFilter, false)
             }
+            SportPickerFragment.newInstance(
+                mBinding.clTitle.height + mBinding.clFilter.height + mBinding.tabLayout.height,
+                it.sportId
+            ).show(childFragmentManager, mBinding.main.id)
+        }
+    }
+
+    private fun setFilterText(view: TextView, isSelected: Boolean) {
+        if (isSelected) {
+            view.setTextColor(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    arch.cayenne.lib.res.R.color.green_for_white_bg
+                )
+            )
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0, 0, R.mipmap.ic_bet_slip_filter_selected, 0
+            )
+        } else {
+            view.setTextColor(
+                ContextCompat.getColorStateList(
+                    requireContext(),
+                    arch.cayenne.lib.res.R.color.main_text
+                )
+            )
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(
+                0, 0, R.mipmap.ic_bet_slip_filter, 0
+            )
         }
     }
 }

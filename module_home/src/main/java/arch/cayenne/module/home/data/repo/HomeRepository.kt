@@ -19,7 +19,6 @@ import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.MatchUpdateData
 import arch.cayenne.module.home.data.model.toRoomData
-import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel.Companion.DEFAULT_MATCH_SIZE
 import arch.cayenne.module.home.utils.setSelected
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -37,9 +36,10 @@ class HomeRepository(
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
     private val betDao = database.betDao()
-
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
+        const val DEFAULT_MATCH_SIZE = 10
+
     }
 
     @Transaction
@@ -97,31 +97,6 @@ class HomeRepository(
         sportDao.clearSports()
     }
 
-    suspend fun getChampionTournament(sportId: Int): List<TournamentDataModel> { //先暫時用TournamentDataModel
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.LIST_OUTRIGHT_MATCH,
-        ) {
-            Client.ListOutrightMatchReq.newBuilder().apply {
-                this.sportId = sportId
-            }.build()
-        }
-        if (res.error == null && res.data != null) {
-            return res.data!!.outrightMatchOrBuilderList.map {
-                TournamentDataModel(
-                    id = it.tournamentId,
-                    sportId = it.sportId,
-                    name = it.tournamentName,
-                    simpleName = "",
-                    icon = it.tournamentIcon,
-                    weight = it.weight,
-                    hot = it.hot
-                )
-            }
-        }
-        return arrayListOf()
-    }
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
         clearTournamentCache()
@@ -193,10 +168,6 @@ class HomeRepository(
         val model = tournamentDao.getTournamentById(tournamentId)
         "getTournamentById: $tournamentId, list: $model".logd()
         return model
-    }
-
-    fun getAllTournaments(): List<TournamentDataModel> {
-        return tournamentDao.queryTournament()
     }
 
     private fun clearTournamentCache() {

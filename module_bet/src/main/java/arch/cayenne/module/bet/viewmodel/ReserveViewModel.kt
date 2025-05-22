@@ -24,7 +24,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
     private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
-    private val odds: Int get() = _onOddsListener.value ?: 1
+    private val odds: Int get() = _onOddsListener.value ?: 0
 
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
         addSource(onEditNumber) {
@@ -73,13 +73,9 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
                             setEditNumber(it.inputMoney)
                         }
                     } else {
-                        val oriMoney = oriData.toMoney()
-                        if (oriMoney > it.maxAmount) {
-                            setEditNumber(it.maxAmount)
-                        } else if (oriMoney < it.minAmount) {
-                            setEditNumber(it.minAmount)
-                        } else {
-                            setEditNumber(oriMoney)
+                        val curMoney = oriData.toMoney()
+                        if (curMoney > 0L) {
+                            setEditNumber(curMoney)
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.Animator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -38,6 +41,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
+import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -54,8 +58,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
+    private val tournamentList = mutableListOf<TournamentDataModel>()
+    private lateinit var leagueAdapter: LeaguePagerAdapter
 
-//    private val tournamentListFragment  = TournamentListFragment.newInstance()
+    //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -84,12 +90,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         //看db, 點擊的不在matchBean中會爆掉
                         resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
-                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                            toggleTournamentMoreSection(true)
-//                            navigate(NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(matchId = 464046))
-                        } else {
-                            toggleTournamentMoreSection(false)
-                        }
                     }
                 }
 
@@ -150,8 +150,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
                 "ivHomeLeagueMore click".logd()
-                mViewModel.getAllTournament()
-                toggleTournamentMoreSection(true)
+                toggleTournamentMoreSection(true, TournamentListType.MORE)
             }
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
@@ -169,35 +168,40 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
 
-    private fun toggleTournamentMoreSection(expanded: Boolean) {
+    private fun toggleTournamentMoreSection(expanded: Boolean, type: TournamentListType) {
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
         isExpanded = expanded
         if (expanded) {
             if (fm.findFragmentByTag(tag) != null) return
-            container.visibility = View.INVISIBLE
+            container.visibility = View.VISIBLE
 
-            val tournamentListFragment = TournamentListFragment.newInstance()
+            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId(), type)
 
-            container.post {
-                container.visibility = View.VISIBLE
+            fm.beginTransaction().apply {
+                if (type == TournamentListType.MORE) {
+                    setCustomAnimations(
+                        R.anim.slide_in_from_top,
+                        R.anim.slide_out_to_top
+                    )
+                }
+                replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
+                commitAllowingStateLoss()
             }
-            fm.beginTransaction()
-                .setCustomAnimations(
-                    R.anim.slide_in_from_top,
-                    R.anim.slide_out_to_top
-                )
-                .replace(R.id.ll_tournaments_dropdown, tournamentListFragment, tag)
-                .commitAllowingStateLoss()
+
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
-            fm.beginTransaction()
-                .setCustomAnimations(0, R.anim.slide_out_to_top)
-                .remove(fragment)
-                .commitAllowingStateLoss()
+            fm.beginTransaction().apply {
+                if (type == TournamentListType.MORE){
+                    setCustomAnimations(0, R.anim.slide_out_to_top)
+                }
+                remove(fragment)
+                commitAllowingStateLoss()
+            }
 
+            //TODO 把進出的anim優化
             container.postDelayed({
                 mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
                 container.visibility = View.GONE
@@ -205,9 +209,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
+    override fun onCreateAnimator(transit: Int, enter: Boolean, nextAnim: Int): Animator? {
+        return super.onCreateAnimator(transit, enter, nextAnim)
+    }
+
     private fun showHomeCalendar(tabSelectedDate: String) {
         //設定標記紅色日期及可選取日期範圍
-        fun setSchemeDate(calendarView:CalendarView) {
+        fun setSchemeDate(calendarView: CalendarView) {
             val map: MutableMap<String, Calendar> = HashMap()
             //設定可以標記為紅色字的日期區間，目前設定為30天
             for (date in getFutureThirtyDays()) {
@@ -381,10 +389,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
-        "setTournamentAndViewPagerLayout: ${tournaments.size}".logd()
+        tournamentList.clear()
+        tournamentList.addAll(tournaments)
         //確定拿到聯賽資料後再決定要不要show出時間
         if (tournaments.isNotEmpty()) {
-            with (mBinding.layoutContainer) {
+            with(mBinding.layoutContainer) {
                 if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
                     tlDateList.visibility = View.GONE
                     llOtherDate.visibility = View.GONE
@@ -397,40 +406,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.apply {
             vpGameList.currentItem = 0
             tlDateList.getTabAt(0)?.select()
-            vpGameList.adapter = LeaguePagerAdapter(
+
+            leagueAdapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
-                tournament = tournaments,
+                tournament = tournamentList,
                 playType = mViewModel.getCurrentPlayType()
             )
+            vpGameList.adapter = leagueAdapter
+
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
-                val tournament = tournaments[position]
-
-                val tabBinding =
-                    ItemLeagueTabBinding.inflate(LayoutInflater.from(context), null, false)
-                tabBinding.apply {
-                    if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID) {   //ALL 標籤
-                        ivLeagueIcon.visibility = View.GONE
-                        tvLeagueName.text = getString(R.string.league_all)
-                    } else {
-                        Glide.with(this@NewHomeFragment)
-                            .load(tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
-                            .placeholder(R.drawable.ic_default_tournament)
-                            .error(R.drawable.ic_default_tournament)
-                            .into(ivLeagueIcon)
-                        tvLeagueName.text = tournament.simpleName
-                        ivLeagueIcon.imageTintList = context?.let {
-                            SkinnableResourceManager.getColorStateList(
-                                it,
-                                R.color.selector_league_tab_tint
-                            )
-                        }
-                    }
-
-                    root.setBackgroundResource(R.drawable.selector_league_tab_bg)
-                }
-
-                tab.customView = tabBinding.root
+                val tournament = tournamentList[position]
+                tab.customView = createTournamentTabView(tournament)
                 tab.view.setPadding(
                     0,
                     0,
@@ -438,6 +425,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     0
                 )
             }.attach()
+
 
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -451,6 +439,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
         }
+    }
+
+    private fun addNewTournamentTab(tournament: TournamentDataModel) {
+        tournamentList.add(tournament)
+        leagueAdapter.notifyItemInserted(tournamentList.lastIndex)
+        val newTab = mBinding.layoutContainer.tlLeagueList.newTab()
+        newTab.customView = createTournamentTabView(tournament)
+        newTab.view.setPadding(
+            0,
+            0,
+            10f.dp2px,
+            0
+        )
+        mBinding.layoutContainer.tlLeagueList.addTab(newTab, true)
     }
 
     override fun initData() {
@@ -485,19 +487,27 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
+            if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
+            } else {
+                toggleTournamentMoreSection(false, TournamentListType.CHAMPION)
+            }
         }
 
-        mViewModel.tournaments.observe(viewLifecycleOwner) {
-            setTournamentAndViewPagerLayout(it)
+        mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
+            setTournamentAndViewPagerLayout(list)
+        }
+
+        mViewModel.appendTournament.observe(viewLifecycleOwner) { tournament ->
+            if (tournament != null && tournamentList.none { it.id == tournament.id }) {
+                addNewTournamentTab(tournament)
+            }
         }
 
         mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
-            "使用者選取聯賽 ID: $id".logd()
             val list = mViewModel.tournaments.value.orEmpty()
-            "使用者選取聯賽 tournaments: ${list.size}".logd()
             val index = list.indexOfFirst { it.id == id }
-            if (index != -1) {
-                "使用者選取聯賽 index select(): $index".logd()
+            if (index != 0) {
                 mBinding.layoutContainer.tlLeagueList.post {
                     mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
                 }
@@ -506,7 +516,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
             if (shouldCollapse == true && isExpanded) {
-                toggleTournamentMoreSection(false)
+                toggleTournamentMoreSection(false, TournamentListType.MORE)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
@@ -514,5 +524,61 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
+
+        lifecycleScope.launch {
+            mViewModel.navigationToChampion.collect { data ->
+                val navController = findNavController()
+                if (navController.currentDestination?.id == R.id.newHomeFragment) {
+                    navigate(
+                        NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+                            matchId = data.championMatchId,
+                            name = data.name,
+                            icon = data.icon
+                        )
+                    )
+                }
+            }
+        }
+//        mViewModel.navigationToChampion.observe(viewLifecycleOwner) { data ->
+//            if (data == null) return@observe
+//            navigate(
+//                NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+//                        matchId = data.championMatchId,
+//                        name = data.name,
+//                        icon = data.icon
+//                )
+//            )
+//            mViewModel.resetNavigationToChampion()
+//        }
     }
+
+    private fun createTournamentTabView(
+        tournament: TournamentDataModel
+    ): View {
+        val tabBinding =
+            ItemLeagueTabBinding.inflate(LayoutInflater.from(requireContext()), null, false)
+
+        tabBinding.apply {
+            tvLeagueName.text = if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID)
+                getString(R.string.league_all)
+            else tournament.simpleName
+
+            if (tournament.id == HomeViewModel.TOURNAMENT_ALL_ID) {
+                ivLeagueIcon.visibility = View.GONE
+            } else {
+                Glide.with(this@NewHomeFragment)
+                    .load(tournament.icon.ifEmpty { R.drawable.ic_default_tournament })
+                    .placeholder(R.drawable.ic_default_tournament)
+                    .error(R.drawable.ic_default_tournament)
+                    .into(ivLeagueIcon)
+
+                ivLeagueIcon.imageTintList = context?.let {
+                    SkinnableResourceManager.getColorStateList(it, R.color.selector_league_tab_tint)
+                }
+            }
+            root.setBackgroundResource(R.drawable.selector_league_tab_bg)
+        }
+        return tabBinding.root
+    }
+
 }
