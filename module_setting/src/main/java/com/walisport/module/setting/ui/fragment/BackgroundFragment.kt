@@ -83,7 +83,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     }
 
     override fun createObserver() {
-        mViewModel.skinType.observe(this) {
+        mViewModel.skinType.observe(viewLifecycleOwner) {
             changeSkinType(it)
         }
     }

@@ -50,7 +50,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun createObserver() {
-        mViewModel.systemSetting.observe(this) {
+        mViewModel.systemSetting.observe(viewLifecycleOwner) {
             it?.let {
                 //赔率类型, 0-欧盘 1-香港盘
                 oddsType = it.oddType
