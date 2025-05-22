@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
@@ -22,6 +23,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
+        mViewModel.startChatServer()
     }
 
     private fun initTab() {
@@ -90,6 +92,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun hideKeyboard() {
         mBinding.liveChatGroupChat.isVisible = true
+    }
+
+    override fun onDestroyView() {
+        mViewModel.disConnectChatServer()
+        super.onDestroyView()
     }
 
 

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.websocket
+package arch.cayenne.lib.websocket.chat
 
 import android.app.Application
 import android.content.Context
@@ -6,12 +6,14 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.websocket.NativeLib
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISecurity
 import arch.cayenne.lib.websocket.data.ISocket
 import arch.cayenne.lib.websocket.data.SocketConnectState
+import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,20 +30,20 @@ import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
-class SocketClientService(
+class ChatSocketClientService(
     private val context: WeakReference<Application>,
     private val security: ISecurity<IRequest, ByteArray, IResponse>
 ) : ISocket<IRequest, IResponse, ConnectState> {
-    private var currentState : SocketConnectState = SocketConnectState.None
+    private var currentState: SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
-    private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
+    private val connectStateFlow: MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 5,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
         )
     }
-    private val socketResponseFlow : MutableSharedFlow<IResponse> by lazy {
+    private val socketResponseFlow: MutableSharedFlow<IResponse> by lazy {
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 10,
@@ -71,23 +73,23 @@ class SocketClientService(
         val request = Request.Builder()
             .url(host)
             .build()
-        security.resetSecurity()
+        security.resetSecurity(NativeLib.CIPHER_TYPE_JSON)
         client.newWebSocket(request, object : WebSocketListener() {
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
                 if (!hasNetworkConnection()) {
-                    "Socket Client -> NetworkUnavailable".loge(SocketClientService::class.java.simpleName)
+                    "Socket Client -> NetworkUnavailable".loge(ChatSocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
                 } else {
-                    "Socket Client -> ConnectFailure:$t".loge(SocketClientService::class.java.simpleName)
+                    "Socket Client -> ConnectFailure:$t".loge(ChatSocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.ConnectFailure) }
                 }
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
-                "Socket Client -> ConnectClosed".loge(SocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectClosed".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = if (reason == SocketConnectState.None.name) {
                     SocketConnectState.None
                 } else {
@@ -99,25 +101,28 @@ class SocketClientService(
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen".loge(SocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectOpen".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
-                this@SocketClientService.webSocket = webSocket
+                this@ChatSocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                "onMessage text $text".logi(this@SocketClientService::class.java.simpleName)
+                "onMessage text $text".logi(this@ChatSocketClientService::class.java.simpleName)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
-                    "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
+//                    "onMessage bytes $bytes".logi(this@ChatSocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         workingScope.launch(Dispatchers.Main) {
 
                         }
                         val data = security.decrypt(byteArray)
+                        "result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(
+                            this@ChatSocketClientService::class.java.simpleName
+                        )
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {
@@ -129,8 +134,10 @@ class SocketClientService(
 
     }
 
-    override fun disConnect():Boolean {
-      return  webSocket?.close(1001, null) ?: true
+    override fun disConnect(): Boolean {
+        val result = webSocket?.close(1001, null) ?: false
+        currentState = SocketConnectState.Closed
+        return result
     }
 
     override fun reconnect() {
@@ -140,7 +147,7 @@ class SocketClientService(
     }
 
     override fun reset() {
-        "reset webSocket to init state".logi(this::class.java.simpleName)
+//        "reset webSocket to init state".logi(this::class.java.simpleName)
         webSocket?.close(1001, SocketConnectState.None.name)
     }
 
@@ -148,9 +155,9 @@ class SocketClientService(
     override fun send(data: IRequest) {
         val byteArray = security.encrypt(data)
         if (byteArray != null) {
-            webSocket?.send(byteArray.toByteString())
+            val flag = webSocket?.send(byteArray.toByteString())
+//            "sendResult $flag  flag2  ".logi(this::class.java.simpleName)
         }
-
     }
 
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow

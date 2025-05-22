@@ -48,4 +48,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     GET_SYSTEM_SETTING(500,1050),    //500-1050: 获取系统设置
     UPDATE_SYSTEM_SETTING(500,1051), //500-1051: 修改系统设置
+
+    CHAT_PING(0,2), //0 -2 聊天心跳
+    CHAT_LOGIN(90,1101), //7-7 聊天登陆
 }

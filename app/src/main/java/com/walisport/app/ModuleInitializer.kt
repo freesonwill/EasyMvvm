@@ -80,7 +80,7 @@ class ModuleInitializer : DefaultInitializer<String> {
         return super.dependencies() + listOf(
             SocketModuleInitializer::class.java,
             CommonModuleInitializer::class.java,
-            HomeModuleInitializer::class.java
+            HomeModuleInitializer::class.java,
         )
     }
 
