@@ -2,8 +2,6 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Embedded
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /*
@@ -144,5 +142,5 @@ data class MatchBeanLite(
     val status: Int,  //update MatchBasicInfoBean
     val betStop: Boolean, //update MatchBasicInfoBean
     val startTime: Long, //update MatchBasicInfoBean
-    val liveInfo: MatchLiveInfoBean  //update MatchLiveInfoBean
+    val liveInfo: MatchLiveInfoBean?  //update MatchLiveInfoBean
 )
