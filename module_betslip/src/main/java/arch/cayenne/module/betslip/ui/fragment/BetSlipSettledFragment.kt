@@ -2,17 +2,13 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
-import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.loadMoreData
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 
@@ -28,15 +24,14 @@ class BetSlipSettledFragment :
     }
 
     private fun initRecycler() {
-        val adapter = BetSlipAdapter(BetSlipEnum.Settled)
-        adapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
+        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
             override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
 
             }
         })
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
-            it.adapter = adapter
+            it.adapter = betSlipAdapter
             it.betSlipInit()
         }
     }
@@ -59,32 +54,20 @@ class BetSlipSettledFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            if (!it.isNullOrEmpty()) {
-                updateData(it)
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
+            betSlipAdapter.submitList(it) {
+                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
             }
-            mBinding.refreshLayout.finishRefresh(300)
-            mBinding.refreshLayout.finishLoadMore(300)
-            showEmpty()
+            showEmpty(it.isEmpty())
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
             mViewModel.getOrders(BetSlipEnum.UnSettled)
         }
     }
 
-    private fun showEmpty() {
-        val flag = mBinding.recyclerView.adapter?.let {
-            val adapter = it as BetSlipAdapter
-            adapter.currentList.isEmpty()
-        } ?: true
-        mBinding.emptyState.showEmptyData(flag, mBinding.refreshLayout)
-    }
-
-    private fun updateData(orders: List<Common.Order>) {
-        val list = orders.toBetSlipData()
-        mBinding.recyclerView.adapter?.let {
-            val adapter = it as BetSlipAdapter
-           mBinding.refreshLayout.loadMoreData(adapter,list)
-        }
+    private fun showEmpty(isEmpty: Boolean) {
+        mBinding.emptyState.showEmptyData(isEmpty, mBinding.refreshLayout)
     }
 
     override fun getBetSlipEnum(): BetSlipEnum {
