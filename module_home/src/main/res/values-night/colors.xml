@@ -4,8 +4,6 @@
     <color name="bg_main">#F3F3F4</color>
     <color name="bg_card">#ffffff</color>
     <color name="data_bg">#FBFBFB</color>
-    <color name="main_text">#222222</color>
-    <color name="card_odds_background">#F3F3F4</color>
     <color name="secondary_text">#666666</color>
     <color name="secondary_title">@color/main_text</color>
     <color name="bg_card_gradient_start">#00FEFFFE</color>

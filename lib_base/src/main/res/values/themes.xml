@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="ArchBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="ArchBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ArchButtonSheetStyle</item>
         <item name="background">@color/color_dialog_window_background</item>
     </style>
