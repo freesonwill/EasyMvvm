@@ -37,7 +37,7 @@
     <color name="tran_75_white">#BFFFFFFF</color>
     <color name="tran_20_white">#33E6E6E6</color>
 
-
+    <color name="main_text">#222222</color>
     <color name="secondary_text">#666666</color>
     <color name="text_on_theme_color">#000000</color>
     <color name="card_outline">#FFFFFF</color>
@@ -58,6 +58,7 @@
     <color name="list_separator">#F6F6F6</color>
     <color name="tab_bg">#3d404d</color>
     <color name="tab_text">#cbd8eb</color>
+    <color name="tab_fill_color">#FFFFFF</color>
 
     <color name="green_for_white_bg">#00D271</color>
 </resources>

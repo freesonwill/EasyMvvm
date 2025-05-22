@@ -19,13 +19,13 @@ class OddsDisplayDialog : BaseBottomSheetFragment<EmptyViewModel, DialogOddsDisp
         get() = EmptyViewModel::class
     private var clicklistener: OnClickListener? = null
     val bundle = "display_type"
-    private var displayType = "EP"
+    private var displayType = 0  //赔率类型, 0-欧盘 1-香港盘
 
     override fun initView(savedInstanceState: Bundle?) {
         arguments?.let {
-            displayType = it.getString(bundle) ?: ""
+            displayType = it.getInt(bundle)
         }
-        if ("EP" == displayType) {
+        if (0 == displayType) {
             mBinding.radioEp.isSelected = true
             mBinding.radioHk.isSelected = false
         } else {
