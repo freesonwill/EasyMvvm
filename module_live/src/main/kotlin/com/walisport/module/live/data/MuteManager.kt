@@ -12,8 +12,25 @@ class MuteManager {
 
     val mutedLiveData: LiveData<Boolean> = _liveData
 
+    /**
+     * 改变静音状态
+     */
     suspend fun changeMuteStatus() {
         //默认不静音
         _liveData.value = _liveData.value?.not() ?: true
+    }
+
+    /**
+     * 静音
+     */
+    suspend fun mute() {
+        _liveData.value = true
+    }
+
+    /**
+     * 取消静音
+     */
+    suspend fun unMute() {
+        _liveData.value = false
     }
 }
