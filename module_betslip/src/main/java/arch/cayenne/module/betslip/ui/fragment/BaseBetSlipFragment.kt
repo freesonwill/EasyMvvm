@@ -35,4 +35,13 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
             }
         }
     }
+
+    override fun initData() {
+        super.initData()
+        if (filterViewModel == null) {
+            mViewModel.setIds(-1, -1)
+            mViewModel.setTime(null, null)
+            mViewModel.loadData(getBetSlipEnum())
+        }
+    }
 }
