@@ -91,7 +91,7 @@ class SettingRepository(
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.GET_SYSTEM_SETTING,
+            apiCode = ApiCode.UPDATE_SYSTEM_SETTING,
         ) {
             Client.UpdateSettingReq.newBuilder().apply {
                 this.setting = setting
