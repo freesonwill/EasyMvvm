@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:src="@mipmap/icon_collapse"
+                android:src="@drawable/icon_collapse"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -100,7 +100,7 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@mipmap/icom_combo_bet_ham" />
+                        android:src="@drawable/icon_combo_bet_ham" />
 
                     <TextView
                         android:id="@+id/tv_multi_bet_expand"
