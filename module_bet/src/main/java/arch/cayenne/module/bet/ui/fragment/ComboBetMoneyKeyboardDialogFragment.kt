@@ -65,7 +65,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        isCancelable = false
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
@@ -159,6 +158,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private fun setDialogPosition() {
         dialog?.window?.apply {
+            setDimAmount(0.65f)
             // 將 margin 設為 16dp
             val marginInPx = 16.dp2px
 

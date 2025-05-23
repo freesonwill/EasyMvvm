@@ -1,0 +1,21 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="28dp"
+    android:height="28dp"
+    android:viewportWidth="28"
+    android:viewportHeight="28">
+  <path
+      android:pathData="M19.949,7.95L19.949,7.95A1.414,1.414 90,0 1,19.949 9.95L9.95,19.95A1.414,1.414 90,0 1,7.95 19.95L7.95,19.95A1.414,1.414 90,0 1,7.95 17.95L17.95,7.95A1.414,1.414 0,0 1,19.949 7.95z"
+      android:fillColor="@color/card_odds_background"/>
+  <path
+      android:pathData="M19.95,19.95L19.95,19.95A1.414,1.414 90,0 1,17.95 19.95L7.95,9.95A1.414,1.414 0,0 1,7.95 7.95L7.95,7.95A1.414,1.414 90,0 1,9.95 7.95L19.95,17.95A1.414,1.414 90,0 1,19.95 19.95z"
+      android:fillColor="@color/card_odds_background"/>
+  <path
+      android:pathData="M14,2L14,2A12,12 0,0 1,26 14L26,14A12,12 0,0 1,14 26L14,26A12,12 0,0 1,2 14L2,14A12,12 0,0 1,14 2z"
+      android:fillColor="@color/card_odds_background"/>
+  <path
+      android:pathData="M18.144,9.672C17.719,9.295 17.073,9.314 16.671,9.716L9.255,17.132C8.842,17.545 8.842,18.215 9.255,18.628C9.667,19.04 10.334,19.041 10.748,18.63L18.188,11.238C18.628,10.801 18.608,10.084 18.144,9.672Z"
+      android:fillColor="@color/secondary_text"/>
+  <path
+      android:pathData="M18.144,18.328C17.719,18.705 17.073,18.686 16.671,18.284L9.255,10.868C8.842,10.455 8.842,9.785 9.255,9.372C9.667,8.96 10.334,8.959 10.748,9.37L18.188,16.762C18.628,17.199 18.608,17.916 18.144,18.328Z"
+      android:fillColor="@color/secondary_text"/>
+</vector>
