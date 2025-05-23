@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="search_bg">#0e0f19</color>
     <color name="search_title">#BBBBBB</color>
 </resources>

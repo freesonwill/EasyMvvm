@@ -29,7 +29,7 @@ class LiveChatAdapter :
             builder.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        binding.root.context, R.color.live_name
+                        binding.root.context, arch.cayenne.lib.common.R.color.live_name
                     )
                 ), 0, first.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
@@ -37,7 +37,7 @@ class LiveChatAdapter :
             builder.setSpan(
                 ForegroundColorSpan(
                     ContextCompat.getColor(
-                        binding.root.context, R.color.secondary_text
+                        binding.root.context, arch.cayenne.lib.common.R.color.secondary_text
                     )
                 ), first.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
