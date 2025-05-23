@@ -67,7 +67,7 @@ class LiveMainRepository(
             clockModified = marketInfo.liveInfo.clockModified,
         )
         var selections = marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
-        database.liveMatchDao().updateLiveSelectionBean(selections =selections.selections,selections.selectionsRecord )
+            database.liveMatchDao().updateLiveSelectionBean(selections.selections,selections.selectionsRecord,selections.selectionsDelete )
     }
 
      fun unregisterMatchInfoNotify(matchId: Long) {
