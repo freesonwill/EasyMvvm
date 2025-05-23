@@ -467,7 +467,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llFavoriteEntry.setOnClickListener {
-
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToFavoriteListFragment())
             }
 
             llSearchEntry.setOnClickListener {
