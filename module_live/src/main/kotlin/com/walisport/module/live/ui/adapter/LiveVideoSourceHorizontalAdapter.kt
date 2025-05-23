@@ -46,7 +46,7 @@ class LiveVideoSourceHorizontalAdapter(compare: DiffUtil.ItemCallback<VideoSourc
 
             Glide.with(viewBinding.ivThumb).load(item.thumb)
                 .placeholder(R.drawable.live_video_source_thumb_placeholder)
-                .apply(RequestOptions().transform(CenterCrop(), RoundedCorners(4.dp2px)))
+                .apply(RequestOptions().transform(CenterCrop()))
                 .into(viewBinding.ivThumb)
 
             viewBinding.root.setOnClickListener{
