@@ -10,6 +10,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
 
 class LiveMainRepository(
     private val remoteManager: LiveRemoteManager, private val database: GameDatabase
@@ -43,7 +44,7 @@ class LiveMainRepository(
 
     suspend fun observeMatchInfoNotify() {
         remoteManager.observeMatchInfoNotify().collect {
-            scope.launch{
+            scope.launch(Dispatchers.IO){
                 updateFullMatchInfo(it.basicUpdate,  it.marketUpdateList,it.matchId)
             }
         }
