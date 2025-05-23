@@ -13,6 +13,7 @@ import arch.cayenne.module.bet.viewmodel.BetResultViewModel
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
+import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ReserveViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
@@ -49,6 +50,7 @@ class BetModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::ComboBetMoneyKeyboardDialogViewModel)
         viewModelOf(::ReserveViewModel)
         viewModelOf(::BetSheetViewModel)
+        viewModelOf(::FloatingButtonControlViewModel)
     }
     private val repoModules = module {
         factoryOf(::FloatingButtonRepository)
