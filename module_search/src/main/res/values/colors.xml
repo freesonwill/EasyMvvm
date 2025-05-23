@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="search_title">#BBBBBB</color>
+    <color name="hot_word">#00D271</color>
+    <color name="hot_word_divider">#232530</color>
 </resources>
