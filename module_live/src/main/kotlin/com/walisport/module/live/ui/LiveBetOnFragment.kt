@@ -91,19 +91,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 isNotify = false
                 liveBetOnAdapter.setIsNotify(false)
                 liveBetOnAdapter.setSelectionComboId(selectionComboId)
-                notifyDataSetChanged()
+                liveBetOnAdapter.notifyDataSetChanged()
             }
         }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun notifyDataSetChanged(){
-        val layoutManager = mBinding.rvBetList.layoutManager as LinearLayoutManager
-        val scrollPosition = layoutManager.findFirstVisibleItemPosition()
-        val view = layoutManager.findViewByPosition(scrollPosition)
-        val offset = view?.top ?: 0
-        liveBetOnAdapter.notifyDataSetChanged()
-        layoutManager.scrollToPositionWithOffset(scrollPosition, offset)
     }
 
     override fun initListener() {
@@ -126,6 +116,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
