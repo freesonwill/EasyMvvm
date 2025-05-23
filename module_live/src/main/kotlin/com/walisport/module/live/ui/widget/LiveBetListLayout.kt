@@ -27,7 +27,7 @@ class LiveBetListLayout @JvmOverloads constructor(
 ) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
     var binding =
         LiveBetContentListItemLayoutBinding.inflate(LayoutInflater.from(context), this, false)
-    var  isNotify : Boolean = false
+    var isNotify: Boolean = false
     fun viewInit() {
         this.removeAllViews()
         this.addView(binding.root)
@@ -43,7 +43,8 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isNotify:Boolean,
+        isNotify: Boolean,
+        isCombo: Boolean,
         callback: (Long) -> Unit
     ) {
         this.isNotify = isNotify
@@ -62,7 +63,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -74,7 +75,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -90,7 +91,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                         odds,
                         marketId,
                         active,
-                        oddStatus,
+                        oddStatus, isCombo,
                         callback
                     )
                 )
@@ -107,7 +108,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -119,7 +120,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -137,7 +138,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -149,7 +150,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -161,7 +162,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -181,7 +182,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     odds,
                                     marketId,
                                     active,
-                                    oddStatus,
+                                    oddStatus, isCombo,
                                     callback
                                 )
                             )
@@ -195,7 +196,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     odds,
                                     marketId,
                                     active,
-                                    oddStatus,
+                                    oddStatus, isCombo,
                                     callback
                                 )
                             )
@@ -209,7 +210,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                                     odds,
                                     marketId,
                                     active,
-                                    oddStatus,
+                                    oddStatus, isCombo,
                                     callback
                                 )
                             )
@@ -222,7 +223,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                             odds,
                             marketId,
                             active,
-                            oddStatus,
+                            oddStatus, isCombo,
                             callback
                         )
                     )
@@ -237,6 +238,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
+        isCombo: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutOneBinding.inflate(
@@ -257,11 +259,14 @@ class LiveBetListLayout @JvmOverloads constructor(
         isActive(!active, itemBinding.sclOneLock)
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclOne.isSelected = isCombo
         itemBinding.sclOne.clickNoRepeatSingle {
             callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
+            if (!isCombo) {
+                it.isSelected = true
+                delayExample {
+                    it.isSelected = false
+                }
             }
         }
         return itemBinding.root
@@ -273,6 +278,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
+        isCombo: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutTowBinding.inflate(
@@ -292,18 +298,21 @@ class LiveBetListLayout @JvmOverloads constructor(
         isActive(!active, itemBinding.sclTowLock)
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclTow.isSelected = isCombo
         itemBinding.sclTow.clickNoRepeatSingle {
             callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
+            if (!isCombo) {
+                it.isSelected = true
+                delayExample {
+                    it.isSelected = false
+                }
             }
         }
         return itemBinding.root
     }
 
     private fun isOddsStatus(oddStatus: Int, top: View, down: View) {
-        if (isNotify){
+        if (isNotify) {
             when (oddStatus) {
                 LiveOddsStatusEnum.UP.status -> {
                     down.visibility = GONE
@@ -343,6 +352,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
+        isCombo: Boolean,
         callback: (Long) -> Unit
     ): View {
         var itemBinding = LiveBetContentItemLayoutThreeBinding.inflate(
@@ -361,11 +371,14 @@ class LiveBetListLayout @JvmOverloads constructor(
         isActive(!active, itemBinding.sclThreeLock)
         itemBinding.tvBetDuelLeft.text = name
         itemBinding.tvBetDuelRight.text = odds
+        itemBinding.sclThree.isSelected = isCombo
         itemBinding.sclThree.clickNoRepeatSingle {
             callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
+            if (isCombo) {
+                it.isSelected = true
+                delayExample {
+                    it.isSelected = false
+                }
             }
         }
         return itemBinding.root
@@ -377,6 +390,7 @@ class LiveBetListLayout @JvmOverloads constructor(
             delayCallback()
         }
     }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         handler.removeCallbacksAndMessages(null)
