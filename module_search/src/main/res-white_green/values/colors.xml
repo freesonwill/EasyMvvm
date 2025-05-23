@@ -2,4 +2,6 @@
 <resources>
     <color name="search_bg_white_green">#eeeeee</color>
     <color name="search_title_white_green">#222222</color>
+    <color name="hot_word_white_green">#00D271</color>
+    <color name="hot_word_divider_white_green">#E8E8EA</color>
 </resources>
