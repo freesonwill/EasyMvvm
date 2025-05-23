@@ -18,23 +18,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_section_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_6"
-        android:textColor="@color/main_text"
+        android:textColor="@color/home_main_text"
         android:textSize="15sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_section_icon"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="聯賽名稱" />
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:layout_marginEnd="@dimen/dp_16"
-        android:background="@color/list_separator"
+        android:background="@color/home_list_separator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

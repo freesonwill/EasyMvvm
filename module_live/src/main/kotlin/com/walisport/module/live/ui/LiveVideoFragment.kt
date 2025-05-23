@@ -3,12 +3,18 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.database.ContentObserver
+import android.media.AudioManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.provider.Settings
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ThreadUtils.launchWithCustomContext
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -40,12 +46,45 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
+    private lateinit var audioManager: AudioManager
+    private var volumeObserver: VolumeObserver? = null
+
     private var buttonsDisplaying = true
 
     /**
      * 隐藏操作栏的定时Job
      */
     private var scheduledHideButtonsJob: Job? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // 初始化 AudioManager
+        audioManager = requireContext().getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        // 初始化 VolumeObserver
+        volumeObserver = VolumeObserver(Handler(Looper.getMainLooper()))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // 注册 ContentObserver
+        volumeObserver?.let {
+            requireContext().contentResolver.registerContentObserver(
+                Settings.System.CONTENT_URI,
+                true,
+                it
+            )
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // 注销 ContentObserver
+        volumeObserver?.let {
+            requireContext().contentResolver.unregisterContentObserver(it)
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
@@ -197,8 +236,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
-                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
+                        .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivHomeTeam)
                 }
             }
@@ -211,8 +250,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
-                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
+                        .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
                 }
             }
@@ -370,7 +409,28 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     }
 
+    private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
+        override fun onChange(selfChange: Boolean) {
+            super.onChange(selfChange)
+            // 获取当前媒体音量
+            val mediaVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+            // 可以获取其他音量类型，如铃声：STREAM_RING，闹钟：STREAM_ALARM 等
+            "媒体音量变化: $mediaVolume".logd(TAG)
+
+            // 在这里添加音量变化后的处理逻辑
+            // 例如：更新 UI 或触发其他操作
+            if (mediaVolume > 0) {
+                mViewModel.unMute()
+            } else {
+                mViewModel.mute()
+            }
+
+        }
+    }
+
     companion object {
         const val TAG = "LiveVideoFragment"
     }
+
+
 }

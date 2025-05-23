@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip
 
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
@@ -32,6 +33,7 @@ class BetSlipConfirmAdapterManager(
     ) {
         binding.also {
             item.order?.let { order ->
+                it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
                 it.betConfirmTvBettingValue.text = order.betAmount

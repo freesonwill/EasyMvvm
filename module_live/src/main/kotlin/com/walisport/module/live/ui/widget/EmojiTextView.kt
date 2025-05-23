@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import com.walisport.module.live.utils.EmojiUtils
@@ -16,7 +16,7 @@ import org.koin.java.KoinJavaComponent.inject
 
 class EmojiTextView :
     AppCompatTextView {
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
     private val textHelper: SkinnableTextHelper = SkinnableTextHelper(this)
     private val backGroundHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
 

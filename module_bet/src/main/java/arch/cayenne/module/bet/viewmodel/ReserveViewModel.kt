@@ -73,13 +73,9 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
                             setEditNumber(it.inputMoney)
                         }
                     } else {
-                        val oriMoney = oriData.toMoney()
-                        if (oriMoney > it.maxAmount) {
-                            setEditNumber(it.maxAmount)
-                        } else if (oriMoney < it.minAmount) {
-                            setEditNumber(it.minAmount)
-                        } else {
-                            setEditNumber(oriMoney)
+                        val curMoney = oriData.toMoney()
+                        if (curMoney > 0L) {
+                            setEditNumber(curMoney)
                         }
                     }
                 }

@@ -21,10 +21,13 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
-import okhttp3.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
+import okhttp3.WebSocket
+import okhttp3.WebSocketListener
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
@@ -129,8 +132,8 @@ class SocketClientService(
 
     }
 
-    override fun disConnect() {
-        webSocket?.close(1001, null)
+    override fun disConnect():Boolean {
+      return  webSocket?.close(1001, null) ?: true
     }
 
     override fun reconnect() {
@@ -141,6 +144,11 @@ class SocketClientService(
 
     override fun reset() {
         "reset webSocket to init state".logi(this::class.java.simpleName)
+        //當前狀態不是連線中，不需要特別等socket關掉再設定，直接設定回初始值就好
+        if (currentState != SocketConnectState.Connecting) {
+            currentState = SocketConnectState.None
+            return
+        }
         webSocket?.close(1001, SocketConnectState.None.name)
     }
 

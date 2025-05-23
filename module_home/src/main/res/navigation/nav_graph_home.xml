@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="arch.cayenne.module.home.ui.fragment.HomeFragment"
+        android:name="arch.cayenne.module.home.test.ui.fragment.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
@@ -116,9 +116,7 @@
         <action
             android:id="@+id/action_newHomeFragment_to_championFragment"
             app:destination="@id/championFragment"
-            app:popUpToSaveState="true"
-            app:restoreState="true" >
-        </action>
+            app:popUpToInclusive="false"/>
 
         <deepLink app:uri="walisport://module_home/NewHomeFragment" />
         <action
@@ -145,6 +143,12 @@
         <argument
             android:name="matchId"
             app:argType="long" />
+        <argument
+            android:name="name"
+            app:argType="string" />
+        <argument
+            android:name="icon"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/homeBetSlipFragment"

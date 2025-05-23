@@ -16,7 +16,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.livebetslip.BetSlipBaseAdapterManager
 import arch.cayenne.module.betslip.ui.compare.BetSlipCompare
-import arch.cayenne.module.betslip.utisl.RecyclerItemListener
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 
 class BetSlipAdapter(type: BetSlipEnum) :
     BaseAdapter<BetSlipData, BetSlipAdapter.LiveBetSlipViewHolder, ViewBinding>(BetSlipCompare()) {

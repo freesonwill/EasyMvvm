@@ -17,9 +17,9 @@ class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<
        val bean = getItem(position)
         binding.tvTitle.text = bean.title
         if (bean.isSelected) {
-            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.res.R.color.brand_color))
+            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.common.R.color.brand_color))
         } else {
-            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.res.R.color.secondary_text))
+            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.common.R.color.secondary_text))
         }
         binding.ivCancel.isVisible = bean.isSelected
         binding.clTitle.isEnabled = bean.isSelected

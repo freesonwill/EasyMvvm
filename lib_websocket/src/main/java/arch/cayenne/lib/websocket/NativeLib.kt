@@ -11,11 +11,17 @@ import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 
 class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
+    companion object {
+        const val CIPHER_TYPE_PB = 1
+        const val CIPHER_TYPE_JSON = 2
+    }
+
     init {
         System.loadLibrary("util")
         createChiper()
     }
 
+    external fun init(cipherType: Int)
     external fun pack(mid: Short, sid: Short, rid: Short, data: String?, dataSize: Int): ByteArray?
     external fun newPack(mid: Short, sid: Short, rid: Short, data: ByteArray?, dataSize: Int): ByteArray?
     external fun unpack(data: ByteArray?): Array<Any?>?
@@ -30,6 +36,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
         Log.d("NativeLib", "createChiper1:$mNativePtr")
         mNativePtr = nativeCreateChiper()
         Log.d("NativeLib", "createChiper2:$mNativePtr")
+        init(CIPHER_TYPE_PB)
     }
 
     protected fun finalize() {
@@ -81,7 +88,10 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
         )
     }
 
-    override fun resetSecurity() {
+    override fun resetSecurity(type: Int) {
         reset()
+        init(type)
     }
+
+
 }

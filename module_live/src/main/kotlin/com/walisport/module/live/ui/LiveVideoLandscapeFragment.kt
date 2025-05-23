@@ -143,7 +143,11 @@ class LiveVideoLandscapeFragment :
 
         mBinding.ivShare.clickNoRepeat {
             hideButtons()
-            reduce {
+            reduce(
+                targetWidth = mBinding.root.measuredWidth - mBinding.fragmentShare.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
+                targetHeight = 275.dp2px,
+                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+            ) {
                 videoViewFullScreen = false
             }
             setShareView()
@@ -152,7 +156,11 @@ class LiveVideoLandscapeFragment :
 
         mBinding.llChooseSource.clickNoRepeat {
             hideButtons()
-            reduce {
+            reduce(
+                targetWidth = mBinding.root.measuredWidth - mBinding.fragmentChooseSource.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
+                targetHeight = 275.dp2px,
+                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
+            ) {
                 videoViewFullScreen = false
             }
 
@@ -164,9 +172,9 @@ class LiveVideoLandscapeFragment :
         mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
             reduce(
-                targetWidth = 376.dp2px,
+                targetWidth = mBinding.root.measuredWidth - mBinding.fragmentStatistics.measuredWidth - VIDEO_MARGIN_HORIZONTAL.dp2px * 2,
                 targetHeight = 209.dp2px,
-                targetMarginStart = 32.dp2px
+                targetHorizontalMargin = VIDEO_MARGIN_HORIZONTAL.dp2px
             ) {
                 videoViewFullScreen = false
             }
@@ -190,31 +198,31 @@ class LiveVideoLandscapeFragment :
                 }
             }
         }
-
-        mViewModel.tournamentIcon.observe(this) {
+        mViewModel.tournamentIcon.observe(viewLifecycleOwner) {
 //            "tournamentIcon: $it".logd("matchIssue")
-
             it?.takeIf { it.isNotEmpty() }?.let { url ->
                 Glide.with(requireContext()).load(url)
                     .placeholder(R.drawable.title_league_icon)
                     .error(R.drawable.title_league_icon)
                     .into(mBinding.ivVideoLandscapeTournamentIcon)
             }
-
         }
-
-        mViewModel.matchName.observe(this) {
+        mViewModel.matchName.observe(viewLifecycleOwner) {
             it?.takeIf { it.isNotEmpty() }?.let { name ->
                 mBinding.tvMatchName.text = name
             }
         }
-
-
+        mViewModel.mainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
+            }
+        }
         mViewModel.createObserver()
     }
 
     override fun initData() {
         super.initData()
+        mViewModel.getMainMatch(mViewModel.matchId())
     }
 
     /**
@@ -372,6 +380,7 @@ class LiveVideoLandscapeFragment :
                     addUpdateListener {
                         val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
+                        lp.marginEnd = it.animatedValue as Int
 
                         mBinding.videoView.layoutParams = lp
 
@@ -391,9 +400,9 @@ class LiveVideoLandscapeFragment :
      * 缩小视频播放区
      */
     private fun reduce(
-        targetWidth: Int = 495.dp2px,
-        targetHeight: Int = 275.dp2px,
-        targetMarginStart: Int = 32.dp2px,
+        targetWidth: Int,
+        targetHeight: Int,
+        targetHorizontalMargin: Int,
         onEndAction: () -> Unit
     ) {
         //width， height， marginStart, marginTop
@@ -430,10 +439,11 @@ class LiveVideoLandscapeFragment :
 
                     }
                 },
-                ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
+                ValueAnimator.ofInt(currentMarginStart, targetHorizontalMargin).apply {
                     addUpdateListener {
                         val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
+                        lp.marginEnd = it.animatedValue as Int
 
                         mBinding.videoView.layoutParams = lp
 
@@ -512,7 +522,10 @@ class LiveVideoLandscapeFragment :
      * 跳转到联赛赛程页
      */
     private fun jumpToLeagueFragment() {
-        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
+        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment().apply {
+            arguments.putLong("matchID", mViewModel.matchId())
+            arguments.putInt("leagueID", mViewModel.leagueID)
+        })
     }
 
     /**
@@ -539,9 +552,7 @@ class LiveVideoLandscapeFragment :
             addUpdateListener {
                 val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
                 lp.marginStart = it.animatedValue as Int
-
                 mBinding.fragmentShare.layoutParams = lp
-
             }
             setDuration(ANIMATION_DURATION)
             start()
@@ -719,6 +730,8 @@ class LiveVideoLandscapeFragment :
 
         const val PORTRAIT_WIDTH = 375
         const val PORTRAIT_HEIGHT = 812
+
+        const val VIDEO_MARGIN_HORIZONTAL = 32
     }
 
 }

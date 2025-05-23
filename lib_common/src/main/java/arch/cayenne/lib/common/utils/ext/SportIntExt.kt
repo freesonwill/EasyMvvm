@@ -63,7 +63,7 @@ object SportIntExt {
         if (this == 0) return "0.00" // ← 明確處理 0
 
         val rate = this / 100f
-        val adjusted = if (rate < 0.1f) 0.1f else rate
+        val adjusted = if (rate < 0.01f) 0.01f else rate
         return String.format("%.2f", adjusted)
     }
 

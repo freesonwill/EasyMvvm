@@ -8,11 +8,8 @@
     <color name="live_text_selected_false">#929298</color>
     <color name="live_text_bg_selected_true">#24EE8A</color>
     <color name="live_text_bg_selected_false">#161823</color>
-    <color name="brand_color">#24ee8a</color>
-    <color name="theme_text">#000000</color>
     <color name="card_out_area">#AC8E6A</color>
     <color name="secondary_text">#929298</color>
-    <color name="main_text">#ffffff</color>
     <color name="color_15b264">#15b264</color>
 
     <color name="color_24ee8a">#cc24ee8a</color>
@@ -35,10 +32,7 @@
     <color name="color_line_282a34">#282a34</color>
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
-    <color name="card_odds_background">#232530</color>
     <color name="color_909092">#909092</color>
-    <color name="main_background">#0E0F1A</color>
-    <color name="input_box2">#232530</color>
     <color name="menu_lin">#232530</color>
     <color name="substitution_text_color">#ffffff</color>
     <color name="live_main_tab_bg">#0e0f19</color>
@@ -46,20 +40,14 @@
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="video_tab_text_color">#929298</color>
     <color name="text_color">#ffffff</color>
-    <color name="lose_color">#FF3019</color>
     <color name="live_video_mask">#ff121321</color>
     <color name="standing_text">#ffffff</color>
     <color name="text_dialog_gy">#FE3666</color>
     <color name="text_dialog_dy">#4156ed</color>
     <color name="text_know">#5fce7b</color>
-    <color name="keyboard_2">#232530</color>
     <color name="color_edittext_hint">#929298</color>
-    <color name="keyboard_1">#3d3e4b</color>
-    <color name="dividing_line">#14ffffff</color>
     <color name="black_20">#99000000</color>
     <color name="black_65">#59000000</color>
-    <color name="message_fill_color">#30303e</color>
-    <color name="keyboard_3">#3d3e4b</color>
     <color name="video_source_fragment_title_color">#FFFFFF</color>
     <color name="video_source_fragment_bkg">#161823</color>
     <color name="video_source_item_title_color">#FFFFFF</color>

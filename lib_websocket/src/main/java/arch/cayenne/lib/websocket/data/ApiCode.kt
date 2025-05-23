@@ -1,8 +1,8 @@
 package arch.cayenne.lib.websocket.data
 
 enum class ApiCode(val mid: Short, val sid: Short) {
-    LOGIN(7, 7),             // 7-7: 登录游戏服
-    PING(7, 100),            // 7-100: ping消息, 客户端回传数据。纯回传，server 无业务处理，无返回
+    LOGIN(7,7),             // 7-7: 登录游戏服
+    PING(7,100),            // 7-100: ping消息, 客户端回传数据。纯回传，server 无业务处理，无返回
     BALANCE(500, 1005),     //500-1005: 查询余额(主動)
     BALANCE_NOTIFY(600, 1002),     //600-1002: 订单余额推送(被動)
     LIST_SPORT(500, 1004),  // 500-1004: 获取球类信息
@@ -44,6 +44,15 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     ORDER_STATUS_NOTIFY(600, 1001), //600-1001: 订单状态推送(被動)
     GET_MARKET_TYPE(500, 1007),   //500-1007: 盘口分类
+    ORDER_STATUS_NOTIFY(600, 1001),  //600-1001: 订单状态推送(被動)
+    GET_MARKET_TYPE(500, 1007)  ,    //500-1007: 盘口分类
 
     EARLY_SETTLE_PRICE(500, 1016)    //500-1016: 提前结算报价
+    EARLY_SETTLE_PRICE(500,1016),    //500-1016: 提前结算报价
+
+    GET_SYSTEM_SETTING(500,1050),    //500-1050: 获取系统设置
+    UPDATE_SYSTEM_SETTING(500,1051), //500-1051: 修改系统设置
+
+    CHAT_PING(0,2), //0 -2 聊天心跳
+    CHAT_LOGIN(90,1101), //7-7 聊天登陆
 }

@@ -1,15 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <!--    <color name="search_bg">#232530</color>-->
+    <!--    <color name="search_btn">#24EE8A</color>-->
+
+    <color name="color_f3f3f4">#FFF3F3F4</color>
+    <color name="color_f3f3f5">#FFF3F3F5</color>
+    <color name="color_222222">#FF222222</color>
+    <color name="color_929292">#FF929292</color>
+    <color name="color_929298">#FF929298</color>
+    <color name="color_666666">#FF666666</color>
+    <color name="color_5fce7b">#FF5FCE7B</color>
+    <color name="color_0E0F1A">#FF0E0F1A</color>
+    <color name="color_0E0F19">#FF0E0F19</color>
+    <color name="color_161822">#FF161822</color>
+    <color name="color_161823">#FF161823</color>
+    <color name="color_1d1f29">#FF1d1f29</color>
+    <color name="color_0f101a">#FF0F101A</color>
+    <color name="color_0f101b">#FF0F101B</color>
+    <color name="color_71e993">#FF71e993</color>
+    <color name="color_0f1016">#FF0f1016</color>
+    <color name="color_E6E6E6">#FFE6E6E6</color>
+    <color name="color_EA4A69">#FFEA4A69</color>
+    <color name="color_52AF6B">#FF52AF6B</color>
+    <color name="color_23252F">#FF23252F</color>
+    <color name="color_fe3666">#FFFE3666</color>
+    <color name="color_333A45">#FF333A45</color>
+
+    <color name="tran_75_white">#BFFFFFFF</color>
+    <color name="tran_20_white">#33E6E6E6</color>
+
+    <color name="green_for_white_bg">#24ee8a</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0000FF</color>
     <color name="app_bg">#0e0f19</color>
-    <color name="search_bg">#232530</color>
     <color name="search_bg_white">#36FFFFFF</color>
     <color name="search_btn">#24EE8A</color>
     <color name="search_btn_normal">#BBBBBB</color>
     <color name="search_hint">#4B4C55</color>
-    <color name="search_text">#ffffff</color>
+    <color name="search_text">#BBBBBB</color>
     <color name="tran_0">#00000000</color>
 
     <color name="color_80000000">#80000000</color>
@@ -19,21 +53,72 @@
 
     <!-- Dialog -->
     <color name="dialog_title">#00D271</color>
+    <color name="secondary_title">#929298</color>
     <color name="secondary_text">#929298</color>
-    <color name="district_line">#f7f7f7</color>
     <color name="dynamic_text">#929298</color>
 
     <color name="color_blue">#2196f3</color>
     <color name="bg_gray">#fff5f7fa</color>
 
-    <color name="message_fill_color">#F3F3F4</color>
     <color name="toast_text">#222222</color>
-    <color name="main_text">#222222</color>
 
-    <color name="keyboard_number">#000000</color>
-    <color name="keyboard_1">#E8E8EA</color>
-    <color name="keyboard_2">#FFFFFF</color>
-    <color name="keyboard_3">#F3F3F4</color>
-    <color name="dividing_line">#FFFFFF</color>
+    <color name="main_text">#FFFFFF</color>
+
+    <color name="text_on_theme_color">#000000</color>
+    <color name="brand_color">#24EE8A</color>
+
+
+    <color name="input_word">#929298</color>
+
+    <color name="tab_bg">#3d404d</color>
+    <color name="tab_text">#cbd8eb</color>
+
+    <color name="blue_team">#4150F6</color>
+    <color name="red_team">#FE3666</color>
+    <color name="explanation_text">#666666</color>
+    <color name="navigation_bar">#e6e6e6</color>
+    <color name="navigation_lin">#cce6e6e6</color>
+    <color name="event_tags">#2A3B3C</color>
+
+
+    <!-- Dark Theme Colors -->
+    <color name="keyboard_1">#3D3E4B</color>
+    <color name="keyboard_number">#D3D3D6</color>
+    <color name="input_words">#4B4C55</color>
+    <color name="live_name">#418EFF</color>
+    <color name="input_box">#2C2E3B</color>
+    <color name="court_bg">#161823</color>
+    <color name="court_line">#313441</color>
+    <color name="select_bg">#373C46</color>
+    <color name="select_text">#C0C0C0</color>
+    <color name="main_background">#0E0F1A</color>
+    <color name="card_background">#161823</color>
+    <color name="date_bg">#1D1F2A</color>
+    <color name="champions_list">#161823</color>
+    <color name="sports_not_selected">#3F434B</color>
+    <color name="sports_selected">#1BAF6A</color>
+    <color name="keyboard_2">#232530</color>
+    <color name="input_box_2">#232530</color>
+    <color name="tab_fill_color">#1B1D2A</color>
+    <color name="arrow_icon_fill_color">#373C46</color>
+    <color name="text_background">#1C1D28</color>
+    <color name="reserve_bg">#31333F</color>
+    <color name="delete_bg">#31333F</color>
+    <color name="keyboard_3">#161823</color>
+    <color name="live_tab_bg">#0E0F1A</color>
+    <color name="keyboard_bg">#161823</color>
+    <color name="search_bg">#161823</color>
+    <color name="card_outline">#282A34</color>
+    <color name="tab_outline">#929298</color>
+    <color name="panel_outline">#1A1C29</color>
+    <color name="message_fill_color">#30303E</color>
+    <color name="live_background">#12132130</color>
+    <color name="card_title">#FFFFFF02</color>
+    <color name="league_line">#1D1F2A</color>
+    <color name="district_line">#282A34</color>
+    <color name="race_line">#54555E</color>
+    <color name="list_separator">#1D1F2A</color>
+    <color name="dividing_line">#FFFFFF08</color>
+
 
 </resources>

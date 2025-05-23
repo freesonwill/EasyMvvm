@@ -6,13 +6,13 @@ import androidx.annotation.DrawableRes
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableRecyclerView : RecyclerView {
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
 
 
     private val backgroundHelper = SkinnableBackGroundHelper(this)

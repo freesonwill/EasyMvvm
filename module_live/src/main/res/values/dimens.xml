@@ -3,4 +3,7 @@
     <dimen name="video_landscape_operate_area_height">@dimen/dp_100</dimen>
     <dimen name="video_operate_area_height">@dimen/dp_100</dimen>
 
+    <dimen name="video_landscape_statistics_fragment_width">@dimen/dp_372</dimen>
+    <dimen name="video_landscape_share_fragment_width">@dimen/dp_253</dimen>
+
 </resources>

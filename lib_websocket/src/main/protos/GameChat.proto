@@ -1,0 +1,142 @@
+import "google/protobuf/timestamp.proto";
+
+// 登录请求 7-7
+message LoginReq {
+  required int64 uid = 1;
+  required string token = 2;
+  required int32 platform = 3;
+}
+
+// 登录响应
+message LoginResp {
+  required int32 code = 1; // 0-成功，1-失败原因
+  optional string message = 2; // 失败原因提示
+  optional int64 uid = 3; // 成功时返回用户ID
+  optional string username = 4; // 成功时返回用户名
+  optional int32 avatarId = 5; // 成功时返回用户头像
+}
+
+// 错误代码枚举
+enum ErrorCode {
+  SUCCESS = 0;
+  INVALID_MESSAGE = 1;
+  ROOM_NOT_FOUND = 2;
+  USER_NOT_IN_ROOM = 3;
+  USER_MUTED = 4;
+  INSUFFICIENT_BET = 5;
+  MESSAGE_RATE_LIMITED = 6;
+  USER_NOT_FOUND = 7;
+  ACCOUNT_LOGGED_IN_ELSEWHERE = 8;
+  CHECK_BET_AMOUNT = 9;
+  NON_COMPLIANT_CONTENT = 10;
+  // 添加其他错误码...
+}
+
+// 客户端 -> 服务器
+
+// 1. 进入聊天室
+message EnterChatRoomReq {
+  required uint64 roomId = 1;
+  required int32 platform = 2;
+}
+message EnterChatRoomResp {
+  required int32 code = 1;
+  optional uint64 chatroomId = 2; // 可选，聊天室唯一标识
+}
+
+// 2. 离开聊天室
+message LeaveChatRoomReq {
+  required uint64 roomId = 1;
+  required int32 platform = 2;
+}
+message LeaveChatRoomResp {
+  required int32 code = 1;
+}
+
+// 3. 发送消息
+message SendMsgReq {
+  required uint64 roomId = 1;
+  required string content = 2;
+  optional uint64 refUid = 3; // 引用的用户 ID
+  optional int32 refPlatform = 4; // 引用的用户平台
+
+}
+message SendMsgResp {
+  required int32 code = 1;
+  optional string errorMessage = 2; // 多语言的错误提示信息
+}
+
+// 4. 获取聊天记录
+message GetChatHistoryReq {
+  required uint64 roomId = 1;
+  required int32 page = 2;
+  required int32 pageSize = 3;
+  optional string requestId = 4; // 请求唯一标识符
+}
+message GetChatHistoryResp {
+  required int32 code = 1;
+  repeated ChatMsg msgs = 2;
+  required int32 totalPages = 3;
+  required int32 totalRecords = 4;
+  optional string requestId = 5; // 与请求中的 requestId 对应
+}
+
+message ChatMsg {
+  required uint64 uid = 1;
+  required string userName = 2;
+  required int32 avatarId = 3;
+  optional uint64 msgId = 4;
+  required string content = 5;
+  optional google.protobuf.Timestamp timestamp = 6;
+  optional uint64 refUid = 7;
+  optional string refUserName = 8;
+  optional int32 refAvatarId = 9;
+
+  optional int32 onlyForSelf = 10; // 1-仅自己可见 0-所有人可见. 理论上不需要客户端 发这个字段
+  required int32 platform = 11;
+}
+
+// 5. 获取用户统计信息
+message GetUserStatisticReq {
+  required uint64 uid = 1;
+  required int32 platform = 2;
+}
+message GetUserStatisticResp {
+  required int32 code = 1;
+  required int64 roundCount = 2;
+  required int64 validBetScore = 3;
+}
+
+// 6. 设置用户头像
+message SetUserAvatarReq {
+  required int32 avatarId = 1;
+  required int32 platform = 2;
+}
+message SetUserAvatarResp {
+  required int32 code = 1;
+}
+
+// 7. 更新用户信息
+message SyncUserNameReq {
+  required int32 platform = 1;
+}
+message SyncUserNameResp {
+  required int32 code = 1;
+}
+
+// 8. 校验校验投注额
+message CheckBetAmountReq {
+  required int32 platform = 1;
+}
+message CheckBetAmountResp {
+  required int32 code = 1;
+  optional int64 validBetScore = 2;
+  optional string errorMessage = 3; // 多语言的错误提示信息
+}
+
+// 服务器 -> 客户端
+// 1. 消息通知
+message MsgNotify {
+  required uint64 roomId = 1;
+  optional ChatMsg msg = 2; // 最新的聊天数据
+}

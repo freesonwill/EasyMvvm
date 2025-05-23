@@ -80,4 +80,6 @@
     <string name="sport_picker_all">体育</string>
     <string name="sport_picker_title">选择体育类型</string>
     <string name="sport_picker_reset">重置</string>
+    <string name="btn_confirm">确定</string>
+
 </resources>

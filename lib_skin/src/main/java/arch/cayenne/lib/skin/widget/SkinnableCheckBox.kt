@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import kotlinx.coroutines.launch
@@ -15,7 +15,7 @@ import org.koin.java.KoinJavaComponent.inject
 class SkinnableCheckBox : AppCompatCheckBox {
     private val textHelper = SkinnableTextHelper(this)
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
 
     constructor(context: Context) : super(context) {
         initView(context)

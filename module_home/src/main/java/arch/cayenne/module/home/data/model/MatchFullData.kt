@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.data.model
 
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.MarketBean
 import arch.cayenne.lib.database.entity.MarketDetailBean
@@ -117,6 +116,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
 }
 
 data class MatchUpdateData(
+    val ids: List<Long>,  //更新的match id
     val matchLites: List<MatchBeanLite>,
     val markets: List<MarketBean>,
     val selections: List<SelectionBean>,
@@ -126,6 +126,7 @@ data class MatchUpdateData(
 
 //把MatchNotify整理成可以丟進資料庫的形式
 fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
+    val ids = this.map { it.matchId }   //有更新的賽事id
     val matchLites = arrayListOf<MatchBeanLite>()
     val markets = mutableListOf<MarketBean>()
     val selections = mutableListOf<SelectionBean>()
@@ -133,13 +134,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
     val marketSelectCrossRef = mutableListOf<MarketSelectCrossRef>()
     this.forEach { matchNotify ->
         val matchId = matchNotify.matchId
-        matchLites.add(
-            MatchBeanLite(
-                matchId = matchNotify.matchId,
-                status = matchNotify.basicUpdate.status,
-                betStop = matchNotify.basicUpdate.betStop,
-                startTime = matchNotify.basicUpdate.startTime,
-                liveInfo = MatchLiveInfoBean(
+        if (matchNotify.hasBasicUpdate()) {
+            val liveInfo = if (matchNotify.basicUpdate.hasLiveInfo()) {
+                MatchLiveInfoBean(
                     clock = matchNotify.basicUpdate.liveInfo.clock,
                     rollClock = matchNotify.basicUpdate.liveInfo.rollClock,
                     period = matchNotify.basicUpdate.liveInfo.period,
@@ -149,8 +146,18 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     viewerCount = matchNotify.basicUpdate.liveInfo.viewerCount,
                     clockModified = matchNotify.basicUpdate.liveInfo.clockModified
                 )
+            } else { null }
+            matchLites.add(
+                MatchBeanLite(
+                    matchId = matchNotify.matchId,
+                    status = matchNotify.basicUpdate.status,
+                    betStop = matchNotify.basicUpdate.betStop,
+                    startTime = matchNotify.basicUpdate.startTime,
+                    liveInfo = liveInfo,
+                )
             )
-        )
+        }
+
         matchNotify.marketUpdateList.forEach { market ->
             val marketId = market.marketId
             markets.add(
@@ -188,9 +195,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                 MatchMarketCrossRef(matchId,marketId,selectionCount)
             )
         }
-        "收到比賽推播結束---------------------------------------------".logi("MatchFullData")
     }
     return MatchUpdateData(
+        ids,
         matchLites,
         markets,
         selections,
@@ -201,6 +208,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
 
 //把MatchInfoNotify整理成可以丟進資料庫的形式
 fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
+    val ids = arrayListOf(this.matchId)   //有更新的賽事id
     val matchLites = arrayListOf<MatchBeanLite>()
     val markets = mutableListOf<MarketBean>()
     val selections = mutableListOf<SelectionBean>()
@@ -265,6 +273,7 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
     }
 
     return MatchUpdateData(
+        ids,
         matchLites,
         markets,
         selections,

@@ -133,8 +133,16 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("UPDATE MatchBean " +
             "SET basic_status = :status, " +
                 "basic_betStop = :betStop, " +
-                "basic_startTime = :startTime," +
-                "live_clock = :clock, " +
+                "basic_startTime = :startTime " +
+            "WHERE matchId = :matchId")
+    abstract fun updateNotifyMatchBasic(
+        matchId: Long,
+        status: Int,
+        betStop: Boolean,
+        startTime: Long,
+    )
+    @Query("UPDATE MatchBean " +
+            "SET live_clock = :clock, " +
                 "live_rollClock = :rollClock, " +
                 "live_period = :period, " +
                 "live_score = :score, " +
@@ -143,11 +151,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "live_viewerCount = :viewerCount, " +
                 "live_clockModified = :clockModified " +
             "WHERE matchId = :matchId")
-    abstract fun updateNotifyMatch(
+    abstract fun updateNotifyMatchLive(
         matchId: Long,
-        status: Int,
-        betStop: Boolean,
-        startTime: Long,
         clock: Int,
         rollClock: Boolean,
         period: String,
@@ -170,7 +175,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
-        ) {
+    ) {
         tournamentMatchRefs?.apply { insertTournamentMatchRef(tournamentMatchRefs) }
         insertMatch(matches)
         insertMarkets(markets)
@@ -183,6 +188,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun updateFullMatch(
+        updateIds: List<Long>,     //更新的賽事id
         matchLites: List<MatchBeanLite>,
         markets: List<MarketBean>,
         selections: List<SelectionBean>,
@@ -190,20 +196,26 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
     ): List<MatchWithMarkets> {
         matchLites.forEach { bean ->
-            updateNotifyMatch(
+            updateNotifyMatchBasic(
                 matchId = bean.matchId,
                 status = bean.status,
                 betStop = bean.betStop,
                 startTime = bean.startTime,
-                clock = bean.liveInfo.clock,
-                rollClock = bean.liveInfo.rollClock,
-                period = bean.liveInfo.period,
-                score = bean.liveInfo.score,
-                liveVideo = bean.liveInfo.liveVideo,
-                charRoom = bean.liveInfo.charRoom,
-                viewerCount = bean.liveInfo.viewerCount,
-                clockModified = bean.liveInfo.clockModified,
+
             )
+            if (bean.liveInfo != null) {
+                updateNotifyMatchLive(
+                    matchId = bean.matchId,
+                    clock = bean.liveInfo.clock,
+                    rollClock = bean.liveInfo.rollClock,
+                    period = bean.liveInfo.period,
+                    score = bean.liveInfo.score,
+                    liveVideo = bean.liveInfo.liveVideo,
+                    charRoom = bean.liveInfo.charRoom,
+                    viewerCount = bean.liveInfo.viewerCount,
+                    clockModified = bean.liveInfo.clockModified,
+                )
+            }
         }
         val oldOdds =
             getSelectionsByIds(selections.map { it.selectionId }).associate { it.selectionId to it.odds }
@@ -213,8 +225,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         //盤口的selection有可能在推播時整個變更（例如兩個選項+0.5/-0.5 -> +1/-1），所以刪除之前的cross ref，把之前盤口和selection連結斷開再連接，避免query取得之前的盤口
         deleteMarketSelectionCrossRef(marketCrossRef.map { it.matchId }, marketCrossRef.map { it.marketId })
         insertMarketSelectionCrossRef(marketSelectCrossRefs)
-
-        return getOneMatchByIds(matchLites.map { it.matchId }).onEach {
+        return getOneMatchByIds(updateIds).onEach {
             //加入賠率趨勢
             it.markets.forEach { markets ->
                 markets.selections.forEach { selection ->

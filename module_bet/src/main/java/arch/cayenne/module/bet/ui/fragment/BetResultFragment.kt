@@ -19,7 +19,6 @@ import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
 import arch.cayenne.module.bet.util.BetSheetDecoration
 import arch.cayenne.module.bet.viewmodel.BetResultViewModel
-import com.bumptech.glide.Glide
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -95,7 +94,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     private fun setPending(type: BetTypeEnum) {
         mBinding.tvHint.isVisible = true
-        Glide.with(requireContext()).load(R.mipmap.icon_bet_result_pending).into(mBinding.ivTitle)
+        mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_pending)
         mBinding.tvTitle.text = if (type == BetTypeEnum.RESERVE) {
             getString(R.string.title_result_pending_reserve)
         } else {
@@ -105,21 +104,21 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     private fun setComplete(type: BetTypeEnum) {
         mBinding.tvHint.isVisible = false
-        Glide.with(requireContext()).load(R.mipmap.icon_bet_result_success).into(mBinding.ivTitle)
+        mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_success)
         if (type == BetTypeEnum.RESERVE) {
-            mBinding.tvTitle.text = getText(R.string.title_result_success_reserve)
+            mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text = getText(R.string.title_result_success_bet)
+            mBinding.tvTitle.text = getString(R.string.title_result_success_bet)
         }
     }
 
     private fun setFail(type: BetTypeEnum) {
         mBinding.tvHint.isVisible = false
-        Glide.with(requireContext()).load(R.mipmap.icon_bet_result_fail).into(mBinding.ivTitle)
+        mBinding.ivTitle.setImageResource(arch.cayenne.lib.common.R.mipmap.icon_bet_result_fail)
         if (type == BetTypeEnum.RESERVE) {
-            mBinding.tvTitle.text = getText(R.string.title_result_fail_reserve)
+            mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
         } else {
-            mBinding.tvTitle.text = getText(R.string.title_result_fail_bet)
+            mBinding.tvTitle.text = getString(R.string.title_result_fail_bet)
         }
     }
 

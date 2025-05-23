@@ -64,4 +64,20 @@ object ResourceExt {
         return application.resources.getDimension(this)
     }
 
+    /**
+     * getDimensionPixelSize
+     * @return
+     */
+    fun @receiver:DimenRes Int.getDimensionPixelSize(): Int {
+        return application.resources.getDimensionPixelSize(this)
+    }
+
+    /**
+     * getDimensionPixelOffset
+     * @return
+     */
+    fun @receiver:DimenRes Int.getDimensionPixelOffset(): Int {
+        return application.resources.getDimensionPixelOffset(this)
+    }
+
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -46,7 +47,16 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            titleBar.loadDynamicsTitleBar(tittleBarBinding.root)
+            titleBar.loadDynamicsTitleBar(tittleBarBinding.root) {
+                findNavController().navigateUp()
+            }
+            tittleBarBinding.apply {
+                Glide.with(this@ChampionFragment)
+                    .load(args.icon)
+                    .error(R.drawable.title_league_icon)
+                    .into(tittleBarBinding.ivLandscapeLeagueIcon)
+                tittleBarBinding.tvCompetitionName.text = args.name
+            }
             rvChampion.apply {
                 championAdapter = ChampionItemAdapter(object : OnChampionItemClickListener {
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
@@ -80,13 +90,6 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
             with(mBinding) {
                 if (matchWithMarkets != null && matchWithMarkets.markets.isNotEmpty()) {
                     clDynamics.visibility = View.GONE
-                    Glide.with(this@ChampionFragment)
-                        .load(matchWithMarkets.match.basicInfo.tournamentIcon)
-                        .error(R.drawable.title_league_icon)
-                        .into(tittleBarBinding.ivLandscapeLeagueIcon)
-                    tittleBarBinding.tvCompetitionName.text =
-                        matchWithMarkets.match.basicInfo.matchName
-
                     championAdapter.submitList(matchWithMarkets.markets)
                 } else {
                     clDynamics.visibility = View.VISIBLE

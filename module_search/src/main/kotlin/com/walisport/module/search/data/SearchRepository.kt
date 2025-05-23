@@ -14,21 +14,17 @@ class SearchRepository(override val scope: CoroutineScope) : BaseRepository() {
     private val manager: UserDataManager by inject(UserDataManager::class.java)
 
     //删除某搜索关键字
-    fun deleteOneRecord(position: Int) {
+    fun deleteOneRecord(keyword: String?) {
         val record = manager.getValue(UserDataKey.KEY_RECORD, "")
         if (record.isNotEmpty()) {
             val uid = manager.getValue(UserDataKey.KEY_UID, -1)
             val list = getRecordList(record)
             for (item in list) {
-                val iid = item.uid
-                if (iid == uid) {
-                    val data = item.record
-                    val parts = data.split(";").filter { it.isNotEmpty() }
-                    var key = ""
-                    if (position < parts.size) {
-                        key = parts[position]
+                val id = item.uid
+                if (id == uid) {
+                    if (keyword!!.isNotEmpty()) {
+                        item.record = item.record.replace(keyword, "")
                     }
-                    item.record = item.record.replace(key, "")
                 }
             }
             val json = Gson().toJson(list)
@@ -53,7 +49,7 @@ class SearchRepository(override val scope: CoroutineScope) : BaseRepository() {
                 if (iid == uid) {
                     val keyword = item.record
                     isExist = true
-                    if(!keyword.contains(key)){//不包含关键字才添加
+                    if (!keyword.contains(key)) {//不包含关键字才添加
                         item.record = item.record + ";" + key
                     }
                 }
@@ -106,6 +102,9 @@ class SearchRepository(override val scope: CoroutineScope) : BaseRepository() {
                     }
                 }
             }
+        }
+        if (historyList.size > 20) {//限制最多读取最新的20条
+            return historyList.takeLast(20)
         }
         return historyList
     }

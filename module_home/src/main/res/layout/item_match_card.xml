@@ -14,7 +14,6 @@
         android:layout_height="21dp"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_6"
-        android:src="@drawable/ic_ucl"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/secondary_text" />
@@ -88,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:textColor="@color/main_text"
+                android:textColor="@color/home_main_text"
                 android:textSize="14sp"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -135,7 +134,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
-                android:textColor="@color/main_text"
+                android:textColor="@color/home_main_text"
                 android:textSize="14sp"
                 app:layout_constrainedWidth="true"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -223,7 +222,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_10"
-                android:textColor="@color/main_text"
+                android:textColor="@color/home_main_text"
                 android:textSize="12sp"
                 tools:text="127" />
 

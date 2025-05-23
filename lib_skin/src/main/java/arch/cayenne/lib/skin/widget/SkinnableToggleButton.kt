@@ -6,7 +6,7 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ class SkinnableToggleButton : AppCompatToggleButton {
 
     private val mTextHelper: SkinnableTextHelper = SkinnableTextHelper(this)
     private val mBackgroundTintHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
 
     constructor(context: Context) : super(context) {
         initView(context)

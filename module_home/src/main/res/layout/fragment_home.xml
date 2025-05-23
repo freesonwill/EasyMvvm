@@ -14,7 +14,7 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:showDividers="middle"
-        tools:context=".ui.fragment.HomeFragment">
+        tools:context=".test.ui.fragment.HomeFragment">
 
         <TextView
             android:id="@+id/tv1"

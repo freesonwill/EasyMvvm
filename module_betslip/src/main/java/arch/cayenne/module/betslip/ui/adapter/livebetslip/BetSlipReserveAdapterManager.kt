@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip
 
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
@@ -37,6 +38,7 @@ class BetSlipReserveAdapterManager(
     ) {
         with(binding) {
             val selection = order.selection
+            betReserveTvDate.text = order.reserveTime.getDetailFormatDate()
             betReserveTvOddsValue.text = selection.odds
             betReserveTvBettingValue.text = order.betAmount
             betReserveTvExceptValue.text = expectMaxAmount(order.betAmount, order.selection.odds)

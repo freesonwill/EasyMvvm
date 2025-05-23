@@ -11,6 +11,7 @@ import org.koin.core.module.dsl.factoryOf
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
 import arch.cayenne.module.betslip.data.repo.SportPickerRepository
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
@@ -47,6 +48,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::TimePickerViewModel)
         viewModelOf(::HomeBetSlipViewModel)
         viewModelOf(::SportPickerViewModel)
+        viewModelOf(::BetSlipFilterViewModel)
     }
 
     private val repoModules = module {

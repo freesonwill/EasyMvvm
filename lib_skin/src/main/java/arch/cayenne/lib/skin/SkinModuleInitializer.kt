@@ -1,7 +1,6 @@
 package arch.cayenne.lib.skin
 
 import android.content.Context
-import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -15,7 +14,7 @@ class SkinModuleInitializer : DefaultInitializer<String> {
     }
 
     private val socketModules = module {
-        single<SportSkinManager> { SportSkinManager() }
+        single<SkinnableManager> { SkinnableManager() }
     }
     private val moduleList: List<Module> = listOf(socketModules)
 

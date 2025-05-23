@@ -6,7 +6,7 @@ interface ISocket<REQ, RES, State> {
 
     suspend fun connect(host: String): SharedFlow<State>
 
-    fun disConnect()
+    fun disConnect():Boolean
 
     fun reconnect()
 

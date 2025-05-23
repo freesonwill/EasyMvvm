@@ -12,18 +12,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationView"
-        android:layout_width="@dimen/dp_21"
-        android:layout_height="@dimen/dp_16"
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/playing_bkg"
+        android:layout_width="@dimen/dp_103"
+        android:layout_height="@dimen/dp_60"
+        android:background="@drawable/video_source_playing_bkg"
+        android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_thumb"
-        app:layout_constraintEnd_toEndOf="@+id/iv_thumb"
-        app:layout_constraintStart_toStartOf="@+id/iv_thumb"
-        app:layout_constraintTop_toTopOf="@+id/iv_thumb"
-        app:lottie_autoPlay="true"
-        app:lottie_fileName="playing_animation.json"
-        app:lottie_loop="true" />
+        app:layout_constraintStart_toStartOf="@id/iv_thumb"
+        app:layout_constraintTop_toTopOf="@id/iv_thumb">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animationView"
+            android:layout_width="@dimen/dp_63"
+            android:layout_height="@dimen/dp_48"
+            android:scaleType="centerCrop"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="playing_animation.json"
+            app:lottie_loop="true" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView

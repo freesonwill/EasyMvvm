@@ -2,7 +2,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
@@ -10,9 +10,8 @@ import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
 import arch.cayenne.module.betslip.data.model.SportFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
-import kotlinx.coroutines.launch
 
-class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFilterViewModel() {
+class HomeBetSlipViewModel(repo: HomeBetSlipRepository) : BaseViewModel() {
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
@@ -21,12 +20,7 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFil
     val onSportFilter: LiveData<SportFilterBean> get() = _onSportFilter
 
     var customTime: Long? = null
-        set(value) {
-            field = value
-            if (value != null && value > 0L) {
-                setDateFilter(value)
-            }
-        }
+        private set
 
     init {
         _onDateFilter.value = DateFilterBean(
@@ -42,36 +36,23 @@ class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BetSlipFil
             title = dateFilter.title,
             date = dateFilter
         )
-        setDateTimeFilter(
-            startTime = dateFilter.startTime(),
-            endTime = dateFilter.endTime()
-        )
     }
 
-    private fun setDateFilter(millisecond: Long) {
+    fun setDateFilter(millisecond: Long) {
+        customTime = millisecond
         val date = millisecond.getFormatDate()
         val title = R.string.date_picker_date_before.getString(date)
         _onDateFilter.value = DateFilterBean(
             title = title,
             date = BetSlipDateFilterEnum.CUSTOM
         )
-        setDateTimeFilter(
-            startTime = null,
-            endTime = customTime
-        )
     }
 
-    fun setSportFilter(id: Int) {
-        if (id == -1) {
-            _onSportFilter.value = SportFilterBean.getAllTypeBean()
-            setSportIdFilter(-1)
-        } else {
-            viewModelScope.launch {
-                repo.getSportById(id)?.let {
-                    _onSportFilter.value = it
-                    setSportIdFilter(id)
-                }
-            }
-        }
+    fun setSportFilter(id: Int, name: String) {
+        _onSportFilter.value = SportFilterBean(
+            sportId = id,
+            sportName = name,
+            isSelected = true
+        )
     }
 }

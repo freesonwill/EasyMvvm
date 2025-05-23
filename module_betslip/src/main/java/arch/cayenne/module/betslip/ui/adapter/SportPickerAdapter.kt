@@ -24,7 +24,7 @@ class SportPickerAdapter(private val listener: SportPickerListener) : BaseAdapte
         } else {
             ContextCompat.getColor(
                 holder.itemView.context,
-                arch.cayenne.lib.res.R.color.secondary_text
+                arch.cayenne.lib.common.R.color.secondary_text
             )
         }
         binding.tvTitle.setTextColor(titleColor)

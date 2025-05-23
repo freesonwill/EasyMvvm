@@ -28,6 +28,9 @@ class LiveVideoViewModel(
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
 
+    private val _mainMatch = MutableLiveData<LiveMatchBean>()
+    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
+
     //比赛状态
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
     val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
@@ -73,7 +76,7 @@ class LiveVideoViewModel(
     val subTitleText: LiveData<String> = _subTitleText
 
     @ColorRes
-    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
+    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
 
     @ColorRes
     val subTitleTextColor: LiveData<Int> = _subTitleTextColor
@@ -101,11 +104,30 @@ class LiveVideoViewModel(
 
     fun mutedData() = muteManager.mutedLiveData
 
+    /**
+     * 改变静音状态
+     */
     fun changeMuteStatus() {
         viewModelScope.launch {
             muteManager.changeMuteStatus()
         }
     }
+
+    /**
+     * 设置静音
+     */
+    fun mute() {
+        viewModelScope.launch { muteManager.mute() }
+    }
+
+    /**
+     * 取消静音
+     */
+    fun unMute() {
+        viewModelScope.launch { muteManager.unMute() }
+    }
+
+    var leagueID = 0
 
     fun matchId() = repo.matchId
 
@@ -155,25 +177,25 @@ class LiveVideoViewModel(
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
                                     _subTitleText.value = time
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_666666
+                                        arch.cayenne.lib.common.R.color.color_666666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
 
                                 MatchStatus.IN_PROGRESS -> {
                                     _titleText.value = match.liveInfo.score
                                     _titleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
                                     _subTitleText.value = "" // 比赛进行中不展示副标题
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
 
                                 else -> {
                                     _titleText.value = match.liveInfo.score
                                     _titleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
                                     _subTitleText.value = when (it) {
                                         MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
@@ -186,7 +208,7 @@ class LiveVideoViewModel(
                                         else -> "" // 防止遗漏
                                     }
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
                             }
@@ -205,4 +227,11 @@ class LiveVideoViewModel(
         repo.queryLiveStream()
     }
 
+    fun getMainMatch(matchId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mainRepo.getMatchRes(matchId) {
+                _mainMatch.value = it
+            }
+        }
+    }
 }
