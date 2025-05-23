@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="card_odds_background_white_blue">#F3F3F4</color>
+    <color name="money_color_white_blue">#FF7700</color>
+    <color name="win_color_white_blue">#06E35F</color>
+    <color name="lose_color_white_blue">#FF3019</color>
+    <color name="money_background_white_blue">#F6EFE5</color>
+
+
+</resources>

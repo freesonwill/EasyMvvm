@@ -5,25 +5,60 @@
 
     <color name="search_btn_white_blue">#000000</color>
     <color name="search_hint_white_blue">#929298</color>
-    <color name="search_text_white_blue">#000000</color>
     <color name="app_bg_white_blue">#F3F3F4</color>
     <color name="dynamic_text_white_blue">#666666</color>
-    <color name="text_on_theme_color">#000000</color>
-    <color name="brand_color">#24EE8A</color>
-    <color name="green_for_white_bg">#00d271</color>
-    <color name="money_color">#FF7700</color>
-    <color name="win_color">#06E35F</color>
-    <color name="lose_color">#FF3019</color>
-    <color name="blue_team">#4150F6</color>
-    <color name="main_text">#222222</color>
-    <color name="secondary_title">#222222</color>
-    <color name="secondary_text">#666666</color>
-    <color name="search_text">#222222</color>
-    <color name="explanation_text">#929292</color>
-    <color name="navigation_bar">#222222</color>
-    <color name="navigation_lin">#222222</color>
-    <color name="tab_bg">#EAEFF7</color>
-    <color name="event_tags">#C4FFD2</color>
+    <color name="text_on_theme_color_white_blue">#000000</color>
+    <color name="brand_color_white_blue">#24EE8A</color>
+    <color name="green_for_white_bg_white_blue">#00d271</color>
+    <color name="blue_team_white_blue">#4150F6</color>
+    <color name="main_text_white_blue">#222222</color>
+    <color name="secondary_title_white_blue">#222222</color>
+    <color name="secondary_text_white_blue">#666666</color>
+    <color name="search_text_white_blue">#222222</color>
+    <color name="explanation_text_white_blue">#929292</color>
+    <color name="navigation_bar_white_blue">#222222</color>
+    <color name="navigation_lin_white_blue">#222222</color>
+    <color name="tab_bg_white_blue">#EAEFF7</color>
+    <color name="event_tags_white_blue">#C4FFD2</color>
+
+
+    <!-- Light Theme Colors -->
+    <color name="keyboard_1_white_blue">#E8E8EA</color>
+    <color name="keyboard_number_white_blue">#000000</color>
+    <color name="input_words_white_blue">#929298</color>
+    <color name="live_name_white_blue">#418EFF</color>
+    <color name="court_bg_white_blue">#17A348</color>
+    <color name="court_line_white_blue">#50C577</color>
+    <color name="select_bg_white_blue">#F3F3F4</color>
+    <color name="select_text_white_blue">#666666</color>
+    <color name="main_background_white_blue">#EEEEEE</color>
+    <color name="card_background_white_blue">#FFFFFF</color>
+    <color name="date_bg_white_blue">#FBFBFB</color>
+    <color name="champions_list_white_blue">#FEFFFE</color>
+    <color name="sports_not_selected_white_blue">#E1E1E3</color>
+    <color name="sports_selected_white_blue">#24EE8A</color>
+    <color name="keyboard_2_white_blue">#FFFFFF</color>
+    <color name="input_box_2_white_blue">#E8E8EA</color>
+    <color name="tab_fill_color_white_blue">#FFFFFF</color>
+    <color name="arrow_icon_fill_color_white_blue">#F3F3F4</color>
+    <color name="text_background_white_blue">#FFFFFF</color>
+    <color name="reserve_bg_white_blue">#FFFFFF</color>
+    <color name="delete_bg_white_blue">#00000015</color>
+    <color name="keyboard_3_white_blue">#F3F3F4</color>
+    <color name="live_tab_bg_white_blue">#FAFBFC</color>
+    <color name="keyboard_bg_white_blue">#D3D7DC</color>
+    <color name="search_bg_white_blue">#E8E8EA</color>
+    <color name="card_outline_white_blue">#FFFFFF</color>
+    <color name="tab_outline_white_blue">#F3F3F4</color>
+    <color name="panel_outline_white_blue">#F3F3F4</color>
+    <color name="message_fill_color_white_blue">#F3F3F4</color>
+    <color name="live_background_white_blue">#12132130</color>
+    <color name="card_title_white_blue">#FAFAFB</color>
+    <color name="league_line_white_blue">#E0E0E0</color>
+    <color name="district_line_white_blue">#E0E0E0</color>
+    <color name="race_line_white_blue">#E8E8E8</color>
+    <color name="list_separator_white_blue">#F6F6F6</color>
+    <color name="dividing_line_white_blue">#FFFFFF</color>
 
 
 

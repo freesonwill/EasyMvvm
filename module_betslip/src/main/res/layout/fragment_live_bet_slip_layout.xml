@@ -10,17 +10,17 @@
             type="arch.cayenne.module.betslip.ui.viewmodel.BetSlipPageViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_0E0F1A">
+        android:background="@color/main_background">
 
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:layout_marginTop="@dimen/dp_12"
-            android:background="@color/color_0E0F1A"
+            android:background="@color/main_background"
             app:layout_constraintTop_toTopOf="parent"
             app:sportTabBackground="@drawable/selector_betslip_tab"
             app:tabGravity="fill"
@@ -54,5 +54,5 @@
         </arch.cayenne.lib.common.ui.view.InnerViewPager2Container>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

@@ -197,8 +197,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
-                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
+                        .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivHomeTeam)
                 }
             }
@@ -211,8 +211,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let {
                     Glide.with(requireContext())
                         .load(it)
-                        .placeholder(arch.cayenne.lib.res.R.color.color_333A45)
-                        .error(arch.cayenne.lib.res.R.color.color_333A45)
+                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
+                        .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
                 }
             }

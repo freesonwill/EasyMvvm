@@ -73,7 +73,7 @@ class LiveVideoViewModel(
     val subTitleText: LiveData<String> = _subTitleText
 
     @ColorRes
-    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.res.R.color.color_929298)
+    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
 
     @ColorRes
     val subTitleTextColor: LiveData<Int> = _subTitleTextColor
@@ -155,25 +155,25 @@ class LiveVideoViewModel(
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
                                     _subTitleText.value = time
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_666666
+                                        arch.cayenne.lib.common.R.color.color_666666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
 
                                 MatchStatus.IN_PROGRESS -> {
                                     _titleText.value = match.liveInfo.score
                                     _titleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
                                     _subTitleText.value = "" // 比赛进行中不展示副标题
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
 
                                 else -> {
                                     _titleText.value = match.liveInfo.score
                                     _titleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
                                     _subTitleText.value = when (it) {
                                         MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
@@ -186,7 +186,7 @@ class LiveVideoViewModel(
                                         else -> "" // 防止遗漏
                                     }
                                     _subTitleTextColor.value =
-                                        arch.cayenne.lib.res.R.color.color_fe3666
+                                        arch.cayenne.lib.common.R.color.color_fe3666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
                                 }
                             }

@@ -145,7 +145,7 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                     setTextColor(
                         ContextCompat.getColor(
                             context,
-                            R.color.brand_color
+                            arch.cayenne.lib.common.R.color.brand_color
                         )
                     ) // 非 stateList
                     setOnClickListener { scrollToSection(letter) }

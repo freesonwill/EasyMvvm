@@ -90,7 +90,7 @@
             android:background="@drawable/bg_keyboard_send"
             android:gravity="center"
             android:text="发送"
-            android:textColor="@color/theme_text"
+            android:textColor="@color/text_on_theme_color"
             app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_search"
             app:layout_constraintLeft_toRightOf="@id/live_chat_ll_search"
             app:layout_constraintTop_toTopOf="@id/live_chat_ll_search" />

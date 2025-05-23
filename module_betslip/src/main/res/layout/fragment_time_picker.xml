@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/date_picker_title"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@id/tv_cancel"
         app:layout_constraintTop_toTopOf="@id/tv_cancel" />
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -51,11 +51,11 @@
         android:paddingHorizontal="16dp"
         app:layout_constraintTop_toBottomOf="@id/line">
 
-        <View
+        <arch.cayenne.lib.skin.widget.SkinnableView
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/shape_8dp"
-            android:backgroundTint="#F3F3F4"
+            android:backgroundTint="@color/card_odds_background"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

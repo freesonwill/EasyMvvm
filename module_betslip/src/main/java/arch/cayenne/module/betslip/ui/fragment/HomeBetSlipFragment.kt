@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
@@ -138,9 +139,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     private fun setFilterText(view: TextView, isSelected: Boolean) {
         if (isSelected) {
             view.setTextColor(
-                ContextCompat.getColorStateList(
+                SkinnableResourceManager.getColorStateList(
                     requireContext(),
-                    arch.cayenne.lib.res.R.color.green_for_white_bg
+                    arch.cayenne.lib.common.R.color.green_for_white_bg
                 )
             )
             view.setCompoundDrawablesRelativeWithIntrinsicBounds(
@@ -148,9 +149,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             )
         } else {
             view.setTextColor(
-                ContextCompat.getColorStateList(
+                SkinnableResourceManager.getColorStateList(
                     requireContext(),
-                    arch.cayenne.lib.res.R.color.main_text
+                    arch.cayenne.lib.common.R.color.main_text
                 )
             )
             view.setCompoundDrawablesRelativeWithIntrinsicBounds(
