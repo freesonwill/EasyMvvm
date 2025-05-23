@@ -40,12 +40,23 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
     val observeMarketMenu: LiveData<MutableList<Int>> = _observeMarketMenu
 
+    //监听串关数据变化
+    private val _observerSelectionCombo = MutableLiveData<Long?>()
+    val observerSelectionCombo: LiveData<Long?> = _observerSelectionCombo
+
     fun getMarketType(matchId: Long) {
         viewModelScope.launch {
             repository.queryLiveMarketType(matchId) {
                 _marketType.value = it
             }
-
+        }
+    }
+    //监听串关数据变化//监听串关数据变化
+    fun observerSelectionComboByMatchId(matchId: Long){
+        viewModelScope.launch {
+            betRepository.observerSelectionByMatchId(matchId).collect {
+                _observerSelectionCombo.value =it
+            }
         }
     }
 

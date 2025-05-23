@@ -16,7 +16,6 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
-import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import com.google.android.material.tabs.TabLayout
@@ -29,7 +28,6 @@ import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -44,11 +42,13 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var isNotify = false
+    private var selectionComboId :Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
     }
 
     override fun initData() {
+        mViewModel.observerSelectionComboByMatchId(mainViewModel.matchId)
         super.initData()
     }
 
@@ -87,19 +87,14 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     baseInfo?.awayTeam.toString(),
                     baseInfo?.awayTeamIcon.toString(), it, isNotify
                 )
-                val layoutManager = mBinding.rvBetList.layoutManager as LinearLayoutManager
-                val scrollPosition = layoutManager.findFirstVisibleItemPosition()
-                val view = layoutManager.findViewByPosition(scrollPosition)
-                val offset = view?.top ?: 0
                 liveBetOnAdapter.submitList(list)
-                liveBetOnAdapter.notifyDataSetChanged()
-                layoutManager.scrollToPositionWithOffset(scrollPosition, offset)
                 isNotify = false
                 liveBetOnAdapter.setIsNotify(false)
+                liveBetOnAdapter.setSelectionComboId(selectionComboId)
+                liveBetOnAdapter.notifyDataSetChanged()
             }
         }
     }
-
 
     override fun initListener() {
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -121,6 +116,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
@@ -195,6 +191,13 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     )?.code).toString()
                 )
             }
+        }
+
+        //串关数据变动
+        mViewModel.observerSelectionCombo.observe(viewLifecycleOwner){
+            selectionComboId = it
+            liveBetOnAdapter.setSelectionComboId(selectionComboId)
+            liveBetOnAdapter.notifyDataSetChanged()
         }
     }
 
