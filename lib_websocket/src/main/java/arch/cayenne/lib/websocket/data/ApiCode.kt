@@ -44,11 +44,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     ORDER_STATUS_NOTIFY(600, 1001), //600-1001: 订单状态推送(被動)
     GET_MARKET_TYPE(500, 1007),   //500-1007: 盘口分类
-    ORDER_STATUS_NOTIFY(600, 1001),  //600-1001: 订单状态推送(被動)
-    GET_MARKET_TYPE(500, 1007)  ,    //500-1007: 盘口分类
 
-    EARLY_SETTLE_PRICE(500, 1016)    //500-1016: 提前结算报价
-    EARLY_SETTLE_PRICE(500,1016),    //500-1016: 提前结算报价
+    EARLY_SETTLE_PRICE(500, 1016),    //500-1016: 提前结算报价
 
     GET_SYSTEM_SETTING(500,1050),    //500-1050: 获取系统设置
     UPDATE_SYSTEM_SETTING(500,1051), //500-1051: 修改系统设置
