@@ -48,6 +48,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
+            it.setDimAmount(0.6f)
             it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             val positionX = requireArguments().getInt(POSITION_X, -1)
