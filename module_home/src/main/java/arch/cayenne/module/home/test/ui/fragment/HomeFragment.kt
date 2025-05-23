@@ -16,7 +16,6 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
-import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
 import com.haibin.calendarview.Calendar
@@ -29,9 +28,6 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        childFragmentManager.beginTransaction()
-            .replace(mBinding.floatingContainer.id, FloatingButtonFragment())
-            .commit()
     }
 
     override fun initListener() {
