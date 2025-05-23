@@ -12,7 +12,7 @@ import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
 import kotlinx.coroutines.launch
@@ -25,7 +25,7 @@ class SkinnableImageView : AppCompatImageView{
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
 
     constructor(context: Context) : super(context) {
         initView(context)

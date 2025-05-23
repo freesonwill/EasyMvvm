@@ -8,8 +8,6 @@
     <color name="live_text_selected_false">#929298</color>
     <color name="live_text_bg_selected_true">#24EE8A</color>
     <color name="live_text_bg_selected_false">#161823</color>
-    <color name="brand_color">#24ee8a</color>
-    <color name="theme_text">#000000</color>
     <color name="card_out_area">#AC8E6A</color>
     <color name="secondary_text">#929298</color>
     <color name="color_15b264">#15b264</color>
@@ -35,7 +33,6 @@
     <color name="text_background">#1c1d28</color>
     <color name="live_name">#418eff</color>
     <color name="color_909092">#909092</color>
-    <color name="input_box2">#232530</color>
     <color name="menu_lin">#232530</color>
     <color name="substitution_text_color">#ffffff</color>
     <color name="live_main_tab_bg">#0e0f19</color>
@@ -43,7 +40,6 @@
     <color name="tab_selected_text_color">#ffffff</color>
     <color name="video_tab_text_color">#929298</color>
     <color name="text_color">#ffffff</color>
-    <color name="lose_color">#FF3019</color>
     <color name="live_video_mask">#ff121321</color>
     <color name="standing_text">#ffffff</color>
     <color name="text_dialog_gy">#FE3666</color>

@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.tabs.TabLayout
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
 import kotlinx.coroutines.launch
@@ -14,7 +14,7 @@ import org.koin.java.KoinJavaComponent.inject
 class SkinnableTabLayout : TabLayout {
 
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SportSkinManager by inject(SportSkinManager::class.java)
+    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
 

@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SkinType
-import arch.cayenne.lib.skin.SportSkinManager
+import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -15,7 +15,7 @@ import plugin.koin.KoinViewModel
 class BackgroundViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }
-    private val skinManager: SportSkinManager by inject { parametersOf(viewModelScope) }
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
 
     val skinType = MutableLiveData("")
 

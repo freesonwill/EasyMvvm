@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
-class SportSkinManager {
+class SkinnableManager {
     private val resourcesManager = SkinnableResourceManager
     private val _skinFlow = MutableStateFlow("")
     private val _languageFlow = MutableStateFlow<Locale?>(null)
