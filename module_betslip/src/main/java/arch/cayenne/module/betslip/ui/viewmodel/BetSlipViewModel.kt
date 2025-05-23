@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
+import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
 import galaxy.common.proto.Common.EarlySettlePrice
 import galaxy.common.proto.Common.Order
 import galaxy.common.proto.Common.ReserveOrder
@@ -15,10 +17,15 @@ import org.koin.core.parameter.parametersOf
 
 
 class BetSlipViewModel : BaseViewModel() {
-    private var matchId: Long = -1
-    private var sportId: Int = -1
-    private var startTime: Long? = null
-    private var endTime: Long? = null
+
+    private var ids: Pair<Long, Int> = Pair(-1, -1)
+    private val matchId: Long get() = ids.first
+    private val sportId: Int get() = ids.second
+
+    private var times: Pair<Long?, Long?> = Pair(null, null)
+    private val startTime: Long? get() = times.first
+    private val endTime: Long? get() = times.second
+
     private var page = 1
     private val pageSize = 10
     private val repository: BetSlipRepository by inject {
@@ -28,12 +35,12 @@ class BetSlipViewModel : BaseViewModel() {
     }
 
     //普通注单
-    private val _orderLiveData = MutableLiveData<List<Order>?>()
-    val orderLiveData: LiveData<List<Order>?> = _orderLiveData
+    private val _orderLiveData = MutableLiveData<List<BetSlipData>>()
+    val orderLiveData: LiveData<List<BetSlipData>> = _orderLiveData
 
     //预约注单
-    private val _reserveLiveData = MutableLiveData<List<ReserveOrder>?>()
-    val reserveLiveData: LiveData<List<ReserveOrder>?> = _reserveLiveData
+    private val _reserveLiveData = MutableLiveData<List<BetSlipData>>()
+    val reserveLiveData: LiveData<List<BetSlipData>> = _reserveLiveData
 
     //提前结算结果
     private val _earlySettledResultLiveData: MutableLiveData<Boolean> = MutableLiveData()
@@ -53,10 +60,11 @@ class BetSlipViewModel : BaseViewModel() {
 
     //选择的提前结算注单
     var selectOrder: Order? = null
+        private set
 
     fun setIds(matchId: Long, sportId: Int) {
-        this.matchId = matchId
-        this.sportId = sportId
+        this.ids = Pair(matchId, sportId)
+        page = 1
     }
 
     /**
@@ -64,8 +72,9 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
-            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)
-            _orderLiveData.value = result
+            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let { result ->
+                _orderLiveData.value = result.toBetSlipData()
+            }
         }
     }
 
@@ -74,20 +83,10 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getReserveOrder() {
         viewModelScope.launch {
-            val result = repository.getReserveOrder(sportId, matchId, startTime, endTime)
-            _reserveLiveData.value = result
+            repository.getReserveOrder(sportId, matchId, startTime, endTime)?.let { result ->
+                _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
+            }
         }
-    }
-
-
-    fun getTestList(): List<arch.cayenne.module.betslip.data.model.BetSlipData> {
-        val order = Order.newBuilder().setBetId("0").build()
-        val order1 = Order.newBuilder().setBetId("1").build()
-        val tmpList = arrayListOf(
-            arch.cayenne.module.betslip.data.model.BetSlipData(order),
-            arch.cayenne.module.betslip.data.model.BetSlipData(order1)
-        )
-        return tmpList
     }
 
     /**
@@ -126,12 +125,22 @@ class BetSlipViewModel : BaseViewModel() {
     }
 
     fun loadMoreOrder(status: BetSlipEnum) {
+        val list = _orderLiveData.value
+        // 如果列表为空或者不是整页数据，则不加载更多
+        if (list.isNullOrEmpty() || list.size % pageSize != 0) {
+            return
+        }
         viewModelScope.launch {
-            page++
-            val result = repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)
-            _orderLiveData.value = result
-            if (_orderLiveData.value?.isEmpty() == true) {
-                page--
+            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let {  result ->
+                if (result.isNotEmpty()) {
+                    page++
+                    val newList = mutableListOf<BetSlipData>()
+                    val oldList = _orderLiveData.value ?: emptyList()
+                    val resultList = result.toBetSlipData()
+                    newList.addAll(oldList)
+                    newList.addAll(resultList)
+                    _orderLiveData.value = newList
+                }
             }
         }
     }
@@ -139,9 +148,10 @@ class BetSlipViewModel : BaseViewModel() {
     /**
      * 检查是否支持提前结算
      * */
-    fun earlySettledPrice(betId: String) {
+    fun earlySettledPrice(order: Order) {
+        selectOrder = order
         viewModelScope.launch {
-            val result = repository.earlySettledPrice(betId)
+            val result = repository.earlySettledPrice(order.betId)
             if (!result.isNullOrEmpty()) {
                 _earlySettlePriceLiveData.value = result.first()
             }
@@ -149,8 +159,8 @@ class BetSlipViewModel : BaseViewModel() {
     }
 
     fun setTime(startTime: Long?, endTime: Long?) {
-        this.startTime = startTime
-        this.endTime = endTime
+        this.times = Pair(startTime, endTime)
+        page = 1
     }
 
     fun loadData(status: BetSlipEnum) {

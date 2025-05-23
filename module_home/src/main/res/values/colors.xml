@@ -3,11 +3,13 @@
     <color name="bg_main">#0E0F1A</color>
     <color name="bg_card">#161823</color>
     <color name="data_bg">#1D1F2A</color>
+    <color name="home_main_text">#FFFFFF</color>
+    <color name="home_list_separator">#1D1F2A</color>
     <color name="secondary_text">#929298</color>
     <color name="secondary_title">@color/secondary_text</color>
     <color name="date_text_select">#000000</color>
     <color name="date_text_unselect">#929298</color>
-    <color name="bg_card_gradient_start">#00161823</color>
+    <color name="bg_card_gradient_start">#00FEFFFE</color>
     <color name="tab_indicator_color">#24EE8A</color>
     <color name="bg_sport_selected">#1BAF6A</color>
     <color name="bg_sport_unselect">#3F434B</color>
@@ -28,5 +30,5 @@
     <color name="drawer_common_function_text">#929298</color>
     <color name="drawer_bottom_function_text">#929298</color>
     <color name="odds_highlight_overlay">#353848</color>
-    <color name="list_separator">#1D1F2A</color>
+    <color name="home_card_odds_background">#232530</color>
 </resources>

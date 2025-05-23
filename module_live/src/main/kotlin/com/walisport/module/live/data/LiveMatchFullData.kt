@@ -86,7 +86,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                         ),
                         name = selection.name,
                         shortName = selection.shortName,
-                        odds = selection.odds.toOdds(),
+                        odds = selection.odds,
                         active = selection.active,
                         parlay = selection.parlay,
                         style = market.style,
@@ -96,7 +96,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                 selectionsRecord.add(LiveSelectionBeanRecord(
                     marketId = market.marketId,
                     selectionId = selection.selectionId,
-                    odds = selection.odds.toOdds(),
+                    odds = selection.odds,
                 ))
                 LogUtils.e("showDataMarketMenuBean------add---id${market.marketId}--name${market.marketName}----selection${selection.shortName}")
             }

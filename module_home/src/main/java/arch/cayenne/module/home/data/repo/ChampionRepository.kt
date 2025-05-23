@@ -133,6 +133,7 @@ class ChampionRepository(
      * */
     private suspend fun updateFullMath(updateData: MatchUpdateData): List<MatchWithMarkets> {
         return matchDao.updateFullMatch(
+            updateData.ids,
             updateData.matchLites,
             updateData.markets,
             updateData.selections,

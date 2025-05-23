@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 #define DUCKGO_VERSION      8
-#define SOCKET_BUFFER       8192
+#define SOCKET_BUFFER       102400
 typedef unsigned char       BYTE;
 typedef unsigned int        UINT32;
 typedef unsigned short      WORD;

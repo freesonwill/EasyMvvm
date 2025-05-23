@@ -198,31 +198,31 @@ class LiveVideoLandscapeFragment :
                 }
             }
         }
-
-        mViewModel.tournamentIcon.observe(this) {
+        mViewModel.tournamentIcon.observe(viewLifecycleOwner) {
 //            "tournamentIcon: $it".logd("matchIssue")
-
             it?.takeIf { it.isNotEmpty() }?.let { url ->
                 Glide.with(requireContext()).load(url)
                     .placeholder(R.drawable.title_league_icon)
                     .error(R.drawable.title_league_icon)
                     .into(mBinding.ivVideoLandscapeTournamentIcon)
             }
-
         }
-
-        mViewModel.matchName.observe(this) {
+        mViewModel.matchName.observe(viewLifecycleOwner) {
             it?.takeIf { it.isNotEmpty() }?.let { name ->
                 mBinding.tvMatchName.text = name
             }
         }
-
-
+        mViewModel.mainMatch.observe(viewLifecycleOwner) {
+            it?.let {
+                mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
+            }
+        }
         mViewModel.createObserver()
     }
 
     override fun initData() {
         super.initData()
+        mViewModel.getMainMatch(mViewModel.matchId())
     }
 
     /**
@@ -522,7 +522,10 @@ class LiveVideoLandscapeFragment :
      * 跳转到联赛赛程页
      */
     private fun jumpToLeagueFragment() {
-        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment())
+        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment().apply {
+            arguments.putLong("matchID", mViewModel.matchId())
+            arguments.putInt("leagueID", mViewModel.leagueID)
+        })
     }
 
     /**
@@ -549,9 +552,7 @@ class LiveVideoLandscapeFragment :
             addUpdateListener {
                 val lp = mBinding.fragmentShare.layoutParams as ConstraintLayout.LayoutParams
                 lp.marginStart = it.animatedValue as Int
-
                 mBinding.fragmentShare.layoutParams = lp
-
             }
             setDuration(ANIMATION_DURATION)
             start()

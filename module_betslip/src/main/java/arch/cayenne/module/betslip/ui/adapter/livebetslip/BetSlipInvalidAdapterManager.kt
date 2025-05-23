@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip
 
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import galaxy.common.proto.Common.Order
 import arch.cayenne.module.betslip.R
@@ -63,6 +64,7 @@ class BetSlipInvalidAdapterManager(
 
     private fun updateInvalid(item: Order) {
         with(binding) {
+            betExpiredTvDate.text = item.betTime.getDetailFormatDate()
             betExpiredTvStatus.text = root.context.resources.getString(R.string.live_bet_rejection)
             betExpiredTvStatus.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(root.context, R.drawable.bg_rejection))
             tvUnit1.text = ContextCompat.getString(binding.root.context, R.string.live_bet_bet_num)

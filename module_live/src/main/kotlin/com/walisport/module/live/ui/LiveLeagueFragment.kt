@@ -102,7 +102,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun createObserver() {
-        mViewModel.leagueData.observe(this) {
+        mViewModel.leagueData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
             it?.let {

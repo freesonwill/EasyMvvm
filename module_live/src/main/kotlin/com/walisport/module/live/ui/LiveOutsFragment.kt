@@ -61,13 +61,13 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
             }
         }
-        mViewModel.matchStatisticData.observe(this) {
+        mViewModel.matchStatisticData.observe(viewLifecycleOwner) {
             it?.let {
                 parseData(it.stats)
                 parseHalfTeamData(it.team)
             }
         }
-        mViewModel.matchTrendData.observe(this) {
+        mViewModel.matchTrendData.observe(viewLifecycleOwner) {
             if (it != null) {
                 matchTrendData = it
                 mBinding.mainLayout.setVisibilityGone()

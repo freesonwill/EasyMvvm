@@ -76,7 +76,7 @@ class LiveMainRepository(
 
      fun clearAllMatch(){
         scope.launch(Dispatchers.IO){
-            database.clearAllTables()
+            database.liveMatchDao().clearAllMatch()
         }
     }
 

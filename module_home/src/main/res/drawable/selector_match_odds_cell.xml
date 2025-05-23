@@ -11,7 +11,7 @@
     <item>
         <shape android:shape="rectangle">
             <corners android:radius="4dp" />
-            <solid android:color="@color/card_odds_background" />
+            <solid android:color="@color/home_card_odds_background" />
         </shape>
     </item>
 </selector>

@@ -320,7 +320,7 @@ class HomeRepository(
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
         return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
-                "收到比賽推播  ${it.data!!.matchId}".logi(this::class.java.name)
+                "收到比賽推播  ${it.data!!}".logi(this::class.java.name)
                 val matchUpdateData = arrayListOf(it.data!!).toRoomData()
                 val list = updateFullMath(matchUpdateData)
                 list.forEach { matchWithMarket -> emit(matchWithMarket) }
@@ -334,6 +334,7 @@ class HomeRepository(
     * */
     private suspend fun updateFullMath(updateData: MatchUpdateData): List<MatchWithMarkets> {
         return matchDao.updateFullMatch(
+            updateData.ids,
             updateData.matchLites,
             updateData.markets,
             updateData.selections,

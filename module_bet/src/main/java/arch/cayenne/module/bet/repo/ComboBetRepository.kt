@@ -24,8 +24,8 @@ class ComboBetRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    private val selectionFlow = MutableSharedFlow<List<BetSelectionBean>>()
-    private val comboMultiBetFlow = MutableSharedFlow<List<ComboMultiBetBean>>()
+    private val selectionFlow = MutableSharedFlow<List<BetSelectionBean>>(replay = 1, extraBufferCapacity = 1)
+    private val comboMultiBetFlow = MutableSharedFlow<List<ComboMultiBetBean>>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {

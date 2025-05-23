@@ -68,7 +68,7 @@
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="7dp"
-            android:textColor="@color/main_text"
+            android:textColor="@color/home_main_text"
             android:textSize="13sp"
             tools:text="$1,100.00" />
 

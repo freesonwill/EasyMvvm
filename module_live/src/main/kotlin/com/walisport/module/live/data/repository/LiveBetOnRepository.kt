@@ -1,6 +1,7 @@
 package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.dao.MarketTypeBeanDao
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -65,7 +66,7 @@ private fun matchSelectionInsertBean(
                 marketName = selectionBean.marketName,
                 selectionId = selectionBean.selectionId,
                 name = selectionBean.shortName,
-                odds = selectionBean.odds,
+                odds = selectionBean.odds.toOdds(),
                 leagueName = match.basicInfo.tournamentName,
                 matchName = match.basicInfo.matchName,
                 isActive = selectionBean.active,
