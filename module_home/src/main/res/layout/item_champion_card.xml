@@ -16,7 +16,7 @@
         android:layout_marginTop="@dimen/dp_14"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_12"
-        android:textColor="@color/main_text"
+        android:textColor="@color/home_main_text"
         android:textSize="@dimen/sp_15"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"

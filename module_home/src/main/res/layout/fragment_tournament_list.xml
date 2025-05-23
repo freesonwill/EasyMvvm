@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/dp_16"
         android:paddingTop="@dimen/dp_16"
         android:text="@string/tournament_section_title"
-        android:textColor="@color/main_text"
+        android:textColor="@color/home_main_text"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
