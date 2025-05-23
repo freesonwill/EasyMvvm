@@ -77,7 +77,7 @@
                 android:layout_height="48dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
-                android:src="@mipmap/icon_back" />
+                android:src="@drawable/icon_keyboard_back" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_clear"

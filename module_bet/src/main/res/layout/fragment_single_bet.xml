@@ -290,7 +290,7 @@
                 style="@style/NumberKeyboardButton"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
-                android:src="@mipmap/icon_back" />
+                android:src="@drawable/icon_keyboard_back" />
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_clear"
@@ -317,8 +317,7 @@
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
                 android:padding="10dp"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/icon_keyboard" />
+                android:src="@drawable/icon_keyboard" />
 
         </GridLayout>
 
