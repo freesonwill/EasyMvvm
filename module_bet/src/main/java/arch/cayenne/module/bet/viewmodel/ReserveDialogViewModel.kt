@@ -6,6 +6,12 @@ class ReserveDialogViewModel : NumberCalculatorViewModel() {
 
     val minOdds = 1
 
+    fun init(odds: Int) {
+        setRemainingNumber(Long.MAX_VALUE)
+        setNumberLimit(minOdds.toLong(), Long.MAX_VALUE)
+        setEditNumber(odds.toLong())
+    }
+
     fun addMixRate() {
         val odds = onEditNumber.value?.let {
             if (it.isEmpty()) {

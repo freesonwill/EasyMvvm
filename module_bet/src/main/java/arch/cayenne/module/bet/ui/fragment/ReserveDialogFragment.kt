@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewTreeObserver
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
@@ -67,6 +68,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                         layoutParams.y = positionY - (mBinding.triangle.height * 1.8).toInt()
 
                         it.attributes = layoutParams
+                        mBinding.root.visibility = View.VISIBLE
                     }
                 })
             }
@@ -74,11 +76,12 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.root.visibility = View.INVISIBLE
         mBinding.etRate.requestFocus()
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
         if (odds != -1) {
-            mViewModel.setNumber(odds.toLong())
+            mViewModel.init(odds)
         }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
