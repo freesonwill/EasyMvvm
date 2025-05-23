@@ -77,7 +77,7 @@ class MatchItemViewHolder(
                     setTextColor(
                         ContextCompat.getColorStateList(
                             context,
-                            R.color.secondary_title
+                            arch.cayenne.lib.common.R.color.secondary_title
                         )
                     )
                     textSize = 13f
