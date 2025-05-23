@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="live_main_tab_bg_black_green">#0e0f19</color>
+    <color name="tab_indicator_color_black_green">#24ee8a</color>
+    <color name="video_source_fragment_title_color_black_green">#FFFFFF</color>
+    <color name="video_source_fragment_bkg_black_green">#161823</color>
+    <color name="video_source_item_title_color_black_green">#FFFFFF</color>
+    <color name="video_source_item_subtitle_color_black_green">#929298</color>
+    <color name="video_landscape_fragment_bkg_black_green">#0E0F1A</color>
+    <color name="video_share_fragment_title_color_black_green">#FFFFFF</color>
+    <color name="video_share_fragment_subtitle_color_black_green">#929298</color>
+
+
+</resources>
