@@ -15,7 +15,7 @@ import com.walisport.module.search.ui.view.FlowAdapter
  * @date: 2025/4/22 16:01
  * @description: 测试适配器
  */
-class SearchHistoryAdapter(var closeAction: (position: Int, text: String?) -> Unit) :
+class SearchHistoryAdapter(var closeAction: (position: Int, text: String?) -> Unit, var onSearch: (key: String?) -> Unit = {}) :
     FlowAdapter<String?>() {
     var isDelete: Boolean = false
 
@@ -35,12 +35,13 @@ class SearchHistoryAdapter(var closeAction: (position: Int, text: String?) -> Un
             closeAction.invoke(position, item)
         }
         textView?.text = item
-        textView?.setOnClickListener { v: View? ->
+        textView?.setOnClickListener {
             Toast.makeText(
                 view.context,
                 item,
                 Toast.LENGTH_SHORT
             ).show()
+            onSearch(item)
         }
     }
 }

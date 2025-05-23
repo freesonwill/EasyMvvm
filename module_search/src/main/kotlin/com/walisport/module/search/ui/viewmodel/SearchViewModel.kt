@@ -17,6 +17,9 @@ class SearchViewModel : BaseViewModel() {
     private val _recordList = MutableLiveData<List<String>>()
     val searchRecord: LiveData<List<String>> = _recordList
 
+    private val _searchHotWord = MutableLiveData<List<String>>()
+    val searchHotWord: LiveData<List<String>> = _searchHotWord
+
     fun getRecordByUID() {
         viewModelScope.launch {
             val res = repository.getRecordByUID()
@@ -39,6 +42,19 @@ class SearchViewModel : BaseViewModel() {
     fun deleteOneRecord(keyword: String?) {
         viewModelScope.launch {
             repository.deleteOneRecord(keyword)
+        }
+    }
+
+    fun getSearchResult(keyword: String) {
+        //TODO
+        viewModelScope.launch {
+            val response = repository.getSearchResult(keyword)
+        }
+    }
+
+    fun getSearchHotWord() {
+        viewModelScope.launch {
+            _searchHotWord.value = repository.getSearchHotWord()
         }
     }
 }

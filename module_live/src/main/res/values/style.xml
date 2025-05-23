@@ -8,5 +8,10 @@
         <item name="android:textSize">14sp</item> <!-- 设置字体大小 -->
     </style>
 
+    <style name="VideoThumbRoundedCorner" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item> <!-- 設置圓角半徑 -->
+    </style>
+
 
 </resources>

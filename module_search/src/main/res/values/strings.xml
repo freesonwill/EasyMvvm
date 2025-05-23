@@ -3,4 +3,5 @@
     <string name="delete_all">全部删除</string>
     <string name="search_finish">完成</string>
     <string name="history_record">历史记录</string>
+    <string name="hot_search">热门搜索</string>
 </resources>

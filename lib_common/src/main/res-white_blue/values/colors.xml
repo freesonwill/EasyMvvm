@@ -43,7 +43,7 @@
     <color name="arrow_icon_fill_color_white_blue">#F3F3F4</color>
     <color name="text_background_white_blue">#FFFFFF</color>
     <color name="reserve_bg_white_blue">#FFFFFF</color>
-    <color name="delete_bg_white_blue">#00000015</color>
+    <color name="delete_bg_white_blue">#26000000</color>
     <color name="keyboard_3_white_blue">#F3F3F4</color>
     <color name="live_tab_bg_white_blue">#FAFBFC</color>
     <color name="keyboard_bg_white_blue">#D3D7DC</color>
@@ -52,7 +52,7 @@
     <color name="tab_outline_white_blue">#F3F3F4</color>
     <color name="panel_outline_white_blue">#F3F3F4</color>
     <color name="message_fill_color_white_blue">#F3F3F4</color>
-    <color name="live_background_white_blue">#12132130</color>
+    <color name="live_background_white_blue">#4D121321</color>
     <color name="card_title_white_blue">#FAFAFB</color>
     <color name="league_line_white_blue">#E0E0E0</color>
     <color name="district_line_white_blue">#E0E0E0</color>

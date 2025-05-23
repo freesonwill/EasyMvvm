@@ -1,12 +1,12 @@
 package com.walisport.module.live.ui.widget
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.walisport.module.live.data.LiveOddsStatusEnum
@@ -25,16 +25,22 @@ class LiveBetListLayout @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : SkinnableLinearLayout(context, attrs, defStyleAttr) {
-    var binding =
-        LiveBetContentListItemLayoutBinding.inflate(LayoutInflater.from(context), this, false)
-    var  isNotify : Boolean = false
-    fun viewInit() {
-        this.removeAllViews()
-        this.addView(binding.root)
+
+    private val binding = LiveBetContentListItemLayoutBinding.inflate(
+        LayoutInflater.from(context), this, false
+    )
+    private var isNotify: Boolean = false
+    private val handler = Handler(Looper.getMainLooper())
+
+    init {
+        viewInit()
     }
 
-    // active: Boolean, //true - 可以投注  false - 不可投注
-    //请空,不需要懒加载
+     fun viewInit() {
+        removeAllViews()
+        addView(binding.root)
+    }
+
     fun submitList(
         state: StatesArrange?,
         num: Int,
@@ -43,340 +49,248 @@ class LiveBetListLayout @JvmOverloads constructor(
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
-        isNotify:Boolean,
+        isNotify: Boolean,
+        isCombo: Boolean,
         callback: (Long) -> Unit
     ) {
         this.isNotify = isNotify
         if (num == 0) {
-            binding.llcOneArrange.removeAllViews()
-            binding.llcTowArrange.removeAllViews()
-            binding.llcThreeArrange.removeAllViews()
-            binding.llcOther.removeAllViews()
+            clearAllArranges()
         }
-        when (state?.code) {
-            StatesArrange.DEFAULT_ARRANGE.code -> {
-                if (num == 0 || num % StatesArrange.DEFAULT_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(
-                        addViewOne(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                if (num == 1 || num % StatesArrange.DEFAULT_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(
-                        addViewTow(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                binding.llcTowArrange.visibility = VISIBLE
-                binding.llcThreeArrange.visibility = GONE
-            }
 
-            StatesArrange.ONE_ARRANGE.code -> {
-                binding.llcOneArrange.addView(
-                    addViewOne(
-                        name,
-                        odds,
-                        marketId,
-                        active,
-                        oddStatus,
-                        callback
-                    )
-                )
-                binding.llcTowArrange.visibility = GONE
-                binding.llcThreeArrange.visibility = GONE
-            }
-
-            StatesArrange.TOW_ARRANGE.code -> {
-                binding.llcTowArrange.visibility = VISIBLE
-                if (num == 0 || num % StatesArrange.TOW_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(
-                        addViewOne(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                if (num == 1 || num % StatesArrange.TOW_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(
-                        addViewTow(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                binding.llcThreeArrange.visibility = GONE
-            }
-
-            StatesArrange.THREE_ARRANGE.code -> {
-                binding.llcThreeArrange.visibility = VISIBLE
-                binding.llcTowArrange.visibility = VISIBLE
-                if (num == 0 || num % StatesArrange.THREE_ARRANGE.value == 0) {
-                    binding.llcOneArrange.addView(
-                        addViewOne(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                if (num == 1 || num % StatesArrange.THREE_ARRANGE.value == 1) {
-                    binding.llcTowArrange.addView(
-                        addViewTow(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-                if (num == 2 || num % StatesArrange.THREE_ARRANGE.value == 2) {
-                    binding.llcThreeArrange.addView(
-                        addViewThree(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-            }
-
-            StatesArrange.BO_DIAN.code -> {
-                val parts = name.split("-")
-                if (parts.size == 2) {
-                    val left = parts[0].toIntOrNull() ?: return // If conversion fails, exit
-                    val right = parts[1].toIntOrNull() ?: return // If conversion fails, exit
-                    when {
-                        left > right -> {
-                            binding.llcOneArrange.addView(
-                                addViewOne(
-                                    name,
-                                    odds,
-                                    marketId,
-                                    active,
-                                    oddStatus,
-                                    callback
-                                )
-                            )
-                        }
-
-                        left == right -> {
-                            binding.llcTowArrange.visibility = VISIBLE
-                            binding.llcTowArrange.addView(
-                                addViewTow(
-                                    name,
-                                    odds,
-                                    marketId,
-                                    active,
-                                    oddStatus,
-                                    callback
-                                )
-                            )
-                        }
-
-                        left < right -> {
-                            binding.llcThreeArrange.visibility = VISIBLE
-                            binding.llcThreeArrange.addView(
-                                addViewThree(
-                                    name,
-                                    odds,
-                                    marketId,
-                                    active,
-                                    oddStatus,
-                                    callback
-                                )
-                            )
-                        }
-                    }
-                } else {
-                    binding.llcOther.addView(
-                        addViewTow(
-                            name,
-                            odds,
-                            marketId,
-                            active,
-                            oddStatus,
-                            callback
-                        )
-                    )
-                }
-            }
+        when (state) {
+            StatesArrange.DEFAULT_ARRANGE -> addToDefaultArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
+            StatesArrange.ONE_ARRANGE -> addToOneArrange(name, odds, marketId, active, oddStatus, isCombo, callback)
+            StatesArrange.TOW_ARRANGE -> addToTowArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
+            StatesArrange.THREE_ARRANGE -> addToThreeArrange(num, name, odds, marketId, active, oddStatus, isCombo, callback)
+            StatesArrange.BO_DIAN -> addToBoDian( name, odds, marketId, active, oddStatus, isCombo, callback)
+            null -> Unit // Handle null state gracefully
         }
     }
 
-    fun addViewOne(
+    private fun clearAllArranges() {
+        with(binding) {
+            llcOneArrange.removeAllViews()
+            llcTowArrange.removeAllViews()
+            llcThreeArrange.removeAllViews()
+            llcOther.removeAllViews()
+        }
+    }
+
+    private fun addToDefaultArrange(
+        num: Int,
         name: String,
         odds: String,
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
+        isCombo: Boolean,
         callback: (Long) -> Unit
-    ): View {
-        var itemBinding = LiveBetContentItemLayoutOneBinding.inflate(
-            LayoutInflater.from(context),
-            binding.root,
-            false
-        )
-        if (active) {
-            isOddsStatus(
-                oddStatus,
-                itemBinding.imgTop,
-                itemBinding.imgDown
-
-            )
+    ) {
+        when (num % StatesArrange.DEFAULT_ARRANGE.value) {
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+            else ->{}
         }
-        //true - 可以投注  false - 不可投注
-        isActive(active, itemBinding.sclOne)
-        isActive(!active, itemBinding.sclOneLock)
-        itemBinding.tvBetDuelLeft.text = name
-        itemBinding.tvBetDuelRight.text = odds
-        itemBinding.sclOne.clickNoRepeatSingle {
-            callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
-            }
-        }
-        return itemBinding.root
+        binding.llcTowArrange.isVisible = true
+        binding.llcThreeArrange.isVisible = false
     }
 
-    fun addViewTow(
+    private fun addToOneArrange(
         name: String,
         odds: String,
         marketId: Long,
         active: Boolean,
         oddStatus: Int,
+        isCombo: Boolean,
         callback: (Long) -> Unit
-    ): View {
-        var itemBinding = LiveBetContentItemLayoutTowBinding.inflate(
-            LayoutInflater.from(context),
-            binding.root,
-            false
-        )
-        if (active) {
-            isOddsStatus(
-                oddStatus,
-                itemBinding.imgTop,
-                itemBinding.imgDown
-            )
+    ) {
+        binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+        binding.llcTowArrange.isVisible = false
+        binding.llcThreeArrange.isVisible = false
+    }
+
+    private fun addToTowArrange(
+        num: Int,
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ) {
+        when (num % StatesArrange.TOW_ARRANGE.value) {
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
         }
-        //true - 可以投注  false - 不可投注
-        isActive(active, itemBinding.sclTow)
-        isActive(!active, itemBinding.sclTowLock)
-        itemBinding.tvBetDuelLeft.text = name
-        itemBinding.tvBetDuelRight.text = odds
-        itemBinding.sclTow.clickNoRepeatSingle {
-            callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
+        binding.llcTowArrange.isVisible = true
+        binding.llcThreeArrange.isVisible = false
+    }
+
+    private fun addToThreeArrange(
+        num: Int,
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ) {
+        when (num % StatesArrange.THREE_ARRANGE.value) {
+            0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+            1 -> binding.llcTowArrange.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+            2 -> binding.llcThreeArrange.addView(createViewThree(name, odds, marketId, active, oddStatus, isCombo, callback))
+        }
+        binding.llcTowArrange.isVisible = true
+        binding.llcThreeArrange.isVisible = true
+    }
+
+    private fun addToBoDian(
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ) {
+        name.split("-").takeIf { it.size == 2 }?.let { parts ->
+            val left = parts[0].toIntOrNull() ?: return
+            val right = parts[1].toIntOrNull() ?: return
+            when {
+                left > right -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
+                left == right -> binding.llcTowArrange.apply {
+                    isVisible = true
+                    addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+                }
+                left < right -> binding.llcThreeArrange.apply {
+                    isVisible = true
+                    addView(createViewThree(name, odds, marketId, active, oddStatus, isCombo, callback))
+                }
+                else ->{}
             }
+        } ?: binding.llcOther.addView(createViewTow(name, odds, marketId, active, oddStatus, isCombo, callback))
+    }
+
+    private fun createViewOne(
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ): View = LiveBetContentItemLayoutOneBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
+        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclOne, sclOneLock)
+        root
+    }
+
+    private fun createViewTow(
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ): View = LiveBetContentItemLayoutTowBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
+        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclTow, sclTowLock)
+        root
+    }
+
+    private fun createViewThree(
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit
+    ): View = LiveBetContentItemLayoutThreeBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
+        setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclThree, sclThreeLock)
+        root
+    }
+
+    private fun <T : Any> setupView(
+        binding: T,
+        name: String,
+        odds: String,
+        marketId: Long,
+        active: Boolean,
+        oddStatus: Int,
+        isCombo: Boolean,
+        callback: (Long) -> Unit,
+        selectableView: View,
+        lockView: View
+    ) {
+        with(binding) {
+            when (this) {
+                is LiveBetContentItemLayoutOneBinding -> {
+                    if (active) isOddsStatus(oddStatus, imgTop, imgDown)
+                    tvBetDuelLeft.text = name
+                    tvBetDuelRight.text = odds
+                    sclOne.isSelected = isCombo
+                    sclOne.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclOne) }
+                }
+                is LiveBetContentItemLayoutTowBinding -> {
+                    if (active) isOddsStatus(oddStatus, imgTop, imgDown)
+                    tvBetDuelLeft.text = name
+                    tvBetDuelRight.text = odds
+                    sclTow.isSelected = isCombo
+                    sclTow.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclTow) }
+                }
+                is LiveBetContentItemLayoutThreeBinding -> {
+                    if (active) isOddsStatus(oddStatus, imgTop, imgDown)
+                    tvBetDuelLeft.text = name
+                    tvBetDuelRight.text = odds
+                    sclThree.isSelected = isCombo
+                    sclThree.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclThree) }
+                }
+                else ->{}
+            }
+            selectableView.isVisible = active
+            lockView.isVisible = !active
         }
-        return itemBinding.root
+    }
+
+    private fun handleClick(marketId: Long, isCombo: Boolean, callback: (Long) -> Unit, view: View) {
+        callback(marketId)
+        if (!isCombo) {
+            view.isSelected = true
+            delayExample { view.isSelected = false }
+        }
     }
 
     private fun isOddsStatus(oddStatus: Int, top: View, down: View) {
-        if (isNotify){
-            when (oddStatus) {
-                LiveOddsStatusEnum.UP.status -> {
-                    down.visibility = GONE
-                    top.visibility = VISIBLE
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        top.visibility = GONE
-                    }, 2000)
-                }
-
-                LiveOddsStatusEnum.DOWN.status -> {
-                    down.visibility = VISIBLE
-                    top.visibility = GONE
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        down.visibility = GONE
-                    }, 2000)
-                }
-
-                LiveOddsStatusEnum.SAME.status -> {
-                    down.visibility = GONE
-                    top.visibility = GONE
-                }
+        if (!isNotify) return
+        when (oddStatus) {
+            LiveOddsStatusEnum.UP.status -> {
+                down.isVisible = false
+                top.isVisible = true
+                handler.postDelayed({ top.isVisible = false }, 2000)
             }
-        }
-    }
-
-    private fun isActive(active: Boolean, v: View) {
-        if (active) {
-            v.visibility = VISIBLE
-        } else {
-            v.visibility = GONE
-        }
-    }
-
-    fun addViewThree(
-        name: String,
-        odds: String,
-        marketId: Long,
-        active: Boolean,
-        oddStatus: Int,
-        callback: (Long) -> Unit
-    ): View {
-        var itemBinding = LiveBetContentItemLayoutThreeBinding.inflate(
-            LayoutInflater.from(context),
-            binding.root,
-            false
-        )
-        if (active) {
-            isOddsStatus(
-                oddStatus,
-                itemBinding.imgTop,
-                itemBinding.imgDown
-            )
-        }
-        isActive(active, itemBinding.sclThree)
-        isActive(!active, itemBinding.sclThreeLock)
-        itemBinding.tvBetDuelLeft.text = name
-        itemBinding.tvBetDuelRight.text = odds
-        itemBinding.sclThree.clickNoRepeatSingle {
-            callback(marketId)
-            it.isSelected = true
-            delayExample {
-                it.isSelected = false
+            LiveOddsStatusEnum.DOWN.status -> {
+                down.isVisible = true
+                top.isVisible = false
+                handler.postDelayed({ down.isVisible = false }, 2000)
             }
+            LiveOddsStatusEnum.SAME.status -> {
+                down.isVisible = false
+                top.isVisible = false
+            }
+            else ->{}
         }
-        return itemBinding.root
     }
 
-    fun delayExample(delayCallback: () -> Unit) {
+    private fun delayExample(delayCallback: () -> Unit) {
         CoroutineScope(Dispatchers.Main).launch {
             delay(2000)
             delayCallback()
         }
     }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         handler.removeCallbacksAndMessages(null)

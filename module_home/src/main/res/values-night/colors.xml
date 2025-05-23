@@ -3,11 +3,8 @@
     <color name="bg_main">#F3F3F4</color>
     <color name="bg_card">#ffffff</color>
     <color name="data_bg">#FBFBFB</color>
-    <color name="secondary_text">#666666</color>
-    <color name="secondary_title">@color/main_text</color>
     <color name="bg_card_gradient_start">#00FEFFFE</color>
     <color name="bg_sport_list_gradient_start">#00F3F3F4</color>
-    <color name="tab_indicator_color">@color/brand_color</color>
     <color name="bg_sport_selected">@color/brand_color</color>
     <color name="bg_sport_unselect">#E1E1E3</color>
     <color name="sport_item_text_select">#222222</color>
@@ -16,8 +13,6 @@
     <color name="bg_league_item_unselect">@color/secondary_text</color>
     <color name="league_tab_tint_select">#000000</color>
     <color name="league_tab_tint_unselect">@color/secondary_text</color>
-    <color name="balance_background">#0A000000</color>
     <color name="balance_background_icon">#99FFFFFF</color>
     <color name="odds_highlight_overlay">#e8e8e8</color>
-    <color name="list_separator">#f6f6f6</color>
 </resources>

@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
     <color name="tab_normal_text_color">#929298</color>
     <color name="tab_select_text_color">#000000</color>
     <color name="tab_color_normal">#161823</color>
@@ -17,7 +10,6 @@
     <color name="tran_green">#3324EE8A</color>
     <color name="tran_red">#33FE3666</color>
 
-    <color name="background">#0E0F19</color>
     <color name="line">#23252F</color>
     <color name="item_name">#FFFFFF</color>
     <color name="item_answer">#30303E</color>

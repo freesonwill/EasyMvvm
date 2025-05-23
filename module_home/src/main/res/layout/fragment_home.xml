@@ -89,9 +89,4 @@
             android:text="测试WebFragment" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/floating_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

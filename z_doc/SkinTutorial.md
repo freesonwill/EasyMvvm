@@ -77,3 +77,9 @@ apply(from = rootProject.file("gradle/_suffixes.gradle.kts"))
 ``` 
 ./gradlew :module_live:addResourceSuffixes
 ```
+
+## 6. 使用_duplicate_color_name.gradle.kt 检查每个module中的color name 不与其他模块重复
+``` 
+./gradlew checkDuplicateColorNames   
+```
+

@@ -122,6 +122,9 @@
         <action
             android:id="@+id/action_newHomeFragment_to_homeBetSlipFragment"
             app:destination="@id/homeBetSlipFragment" />
+        <action
+            android:id="@+id/action_newHomeFragment_to_favoriteListFragment"
+            app:destination="@id/favoriteListFragment" />
     </fragment>
 
     <fragment
@@ -154,4 +157,8 @@
         android:id="@+id/homeBetSlipFragment"
         android:name="arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment"
         android:label="HomeBetSlipFragment" />
+    <fragment
+        android:id="@+id/favoriteListFragment"
+        android:name="arch.cayenne.module.home.ui.fragment.FavoriteListFragment"
+        android:label="FavoriteListFragment" />
 </navigation>

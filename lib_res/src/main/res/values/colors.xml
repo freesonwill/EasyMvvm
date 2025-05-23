@@ -7,7 +7,7 @@
     <color name="win_color">#01CA52</color>
     <color name="lose_color">#FF3019</color>
     <color name="money_background">#232530</color>
-    <color name="balance_background">#FFFFFF05</color>
+    <color name="balance_background">#0DFFFFFF</color>
 
 
 </resources>

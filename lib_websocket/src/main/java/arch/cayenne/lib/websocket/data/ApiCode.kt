@@ -52,4 +52,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     CHAT_PING(0,2), //0 -2 聊天心跳
     CHAT_LOGIN(90,1101), //7-7 聊天登陆
+
+    SEARCH(500, 1030), // 500-1030: 搜索
+    SEARCH_HOT_WORD(500, 1031), // 500-1031: 热门搜索词
+    SEARCH_RECOMMEND(500, 1032), // 500-1032: 搜索自动补充词汇
 }

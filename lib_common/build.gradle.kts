@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
 }
 apply(from = rootProject.file("gradle/flavor.gradle"))
+apply(from = rootProject.file("gradle/_duplicate_color_names.gradle.kt"))
 
 android {
     namespace = "arch.cayenne.lib.common"

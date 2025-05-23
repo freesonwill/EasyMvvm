@@ -65,10 +65,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var isExpanded = false
 
     override fun initView(savedInstanceState: Bundle?) {
-
-        childFragmentManager.beginTransaction()
-            .replace(mBinding.floatingContainer.id, FloatingButtonFragment())
-            .commit()
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
@@ -467,7 +463,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llFavoriteEntry.setOnClickListener {
-
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToFavoriteListFragment())
             }
 
             llSearchEntry.setOnClickListener {

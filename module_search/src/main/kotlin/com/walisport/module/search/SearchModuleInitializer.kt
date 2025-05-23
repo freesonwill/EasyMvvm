@@ -22,7 +22,7 @@ class SearchModuleInitializer : DefaultInitializer<String> {
     }
 
     private val repoModules = module {
-        factoryOf(::SearchRepository)
+        factory { SearchRepository(get(), get(), get()) }
     }
 
     private val moduleList: List<Module> = listOf(viewModules, repoModules)

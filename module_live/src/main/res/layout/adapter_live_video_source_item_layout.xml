@@ -4,12 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_60">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_thumb"
         android:layout_width="@dimen/dp_103"
         android:layout_height="@dimen/dp_60"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/VideoThumbRoundedCorner"/>
 
 
     <androidx.appcompat.widget.LinearLayoutCompat

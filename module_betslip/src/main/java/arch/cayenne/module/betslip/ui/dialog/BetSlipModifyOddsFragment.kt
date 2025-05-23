@@ -76,7 +76,7 @@ class BetSlipModifyOddsFragment private constructor() :
     }
 
     override val dialogBackground: Drawable?
-        get() = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.black_65))
+        get() = ColorDrawable(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.black_65))
 
     private fun setDialogPosition() {
         dialog?.setCanceledOnTouchOutside(true)
