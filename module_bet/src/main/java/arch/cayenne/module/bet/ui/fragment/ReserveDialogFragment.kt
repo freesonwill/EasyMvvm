@@ -78,7 +78,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
         val odds = requireArguments().getInt(ODDS_NUMBER, -1)
         if (odds != -1) {
-            mViewModel.setNumber(odds.toLong())
+            mViewModel.init(odds)
         }
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object : NumberKeyboardView.OnCalculatorClickListener {
