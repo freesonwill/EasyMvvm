@@ -6,7 +6,7 @@ import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 
 class OddsColumnViewHolder(
-    mBinding: ItemOddsColumnBinding, // odds_row_item.xml 的 binding
+    mBinding: ItemOddsColumnBinding,
     onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
 

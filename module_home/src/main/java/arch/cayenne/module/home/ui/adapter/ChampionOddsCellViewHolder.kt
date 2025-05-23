@@ -13,15 +13,13 @@ class ChampionOddsCellViewHolder(
     private val mBinding: ItemChampionOddsCellBinding,
     private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
 ) : BaseViewHolder(mBinding) {
-    private var currentState: OddsCellState = OddsCellState.HIDDEN
+    private var currentState: OddsCellState = OddsCellState.VISIBLE
     fun bind(item: SelectionBeanLite) {
-        currentState = OddsCellState.VISIBLE
         with(mBinding) {
             tvShortName.text = item.name
             tvOdds.text = item.odds.getOdds()
-            llOddsCell.isSelected = item.isSelected //<<<< 是否選中
             val isActive = item.active
-            updateState(isActive)
+            updateState(isActive, item.isSelected)
 
             llOddsCell.setOnClickListener {
                 if (item.active) {
@@ -34,9 +32,9 @@ class ChampionOddsCellViewHolder(
 
 
     fun bindPayload(item: SelectionBeanLite, payloads: List<Any>) {
-        currentState = OddsCellState.VISIBLE
         val diff = payloads.firstOrNull() as? Set<*> ?: return
         val isActive = item.active
+        currentState = if (isActive) OddsCellState.VISIBLE else OddsCellState.DEACTIVATED
         with(mBinding) {
 
             if ("odds" in diff) {
@@ -52,7 +50,7 @@ class ChampionOddsCellViewHolder(
             }
 
             if ("active" in diff) {
-                updateState(isActive)
+                updateState(isActive, item.isSelected)
             }
 
             if ("parlay" in diff) {
@@ -108,13 +106,18 @@ class ChampionOddsCellViewHolder(
     }
 
 
-    private fun updateState(active: Boolean) {
-
+    private fun updateState(active: Boolean, isSelected: Boolean) {
+        currentState = if (active) OddsCellState.VISIBLE else OddsCellState.DEACTIVATED
         with(mBinding) {
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE
             llOddsCell.isEnabled = active
+            if (active) {
+                llOddsCell.isSelected = isSelected
+            } else {
+                llOddsCell.isSelected = false
+            }
         }
     }
 
@@ -129,7 +132,7 @@ class ChampionOddsCellViewHolder(
     }
 
     fun hideView() {
-        currentState = OddsCellState.HIDDEN
+        currentState = OddsCellState.DEACTIVATED
         mBinding.root.visibility = View.GONE
     }
 

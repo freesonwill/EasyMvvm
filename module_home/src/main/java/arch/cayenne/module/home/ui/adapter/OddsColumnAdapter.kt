@@ -46,7 +46,7 @@ class OddsColumnAdapter(
         if (payloads.isNotEmpty()) {
             holder.bindPayload(market, selections, payloads)
         } else {
-            holder.bind(market, selections)
+            super.onBindViewHolder(holder, position, payloads)
         }
     }
 }
