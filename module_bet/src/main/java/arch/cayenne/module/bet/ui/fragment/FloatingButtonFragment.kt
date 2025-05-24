@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -10,10 +11,16 @@ import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import kotlin.reflect.KClass
 
-class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
+class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
     override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
     override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
     private var isShowBetSheet = false
+
+    companion object {
+        fun newInstance(): FloatingButtonFragment {
+            return FloatingButtonFragment()
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         setFloatingViewPosition(requireActivity().resources.displayMetrics.heightPixels)
@@ -71,5 +78,11 @@ class FloatingButtonFragment : BaseFragment<FloatingButtonViewModel, FragmentFlo
         layoutParams.topMargin = (screenHeight * 2 / 3) - floatingView.height / 2
 
         floatingView.layoutParams = layoutParams
+    }
+
+    fun show(activity: AppCompatActivity) {
+        activity.supportFragmentManager.beginTransaction()
+            .add(android.R.id.content, this, this.javaClass.simpleName)
+            .commit()
     }
 }

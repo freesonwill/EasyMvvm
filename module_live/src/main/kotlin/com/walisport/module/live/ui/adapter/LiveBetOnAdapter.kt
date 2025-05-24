@@ -4,18 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
-import com.walisport.module.live.ui.widget.LiveBetListLayout
 
 class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
@@ -25,8 +22,10 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var homeLogo: String? = ""
     private var awayName: String? = ""
     private var awayLogo: String? = ""
+    private var selectionComboId: Long? = null
     private lateinit var map: Map<Long, List<LiveSelectionBean>>
     private var isNotify = false
+
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetItemLayoutBinding =
             binding as AdapterLiveBetItemLayoutBinding
@@ -34,6 +33,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         init {
             setOnClickListener()
         }
+
         private fun setOnClickListener() {
 
         }
@@ -44,28 +44,40 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
             var lists = map[item.marketId]
             viewBinding.lbBet.removeAllViews()
             viewBinding.lbBet.viewInit()
-
             lists?.withIndex()?.forEach { (index, listIt) ->
-                if (position==0||listIt.style == StatesArrange.BO_DIAN.code){
-                        viewBinding.clBet.visibility = View.VISIBLE
-                        viewBinding.awayName.text = awayName
-                        viewBinding.homeName.text = homeName
-                        Glide.with(viewBinding.roots).load(homeLogo)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
-                            .into(viewBinding.homeLogo)
-                        Glide.with(viewBinding.roots).load(awayLogo)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
-                            .into(viewBinding.awayLogo)
-                        viewBinding.andName.visibility =
-                            if (lists[0].style == StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
-                    } else {
-                        viewBinding.clBet.visibility = View.GONE
-                    }
+                if (position == 0 || listIt.style == StatesArrange.BO_DIAN.code) {
+                    viewBinding.clBet.visibility = View.VISIBLE
+                    viewBinding.awayName.text = awayName
+                    viewBinding.homeName.text = homeName
+                    Glide.with(viewBinding.roots).load(homeLogo)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
+                        .into(viewBinding.homeLogo)
+                    Glide.with(viewBinding.roots).load(awayLogo)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).skipMemoryCache(false)
+                        .into(viewBinding.awayLogo)
+                    viewBinding.andName.visibility =
+                        if (lists[0].style == StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
+                } else {
+                    viewBinding.clBet.visibility = View.GONE
+                }
+
+                var isisCombo: Boolean = if (selectionComboId == null) {
+                    false
+                } else if (selectionComboId == listIt.selectionId) {
+                    true
+                } else {
+                    false
+                }
                 viewBinding.lbBet.submitList(
                     StatesArrange.getStates(listIt.style),
                     index,
                     listIt.shortName,
-                    listIt.odds, listIt.selectionId, listIt.active,listIt.oddsStatus,isNotify
+                    listIt.odds,
+                    listIt.selectionId,
+                    listIt.active,
+                    listIt.oddsStatus,
+                    isNotify,
+                    isisCombo,
                 ) { it ->
                     callback.itemListCallback(it, listIt.selectionId)
                 }
@@ -79,7 +91,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         awayName: String,
         awayLogo: String,
         map: Map<Long, List<LiveSelectionBean>>,
-        isNotify : Boolean
+        isNotify: Boolean
     ) {
         this.homeName = homeName
         this.homeLogo = homeLogo
@@ -90,9 +102,14 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     }
 
 
-    fun setIsNotify( isNotify : Boolean){
+    fun setIsNotify(isNotify: Boolean) {
         this.isNotify = isNotify
     }
+
+    fun setSelectionComboId(selectionComboId: Long?) {
+        this.selectionComboId = selectionComboId
+    }
+
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
         holder.updateItem(position)
     }
@@ -121,10 +138,10 @@ interface LivBetListCallback {
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
     override fun areItemsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return false
+        return oldItem.marketId == newItem.marketId
     }
 
     override fun areContentsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return false
+        return oldItem==newItem
     }
 }

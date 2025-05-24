@@ -42,7 +42,6 @@
         />
   </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
   <androidx.constraintlayout.widget.ConstraintLayout
-      android:id="@+id/clBetTitleTop"
       android:layout_marginStart="6dp"
       android:paddingTop="6dp"
       android:layout_marginEnd="6dp"
