@@ -62,7 +62,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
             }
         }
         //比赛技术统计推送数据(WebSocket接口)
-        mainViewModel.matchStatisticData.observe(viewLifecycleOwner) {
+        mainViewModel.statisticData.observe(viewLifecycleOwner) {
             it?.let {
                 parseData(it.stats)
                 parseHalfTeamData(it.team)

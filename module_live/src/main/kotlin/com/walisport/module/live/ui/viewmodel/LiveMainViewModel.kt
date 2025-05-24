@@ -26,8 +26,8 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
 
     //技术统计
-    private val _matchStatisticData = MutableLiveData<MatchLiveData>()
-    val matchStatisticData: LiveData<MatchLiveData> = _matchStatisticData
+    private val _statisticData = MutableLiveData<MatchLiveData>()
+    val statisticData: LiveData<MatchLiveData> = _statisticData
 
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
@@ -115,7 +115,7 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
                     )
                 } ?: emptyList()
                 val temp = MatchLiveData(0, teams, stats)
-                _matchStatisticData.value = temp
+                _statisticData.value = temp
             }
         }
     }
