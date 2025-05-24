@@ -3,6 +3,8 @@
     <declare-styleable name="SportBackgroundHelper">
         <attr name="android:background"/>
         <attr name="android:progressDrawable"/>
+        <attr name="android:backgroundTint" format="color" />
+
     </declare-styleable>
 
     <declare-styleable name="SportImageView">

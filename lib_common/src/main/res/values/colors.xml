@@ -122,7 +122,8 @@
 
     <color name="color_2c3c3e">#2c3c3e</color>
     <color name="color_15b264">#15b264</color>
-    <color name="black_65">#59000000</color>
+    <color name="black_65">#A6000000</color>
+    <color name="black_75">#BF000000</color>
     <color name="tab_indicator_color">#24EE8A</color>
     <color name="background">#FF0E0F19</color>
 </resources>
