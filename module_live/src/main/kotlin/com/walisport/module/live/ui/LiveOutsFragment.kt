@@ -61,12 +61,14 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
             }
         }
+        //比赛技术统计推送数据(WebSocket接口)
         mainViewModel.matchStatisticData.observe(viewLifecycleOwner) {
             it?.let {
                 parseData(it.stats)
                 parseHalfTeamData(it.team)
             }
         }
+        //比赛技术统计接口数据(HTTP接口)
         mViewModel.matchStatisticData.observe(viewLifecycleOwner) {
             it?.let {
                 parseData(it.stats)
