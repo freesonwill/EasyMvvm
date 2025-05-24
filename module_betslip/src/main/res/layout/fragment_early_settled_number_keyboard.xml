@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     >
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/main_background"
@@ -22,7 +22,7 @@
         android:layout_marginBottom="@dimen/dp_30"
         >
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_money"
             android:layout_width="0dp"
             android:layout_height="46dp"
@@ -83,7 +83,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/iv_money"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableTabLayout
             android:id="@+id/ll_tab"
@@ -92,7 +92,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/main_background"
             app:layout_constraintTop_toBottomOf="@id/cl_money"
-            app:sportTabBackground="@drawable/selector_keyboard_tab_percent"
+            app:sportTabBackground="@drawable/selector_keyboard_tab_percent_white_blue"
             app:tabGravity="start"
             app:tabIndicatorHeight="0dp"
             app:tabMode="scrollable"
@@ -101,7 +101,7 @@
             app:tabTextAppearance="@style/CustomTabText"
             app:tabTextColor="@color/secondary_text" />
 
-        <LinearLayout
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/ll_common_amount"
             android:layout_width="62dp"
             android:layout_height="wrap_content"
@@ -114,7 +114,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_tab">
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_100"
                 style="@style/KeyboardSideTextView"
                 android:layout_width="match_parent"
@@ -125,13 +125,13 @@
                 android:text="100"
                 android:textSize="14sp" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
                 android:background="@color/dividing_line" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_500"
                 style="@style/KeyboardSideTextView"
                 android:layout_width="match_parent"
@@ -142,13 +142,13 @@
                 android:text="500"
                 android:textSize="14sp" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
                 android:background="@color/dividing_line" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_1000"
                 style="@style/KeyboardSideTextView"
                 android:layout_width="match_parent"
@@ -159,13 +159,13 @@
                 android:text="1000"
                 android:textSize="14sp" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
                 android:background="@color/dividing_line" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_2000"
                 style="@style/KeyboardSideTextView"
                 android:layout_width="match_parent"
@@ -176,13 +176,13 @@
                 android:text="2000"
                 android:textSize="14sp" />
 
-            <View
+            <arch.cayenne.lib.skin.widget.SkinnableView
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginHorizontal="4dp"
                 android:background="@color/dividing_line" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_5000"
                 style="@style/KeyboardSideTextView"
                 android:layout_width="match_parent"
@@ -192,7 +192,7 @@
                 android:paddingVertical="12dp"
                 android:text="5000"
                 android:textSize="14sp" />
-        </LinearLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_keyboard"
@@ -220,14 +220,14 @@
             app:layout_constraintEnd_toEndOf="@id/cl_money"
             app:layout_constraintTop_toTopOf="@id/ll_common_amount">
 
-            <ImageButton
+            <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
                 android:src="@drawable/icon_keyborad_back" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_clear"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
@@ -236,7 +236,7 @@
                 android:text="@string/keyboard_clear"
                 android:textSize="12sp" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_double"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
@@ -245,7 +245,7 @@
                 android:text="@string/keyboard_double"
                 android:textSize="12sp" />
 
-            <ImageButton
+            <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_collapse"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginTop="2dp"
@@ -269,7 +269,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottom"
         >
 
-        <androidx.appcompat.widget.AppCompatButton
+        <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_cancel"
             android:layout_width="90dp"
             android:layout_height="48dp"
