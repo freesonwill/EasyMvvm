@@ -6,6 +6,9 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.model.MatchHalfTeamStats
+import com.walisport.module.live.data.model.MatchLiveData
+import com.walisport.module.live.data.model.Stat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,6 +24,10 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     //首次加载
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
+
+    //技术统计
+    private val _matchStatisticData = MutableLiveData<MatchLiveData>()
+    val matchStatisticData: LiveData<MatchLiveData> = _matchStatisticData
 
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
@@ -93,6 +100,22 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     fun observeMatchStaticsNotify() {
         viewModelScope.launch {
             repo.observeMatchStaticsNotify().collect {
+                val teams = it.matchLiveData?.teamStatsList?.mapIndexed { _, item ->
+                    MatchHalfTeamStats(
+                        type = item.type,
+                        homeNum = item.homeNum,
+                        awayNum = item.awayNum
+                    )
+                } ?: emptyList()
+                val stats = it.matchLiveData?.statsList?.mapIndexed { _, item ->
+                    Stat(
+                        type = item.type,
+                        home = item.home,
+                        away = item.away
+                    )
+                } ?: emptyList()
+                val temp = MatchLiveData(0, teams, stats)
+                _matchStatisticData.value = temp
             }
         }
     }
