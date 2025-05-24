@@ -96,6 +96,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.getMainMatch(mViewModel.matchId)
         mViewModel.observeMatchBean(mViewModel.matchId)
         mViewModel.registerMatchInfoNotify(mViewModel.matchId)
+        mViewModel.registerStatisticsNotify(123456L)
+        mViewModel.observeMatchStaticsNotify()
     }
 
     private fun setVideoView() {
@@ -140,6 +142,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
+        mViewModel.unregisterStatisticsNotify()
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()
