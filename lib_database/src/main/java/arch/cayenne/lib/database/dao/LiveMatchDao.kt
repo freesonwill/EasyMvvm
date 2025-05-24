@@ -69,6 +69,15 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("DELETE FROM LiveSelectionBeanRecord")
     abstract fun deleteSelectionBeanRecord()
 
+
+    @Query("DELETE FROM LiveSelectionBean WHERE selectionId IN (:selectionsIds)")
+    abstract fun deleteSelectionBeanById( selectionsIds: List<Long>)
+
+    @Query("DELETE FROM LiveSelectionBeanRecord WHERE selectionId IN (:selectionsIds)")
+    abstract fun deleteSelectionBeanRecordById(selectionsIds: List<Long>)
+
+
+
     //收到notify更新数据
     @Query(
         "UPDATE LiveMatchBean " +
@@ -118,11 +127,19 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     open suspend fun updateLiveSelectionBean(
         selections: List<LiveSelectionBean>,
         selectionsRecord: List<LiveSelectionBeanRecord>,
+        selectionsDeleteIds: List<Long>,
     ) {
-        insertSelections(selections)
-        insertSelectionsRecord(selectionsRecord)
+        if (selections.isNotEmpty()) {
+            insertSelections(selections)
+        }
+        if (selectionsRecord.isNotEmpty()) {
+            insertSelectionsRecord(selectionsRecord)
+        }
+        if (selectionsDeleteIds.isNotEmpty()){
+            deleteSelectionBeanById(selectionsDeleteIds)
+            deleteSelectionBeanRecordById(selectionsDeleteIds)
+        }
     }
-
 
     @Transaction
     open fun clearAllMatch() {

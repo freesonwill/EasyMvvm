@@ -90,10 +90,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 liveBetOnAdapter.submitList(list)
                 liveBetOnAdapter.setSelectionComboId(selectionComboId)
                 liveBetOnAdapter.notifyDataSetChanged()
-                //往下滑动盘口变动不会显示上升,下降
-                delay(2000)
-                isNotify = false
-                liveBetOnAdapter.setIsNotify(false)
             }
         }
     }

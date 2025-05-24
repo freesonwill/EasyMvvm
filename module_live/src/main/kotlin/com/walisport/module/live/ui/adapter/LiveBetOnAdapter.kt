@@ -138,10 +138,10 @@ interface LivBetListCallback {
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
     override fun areItemsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return false
+        return oldItem.marketId == newItem.marketId
     }
 
     override fun areContentsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return false
+        return oldItem==newItem
     }
 }
