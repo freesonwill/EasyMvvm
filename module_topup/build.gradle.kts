@@ -3,6 +3,9 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
+apply(from = rootProject.file("gradle/flavor.gradle"))
+
+
 android {
     namespace = "com.walisport.module.topup"
     compileSdk = 34
@@ -33,7 +36,11 @@ android {
 }
 
 dependencies {
-
+    implementation(project(":lib_res"))
+    implementation(project(":lib_skin"))
+    implementation(project(":lib_common"))
+    implementation(project(":lib_database"))
+    implementation(project(":lib_websocket"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
