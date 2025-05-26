@@ -8,10 +8,10 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:divider="?android:dividerVertical"
         android:dividerPadding="10dp"
         android:gravity="center_horizontal"
-        android:background="@color/white"
         android:orientation="vertical"
         android:showDividers="middle"
         tools:context=".test.ui.fragment.HomeFragment">
@@ -87,6 +87,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:text="测试WebFragment" />
+
+        <TextView
+            android:id="@+id/http测试"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="http测试" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>

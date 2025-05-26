@@ -1,18 +1,17 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -123,11 +122,14 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
 
     override fun superDismiss() {
         mViewModel.unregister()
+        super.superDismiss()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
         parentFragmentManager.setFragmentResult(KEY_RESULT, Bundle().apply {
             putString(VALUE_DISMISS, VALUE_DISMISS)
         })
-        super.superDismiss()
-
+        super.onDismiss(dialog)
     }
 }
 

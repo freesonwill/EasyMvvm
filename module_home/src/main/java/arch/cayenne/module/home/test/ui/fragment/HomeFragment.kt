@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.test.ui.fragment
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -9,17 +10,32 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.view.BasePopup
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.http.HttpClient
+import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
+import kotlinx.coroutines.delay
+import org.koin.android.ext.android.getKoin
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.Query
+import retrofit2.http.QueryMap
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -39,6 +55,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
          * fragment -> activity
          */
         mBinding.tv1.setOnClickListener {
+
             navigate(HomeFragmentDirections.actionHomeFragmentToSecondFragment("Tom"))
             //navigate(HomeFragmentDirections.actionHomeFragmentToLoginActivity(null))
         }
@@ -97,7 +114,8 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
                         override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
                             if (calendar == null) return
                             selectedDate = "$calendar"
-                            vb.tvCurrentMonth.text = "${calendar.month.toChineseMonth()} ${calendar.year}"
+                            vb.tvCurrentMonth.text =
+                                "${calendar.month.toChineseMonth()} ${calendar.year}"
                         }
                     })
                 }
@@ -134,15 +152,179 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
             navigate(Uri.parse("walisport://module_handicap/HandicapFragment"))
         }
         mBinding.tvWebFragment.clickNoRepeat {
-            navigate(Rc.string.deeplink_single_web_fragment.deeplink(
-                "title" to "baidu",
-                "url" to "https://www.baidu.com/")
+            navigate(
+                Rc.string.deeplink_single_web_fragment.deeplink(
+                    "title" to "baidu",
+                    "url" to "https://www.baidu.com/"
+                )
             )
             /*navigate(Rc.string.deeplink_single_web_fragment.deeplink(
                 "title=baidu",
                 "url=https://www.baidu.com/")
             )*/
         }
+        mBinding.http.clickNoRepeat {
+            val httpClient = getKoin().get<HttpClient>()
+            launch {
+                val api = httpClient.create(ITestApi::class.java)
+                //Get
+                var progressDialog: ProgressDialog? = null
+                httpClient.safeRequest(
+                    request = {
+                        api.getVacations(
+                            token = "A2E0C3CDEA081D3BFC34F8FE23A15886",
+                            type = 1,
+                            timestamp = "1462377600",
+                            client = "ceshi"
+                        )
+                    },
+                    onStart = {
+                        progressDialog = ProgressDialog(requireContext()).apply {
+                            setMessage("测试Get...")
+                            setCancelable(false) // 不可取消
+                            show()
+                        }
+                    },
+                    onSuccess = {
+                        "response------>$it".logd(TAG)
+                        showToast(it.toString())
+                        progressDialog?.dismiss()
+                    },
+                    onFailure = { code, msg, throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        showToast(msg)
+                        progressDialog?.dismiss()
+                    }
+                )
+                delay(1000)
+                //POST
+                httpClient.safeRequest(
+                    request = {
+                        api.postTest(
+                            mapOf(
+                                "name" to "ChatGPT",
+                                "message" to "Hello World"
+                            )
+                        )
+                    },
+                    onStart = {
+                        progressDialog = ProgressDialog(requireContext()).apply {
+                            setMessage("测试Post...")
+                            setCancelable(false) // 不可取消
+                            show()
+                        }
+                    },
+                    onSuccess = {
+                        "response------>$it".logd(TAG)
+                        showToast(it.toString())
+                        progressDialog?.dismiss()
+                    },
+                    onFailure = { code, msg, throwable ->
+                        "response------>$code,$msg,$throwable".loge(TAG)
+                        showToast(msg)
+                        progressDialog?.dismiss()
+                    }
+                )
+
+                /*api.getVacations2(
+                    token = "A2E0C3CDEA081D3BFC34F8FE23A15886",
+                    type = 1,
+                    timestamp = "1462377600",
+                    client = "ceshi"
+                )*/
+                /*api.getVacations2(
+                    token = "A2E0C3CDEA081D3BFC34F8FE23A15886",
+                    type = 1,
+                    timestamp = "1462377600",
+                    client = "ceshi"
+                ).let {
+                    "response------>$it".logd(TAG)
+                }
+
+                api.getVacations3(
+                    mapOf(
+                        "token" to "A2E0C3CDEA081D3BFC34F8FE23A15886",
+                        "type" to "1",
+                        "timestamp" to "1462377600",
+                        "client" to "ceshi"
+                    )
+                ).let {
+                    "response------>$it".logd(TAG)
+                }
+                api.postTest(mapOf(
+                    "name" to "ChatGPT",
+                    "message" to "Hello World"
+                )).let {
+                    "response------>$it,body:${it.body()}".logd(TAG)
+                }
+                api.postTest2(mapOf(
+                    "name" to "ChatGPT",
+                    "message" to "Hello World"
+                )).let {
+                    "response------>$it}".logd(TAG)
+                    Toast.makeText(requireContext(),it.data,Toast.LENGTH_SHORT).show()
+                }*/
+            }
+        }
+    }
+
+    data class HolidayResponse(
+        val status: Int,
+        val data: Map<String, String>,
+        val errMsg: String
+    )
+
+    data class HttpBinResponse(
+        val args: Map<String, String>?,
+        val data: String?,
+        val files: Map<String, String>?,
+        val form: Map<String, String>?,
+        val headers: HttpBinHeaders?,
+        val json: Map<String, String>?,
+        val origin: String?,
+        val url: String?
+    )
+
+    data class HttpBinHeaders(
+        val Accept: String?,
+        val `Content-Length`: String?,
+        val `Content-Type`: String?,
+        val Host: String?,
+        val `User-Agent`: String?,
+        val `X-Amzn-Trace-Id`: String?
+    )
+
+
+    interface ITestApi : IApi {
+        @GET("calendar/vacations")
+        suspend fun getVacations(
+            @Query("token") token: String,
+            @Query("type") type: Int,
+            @Query("timestamp") timestamp: String,
+            @Query("client") client: String
+        ): Response<HolidayResponse>
+
+        @GET("calendar/vacations")
+        suspend fun getVacations2(
+            @Query("token") token: String,
+            @Query("type") type: Int,
+            @Query("timestamp") timestamp: String,
+            @Query("client") client: String
+        ): HolidayResponse
+
+        @GET("calendar/vacations")
+        suspend fun getVacations3(
+            @QueryMap params: Map<String, String>
+        ): HolidayResponse
+
+        /************** 测试切换baseUrl *********/
+        @Headers("baseUrl:https://httpbin.org/")
+        @POST("post")
+        suspend fun postTest(@Body params: Map<String, String>): Response<HttpBinResponse>
+
+        @Headers("BASEURL:https://httpbin.org/")
+        @POST("post")
+        suspend fun postTest2(@Body params: Map<String, String>): HttpBinResponse
     }
 
     private fun toFragmentInner() {
