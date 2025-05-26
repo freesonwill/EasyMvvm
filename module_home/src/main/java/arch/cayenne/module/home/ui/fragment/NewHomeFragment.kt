@@ -22,7 +22,6 @@ import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
@@ -58,8 +57,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             ).show()
         }
     }
-    private val tournamentList = mutableListOf<TournamentDataModel>()
+
     private lateinit var leagueAdapter: LeaguePagerAdapter
+    private lateinit var tabLayoutMediator: TabLayoutMediator
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -384,44 +384,26 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
-        tournamentList.clear()
-        tournamentList.addAll(tournaments)
-        //確定拿到聯賽資料後再決定要不要show出時間
-        if (tournaments.isNotEmpty()) {
-            with(mBinding.layoutContainer) {
-                if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
-                    tlDateList.visibility = View.GONE
-                    llOtherDate.visibility = View.GONE
-                } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
-                    tlDateList.visibility = View.VISIBLE
-                    llOtherDate.visibility = View.VISIBLE
-                }
+    private fun initTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+        with(mBinding.layoutContainer) {
+            if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                tlDateList.visibility = View.GONE
+                llOtherDate.visibility = View.GONE
+            } else {
+                tlDateList.visibility = View.VISIBLE
+                llOtherDate.visibility = View.VISIBLE
             }
-        }
-        mBinding.layoutContainer.apply {
+
             vpGameList.currentItem = 0
             tlDateList.getTabAt(0)?.select()
 
             leagueAdapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
-                tournament = tournamentList,
+                tournament = tournaments,
                 playType = mViewModel.getCurrentPlayType()
             )
             vpGameList.adapter = leagueAdapter
-
-            TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
-                val tournament = tournamentList[position]
-                tab.customView = createTournamentTabView(tournament)
-                tab.view.setPadding(
-                    0,
-                    0,
-                    10f.dp2px,
-                    0
-                )
-            }.attach()
-
 
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -429,26 +411,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     vpGameList.currentItem = tab?.position ?: 0
                 }
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {
-                }
-
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
         }
     }
 
-    private fun addNewTournamentTab(tournament: TournamentDataModel) {
-        tournamentList.add(tournament)
-        leagueAdapter.notifyItemInserted(tournamentList.lastIndex)
-        val newTab = mBinding.layoutContainer.tlLeagueList.newTab()
-        newTab.customView = createTournamentTabView(tournament)
-        newTab.view.setPadding(
-            0,
-            0,
-            10f.dp2px,
-            0
-        )
-        mBinding.layoutContainer.tlLeagueList.addTab(newTab, true)
+    private fun setupTournamentTabs(tournaments: List<TournamentDataModel>) {
+        if (::tabLayoutMediator.isInitialized) {
+            tabLayoutMediator.detach()
+        }
+        with(mBinding.layoutContainer) {
+            tabLayoutMediator = TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
+                tournaments.getOrNull(position)?.let {
+                    tab.customView = createTournamentTabView(it)
+                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+                }
+            }.also { it.attach() }
+        }
     }
 
     override fun initData() {
@@ -491,13 +471,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
-            setTournamentAndViewPagerLayout(list)
-        }
-
-        mViewModel.appendTournament.observe(viewLifecycleOwner) { tournament ->
-            if (tournament != null && tournamentList.none { it.id == tournament.id }) {
-                addNewTournamentTab(tournament)
+            if (!::leagueAdapter.isInitialized) {
+                initTournamentAndViewPagerLayout(list)
+            } else {
+                leagueAdapter.updateList(list)
             }
+            setupTournamentTabs(list)
         }
 
         mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
