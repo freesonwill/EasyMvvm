@@ -20,6 +20,9 @@ class SearchViewModel : BaseViewModel() {
     private val _searchHotWord = MutableLiveData<List<String>>()
     val searchHotWord: LiveData<List<String>> = _searchHotWord
 
+    private val _searchRecommend = MutableLiveData<List<String>>()
+    val searchRecommend: LiveData<List<String>> = _searchRecommend
+
     fun getRecordByUID() {
         viewModelScope.launch {
             val res = repository.getRecordByUID()
@@ -50,6 +53,17 @@ class SearchViewModel : BaseViewModel() {
         viewModelScope.launch {
             val response = repository.getSearchResult(keyword)
         }
+    }
+
+    fun getSearchRecommend(keyword: String? = "") {
+        viewModelScope.launch {
+            val response = repository.getSearchRecommend(keyword)
+            _searchRecommend.value = response
+        }
+    }
+
+    fun clearSearchRecommend() {
+        _searchRecommend.value = emptyList()
     }
 
     fun getSearchHotWord() {

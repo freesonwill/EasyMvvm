@@ -142,6 +142,19 @@ class SearchRepository(
         println(response)
     }
 
+    suspend fun getSearchRecommend(keyword: String? = ""): List<String> {
+        val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchRecommendResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SEARCH_RECOMMEND,
+        ) {
+            Client.SearchRecommendReq.newBuilder().apply {
+                word = keyword
+            }.build()
+        }
+        return resp.data?.recommendList?.toList() ?: listOf()
+    }
+
     suspend fun getSearchHotWord(): List<String> {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchHotWordResp>(
             scope = scope,

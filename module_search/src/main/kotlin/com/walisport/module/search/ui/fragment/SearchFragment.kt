@@ -2,28 +2,26 @@ package com.walisport.module.search.ui.fragment
 
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.Rect
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
-import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
+import com.walisport.module.search.ui.adapter.RecommendAdapter
+import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -44,8 +42,15 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private val hotWordAdapter by lazy {
         HotWordAdapter { hotWord ->
             mViewModel.getSearchResult(hotWord)
+            updateSearchText(hotWord)
+            addSearchHistory(hotWord)
         }
     }
+
+    private val recommendAdapter by lazy {
+        RecommendAdapter()
+    }
+    private var canSearch: Boolean = true
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -54,19 +59,35 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 titleBar.loadSearchTitleBar(
                     hint = getString(R.string.please_input_content),
                     afterTextChanged = { text, binding ->
+                        if(!canSearch) return@loadSearchTitleBar
+
                         val count = text?.length ?: 0
                         val color = if (count > 0) Rc.color.search_btn
                         else Rc.color.search_btn_normal
                         binding.tvSearchText.setTextColor(color.getColor())
+
+                        // 搜索自动补充词汇
+                        if(recommendAdapter.onClick == null) {
+                            recommendAdapter.setOnClickListener { recommendWord ->
+                                updateSearchText(recommendWord) {
+                                    mViewModel.getSearchResult(recommendWord)
+                                    clearSearchRecommend()
+                                }
+                            }
+                        }
+                        with(text?.toString()) {
+                            recommendAdapter.updateMatchKeyword(this)
+                            getSearchRecommend(this)
+                        }
                     },
                     onSearch = { content, _ ->
                         if (TextUtils.isEmpty(content)) {
                             showToast(getString(R.string.please_input_content))
                             return@loadSearchTitleBar
                         }
-                        historyAdapter?.addData(content)
-                        addOneRecord(content)
+                        addSearchHistory(content)
                         getSearchResult(content)
+                        clearSearchRecommend()
                         getRecordByUID()
                     }
                 )
@@ -81,6 +102,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     onSearch = { content ->
                         content?.let {
                             mViewModel.getSearchResult(content)
+                            clearSearchRecommend()
+                            updateSearchText(content)
                         }
                     }
                 )
@@ -104,6 +127,39 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     setButton()
                 }
 
+                // 搜索自动补充词汇
+                rvSearchRecommend.apply {
+                    layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                    adapter = recommendAdapter.apply {
+                        if (itemDecorationCount == 0) {
+                            addItemDecoration(object : ItemDecoration() {
+                                private val dividerHeight = 0.5f.dp2px
+                                private val paint = Paint().apply {
+                                    color = SkinnableResourceManager.getColor(context, R.color.search_divider)
+                                    strokeWidth = dividerHeight.toFloat()
+                                }
+
+                                override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                                    val itemCount = parent.adapter?.itemCount ?: 0
+
+                                    for (i in 0 until parent.childCount) {
+                                        val child = parent.getChildAt(i)
+                                        val position = parent.getChildAdapterPosition(child)
+
+                                        // 如果不是最後一個 item，就畫底部分隔線
+                                        if (position < itemCount - 1) {
+                                            val left = child.left.toFloat()
+                                            val right = child.right.toFloat()
+                                            val y = child.bottom.toFloat()
+                                            canvas.drawLine(left, y, right, y, paint)
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+
                 //热门搜索
                 rvHotWord.apply {
                     layoutManager = GridLayoutManager(context, 2)
@@ -112,7 +168,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             addItemDecoration(object : ItemDecoration() {
                                 private val dividerHeight = 0.5f.dp2px
                                 private val paint = Paint().apply {
-                                    color = SkinnableResourceManager.getColor(context, R.color.hot_word_divider)
+                                    color = SkinnableResourceManager.getColor(context, R.color.search_divider)
                                     strokeWidth = dividerHeight.toFloat()
                                 }
 
@@ -167,6 +223,27 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
 
+    private fun addSearchHistory(word: String) {
+        historyAdapter?.addData(word)
+        mViewModel.addOneRecord(word)
+    }
+
+    private fun clearSearchRecommend() {
+        mBinding.clSearchRecommend.visibility = View.GONE
+        mViewModel.clearSearchRecommend()
+    }
+
+    private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
+        canSearch = false
+        mBinding.titleBar.findViewById<ClearableEditText>(arch.cayenne.lib.common.R.id.ce_search)
+            .apply {
+                setText(word)
+                setSelection(word.length)
+            }
+        afterChange?.invoke()
+        canSearch = true
+    }
+
     override fun initListener() {
 
     }
@@ -177,6 +254,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 searchRecord.observe(viewLifecycleOwner) {
                     historyAdapter?.setNewData(it.toMutableList())
                     clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+                }
+                searchRecommend.observe(viewLifecycleOwner) {
+                    recommendAdapter.submitList(it)
+                    clSearchRecommend.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
                 searchHotWord.observe(viewLifecycleOwner) {
                     hotWordAdapter.submitList(it)
