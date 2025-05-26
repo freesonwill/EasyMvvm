@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -16,8 +17,6 @@ import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -50,11 +49,8 @@ class HomeViewModel : BaseViewModel() {
     private val _collapseTournamentDropdown = MutableLiveData<Event<Boolean>>()
     val collapseTournamentDropdown: MutableLiveData<Event<Boolean>> = _collapseTournamentDropdown
 
-    //用SharedFlow處理掉返回後livedata會重複接收問題
-    private val _navigateToChampion = MutableSharedFlow<ChampionTournamentDataModel>(replay = 0, extraBufferCapacity = 0)
-    val navigationToChampion: Flow<ChampionTournamentDataModel> = _navigateToChampion
-//    private val _navigateToChampion = MutableLiveData<ChampionTournamentDataModel?>()
-//    val navigationToChampion: LiveData<ChampionTournamentDataModel?> = _navigateToChampion
+    private val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
+    val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
 
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
@@ -97,10 +93,7 @@ class HomeViewModel : BaseViewModel() {
         if (tournament is TournamentDataModel) {
             addNewTournament(tournament.id)
         } else if (tournament is ChampionTournamentDataModel) {
-            viewModelScope.launch {
-                _navigateToChampion.emit(tournament)
-            }
-//            _navigateToChampion.value = tournament
+            _navigateToChampion.value = Event(tournament)
 
         }
     }

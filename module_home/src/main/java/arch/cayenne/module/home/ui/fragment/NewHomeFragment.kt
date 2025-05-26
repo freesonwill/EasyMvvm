@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -41,7 +40,6 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
-import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -499,31 +497,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.tvWalletBalance.text = it.getFormalMoney()
         }
 
-        lifecycleScope.launch {
-            mViewModel.navigationToChampion.collect { data ->
-                val navController = findNavController()
-                if (navController.currentDestination?.id == R.id.newHomeFragment) {
-                    navigate(
-                        NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-                            matchId = data.championMatchId,
-                            name = data.name,
-                            icon = data.icon
-                        )
+        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.newHomeFragment) {
+                navigate(
+                    NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+                        matchId = data.championMatchId,
+                        name = data.name,
+                        icon = data.icon
                     )
-                }
+                )
             }
         }
-//        mViewModel.navigationToChampion.observe(viewLifecycleOwner) { data ->
-//            if (data == null) return@observe
-//            navigate(
-//                NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-//                        matchId = data.championMatchId,
-//                        name = data.name,
-//                        icon = data.icon
-//                )
-//            )
-//            mViewModel.resetNavigationToChampion()
-//        }
     }
 
     private fun createTournamentTabView(
