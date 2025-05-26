@@ -50,4 +50,5 @@
     <string name="lineup_empty">暂无数据,请换个试一试</string>
     <string name="tournament_section_title">选联赛</string>
     <string name="tournament_section_title_hot">热门</string>
+    <string name="balance_format">$%s</string>
 </resources>
