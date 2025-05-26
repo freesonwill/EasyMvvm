@@ -188,5 +188,5 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
 }
 
 enum class TournamentListType {
-    MORE, CHAMPION
+    MORE, CHAMPION, NONE
 }
