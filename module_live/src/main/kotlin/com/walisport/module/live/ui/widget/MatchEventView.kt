@@ -13,7 +13,7 @@ import com.walisport.module.live.databinding.ViewMatchEventBinding
 import com.walisport.module.live.ui.adapter.MatchEventAdapter
 
 /**
- * 赛况页赛况布局控件
+ * 赛况页文字直播控件
  */
 
 class MatchEventView @JvmOverloads constructor(
@@ -40,6 +40,12 @@ class MatchEventView @JvmOverloads constructor(
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
             })
         }
+    }
+
+    //全屏直播模式下的文字直播控件，不要圆角背景
+    fun setFullScreenMode() {
+        mBinding.tvEventTitle.background = null
+        mBinding.root.background = null
     }
 
     //设置比赛双方名称和LOGO

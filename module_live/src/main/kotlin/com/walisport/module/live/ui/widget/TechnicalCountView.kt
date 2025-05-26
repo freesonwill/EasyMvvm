@@ -6,8 +6,6 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -20,7 +18,7 @@ import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.databinding.ViewTechnicalStatisticsBinding
 
 /**
- * 赛况页技术统计布局控件
+ * 赛况页技术统计控件
  */
 
 class TechnicalCountView @JvmOverloads constructor(
@@ -29,7 +27,6 @@ class TechnicalCountView @JvmOverloads constructor(
 
     private var clicklistener: OnClickListener? = null
     private var unitWidth: Float = 0f
-
     private var mBinding: ViewTechnicalStatisticsBinding =
         ViewTechnicalStatisticsBinding.inflate(LayoutInflater.from(context), this, true)
 
@@ -45,9 +42,9 @@ class TechnicalCountView @JvmOverloads constructor(
         unitWidth = (width - 24.dp2px) / 90f
     }
 
-    //全屏直播模式下的技术统计控件
+    //全屏直播模式下的技术统计控件，不要圆角背景
     fun setFullScreenMode() {
-        mBinding.tvStatisticsTitle.visibility = View.GONE
+        mBinding.tvStatisticsTitle.background = null
         mBinding.root.background = null
     }
 
