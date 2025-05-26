@@ -28,14 +28,13 @@ class BetSheetRepository(
                 }
             }
         }
-        register()
     }
 
     suspend fun getBetType() = withContext(scope.coroutineContext) {
         betDao.getCurrentBet()?.betType
     }
 
-    private fun register() {
+    fun register() {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 val selections = betDao.getSelections(bet.betId)
