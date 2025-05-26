@@ -40,7 +40,7 @@ internal class ToastHelper private constructor() {
      * @param context
      * @param msg
      */
-    fun showDefaultToast(context: Context, msg: String, duration: Long = DEFAULT_DURATION) {
+    fun showDefaultToast(context: Context, msg: String?, duration: Long = DEFAULT_DURATION) {
         cancelToast(context)
         if (toastJob != null) {
             return
@@ -138,7 +138,7 @@ internal class ToastHelper private constructor() {
 
 }
 
-fun Fragment.showToast(msg: String, duration: Long = ToastHelper.DEFAULT_DURATION) {
+fun Fragment.showToast(msg: String?, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showDefaultToast(requireContext(), msg, duration)
 }
 

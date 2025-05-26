@@ -29,10 +29,7 @@ class BettingRemoteManager(
     private val socketManager: WebSocketManager
 ) {
 
-    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> by lazy {
-        MutableSharedFlow()
-    }
-
+    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> = MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
     val matchNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchNotifyFlow
 
     init {
@@ -261,6 +258,8 @@ class BettingRemoteManager(
                     selection.parlay
                 )
             }
-        _matchNotifyFlow.tryEmit(selection)
+        if (selection.isNotEmpty()) {
+            _matchNotifyFlow.tryEmit(selection)
+        }
     }
 }

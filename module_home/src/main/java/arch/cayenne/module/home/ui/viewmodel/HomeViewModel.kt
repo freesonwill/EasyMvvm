@@ -48,8 +48,6 @@ class HomeViewModel : BaseViewModel() {
 
     private val _collapseTournamentDropdown = MutableLiveData<Boolean>()
     val collapseTournamentDropdown: MutableLiveData<Boolean> = _collapseTournamentDropdown
-    private val _appendTournament = MutableLiveData<TournamentDataModel?>()
-    val appendTournament: MutableLiveData<TournamentDataModel?> = _appendTournament
 
     //用SharedFlow處理掉返回後livedata會重複接收問題
     private val _navigateToChampion = MutableSharedFlow<ChampionTournamentDataModel>(replay = 0, extraBufferCapacity = 0)
@@ -75,15 +73,15 @@ class HomeViewModel : BaseViewModel() {
                 val tournament = repository.getTournamentById(id)
                 if (tournament != null) {
                     val updatedList = currentList
-                        .filterNot { it.id == TOURNAMENT_ALL_ID }
+                        .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
                         .toMutableList()
                         .apply { add(tournament) }
 
-                    val fullList = listOf(TournamentDataModel.createAllItem(currentSportId)) +
-                            updatedList.distinctBy { it.id }
+                    val fullList =
+                        listOf(TournamentDataModel.createAllItem(currentSportId)) + updatedList
+
                     withContext(Dispatchers.Main) {
                         tournaments.value = fullList
-                        _appendTournament.value = tournament
                         _selectedTournamentId.postValue(id)
                     }
                 } else {
