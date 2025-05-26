@@ -99,8 +99,13 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     )
                 }
             }
-
-
+        }
+        mViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (!isLoading) {
+                mBinding.loadingView.visibility = View.GONE
+            } else {
+                mBinding.loadingView.visibility = View.VISIBLE
+            }
         }
     }
 

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_progress"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_gravity="center"/>
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_12"
+        android:textSize="14sp"
+        android:textColor="@color/main_text"
+        android:text="讀取中"/>
+</merge>
