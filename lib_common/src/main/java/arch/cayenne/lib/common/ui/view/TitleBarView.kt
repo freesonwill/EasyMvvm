@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.Toolbar
 import arch.cayenne.lib.common.databinding.TitleBarDefaultBinding
 import arch.cayenne.lib.common.databinding.TitleBarDynamicsBinding
@@ -63,7 +64,13 @@ class TitleBarView @JvmOverloads constructor(
     ) {
         val binding = TitleBarSearchBinding.inflate(LayoutInflater.from(context), this, true)
         binding.apply {
+            val triggerSearch = {
+                //如果输入内容为空，传入hint内容
+                onSearch.invoke(ceSearch.text?.trim().toString(),this)
+            }
+
             ceSearch.hint = hint
+            ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
             ivBack.clickNoRepeat { onBack() }
             ceSearch.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -76,10 +83,16 @@ class TitleBarView @JvmOverloads constructor(
                     afterTextChanged(s,binding)
                 }
             })
+            ceSearch.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    triggerSearch()
+                    true
+                } else {
+                    false
+                }
+            }
             tvSearchText.clickNoRepeat {
-                //如果输入内容为空，传入hint内容
-                onSearch.invoke(ceSearch.text?.trim().toString(),this)
-                ceSearch.setText("")
+                triggerSearch()
             }
         }
     }
