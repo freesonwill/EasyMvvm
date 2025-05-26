@@ -141,6 +141,9 @@ class MatchListPagerFragment :
         mViewModel.isLoadingData.observe(viewLifecycleOwner) { isLoading ->
             if (!isLoading) {
                 mBinding.refreshLayout.finishRefresh()
+                mBinding.loadingView.visibility = View.GONE
+            } else {
+                mBinding.loadingView.visibility = View.VISIBLE
             }
         }
     }

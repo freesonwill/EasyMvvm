@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -18,6 +19,9 @@ class TournamentListViewModel : BaseViewModel() {
     private var sportId = -1
     private val repo : TournamentListRepository by inject()
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading : LiveData<Boolean> = _isLoading
+
     val tournaments by lazy { MutableLiveData<List<BaseTournamentData>>() }
 
     fun setType(type: TournamentListType) {
@@ -31,10 +35,12 @@ class TournamentListViewModel : BaseViewModel() {
     }
 
     fun getTournaments() {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val list = repo.getAllTournaments(type, sportId)
             withContext(Dispatchers.Main) {
                 tournaments.value = list
+                _isLoading.value = false
             }
         }
 
