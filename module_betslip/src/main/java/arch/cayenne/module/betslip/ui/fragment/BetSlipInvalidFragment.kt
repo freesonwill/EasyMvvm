@@ -54,8 +54,6 @@ class BetSlipInvalidFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
             betSlipAdapter.submitList(it) {
                 mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
             }
@@ -64,7 +62,7 @@ class BetSlipInvalidFragment :
     }
 
     private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.refreshLayout)
+        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
     override fun getBetSlipEnum(): BetSlipEnum {

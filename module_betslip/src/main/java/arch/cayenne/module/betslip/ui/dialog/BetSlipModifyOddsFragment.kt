@@ -25,8 +25,14 @@ class BetSlipModifyOddsFragment private constructor() :
     private var _confirmClick: ((value: String) -> Unit)? = null
 
     companion object {
-        fun newInstance(): BetSlipModifyOddsFragment {
-            return BetSlipModifyOddsFragment()
+       const  val ODDS_KEY:String = "odds_key"
+
+        fun newInstance(odds:String): BetSlipModifyOddsFragment {
+            return BetSlipModifyOddsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ODDS_KEY,odds)
+                }
+            }
         }
     }
 
@@ -58,6 +64,8 @@ class BetSlipModifyOddsFragment private constructor() :
                 _confirmClick?.invoke(mBinding.etOdds.text.toString())
                 dismiss()
             }
+            val odds = arguments?.getString(ODDS_KEY)
+            etOdds.setText(odds)
         }
     }
 

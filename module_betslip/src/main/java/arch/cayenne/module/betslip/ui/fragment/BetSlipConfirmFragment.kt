@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -56,17 +57,13 @@ class BetSlipConfirmFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
-            betSlipAdapter.submitList(it) {
-                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-            }
+            betSlipAdapter.submitList(it)
             showEmpty(it.isEmpty())
         }
     }
 
     private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.refreshLayout)
+        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
     override fun getBetSlipEnum(): BetSlipEnum {

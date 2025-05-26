@@ -92,7 +92,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/main_background"
             app:layout_constraintTop_toBottomOf="@id/cl_money"
-            app:sportTabBackground="@drawable/selector_keyboard_tab_percent_white_blue"
+            app:sportTabBackground="@drawable/selector_keyboard_tab_percent"
             app:tabGravity="start"
             app:tabIndicatorHeight="0dp"
             app:tabMode="scrollable"

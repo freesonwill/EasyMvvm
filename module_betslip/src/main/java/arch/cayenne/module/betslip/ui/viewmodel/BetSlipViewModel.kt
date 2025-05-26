@@ -55,8 +55,10 @@ class BetSlipViewModel : BaseViewModel() {
     val modifyOddsLiveData: LiveData<Boolean> = _modifyOddsLiveData
 
     //检查提前结算
-    private val _earlySettlePriceLiveData = MutableLiveData<EarlySettlePrice>()
-    val earlySettlePriceLiveData: LiveData<EarlySettlePrice> = _earlySettlePriceLiveData
+    private val _isSupportEarlySettleLiveData = MutableLiveData<EarlySettlePrice>()
+    val isSupportEarlySettleLiveData: LiveData<EarlySettlePrice> = _isSupportEarlySettleLiveData
+
+    val refreshLiveData:MutableLiveData<Boolean> = MutableLiveData()
 
     //选择的提前结算注单
     var selectOrder: Order? = null
@@ -75,6 +77,7 @@ class BetSlipViewModel : BaseViewModel() {
             repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let { result ->
                 _orderLiveData.value = result.toBetSlipData()
             }
+            refreshLiveData.value = true
         }
     }
 
@@ -86,6 +89,7 @@ class BetSlipViewModel : BaseViewModel() {
             repository.getReserveOrder(sportId, matchId, startTime, endTime)?.let { result ->
                 _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
             }
+            refreshLiveData.value = true
         }
     }
 
@@ -142,18 +146,19 @@ class BetSlipViewModel : BaseViewModel() {
                     _orderLiveData.value = newList
                 }
             }
+            refreshLiveData.value = true
         }
     }
 
     /**
      * 检查是否支持提前结算
      * */
-    fun earlySettledPrice(order: Order) {
+    fun isSuppportEarlySettled(order: Order) {
         selectOrder = order
         viewModelScope.launch {
             val result = repository.earlySettledPrice(order.betId)
             if (!result.isNullOrEmpty()) {
-                _earlySettlePriceLiveData.value = result.first()
+                _isSupportEarlySettleLiveData.value = result.first()
             }
         }
     }

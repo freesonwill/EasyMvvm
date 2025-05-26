@@ -57,8 +57,8 @@ class BetSlipSettledItemManager(
                 betSettledTvIntroduce.text = item.selectionName
                 betSettledTvAodds.text = "@${item.odds}"
 //                betSettledTvStatus.isVisible = it.inPlay
-                betSettledTvScore.text = item.marketName + "  (${item.betScore})"
-                betSettledTvScore1.text = item.endScore
+                betSettledTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
+                betSettledTvScore1.text =whenScoreIsNull(item.endScore)
             }
         }
     }

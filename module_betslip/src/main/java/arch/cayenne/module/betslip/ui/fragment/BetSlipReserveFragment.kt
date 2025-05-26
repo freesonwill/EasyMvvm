@@ -12,6 +12,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
@@ -25,6 +26,7 @@ class BetSlipReserveFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
+        initLoadRefresh()
     }
 
     private fun initRecycler() {
@@ -49,6 +51,15 @@ class BetSlipReserveFragment :
             it.betSlipInit()
         }
     }
+    private fun initLoadRefresh() {
+        mBinding.refreshLayout.also {
+            it.initLoadMore(false)
+            it.setOnRefreshListener {
+                mViewModel.getReserveOrder()
+            }
+        }
+    }
+
 
 
     override fun initListener() {
@@ -97,7 +108,7 @@ class BetSlipReserveFragment :
 
     private fun modifyReserve(order: Common.ReserveOrder) {
 
-        BetSlipModifyOddsFragment.newInstance().also {
+        BetSlipModifyOddsFragment.newInstance(order.selection.odds).also {
             it.setConfirmListener { odds ->
                 mViewModel.modifyReserve(order, odds)
             }
