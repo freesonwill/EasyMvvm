@@ -644,6 +644,7 @@ class LiveVideoLandscapeFragment :
     private fun setStatisticsView() {
         childFragmentManager.findFragmentByTag(LiveVideoStatisticsFragment.TAG)
                 as? LiveVideoStatisticsFragment ?: LiveVideoStatisticsFragment().also {
+            it.arguments = Bundle().apply { putLong("matchId", mViewModel.matchId()) }
             childFragmentManager.beginTransaction()
                 .replace(mBinding.fragmentStatistics.id, it, LiveVideoStatisticsFragment.TAG)
                 .commitNow()
