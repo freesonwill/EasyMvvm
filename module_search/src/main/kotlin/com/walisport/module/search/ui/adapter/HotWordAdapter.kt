@@ -3,7 +3,6 @@ package com.walisport.module.search.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -34,11 +33,6 @@ class HotWordAdapter(private val onClick: (String) -> Unit) :
                 }
             }
             holder.itemView.clickNoRepeat {
-                Toast.makeText(
-                    holder.itemView.context,
-                    hotWord,
-                    Toast.LENGTH_SHORT
-                ).show()
                 onClick(hotWord)
             }
         }

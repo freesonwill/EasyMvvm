@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import com.walisport.module.search.data.SearchRepository
+import com.walisport.module.search.data.repo.SearchRepository
+import com.walisport.module.search.data.model.SearchResultBean
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -22,6 +23,9 @@ class SearchViewModel : BaseViewModel() {
 
     private val _searchRecommend = MutableLiveData<List<String>>()
     val searchRecommend: LiveData<List<String>> = _searchRecommend
+
+    private val _searchResult = MutableLiveData<SearchResultBean>()
+    val searchResult: LiveData<SearchResultBean> = _searchResult
 
     fun getRecordByUID() {
         viewModelScope.launch {
@@ -49,9 +53,8 @@ class SearchViewModel : BaseViewModel() {
     }
 
     fun getSearchResult(keyword: String) {
-        //TODO
         viewModelScope.launch {
-            val response = repository.getSearchResult(keyword)
+            _searchResult.value = repository.getSearchResult(keyword)
         }
     }
 
