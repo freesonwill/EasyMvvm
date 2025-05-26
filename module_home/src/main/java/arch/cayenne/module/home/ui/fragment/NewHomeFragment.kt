@@ -481,7 +481,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            mBinding.tvWalletBalance.text = it.getFormalMoney()
+            mBinding.tvWalletBalance.text = getString(R.string.balance_format, it.getFormalMoney())
         }
 
         lifecycleScope.launch {
