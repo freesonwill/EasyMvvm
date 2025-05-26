@@ -22,6 +22,8 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
+import com.ym521.skeleton.Skeleton
+import com.ym521.skeleton.core.RecyclerViewSkeletonScreen
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
@@ -29,8 +31,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     override val vbClass: KClass<FragmentLeagueBinding> = FragmentLeagueBinding::class
     override val vmClass: KClass<LeagueViewModel> = LeagueViewModel::class
     private val standsAdapter = LeagueAdapter()
-    private var statusBarColor: Int = 0
     private var leagueID: Int = 0
+    private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     class LeagueItemDecoration(
         private val spacing: Int = 12.dp2px,
@@ -51,9 +53,13 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun initView(savedInstanceState: Bundle?) {
         requireActivity().window?.apply {
-            setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS) // Avoid affecting navigation bar
+            setFlags(
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+            )
         }
+        StatusBarConfig.hideStatusBar = false
+        setStatusBar(StatusBarConfig)
         //获取联赛日程列表
         val matchID = arguments?.getLong("matchID") ?: 0L
         leagueID = arguments?.getInt("leagueID") ?: 0
@@ -81,6 +87,16 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 )
             )
         }
+        //列表骨架屏
+        skeleton = Skeleton.bind(mBinding.recyclerLeague)
+            .load(R.layout.skeleton_view_item)
+            .adapter(standsAdapter)
+            .angle(20)
+            .duration(1000)
+            .count(5)
+            .shimmer(true)
+            .show()
+        skeleton.show()
     }
 
     override fun initData() {
@@ -108,6 +124,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             it?.let {
                 mBinding.leagueRoot.setVisibilityGone()
                 if (it.match.isEmpty()) {
+                    skeleton.dismiss()
                     mBinding.leagueRoot.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
@@ -129,9 +146,13 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     //更新设置联赛名称
                     mBinding.tvLeagueName.text = it.tournamentName
                     //更新联赛数据
-                    standsAdapter.submitList(it.match)
+                    mBinding.leagueRoot.postDelayed({
+                        skeleton.dismiss()
+                        standsAdapter.submitList(it.match)
+                    }, 1000)
                 }
             } ?: run {
+                skeleton.dismiss()
                 mBinding.leagueRoot.setState(
                     DynamicStateLayout.States.DATA_EMPTY,
                     R.string.lineup_empty.getString()
