@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.animation.Animator
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -428,7 +429,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initListener() {
         with(mBinding) {
             llWalletEntry.setOnClickListener {
-                navigate(R.id.homeFragment)
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
 
             llFavoriteEntry.setOnClickListener {
