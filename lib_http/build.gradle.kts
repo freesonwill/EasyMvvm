@@ -3,10 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
 }
 
-apply(from = rootProject.file("gradle/flavor.gradle"))
-
 android {
-    namespace = "arch.cayenne.module.home"
+    namespace = "arch.cayenne.lib.http"
     compileSdk = 34
 
     defaultConfig {
@@ -15,7 +13,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -32,17 +29,16 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
-    implementation(project(":lib_http"))
-    implementation(project(":lib_common"))
-    implementation(project(":lib_res"))
-    implementation(project(":lib_websocket"))
-    implementation(project(":module_bet"))
-    implementation(project(":module_betslip"))
-    implementation(libs.icu4j)
+    api(libs.retrofit)
+    api(libs.retrofit.converter.gson)
+    api(libs.retrofit.logging.interceptor)
+    implementation(libs.androidx.core.ktx)
+    implementation(project(":lib_base"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
