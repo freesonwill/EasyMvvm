@@ -33,7 +33,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return if (res.error == null && res.data != null) {
             val data = res.data!!
-
             data.streamsList
         } else {
             null
@@ -74,7 +73,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
-
 
     // 500-1102: 订阅比赛详情
     suspend fun registerMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
@@ -128,7 +126,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 }
             }
     }
-
 
     //获取比赛趋势的实时数据
     suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long): Sloth.MatchTrendData? {
@@ -221,4 +218,26 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return null
     }
 
+    //700-1100: 订阅比赛统计数据推送
+    suspend fun registerMatchStaticsNotify(scope: CoroutineScope, matchIds: Long) {
+        socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_STATICS,
+        ) {
+            Client.SubscribeMatchLiveReq.newBuilder().apply {
+                this.matchId = matchIds
+            }.build()
+        }
+    }
+
+    //700-1100: 接收比赛统计数据推送(订阅和接收技术统计，apiCode都为700-1100)
+    fun observeMatchStaticsNotify(): Flow<Client.SubscribeMatchLiveResp> {
+        return socketManager.observeProtoMessage<Client.SubscribeMatchLiveResp>(ApiCode.MATCH_STATICS)
+            .transform { res ->
+                if (res.error == null && res.data != null) {
+                    emit(res.data!!)
+                }
+            }
+    }
 }

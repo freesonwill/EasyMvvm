@@ -26,8 +26,6 @@
     </style>
 
     <style name="ButtonStyle">
-        <item name="android:paddingTop">14dp</item>
-        <item name="android:paddingBottom">14dp</item>
         <item name="android:background">@drawable/selector_button</item>
         <item name="android:textColor">@color/text_on_theme_color</item>
         <item name="android:textSize">15sp</item>

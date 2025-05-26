@@ -1,9 +1,11 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.LiveRemoteManager
+import galaxy.client.proto.Client
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
@@ -81,5 +83,16 @@ class LiveMainRepository(
         }
     }
 
+    suspend fun registerMatchStaticsNotify(matchId: Long) {
+        remoteManager.registerMatchStaticsNotify(scope, matchId)
+    }
+
+    suspend fun unregisterStatisticsNotify() {
+        remoteManager.registerMatchStaticsNotify(scope, -1)
+    }
+
+    suspend fun observeMatchStaticsNotify():Flow<Client.SubscribeMatchLiveResp> {
+        return remoteManager.observeMatchStaticsNotify()
+    }
 }
 

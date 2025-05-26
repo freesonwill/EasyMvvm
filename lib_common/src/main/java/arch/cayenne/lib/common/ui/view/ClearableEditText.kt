@@ -1,7 +1,9 @@
 package arch.cayenne.lib.common.ui.view
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
@@ -12,6 +14,7 @@ import android.view.View.OnTouchListener
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.widget.SkinnableEditText
 
 class ClearableEditText : SkinnableEditText, OnTouchListener,
@@ -47,20 +50,17 @@ class ClearableEditText : SkinnableEditText, OnTouchListener,
         mOnTouchListener = onTouchListener
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun init(context: Context) {
-        val drawable = ContextCompat.getDrawable(context, R.drawable.clearable_icon)
-        val wrappedDrawable = DrawableCompat.wrap(
-            drawable!!
-        )
-        DrawableCompat.setTint(
-            wrappedDrawable,
-            currentHintTextColor
-        )
-        clearTextIcon = wrappedDrawable
-        clearTextIcon!!.setBounds(
-            0, 0, clearTextIcon!!.intrinsicWidth,
-            clearTextIcon!!.intrinsicHeight
-        )
+        val baseDrawable = ContextCompat.getDrawable(context, R.drawable.clearable_icon)?.let {
+            DrawableCompat.wrap(it).also { wrapped ->
+                DrawableCompat.setTint(wrapped, currentHintTextColor)
+            }
+        }
+        clearTextIcon = InsetDrawable(baseDrawable, 0, 0, 8.dp2px, 0).apply {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+
         setClearIconVisible(false)
         super.setOnTouchListener(this)
         super.setOnFocusChangeListener(this)
@@ -69,7 +69,7 @@ class ClearableEditText : SkinnableEditText, OnTouchListener,
 
     override fun onFocusChange(view: View, hasFocus: Boolean) {
         if (hasFocus) {
-            setClearIconVisible(text!!.length > 0)
+            setClearIconVisible(text!!.isNotEmpty())
         } else {
             setClearIconVisible(false)
             isCanClear = true
@@ -103,7 +103,7 @@ class ClearableEditText : SkinnableEditText, OnTouchListener,
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         if (isFocused) {
-            setClearIconVisible(s.length > 0)
+            setClearIconVisible(s.isNotEmpty())
         }
     }
 
