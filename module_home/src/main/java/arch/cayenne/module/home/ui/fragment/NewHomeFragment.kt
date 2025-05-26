@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -47,6 +48,7 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
+    override val keepViewOnNavigation: Boolean = true
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
@@ -457,7 +459,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun createObserver() {
-        mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
+        mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             if (it.isNotEmpty()) {
                 mViewModel.setCurrentSport(it[0].id)
             }
@@ -470,7 +472,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
 
-        mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
+        mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             if (!::leagueAdapter.isInitialized) {
                 initTournamentAndViewPagerLayout(list)
             } else {
@@ -479,8 +481,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             setupTournamentTabs(list)
         }
 
-        mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
-            val list = mViewModel.tournaments.value.orEmpty()
+        mViewModel.selectedTournamentId.observeEvent(viewLifecycleOwner, this) { id ->
+            val list = mViewModel.tournaments.value?.peekContent().orEmpty()
             val index = list.indexOfFirst { it.id == id }
             if (index != 0) {
                 mBinding.layoutContainer.tlLeagueList.post {
@@ -489,8 +491,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
 
-        mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
-            if (shouldCollapse == true && isExpanded) {
+        mViewModel.collapseTournamentDropdown.observeEvent(viewLifecycleOwner, this) { shouldCollapse ->
+            if (shouldCollapse && isExpanded) {
                 toggleTournamentMoreSection(false, TournamentListType.MORE)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }

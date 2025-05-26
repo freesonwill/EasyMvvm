@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -33,6 +34,7 @@ class MatchListPagerFragment :
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
+    override val keepViewOnNavigation: Boolean = true
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
 
@@ -119,7 +121,7 @@ class MatchListPagerFragment :
     }
 
     override fun createObserver() {
-        homeViewModel.selectedDate.observe(viewLifecycleOwner) { date ->
+        homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
             refreshListByDate(date)
         }
 
