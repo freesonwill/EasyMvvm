@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources translatable="false">
     <string name="nav_module_search_fragment">walisport://module_search/searchFragment</string>
+    <string name="nav_module_topup_fragment">walisport://module_topup/topUpFragment</string>
+    <string name="nav_module_message_fragment">walisport://module_message/messageFragment</string>
+    <string name="nav_module_setting_fragment">walisport://module_setting/settingFragment</string>
+    <string name="nav_module_handicap_fragment">walisport://module_handicap/HandicapFragment</string>
+    <string name="nav_module_feedback_fragment">walisport://module_feedback/feedbackFragment</string>
 </resources>

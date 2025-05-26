@@ -335,6 +335,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         )
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
+            drawerContentFragment?.also {
+                it.setOnFunctionClickListener {
+                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }
         }
         childFragmentManager.beginTransaction()
             .replace(
