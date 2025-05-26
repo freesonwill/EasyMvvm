@@ -59,7 +59,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 titleBar.loadSearchTitleBar(
                     hint = getString(R.string.please_input_content),
                     afterTextChanged = { text, binding ->
-                        if(!canSearch) return@loadSearchTitleBar
+                        if (!canSearch) return@loadSearchTitleBar
 
                         val count = text?.length ?: 0
                         val color = if (count > 0) Rc.color.search_btn
@@ -67,7 +67,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         binding.tvSearchText.setTextColor(color.getColor())
 
                         // 搜索自动补充词汇
-                        if(recommendAdapter.onClick == null) {
+                        if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
                                     mViewModel.getSearchResult(recommendWord)
@@ -135,11 +135,18 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             addItemDecoration(object : ItemDecoration() {
                                 private val dividerHeight = 0.5f.dp2px
                                 private val paint = Paint().apply {
-                                    color = SkinnableResourceManager.getColor(context, R.color.search_divider)
+                                    color = SkinnableResourceManager.getColor(
+                                        context,
+                                        R.color.search_divider
+                                    )
                                     strokeWidth = dividerHeight.toFloat()
                                 }
 
-                                override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                                override fun onDraw(
+                                    canvas: Canvas,
+                                    parent: RecyclerView,
+                                    state: RecyclerView.State
+                                ) {
                                     val itemCount = parent.adapter?.itemCount ?: 0
 
                                     for (i in 0 until parent.childCount) {
@@ -168,11 +175,18 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             addItemDecoration(object : ItemDecoration() {
                                 private val dividerHeight = 0.5f.dp2px
                                 private val paint = Paint().apply {
-                                    color = SkinnableResourceManager.getColor(context, R.color.search_divider)
+                                    color = SkinnableResourceManager.getColor(
+                                        context,
+                                        R.color.search_divider
+                                    )
                                     strokeWidth = dividerHeight.toFloat()
                                 }
 
-                                override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+                                override fun onDraw(
+                                    canvas: Canvas,
+                                    parent: RecyclerView,
+                                    state: RecyclerView.State
+                                ) {
                                     val spanCount = 2
                                     val itemCount = parent.adapter?.itemCount ?: 0
                                     val totalRowCount = (itemCount + spanCount - 1) / spanCount
@@ -254,6 +268,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 searchRecord.observe(viewLifecycleOwner) {
                     historyAdapter?.setNewData(it.toMutableList())
                     clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+                }
+                searchResult.observe(viewLifecycleOwner) { result ->
+                    //TODO
+                    println(result)
                 }
                 searchRecommend.observe(viewLifecycleOwner) {
                     recommendAdapter.submitList(it)

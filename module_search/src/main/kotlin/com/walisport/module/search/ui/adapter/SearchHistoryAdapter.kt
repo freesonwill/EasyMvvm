@@ -3,7 +3,6 @@ package com.walisport.module.search.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatTextView
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -36,11 +35,6 @@ class SearchHistoryAdapter(var closeAction: (position: Int, text: String?) -> Un
         }
         textView?.text = item
         textView?.setOnClickListener {
-            Toast.makeText(
-                view.context,
-                item,
-                Toast.LENGTH_SHORT
-            ).show()
             onSearch(item)
         }
     }
