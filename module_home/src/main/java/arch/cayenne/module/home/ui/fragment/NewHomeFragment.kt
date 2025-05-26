@@ -177,7 +177,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         expanded: Boolean,
         type: TournamentListType
     ) {
-        "KC_ toggleTournamentMoreSection ${expanded} ${type}".logd()
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
