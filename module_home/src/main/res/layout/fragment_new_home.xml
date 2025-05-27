@@ -64,7 +64,7 @@
                 app:tabRippleColor="@null"
                 app:tabSelectedTextColor="@color/sport_item_text_select"
                 app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
-                app:tabTextColor="@color/secondary_text" />
+                app:tabTextColor="@color/home_secondary_text" />
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/ll_wallet_entry"
@@ -118,7 +118,7 @@
                 android:background="@drawable/bg_sport_list"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingStart="12dp"
+                android:paddingStart="6dp"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -127,7 +127,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="23dp"
+                android:layout_width="@dimen/dp_28"
                 android:layout_height="match_parent"
                 android:background="@drawable/gradient_sport_list"
                 app:layout_constraintBottom_toBottomOf="parent"

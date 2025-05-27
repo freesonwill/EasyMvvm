@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintBottom_toTopOf="@id/rv_bet">
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_title_betting_slip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                 app:layout_constraintEnd_toStartOf="@id/iv_close"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_close"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
             tools:itemCount="2"
             tools:listitem="@layout/item_bet_sheet" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_multi_bet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             android:focusable="true"
             app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
                 android:id="@+id/cl_multi_bet_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,12 +98,12 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <ImageView
+                    <arch.cayenne.lib.skin.widget.SkinnableImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/icon_combo_bet_ham" />
 
-                    <TextView
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_multi_bet_expand"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -113,7 +113,7 @@
                         android:textSize="13sp" />
                 </LinearLayout>
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_sum_bet_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,7 +125,7 @@
                     app:layout_constraintEnd_toStartOf="@id/tv_sum_bet_money"
                     app:layout_constraintTop_toTopOf="@id/tv_sum_bet_money" />
 
-                <TextView
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_sum_bet_money"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,7 +135,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_multi_bet"
@@ -148,7 +148,7 @@
                 tools:itemCount="1"
                 tools:listitem="@layout/item_combo_multi_bet" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_bottom_button"
