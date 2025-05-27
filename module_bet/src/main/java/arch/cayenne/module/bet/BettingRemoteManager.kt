@@ -29,35 +29,19 @@ class BettingRemoteManager(
     private val socketManager: WebSocketManager
 ) {
 
-    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
-        MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
-    val matchNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchNotifyFlow
-
     private val _matchMarketNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
         MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
     val matchMarketNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchMarketNotifyFlow
 
     init {
         scope.launch {
-            launch {
-                socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY)
-                    .collect { res ->
-                        if (res.error == null && res.data != null) {
-                            val data = res.data!!
-                            setMatchNotifyData(data)
-                        }
+            socketManager.observeProtoMessage<Client.MatchMarketNotify>(ApiCode.MATCH_MARKET_NOTIFY)
+                .collect { res ->
+                    if (res.error == null && res.data != null) {
+                        val data = res.data!!
+                        setMatchMarketNotifyData(data)
                     }
-            }
-            launch {
-                socketManager.observeProtoMessage<Client.MatchMarketNotify>(ApiCode.MATCH_MARKET_NOTIFY)
-                    .collect { res ->
-                        if (res.error == null && res.data != null) {
-                            val data = res.data!!
-                            setMatchMarketNotifyData(data)
-                        }
-                    }
-
-            }
+                }
         }
     }
 
@@ -227,56 +211,6 @@ class BettingRemoteManager(
             }
         } else {
             null
-        }
-    }
-
-    suspend fun registerMatchNotify(matchIds: List<Long>) {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.SUBSCRIBE_HOME_MATCH,
-        ) {
-            Client.SubscribeHomeMatchReq.newBuilder().apply {
-                this.addAllMatchId(matchIds)
-            }.build()
-        }
-        if (res.error == null && res.data != null) {
-            res.data!!.matchNotifyList.forEach {
-                setMatchNotifyData(it)
-            }
-        }
-    }
-
-    fun unregisterMatchNotify(matchIds: List<Long>) {
-        scope.launch {
-            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeHomeMatchResp>(
-                scope = scope,
-                dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.CANCEL_SUBSCRIBE_HOME_MATCH,
-            ) {
-                Client.CancelSubscribeHomeMatchReq.newBuilder().apply {
-                    this.addAllMatchId(matchIds)
-                }.build()
-            }
-        }
-    }
-
-    private fun setMatchNotifyData(data: Client.MatchNotify) {
-        val matchId = data.matchId
-        val selection = data.marketUpdateList
-            .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
-            .flatMap { it.selectionList }
-            .map { selection ->
-                BetNotifySelectionBean(
-                    matchId,
-                    selection.selectionId,
-                    selection.odds.toOdds(),
-                    selection.active,
-                    selection.parlay
-                )
-            }
-        if (selection.isNotEmpty()) {
-            _matchNotifyFlow.tryEmit(selection)
         }
     }
 
