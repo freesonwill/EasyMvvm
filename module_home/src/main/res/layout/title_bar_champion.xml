@@ -55,7 +55,6 @@
         android:layout_height="28dp"
         android:background="@drawable/bg_wallet_entry"
         android:gravity="center_vertical|end"
-        android:minWidth="97dp"
         android:orientation="horizontal"
         android:paddingEnd="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -67,9 +66,11 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_18"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginEnd="7dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="1dp"
             android:textColor="@color/home_main_text"
-            android:textSize="13sp"
+            android:fontFamily="@font/sf_pro_display_regular"
+            android:textSize="14sp"
             tools:text="$1,100.00" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView

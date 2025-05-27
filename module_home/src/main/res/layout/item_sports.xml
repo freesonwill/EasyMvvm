@@ -5,7 +5,8 @@
     android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:paddingHorizontal="@dimen/dp_6"
+    android:paddingVertical="@dimen/dp_8">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/tv_sport_icon"
