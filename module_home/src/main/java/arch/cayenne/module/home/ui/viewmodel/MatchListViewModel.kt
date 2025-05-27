@@ -85,6 +85,7 @@ class MatchListViewModel : BaseViewModel() {
 
     fun setSelectedDate(id: Long = 0) {
         page = 1
+        _state.value = Event(MatchListState.REFRESHING)
         _selectedDate.value = id
 //        getCurrentMatch()
     }
