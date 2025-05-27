@@ -13,6 +13,7 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.StatusBarEnum.TOP
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -76,7 +77,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType = TOP
         setStatusBar(StatusBarConfig,mBinding.clMain)
         super.onStart()
     }

@@ -80,7 +80,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     private fun setImmColor(type: String){
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor =immColor
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         StatusBarConfig.keySkin =skinType
         setStatusBar(StatusBarConfig,mBinding.root)
     }

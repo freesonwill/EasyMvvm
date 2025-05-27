@@ -21,10 +21,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         const val TAG = "DrawerContentFragment"
     }
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.root.post{
-            StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+
+            StatusBarConfig.statusBarType =StatusBarEnum.TOP
             setStatusBar(StatusBarConfig,mBinding.root)
-        }
+
     }
 
     override fun initListener() {

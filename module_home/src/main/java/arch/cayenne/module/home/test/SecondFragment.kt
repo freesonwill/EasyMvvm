@@ -46,7 +46,7 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
     }
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
     }

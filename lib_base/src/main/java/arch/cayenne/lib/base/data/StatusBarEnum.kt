@@ -8,5 +8,5 @@ package arch.cayenne.lib.base.data
 enum class StatusBarEnum {
     DEFAULT,
     FULL_SCREEN,
-    TOP_UP
+    TOP
 }

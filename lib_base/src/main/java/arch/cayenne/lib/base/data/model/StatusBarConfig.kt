@@ -12,6 +12,8 @@ object  StatusBarConfig  {
 
     //记录root 顶部内边距
     var rootViewPaddingTop: Int = -1
+
+    var statusBarDarkFont : Boolean = false
      var keySkin  : String  = ""
     //状态栏颜色
     var statusBarColor: Int = android.R.color.black

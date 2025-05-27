@@ -120,7 +120,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
     }

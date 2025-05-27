@@ -20,19 +20,7 @@ import arch.cayenne.lib.base.utils.LogUtils
 class StatusBarDelegate(private val activity: Activity) : IStatusBar {
     override fun setStatusBar(config: StatusBarConfig, view: View) {
         val immersionBar = ImmersionBar.with(activity)
-        when (StatusBarConfig.keySkin) {
-            SkinType.SKIN_CLASSIC.value, SkinType.SKIN_BLACK_BLUE.value, SkinType.SKIN_BLACK_GREEN.value, SkinType.SKIN_BLACK_RED.value -> {
-                immersionBar.statusBarDarkFont(false)
-            }
-
-            SkinType.SKIN_WHITE_BLUE.value, SkinType.SKIN_WHITE_GREEN.value -> {
-                immersionBar.statusBarDarkFont(true)
-            }
-
-            else -> {
-                immersionBar.statusBarDarkFont(false)
-            }
-        }
+        immersionBar.statusBarDarkFont(config.statusBarDarkFont)
         val statusBarHeight = ImmersionBar.getStatusBarHeight(activity)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
         if (StatusBarConfig.rootViewPaddingTop == -1) {
@@ -63,7 +51,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
             }
             //顶部沉浸式
             //ImmersionBar实现状态栏和底部虚拟home键透明
-            StatusBarEnum.TOP_UP -> {
+            StatusBarEnum.TOP -> {
                 view.fitsSystemWindows = false
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(activity)
                 LogUtils.e("setStatusBar-------------view-${view},statusBarHeightv${statusBarHeight}---,vnavigationBarHeight${navigationBarHeight}")

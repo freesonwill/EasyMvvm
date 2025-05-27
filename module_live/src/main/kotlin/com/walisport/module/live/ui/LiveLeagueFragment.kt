@@ -53,7 +53,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType = StatusBarEnum.TOP
         setStatusBar(StatusBarConfig,mBinding.root)
     }
 

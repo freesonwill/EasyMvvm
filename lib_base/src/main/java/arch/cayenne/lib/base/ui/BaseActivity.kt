@@ -72,7 +72,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         uiBind.onCreateView(layoutInflater,null,savedInstanceState)
         setContentView(mBinding.root)
         uiBind.onViewCreated(mBinding.root,savedInstanceState)
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         setStatusBar(configStatusBar(),mBinding.root)
     }
 

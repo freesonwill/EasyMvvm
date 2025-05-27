@@ -52,7 +52,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         setStatusBar(StatusBarConfig,mBinding.root)
     }
     override fun initListener() {

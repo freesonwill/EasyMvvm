@@ -502,7 +502,7 @@ class LiveVideoLandscapeFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP
         setStatusBar(StatusBarConfig,mBinding.root)
         mBinding.videoView.onDestroy()
     }
