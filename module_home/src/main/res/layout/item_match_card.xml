@@ -76,8 +76,8 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_home_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -123,8 +123,8 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_away_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
