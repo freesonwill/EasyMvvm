@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -24,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
@@ -68,6 +70,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initSportLayout()
         initTournamentLayout()
         initDrawerContent()
+        initFailedLayout()
+    }
+
+    private fun initFailedLayout() {
+        with(mBinding) {
+            dslFailed.setState(
+                DynamicStateLayout.States.NETWORK_ANOMALY,
+                getString(arch.cayenne.lib.common.R.string.error_net)
+            ) {
+                mViewModel.refreshAll()
+            }
+        }
     }
 
     //init 一級導航欄位
@@ -83,7 +97,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
                         //看db, 點擊的不在matchBean中會爆掉
-                        resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                     }
                 }
@@ -469,10 +482,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             if (it.isNotEmpty()) {
                 mViewModel.setCurrentSport(it[0].id)
-
-                if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                    toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                }
             }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
@@ -514,6 +523,32 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     )
                 )
             }
+        }
+
+        mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
+            with(mBinding) {
+                when(state) {
+                    HomeState.PLAY_TYPE_CLICK -> {
+                        resetHomeView()
+                        mViewModel.getCurrentSportStatistical()
+                        groupHomeMain.visibility = View.VISIBLE
+                        dslFailed.visibility = View.GONE
+                    }
+                    HomeState.SPORT_LOAD_SUCCESS -> {
+                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
+                        } else {
+                            mViewModel.getCurrentTournament()
+                        }
+                    }
+                    HomeState.FAILED -> {
+                        groupHomeMain.visibility = View.GONE
+                        dslFailed.visibility = View.VISIBLE
+                    }
+                    else -> Unit
+                }
+            }
+
         }
     }
 
