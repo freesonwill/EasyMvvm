@@ -14,4 +14,8 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
     fun unregister() {
         repo.unregister()
     }
+
+    fun removeSingleBet() {
+        repo.removeSingleBet()
+    }
 }

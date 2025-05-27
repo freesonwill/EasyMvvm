@@ -69,18 +69,6 @@ class SingleBetRepository(
         }
     }
 
-    fun removeSingleBet() {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                if (it .betType == BetTypeEnum.SINGLE) {
-                    betDao.removeBet(it.betId)
-                    betDao.removeBetSelection(it.betId)
-                    betDao.removeBetDetail(it.betId)
-                }
-            }
-        }
-    }
-
     fun saveToCombo() {
         scope.launch {
             betDao.getCurrentBet()?.let {
