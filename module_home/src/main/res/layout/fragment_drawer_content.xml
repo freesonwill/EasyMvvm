@@ -338,7 +338,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/drawer_setting"
                 android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="@dimen/sp_13" />
+                android:textSize="12sp" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -346,9 +346,9 @@
             android:id="@+id/ll_drawer_feedback"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginTop="11dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginStart="@dimen/dp_66"
+            app:layout_constraintStart_toEndOf="@id/ll_drawer_setting"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -366,33 +366,8 @@
                 android:gravity="center_vertical"
                 android:text="@string/drawer_feedback"
                 android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="@dimen/sp_13" />
+                android:textSize="12sp" />
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ll_drawer_help"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginEnd="@dimen/dp_44"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_drawer_help"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
-                android:src="@drawable/ic_drawer_help"
-                android:scaleType="fitXY" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_drawer_help"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/sp_13"
-                android:textColor="@color/drawer_bottom_function_text"
-                android:text="@string/drawer_help" />
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
