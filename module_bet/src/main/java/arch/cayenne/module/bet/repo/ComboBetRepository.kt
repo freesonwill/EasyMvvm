@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
+import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -23,12 +24,14 @@ class ComboBetRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    private val selectionFlow = MutableSharedFlow<List<BetSelectionBean>>(replay = 1, extraBufferCapacity = 1)
-    private val comboMultiBetFlow = MutableSharedFlow<List<ComboMultiBetBean>>(replay = 1, extraBufferCapacity = 1)
+    private val selectionFlow =
+        MutableSharedFlow<List<BetSelectionBean>>(replay = 1, extraBufferCapacity = 1)
+    private val comboMultiBetFlow =
+        MutableSharedFlow<List<ComboMultiBetBean>>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {
-            betDao.getCurrentBet()?.let {  bet ->
+            betDao.getCurrentBet()?.let { bet ->
                 betDao.observeSelections(bet.betId).collect {
                     selectionFlow.emit(it)
                     if (it.isNotEmpty()) {
@@ -40,7 +43,10 @@ class ComboBetRepository(
         }
     }
 
-    private suspend fun setComboMulti(data: List<BetSelectionBean>, detailList: List<BetDetailBean>? = null) {
+    private suspend fun setComboMulti(
+        data: List<BetSelectionBean>,
+        detailList: List<BetDetailBean>? = null
+    ) {
         remoteManager.getComboRisk(data)?.let { riskList ->
             val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
                 val detail = detailList?.find { it.combo == bean.combo }
@@ -75,7 +81,14 @@ class ComboBetRepository(
                     betDao.getSelections(bet.betId).find { it.selectionId == selectionId }
                 if (selection != null) {
                     betDao.removeBetSelectionByMatchId(bet.betId, selection.matchId)
-                    remoteManager.unregisterMatchNotify(listOf(selection.matchId))
+                    remoteManager.unregisterMatchMarketNotify(
+                        listOf(
+                            Client.MarketIdBase.newBuilder()
+                                .setMatchId(selection.matchId)
+                                .addMarketId(selection.marketId)
+                                .build()
+                        )
+                    )
                 }
             }
         }
@@ -118,7 +131,7 @@ class ComboBetRepository(
 
     fun sendBet(multiBet: List<ComboMultiBetBean>) {
         scope.launch {
-            betDao.getCurrentBet()?.let {  bet ->
+            betDao.getCurrentBet()?.let { bet ->
                 if (bet.betType == BetTypeEnum.COMBO) {
                     val betId = bet.betId
                     betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
