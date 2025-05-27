@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/transparent">
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/triangle"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_calculator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/triangle">
 
-        <TextView
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="12dp"
@@ -39,7 +39,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/et_rate" />
 
-        <EditText
+        <arch.cayenne.lib.skin.widget.SkinnableEditText
             android:id="@+id/et_rate"
             android:layout_width="130dp"
             android:layout_height="36dp"
@@ -81,7 +81,7 @@
                 android:backgroundTint="@color/keyboard_1"
                 android:src="@drawable/icon_keyboard_back" />
 
-            <androidx.appcompat.widget.AppCompatButton
+            <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_clear"
                 style="@style/NumberKeyboardButton"
                 android:layout_width="62dp"
@@ -106,6 +106,6 @@
 
         </GridLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
