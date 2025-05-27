@@ -37,7 +37,6 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                LogUtils.e("setStatusBar-----DEFAULT--------view-${viewPaddingTop}")
                 setViewPadding(
                     view,
                     viewPaddingTop+statusBarHeight,
@@ -56,7 +55,6 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
             StatusBarMode.DRAW_BEHIND -> {
                 view.fitsSystemWindows = false
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(activity)
-                LogUtils.e("setStatusBar-------------view-${view},statusBarHeightv${statusBarHeight}---,vnavigationBarHeight${navigationBarHeight}")
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .transparentStatusBar() // 设置状态栏透明

@@ -45,7 +45,6 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
         super.onStop()
     }
     override fun onStart() {
-        mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
