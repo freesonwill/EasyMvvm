@@ -30,6 +30,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
+                android:textColor="@color/main_text"
                 android:textSize="17sp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -104,6 +105,7 @@
                 android:id="@+id/tv_amount_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/tv_amount"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,6 +115,7 @@
                 android:id="@+id/tv_max_win_money"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/main_text"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/tv_max_win"
                 app:layout_constraintEnd_toEndOf="parent"
