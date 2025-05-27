@@ -118,10 +118,4 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             })
         }.show(fragmentManager)
     }
-
-    override fun onStart() {
-        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onStart()
-    }
 }

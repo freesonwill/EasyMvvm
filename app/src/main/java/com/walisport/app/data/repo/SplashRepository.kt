@@ -36,14 +36,11 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(
-            userDataManager.getValue(
-                UserDataKey.KEY_SKIN,
-                SkinType.SKIN_WHITE_BLUE.value
-            )
-        )
         return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
     }
+
+
+
 
     suspend fun startSocket(): ConnectState {
         return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()

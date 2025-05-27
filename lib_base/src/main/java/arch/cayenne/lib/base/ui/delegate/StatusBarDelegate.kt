@@ -2,9 +2,7 @@ package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
 import android.view.View
-import android.view.WindowManager
 import arch.cayenne.lib.base.data.StatusBarMode
-import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
