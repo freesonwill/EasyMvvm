@@ -45,9 +45,11 @@
     <string name="drawer_notification_time_1">05:35</string>
     <string name="drawer_notification_time_2">周一</string>
     <string name="drawer_notification_message">通知消息</string>
+    <string name="drawer_nickname_title">设置头像和昵称</string>
 
     <string name="disabled_to_combo">当前赛事不支持串关</string>
     <string name="lineup_empty">暂无数据,请换个试一试</string>
     <string name="tournament_section_title">选联赛</string>
     <string name="tournament_section_title_hot">热门</string>
+    <string name="balance_format">$%s</string>
 </resources>

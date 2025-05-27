@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.animation.Animator
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,6 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.StatusBarEnum
@@ -17,6 +17,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -44,13 +45,13 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
-import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
+    override val keepViewOnNavigation: Boolean = true
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
@@ -62,9 +63,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    private lateinit var leagueAdapter: LeaguePagerAdapter
-    private lateinit var tabLayoutMediator: TabLayoutMediator
-    //    private val tournamentListFragment  = TournamentListFragment.newInstance()x
+
+    //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
@@ -113,6 +113,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
         mBinding.llTournamentsDropdown.visibility = View.GONE
+        toggleTournamentMoreSection(
+            false,
+            TournamentListType.NONE
+        )
         with(mBinding.layoutContainer) {
             tlDateList.visibility = View.GONE
             llOtherDate.visibility = View.GONE
@@ -160,7 +164,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
             mBinding.ivHomeLeagueMore.clickNoRepeat {
-                "ivHomeLeagueMore click".logd()
                 toggleTournamentMoreSection(true, TournamentListType.MORE)
             }
             // 其他日期 Tab 設定
@@ -179,7 +182,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
 
-    private fun toggleTournamentMoreSection(expanded: Boolean, type: TournamentListType) {
+    /***
+     * @param expanded : Boolean 展開、收起
+     * @param type : TournamentListType 是屬於今日和早盤的展開型聯賽列表或是屬於冠軍型的聯賽列表，
+     * 或是none，表示切換到其他一級導航前先把目前的聯賽列表馬上收起來，例如 今日 -> 冠軍 or 冠軍 -> 今日，這種情況下一律沒有動畫
+     *
+     * */
+    private fun toggleTournamentMoreSection(
+        expanded: Boolean,
+        type: TournamentListType
+    ) {
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
@@ -205,18 +217,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val fragment = fm.findFragmentByTag(tag) ?: return
 
             fm.beginTransaction().apply {
-                if (type == TournamentListType.MORE){
+                if (type == TournamentListType.MORE) {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
                 }
                 remove(fragment)
                 commitAllowingStateLoss()
             }
+            val delay = if (type == TournamentListType.MORE) { 200L } else { 0L }
 
             //TODO 把進出的anim優化
             container.postDelayed({
                 mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
                 container.visibility = View.GONE
-            }, 200)
+            }, delay)
         }
     }
 
@@ -352,6 +365,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         )
         if (drawerContentFragment == null) {
             drawerContentFragment = DrawerContentFragment()
+            drawerContentFragment?.also {
+                it.setOnFunctionClickListener {
+                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+                }
+            }
         }
         childFragmentManager.beginTransaction()
             .replace(
@@ -399,26 +417,33 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    private fun initTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
+    private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-            if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
-                tlDateList.visibility = View.GONE
-                llOtherDate.visibility = View.GONE
-            } else {
-                tlDateList.visibility = View.VISIBLE
-                llOtherDate.visibility = View.VISIBLE
+            if (tournaments.isNotEmpty()) {
+                if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                    tlDateList.visibility = View.GONE
+                    llOtherDate.visibility = View.GONE
+                } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+                    tlDateList.visibility = View.VISIBLE
+                    llOtherDate.visibility = View.VISIBLE
+                }
             }
-
             vpGameList.currentItem = 0
             tlDateList.getTabAt(0)?.select()
 
-            leagueAdapter = LeaguePagerAdapter(
+            vpGameList.adapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
                 playType = mViewModel.getCurrentPlayType()
             )
-            vpGameList.adapter = leagueAdapter
+
+            TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
+                tournaments.getOrNull(position)?.let {
+                    tab.customView = createTournamentTabView(it)
+                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+                }
+            }.also { it.attach() }
 
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -431,21 +456,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
     }
-
-    private fun setupTournamentTabs(tournaments: List<TournamentDataModel>) {
-        if (::tabLayoutMediator.isInitialized) {
-            tabLayoutMediator.detach()
-        }
-        with(mBinding.layoutContainer) {
-            tabLayoutMediator = TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
-                tournaments.getOrNull(position)?.let {
-                    tab.customView = createTournamentTabView(it)
-                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
-                }
-            }.also { it.attach() }
-        }
-    }
-
     override fun initData() {
         super.initData()
         mViewModel.setCurrentPlayType(PlayType.TODAY)
@@ -454,7 +464,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initListener() {
         with(mBinding) {
             llWalletEntry.setOnClickListener {
-                navigate(R.id.homeFragment)
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
 
             llFavoriteEntry.setOnClickListener {
@@ -472,30 +482,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     override fun createObserver() {
-        mViewModel.sportsStatistical.observe(viewLifecycleOwner) {
+        mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             if (it.isNotEmpty()) {
                 mViewModel.setCurrentSport(it[0].id)
+
+                if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                    toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
+                }
             }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
-            if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-            } else {
-                toggleTournamentMoreSection(false, TournamentListType.CHAMPION)
-            }
         }
 
-        mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
-            if (!::leagueAdapter.isInitialized) {
-                initTournamentAndViewPagerLayout(list)
-            } else {
-                leagueAdapter.updateList(list)
-            }
-            setupTournamentTabs(list)
+        mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
+            setTournamentAndViewPagerLayout(list)
         }
 
-        mViewModel.selectedTournamentId.observe(viewLifecycleOwner) { id ->
-            val list = mViewModel.tournaments.value.orEmpty()
+        mViewModel.selectedTournamentId.observeEvent(viewLifecycleOwner, this) { id ->
+            val list = mViewModel.tournaments.value?.peekContent().orEmpty()
             val index = list.indexOfFirst { it.id == id }
             if (index != 0) {
                 mBinding.layoutContainer.tlLeagueList.post {
@@ -504,42 +508,29 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
 
-        mViewModel.collapseTournamentDropdown.observe(viewLifecycleOwner) { shouldCollapse ->
-            if (shouldCollapse == true && isExpanded) {
+        mViewModel.collapseTournamentDropdown.observeEvent(viewLifecycleOwner, this) { shouldCollapse ->
+            if (shouldCollapse && isExpanded) {
                 toggleTournamentMoreSection(false, TournamentListType.MORE)
                 mViewModel.consumeCollapseTournamentDropdown() // 重置事件，避免重複觸發
             }
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            mBinding.tvWalletBalance.text = it.getFormalMoney()
+            mBinding.tvWalletBalance.text = getString(R.string.balance_format, it.getFormalMoney())
         }
 
-        lifecycleScope.launch {
-            mViewModel.navigationToChampion.collect { data ->
-                val navController = findNavController()
-                if (navController.currentDestination?.id == R.id.newHomeFragment) {
-                    navigate(
-                        NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-                            matchId = data.championMatchId,
-                            name = data.name,
-                            icon = data.icon
-                        )
+        mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
+            val navController = findNavController()
+            if (navController.currentDestination?.id == R.id.newHomeFragment) {
+                navigate(
+                    NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
+                        matchId = data.championMatchId,
+                        name = data.name,
+                        icon = data.icon
                     )
-                }
+                )
             }
         }
-//        mViewModel.navigationToChampion.observe(viewLifecycleOwner) { data ->
-//            if (data == null) return@observe
-//            navigate(
-//                NewHomeFragmentDirections.actionNewHomeFragmentToChampionFragment(
-//                        matchId = data.championMatchId,
-//                        name = data.name,
-//                        icon = data.icon
-//                )
-//            )
-//            mViewModel.resetNavigationToChampion()
-//        }
     }
 
     private fun createTournamentTabView(

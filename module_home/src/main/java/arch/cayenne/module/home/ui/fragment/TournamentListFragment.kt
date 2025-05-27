@@ -4,6 +4,7 @@ import android.graphics.PointF
 import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
@@ -81,6 +82,13 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
         mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
             if (!list.isNullOrEmpty()) {
                 setTournamentList(list)
+            }
+        }
+        mViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (!isLoading) {
+                mBinding.loadingView.visibility = View.GONE
+            } else {
+                mBinding.loadingView.visibility = View.VISIBLE
             }
         }
     }
@@ -188,5 +196,5 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
 }
 
 enum class TournamentListType {
-    MORE, CHAMPION
+    MORE, CHAMPION, NONE
 }

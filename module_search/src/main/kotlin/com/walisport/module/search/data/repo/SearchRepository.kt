@@ -1,4 +1,4 @@
-package com.walisport.module.search.data
+package com.walisport.module.search.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
@@ -8,6 +8,15 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.walisport.module.search.data.model.RecordBean
+import com.walisport.module.search.data.model.SearchDailyMatchBean
+import com.walisport.module.search.data.model.SearchMatchBean
+import com.walisport.module.search.data.model.SearchResultBean
+import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
+import com.walisport.module.search.data.model.SearchResultTeamBeanBean
+import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.constants.SearchResultTypeEnum
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -121,25 +130,78 @@ class SearchRepository(
         return Gson().fromJson(value, type)
     }
 
-    suspend fun getSearchResult(key: String) {
-        //TODO
-        val response = socketManager.sendAndWaitProtoMessageResponse<Client.SearchResp>(
+    suspend fun getSearchResult(
+        word: String,
+        type: SearchTypeEnum = SearchTypeEnum.NORMAL_WORD,
+        startTime: Long? = null,
+        endTime: Long? = null,
+        page: Int = 1,
+        size: Int = 10,
+        timeZone: Int = 8
+    ): SearchResultBean {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.SearchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SEARCH,
         ) {
             Client.SearchReq.newBuilder().apply {
-                word = key
-//                val word: string = 1 //required 搜索词
-//                val type: int32 = 2 //required 1-普通词  2-热门词  10-球员id  11-球队id  12-联赛id
-//                val start_time: int64 = 3 //开始时间
-//                val end_time: int64 = 4 //结束时间
-//                val page: int32 = 5 //请求的页数,从1开始
-//                val size: int32 = 6 //每页显示数量,最大50
-//                val time_zone: int32 = 7 //时区，例如上海时间+8就传8, utc时间传0
+                this.word = word
+                this.type = type.code
+                startTime?.let { this.startTime = it }
+                endTime?.let { this.endTime = it }
+                this.page = page
+                this.size = size
+                this.timeZone = timeZone
             }.build()
         }
-        println(response)
+
+        when(SearchResultTypeEnum.fromCode(result.data?.type ?: 0)) {
+            SearchResultTypeEnum.LIST -> {
+                return SearchResultBean(
+                    type = SearchResultTypeEnum.LIST,
+                    dataList = listOfNotNull(
+                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBeanBean.fromList(it) },
+                        result.data?.dataList?.teamList?.let { SearchResultTeamBeanBean.fromList(it) },
+                        result.data?.dataList?.playerList?.let { SearchResultPlayerBeanBean.fromList(it) }
+                    ).flatten()
+
+                )
+            }
+            SearchResultTypeEnum.PLAYER -> {
+                return SearchResultBean(
+                    type = SearchResultTypeEnum.PLAYER,
+                    directData = result.data?.player?.let { SearchResultPlayerBeanBean.from(it) },
+                    matchTotal = result.data?.matchTotal ?: 0,
+                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
+                    dailyCount = result.data?.dailyCountList?.let { list ->
+                        SearchDailyMatchBean.fromList(list)
+                    }
+                )
+            }
+            SearchResultTypeEnum.TEAM -> {
+                return SearchResultBean(
+                    type = SearchResultTypeEnum.TEAM,
+                    directData = result.data?.team?.let { SearchResultTeamBeanBean.from(it) },
+                    matchTotal = result.data?.matchTotal ?: 0,
+                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
+                    dailyCount = result.data?.dailyCountList?.let { list ->
+                        SearchDailyMatchBean.fromList(list)
+                    }
+                )
+            }
+            SearchResultTypeEnum.TOURNAMENT -> {
+                return SearchResultBean(
+                    type = SearchResultTypeEnum.TOURNAMENT,
+                    directData = result.data?.tournament?.let { SearchResultTournamentBeanBean.from(it) },
+                    matchTotal = result.data?.matchTotal ?: 0,
+                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
+                    dailyCount = result.data?.dailyCountList?.let { list ->
+                        SearchDailyMatchBean.fromList(list)
+                    }
+                )
+            }
+            else -> { return SearchResultBean(type = SearchResultTypeEnum.NONE) }
+        }
     }
 
     suspend fun getSearchRecommend(keyword: String? = ""): List<String> {

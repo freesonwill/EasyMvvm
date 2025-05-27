@@ -7,14 +7,54 @@
     android:fitsSystemWindows="false"
     android:background="@color/drawer_bg">
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_drawer_nickname"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dp_73"
+        android:layout_height="@dimen/dp_58"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_icon_nickname"
+            android:layout_width="@dimen/dp_58"
+            android:layout_height="@dimen/dp_58"
+            android:layout_marginStart="@dimen/dp_12"
+            android:src="@drawable/ic_drawer_nickname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_title_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_12"
+            android:text="@string/drawer_nickname_title"
+            android:textSize="@dimen/sp_16"
+            android:textColor="@color/drawer_notification_title"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/iv_icon_nickname"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_arrow_right" />
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_nickname_arrow_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:src="@drawable/ic_drawer_arrow_right"
+            app:layout_constraintStart_toEndOf="@id/tv_title_nickname"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_drawer_notification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="93dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cl_drawer_nickname"
         android:background="@drawable/ic_drawer_card_bg">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -23,17 +63,17 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:paddingTop="12dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="12dp">
+            android:paddingTop="@dimen/dp_12"
+            android:paddingStart="@dimen/dp_12"
+            android:paddingEnd="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_12">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_message"
-                android:textSize="16sp"
+                android:textSize="@dimen/sp_15"
                 android:textColor="@color/drawer_notification_title"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -59,8 +99,8 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/cl_notification_header"
             app:layout_constraintStart_toStartOf="parent"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="12dp"
+            android:paddingHorizontal="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
             >
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -77,11 +117,11 @@
                 android:id="@+id/tv_message_1"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_8"
                 android:text="@string/drawer_notification_line_1"
                 android:textColor="@color/drawer_notification_message"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp_14"
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:layout_constraintStart_toEndOf="@+id/iv_icon_1"
@@ -95,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_time_1"
                 android:textColor="@color/drawer_notification_message"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -109,8 +149,8 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/item_notification_1"
             app:layout_constraintStart_toStartOf="parent"
-            android:paddingHorizontal="12dp"
-            android:paddingBottom="16dp">
+            android:paddingHorizontal="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_16">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_icon_2"
@@ -130,7 +170,7 @@
                 android:layout_marginEnd="8dp"
                 android:text="@string/drawer_notification_line_2"
                 android:textColor="@color/drawer_notification_message"
-                android:textSize="14sp"
+                android:textSize="@dimen/sp_14"
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:layout_constraintStart_toEndOf="@+id/iv_icon_2"
@@ -144,7 +184,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_notification_time_2"
                 android:textColor="@color/drawer_notification_message"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_12"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
@@ -157,8 +197,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_12"
         android:background="@drawable/ic_drawer_card_bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_drawer_notification">
@@ -168,30 +208,57 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
+                android:layout_marginStart="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_12"
                 android:text="@string/drawer_common_function"
-                android:textSize="15sp"
-                android:textColor="@color/drawer_common_function_title"
+                android:textSize="@dimen/sp_15"
+                android:textColor="@color/drawer_notification_title"
                 android:textStyle="bold"
                 />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_recharge"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/dp_11"
+            android:layout_marginStart="@dimen/dp_26"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/li_title"
+            app:layout_constraintBottom_toBottomOf="parent">
 
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_recharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_drawer_recharge"
+                android:scaleType="fitXY" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_recharge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/drawer_common_function_text"
+                android:text="@string/drawer_recharge" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/ll_bet_slip"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginTop="11dp"
-            android:layout_marginStart="26dp"
+            android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -207,7 +274,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_13"
                 android:textColor="@color/drawer_common_function_text"
                 android:text="@string/drawer_bet_slip" />
         </LinearLayout>
@@ -219,8 +286,8 @@
             android:orientation="vertical"
             android:layout_marginTop="@dimen/dp_11"
             android:layout_marginBottom="@dimen/dp_12"
-            android:layout_marginStart="@dimen/dp_46"
-            app:layout_constraintStart_toEndOf="@id/ll_bet_slip"
+            android:layout_marginEnd="@dimen/dp_26"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/li_title"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -236,12 +303,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:textSize="12sp"
+                android:textSize="@dimen/sp_13"
                 android:textColor="@color/drawer_common_function_text"
                 android:text="@string/drawer_tutorial" />
         </LinearLayout>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_drawer_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -272,7 +339,7 @@
                 android:gravity="center_vertical"
                 android:text="@string/drawer_setting"
                 android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sp_13" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
@@ -280,9 +347,9 @@
             android:id="@+id/ll_drawer_feedback"
             android:gravity="center"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginStart="@dimen/dp_66"
-            app:layout_constraintStart_toEndOf="@id/ll_drawer_setting"
+            android:layout_marginTop="11dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
@@ -300,8 +367,33 @@
                 android:gravity="center_vertical"
                 android:text="@string/drawer_feedback"
                 android:textColor="@color/drawer_bottom_function_text"
-                android:textSize="12sp" />
+                android:textSize="@dimen/sp_13" />
         </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_drawer_help"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:layout_marginEnd="@dimen/dp_44"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_drawer_help"
+                android:layout_width="@dimen/dp_28"
+                android:layout_height="@dimen/dp_28"
+                android:src="@drawable/ic_drawer_help"
+                android:scaleType="fitXY" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_drawer_help"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/sp_13"
+                android:textColor="@color/drawer_bottom_function_text"
+                android:text="@string/drawer_help" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
