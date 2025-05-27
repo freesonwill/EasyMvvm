@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.CallSuper
@@ -12,6 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui._interface.IStatusBar
@@ -55,10 +57,10 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+
     //navigation跳转时是否保留view（true:保留；false：销毁）
     open val keepViewOnNavigation:Boolean = false
     //#endregion VB,VM
-
     // 默认不启用键盘隐藏功能，子类可覆盖 edittext软键盘弹出后，点击外部虚拟键盘消失
     open val enableHideKeyboardOnTouchOutside = false
     //设置颜色，默认根据主题颜色设定
@@ -70,7 +72,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         uiBind.onCreateView(layoutInflater,null,savedInstanceState)
         setContentView(mBinding.root)
         uiBind.onViewCreated(mBinding.root,savedInstanceState)
-        setStatusBar(configStatusBar())
+        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+        setStatusBar(configStatusBar(),mBinding.root)
     }
 
     @CallSuper
@@ -80,8 +83,8 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         uiBind.onDestroy()
     }
 
-    override fun setStatusBar(config: StatusBarConfig) {
-        statusBar.setStatusBar(config)
+    override fun setStatusBar(config: StatusBarConfig, view: View) {
+        statusBar.setStatusBar(config,view)
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {

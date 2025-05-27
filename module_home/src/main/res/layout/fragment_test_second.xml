@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_match_item_card"
+    android:fitsSystemWindows="false"
+    android:paddingTop="120dp"
     tools:context=".test.SecondFragment">
 
     <TextView
@@ -11,4 +14,5 @@
         android:layout_height="wrap_content"
         android:text="@string/second_fragment" />
 
-</FrameLayout>
+
+</RelativeLayout>

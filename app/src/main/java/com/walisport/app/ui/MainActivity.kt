@@ -3,6 +3,7 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.walisport.app.R
 import arch.cayenne.lib.common.ui.BaseNavActivity
@@ -52,7 +53,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
 
     override fun configStatusBar(): StatusBarConfig {
         StatusBarConfig.statusBarColor = immersionBarColorExt(mViewModel.getSkinType())
-        StatusBarConfig.hideStatusBar = false
+        StatusBarConfig.statusBarType = StatusBarEnum.FULL_SCREEN
         return StatusBarConfig
     }
 }

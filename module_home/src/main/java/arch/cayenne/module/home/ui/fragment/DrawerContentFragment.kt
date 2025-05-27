@@ -2,6 +2,9 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -16,9 +19,21 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     companion object {
         const val TAG = "DrawerContentFragment"
     }
-
     override fun initView(savedInstanceState: Bundle?) {
 
+    }
+
+
+    override fun onStop() {
+        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStop()
+    }
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
     }
 
     override fun initListener() {

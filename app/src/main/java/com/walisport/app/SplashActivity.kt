@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
@@ -119,7 +120,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
-        StatusBarConfig.hideStatusBar = true
+        StatusBarConfig.statusBarType = StatusBarEnum.FULL_SCREEN
         return StatusBarConfig
     }
 

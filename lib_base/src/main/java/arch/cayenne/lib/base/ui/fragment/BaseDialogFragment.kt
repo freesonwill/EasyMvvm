@@ -105,8 +105,8 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
         }
     }
 
-    override fun setStatusBar(config: StatusBarConfig) {
-        statusBar.setStatusBar(config)
+    override fun setStatusBar(config: StatusBarConfig,view: View) {
+        statusBar.setStatusBar(config,view)
     }
 
     /**

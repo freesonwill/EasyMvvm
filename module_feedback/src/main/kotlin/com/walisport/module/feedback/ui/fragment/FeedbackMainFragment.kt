@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.feedback.R
@@ -25,8 +27,6 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
             titleBar.loadGeneralTitleBar(R.string.feedback_title.getString(), {
                 findNavController().navigateUp()
             })
-
-
         }
     }
 
@@ -39,7 +39,8 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
             override fun afterTextChanged(s: Editable?) {
                 val inputLength = s?.length ?: 0
-                mBinding.tvEditTextLength.text = if (inputLength == 0) "" else "$inputLength/${mViewModel.maxInputLength}"
+                mBinding.tvEditTextLength.text =
+                    if (inputLength == 0) "" else "$inputLength/${mViewModel.maxInputLength}"
             }
         })
 

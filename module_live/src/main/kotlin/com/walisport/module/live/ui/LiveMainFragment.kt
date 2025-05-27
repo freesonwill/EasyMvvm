@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -43,8 +44,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         setVideoView()
         loadFragment()
-        mViewModel.matchId =args.matchId
+        mViewModel.matchId = args.matchId
         mViewModel.sportId = args.sportId
+        StatusBarConfig.statusBarType = StatusBarEnum.DEFAULT
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     override fun initListener() {
@@ -71,6 +74,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
             }
+
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
@@ -136,7 +140,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tabView.setOnClickListener {}
             }.attach()
             mBinding.tabLayout.getTabAt(1)?.select()
-            mBinding.vpPage.setCurrentItem(1,false)
+            mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
         }
     }
@@ -149,8 +153,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onResume() {
-        StatusBarConfig.hideStatusBar =false
-        setStatusBar(StatusBarConfig)
+        StatusBarConfig.statusBarType = StatusBarEnum.DEFAULT
+        setStatusBar(StatusBarConfig,mBinding.root)
         super.onResume()
     }
 }

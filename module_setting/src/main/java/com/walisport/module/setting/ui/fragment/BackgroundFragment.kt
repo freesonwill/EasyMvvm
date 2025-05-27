@@ -79,7 +79,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     private fun setImmColor(type: String){
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor =immColor
-        setStatusBar(StatusBarConfig)
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     override fun createObserver() {
@@ -109,6 +109,6 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarColor =defaultImmColor
-        setStatusBar(StatusBarConfig)
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 }

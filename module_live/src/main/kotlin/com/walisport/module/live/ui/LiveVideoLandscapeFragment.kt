@@ -10,6 +10,7 @@ import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
@@ -483,8 +484,8 @@ class LiveVideoLandscapeFragment :
         AutoSizeConfig.getInstance().setDesignWidthInDp(LANDSCAPE_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.hideStatusBar = true
-        setStatusBar(StatusBarConfig)
+        StatusBarConfig.statusBarType =StatusBarEnum.FULL_SCREEN
+        setStatusBar(StatusBarConfig,mBinding.root)
         mBinding.videoView.onResume()
 
     }
@@ -501,8 +502,8 @@ class LiveVideoLandscapeFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        StatusBarConfig.hideStatusBar = false
-        setStatusBar(StatusBarConfig)
+        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+        setStatusBar(StatusBarConfig,mBinding.root)
         mBinding.videoView.onDestroy()
     }
 

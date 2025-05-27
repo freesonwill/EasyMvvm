@@ -227,8 +227,6 @@
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-
         <include
             android:id="@+id/layout_container"
             layout="@layout/view_home_content"

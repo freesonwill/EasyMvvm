@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -60,15 +64,26 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private lateinit var leagueAdapter: LeaguePagerAdapter
     private lateinit var tabLayoutMediator: TabLayoutMediator
-
-    //    private val tournamentListFragment  = TournamentListFragment.newInstance()
+    //    private val tournamentListFragment  = TournamentListFragment.newInstance()x
     private var isExpanded = false
-
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
         initDrawerContent()
+    }
+
+    override fun onStop() {
+        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStop()
+    }
+
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        setStatusBar(StatusBarConfig,mBinding.clMain)
+        super.onStart()
     }
 
     //init 一級導航欄位

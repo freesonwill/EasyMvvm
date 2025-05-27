@@ -1,11 +1,14 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,13 +19,13 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -61,8 +64,8 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     }
     //navigation跳转时是否保留view（true:保留；false：销毁）
     open val keepViewOnNavigation:Boolean = false
-    //#endregion VB,VM
 
+    //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
     private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
 
@@ -95,9 +98,10 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         uiBind.onDestroy()
     }
 
-    override fun setStatusBar(config: StatusBarConfig) {
-        statusBar.setStatusBar(config)
+    override fun setStatusBar(config: StatusBarConfig,view: View) {
+        statusBar.setStatusBar(config,view)
     }
+
     fun getStatusBarColor() : Int{
         return statusBar.configStatusBar().statusBarColor
     }
