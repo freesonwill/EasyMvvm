@@ -118,7 +118,7 @@
                 android:background="@drawable/bg_sport_list"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingStart="12dp"
+                android:paddingStart="6dp"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -127,7 +127,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="23dp"
+                android:layout_width="@dimen/dp_28"
                 android:layout_height="match_parent"
                 android:background="@drawable/gradient_sport_list"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +24,6 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
@@ -51,11 +49,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { sport ->
-            Toast.makeText(
-                requireContext(),
-                "選擇：${getString(SportType.fromId(sport.id)!!.titleResId)}",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
