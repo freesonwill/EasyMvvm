@@ -56,4 +56,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     SEARCH(500, 1030), // 500-1030: 搜索
     SEARCH_HOT_WORD(500, 1031), // 500-1031: 热门搜索词
     SEARCH_RECOMMEND(500, 1032), // 500-1032: 搜索自动补充词汇
+
+    SUBSCRIBE_MATCH_MARKET(500, 1104), // 500-1104: 订阅比赛盘口
+    CANCEL_SUBSCRIBE_MATCH_MARKET(500, 1105), // 500-1105: 取消订阅比赛盘口
+    MATCH_MARKET_NOTIFY(600, 1005), // 600-1005: 比赛盘口推送
 }

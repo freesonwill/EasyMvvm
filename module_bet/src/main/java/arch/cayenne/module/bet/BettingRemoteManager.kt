@@ -29,18 +29,35 @@ class BettingRemoteManager(
     private val socketManager: WebSocketManager
 ) {
 
-    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> = MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
+    private val _matchNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
+        MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
     val matchNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchNotifyFlow
+
+    private val _matchMarketNotifyFlow: MutableSharedFlow<List<BetNotifySelectionBean>> =
+        MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
+    val matchMarketNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchMarketNotifyFlow
 
     init {
         scope.launch {
-            socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY)
-                .collect { res ->
-                    if (res.error == null && res.data != null) {
-                        val data = res.data!!
-                        setMatchNotifyData(data)
+            launch {
+                socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY)
+                    .collect { res ->
+                        if (res.error == null && res.data != null) {
+                            val data = res.data!!
+                            setMatchNotifyData(data)
+                        }
                     }
-                }
+            }
+            launch {
+                socketManager.observeProtoMessage<Client.MatchMarketNotify>(ApiCode.MATCH_MARKET_NOTIFY)
+                    .collect { res ->
+                        if (res.error == null && res.data != null) {
+                            val data = res.data!!
+                            setMatchMarketNotifyData(data)
+                        }
+                    }
+
+            }
         }
     }
 
@@ -260,6 +277,60 @@ class BettingRemoteManager(
             }
         if (selection.isNotEmpty()) {
             _matchNotifyFlow.tryEmit(selection)
+        }
+    }
+
+    suspend fun registerMatchMarketNotify(ids: List<Client.MarketIdBase>) {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchMarketResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.SUBSCRIBE_MATCH_MARKET,
+        ) {
+            Client.SubscribeMatchMarketReq.newBuilder().apply {
+                this.addAllMarket(
+                    ids
+                )
+            }.build()
+        }
+        if (res.error == null && res.data != null) {
+            res.data!!.matchNotifyList.forEach {
+                setMatchMarketNotifyData(it)
+            }
+        }
+    }
+
+    fun unregisterMatchMarketNotify(ids: List<Client.MarketIdBase>) {
+        scope.launch {
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchMarketResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_MARKET,
+            ) {
+                Client.SubscribeMatchMarketReq.newBuilder().apply {
+                    this.addAllMarket(
+                        ids
+                    )
+                }.build()
+            }
+        }
+    }
+
+    private fun setMatchMarketNotifyData(data: Client.MatchMarketNotify) {
+        val matchId = data.matchId
+        val selection = data.marketUpdateList
+            .flatMap { it.marketDetailList }  // 展開所有 MarketDetail
+            .flatMap { it.selectionList }
+            .map { selection ->
+                BetNotifySelectionBean(
+                    matchId,
+                    selection.selectionId,
+                    selection.odds.toOdds(),
+                    selection.active,
+                    selection.parlay
+                )
+            }
+        if (selection.isNotEmpty()) {
+            _matchMarketNotifyFlow.tryEmit(selection)
         }
     }
 }
