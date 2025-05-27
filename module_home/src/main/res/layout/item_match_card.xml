@@ -15,8 +15,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/secondary_text" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_name"

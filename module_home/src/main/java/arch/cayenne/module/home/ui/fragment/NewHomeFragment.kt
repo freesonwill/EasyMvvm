@@ -578,10 +578,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     .placeholder(R.drawable.ic_default_tournament)
                     .error(R.drawable.ic_default_tournament)
                     .into(ivLeagueIcon)
-
-                ivLeagueIcon.imageTintList = context?.let {
-                    SkinnableResourceManager.getColorStateList(it, R.color.selector_league_tab_tint)
-                }
             }
             root.setBackgroundResource(R.drawable.selector_league_tab_bg)
         }
