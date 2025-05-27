@@ -31,7 +31,6 @@ class BackgroundViewModel : BaseViewModel() {
 
     //点击确认键后才会写入数据，否则只是换肤显示
     fun setSkinData(type: String) {
-        StatusBarConfig.keySkin =type
         repository.setSkinType(type)
     }
 

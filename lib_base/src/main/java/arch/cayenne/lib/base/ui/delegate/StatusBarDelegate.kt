@@ -18,7 +18,7 @@ import arch.cayenne.lib.base.utils.LogUtils
  * @description:
  */
 class StatusBarDelegate(private val activity: Activity) : IStatusBar {
-    private var rootViewPaddingTop :Int = -1
+    private var viewPaddingTop :Int = -1
 
 
 
@@ -27,8 +27,8 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
         immersionBar.statusBarDarkFont(config.statusBarDarkFont)
         val statusBarHeight = ImmersionBar.getStatusBarHeight(activity)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
-        if (rootViewPaddingTop == -1) {
-            rootViewPaddingTop = view.paddingTop
+        if (viewPaddingTop == -1) {
+            viewPaddingTop = view.paddingTop
         }
         //默认
         when (config.statusBarType) {
@@ -39,10 +39,10 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                LogUtils.e("setStatusBar-----DEFAULT--------view-${rootViewPaddingTop}")
+                LogUtils.e("setStatusBar-----DEFAULT--------view-${viewPaddingTop}")
                 setViewPadding(
                     view,
-                    rootViewPaddingTop+statusBarHeight,
+                    viewPaddingTop+statusBarHeight,
                     view.paddingBottom
                 )
             }
@@ -66,7 +66,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
                 immersionBar.init()
                 setViewPadding(
                     view,
-                    rootViewPaddingTop+statusBarHeight,
+                    viewPaddingTop+statusBarHeight,
                     navigationBarHeight
                 )
             }

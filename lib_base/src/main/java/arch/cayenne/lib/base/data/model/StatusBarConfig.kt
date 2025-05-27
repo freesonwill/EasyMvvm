@@ -11,8 +11,6 @@ import arch.cayenne.lib.base.data.StatusBarMode
 object  StatusBarConfig  {
     //状态栏文字颜色 false  statusBarDarkFont(false) 亮色 statusBarDarkFont(true) 暗色
     var statusBarDarkFont : Boolean = false
-    //皮肤类型
-    var keySkin  : String  = ""
     //状态栏颜色
     var statusBarColor: Int = android.R.color.black
     //状态栏模式

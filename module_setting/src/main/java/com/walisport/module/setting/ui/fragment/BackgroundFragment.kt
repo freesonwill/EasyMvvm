@@ -88,8 +88,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor =immColor
         StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
-        StatusBarConfig.keySkin =skinType
-        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(StatusBarConfig.keySkin)
+        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(skinType)
         setStatusBar(StatusBarConfig,mBinding.root)
     }
 
@@ -120,6 +119,5 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarColor =defaultImmColor
-        StatusBarConfig.keySkin = mViewModel.getSkinData()
     }
 }

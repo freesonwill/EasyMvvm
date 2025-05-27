@@ -19,8 +19,12 @@ class MainRepository(
 ) : BaseRepository() {
     //获取皮肤背景
     fun getSkinType(): String {
-        StatusBarConfig.keySkin =userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(StatusBarConfig.keySkin)
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(
+            userDataManager.getValue(
+                UserDataKey.KEY_SKIN,
+                SkinType.SKIN_WHITE_BLUE.value
+            )
+        )
         return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
     }
 }

@@ -24,6 +24,7 @@ class SplashRepository(
     internal var countDown: Int by countDownHelper::countDown
     internal val countDownSecondsLD: SharedFlow<Int> by countDownHelper::countDownSecondsLD
     internal val isCountDownStart by countDownHelper::isCountDownStart
+
     init {
         countDown = 2_000
     }
@@ -35,12 +36,16 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        StatusBarConfig.keySkin =userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(StatusBarConfig.keySkin)
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(
+            userDataManager.getValue(
+                UserDataKey.KEY_SKIN,
+                SkinType.SKIN_WHITE_BLUE.value
+            )
+        )
         return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
     }
 
-    suspend fun startSocket() : ConnectState {
+    suspend fun startSocket(): ConnectState {
         return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
     }
 }
