@@ -1,6 +1,5 @@
 package com.walisport.app.data.repo
 
-import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.data.repository.BaseRepository

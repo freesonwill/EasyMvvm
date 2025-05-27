@@ -13,7 +13,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.ui._interface.IStatusBar
@@ -72,7 +72,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         uiBind.onCreateView(layoutInflater,null,savedInstanceState)
         setContentView(mBinding.root)
         uiBind.onViewCreated(mBinding.root,savedInstanceState)
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
         setStatusBar(configStatusBar(),mBinding.root)
     }
 

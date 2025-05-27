@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate

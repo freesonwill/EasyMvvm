@@ -2,7 +2,7 @@ package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -120,7 +120,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
     }

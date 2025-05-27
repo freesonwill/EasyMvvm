@@ -1,7 +1,7 @@
 package arch.cayenne.module.home.test
 
 import android.os.Bundle
-import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -40,13 +40,13 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
     }
 
     override fun onStop() {
-        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStop()
     }
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
     }

@@ -3,7 +3,6 @@ package arch.cayenne.module.handicap.ui.fragment
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.data.model.StatusBarConfig

@@ -21,14 +21,6 @@ interface IStatusBar {
      * 设置状态栏
      */
     fun setStatusBar(config: StatusBarConfig, view: View)
-    fun getStatusBarHeight( activity: Activity):Int{
-        return ImmersionBar.getStatusBarHeight(activity)
-    }
-
-
-    fun getNavigationBarHeight( activity: Activity):Int{
-        return ImmersionBar.getNavigationBarHeight(activity)
-    }
 }
 
 
