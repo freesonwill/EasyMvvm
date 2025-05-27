@@ -3,6 +3,7 @@
     <color name="bg_main">#F3F3F4</color>
     <color name="bg_card">#ffffff</color>
     <color name="data_bg">#FBFBFB</color>
+    <color name="home_secondary_text">#666666</color>
     <color name="bg_card_gradient_start">#00FEFFFE</color>
     <color name="bg_sport_list_gradient_start">#00F3F3F4</color>
     <color name="bg_sport_selected">@color/brand_color</color>
