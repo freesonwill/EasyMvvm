@@ -3,10 +3,12 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.ui.viewmodel.BackgroundViewModel
@@ -44,6 +46,12 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         }
     }
 
+    override fun onStart() {
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
+    }
+
     override fun initListener() {
         mBinding.layClassic.clickNoRepeat {
             skinType = SkinType.SKIN_CLASSIC.value
@@ -79,7 +87,9 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     private fun setImmColor(type: String){
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor =immColor
-        setStatusBar(StatusBarConfig)
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(skinType)
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     override fun createObserver() {
@@ -109,6 +119,8 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarColor =defaultImmColor
-        setStatusBar(StatusBarConfig)
+        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(mViewModel.getSkinData())
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.root)
     }
 }

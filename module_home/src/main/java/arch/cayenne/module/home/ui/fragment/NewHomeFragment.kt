@@ -10,6 +10,8 @@ import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -55,12 +57,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
-
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
         initDrawerContent()
+    }
+
+
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.clMain)
+        super.onStart()
     }
 
     //init 一級導航欄位
@@ -470,7 +479,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
-        
+
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             setTournamentAndViewPagerLayout(list)
         }

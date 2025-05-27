@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -43,7 +42,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         setVideoView()
         loadFragment()
-        mViewModel.matchId =args.matchId
+        mViewModel.matchId = args.matchId
         mViewModel.sportId = args.sportId
     }
 
@@ -145,11 +144,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()
-    }
-
-    override fun onResume() {
-        StatusBarConfig.hideStatusBar =false
-        setStatusBar(StatusBarConfig)
-        super.onResume()
     }
 }
