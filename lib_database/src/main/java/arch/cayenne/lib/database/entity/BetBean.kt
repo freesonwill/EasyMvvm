@@ -40,6 +40,7 @@ data class BetSelectionLiteBean(
 data class BetSelectionBean(
     val betId: Long,
     val matchId: Long,
+    val marketId: Long, // 盘口ID
     val marketName: String, // 盘口名称 ex. 讓分盤
     val selectionId: Long, // 盘口ID
     val name: String, // 盘口名称 ex. 中國 (+1.5)

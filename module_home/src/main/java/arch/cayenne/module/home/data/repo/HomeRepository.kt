@@ -390,6 +390,7 @@ class HomeRepository(
         }?.let { market ->
             return BetInsertBean(
                 matchId = match.match.matchId,
+                marketId = market.market.marketId,
                 marketName = market.market.marketName,
                 selectionId = selectionBean.selectionId,
                 name = selectionBean.name,

@@ -63,6 +63,7 @@ private fun matchSelectionInsertBean(
     ): BetInsertBean? {
             return BetInsertBean(
                 matchId = match.matchId,
+                marketId = selectionBean.marketId,
                 marketName = selectionBean.marketName,
                 selectionId = selectionBean.selectionId,
                 name = selectionBean.shortName,
