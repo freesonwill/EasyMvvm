@@ -72,7 +72,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/et_rate">
 
-            <ImageButton
+            <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
                 android:layout_width="62dp"

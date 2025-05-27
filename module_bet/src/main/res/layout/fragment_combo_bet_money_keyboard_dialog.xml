@@ -167,7 +167,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/ll_common_amount">
 
-            <ImageButton
+            <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
                 android:layout_marginBottom="2dp"
