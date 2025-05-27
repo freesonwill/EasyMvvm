@@ -73,11 +73,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initDrawerContent()
     }
 
-    override fun onStop() {
-        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onStop()
-    }
 
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false

@@ -2,8 +2,10 @@ package com.walisport.module.setting.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.SkinType
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.launch
@@ -29,6 +31,7 @@ class BackgroundViewModel : BaseViewModel() {
 
     //点击确认键后才会写入数据，否则只是换肤显示
     fun setSkinData(type: String) {
+        StatusBarConfig.keySkin =type
         repository.setSkinType(type)
     }
 

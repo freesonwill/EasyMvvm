@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.StatusBarEnum
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -50,16 +51,19 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             outRect.right = leftRight
         }
     }
+    override fun onStart() {
+        super.onStart()
+        StatusBarConfig.statusBarType = StatusBarEnum.TOP_UP
+        setStatusBar(StatusBarConfig,mBinding.root)
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
-        requireActivity().window?.apply {
-            setFlags(
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-            )
-        }
-        StatusBarConfig.hideStatusBar = false
-        setStatusBar(StatusBarConfig)
+//        requireActivity().window?.apply {
+//            setFlags(
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//                WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+//            )
+//        }
         //获取联赛日程列表
         val matchID = arguments?.getLong("matchID") ?: 0L
         leagueID = arguments?.getInt("leagueID") ?: 0
@@ -110,12 +114,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         }
     }
 
-    override fun onDestroyView() {
-        requireActivity().window?.apply {
-            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-        }
-        super.onDestroyView()
-    }
+//    override fun onDestroyView() {
+//        requireActivity().window?.apply {
+//            clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//        }
+//        super.onDestroyView()
+//    }
 
     override fun createObserver() {
         mViewModel.leagueData.observe(viewLifecycleOwner) {

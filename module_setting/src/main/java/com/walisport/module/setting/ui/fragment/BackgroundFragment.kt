@@ -3,8 +3,9 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.StatusBarEnum
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -79,6 +80,8 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     private fun setImmColor(type: String){
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor =immColor
+        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+        StatusBarConfig.keySkin =skinType
         setStatusBar(StatusBarConfig,mBinding.root)
     }
 
@@ -109,6 +112,6 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarColor =defaultImmColor
-        setStatusBar(StatusBarConfig,mBinding.root)
+        StatusBarConfig.keySkin = mViewModel.getSkinData()
     }
 }

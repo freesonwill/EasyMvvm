@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/sclMain"
-    android:fitsSystemWindows="false"
     android:background="@color/drawer_bg">
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_drawer_nickname"

@@ -21,20 +21,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         const val TAG = "DrawerContentFragment"
     }
     override fun initView(savedInstanceState: Bundle?) {
-
-    }
-
-
-    override fun onStop() {
-        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onStop()
-    }
-    override fun onStart() {
-        mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onStart()
+        mBinding.root.post{
+            StatusBarConfig.statusBarType =StatusBarEnum.TOP_UP
+            setStatusBar(StatusBarConfig,mBinding.root)
+        }
     }
 
     override fun initListener() {

@@ -46,8 +46,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         loadFragment()
         mViewModel.matchId = args.matchId
         mViewModel.sportId = args.sportId
-        StatusBarConfig.statusBarType = StatusBarEnum.DEFAULT
-        setStatusBar(StatusBarConfig,mBinding.root)
     }
 
     override fun initListener() {
@@ -148,11 +146,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()
-    }
-
-    override fun onResume() {
-        StatusBarConfig.statusBarType = StatusBarEnum.DEFAULT
-        setStatusBar(StatusBarConfig,mBinding.root)
-        super.onResume()
     }
 }
