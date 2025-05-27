@@ -130,6 +130,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
 
         mBinding.btnReserve.isVisible = false
         mBinding.clCancelReserve.isVisible = true
+        mBinding.layoutBet.ivDelete.isVisible = false
     }
 
     override fun dismiss(key: String, value: String) {
