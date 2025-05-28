@@ -8,11 +8,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableRecyclerView : RecyclerView {
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val flowHelper = SkinnableViewFlowHelper()
 
 
     private val backgroundHelper = SkinnableBackGroundHelper(this)
@@ -32,12 +33,8 @@ class SkinnableRecyclerView : RecyclerView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    backgroundHelper.updateSkin()
-                }
-            }
+        flowHelper.startSkinFlow {
+            backgroundHelper.updateSkin()
         }
     }
 
@@ -48,5 +45,10 @@ class SkinnableRecyclerView : RecyclerView {
     override fun setBackgroundResource(@DrawableRes resId: Int) {
         super.setBackgroundResource(resId)
         backgroundHelper.setSrcId(resId)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
     }
 }
