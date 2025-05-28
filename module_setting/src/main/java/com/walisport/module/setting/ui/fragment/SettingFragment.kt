@@ -2,10 +2,7 @@ package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
