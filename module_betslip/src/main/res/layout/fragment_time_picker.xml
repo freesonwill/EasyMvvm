@@ -61,28 +61,31 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <NumberPicker
+        <arch.cayenne.lib.skin.widget.SkinnableNumberPicker
             android:id="@+id/year_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/NumberPickerTextAppearance"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/month_picker"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <NumberPicker
+        <arch.cayenne.lib.skin.widget.SkinnableNumberPicker
             android:id="@+id/month_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/NumberPickerTextAppearance"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/day_picker"
             app:layout_constraintStart_toEndOf="@id/year_picker"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <NumberPicker
+        <arch.cayenne.lib.skin.widget.SkinnableNumberPicker
             android:id="@+id/day_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:theme="@style/NumberPickerTextAppearance"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/month_picker"
