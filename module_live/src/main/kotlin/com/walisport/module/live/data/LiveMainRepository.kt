@@ -53,7 +53,6 @@ class LiveMainRepository(
         }
     }
 
-    @SuppressLint("SuspiciousIndentation")
     suspend fun updateFullMatchInfo(
         marketInfo: MatchBasicUpdate, marketUpdate: List<Market>, matchId: Long
     ) {
