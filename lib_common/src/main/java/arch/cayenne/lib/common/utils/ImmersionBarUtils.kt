@@ -1,7 +1,8 @@
 package arch.cayenne.lib.common.utils
 
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.data.constants.SkinType
+
 object ImmersionBarUtils {
     fun immersionBarColorExt(type: String):Int{
         return when (type){
@@ -24,6 +25,20 @@ object ImmersionBarUtils {
                     R.color.title_bg_white_blue
                 }
             else -> {R.color.title_bg}
+        }
+    }
+
+    fun immersionBarSkinTypeExt(type: String): Boolean{
+      return  when (type) {
+            SkinType.SKIN_CLASSIC.value, SkinType.SKIN_BLACK_BLUE.value, SkinType.SKIN_BLACK_GREEN.value, SkinType.SKIN_BLACK_RED.value -> {
+              false
+            }
+            SkinType.SKIN_WHITE_BLUE.value, SkinType.SKIN_WHITE_GREEN.value -> {
+               true
+            }
+            else -> {
+                false
+            }
         }
     }
 }

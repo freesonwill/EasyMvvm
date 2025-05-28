@@ -1,9 +1,9 @@
 package com.walisport.module.setting.data
 
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse

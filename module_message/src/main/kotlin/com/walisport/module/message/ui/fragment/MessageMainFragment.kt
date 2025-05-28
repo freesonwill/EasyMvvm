@@ -2,6 +2,7 @@ package com.walisport.module.message.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import com.walisport.module.message.R

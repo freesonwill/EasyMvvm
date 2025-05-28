@@ -7,11 +7,17 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_card">
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_home_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container,iv_home_league_more,ll_tournaments_dropdown" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_first_navbar"
@@ -229,8 +235,6 @@
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-
         <include
             android:id="@+id/layout_container"
             layout="@layout/view_home_content"
@@ -264,6 +268,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+        <arch.cayenne.lib.common.ui.view.LoadingView
+            android:id="@+id/loading_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintStart_toStartOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintEnd_toEndOf="@+id/ll_tournaments_dropdown" />
+
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dsl_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->

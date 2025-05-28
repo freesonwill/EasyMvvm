@@ -125,6 +125,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun onDismiss(dialog: DialogInterface) {
+        mViewModel.removeSingleBet()
         parentFragmentManager.setFragmentResult(KEY_RESULT, Bundle().apply {
             putString(VALUE_DISMISS, VALUE_DISMISS)
         })

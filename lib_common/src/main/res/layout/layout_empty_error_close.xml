@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/app_bg"
    >
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView

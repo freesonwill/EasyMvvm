@@ -1,6 +1,8 @@
 package arch.cayenne.module.home.test
 
 import android.os.Bundle
+import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -37,4 +39,20 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
     override fun createObserver() {
     }
 
+    override fun onStop() {
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStop()
+    }
+    override fun onStart() {
+        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.root)
+        super.onStart()
+    }
+
+//    override fun onStop() {
+//        StatusBarConfig.statusBarType =StatusBarEnum.DEFAULT
+//        setStatusBar(StatusBarConfig,mBinding.root)
+//        super.onStop()
+//    }
 }

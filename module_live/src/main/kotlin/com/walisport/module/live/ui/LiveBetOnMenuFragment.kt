@@ -45,7 +45,7 @@ class LiveBetOnMenuFragment :
     private var selectId: Long = 0
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBar(StatusBarConfig)
+        setStatusBar(StatusBarConfig,mBinding.root)
         mViewModel.getMarketType()
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe
