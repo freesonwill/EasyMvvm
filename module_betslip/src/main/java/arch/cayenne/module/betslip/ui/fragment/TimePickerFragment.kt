@@ -1,9 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.widget.NumberPicker
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.Config
@@ -73,7 +70,6 @@ class TimePickerFragment private constructor() :
 
     private fun initYearPicker() {
         mBinding.yearPicker.apply {
-            hidePickerDivider(this)
             wrapSelectorWheel = false
 
             val curYear = calendar.get(Calendar.YEAR)
@@ -91,7 +87,6 @@ class TimePickerFragment private constructor() :
 
     private fun initMonthPicker() {
         mBinding.monthPicker.apply {
-            hidePickerDivider(this)
             wrapSelectorWheel = true
 
             val curMonth = calendar.get(Calendar.MONTH) + 1
@@ -109,7 +104,6 @@ class TimePickerFragment private constructor() :
 
     private fun initDayPicker() {
         mBinding.dayPicker.apply {
-            hidePickerDivider(this)
             wrapSelectorWheel = true
 
             val curDay = calendar.get(Calendar.DAY_OF_MONTH)
@@ -136,21 +130,6 @@ class TimePickerFragment private constructor() :
             mBinding.dayPicker.value = day
             mBinding.dayPicker.maxValue = maxDay
             calendar.set(year, month - 1, day)
-        }
-    }
-
-    private fun hidePickerDivider(picker: NumberPicker) {
-        try {
-            val pickerFields = NumberPicker::class.java.declaredFields
-            for (field in pickerFields) {
-                if ("mSelectionDivider" == field.name) {
-                    field.isAccessible = true
-                    field.set(picker, ColorDrawable(Color.TRANSPARENT))
-                    break
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
     }
 }
