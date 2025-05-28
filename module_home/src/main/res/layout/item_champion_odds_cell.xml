@@ -28,7 +28,7 @@
             style="@style/OddsShortNameStyle"
             android:layout_width="0dp"
             android:textSize="14sp"
-            android:gravity="left"
+            android:gravity="start"
             android:lines="1"
             android:ellipsize="end"
             android:layout_marginStart="@dimen/dp_12"
@@ -41,12 +41,14 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_odds"
             style="@style/OddsTextStyle"
-            android:textSize="14sp"
+            android:fontFamily="sans-serif"
+            android:textFontWeight="500"
             android:layout_marginEnd="@dimen/dp_12"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="1.33" />
+            tools:text="1.33"
+            tools:targetApi="p"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_lock"
