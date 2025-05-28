@@ -20,6 +20,8 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     var matchId: Long = 0
     var sportId: Int = 0
     var leagueID: Int = 0
+    var leagueName: String = ""
+    var leagueLogo: String = ""
 
     //首次加载
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
