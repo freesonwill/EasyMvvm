@@ -45,4 +45,9 @@
         <attr format="color" name="tabTextColor"/>
         <attr format="color" name="tabSelectedTextColor"/>
     </declare-styleable>
+
+    <declare-styleable name="SportNumberPickerHelper">
+        <attr name="android:textColor"/>
+        <attr name="android:textSize"/>
+    </declare-styleable>
 </resources>
