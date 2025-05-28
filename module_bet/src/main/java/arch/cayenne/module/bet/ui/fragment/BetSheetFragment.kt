@@ -54,7 +54,6 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        isCancelable = false
     }
 
     override fun initListener() {
