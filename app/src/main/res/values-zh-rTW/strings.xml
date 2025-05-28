@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">瓦力體育</string>
-    <string name="splash_counter_down_skip">跳過 (%s)</string>
-    <string name="more_taps_to_exit">再次操作以退出App</string>
-    <string name="more_taps_to_exit2">還需 %1$s 次操作才能退出 App</string>
-</resources>
