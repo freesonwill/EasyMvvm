@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
@@ -34,6 +35,12 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
                 mViewModel.loadData(getBetSlipEnum())
             }
         }
+        mViewModel.state.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled(viewLifecycleOwner)?.let { states ->
+                updateState(states)
+            }
+
+        }
     }
 
     override fun initData() {
@@ -44,4 +51,6 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
             mViewModel.loadData(getBetSlipEnum())
         }
     }
+
+    abstract fun updateState(state: DynamicStateLayout.States)
 }
