@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never"
+        android:visibility="gone" />
+
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        android:id="@+id/dynamic_state_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

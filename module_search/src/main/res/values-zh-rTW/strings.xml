@@ -5,4 +5,8 @@
     <string name="history_record">曆史記錄</string>
     <string name="hot_search">熱門搜索</string>
     <string name="no_search_result">暫無數據，請換個試試</string>
+    <string name="tab_all">全部</string>
+    <string name="tab_tournament">聯盟</string>
+    <string name="tab_team">球隊</string>
+    <string name="tab_player">球員</string>
 </resources>
