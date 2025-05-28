@@ -46,7 +46,10 @@
             android:maxLines="1"
             android:textColor="@color/title_bar"
             android:textSize="15sp"
-            tools:ignore="MissingConstraints" />
+            android:fontFamily="sans-serif"
+            android:textFontWeight="500"
+            tools:ignore="MissingConstraints"
+            tools:targetApi="p"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
