@@ -53,10 +53,13 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 mBinding.main.setVisibilityGone()
                 upData(it)
                 if (it.awayOrBuilderList.isEmpty()) {
+                    mBinding.llContent.visibility = View.GONE
                     mBinding.main.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
+                }else{
+                    mBinding.llContent.visibility = View.VISIBLE
                 }
             } ?: run {
                 mBinding.main.setState(
