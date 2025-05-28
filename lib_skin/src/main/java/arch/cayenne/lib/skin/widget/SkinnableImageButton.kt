@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableImageHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -25,7 +26,7 @@ class SkinnableImageButton : AppCompatImageButton{
     private var mPaint: Paint? = null
     private var mRectF: RectF? = null
     private var mBitmapShader: BitmapShader? = null
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val flowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -42,13 +43,9 @@ class SkinnableImageButton : AppCompatImageButton{
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    backgroundHelper.updateSkin()
-                    imageHelper.updateSkin()
-                }
-            }
+        flowHelper.startSkinFlow {
+            backgroundHelper.updateSkin()
+            imageHelper.updateSkin()
         }
     }
 
@@ -90,6 +87,11 @@ class SkinnableImageButton : AppCompatImageButton{
         }else{
             super.onDraw(canvas)
         }
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
     }
 
 }

@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -16,7 +17,7 @@ class SkinnableToggleButton : AppCompatToggleButton {
 
     private val mTextHelper: SkinnableTextHelper = SkinnableTextHelper(this)
     private val mBackgroundTintHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val flowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -37,20 +38,12 @@ class SkinnableToggleButton : AppCompatToggleButton {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    mBackgroundTintHelper.updateSkin()
-                    mTextHelper.updateSkin()
-                }
-            }
-            launch {
-                sportSkinManager.languageFlow.collect {
-                    it?.let {
-                        mTextHelper.updateLanguage(it.language)
-                    }
-                }
-            }
+        flowHelper.startSkinFlow {
+            mBackgroundTintHelper.updateSkin()
+            mTextHelper.updateSkin()
+        }
+        flowHelper.startLanguageFlow {
+            mTextHelper.updateLanguage(it.language)
         }
     }
 
@@ -91,5 +84,10 @@ class SkinnableToggleButton : AppCompatToggleButton {
     ) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
     }
 }

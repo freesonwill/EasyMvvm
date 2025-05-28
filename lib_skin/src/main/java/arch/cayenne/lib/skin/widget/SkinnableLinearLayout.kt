@@ -7,12 +7,13 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
-open class SkinnableLinearLayout :LinearLayout {
-    private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+open class SkinnableLinearLayout : LinearLayout {
+    private lateinit var backgroundTintHelper: SkinnableBackGroundHelper
+    private val flowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -29,16 +30,18 @@ open class SkinnableLinearLayout :LinearLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    backgroundTintHelper.updateSkin()
-                }
-            }
+        flowHelper.startSkinFlow {
+            backgroundTintHelper.updateSkin()
         }
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
+        backgroundTintHelper = SkinnableBackGroundHelper(this)
         backgroundTintHelper.loadFromAttributes(attrs, defStyleAttr)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
     }
 }
