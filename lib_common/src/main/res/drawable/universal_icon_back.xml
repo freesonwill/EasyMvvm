@@ -7,6 +7,6 @@
       android:pathData="M18.133,11.867L12,18L18.133,24.134"
       android:strokeWidth="1.81159"
       android:fillColor="#00000000"
-      android:strokeColor="#E6E6E6"
+      android:strokeColor="@color/navigation_bar"
       android:strokeLineCap="square"/>
 </vector>

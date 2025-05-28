@@ -14,12 +14,14 @@
       tools:ignore="ScrollViewCount">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="7dp"
         android:paddingStart="7dp"
         android:paddingEnd="7dp"
+        android:visibility="gone"
         >
 <RelativeLayout
     android:layout_width="match_parent"

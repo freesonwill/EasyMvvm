@@ -27,7 +27,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     override val vmClass: KClass<SingleBetViewModel> = SingleBetViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
+        ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
+            showKeyboard()
+        }
         mBinding.etMoney.requestFocus()
 
         mBinding.numberKeyboard.setOnCalculatorClickListener(object :
@@ -53,6 +55,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
+            mViewModel.removeBet()
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -106,6 +109,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 ).show(childFragmentManager)
             }
         }
+        mBinding.btnCollapse.setOnClickListener {
+            hideKeyboard()
+        }
+        mBinding.clMoney.setOnClickListener {
+            showKeyboard()
+        }
     }
 
     override fun createObserver() {
@@ -146,8 +155,19 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         sendResult(key, value, R.id.singleBetFragment)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mViewModel.removeSingleBet()
+    private fun hideKeyboard() {
+        ViewHelper.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
+        mBinding.etMoney.clearFocus()
+        mBinding.clMoney.isFocusableInTouchMode = false
+        mBinding.clMoney.isFocusable = false
+    }
+
+    private fun showKeyboard() {
+        if (!mBinding.clKeyboard.isVisible) {
+            ViewHelper.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
+            mBinding.etMoney.requestFocus()
+            mBinding.clMoney.isFocusableInTouchMode = true
+            mBinding.clMoney.isFocusable = true
+        }
     }
 }

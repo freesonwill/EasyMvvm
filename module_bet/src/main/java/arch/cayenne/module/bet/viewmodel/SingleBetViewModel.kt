@@ -90,10 +90,6 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         betRepo.removeBet()
     }
 
-    fun removeSingleBet() {
-        betRepo.removeSingleBet()
-    }
-
     fun saveToCombo() {
         onEditNumber.value?.let {
             if (it.isEmpty()) return@let

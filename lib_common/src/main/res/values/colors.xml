@@ -126,4 +126,5 @@
     <color name="black_75">#BF000000</color>
     <color name="tab_indicator_color">#24EE8A</color>
     <color name="background">#FF0E0F19</color>
+    <color name="progress_text">#FFFFFF</color>
 </resources>

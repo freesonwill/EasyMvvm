@@ -18,13 +18,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tv_title"/>
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxLines="1"
         android:textSize="15sp"
-        android:textColor="@color/white"
+        android:textColor="@color/progress_text"
         android:background="@android:color/transparent"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"

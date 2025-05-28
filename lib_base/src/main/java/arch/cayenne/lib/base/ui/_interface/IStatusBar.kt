@@ -1,6 +1,9 @@
 package arch.cayenne.lib.base.ui._interface
 
+import android.app.Activity
+import android.view.View
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import com.gyf.immersionbar.ImmersionBar
 
 /**
  * 状态栏StatusBar
@@ -17,7 +20,7 @@ interface IStatusBar {
     /**
      * 设置状态栏
      */
-    fun setStatusBar(config: StatusBarConfig)
+    fun setStatusBar(config: StatusBarConfig, view: View)
 }
 
 

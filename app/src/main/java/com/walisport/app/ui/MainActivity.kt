@@ -3,11 +3,15 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import com.walisport.app.R
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
+import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
@@ -49,10 +53,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
     }
 
-
     override fun configStatusBar(): StatusBarConfig {
         StatusBarConfig.statusBarColor = immersionBarColorExt(mViewModel.getSkinType())
-        StatusBarConfig.hideStatusBar = false
+        StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         return StatusBarConfig
     }
 }

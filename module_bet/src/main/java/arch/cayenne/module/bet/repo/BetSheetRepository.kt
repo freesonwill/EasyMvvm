@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -60,6 +61,18 @@ class BetSheetRepository(
                 selections.forEach {
                     it.oddsStatus = null
                     betDao.updateSelection(it)
+                }
+            }
+        }
+    }
+
+    fun removeSingleBet() {
+        scope.launch {
+            betDao.getCurrentBet()?.let {
+                if (it.betType == BetTypeEnum.SINGLE || it.betType == BetTypeEnum.RESERVE) {
+                    betDao.removeBet(it.betId)
+                    betDao.removeBetSelection(it.betId)
+                    betDao.removeBetDetail(it.betId)
                 }
             }
         }

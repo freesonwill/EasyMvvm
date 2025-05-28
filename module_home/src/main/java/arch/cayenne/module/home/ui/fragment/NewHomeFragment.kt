@@ -10,8 +10,11 @@ import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -23,6 +26,7 @@ import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
@@ -55,12 +59,31 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
-
     override fun initView(savedInstanceState: Bundle?) {
         initPlayTypeLayout()
         initSportLayout()
         initTournamentLayout()
         initDrawerContent()
+        initFailedLayout()
+    }
+
+    private fun initFailedLayout() {
+        with(mBinding) {
+            dslFailed.setState(
+                DynamicStateLayout.States.NETWORK_ANOMALY,
+                getString(arch.cayenne.lib.common.R.string.error_net)
+            ) {
+                mViewModel.refreshAll()
+            }
+        }
+    }
+
+
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.clMain)
+        super.onStart()
     }
 
     //init 一級導航欄位
@@ -76,7 +99,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
                         //看db, 點擊的不在matchBean中會爆掉
-                        resetHomeView()
                         mViewModel.setCurrentPlayType(PlayType.entries[this])
                     }
                 }
@@ -384,7 +406,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
                         layoutParams = LinearLayout.LayoutParams(56.dp2px, 50.dp2px).apply {
-                            setMargins(5.dp2px, 0, 0, 0)
+                            setMargins(4.dp2px, 0, 0, 0)
                         }
                         setPadding(0, 0, 0, 0)
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
@@ -462,15 +484,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             if (it.isNotEmpty()) {
                 mViewModel.setCurrentSport(it[0].id)
-
-                if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
-                    toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                }
             }
             sportsListAdapter.setData(it)
             sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
         }
-        
+
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             setTournamentAndViewPagerLayout(list)
         }
@@ -508,6 +526,37 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 )
             }
         }
+
+        mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
+            with(mBinding) {
+                when(state) {
+                    HomeState.PLAY_TYPE_CLICK -> {
+                        resetHomeView()
+                        mViewModel.getCurrentSportStatistical()
+                        groupHomeMain.visibility = View.VISIBLE
+                        loadingView.visibility = View.VISIBLE
+                        dslFailed.visibility = View.GONE
+                    }
+                    HomeState.SPORT_LOAD_SUCCESS -> {
+                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
+                        } else {
+                            mViewModel.getCurrentTournament()
+                        }
+                    }
+                    HomeState.FAILED -> {
+                        groupHomeMain.visibility = View.GONE
+                        dslFailed.visibility = View.VISIBLE
+                        loadingView.visibility = View.GONE
+                    }
+                    HomeState.LOADING_MATCH_SUCCESS, HomeState.LOADING_TOURNAMENT_LIST_SUCCESS -> {
+                        loadingView.visibility = View.GONE
+                    }
+                    else -> Unit
+                }
+            }
+
+        }
     }
 
     private fun createTournamentTabView(
@@ -529,10 +578,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     .placeholder(R.drawable.ic_default_tournament)
                     .error(R.drawable.ic_default_tournament)
                     .into(ivLeagueIcon)
-
-                ivLeagueIcon.imageTintList = context?.let {
-                    SkinnableResourceManager.getColorStateList(it, R.color.selector_league_tab_tint)
-                }
             }
             root.setBackgroundResource(R.drawable.selector_league_tab_bg)
         }

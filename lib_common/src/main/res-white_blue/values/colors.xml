@@ -62,7 +62,5 @@
     <color name="list_separator_white_blue">#F6F6F6</color>
     <color name="dividing_line_white_blue">#FFFFFF</color>
     <color name="input_box_white_blue">#F3F3F4</color>
-
-
-
+    <color name="progress_text_white_blue">#222222</color>
 </resources>

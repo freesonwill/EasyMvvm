@@ -194,167 +194,185 @@
             </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-            android:id="@+id/ll_common_amount"
-            android:layout_width="62dp"
+        <ImageView
+            android:id="@+id/iv_faker_view"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@drawable/shape_6dp"
-            android:backgroundTint="@color/keyboard_1"
-            android:gravity="center"
-            android:orientation="vertical"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_reserve" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_reserve">
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_100"
-                android:layout_width="match_parent"
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/ll_common_amount"
+                android:layout_width="62dp"
                 android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingVertical="12dp"
-                android:text="100"
-                android:textColor="@color/keyboard_number"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="4dp"
-                android:background="@color/dividing_line" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_500"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingVertical="12dp"
-                android:text="500"
-                android:textColor="@color/keyboard_number"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="4dp"
-                android:background="@color/dividing_line" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_1000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingVertical="12dp"
-                android:text="1000"
-                android:textColor="@color/keyboard_number"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="4dp"
-                android:background="@color/dividing_line" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_2000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingVertical="12dp"
-                android:text="2000"
-                android:textColor="@color/keyboard_number"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="4dp"
-                android:background="@color/dividing_line" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_5000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:gravity="center"
-                android:paddingVertical="12dp"
-                android:text="5000"
-                android:textColor="@color/keyboard_number"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-        <arch.cayenne.lib.common.ui.view.NumberKeyboardView
-            android:id="@+id/number_keyboard"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginHorizontal="4dp"
-            app:layout_constraintBottom_toBottomOf="@id/ll_common_amount"
-            app:layout_constraintEnd_toStartOf="@id/gl_other"
-            app:layout_constraintStart_toEndOf="@id/ll_common_amount"
-            app:layout_constraintTop_toTopOf="@id/ll_common_amount" />
-
-        <GridLayout
-            android:id="@+id/gl_other"
-            android:layout_width="62dp"
-            android:layout_height="0dp"
-            android:columnCount="1"
-            app:layout_constraintBottom_toBottomOf="@id/ll_common_amount"
-            app:layout_constraintEnd_toEndOf="@id/cl_reserve"
-            app:layout_constraintTop_toTopOf="@id/ll_common_amount">
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageButton
-                android:id="@+id/btn_back"
-                style="@style/NumberKeyboardButton"
-                android:layout_marginBottom="2dp"
+                android:background="@drawable/shape_6dp"
                 android:backgroundTint="@color/keyboard_1"
-                android:src="@drawable/icon_keyboard_back" />
+                android:gravity="center"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_clear"
-                style="@style/NumberKeyboardButton"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:text="@string/btn_clear"
-                android:textSize="12sp" />
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_100"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:text="100"
+                    android:textColor="@color/keyboard_number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
-                android:id="@+id/btn_double"
-                style="@style/NumberKeyboardButton"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:text="@string/btn_double"
-                android:textSize="12sp" />
+                <arch.cayenne.lib.skin.widget.SkinnableView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@color/dividing_line" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageButton
-                android:id="@+id/btn_collapse"
-                style="@style/NumberKeyboardButton"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="2dp"
-                android:backgroundTint="@color/keyboard_1"
-                android:padding="10dp"
-                android:src="@drawable/icon_keyboard" />
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_500"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:text="500"
+                    android:textColor="@color/keyboard_number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-        </GridLayout>
+                <arch.cayenne.lib.skin.widget.SkinnableView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@color/dividing_line" />
 
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_1000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:text="1000"
+                    android:textColor="@color/keyboard_number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@color/dividing_line" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_2000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:text="2000"
+                    android:textColor="@color/keyboard_number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="4dp"
+                    android:background="@color/dividing_line" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_5000"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:paddingVertical="12dp"
+                    android:text="5000"
+                    android:textColor="@color/keyboard_number"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+            <arch.cayenne.lib.common.ui.view.NumberKeyboardView
+                android:id="@+id/number_keyboard"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="4dp"
+                app:layout_constraintBottom_toBottomOf="@id/ll_common_amount"
+                app:layout_constraintEnd_toStartOf="@id/gl_other"
+                app:layout_constraintStart_toEndOf="@id/ll_common_amount"
+                app:layout_constraintTop_toTopOf="@id/ll_common_amount" />
+
+            <GridLayout
+                android:id="@+id/gl_other"
+                android:layout_width="62dp"
+                android:layout_height="0dp"
+                android:columnCount="1"
+                app:layout_constraintBottom_toBottomOf="@id/ll_common_amount"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ll_common_amount">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageButton
+                    android:id="@+id/btn_back"
+                    style="@style/NumberKeyboardButton"
+                    android:layout_marginBottom="2dp"
+                    android:backgroundTint="@color/keyboard_1"
+                    android:src="@drawable/icon_keyboard_back" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_clear"
+                    style="@style/NumberKeyboardButton"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:backgroundTint="@color/keyboard_1"
+                    android:text="@string/btn_clear"
+                    android:textSize="12sp" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableButton
+                    android:id="@+id/btn_double"
+                    style="@style/NumberKeyboardButton"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:backgroundTint="@color/keyboard_1"
+                    android:text="@string/btn_double"
+                    android:textSize="12sp" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageButton
+                    android:id="@+id/btn_collapse"
+                    style="@style/NumberKeyboardButton"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:backgroundTint="@color/keyboard_1"
+                    android:padding="10dp"
+                    android:src="@drawable/icon_keyboard" />
+
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bottom_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="5dp"
+        android:layout_marginHorizontal="10dp"
         android:layout_marginVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_calculator">

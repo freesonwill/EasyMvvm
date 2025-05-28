@@ -3,4 +3,6 @@
     <string name="pull_refresh">下拉刷新…</string>
     <string name="net_refresh">刷新</string>
     <string name="search_title">搜索</string>
+
+    <string name="error_net">网络异常，请检查网络设置</string>
 </resources>

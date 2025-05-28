@@ -1,0 +1,85 @@
+package com.walisport.module.search.ui.fragment
+
+import android.os.Bundle
+import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchResultUiState
+import com.walisport.module.search.data.constants.SearchResultUiState.Loading
+import com.walisport.module.search.data.constants.SearchResultUiState.Empty
+import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
+import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
+import com.walisport.module.search.data.model.SearchResultBean
+import com.walisport.module.search.databinding.FragmentSearchResultBinding
+import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import kotlinx.coroutines.launch
+import kotlin.reflect.KClass
+
+class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchResultBinding>() {
+    override val vbClass: KClass<FragmentSearchResultBinding>
+        get() = FragmentSearchResultBinding::class
+    override val vmClass: KClass<SearchResultViewModel>
+        get() = SearchResultViewModel::class
+
+    override fun initView(savedInstanceState: Bundle?) {
+        with(mBinding) {
+            dynamicState.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                ContextCompat.getString(requireContext(), R.string.no_search_result)
+            )
+        }
+    }
+
+    override fun initListener() {
+    }
+
+    override fun createObserver() {
+        with(mViewModel) {
+            lifecycleScope.launch {
+                uiState.collect {
+                    println("state: $it")
+                    switchUi(it)
+                }
+            }
+        }
+    }
+
+    private fun switchUi(state: SearchResultUiState) {
+        when (state) {
+            is ResultList -> SearchResultListFragment(state.listData)
+            is DirectMatch -> SearchResultDirectMatchFragment(
+                state.type,
+                state.directData,
+                state.matchTotal,
+                state.matches,
+                state.dailyCount
+            )
+
+            else -> null
+        }?.let {
+            childFragmentManager.beginTransaction().replace(
+                R.id.fragment_container,
+                it
+            ).commit()
+        }
+
+        with(mBinding) {
+            loadingView.visibility =
+                if (state is Loading) View.VISIBLE
+                else View.GONE
+            dynamicState.visibility =
+                if (state is Empty) View.VISIBLE
+                else View.GONE
+            fragmentContainer.visibility =
+                if (state is ResultList || state is DirectMatch) View.VISIBLE
+                else View.GONE
+        }
+    }
+
+    fun setResult(result: SearchResultBean) {
+        mViewModel.setResult(result)
+    }
+}

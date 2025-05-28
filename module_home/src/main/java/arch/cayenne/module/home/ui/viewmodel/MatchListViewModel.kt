@@ -1,12 +1,15 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
+import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.HomeRepository
@@ -34,7 +37,9 @@ class MatchListViewModel : BaseViewModel() {
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
-    val isLoadingData by lazy { MutableLiveData<Boolean>() }
+    private val _state  = MutableLiveData<Event<MatchListState>>()
+    val state : LiveData<Event<MatchListState>> = _state
+
     override fun initViewModel() {
         super.initViewModel()
         // 觀察賽事訂閱後，後端主動送出的變化
@@ -80,6 +85,7 @@ class MatchListViewModel : BaseViewModel() {
 
     fun setSelectedDate(id: Long = 0) {
         page = 1
+        _state.value = Event(MatchListState.REFRESHING)
         _selectedDate.value = id
 //        getCurrentMatch()
     }
@@ -95,6 +101,7 @@ class MatchListViewModel : BaseViewModel() {
     fun getPosition() = _position
 
     fun startObserveMatch() {
+        _state.value = Event(MatchListState.FIRST_LOADING)
         viewModelScope.launch {
             combine(
                 _selectedDate,
@@ -116,33 +123,34 @@ class MatchListViewModel : BaseViewModel() {
 
                 withContext(Dispatchers.Main) {
                     matchListChange.value = list
-                    isLoadingData.value = false
                 }
             }
         }
     }
 
     fun loadNextPage() {
-        if (isLoadingData.value == true || isPageEnd) return
+        if (_state.value?.peekContent() != MatchListState.IDLE || isPageEnd) return
         page++
+        _state.value = Event(MatchListState.LOADING_NEXT)
         getCurrentMatch()
     }
 
     //取得分頁的比賽列表
     private fun getCurrentMatch() {
         viewModelScope.launch {
-            isLoadingData.value = true
             withContext(Dispatchers.IO) {
-                "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = $_selectedDate".logi(this::class.java.name)
+                "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = ${_selectedDate.value}".logi(this::class.java.name)
                 isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate.value)
-                if (isPageEnd && page == 1) {
-                    //沒有資料
-                    withContext(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
+                    if (isPageEnd && page == 1) {
+                        //沒有資料
+                        _state.value = Event(MatchListState.FAILED)
                         matchListChange.value = arrayListOf()
+                    } else {
+                        _state.value = Event(MatchListState.IDLE)
                     }
                 }
             }
-            isLoadingData.value = false
         }
     }
 
@@ -211,9 +219,13 @@ class MatchListViewModel : BaseViewModel() {
     fun reload() {
         isPageEnd = false
         page = 1
+        val preState = _state.value?.peekContent()
+        _state.value = Event(MatchListState.REFRESHING)
         viewModelScope.launch(Dispatchers.IO) {
             repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
-            getCurrentMatch()
+            if (preState == MatchListState.FAILED) {
+                getCurrentMatch()
+            }
         }
     }
 }
