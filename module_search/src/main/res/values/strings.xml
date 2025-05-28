@@ -5,4 +5,8 @@
     <string name="history_record">历史记录</string>
     <string name="hot_search">热门搜索</string>
     <string name="no_search_result">暂无数据，请换个试试</string>
+    <string name="tab_all">全部</string>
+    <string name="tab_tournament">联盟</string>
+    <string name="tab_team">球队</string>
+    <string name="tab_player">球员</string>
 </resources>

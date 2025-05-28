@@ -20,4 +20,8 @@
             <enum name="RIGHT" value="1" />
         </attr>
     </declare-styleable>
+
+    <style name="SearchTabLayoutTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">15sp</item>
+    </style>
 </resources>
