@@ -13,9 +13,7 @@
     <color name="blue_team_white_blue">#4150F6</color>
     <color name="main_text_white_blue">#222222</color>
     <color name="secondary_title_white_blue">#222222</color>
-<!--    <color name="secondary_text_white_blue">#666666</color>-->
-    <color name="secondary_text_white_blue">#000000</color>
-
+    <color name="secondary_text_white_blue">#666666</color>
     <color name="search_text_white_blue">#222222</color>
     <color name="explanation_text_white_blue">#929292</color>
     <color name="navigation_bar_white_blue">#222222</color>
