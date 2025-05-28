@@ -101,6 +101,7 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     fun prepare() {
+        updatePlayState(PlayerState.PLAYING)
         mRenderView.prepare()
     }
 
@@ -146,7 +147,8 @@ class LivePlayerView @JvmOverloads constructor(
         }
     }
 
-    private fun pause() {
+    fun pause() {
+        updatePlayState(PlayerState.PAUSED)
         mRenderView.pause()
     }
 

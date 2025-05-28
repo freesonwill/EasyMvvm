@@ -217,6 +217,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             else -> {
                                 //其他情况
                                 mBinding.ctVideoPlay.visibility = View.GONE
+                                mBinding.videoView.pause()
                             }
                         }
 
