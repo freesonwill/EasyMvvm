@@ -353,7 +353,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         with(mBinding) {
             with(mViewModel) {
                 searchRecord.observe(viewLifecycleOwner) {
-                    historyAdapter?.setNewData(it.toMutableList())
+                    historyAdapter?.setNewData(it.reversed().toMutableList())
                     clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
                 searchResult.observe(viewLifecycleOwner) { result ->
