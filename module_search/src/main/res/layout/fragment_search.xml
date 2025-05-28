@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:background="@color/search_bg">
 
-    <arch.cayenne.lib.common.ui.view.TitleBarView
-        android:id="@+id/title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_history"
         android:layout_width="match_parent"
@@ -141,6 +136,39 @@
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingTop="7dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/view_fake_back" />
+
+    <arch.cayenne.lib.common.ui.view.TitleBarView
+        android:id="@+id/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="46dp" />
+
+    <View
+        android:id="@+id/view_fake_back"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="@dimen/title_bar_padding_start"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="fragment_container, view_fake_back" />
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_search_recommend"
         android:layout_width="match_parent"
@@ -160,6 +188,7 @@
             android:layout_marginStart="12dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="12dp"
+            android:overScrollMode="never"
             app:layout_constraintTop_toTopOf="parent" />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
