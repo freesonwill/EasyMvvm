@@ -71,12 +71,22 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
     }
-    send(request.invoke().asRemoteRequest(apiCode, rid))
-    return deferred.await() ?: SocketResponseData(
-        mid = apiCode.mid,
-        sid = apiCode.sid,
-        rid = rid,
-        data = null,
-        error = ResponseTimeOutError()
-    )
+    val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
+    return if (errorRes == null) {
+        deferred.await() ?: SocketResponseData(
+            mid = apiCode.mid,
+            sid = apiCode.sid,
+            rid = rid,
+            data = null,
+            error = ResponseTimeOutError()
+        )
+    } else {
+        SocketResponseData(
+            mid = apiCode.mid,
+            sid = apiCode.sid,
+            rid = rid,
+            data = null,
+            error = errorRes
+        )
+    }
 }

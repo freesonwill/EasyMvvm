@@ -12,8 +12,11 @@ import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISecurity
 import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.data.InvalidEncryptDataError
+import arch.cayenne.lib.websocket.data.InvalidNetworkError
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -152,11 +155,16 @@ class ChatSocketClientService(
     }
 
 
-    override fun send(data: IRequest) {
+    override fun send(data: IRequest): SocketResponseError? {
+        if (currentState != SocketConnectState.Connecting) {
+            return InvalidNetworkError()
+        }
         val byteArray = security.encrypt(data)
-        if (byteArray != null) {
-            val flag = webSocket?.send(byteArray.toByteString())
-//            "sendResult $flag  flag2  ".logi(this::class.java.simpleName)
+        return if (byteArray == null) {
+            InvalidEncryptDataError()
+        } else {
+            webSocket?.send(byteArray.toByteString())
+            null
         }
     }
 
