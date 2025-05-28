@@ -7,11 +7,17 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/bg_card">
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_home_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container,iv_home_league_more,ll_tournaments_dropdown" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_first_navbar"
@@ -64,7 +70,7 @@
                 app:tabRippleColor="@null"
                 app:tabSelectedTextColor="@color/sport_item_text_select"
                 app:tabTextAppearance="@style/HomeTabLayoutTextAppearance"
-                app:tabTextColor="@color/secondary_text" />
+                app:tabTextColor="@color/home_secondary_text" />
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:id="@+id/ll_wallet_entry"
@@ -72,8 +78,8 @@
                 android:layout_height="28dp"
                 android:background="@drawable/bg_wallet_entry"
                 android:gravity="center_vertical|end"
-                android:minWidth="97dp"
                 android:orientation="horizontal"
+                android:paddingStart="@dimen/dp_8"
                 android:paddingEnd="7dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -82,11 +88,13 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/tv_wallet_balance"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/dp_18"
-                    android:layout_marginStart="@dimen/dp_8"
-                    android:layout_marginEnd="7dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginBottom="1dp"
                     android:textColor="@color/home_main_text"
-                    android:textSize="13sp"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/sf_pro_display_regular"
                     tools:text="$1,100.00" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -116,7 +124,7 @@
                 android:background="@drawable/bg_sport_list"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
-                android:paddingStart="12dp"
+                android:paddingStart="6dp"
                 android:scrollbars="none"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -125,7 +133,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <arch.cayenne.lib.skin.widget.SkinnableView
-                android:layout_width="23dp"
+                android:layout_width="@dimen/dp_28"
                 android:layout_height="match_parent"
                 android:background="@drawable/gradient_sport_list"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -227,8 +235,6 @@
                     android:textSize="12sp" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-
         <include
             android:id="@+id/layout_container"
             layout="@layout/view_home_content"
@@ -262,6 +268,25 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+        <arch.cayenne.lib.common.ui.view.LoadingView
+            android:id="@+id/loading_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintBottom_toBottomOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintStart_toStartOf="@+id/ll_tournaments_dropdown"
+            app:layout_constraintEnd_toEndOf="@+id/ll_tournaments_dropdown" />
+
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dsl_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <!-- 左侧滑出的導航菜單 -->

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.common.data.constants
+package arch.cayenne.lib.base.data.model
 
 enum class SkinType(val value: String) {
 

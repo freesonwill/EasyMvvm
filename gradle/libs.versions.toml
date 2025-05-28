@@ -36,6 +36,7 @@ navigation = "2.8.9"
 annotation = "1.9.1"
 lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
+skeleton = "1.2.0"
 window = "1.3.0"
 glide = "4.16.0"
 autoSize = "1.2.1"
@@ -85,6 +86,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 retrofit-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 retrofit-adapter-rxjava2 = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
+skeleton = { module = "com.gitee.ym521:skeleton", version.ref = "skeleton" }
 startup = { group = "androidx.startup", name = "startup-runtime", version.ref = "startupRuntime" }
 okhttps = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttps" }
 protobuf = { group ="com.google.protobuf", name = "protobuf-javalite", version.ref = "protobuf" }

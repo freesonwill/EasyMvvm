@@ -5,13 +5,14 @@ import arch.cayenne.lib.skin.res.SkinnableAssetsResourceLoader
 import arch.cayenne.lib.skin.res.SkinnableBuildInResourceLoader
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.Locale
 
 class SkinnableManager {
     private val resourcesManager = SkinnableResourceManager
-    private val _skinFlow = MutableStateFlow("")
-    private val _languageFlow = MutableStateFlow<Locale?>(null)
+    private val _skinFlow = MutableStateFlow<String>("")
+    private val _languageFlow = MutableSharedFlow<Locale?>()
     val skinFlow: Flow<String> = _skinFlow
     val languageFlow: Flow<Locale?> = _languageFlow
 

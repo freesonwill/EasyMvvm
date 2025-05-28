@@ -4,7 +4,7 @@
     android:id="@+id/ll_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_card">
+    android:background="@color/champions_list">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_section_title"
@@ -52,4 +52,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+        android:id="@+id/cl_dynamics"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

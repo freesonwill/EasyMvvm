@@ -4,4 +4,9 @@
     <string name="search_finish">Finish</string>
     <string name="history_record">History record</string>
     <string name="hot_search">Popular Searches</string>
+    <string name="no_search_result">No data available, please try something else.</string>
+    <string name="tab_all">All</string>
+    <string name="tab_tournament">League</string>
+    <string name="tab_team">Team</string>
+    <string name="tab_player">Player</string>
 </resources>

@@ -3,11 +3,10 @@
 
     <style name="ArchBottomSheetDialogTheme" parent="Theme.Design.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/ArchButtonSheetStyle</item>
-        <item name="background">@color/color_dialog_window_background</item>
     </style>
 
     <style name="ArchButtonSheetStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bg_bottom_sheet_dialog</item>
+        <item name="android:background">@drawable/bg_base_bottom_sheet_dialog</item>
         <item name="behavior_peekHeight">auto</item>
     </style>
 

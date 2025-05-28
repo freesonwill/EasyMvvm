@@ -348,7 +348,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 ),
                 ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
             )
-            setDuration(ANIMATION_DURATION)
+            duration = ANIMATION_DURATION
 
             start()
         }
@@ -389,7 +389,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 override fun onAnimationRepeat(animation: Animator) {
                 }
             })
-            setDuration(ANIMATION_DURATION)
+            duration = ANIMATION_DURATION
 
             start()
         }

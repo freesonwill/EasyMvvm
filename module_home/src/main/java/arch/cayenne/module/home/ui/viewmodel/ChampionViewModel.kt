@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -25,6 +26,8 @@ class ChampionViewModel : BaseViewModel() {
     private var matchId: Long = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
     val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading : LiveData<Boolean> = _isLoading
 
     override fun initViewModel() {
         super.initViewModel()
@@ -61,10 +64,12 @@ class ChampionViewModel : BaseViewModel() {
         this.matchId = matchId
     }
     fun getChampionDetail() {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarkets = championRepository.getChampionDetail(matchId)
             withContext(Dispatchers.Main) {
                 matchWithMarketsChange.value = matchWithMarkets
+                _isLoading.value = false
             }
         }
     }

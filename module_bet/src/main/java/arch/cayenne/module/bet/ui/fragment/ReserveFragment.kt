@@ -24,7 +24,9 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
     override val vmClass: KClass<ReserveViewModel> = ReserveViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
+        ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney) {
+            showKeyboard()
+        }
         mBinding.etMoney.requestFocus()
         mBinding.tvBetHint.text = getString(R.string.title_reserve)
 
@@ -91,6 +93,12 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             mViewModel.sendReserve()
             navigate(ReserveFragmentDirections.actionReserveFragmentToBetResultFragment())
         }
+        mBinding.btnCollapse.setOnClickListener {
+            hideKeyboard()
+        }
+        mBinding.clMoney.setOnClickListener {
+            showKeyboard()
+        }
     }
 
     override fun createObserver() {
@@ -130,9 +138,26 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
 
         mBinding.btnReserve.isVisible = false
         mBinding.clCancelReserve.isVisible = true
+        mBinding.layoutBet.ivDelete.isVisible = false
     }
 
     override fun dismiss(key: String, value: String) {
         sendResult(key, value, R.id.reserveFragment)
+    }
+
+    private fun hideKeyboard() {
+        ViewHelper.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
+        mBinding.etMoney.clearFocus()
+        mBinding.clMoney.isFocusableInTouchMode = false
+        mBinding.clMoney.isFocusable = false
+    }
+
+    private fun showKeyboard() {
+        if (!mBinding.clKeyboard.isVisible) {
+            ViewHelper.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
+            mBinding.etMoney.requestFocus()
+            mBinding.clMoney.isFocusableInTouchMode = true
+            mBinding.clMoney.isFocusable = true
+        }
     }
 }

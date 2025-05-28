@@ -3,4 +3,6 @@
     <color name="search_title">#BBBBBB</color>
     <color name="search_divider">#232530</color>
     <color name="hot_word">#00D271</color>
+    <color name="tab_item_text_select">#ffffff</color>
+    <color name="tab_item_text_unselect">#929298</color>
 </resources>

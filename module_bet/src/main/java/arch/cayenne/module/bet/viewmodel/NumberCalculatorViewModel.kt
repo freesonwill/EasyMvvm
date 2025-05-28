@@ -89,12 +89,12 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     protected fun setEditNumber(value: Long) {
-        _onEditNumber.value = if (value > remainingNumber) {
-            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-            remainingNumber.getMoney()
-        } else if (value > maxMoney) {
+        _onEditNumber.value = if (value > maxMoney) {
             setOverNumberListener(NumberOverEnum.OVER_MAX)
             maxMoney.getMoney()
+        } else if (value > remainingNumber) {
+            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+            remainingNumber.getMoney()
         } else {
             value.getMoney()
         }

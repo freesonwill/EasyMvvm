@@ -47,7 +47,7 @@
     <color name="keyboard_3_white_blue">#F3F3F4</color>
     <color name="live_tab_bg_white_blue">#FAFBFC</color>
     <color name="keyboard_bg_white_blue">#D3D7DC</color>
-    <color name="search_bg_white_blue">#E8E8EA</color>
+    <color name="search_bg_white_blue">#EEEEEE</color>
     <color name="card_outline_white_blue">#FFFFFF</color>
     <color name="tab_outline_white_blue">#F3F3F4</color>
     <color name="panel_outline_white_blue">#F3F3F4</color>
@@ -59,8 +59,6 @@
     <color name="race_line_white_blue">#E8E8E8</color>
     <color name="list_separator_white_blue">#F6F6F6</color>
     <color name="dividing_line_white_blue">#FFFFFF</color>
-
-
-
-
+    <color name="input_box_white_blue">#F3F3F4</color>
+    <color name="progress_text_white_blue">#222222</color>
 </resources>

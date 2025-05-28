@@ -5,6 +5,7 @@
     android:id="@+id/item_match_card"
     android:layout_width="match_parent"
     android:layout_height="213dp"
+    android:layout_marginHorizontal="@dimen/dp_8"
     android:background="@drawable/bg_match_item_card">
 
     <!-- 頂部賽事名稱 -->
@@ -15,8 +16,7 @@
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/secondary_text" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_tournament_name"
@@ -76,8 +76,8 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_home_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -123,8 +123,8 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_away_icon"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

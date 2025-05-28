@@ -18,6 +18,8 @@ class TournamentListViewModel : BaseViewModel() {
     private var sportId = -1
     private val repo : TournamentListRepository by inject()
 
+    private val _isLoading = MutableLiveData<Boolean>()
+
     val tournaments by lazy { MutableLiveData<List<BaseTournamentData>>() }
 
     fun setType(type: TournamentListType) {
@@ -31,6 +33,7 @@ class TournamentListViewModel : BaseViewModel() {
     }
 
     fun getTournaments() {
+        _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val list = repo.getAllTournaments(type, sportId)
             withContext(Dispatchers.Main) {

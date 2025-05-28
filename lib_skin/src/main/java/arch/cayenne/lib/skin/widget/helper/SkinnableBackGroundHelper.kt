@@ -2,7 +2,6 @@ package arch.cayenne.lib.skin.widget.helper
 
 import android.util.AttributeSet
 import android.view.View
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.skin.R
 
 class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
@@ -28,9 +27,7 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
         updateSkin()
     }
 
-
     override fun updateSkin() {
-
         if (checkResourceIdValid(mSrcId)) {
             val drawable = resourcesManager.getDrawable(context = mView.context,mSrcId)
             if (drawable != null) {
@@ -38,15 +35,15 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
                 val paddingTop = mView.paddingTop
                 val paddingRight = mView.paddingRight
                 val paddingBottom = mView.paddingBottom
-                mView.background =drawable
+                mView.background = drawable
                 mView.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
             }
+
         }
         if(checkResourceIdValid(backgroundTintId)){
             val backgroundTint = resourcesManager.getColorStateList(mView.context,backgroundTintId)
             mView.backgroundTintList = backgroundTint
         }
-
     }
 
     override fun updateLanguage(languageCode:String) {

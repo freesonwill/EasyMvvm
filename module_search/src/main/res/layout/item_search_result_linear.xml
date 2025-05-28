@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="15dp"
+    android:paddingEnd="15dp"
+    app:layout_constraintDimensionRatio="375:48">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_icon"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginBottom="13dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_search_result_player_placeholder" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:gravity="start"
+        android:singleLine="true"
+        android:textColor="@color/main_text"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_icon"
+        tools:text="托马斯" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:background="@color/search_divider"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

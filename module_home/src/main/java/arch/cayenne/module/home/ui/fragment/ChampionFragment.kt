@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -80,11 +82,14 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
     }
 
     override fun initListener() {
+        tittleBarBinding.llWalletEntry.setOnClickListener {
+            navigate(Uri.parse("walisport://module_topup/topUpFragment"))
+        }
     }
 
     override fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            tittleBarBinding.tvMoney.text = it.getFormalMoney()
+            tittleBarBinding.tvMoney.text = getString(R.string.balance_format, it.getFormalMoney())
         }
         mViewModel.matchWithMarketsChange.observe(viewLifecycleOwner) { matchWithMarkets ->
             with(mBinding) {
@@ -99,8 +104,13 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     )
                 }
             }
-
-
+        }
+        mViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (!isLoading) {
+                mBinding.loadingView.visibility = View.GONE
+            } else {
+                mBinding.loadingView.visibility = View.VISIBLE
+            }
         }
     }
 

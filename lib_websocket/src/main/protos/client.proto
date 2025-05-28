@@ -80,15 +80,6 @@ message ListMatchResp {
     int32 total = 2;   // 总比赛数量
 }
 
-// 500-1008: 获取首页冠军赛列表
-message ListOutrightMatchReq {
-    int32 sport_id = 1;
-}
-
-message ListOutrightMatchResp {
-    repeated SimpleOutrightMatch outright_match = 1;
-}
-
 message SimpleOutrightMatch {
     int64 match_id = 1; //冠军赛id
     int32 tournament_id = 2;        //联赛名称
@@ -122,6 +113,10 @@ message ListSportResp {
 message BalanceReq {
 }
 
+message BalanceResp {
+    string balance = 1; //余额
+}
+
 // 500-1006: 查询联赛比赛
 message TournamentMatchReq {
     int32 tournament_id = 3;//required 联赛id
@@ -147,8 +142,25 @@ message MarketTypeResp {
     repeated galaxy.common.proto.MarketType marketType = 1;
 }
 
-message BalanceResp {
-    string balance = 1; //余额
+// 500-1008: 获取首页冠军赛列表
+message ListOutrightMatchReq {
+    int32 sport_id = 1;
+}
+
+message ListOutrightMatchResp {
+    repeated SimpleOutrightMatch outright_match = 1;
+}
+
+// 500-1009: 获取近31日比赛日程count
+message Recently31MatchScheduleCountReq {
+    int32 sport_id = 1;     //required 球类id
+    int32 play_type = 2;    //required 玩法类型, 0-全部 1-滚球 2-今日 3-早盘 4-冠军
+    int32 tournament_id = 3;//联赛id
+    int32 time_zone = 4;    //时区，例如上海时间+8就传8, utc时间传0
+}
+
+message Recently31MatchScheduleCountResp {
+    repeated galaxy.common.proto.DailyMatchCount daily_count = 1;
 }
 
 // 500-1015: 单关下注
@@ -178,9 +190,6 @@ message MultipleBetResp {
     string message = 2;  // 例如："Bet placed successfully."
     repeated galaxy.common.proto.PlaceBetInfo place_bet_info = 3;
 }
-
-
-
 
 // 500-1011: 发起提前结算
 message EarlySettleReq {

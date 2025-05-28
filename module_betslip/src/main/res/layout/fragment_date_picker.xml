@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/card_background"
-    >
+    android:backgroundTint="@color/card_background"
+    android:background="@drawable/bg_base_bottom_sheet_dialog">
 
     <TextView
         android:id="@+id/tv_cancel"

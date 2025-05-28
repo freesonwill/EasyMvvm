@@ -126,7 +126,7 @@ class HandicapLetBallViewModel : BaseViewModel() {
         val bean1 = LetBallItem(
             2,
             "角球-独赢",
-            1,
+            2,
             0,
             1,
             2,

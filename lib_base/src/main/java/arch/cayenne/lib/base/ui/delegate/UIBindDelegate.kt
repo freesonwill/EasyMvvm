@@ -64,9 +64,9 @@ class UIBindDelegate<UIOwner, VM, VB>(
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)
             uiOwner.initListener()
-            uiOwner.createObserver()
             uiOwner.initData()
         }
+        uiOwner.createObserver()
     }
 
     fun onDestroyView() {

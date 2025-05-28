@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
@@ -16,7 +17,7 @@ import org.koin.java.KoinJavaComponent.inject
 class SkinnableTextView : AppCompatTextView {
     private val textHelper = SkinnableTextHelper(this)
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val flowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -33,22 +34,14 @@ class SkinnableTextView : AppCompatTextView {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    backgroundTintHelper.updateSkin()
-                    textHelper.updateSkin()
-                }
-            }
-            launch {
-                sportSkinManager.languageFlow.collect {
-                    it?.let {
-                        textHelper.updateLanguage(it.language)
-                    }
-                }
-            }
+        flowHelper.startSkinFlow {
+            backgroundTintHelper.updateSkin()
+            textHelper.updateSkin()
         }
+        flowHelper.startLanguageFlow {
+            textHelper.updateLanguage(it.language)
+        }
+
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
@@ -91,5 +84,8 @@ class SkinnableTextView : AppCompatTextView {
         textHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
-
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
+    }
 }

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -19,6 +20,8 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
@@ -33,6 +36,7 @@ class MatchListPagerFragment :
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
+    override val keepViewOnNavigation: Boolean = true
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
 
@@ -119,29 +123,44 @@ class MatchListPagerFragment :
     }
 
     override fun createObserver() {
-        homeViewModel.selectedDate.observe(viewLifecycleOwner) { date ->
+        homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
             refreshListByDate(date)
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
-            mBinding.apply {
-                if (matchList.isEmpty()) {
-                    clDynamics.visibility = View.VISIBLE
-                    clDynamics.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
-                        R.string.lineup_empty.getString()
-                    )
-                } else {
-                    clDynamics.visibility = View.GONE
-                }
-            }
             matchAdapter.submitList(matchList)
         }
 
-        mViewModel.isLoadingData.observe(viewLifecycleOwner) { isLoading ->
-            if (!isLoading) {
-                mBinding.refreshLayout.finishRefresh()
+        mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
+            with(mBinding) {
+                when(state) {
+                    MatchListState.FIRST_LOADING -> {
+                        clDynamics.visibility = View.GONE
+                        homeViewModel.changeState(HomeState.LOADING_MATCH)
+                    }
+                    MatchListState.REFRESHING -> {
+                        clDynamics.visibility = View.GONE
+                    }
+                    MatchListState.IDLE -> {
+                        if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        clDynamics.visibility = View.GONE
+                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                    }
+                    MatchListState.FAILED -> {
+                        mBinding.refreshLayout.finishRefresh()
+                        clDynamics.visibility = View.VISIBLE
+                        clDynamics.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
+                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                    }
+                    MatchListState.LOADING_NEXT -> {
+                        clDynamics.visibility = View.GONE
+                    }
+                }
             }
+
         }
     }
 

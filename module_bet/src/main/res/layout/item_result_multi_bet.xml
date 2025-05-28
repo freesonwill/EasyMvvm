@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginVertical="4dp">
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_combo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -13,7 +13,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_odds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -23,20 +23,22 @@
         app:layout_constraintStart_toEndOf="@id/tv_combo"
         app:layout_constraintTop_toTopOf="@id/tv_combo" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_bet_money"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/main_text"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/tv_combo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_combo" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_plus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
+        android:textColor="@color/main_text"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/tv_bet_money"
         app:layout_constraintEnd_toStartOf="@id/tv_bet_money"

@@ -2,8 +2,9 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
-import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
+import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -11,13 +12,12 @@ import kotlinx.coroutines.withContext
 class BetSheetRepository(
     override val scope: CoroutineScope,
     private val betDao: BetDao,
-    private val remoteManager: BettingRemoteManager,
-    private val skinManager: SkinnableManager
-): BaseRepository() {
+    private val remoteManager: BettingRemoteManager
+) : BaseRepository() {
 
     init {
         scope.launch {
-            remoteManager.matchNotifyFlow.collect { data ->
+            remoteManager.matchMarketNotifyFlow.collect { data ->
                 data.forEach { newSelection ->
                     betDao.getCurrentSelectionById(newSelection.selectionId)?.let { oldSelection ->
                         oldSelection.updateOdds(newSelection.odds)
@@ -38,7 +38,12 @@ class BetSheetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 val selections = betDao.getSelections(bet.betId)
-                remoteManager.registerMatchNotify(selections.map { it.matchId })
+                remoteManager.registerMatchMarketNotify(selections.map {
+                    Client.MarketIdBase.newBuilder()
+                        .setMatchId(it.matchId)
+                        .addMarketId(it.marketId)
+                        .build()
+                })
             }
         }
     }
@@ -47,10 +52,27 @@ class BetSheetRepository(
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 val selections = betDao.getSelections(bet.betId)
-                remoteManager.unregisterMatchNotify(selections.map { it.matchId })
+                remoteManager.unregisterMatchMarketNotify(selections.map {
+                    Client.MarketIdBase.newBuilder()
+                        .setMatchId(it.matchId)
+                        .addMarketId(it.marketId)
+                        .build()
+                })
                 selections.forEach {
                     it.oddsStatus = null
                     betDao.updateSelection(it)
+                }
+            }
+        }
+    }
+
+    fun removeSingleBet() {
+        scope.launch {
+            betDao.getCurrentBet()?.let {
+                if (it.betType == BetTypeEnum.SINGLE || it.betType == BetTypeEnum.RESERVE) {
+                    betDao.removeBet(it.betId)
+                    betDao.removeBetSelection(it.betId)
+                    betDao.removeBetDetail(it.betId)
                 }
             }
         }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -43,7 +42,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         setVideoView()
         loadFragment()
-        mViewModel.matchId =args.matchId
+        mViewModel.matchId = args.matchId
         mViewModel.sportId = args.sportId
     }
 
@@ -56,6 +55,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         .apply {
                             arguments.putLong("matchID", mViewModel.matchId)
                             arguments.putInt("leagueID", mViewModel.leagueID)
+                            arguments.putString("leagueName", mViewModel.leagueName)
+                            arguments.putString("leagueLogo", mViewModel.leagueLogo)
                         })
             }
             ivLandscapeLeagueIcon.clickNoRepeat {
@@ -64,13 +65,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         .apply {
                             arguments.putLong("matchID", mViewModel.matchId)
                             arguments.putInt("leagueID", mViewModel.leagueID)
+                            arguments.putString("leagueName", mViewModel.leagueName)
+                            arguments.putString("leagueLogo", mViewModel.leagueLogo)
                         }
                 )
             }
         }
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-            }
+            override fun onTabSelected(tab: TabLayout.Tab) {}
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
@@ -83,8 +85,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
-                mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
-                Glide.with(this).load(it.basicInfo.tournamentIcon)
+                mViewModel.leagueID = it.basicInfo.tournamentId      //联赛ID
+                mViewModel.leagueName = it.basicInfo.tournamentName  //联赛名称
+                mViewModel.leagueLogo = it.basicInfo.tournamentIcon  //联赛LOGO
+                Glide.with(this).load(mViewModel.leagueLogo)
                     .error(R.drawable.title_league_icon).into(titleBarBinding.ivLandscapeLeagueIcon)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
             }
@@ -136,7 +140,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tabView.setOnClickListener {}
             }.attach()
             mBinding.tabLayout.getTabAt(1)?.select()
-            mBinding.vpPage.setCurrentItem(1,false)
+            mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
         }
     }
@@ -146,11 +150,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
         mViewModel.clearAllMatch()
         super.onDestroyView()
-    }
-
-    override fun onResume() {
-        StatusBarConfig.hideStatusBar =false
-        setStatusBar(StatusBarConfig)
-        super.onResume()
     }
 }
