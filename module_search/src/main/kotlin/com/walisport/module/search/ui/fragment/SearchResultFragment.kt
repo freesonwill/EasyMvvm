@@ -16,6 +16,7 @@ import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchResultBinding>() {
@@ -23,6 +24,10 @@ class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchRe
         get() = FragmentSearchResultBinding::class
     override val vmClass: KClass<SearchResultViewModel>
         get() = SearchResultViewModel::class
+
+    override fun createVM(): SearchResultViewModel {
+        return activityViewModel<SearchResultViewModel>().value
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -40,7 +45,6 @@ class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchRe
         with(mViewModel) {
             lifecycleScope.launch {
                 uiState.collect {
-                    println("state: $it")
                     switchUi(it)
                 }
             }
@@ -49,15 +53,8 @@ class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchRe
 
     private fun switchUi(state: SearchResultUiState) {
         when (state) {
-            is ResultList -> SearchResultListFragment(state.listData)
-            is DirectMatch -> SearchResultDirectMatchFragment(
-                state.type,
-                state.directData,
-                state.matchTotal,
-                state.matches,
-                state.dailyCount
-            )
-
+            is ResultList -> SearchResultListFragment()
+            is DirectMatch -> SearchResultDirectMatchFragment()
             else -> null
         }?.let {
             childFragmentManager.beginTransaction().replace(
@@ -80,6 +77,6 @@ class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchRe
     }
 
     fun setResult(result: SearchResultBean) {
-        mViewModel.setResult(result)
+        mViewModel.setResult(requireContext(), result)
     }
 }

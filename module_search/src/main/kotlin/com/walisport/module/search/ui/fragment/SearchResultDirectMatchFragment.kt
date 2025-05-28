@@ -10,13 +10,7 @@ import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBi
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlin.reflect.KClass
 
-class SearchResultDirectMatchFragment(
-    type: SearchResultTypeEnum,
-    directData: SearchResultBaseBean,
-    matchTotal: Int,
-    matches: List<SearchMatchBean>,
-    dailyCount: List<SearchDailyMatchBean>
-) :
+class SearchResultDirectMatchFragment :
     BaseFragment<SearchResultDirectMatchViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vbClass: KClass<FragmentSearchResultDirectMatchBinding>
         get() = FragmentSearchResultDirectMatchBinding::class

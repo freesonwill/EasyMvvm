@@ -5,6 +5,8 @@
     android:id="@+id/item_match_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/dp_8"
+    android:layout_marginEnd="@dimen/dp_8"
     android:background="@drawable/bg_champion_item_card">
 
     <!-- 頂部賽事名稱 -->
@@ -18,10 +20,12 @@
         android:layout_marginBottom="@dimen/dp_12"
         android:textColor="@color/home_main_text"
         android:textSize="@dimen/sp_15"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif"
+        android:textFontWeight="500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="2026美加墨世界盃" />
+        tools:text="2026美加墨世界盃"
+        tools:targetApi="p"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_odds_grid"

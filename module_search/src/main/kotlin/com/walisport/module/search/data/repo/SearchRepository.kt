@@ -130,6 +130,15 @@ class SearchRepository(
         return Gson().fromJson(value, type)
     }
 
+    /** * 获取搜索结果
+     * @param word 搜索关键词 / 聯賽ID / 球隊ID / 球員ID
+     * @param type 搜索类型 （1-普通词 / 2-热门词 / 10-球员 / 11-球队 / 12-联赛）
+     * @param startTime 开始时间（可选）
+     * @param endTime 结束时间（可选）
+     * @param page 页码
+     * @param size 每页大小
+     * @param timeZone 时区偏移量，默认8小时
+     */
     suspend fun getSearchResult(
         word: String,
         type: SearchTypeEnum = SearchTypeEnum.NORMAL_WORD,

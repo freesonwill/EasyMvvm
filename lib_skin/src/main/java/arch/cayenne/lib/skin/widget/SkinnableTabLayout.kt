@@ -8,15 +8,16 @@ import com.google.android.material.tabs.TabLayout
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTabLayoutHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableTabLayout : TabLayout {
 
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
-    private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName
+    private val flowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -33,13 +34,9 @@ class SkinnableTabLayout : TabLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        this.findViewTreeLifecycleOwner()?.lifecycleScope?.apply {
-            launch {
-                sportSkinManager.skinFlow.collect {
-                    backgroundTintHelper.updateSkin()
-                    tabLayoutHelper.updateSkin()
-                }
-            }
+        flowHelper.startSkinFlow {
+            backgroundTintHelper.updateSkin()
+            tabLayoutHelper.updateSkin()
         }
     }
 
@@ -67,4 +64,10 @@ class SkinnableTabLayout : TabLayout {
         super.addTab(tab)
         tabLayoutHelper.updateTabBackground(tab)
     }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
+    }
+
 }

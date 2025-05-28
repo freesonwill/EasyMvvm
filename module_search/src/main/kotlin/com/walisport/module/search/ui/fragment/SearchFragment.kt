@@ -117,16 +117,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 titleBar.loadSearchTitleBar(
                     hint = getString(R.string.please_input_content),
                     afterTextChanged = { text, binding ->
-                        if (!canSearch) return@loadSearchTitleBar
-
                         val count = text?.length ?: 0
-                        val color = if (count > 0) Rc.color.search_btn
-                        else Rc.color.search_btn_normal
+                        val color =
+                            if (count > 0) Rc.color.search_btn
+                            else Rc.color.search_btn_normal
                         binding.tvSearchText.setTextColor(color.getColor())
 
-                        if (count > 0) clSearchRecommend.visibility = View.VISIBLE
+                        if (!canSearch) return@loadSearchTitleBar
 
                         // 搜索自动补充词汇
+                        if (count > 0) clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
