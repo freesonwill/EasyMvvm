@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="menu_language_simple">Cina</string>
+    <string name="menu_language_english">Bahasa inggris</string>
+    <string name="menu_language_indonesia">Indonesia</string>
+    <string name="menu_language_portugal">Portugis</string>
+</resources>

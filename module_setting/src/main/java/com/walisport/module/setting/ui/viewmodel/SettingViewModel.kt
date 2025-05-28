@@ -26,9 +26,19 @@ class SettingViewModel : BaseViewModel() {
         repository.setOddsType(type)
     }
 
+    //获取赔率显示方式
+    fun getOddsType(): Int {
+        return repository.getOddsType()
+    }
+
     //设置语言类型
     fun setLanguageType(type: String) {
         repository.setLanguageType(type)
+    }
+
+    //获取语言类型
+    fun getLanguageType(): String {
+        return repository.getLanguageType()
     }
 
     //设置系统通知-进球

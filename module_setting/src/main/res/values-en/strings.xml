@@ -9,8 +9,9 @@
     <string name="menu_background_set">Background Setting</string>
     <string name="menu_language_set">Language Setting</string>
     <string name="menu_language_simple">Simple Chinese</string>
-    <string name="menu_language_traditional">Traditional Chinese</string>
     <string name="menu_language_english">English</string>
+    <string name="menu_language_indonesia">Indonesian</string>
+    <string name="menu_language_portugal">Portuguese</string>
     <string name="menu_notice_sys">System Notice</string>
     <string name="menu_notice_app">App Notice</string>
     <string name="menu_goal_football">Goal(Football)</string>
