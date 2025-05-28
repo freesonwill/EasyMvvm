@@ -184,9 +184,18 @@ class HomeViewModel : BaseViewModel() {
         _selectedDate.value = Event(date)
     }
 
-//    fun resetNavigationToChampion() {
-//        _navigateToChampion.value = null
-//    }
+    //
+    fun isLoadingMatch(b: Boolean) {
+        if (b) {
+            _state.value = Event(HomeState.LOADING_MATCH)
+        } else {
+            _state.value = Event(HomeState.LOADING_MATCH_SUCCESS)
+        }
+    }
 
+    //提供子fragment透過shared HomeViewModel來告知HomeFragment該fragment的狀態
+    fun changeState(state: HomeState) {
+        _state.value = Event(state)
+    }
 
 }

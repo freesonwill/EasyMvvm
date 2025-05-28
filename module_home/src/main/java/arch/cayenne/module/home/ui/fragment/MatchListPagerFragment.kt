@@ -20,6 +20,7 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.databinding.FragmentMatchListPagerBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -135,16 +136,15 @@ class MatchListPagerFragment :
                 when(state) {
                     MatchListState.FIRST_LOADING -> {
                         clDynamics.visibility = View.GONE
-                        loadingView.visibility = View.VISIBLE
+                        homeViewModel.changeState(HomeState.LOADING_MATCH)
                     }
                     MatchListState.REFRESHING -> {
                         clDynamics.visibility = View.GONE
-                        loadingView.visibility = View.GONE
                     }
                     MatchListState.IDLE -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         clDynamics.visibility = View.GONE
-                        loadingView.visibility = View.GONE
+                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
                     MatchListState.FAILED -> {
                         mBinding.refreshLayout.finishRefresh()
@@ -153,6 +153,7 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
+                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE

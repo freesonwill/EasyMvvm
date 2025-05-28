@@ -532,6 +532,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         resetHomeView()
                         mViewModel.getCurrentSportStatistical()
                         groupHomeMain.visibility = View.VISIBLE
+                        loadingView.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
                     HomeState.SPORT_LOAD_SUCCESS -> {
@@ -544,6 +545,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     HomeState.FAILED -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
+                        loadingView.visibility = View.GONE
+                    }
+                    HomeState.LOADING_MATCH_SUCCESS, HomeState.LOADING_TOURNAMENT_LIST_SUCCESS -> {
+                        loadingView.visibility = View.GONE
                     }
                     else -> Unit
                 }
