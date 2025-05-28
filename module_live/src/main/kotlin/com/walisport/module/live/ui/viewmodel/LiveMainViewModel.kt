@@ -17,11 +17,22 @@ import plugin.koin.KoinViewModel
 @KoinViewModel
 class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
 
-    var matchId: Long = 0
-    var sportId: Int = 0
-    var leagueID: Int = 0
-    var leagueName: String = ""
-    var leagueLogo: String = ""
+    //比赛ID
+    private val _matchId = MutableLiveData<Long>(0)
+    val matchId: LiveData<Long> = _matchId
+
+    private val _sportId = MutableLiveData<Int>(0)
+    val sportId: LiveData<Int> = _sportId
+
+    //联赛ID
+    private val _leagueID = MutableLiveData<Int>(0)
+    val leagueID: LiveData<Int> = _leagueID
+    //联赛名称
+    private val _leagueName = MutableLiveData("")
+    val leagueName: LiveData<String> = _leagueName
+    //联赛Logo
+    private val _leagueLogo = MutableLiveData("")
+    val leagueLogo: LiveData<String> = _leagueLogo
 
     //首次加载
     private val _mainMatch = MutableLiveData<LiveMatchBean>()
@@ -47,6 +58,26 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
                 }
             }
         }
+    }
+
+    fun setMatchId(matchId: Long){
+        _matchId.value = matchId
+    }
+
+    fun setSportId(sportId: Int){
+        _sportId.value = sportId
+    }
+
+    fun setLeagueID(leagueID: Int){
+        _leagueID.value = leagueID
+    }
+
+    fun setLeagueName(leagueName: String){
+        _leagueName.value = leagueName
+    }
+
+    fun setLeagueLogo(leagueLogo: String){
+        _leagueLogo.value = leagueLogo
     }
 
     fun getMainMatch(matchId: Long) {
@@ -92,9 +123,9 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     }
 
     //取消订阅比赛技术统计推送
-    fun unregisterStatisticsNotify() {
+    fun unregisterStatisticsNotify(matchId: Long) {
         viewModelScope.launch {
-            repo.unregisterStatisticsNotify()
+            repo.unregisterStatisticsNotify(matchId)
         }
     }
 

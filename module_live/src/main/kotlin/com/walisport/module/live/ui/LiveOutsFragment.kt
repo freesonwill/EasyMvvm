@@ -45,11 +45,13 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
 
     override fun initData() {
         super.initData()
-        mViewModel.getMatchTrendData(mainViewModel.matchId)
-        mViewModel.getStatisticData(mainViewModel.matchId)
     }
 
     override fun createObserver() {
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            mViewModel.getMatchTrendData(it)
+            mViewModel.getStatisticData(it)
+        }
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 homeName = it.basicInfo.homeTeam
