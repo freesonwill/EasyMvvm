@@ -11,7 +11,7 @@ class TournamentHeaderViewHolder(
 ) : BaseViewHolder(mBinding) {
     fun bind(item: TournamentListItem.Header, position: Int) {
         with(mBinding) {
-            if (position == 0) {
+            if (item.letter == '*') {
                 ivHeaderHot.visibility = View.VISIBLE
                 tvHeaderName.text = getString(R.string.tournament_section_title_hot)
             } else {

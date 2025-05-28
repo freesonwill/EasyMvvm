@@ -100,29 +100,40 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
     private fun setTournamentList(tournaments: List<BaseTournamentData>) {
         val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
         val hotList = mutableListOf<BaseTournamentData>()
+        val otherList = mutableListOf<BaseTournamentData>()
+
         tournaments.forEach { tournament ->
             val pinyin = transliterator.transliterate(tournament.name).trim()
             val firstChar = pinyin.firstOrNull()?.uppercaseChar()
-            val groupKey = if (firstChar != null && firstChar in 'A'..'Z') firstChar else '#'
+            when {
+                tournament.hot -> hotList.add(tournament)
+                firstChar != null && firstChar in 'A'..'Z' -> {
+                    groupedMap.getOrPut(firstChar) { mutableListOf() }.add(tournament)
+                }
 
-            // 歸類進字母列表
-            if (tournament.hot) {
-                hotList.add(tournament)
-            } else {
-                groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
+                else -> otherList.add(tournament)
             }
-        }
-        // 將熱門歸類進 '#' 區塊
-        if (hotList.isNotEmpty()) {
-            groupedMap['#'] = hotList
         }
 
         val displayList = mutableListOf<TournamentListItem>()
         letterPositionMap.clear()
+
+        if (hotList.isNotEmpty()) {
+            displayList.add(TournamentListItem.Header('*'))
+            letterPositionMap['*'] = displayList.size - 1
+            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it) })
+        }
+
         groupedMap.toSortedMap().forEach { (letter, list) ->
             letterPositionMap[letter] = displayList.size
             displayList.add(TournamentListItem.Header(letter))
             displayList.addAll(list.map { TournamentListItem.TournamentItem(it) })
+        }
+
+        if (otherList.isNotEmpty()) {
+            letterPositionMap['#'] = displayList.size
+            displayList.add(TournamentListItem.Header('#'))
+            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
         }
         adapter.submitList(displayList)
         setupAZIndex()
@@ -139,12 +150,15 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
-        val hotIcon = ImageView(context).apply {
-            setImageResource(R.drawable.ic_hot_league_index)
-            layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
-            setOnClickListener { scrollToSection('#') }
+
+        if (letterPositionMap.containsKey('*')) {
+            val hotIcon = ImageView(context).apply {
+                setImageResource(R.drawable.ic_hot_league_index)
+                layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
+                setOnClickListener { scrollToSection('*') }
+            }
+            container.addView(hotIcon)
         }
-        container.addView(hotIcon)
 
         ('A'..'Z').forEach { letter ->
             if (letterPositionMap.containsKey(letter)) {
@@ -158,12 +172,30 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                             context,
                             arch.cayenne.lib.common.R.color.brand_color
                         )
-                    ) // 非 stateList
+                    )
                     setOnClickListener { scrollToSection(letter) }
                 }
                 container.addView(tv)
             }
         }
+
+        if (letterPositionMap.containsKey('#')) {
+            val tv = TextView(context).apply {
+                text = "#"
+                textSize = 11f
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
+                setTextColor(
+                    ContextCompat.getColor(
+                        context,
+                        arch.cayenne.lib.common.R.color.brand_color
+                    )
+                )
+                setOnClickListener { scrollToSection('#') }
+            }
+            container.addView(tv)
+        }
+
         container.isClickable = true
         container.isFocusable = true
 
@@ -184,6 +216,7 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
         scroller.targetPosition = position
         layoutManager.startSmoothScroll(scroller)
     }
+
 
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
