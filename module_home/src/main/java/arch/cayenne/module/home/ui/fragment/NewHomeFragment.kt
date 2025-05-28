@@ -406,7 +406,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
                         layoutParams = LinearLayout.LayoutParams(56.dp2px, 50.dp2px).apply {
-                            setMargins(5.dp2px, 0, 0, 0)
+                            setMargins(4.dp2px, 0, 0, 0)
                         }
                         setPadding(0, 0, 0, 0)
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
@@ -578,10 +578,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     .placeholder(R.drawable.ic_default_tournament)
                     .error(R.drawable.ic_default_tournament)
                     .into(ivLeagueIcon)
-
-                ivLeagueIcon.imageTintList = context?.let {
-                    SkinnableResourceManager.getColorStateList(it, R.color.selector_league_tab_tint)
-                }
             }
             root.setBackgroundResource(R.drawable.selector_league_tab_bg)
         }
