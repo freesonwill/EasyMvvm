@@ -18,9 +18,11 @@ message MatchBasicInfo {
     string home_team = 3;     //主队名称
     int32 home_team_id = 4;   //主队id
     string home_team_icon = 5; //主队icon
+    repeated int32 home_history_vs = 22; //主队历史比赛输赢 -1输 1赢 0平
     string away_team = 6;     //客队名称
     int32 away_team_id = 7;   //客队id
     string away_team_icon = 8; //客队icon
+    repeated int32 away_history_vs = 23; //主队历史比赛输赢 -1输 1赢 0平
     int64 start_time = 9;     //开始时间,13位时间戳
     int32 status = 10;         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
     int32 tournament_id = 11;  //联赛id
