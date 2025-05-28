@@ -15,11 +15,14 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
@@ -82,14 +85,15 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
         mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
             if (!list.isNullOrEmpty()) {
                 setTournamentList(list)
-            }
-        }
-        mViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (!isLoading) {
-                mBinding.loadingView.visibility = View.GONE
             } else {
-                mBinding.loadingView.visibility = View.VISIBLE
+                mBinding.clDynamics.visibility = View.VISIBLE
+                mBinding.clDynamics.setState(
+                    DynamicStateLayout.States.DATA_EMPTY,
+                    R.string.lineup_empty.getString()
+                )
             }
+
+            homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
         }
     }
 
