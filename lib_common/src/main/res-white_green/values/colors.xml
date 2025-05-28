@@ -10,4 +10,5 @@
     <color name="app_bg_white_green">#F3F3F4</color>
     <color name="dynamic_text_white_green">#666666</color>
     <color name="progress_text_white_green">#222222</color>
+    <color name="list_separator_white_green">#F6F6F6</color>
 </resources>
