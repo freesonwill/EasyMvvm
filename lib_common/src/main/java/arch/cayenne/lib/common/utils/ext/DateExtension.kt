@@ -86,5 +86,5 @@ fun Long.getDetailFormatDate(): String {
     val hour = calendar.get(Calendar.HOUR_OF_DAY)
     val minute = calendar.get(Calendar.MINUTE)
 
-    return "$year/$month/$day $hour:$minute"
+    return "$year/$month/$day %02d:%02d".format(hour, minute)
 }
