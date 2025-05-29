@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/main_background"
-        app:layout_constraintTop_toTopOf="@id/cl_calculator"
-        app:layout_constraintBottom_toBottomOf="@id/bottom"
-        />
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_dialog">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_calculator"
@@ -30,6 +22,7 @@
             android:textColor="@color/main_text"
             android:textSize="@dimen/sp_15"
             android:layout_marginTop="@dimen/dp_18"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
             android:text="@string/capital"
+            android:textStyle="bold"
             android:textColor="@color/main_text"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_title" />
@@ -225,7 +219,7 @@
                 style="@style/NumberKeyboardButton"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
-                android:src="@drawable/icon_keyborad_back" />
+                android:src="@drawable/icon_keyboard_back" />
 
             <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_clear"
@@ -251,11 +245,8 @@
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
-                android:paddingTop="17dp"
-                android:paddingBottom="@dimen/dp_15"
-                android:paddingHorizontal="@dimen/dp_21"
-                android:scaleType="fitCenter"
-                android:src="@drawable/icon_keyboard_number" />
+                android:padding="10dp"
+                android:src="@drawable/icon_keyboard" />
 
         </GridLayout>
 
@@ -266,7 +257,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="5dp"
-        app:layout_constraintBottom_toTopOf="@id/bottom"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         >
 
         <arch.cayenne.lib.skin.widget.SkinnableButton
@@ -320,14 +312,6 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_bet_hint" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/bottom"
-        android:layout_width="match_parent"
-        android:layout_height="44dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

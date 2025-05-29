@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.skin.util.ResUtils
 import arch.cayenne.lib.skin.widget.helper.SkinnableHelper
@@ -24,7 +25,7 @@ class SkinnableBuildInResourceLoader(val _skinName: String) : SkinnableResourceL
     override fun getColorStateList(context: Context, resId: Int): ColorStateList? {
         val targetId = getTargetResourceId(context, resId)
         if (targetId != SkinnableHelper.INVALID_ID) {
-            return ResourcesCompat.getColorStateList(context.resources, targetId, context.theme)
+            return AppCompatResources.getColorStateList(context, targetId)
         }
         return null
     }

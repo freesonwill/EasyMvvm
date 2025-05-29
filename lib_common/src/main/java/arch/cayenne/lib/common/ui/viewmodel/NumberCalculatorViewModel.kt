@@ -1,17 +1,17 @@
-package arch.cayenne.module.bet.viewmodel
+package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.module.bet.data.NumberOverEnum
-
 open class NumberCalculatorViewModel : BaseViewModel() {
 
     private val _onEditNumber = MutableLiveData("")
     val onEditNumber: LiveData<String> get() =  _onEditNumber
 
+    val editValue: String get() = _onEditNumber.value.orEmpty()
 
     private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>(Pair(0, 0))
     /***
@@ -23,8 +23,8 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     private val _onOverNumberListener = MutableLiveData(NumberOverEnum.DEFAULT)
     val onOverNumberListener: LiveData<NumberOverEnum> get() = _onOverNumberListener
 
-    private val mixMoney: Long get() = onNumberLimit.value?.first ?: 0
-    private val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
+    val mixMoney: Long get() = onNumberLimit.value?.first ?: 0
+    val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
     private var remainingNumber: Long = Long.MAX_VALUE
 
     fun addNumber(number: Int) {

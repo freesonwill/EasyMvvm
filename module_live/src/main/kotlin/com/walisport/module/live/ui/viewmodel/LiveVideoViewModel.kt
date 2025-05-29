@@ -43,6 +43,10 @@ class LiveVideoViewModel(
     private val _homeTeamIcon = MutableLiveData<String>("")
     val homeTeamIcon: LiveData<String> = _homeTeamIcon
 
+    //主队历史比赛输赢 -1输 1赢 0平
+    private val _homeHistoryVs = MutableLiveData<List<Int>>()
+    val homeHistoryVs: LiveData<List<Int>> = _homeHistoryVs
+
     //客队名称
     private val _awayTeamName = MutableLiveData("")
     val awayTeamName: LiveData<String> = _awayTeamName
@@ -50,6 +54,10 @@ class LiveVideoViewModel(
     //客队图标
     private val _awayTeamIcon = MutableLiveData<String>("")
     val awayTeamIcon: LiveData<String> = _awayTeamIcon
+
+    //客队历史比赛输赢 -1输 1赢 0平
+    private val _awayHistoryVs = MutableLiveData<List<Int>>()
+    val awayHistoryVs: LiveData<List<Int>> = _awayHistoryVs
 
     //比赛名称
     private val _matchName = MutableLiveData("")
@@ -156,8 +164,18 @@ class LiveVideoViewModel(
 
                         _homeTeamName.value = match.basicInfo.homeTeam
                         _homeTeamIcon.value = match.basicInfo.homeTeamIcon
+
+                        if (match.basicInfo.homeHistoryVs.isNotEmpty()) {
+                            _homeHistoryVs.value =
+                                match.basicInfo.homeHistoryVs.split(",").map { it.toInt() }
+                        }
                         _awayTeamName.value = match.basicInfo.awayTeam
                         _awayTeamIcon.value = match.basicInfo.awayTeamIcon
+
+                        if (match.basicInfo.awayHistoryVs.isNotEmpty()) {
+                            _awayHistoryVs.value =
+                                match.basicInfo.awayHistoryVs.split(",").map { it.toInt() }
+                        }
 
                         //比赛名称
                         _matchName.value = match.basicInfo.matchName

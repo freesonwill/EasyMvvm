@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 
 class ReserveDialogViewModel : NumberCalculatorViewModel() {

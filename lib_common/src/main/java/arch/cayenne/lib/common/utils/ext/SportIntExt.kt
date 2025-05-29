@@ -74,4 +74,8 @@ object SportIntExt {
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
         return decimal.setScale(2, RoundingMode.DOWN).toPlainString()
     }
+
+    fun Long.percent(p: Int): Long {
+        return this * p / 100
+    }
 }

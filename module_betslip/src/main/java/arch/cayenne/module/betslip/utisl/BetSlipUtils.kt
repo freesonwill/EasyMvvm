@@ -1,6 +1,8 @@
 package arch.cayenne.module.betslip.utisl
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import galaxy.common.proto.Common
