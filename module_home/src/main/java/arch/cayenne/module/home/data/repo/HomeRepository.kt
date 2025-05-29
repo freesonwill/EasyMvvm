@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
+import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
@@ -76,7 +77,8 @@ class HomeRepository(
                     sportId = sport.sportId,
                     sportName = sport.sportName,
                     matchCount = sport.matchCount,
-                    sportOrder = index
+                    sportOrder = index,
+                    type = ShowType.HOME
                 )
                 sportMap[bean.sportId] = bean
 //                val category = PlayTypeSportCrossRef(
