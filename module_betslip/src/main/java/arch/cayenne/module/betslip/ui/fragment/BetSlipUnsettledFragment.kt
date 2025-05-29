@@ -6,6 +6,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
@@ -63,7 +64,7 @@ class BetSlipUnsettledFragment :
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
                             it.betId,
-                            money.toString(),
+                            money.getMoney(),
                             mViewModel.earlySettlePriceLiveData.value?.price ?: "0"
                         )
                     }
