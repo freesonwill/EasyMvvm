@@ -1,20 +1,19 @@
 package arch.cayenne.module.home.ui.adapter
 
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 
 class OddsColumnViewHolder(
     mBinding: ItemOddsColumnBinding,
-    onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
 
     private val oddsCells = listOf(
-        OddsCellViewHolder(mBinding.itemOddsCell1, onOddsClick),
-        OddsCellViewHolder(mBinding.itemOddsCell2, onOddsClick),
-        OddsCellViewHolder(mBinding.itemOddsCell3, onOddsClick)
+        OddsCellViewHolder(mBinding.itemOddsCell1, onMatchItemClickListener),
+        OddsCellViewHolder(mBinding.itemOddsCell2, onMatchItemClickListener),
+        OddsCellViewHolder(mBinding.itemOddsCell3, onMatchItemClickListener)
     )
 
     fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
@@ -67,7 +66,6 @@ class OddsColumnViewHolder(
                     cell.bind(selection)
                 }
             } else {
-                "KC_ hideView ${market.marketName}".logd()
                 cell.hideView()
             }
         }

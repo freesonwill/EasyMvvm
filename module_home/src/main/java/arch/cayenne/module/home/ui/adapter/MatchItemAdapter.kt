@@ -16,8 +16,6 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         position: Int
     ) {
         val item = getItem(position)
-//        binding.layoutOddsTitle.removeAllViews()
-//        binding.rvOddsGrid.removeAllViews()
         holder.init(item)
 
         binding.clLeftInfoEntry.setOnClickListener {
@@ -62,5 +60,5 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
     fun onFavoriteClick(item: MatchWithMarkets)
-    fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
+    fun onOddsCellClick(selection: SelectionBeanLite)
 }

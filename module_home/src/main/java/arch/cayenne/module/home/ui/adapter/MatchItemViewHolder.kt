@@ -25,7 +25,7 @@ class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
     private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
-    private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter()
+    private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter(onMatchItemClickListener)
     private val viewPool = RecyclerView.RecycledViewPool()
     init {
         //右半盤口
@@ -86,9 +86,9 @@ class MatchItemViewHolder(
     }
 
     fun init(data: MatchWithMarkets) {
-        oddsColumnAdapter.onOddsClick = { selection, b ->
-            onMatchItemClickListener?.onOddsCellClick(data, selection)
-        }
+//        oddsColumnAdapter.onOddsClick = { selection, b ->
+//            onMatchItemClickListener?.onOddsCellClick(data, selection)
+//        }
         with(mBinding) {
             val basicInfo = data.match.basicInfo
             val liveInfo = data.match.liveInfo
@@ -143,9 +143,9 @@ class MatchItemViewHolder(
             val basicInfo = item.match.basicInfo
             val liveInfo = item.match.liveInfo
 
-            oddsColumnAdapter.onOddsClick = { selection, _ ->
-                onMatchItemClickListener?.onOddsCellClick(item, selection)
-            }
+//            oddsColumnAdapter.onOddsClick = { selection, _ ->
+//                onMatchItemClickListener?.onOddsCellClick(item, selection)
+//            }
 
             if ("status" in changes) {
                 if (basicInfo.status == 4) {

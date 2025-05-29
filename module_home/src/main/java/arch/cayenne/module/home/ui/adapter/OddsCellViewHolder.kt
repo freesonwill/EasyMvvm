@@ -11,7 +11,7 @@ import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
-    private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
     private var currentState: OddsCellState = OddsCellState.VISIBLE
     fun bind(item: SelectionBeanLite) {
@@ -23,8 +23,7 @@ class OddsCellViewHolder(
 
             llOddsCell.setOnClickListener {
                 if (isActive) {
-                    val isSelected = !(llOddsCell.isSelected)
-                    onOddsClick(item, isSelected)
+                    onMatchItemClickListener?.onOddsCellClick(item)
                 }
             }
         }

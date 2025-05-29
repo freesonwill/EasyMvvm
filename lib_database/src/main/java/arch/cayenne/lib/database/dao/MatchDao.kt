@@ -73,6 +73,10 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
     abstract suspend fun getMatchById(matchId: Long) : MatchBean
 
+    @Transaction
+    @Query("SELECT matchId FROM MarketSelectCrossRef WHERE selectionId = :selectionId limit 1")
+    abstract suspend fun getMatchIdBySelectionId(selectionId: Long) : Long?
+
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
     abstract fun observeMatchById(matchId: Long): Flow<MatchBean?>
 
