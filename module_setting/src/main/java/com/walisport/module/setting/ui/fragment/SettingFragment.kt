@@ -2,6 +2,7 @@ package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.model.SkinType
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -74,6 +75,10 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 langType = it.lang
                 mBinding.tvLanguageType.text = getLanguage(langType)
                 mViewModel.setLanguageType(langType)
+                //主题类型 0-经典 1-黑蓝 2-黑绿 3-黑红 4-白蓝 5-白绿
+                val type = getBackground(it.background)
+                //此处暂时注释，服务器接口好了以后需要打开
+                //mViewModel.setSkinType(type)
                 //系统通知-进球
                 val sys = it.systemGoal
                 mViewModel.setSystemGoal(sys.betMatch, sys.collectMatch, sys.allMatch)
@@ -93,6 +98,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             LanguageType.LANGUAGE_PT.value -> getString(R.string.menu_language_portugal)
             LanguageType.LANGUAGE_ID.value -> getString(R.string.menu_language_indonesia)
             else -> getString(R.string.menu_language_english)
+        }
+    }
+
+    private fun getBackground(type: Int): String {
+        return when (type) {
+            1 -> SkinType.SKIN_BLACK_BLUE.value
+            2 -> SkinType.SKIN_BLACK_GREEN.value
+            3 -> SkinType.SKIN_BLACK_RED.value
+            4 -> SkinType.SKIN_WHITE_BLUE.value
+            5 -> SkinType.SKIN_WHITE_GREEN.value
+            else -> SkinType.SKIN_CLASSIC.value
         }
     }
 

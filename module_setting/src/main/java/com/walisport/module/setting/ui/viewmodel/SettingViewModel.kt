@@ -41,6 +41,11 @@ class SettingViewModel : BaseViewModel() {
         return repository.getLanguageType()
     }
 
+    //设置皮肤背景
+    fun setSkinType(type: String) {
+        repository.setSkinType(type)
+    }
+
     //设置系统通知-进球
     fun setSystemGoal(bet: Boolean, fav: Boolean, all: Boolean) {
         repository.setSystemGoal(bet, fav, all);
