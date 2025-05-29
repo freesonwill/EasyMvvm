@@ -190,10 +190,10 @@ class LiveVideoViewModel(
                             when (it) {
                                 MatchStatus.NOT_STARTED -> {
                                     val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
-                                    _titleText.value = date
+                                    _titleText.value = time
                                     _titleTextColor.value = arch.cayenne.lib.common.R.color.white
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
-                                    _subTitleText.value = time
+                                    _subTitleText.value = date
                                     _subTitleTextColor.value =
                                         arch.cayenne.lib.common.R.color.color_666666
                                     _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
