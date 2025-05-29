@@ -3,8 +3,8 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarMode
-import arch.cayenne.lib.base.data.model.SkinType
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt

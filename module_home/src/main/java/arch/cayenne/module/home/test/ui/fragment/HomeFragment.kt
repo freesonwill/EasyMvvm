@@ -6,10 +6,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Gravity
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
-import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -52,7 +51,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
     }
     override fun initListener() {

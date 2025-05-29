@@ -20,7 +20,7 @@ object DeeplinkExt {
      * input: "http://badiu.com?path={path}".deeplink("path" to "go")
      * output: "http://badiu.com?path=go"
      */
-    fun String.deeplink(vararg params: Pair<String, String>): Uri {
+    fun String.deeplink(vararg params: Pair<String, Any>): Uri {
         val sb = StringBuffer(this.split("?")[0])
         params.forEachIndexed { index, (key, value) ->
             if (index == 0) sb.append("?") else sb.append("&")
@@ -38,7 +38,7 @@ object DeeplinkExt {
      * input: R.string.deeplink_baidu.deeplink("path" to "go")
      * output: "http://badiu.com?path=go"
      */
-    fun @receiver:StringRes Int.deeplink(vararg params: Pair<String, String>): Uri {
+    fun @receiver:StringRes Int.deeplink(vararg params: Pair<String, Any>): Uri {
         return this.getString().deeplink(*params)
     }
 

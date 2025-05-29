@@ -2,7 +2,7 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -21,7 +21,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     }
     override fun initView(savedInstanceState: Bundle?) {
 
-            StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
+            StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
             setStatusBar(StatusBarConfig,mBinding.root)
 
     }

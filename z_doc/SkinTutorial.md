@@ -4,12 +4,12 @@
 - (2) 换肤时可以调用SportSkinManager，进行后缀名区分或者加载assets下的皮肤包
 - (3) 使用后缀名换肤对需要换肤的资源添加后缀名 如：white, white_light
 ``` 
-val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
+val sportSkinManager:SkinnableManager by inject(SkinnableManager::class.java)
 sportSkinManager.loadSkin("light")
 ```
 - (4) 使用皮肤包换肤时，将需要换肤的资源添加到需要打包的项目中，并且资源名与原项目相同，打包后的apk将.apk改成.skin，放入原项目的assets/skins路径下
 ``` 
-val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
+val sportSkinManager:SkinnableManager by inject(SkinnableManager::class.java)
 sportSkinManager.loadSkinAsset("light.skin")
 ```
 ## 2. 使用后缀名换肤如下所示
@@ -41,7 +41,7 @@ sourceSets {
 
 ```
 private val backgroundHelper = SportSkinBackGroundHelper(this)
-private val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
+private val sportSkinManager:SkinnableManager by inject(SkinnableManager::class.java)
 
 override fun onAttachedToWindow() {
     super.onAttachedToWindow()
@@ -62,7 +62,7 @@ override fun onAttachedToWindow() {
 - （1）调用SportSkinManager中的changeLanguage方法
 
 ```
-private val sportSkinManager:SportSkinManager by inject(SportSkinManager::class.java)
+private val sportSkinManager:SkinnableManager by inject(SkinnableManager::class.java)
 sportSkinManager.changeLanguage(Locale.SIMPLIFIED_CHINESE)
 ```
 注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
