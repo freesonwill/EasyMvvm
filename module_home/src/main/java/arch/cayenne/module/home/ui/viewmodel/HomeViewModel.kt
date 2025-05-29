@@ -62,10 +62,6 @@ class HomeViewModel : BaseViewModel() {
         _collapseTournamentDropdown.value = Event(false)
     }
 
-    init {
-        repository.setAllSport()
-    }
-
     private fun addNewTournament(id: Int) {
 
         val currentList = tournaments.value?.peekContent().orEmpty()

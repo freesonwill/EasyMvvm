@@ -26,7 +26,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeRepository(
@@ -406,30 +405,6 @@ class HomeRepository(
             )
         }
         return null
-    }
-
-    fun setAllSport() {
-        scope.launch {
-            val result = socketManager.sendAndWaitProtoMessageResponse<Client.ListSportResp>(
-                scope = scope,
-                dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.LIST_SPORT
-            ) {
-                Client.ListSportReq.newBuilder().build()
-            }
-            if(result.error == null && result.data != null){
-                val data = result.data!!.sportList.map {
-                    SportBean(
-                        sportId = it.sportId,
-                        sportName = it.sportName,
-                        matchCount = 0,
-                        sportOrder = 0,
-                        type = ShowType.ALL
-                    )
-                }
-                sportDao.insert(data)
-            }
-        }
     }
 
 }
