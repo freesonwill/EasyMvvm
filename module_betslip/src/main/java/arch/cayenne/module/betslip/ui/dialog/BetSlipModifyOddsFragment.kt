@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.dialog
 
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -64,6 +65,9 @@ class BetSlipModifyOddsFragment private constructor() :
                 _confirmClick?.invoke(mBinding.etOdds.text.toString())
                 dismiss()
             }
+            main.setOnClickListener {
+                dismiss()
+            }
             val odds = arguments?.getString(ODDS_KEY)
             etOdds.setText(odds)
         }
@@ -84,7 +88,7 @@ class BetSlipModifyOddsFragment private constructor() :
     }
 
     override val dialogBackground: Drawable?
-        get() = ColorDrawable(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.black_75))
+        get() = ColorDrawable(Color.TRANSPARENT)
 
     private fun setDialogPosition() {
         dialog?.setCanceledOnTouchOutside(true)
@@ -94,9 +98,8 @@ class BetSlipModifyOddsFragment private constructor() :
                 override fun onGlobalLayout() {
                     mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val layoutParams = attributes
-                    layoutParams.width = LayoutParams.WRAP_CONTENT
-                    layoutParams.height = LayoutParams.WRAP_CONTENT
-                    layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
+                    layoutParams.width = LayoutParams.MATCH_PARENT
+                    layoutParams.height = LayoutParams.MATCH_PARENT
                     attributes = layoutParams
                 }
             })

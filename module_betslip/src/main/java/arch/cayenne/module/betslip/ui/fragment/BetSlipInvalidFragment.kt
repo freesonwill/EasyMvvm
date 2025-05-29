@@ -54,9 +54,7 @@ class BetSlipInvalidFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it) {
-                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-            }
+            betSlipAdapter.submitList(it)
             showEmpty(it.isEmpty())
         }
     }
