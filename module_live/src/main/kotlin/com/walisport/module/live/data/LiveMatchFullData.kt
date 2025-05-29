@@ -1,7 +1,6 @@
 package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMarketDetailBean
 import arch.cayenne.lib.database.entity.LiveMatchBasicInfoBean
@@ -33,9 +32,11 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                 homeTeam = this.basicInfo.homeTeam,
                 homeTeamId = this.basicInfo.homeTeamId,
                 homeTeamIcon = this.basicInfo.homeTeamIcon,
+                homeHistoryVs = this.basicInfo.homeHistoryVsList.joinToString(separator = ","),
                 awayTeam = this.basicInfo.awayTeam,
                 awayTeamId = this.basicInfo.awayTeamId,
                 awayTeamIcon = this.basicInfo.awayTeamIcon,
+                awayHistoryVs = this.basicInfo.awayHistoryVsList.joinToString(separator = ","),
                 startTime = this.basicInfo.startTime,
                 status = this.basicInfo.status,
                 tournamentId = this.basicInfo.tournamentId,

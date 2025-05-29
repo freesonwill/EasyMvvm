@@ -56,9 +56,11 @@ data class LiveMatchBasicInfoBean(
     val homeTeam: String,
     val homeTeamId: Int,
     val homeTeamIcon: String,
+    val homeHistoryVs: String,//主队历史比赛输赢 -1输 1赢 0平
     val awayTeam: String,
     val awayTeamId: Int,
     val awayTeamIcon: String,
+    val awayHistoryVs: String,//客队历史比赛输赢 -1输 1赢 0平
     val startTime: Long,
     val status: Int, //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
     val tournamentId: Int,
