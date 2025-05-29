@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBigDecimal
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf

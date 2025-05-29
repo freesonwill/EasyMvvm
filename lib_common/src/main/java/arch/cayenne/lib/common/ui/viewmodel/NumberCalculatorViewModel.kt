@@ -1,12 +1,11 @@
-package arch.cayenne.module.bet.viewmodel
+package arch.cayenne.lib.common.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.module.bet.data.NumberOverEnum
-
 open class NumberCalculatorViewModel : BaseViewModel() {
 
     private val _onEditNumber = MutableLiveData("")
