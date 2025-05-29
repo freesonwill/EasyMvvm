@@ -78,7 +78,7 @@ class WebSocketManager(
         stopHeartbeat()
     }
 
-    fun send(data: IRequest): SocketResponseError? {
+    fun send(data: IRequest): IResponse? {
         return socket.send(data)
     }
 

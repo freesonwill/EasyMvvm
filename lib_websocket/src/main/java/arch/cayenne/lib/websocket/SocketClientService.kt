@@ -156,7 +156,7 @@ class SocketClientService(
     }
 
 
-    override fun send(data: IRequest): SocketResponseError? {
+    override fun send(data: IRequest): IResponse? {
         if (currentState != SocketConnectState.Connecting) {
             return InvalidNetworkError()
         }
