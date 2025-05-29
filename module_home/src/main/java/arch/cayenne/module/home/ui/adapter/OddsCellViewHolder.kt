@@ -108,7 +108,7 @@ class OddsCellViewHolder(
     private fun updateState(active: Boolean, isSelected: Boolean) {
         currentState = if (active) OddsCellState.VISIBLE else OddsCellState.DEACTIVATED
         with(mBinding) {
-            root.visibility =  if (active) View.VISIBLE else View.GONE
+            root.visibility =  View.VISIBLE
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE
