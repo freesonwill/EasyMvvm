@@ -68,8 +68,8 @@ class TechnicalCountView @JvmOverloads constructor(
         val size = data.data.size
         if (size > 90) {
             //当比赛时间超过90分钟时需重新绘制时间栏
-            //mBinding.lastTime.text = "$size'"
-            refreshTimeLayout(size)
+            mBinding.lastTime.text = "$size'"
+            //refreshTimeLayout(size)
         }
     }
 

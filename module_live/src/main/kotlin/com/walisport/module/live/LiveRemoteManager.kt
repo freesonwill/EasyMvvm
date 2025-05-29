@@ -1,7 +1,6 @@
 package com.walisport.module.live
 
 import arch.cayenne.lib.base.utils.LogUtils
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
-    private val TAG = LiveRemoteManager::class.java.simpleName
 
     suspend fun queryLiveStream(
         scope: CoroutineScope,
@@ -76,7 +74,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
     // 500-1102: 订阅比赛详情
     suspend fun registerMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchInfoResp>(
+        socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchInfoResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SUBSCRIBE_MATCH_INFO,
@@ -85,33 +83,19 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchIds
             }.build()
         }
-        if (res.error == null) {
-            "比赛详情订阅开始----  result ${res.data}".logd(TAG)
-//            if (res.data != null&&res.data!!.matchNotify!= null){
-//                res.data!!.matchNotify
-//            }
-        }
     }
 
     // 500-1103: 取消订阅比赛详情
     fun unregisterMatchInfoNotify(scope: CoroutineScope, matchIds: Long) {
         scope.launch {
-            var res =
-                socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
-                    scope = scope,
-                    dispatcher = Dispatchers.IO,
-                    apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
-                ) {
-                    Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
-                        this.matchId = matchIds
-                    }.build()
-                }
-
-            if (res.error == null) {
-                "比赛详情订阅结束----  result ${res.data}".logd(TAG)
-//            if (res.data != null&&res.data!!.matchNotify!= null){
-//                res.data!!.matchNotify
-//            }
+            socketManager.sendAndWaitProtoMessageResponse<Client.CancelSubscribeMatchInfoResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.CANCEL_SUBSCRIBE_MATCH_INFO,
+            ) {
+                Client.CancelSubscribeMatchInfoReq.newBuilder().apply {
+                    this.matchId = matchIds
+                }.build()
             }
         }
     }
@@ -120,7 +104,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     fun observeMatchInfoNotify(): Flow<Client.MatchInfoNotify> {
         return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
             .transform { res ->
-                "比赛详情订阅收到推送----  result res---${res.error},-----data${res.data}".logd(TAG)
                 if (res.error == null && res.data != null) {
                     emit(res.data!!)
                 }
@@ -219,8 +202,11 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     //700-1100: 订阅比赛统计数据推送
-    suspend fun registerMatchStaticsNotify(scope: CoroutineScope, matchIds: Long) {
-        socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
+    suspend fun registerMatchStaticsNotify(
+        scope: CoroutineScope,
+        matchIds: Long
+    ): Sloth.MatchLiveData? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.MATCH_STATICS,
@@ -229,14 +215,18 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchIds
             }.build()
         }
+        if (result.error == null && result.data != null) {
+            return result.data!!.matchLiveData
+        }
+        return null
     }
 
     //700-1100: 接收比赛统计数据推送(订阅和接收技术统计，apiCode都为700-1100)
-    fun observeMatchStaticsNotify(): Flow<Client.SubscribeMatchLiveResp> {
+    fun observeMatchStaticsNotify(): Flow<Sloth.MatchLiveData> {
         return socketManager.observeProtoMessage<Client.SubscribeMatchLiveResp>(ApiCode.MATCH_STATICS)
             .transform { res ->
                 if (res.error == null && res.data != null) {
-                    emit(res.data!!)
+                    emit(res.data!!.matchLiveData)
                 }
             }
     }

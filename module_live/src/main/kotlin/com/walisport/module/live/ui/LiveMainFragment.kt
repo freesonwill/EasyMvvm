@@ -85,7 +85,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.getMainMatch(it)
             mViewModel.observeMatchBean(it)
             mViewModel.registerMatchInfoNotify(it)
-            mViewModel.registerStatisticsNotify(123456L)
+            mViewModel.registerStatisticsNotify(it)
             mViewModel.observeMatchStaticsNotify()
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
