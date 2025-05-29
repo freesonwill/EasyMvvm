@@ -11,10 +11,12 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
+import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
 import com.walisport.module.search.databinding.ItemSearchResultGridHeaderBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridItemBinding
+import com.walisport.module.search.databinding.ItemSearchResultGridMoreBinding
 import com.walisport.module.search.ui.compare.SearchResultGridCompare
 
 class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseViewHolder, ViewBinding>(
@@ -23,14 +25,17 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_ITEM = 1
+        const val VIEW_TYPE_MORE = 2
     }
 
     var onItemClick: ((SearchResultBaseBean) -> Unit)? = null
+    var onMoreClick: ((SearchResultTypeEnum) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is SearchResultListItemType.Header -> VIEW_TYPE_HEADER
             is SearchResultListItemType.Item -> VIEW_TYPE_ITEM
+            is SearchResultListItemType.More -> VIEW_TYPE_MORE
             else -> VIEW_TYPE_ITEM
         }
     }
@@ -81,6 +86,14 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
                     }
                 }
             }
+            VIEW_TYPE_MORE -> {
+                val moreBinding = binding as ItemSearchResultGridMoreBinding
+                moreBinding.root.setOnClickListener {
+                    onMoreClick?.invoke(
+                        (getItem(position) as SearchResultListItemType.More).type
+                    )
+                }
+            }
         }
     }
 
@@ -89,10 +102,11 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
         parent: ViewGroup,
         viewType: Int
     ): ViewBinding {
-        return if(viewType == VIEW_TYPE_HEADER) {
-            ItemSearchResultGridHeaderBinding.inflate(inflater, parent, false)
-        } else {
-            ItemSearchResultGridItemBinding.inflate(inflater, parent, false)
+        return when (viewType) {
+            VIEW_TYPE_HEADER -> ItemSearchResultGridHeaderBinding.inflate(inflater, parent, false)
+            VIEW_TYPE_ITEM -> ItemSearchResultGridItemBinding.inflate(inflater, parent, false)
+            VIEW_TYPE_MORE -> ItemSearchResultGridMoreBinding.inflate(inflater, parent, false)
+            else -> throw IllegalArgumentException("Invalid view type: $viewType")
         }
     }
 

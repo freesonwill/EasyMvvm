@@ -6,5 +6,5 @@
     <color name="hot_word_white_green">#00D271</color>
     <color name="tab_item_text_select_white_green">#222222</color>
     <color name="tab_item_text_unselect_white_green">#666666</color>
-
+    <color name="search_result_more_white_green">#666666</color>
 </resources>
