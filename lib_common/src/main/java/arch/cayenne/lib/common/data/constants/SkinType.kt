@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.data.model
+package arch.cayenne.lib.common.data.constants
 
 enum class SkinType(val value: String) {
 
@@ -7,5 +7,9 @@ enum class SkinType(val value: String) {
     SKIN_BLACK_GREEN("black_green"),
     SKIN_BLACK_RED("black_red"),
     SKIN_WHITE_BLUE("white_blue"),
-    SKIN_WHITE_GREEN("white_green")
+    SKIN_WHITE_GREEN("white_green");
+    ;
+    companion object {
+        fun of(v:String):SkinType? = SkinType.values().find { it.value == v }
+    }
 }

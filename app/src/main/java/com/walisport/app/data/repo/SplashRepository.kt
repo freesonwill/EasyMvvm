@@ -1,11 +1,9 @@
 package com.walisport.app.data.repo
 
-import arch.cayenne.lib.base.data.model.SkinType
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ConnectState

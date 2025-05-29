@@ -2,7 +2,7 @@ package com.walisport.module.setting.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.model.SkinType
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
