@@ -10,17 +10,14 @@ import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
     BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
-    private val holders = mutableListOf<MatchItemViewHolder>()
     override fun convertPlus(
         holder: MatchItemViewHolder,
         binding: ItemMatchCardBinding,
         position: Int
     ) {
         val item = getItem(position)
-        binding.layoutOddsTitle.removeAllViews()
-        binding.rvOddsGrid.removeAllViews()
         holder.init(item)
-        holders.add(holder)
+
         binding.clLeftInfoEntry.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
@@ -63,5 +60,5 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
     fun onFavoriteClick(item: MatchWithMarkets)
-    fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite)
+    fun onOddsCellClick(selection: SelectionBeanLite)
 }

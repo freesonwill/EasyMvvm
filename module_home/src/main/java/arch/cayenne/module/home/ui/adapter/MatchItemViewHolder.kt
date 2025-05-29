@@ -25,51 +25,16 @@ class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
     private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
-    private lateinit var oddsColumnAdapter: OddsColumnAdapter
-
-    fun init(data: MatchWithMarkets) {
-        oddsColumnAdapter = OddsColumnAdapter { selection, _ ->
-            onMatchItemClickListener?.onOddsCellClick(data, selection)
-        }
+    private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter(onMatchItemClickListener)
+    private val viewPool = RecyclerView.RecycledViewPool()
+    init {
+        //右半盤口
+        val defaultTitleList = listOf(
+            R.string.match_title_win,
+            R.string.match_title_handicap,
+            R.string.match_title_over_under
+        )
         with(mBinding) {
-            val basicInfo = data.match.basicInfo
-            val liveInfo = data.match.liveInfo
-
-            //賽事資訊
-            setIconWithDefault(
-                basicInfo.tournamentIcon,
-                R.drawable.ic_default_tournament,
-                ivTournamentIcon
-            )
-            tvTournamentName.text = basicInfo.tournamentName
-            //TODO 階段與時間待確認
-            if (basicInfo.status == 4) {
-                tvGameStatus.text = basicInfo.startTime.toLocalDateTimeString()
-                tvGameTime.visibility = TextView.GONE
-            } else {
-                tvGameStatus.text = liveInfo.period
-                tvGameTime.visibility = TextView.VISIBLE
-                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
-            }
-
-            //客隊
-            setIconWithDefault(basicInfo.awayTeamIcon, R.drawable.ic_default_team, ivAwayIcon)
-            tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
-            tvAwayScore.text = liveInfo.score.getAwayScore()
-
-            //主隊
-            setIconWithDefault(basicInfo.homeTeamIcon, R.drawable.ic_default_team, ivHomeIcon)
-            tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
-            tvHomeScore.text = liveInfo.score.getHomeScore()
-            tvWatchCount.text = liveInfo.viewerCount.toString()
-            ivFavorite.isSelected = data.match.collect
-
-            //右半盤口
-            val defaultTitleList = listOf(
-                R.string.match_title_win,
-                R.string.match_title_handicap,
-                R.string.match_title_over_under
-            )
             layoutOddsTitle.columnCount = defaultTitleList.size
             defaultTitleList.forEachIndexed { index, title ->
                 val titleView = TextView(binding.root.context).apply {
@@ -117,6 +82,47 @@ class MatchItemViewHolder(
                     }
                 })
             }
+        }
+    }
+
+    fun init(data: MatchWithMarkets) {
+//        oddsColumnAdapter.onOddsClick = { selection, b ->
+//            onMatchItemClickListener?.onOddsCellClick(data, selection)
+//        }
+        with(mBinding) {
+            val basicInfo = data.match.basicInfo
+            val liveInfo = data.match.liveInfo
+
+            //賽事資訊
+            setIconWithDefault(
+                basicInfo.tournamentIcon,
+                R.drawable.ic_default_tournament,
+                ivTournamentIcon
+            )
+            tvTournamentName.text = basicInfo.tournamentName
+            //TODO 階段與時間待確認
+            if (basicInfo.status == 4) {
+                tvGameStatus.text = basicInfo.startTime.toLocalDateTimeString()
+                tvGameTime.visibility = TextView.GONE
+            } else {
+                tvGameStatus.text = liveInfo.period
+                tvGameTime.visibility = TextView.VISIBLE
+                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+            }
+
+            //客隊
+            setIconWithDefault(basicInfo.awayTeamIcon, R.drawable.ic_default_team, ivAwayIcon)
+            tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
+            tvAwayScore.text = liveInfo.score.getAwayScore()
+
+            //主隊
+            setIconWithDefault(basicInfo.homeTeamIcon, R.drawable.ic_default_team, ivHomeIcon)
+            tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
+            tvHomeScore.text = liveInfo.score.getHomeScore()
+            tvWatchCount.text = liveInfo.viewerCount.toString()
+            ivFavorite.isSelected = data.match.collect
+
+            rvOddsGrid.setRecycledViewPool(viewPool)
 
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
@@ -136,6 +142,10 @@ class MatchItemViewHolder(
         with(mBinding) {
             val basicInfo = item.match.basicInfo
             val liveInfo = item.match.liveInfo
+
+//            oddsColumnAdapter.onOddsClick = { selection, _ ->
+//                onMatchItemClickListener?.onOddsCellClick(item, selection)
+//            }
 
             if ("status" in changes) {
                 if (basicInfo.status == 4) {

@@ -11,7 +11,7 @@ import arch.cayenne.module.home.databinding.ItemOddsCellBinding
 
 class OddsCellViewHolder(
     private val mBinding: ItemOddsCellBinding,
-    private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
     private var currentState: OddsCellState = OddsCellState.VISIBLE
     fun bind(item: SelectionBeanLite) {
@@ -23,8 +23,7 @@ class OddsCellViewHolder(
 
             llOddsCell.setOnClickListener {
                 if (isActive) {
-                    val isSelected = !(llOddsCell.isSelected)
-                    onOddsClick(item, isSelected)
+                    onMatchItemClickListener?.onOddsCellClick(item)
                 }
             }
         }
@@ -72,8 +71,6 @@ class OddsCellViewHolder(
             // 先隱藏所有效果
             ivTrendUp.visibility = View.GONE
             ivTrendDown.visibility = View.GONE
-            vTrendHighlight.clearAnimation()
-            vTrendHighlight.visibility = View.GONE
             val trendView = when {
                 trendDelta == null || trendDelta == 0 -> null
                 trendDelta < 0 -> ivTrendDown   // 賠率下降 → 變差
@@ -84,18 +81,15 @@ class OddsCellViewHolder(
             trendView?.let { trendImage ->
                 trendImage.alpha = 1f
                 trendImage.visibility = View.VISIBLE
-                vTrendHighlight.alpha = 1f
-                vTrendHighlight.visibility = View.VISIBLE
 
                 val animator = ValueAnimator.ofFloat(1f, 0f).apply {
-                    duration = 800
+                    duration = 667     //2000毫秒閃3次，每次耗時667毫秒
+                    repeatCount = 2
                     addUpdateListener { animation ->
                         val alpha = animation.animatedValue as Float
-                        vTrendHighlight.alpha = alpha
                         trendImage.alpha = alpha
                     }
                     addListener(onEnd = {
-                        vTrendHighlight.visibility = View.GONE
                         trendImage.visibility = View.GONE
                     })
                 }
@@ -108,6 +102,7 @@ class OddsCellViewHolder(
     private fun updateState(active: Boolean, isSelected: Boolean) {
         currentState = if (active) OddsCellState.VISIBLE else OddsCellState.DEACTIVATED
         with(mBinding) {
+            root.visibility =  View.VISIBLE
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE
@@ -123,6 +118,7 @@ class OddsCellViewHolder(
     fun deActivate() {
         currentState = OddsCellState.DEACTIVATED
         with(mBinding) {
+            root.visibility = View.VISIBLE
             tvShortName.visibility = View.GONE
             tvOdds.visibility = View.GONE
             ivLock.visibility = View.VISIBLE

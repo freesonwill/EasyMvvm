@@ -364,18 +364,11 @@ class HomeRepository(
 
     fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {
         //觀察後端的500-1002（获取比赛列表）回傳
-//        scope.launch(Dispatchers.IO) {
-//            socketManager.observeProtoMessage<Client.ListMatchResp>(apiCode = ApiCode.LIST_MATCH,)
-//                .filter { it.error == null && it.data != null }.collect {
-//
-//                }
-//        }
-
-
         return matchDao.observeMatchChange(playType, tournamentId)
     }
 
-    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
+    suspend fun getSelectionInsertBean(selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
+        val matchId = matchDao.getMatchIdBySelectionId(selectionId) ?: return@withContext null
         val match = matchDao.getOneMatchById(matchId)
         val selectionBean = matchDao.getSelectionById(selectionId)
         matchSelectionInsertBean(match, selectionBean)
