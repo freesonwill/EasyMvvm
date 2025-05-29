@@ -1,7 +1,7 @@
-package arch.cayenne.module.bet.data
+package arch.cayenne.lib.common.data.constants
 
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.module.bet.R
 
 enum class NumberOverEnum(val msg: String? = null) {
     DEFAULT,
