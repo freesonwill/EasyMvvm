@@ -8,6 +8,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
@@ -58,8 +59,11 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
                         ivIcon.apply {
                             val size = if (isPlayer) 87.dp2px else 68.dp2px
                             val placeholder =
-                                if (isPlayer) R.drawable.ic_search_result_player_placeholder
-                                else R.drawable.ic_search_result_placeholder
+                                SkinnableResourceManager.getTargetResourceId(
+                                    holder.itemView.context,
+                                    if (isPlayer) R.drawable.ic_search_result_player_placeholder
+                                    else R.drawable.ic_search_result_placeholder
+                                )
 
                             updateLayoutParams {
                                 width = size
