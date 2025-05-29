@@ -114,12 +114,12 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {
-        originData = bet
+        originData = bet.copy()
         val number = onNumberLimit.value
         val min = number?.first ?: 0L
         val max = number?.second ?: 0L
 
-        bet.isActive = max != 0L && min != 0L
+        bet.isActive = max != 0L && min != 0L && bet.isActive
         _onBetSheetListener.value = bet
     }
 }
