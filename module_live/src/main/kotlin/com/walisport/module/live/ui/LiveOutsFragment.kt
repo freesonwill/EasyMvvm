@@ -2,8 +2,6 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -26,32 +24,25 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     override val vbClass: KClass<FragmentLiveOutsBinding> = FragmentLiveOutsBinding::class
     override val vmClass: KClass<LiveOutsViewModel> = LiveOutsViewModel::class
-    private lateinit var matchTrendData: MatchTrendData
+    private var matchTrendData: MatchTrendData? = null
     private lateinit var homeName: String
     private lateinit var homeLogo: String
     private lateinit var awayName: String
     private lateinit var awayLogo: String
 
-    override fun initView(savedInstanceState: Bundle?) {
-    }
+    override fun initView(savedInstanceState: Bundle?) {}
 
     override fun initListener() {
         mBinding.viewTechStatic.setOnItemClickListener(object : TechnicalCountView.OnClickListener {
             override fun onClick() {
-                showMatchTrendDialog(homeName, awayName, homeLogo, awayLogo, matchTrendData)
+                if (matchTrendData != null) {
+                    showMatchTrendDialog(homeName, awayName, homeLogo, awayLogo, matchTrendData)
+                }
             }
         })
     }
 
-    override fun initData() {
-        super.initData()
-    }
-
     override fun createObserver() {
-        mainViewModel.matchId.observe(viewLifecycleOwner){
-            mViewModel.getMatchTrendData(it)
-            mViewModel.getStatisticData(it)
-        }
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 homeName = it.basicInfo.homeTeam
@@ -66,29 +57,17 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         //比赛技术统计推送数据(WebSocket接口)
         mainViewModel.statisticData.observe(viewLifecycleOwner) {
             it?.let {
-                parseData(it.stats)
-                parseHalfTeamData(it.team)
+                parseTrendData(it.matchTrendData)  //比赛趋势信息
+                parseStatsData(it.stats)           //统计进球红黄牌等信息
+                parseHalfTeamData(it.team)         //统计进度条相关信息
             }
         }
-        //比赛技术统计接口数据(HTTP接口)
-        mViewModel.matchStatisticData.observe(viewLifecycleOwner) {
-            it?.let {
-                parseData(it.stats)
-                parseHalfTeamData(it.team)
-            }
-        }
-        mViewModel.matchTrendData.observe(viewLifecycleOwner) {
-            if (it != null) {
-                matchTrendData = it
-                mBinding.mainLayout.setVisibilityGone()
-                mBinding.viewTechStatic.setTrendData(it)
-            } else {
-                mBinding.mainLayout.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.outs_empty.getString()
-                )
-            }
-        }
+    }
+
+    private fun parseTrendData(data: MatchTrendData) {
+        matchTrendData = data
+        mBinding.mainLayout.setVisibilityGone()
+        mBinding.viewTechStatic.setTrendData(data)
     }
 
     private fun parseHalfTeamData(data: List<MatchHalfTeamStats>) {
@@ -105,7 +84,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         mBinding.viewTechStatic.setMatchData(data.filter { it.type in list })
     }
 
-    private fun parseData(list: List<Stat>) {
+    private fun parseStatsData(list: List<Stat>) {
         list.mapIndexed { _, item ->
             //2角球 3黄牌 4红牌 23进攻 24危险进攻 25控球率
             when (item.type) {
@@ -141,7 +120,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         away: String,
         homeUrl: String,
         awayUrl: String,
-        data: MatchTrendData
+        data: MatchTrendData?
     ) {
         val homeStr = home + getString(R.string.live_out_gy)
         val awayStr = away + getString(R.string.live_out_dy)

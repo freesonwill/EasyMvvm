@@ -6,9 +6,12 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchLiveData
+import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
+import galaxy.client.proto.Sloth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -27,9 +30,11 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     //联赛ID
     private val _leagueID = MutableLiveData<Int>(0)
     val leagueID: LiveData<Int> = _leagueID
+
     //联赛名称
     private val _leagueName = MutableLiveData("")
     val leagueName: LiveData<String> = _leagueName
+
     //联赛Logo
     private val _leagueLogo = MutableLiveData("")
     val leagueLogo: LiveData<String> = _leagueLogo
@@ -49,7 +54,6 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
 
     override fun initViewModel() {
         super.initViewModel()
-
         //监听余额变化
         viewModelScope.launch(Dispatchers.IO) {
             repo.observeBalance().collect {
@@ -60,23 +64,23 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
         }
     }
 
-    fun setMatchId(matchId: Long){
+    fun setMatchId(matchId: Long) {
         _matchId.value = matchId
     }
 
-    fun setSportId(sportId: Int){
+    fun setSportId(sportId: Int) {
         _sportId.value = sportId
     }
 
-    fun setLeagueID(leagueID: Int){
+    fun setLeagueID(leagueID: Int) {
         _leagueID.value = leagueID
     }
 
-    fun setLeagueName(leagueName: String){
+    fun setLeagueName(leagueName: String) {
         _leagueName.value = leagueName
     }
 
-    fun setLeagueLogo(leagueLogo: String){
+    fun setLeagueLogo(leagueLogo: String) {
         _leagueLogo.value = leagueLogo
     }
 
@@ -118,7 +122,9 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     //订阅比赛技术统计推送
     fun registerStatisticsNotify(matchId: Long) {
         viewModelScope.launch {
-            repo.registerMatchStaticsNotify(matchId)
+            val resp = repo.registerMatchStaticsNotify(matchId)
+            val temp = getMatchLiveData(resp)
+            _statisticData.value = temp
         }
     }
 
@@ -133,23 +139,40 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     fun observeMatchStaticsNotify() {
         viewModelScope.launch {
             repo.observeMatchStaticsNotify().collect {
-                val teams = it.matchLiveData?.teamStatsList?.mapIndexed { _, item ->
-                    MatchHalfTeamStats(
-                        type = item.type,
-                        homeNum = item.homeNum,
-                        awayNum = item.awayNum
-                    )
-                } ?: emptyList()
-                val stats = it.matchLiveData?.statsList?.mapIndexed { _, item ->
-                    Stat(
-                        type = item.type,
-                        home = item.home,
-                        away = item.away
-                    )
-                } ?: emptyList()
-                val temp = MatchLiveData(0, teams, stats)
+                val temp = getMatchLiveData(it)
                 _statisticData.value = temp
             }
         }
+    }
+
+    private fun getMatchLiveData(data: Sloth.MatchLiveData?): MatchLiveData {
+        val teams = data?.teamStatsList?.mapIndexed { _, item ->
+            MatchHalfTeamStats(
+                type = item.type,
+                homeNum = item.homeNum,
+                awayNum = item.awayNum
+            )
+        } ?: emptyList()
+        val stats = data?.statsList?.mapIndexed { _, item ->
+            Stat(
+                type = item.type,
+                home = item.home,
+                away = item.away
+            )
+        } ?: emptyList()
+        val incidents =
+            data?.matchTrendData?.incidentsList?.mapIndexed { _, item ->
+                Incidents(
+                    time = item.time,
+                    position = item.position,
+                    type = item.type
+                )
+            } ?: emptyList()
+        val list: MutableList<Int> = ArrayList()
+        data?.matchTrendData?.dataList?.mapIndexed { _, item ->
+            list.addAll(item.valuesList)
+        }
+        val trend = MatchTrendData(incidents, list)
+        return MatchLiveData(0, teams, stats, trend)
     }
 }

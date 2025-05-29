@@ -8,7 +8,6 @@ import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.repository.LiveBetOnMenuRepository
 import com.walisport.module.live.data.repository.LiveBetOnRepository
 import com.walisport.module.live.data.repository.LiveLeagueRepository
-import com.walisport.module.live.data.repository.LiveOutsRepository
 import com.walisport.module.live.data.repository.LiveStandingRepository
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.data.repository.LiveChatRepository
@@ -58,7 +57,6 @@ class LiveModuleInitializer : DefaultInitializer<String> {
     private val repoModules = module {
         factoryOf(::LiveMainRepository)
         factoryOf(::LiveLineupRepository)
-        factoryOf(::LiveOutsRepository)
         factoryOf(::LiveVideoRepository)
         factoryOf(::LiveStandingRepository)
         factoryOf(::LiveBetOnRepository)
