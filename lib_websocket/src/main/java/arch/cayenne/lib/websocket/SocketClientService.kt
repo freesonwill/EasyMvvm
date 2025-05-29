@@ -14,7 +14,6 @@ import arch.cayenne.lib.websocket.data.ISocket
 import arch.cayenne.lib.websocket.data.InvalidEncryptDataError
 import arch.cayenne.lib.websocket.data.InvalidNetworkError
 import arch.cayenne.lib.websocket.data.SocketConnectState
-import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -18,7 +18,7 @@
             android:name="sportId"
             app:argType="integer" />
 
-        <deepLink app:uri="walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}" />
+        <deepLink app:uri="@string/nav_module_live_fragment" />
 
         <!--从直播详情页跳转到联赛日程页-->
         <action

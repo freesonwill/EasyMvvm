@@ -11,7 +11,7 @@ import java.util.Locale
 
 class SkinnableManager {
     private val resourcesManager = SkinnableResourceManager
-    private val _skinFlow = MutableStateFlow<String>("")
+    private val _skinFlow = MutableSharedFlow<String>()
     private val _languageFlow = MutableSharedFlow<Locale?>()
     val skinFlow: Flow<String> = _skinFlow
     val languageFlow: Flow<Locale?> = _languageFlow
