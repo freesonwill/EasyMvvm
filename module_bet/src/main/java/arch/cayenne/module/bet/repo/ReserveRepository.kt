@@ -40,6 +40,12 @@ class ReserveRepository(
                         }
                         selectionFlow.emit(selection)
                     }
+                } ?: run {
+                    comboFlow.emit(ComboMultiBetBean(
+                        sumOdds = selection.odds,
+                        minAmount = 0,
+                        maxAmount = 0
+                    ))
                 }
             }
         }

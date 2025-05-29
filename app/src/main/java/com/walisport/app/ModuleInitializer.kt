@@ -89,7 +89,7 @@ class ModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
-        factory { (scope: CoroutineScope) -> MainRepository(scope, get()) }
+        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)

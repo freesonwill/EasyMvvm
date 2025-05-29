@@ -2,12 +2,11 @@ package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
 import android.view.View
-import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import arch.cayenne.lib.base.ui._interface.IStatusBar
-import arch.cayenne.lib.base.utils.LogUtils
 
 
 /**

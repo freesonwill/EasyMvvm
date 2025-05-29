@@ -54,9 +54,9 @@ class MatchListPagerFragment :
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
-                override fun onOddsCellClick(item: MatchWithMarkets, selection: SelectionBeanLite) {
+                override fun onOddsCellClick(selection: SelectionBeanLite) {
                     lifecycleScope.launch {
-                        val status = mViewModel.setSelection(item.match.matchId, selection.selectionId)
+                        val status = mViewModel.setSelection(selection.selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {

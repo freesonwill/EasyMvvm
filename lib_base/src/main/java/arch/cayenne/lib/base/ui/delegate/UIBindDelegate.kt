@@ -64,9 +64,11 @@ class UIBindDelegate<UIOwner, VM, VB>(
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)
             uiOwner.initListener()
+            uiOwner.createObserver()
             uiOwner.initData()
+        } else {
+            uiOwner.createObserver()
         }
-        uiOwner.createObserver()
     }
 
     fun onDestroyView() {
@@ -87,7 +89,7 @@ class UIBindDelegate<UIOwner, VM, VB>(
             _viewModel = null
             destroyRunnable = null
         }
-        binding.root.post(destroyRunnable)
+        _binding?.root?.post(destroyRunnable)
     }
 
     /**

@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.data
+package arch.cayenne.lib.base.data.constants
 
 /**
  * @author: aquan
@@ -8,5 +8,5 @@ package arch.cayenne.lib.base.data
 enum class StatusBarMode {
     DEFAULT,         // 默认行为（状态栏下布局）
     FULLSCREEN,      // 全屏沉浸式，状态栏透明，内容顶到状态栏
-    DRAW_BEHIND      // 内容绘制在状态栏之下，但非真正沉浸（状态栏可见）
+    DRAW_BEHIND      // 布ie局顶到状态栏，布局内容自动padding到状态栏下面，图片沉浸式可用这个
 }

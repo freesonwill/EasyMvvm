@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.repo.BetSlipRepository
@@ -58,7 +60,9 @@ class BetSlipViewModel : BaseViewModel() {
     private val _isSupportEarlySettleLiveData = MutableLiveData<EarlySettlePrice>()
     val isSupportEarlySettleLiveData: LiveData<EarlySettlePrice> = _isSupportEarlySettleLiveData
 
-    val refreshLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
+    private val _state = MutableLiveData<Event<DynamicStateLayout.States>>()
+    val state: LiveData<Event<DynamicStateLayout.States>> = _state
 
     //选择的提前结算注单
     var selectOrder: Order? = null
@@ -74,16 +78,12 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
-            _orderLiveData.value = repository.getOrderReq(
-                status.value,
-                page,
-                pageSize,
-                sportId,
-                matchId,
-                startTime,
-                endTime
-            )?.toBetSlipData() ?: arrayListOf()
-            refreshLiveData.value = true
+            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let { result ->
+                _state.value = Event(DynamicStateLayout.States.NULL)
+                _orderLiveData.value = result.toBetSlipData()
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            }
         }
     }
 
@@ -92,10 +92,12 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getReserveOrder() {
         viewModelScope.launch {
-            _reserveLiveData.value =
-                repository.getReserveOrder(sportId, matchId, startTime, endTime)
-                    ?.map { BetSlipData(reserve = it) }?.toList() ?: arrayListOf()
-            refreshLiveData.value = true
+            repository.getReserveOrder(sportId, matchId, startTime, endTime)?.let { result ->
+                _state.value = Event(DynamicStateLayout.States.NULL)
+                _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            }
         }
     }
 
@@ -141,15 +143,8 @@ class BetSlipViewModel : BaseViewModel() {
             return
         }
         viewModelScope.launch {
-            repository.getOrderReq(
-                status.value,
-                page,
-                pageSize,
-                sportId,
-                matchId,
-                startTime,
-                endTime
-            )?.let { result ->
+            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let {  result ->
+                _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
                     page++
                     val newList = mutableListOf<BetSlipData>()
@@ -159,8 +154,9 @@ class BetSlipViewModel : BaseViewModel() {
                     newList.addAll(resultList)
                     _orderLiveData.value = newList
                 }
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
-            refreshLiveData.value = true
         }
     }
 

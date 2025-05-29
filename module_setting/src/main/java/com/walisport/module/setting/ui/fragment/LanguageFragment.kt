@@ -32,23 +32,28 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.languageSimple.clickNoRepeat {
             mViewModel.setLanguageType(LanguageType.LANGUAGE_SIMPLE)
         }
-        mBinding.languageTradition.clickNoRepeat {
-            mViewModel.setLanguageType(LanguageType.LANGUAGE_TRADITION)
-        }
         mBinding.languageEnglish.clickNoRepeat {
             mViewModel.setLanguageType(LanguageType.LANGUAGE_ENGLISH)
+        }
+        mBinding.languageIndonesian.clickNoRepeat {
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_ID)
+        }
+        mBinding.languagePortuguese.clickNoRepeat {
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_PT)
         }
     }
 
     private fun changeLanguageType(type: String) {
         if ("" == type) return
         mBinding.radioSimple.isSelected = false
-        mBinding.radioTraditional.isSelected = false
         mBinding.radioEnglish.isSelected = false
+        mBinding.radioIndonesian.isSelected = false
+        mBinding.radioPortuguese.isSelected = false
         when (type) {
             LanguageType.LANGUAGE_SIMPLE.value -> mBinding.radioSimple.isSelected = true
-            LanguageType.LANGUAGE_TRADITION.value -> mBinding.radioTraditional.isSelected = true
             LanguageType.LANGUAGE_ENGLISH.value -> mBinding.radioEnglish.isSelected = true
+            LanguageType.LANGUAGE_ID.value -> mBinding.radioIndonesian.isSelected = true
+            LanguageType.LANGUAGE_PT.value -> mBinding.radioPortuguese.isSelected = true
         }
     }
 

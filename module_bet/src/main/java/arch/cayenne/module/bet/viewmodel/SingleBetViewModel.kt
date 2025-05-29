@@ -14,7 +14,16 @@ import kotlinx.coroutines.launch
 
 class SingleBetViewModel(private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
-    private val _onBetSheetListener = MutableLiveData<BetSelectionBean>()
+    private val _onBetSheetListener = MediatorLiveData<BetSelectionBean>().apply {
+        addSource(onNumberLimit) { number ->
+            val min = number.first
+            val max = number.second
+
+            value?.let {
+                value = it.copy(isActive = max != 0L && min != 0L && originData!!.isActive)
+            }
+        }
+    }
     val onBetSheetListener: LiveData<BetSelectionBean> get() =  _onBetSheetListener
 
     private val _onBalanceListener = MutableLiveData<Long>()
@@ -41,12 +50,13 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         }
     }
     val onBetWinMoney: LiveData<String> get() = _onBetWinMoney
+    private var originData: BetSelectionBean? = null
 
     init {
         viewModelScope.launch {
             launch {
                 betRepo.observeSelectionBean().collect {
-                    _onBetSheetListener.value = it
+                    setBetSheet(it)
                 }
             }
             launch {
@@ -101,5 +111,15 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
 
     fun saveReserveOdds(odds: Int) {
         betRepo.saveReserve(odds)
+    }
+
+    private fun setBetSheet(bet: BetSelectionBean) {
+        originData = bet.copy()
+        val number = onNumberLimit.value
+        val min = number?.first ?: 0L
+        val max = number?.second ?: 0L
+
+        bet.isActive = max != 0L && min != 0L && bet.isActive
+        _onBetSheetListener.value = bet
     }
 }

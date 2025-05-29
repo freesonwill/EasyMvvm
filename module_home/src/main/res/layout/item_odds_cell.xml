@@ -7,17 +7,6 @@
     android:background="@drawable/selector_match_odds_cell"
     android:gravity="center"
     android:orientation="vertical">
-    <!-- 灰色遮罩 -->
-    <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/v_trend_highlight"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/odds_highlight_overlay"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"

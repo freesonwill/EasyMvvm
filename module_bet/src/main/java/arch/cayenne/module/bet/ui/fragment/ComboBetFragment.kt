@@ -89,6 +89,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
+        setBetSheetView()
     }
 
     override fun initListener() {
@@ -118,7 +119,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 dismiss()
             } else if (it.size > 1) {
                 betSelectionAdapter.submitList(it)
-                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive || bean.isParlay }
+                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
             } else {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),

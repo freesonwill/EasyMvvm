@@ -14,39 +14,47 @@
         app:srcCompat="@drawable/bg_left_arrow"
         tools:ignore="MissingConstraints" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_landscape_league_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="22dp"
-        android:layout_gravity="center_vertical"
-        android:scaleType="fitCenter"
-        />
-
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:layout_width="10dp"
-        android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_6"
-        android:src="@drawable/title_landscape_separator" />
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llcLeagueNameLogo"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:gravity="center_vertical"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_competition_name"
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_landscape_league_icon"
             android:layout_width="wrap_content"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitCenter"
+            />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:layout_width="10dp"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
+            android:src="@drawable/title_landscape_separator" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/title_bar_dow_icon"
-            android:drawablePadding="@dimen/dp_5"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/title_bar"
-            android:textSize="15sp"
-            tools:ignore="MissingConstraints" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:gravity="center_vertical"
+            android:layout_weight="1">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_competition_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@drawable/title_bar_dow_icon"
+                android:drawablePadding="@dimen/dp_5"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/title_bar"
+                android:textSize="15sp"
+                tools:ignore="MissingConstraints" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_money"

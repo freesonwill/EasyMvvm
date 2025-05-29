@@ -1,5 +1,6 @@
 package com.walisport.module.live.data
 
+import android.annotation.SuppressLint
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
@@ -87,8 +88,8 @@ class LiveMainRepository(
         remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
-    suspend fun unregisterStatisticsNotify() {
-        remoteManager.registerMatchStaticsNotify(scope, -1)
+    suspend fun unregisterStatisticsNotify(matchId: Long) {
+        remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
     suspend fun observeMatchStaticsNotify():Flow<Client.SubscribeMatchLiveResp> {

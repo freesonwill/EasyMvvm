@@ -21,7 +21,7 @@ class DynamicStateLayout @JvmOverloads constructor(
     enum class States {
         DATA_EMPTY,//数据为空
         NETWORK_ANOMALY,//网络异常
-        CLOSE,//关闭含,聊天,盘口
+        CLOSE,//关闭
         NULL,
     }
 

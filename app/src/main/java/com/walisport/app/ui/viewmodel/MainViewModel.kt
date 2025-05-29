@@ -14,6 +14,10 @@ import org.koin.core.component.inject
 class MainViewModel : BaseActivityViewModel() {
     private val repository : MainRepository by inject { parametersOf(viewModelScope) }
 
+    init {
+        repository.loadSportList()
+    }
+
     fun getSkinType():String{
         return repository.getSkinType()
     }

@@ -68,10 +68,12 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     false
                 }
+                var name =
+                    if (listIt.style == StatesArrange.BO_DIAN.code) listIt.name else listIt.shortName
                 viewBinding.lbBet.submitList(
                     StatesArrange.getStates(listIt.style),
                     index,
-                    listIt.shortName,
+                    name,
                     listIt.odds,
                     listIt.selectionId,
                     listIt.active,
@@ -142,6 +144,6 @@ class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
     }
 
     override fun areContentsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
-        return oldItem==newItem
+        return oldItem == newItem
     }
 }

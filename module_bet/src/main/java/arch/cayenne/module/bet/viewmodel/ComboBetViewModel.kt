@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -12,11 +13,19 @@ import kotlinx.coroutines.launch
 
 class ComboBetViewModel(private val repo: ComboBetRepository, private val balanceRepo: BalanceRepository) : BaseViewModel() {
 
-    private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
-    val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
-
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
+
+    private val _onBetListListener = MediatorLiveData<List<BetSelectionBean>>().apply {
+        addSource(_onComboMultiBetBeanListener) { comboList ->
+            if (comboList.isEmpty()) {
+                value = value?.map { selection ->
+                    selection.copy(isActive = false)
+                }
+            }
+        }
+    }
+    val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
     private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
@@ -32,11 +41,12 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
         viewModelScope.launch {
             launch {
                 repo.observeComboBet().collect {
-                    _onBetListListener.value = it
                     if (it.size <= 1) {
                         if (it.isNotEmpty()) {
                             repo.saveToSingleBet()
                         }
+                    } else {
+                        setBetList(it)
                     }
                 }
             }
@@ -105,5 +115,17 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
         onComboMultiBetBeanListener.value?.let {
             repo.saveInputMoney(it)
         }
+    }
+
+    private fun setBetList(betList: List<BetSelectionBean>) {
+        val comboList = _onComboMultiBetBeanListener.value
+
+        val updatedList = if (comboList != null && comboList.isEmpty()) {
+            betList.map { it.copy(isActive = false) }
+        } else {
+            betList
+        }
+
+        _onBetListListener.value = updatedList
     }
 }

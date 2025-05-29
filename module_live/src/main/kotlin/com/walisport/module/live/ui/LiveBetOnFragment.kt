@@ -48,7 +48,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun initData() {
-        mViewModel.observerSelectionComboByMatchId(mainViewModel.matchId)
         super.initData()
     }
 
@@ -61,7 +60,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
                 override fun itemListCallback(marketI: Long, selectionId: Long) {
                     lifecycleScope.launch {
-                        val status = mViewModel.setSelection(mainViewModel.matchId, selectionId)
+                        val status = mainViewModel.matchId.value?.let { mViewModel.setSelection(it, selectionId) }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {
@@ -116,6 +115,12 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            tabList.clear()
+            tabPosition = mutableListOf(0, 0)
+            selectionComboId = null
+            mViewModel.observerSelectionComboByMatchId(it)
+        }
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it != null) {
@@ -126,7 +131,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBinding.clDynamics.setVisibilityGone()
                 }
             }
-            mViewModel.getMarketType(mainViewModel.matchId)
+            mViewModel.getMarketType(it.matchId)
         }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             LogUtils.e("marketTypeData${list}")

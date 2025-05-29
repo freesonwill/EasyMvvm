@@ -1,9 +1,11 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -85,6 +87,20 @@ class BetSlipReserveFragment :
             if (it) {
                 mViewModel.getReserveOrder()
             }
+        }
+    }
+
+    override fun updateState(state: DynamicStateLayout.States) {
+        if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
+            mBinding.recyclerView.isVisible = false
+            mBinding.emptyState.isVisible = true
+            mBinding.emptyState.setState(state, getString(arch.cayenne.lib.common.R.string.error_net)
+            ) {
+                mViewModel.loadData(getBetSlipEnum())
+            }
+        } else {
+            mBinding.recyclerView.isVisible = true
+            mBinding.emptyState.isVisible = false
         }
     }
 

@@ -3,8 +3,8 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.data.StatusBarMode
-import arch.cayenne.lib.base.data.model.SkinType
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
@@ -24,14 +24,15 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
 
     override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
     override val vmClass: KClass<BackgroundViewModel> = BackgroundViewModel::class
-    private var skinType: String = "CLASSIC"
-    private var defaultImmColor :Int = 0
-    private var immColor :Int = 0
+    private var skinType: String = ""
+    private var defaultImmColor: Int = 0
+    private var immColor: Int = 0
     override fun initView(savedInstanceState: Bundle?) {
-        defaultImmColor =getStatusBarColor()
+        defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinData()
         changeSkinType(skinType)
-        val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        val binding =
+            TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
         binding.barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
@@ -47,49 +48,57 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
-        setStatusBar(StatusBarConfig,mBinding.root)
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
     }
 
+    //接口中的背景参数 0-经典 1-黑蓝 2-黑绿 3-黑红 4-白蓝 5-白绿
     override fun initListener() {
         mBinding.layClassic.clickNoRepeat {
             skinType = SkinType.SKIN_CLASSIC.value
             mViewModel.setSkinType(SkinType.SKIN_CLASSIC)
+            mViewModel.updateBackgroundSetting(0)
             setImmColor(SkinType.SKIN_CLASSIC.value)
         }
         mBinding.layBlackBlue.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_BLUE)
+            mViewModel.updateBackgroundSetting(1)
             setImmColor(SkinType.SKIN_BLACK_BLUE.value)
-        }
-        mBinding.layBlackRed.clickNoRepeat {
-            skinType = SkinType.SKIN_BLACK_RED.value
-            mViewModel.setSkinType(SkinType.SKIN_BLACK_RED)
-            setImmColor(SkinType.SKIN_BLACK_RED.value)
         }
         mBinding.layBlackGreen.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_GREEN.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_GREEN)
+            mViewModel.updateBackgroundSetting(2)
             setImmColor(SkinType.SKIN_BLACK_GREEN.value)
         }
-        mBinding.layWhiteGreen.clickNoRepeat {
-            skinType = SkinType.SKIN_WHITE_GREEN.value
-            mViewModel.setSkinType(SkinType.SKIN_WHITE_GREEN)
-            setImmColor(SkinType.SKIN_WHITE_GREEN.value)
+        mBinding.layBlackRed.clickNoRepeat {
+            skinType = SkinType.SKIN_BLACK_RED.value
+            mViewModel.setSkinType(SkinType.SKIN_BLACK_RED)
+            mViewModel.updateBackgroundSetting(3)
+            setImmColor(SkinType.SKIN_BLACK_RED.value)
         }
         mBinding.layWhiteBlue.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_WHITE_BLUE)
+            mViewModel.updateBackgroundSetting(4)
             setImmColor(SkinType.SKIN_WHITE_BLUE.value)
         }
+        mBinding.layWhiteGreen.clickNoRepeat {
+            skinType = SkinType.SKIN_WHITE_GREEN.value
+            mViewModel.setSkinType(SkinType.SKIN_WHITE_GREEN)
+            mViewModel.updateBackgroundSetting(5)
+            setImmColor(SkinType.SKIN_WHITE_GREEN.value)
+        }
     }
-    private fun setImmColor(type: String){
+
+    private fun setImmColor(type: String) {
         immColor = immersionBarColorExt(type)
-        StatusBarConfig.statusBarColor =immColor
-        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
-        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(skinType)
-        setStatusBar(StatusBarConfig,mBinding.root)
+        StatusBarConfig.statusBarColor = immColor
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 
     override fun createObserver() {
@@ -99,7 +108,8 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     }
 
     private fun changeSkinType(type: String) {
-        if ("" == type) return
+        if ("" == type)
+            return
         mBinding.radioClassic.isSelected = false
         mBinding.radioBlackBlue.isSelected = false
         mBinding.radioBlackRed.isSelected = false
@@ -118,9 +128,9 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
 
     override fun onDestroy() {
         super.onDestroy()
-        StatusBarConfig.statusBarColor =defaultImmColor
-        StatusBarConfig.statusBarDarkFont =  immersionBarSkinTypeExt(mViewModel.getSkinData())
-        StatusBarConfig.statusBarType =StatusBarMode.DRAW_BEHIND
-        setStatusBar(StatusBarConfig,mBinding.root)
+        StatusBarConfig.statusBarColor = defaultImmColor
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinData())
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 }

@@ -65,9 +65,7 @@ class ComboBetRepository(
             }
             comboMultiBetFlow.emit(multiBet)
         } ?: run {
-            val emptyData = listOf(ComboRiskDataModel(1, 0, 0))
-            val multiBet = calculateMultiBetSums(data, emptyData)
-            comboMultiBetFlow.emit(multiBet)
+            comboMultiBetFlow.emit(emptyList())
         }
     }
 

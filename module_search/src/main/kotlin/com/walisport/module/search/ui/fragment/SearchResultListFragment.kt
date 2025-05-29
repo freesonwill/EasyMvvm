@@ -41,8 +41,12 @@ class SearchResultListFragment :
                     else -> ""
                 }
             }.attach()
-            tlSearch.getTabAt(0)?.select()
+            switchTab(0, false)
         }
+    }
+
+    fun switchTab(position: Int, isSmooth: Boolean = true) {
+        mBinding.viewPager.setCurrentItem(position, isSmooth)
     }
 
     override fun initListener() {

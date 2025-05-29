@@ -1,6 +1,6 @@
 package arch.cayenne.lib.base.data.model
 
-import arch.cayenne.lib.base.data.StatusBarMode
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 
 
 /**

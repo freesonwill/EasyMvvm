@@ -3,10 +3,8 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import arch.cayenne.lib.base.data.StatusBarMode
-import arch.cayenne.lib.base.data.model.SkinType
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.common.data.constants.UserDataKey
 import com.walisport.app.R
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.view.BetResultToastView

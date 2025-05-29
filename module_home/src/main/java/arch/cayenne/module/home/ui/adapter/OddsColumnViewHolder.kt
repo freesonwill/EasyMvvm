@@ -7,13 +7,13 @@ import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 
 class OddsColumnViewHolder(
     mBinding: ItemOddsColumnBinding,
-    onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseViewHolder(mBinding) {
 
     private val oddsCells = listOf(
-        OddsCellViewHolder(mBinding.itemOddsCell1, onOddsClick),
-        OddsCellViewHolder(mBinding.itemOddsCell2, onOddsClick),
-        OddsCellViewHolder(mBinding.itemOddsCell3, onOddsClick)
+        OddsCellViewHolder(mBinding.itemOddsCell1, onMatchItemClickListener),
+        OddsCellViewHolder(mBinding.itemOddsCell2, onMatchItemClickListener),
+        OddsCellViewHolder(mBinding.itemOddsCell3, onMatchItemClickListener)
     )
 
     fun bind(market: MarketBeanLite, selections: List<SelectionBeanLite>) {
@@ -60,7 +60,6 @@ class OddsColumnViewHolder(
                 if ("parlay" in changes) individualChanges.add("parlay")
                 if ("isSelected" in changes) individualChanges.add("isSelected")
                 if ("trend" in changes) individualChanges.add("trend")
-
                 if (individualChanges.isNotEmpty()) {
                     cell.bindPayload(selection, listOf(individualChanges))
                 } else {

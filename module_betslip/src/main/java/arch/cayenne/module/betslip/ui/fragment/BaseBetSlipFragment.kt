@@ -5,6 +5,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
 import arch.cayenne.module.betslip.R
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
@@ -36,10 +37,11 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
                 mViewModel.loadData(getBetSlipEnum())
             }
         }
-        mViewModel.refreshLiveData.observe(viewLifecycleOwner){
-            val refresh:PullRefreshLayout = mBinding.root.findViewById(R.id.refreshLayout)
-            refresh.finishRefresh()
-            refresh.finishLoadMore()
+        mViewModel.state.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled(viewLifecycleOwner)?.let { states ->
+                updateState(states)
+            }
+
         }
     }
 
@@ -51,4 +53,6 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
             mViewModel.loadData(getBetSlipEnum())
         }
     }
+
+    abstract fun updateState(state: DynamicStateLayout.States)
 }

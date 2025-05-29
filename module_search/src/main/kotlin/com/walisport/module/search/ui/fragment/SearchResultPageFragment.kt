@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
+import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
 import com.walisport.module.search.data.model.SearchResultTeamBeanBean
@@ -40,6 +41,16 @@ class SearchResultPageFragment :
     private val gridAdapter by lazy {
         SearchResultPageGridAdapter().apply {
             onItemClick = this@SearchResultPageFragment.onItemClick
+            onMoreClick = { type ->
+                (requireParentFragment() as SearchResultListFragment).switchTab(
+                    when (type) {
+                        SearchResultTypeEnum.TOURNAMENT -> 1
+                        SearchResultTypeEnum.TEAM -> 2
+                        SearchResultTypeEnum.PLAYER -> 3
+                        else -> 0
+                    }
+                )
+            }
         }
     }
 
@@ -92,29 +103,33 @@ class SearchResultPageFragment :
                             marginStart = 21.dp2px
                             marginEnd = 21.dp2px
                         }
-                        addItemDecoration(object : ItemDecoration() {
-                            override fun getItemOffsets(
-                                outRect: android.graphics.Rect,
-                                view: View,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val position = parent.getChildAdapterPosition(view)
-                                when (gridAdapter.getItemViewType(position)) {
-                                    SearchResultPageGridAdapter.VIEW_TYPE_HEADER -> {
-                                        outRect.set(0, 12.dp2px, 0, 12.dp2px)
-                                    }
+                        if (itemDecorationCount == 0) {
+                            addItemDecoration(object : ItemDecoration() {
+                                override fun getItemOffsets(
+                                    outRect: android.graphics.Rect,
+                                    view: View,
+                                    parent: RecyclerView,
+                                    state: RecyclerView.State
+                                ) {
+                                    val position = parent.getChildAdapterPosition(view)
+                                    if (position == RecyclerView.NO_POSITION) return
 
-                                    else -> {
-                                        outRect.right =
-                                            if (position % spanCount == 0 || position % spanCount == 1) 12.dp2px else 0
-                                        outRect.bottom = 12.dp2px
+                                    when (gridAdapter.getItemViewType(position)) {
+                                        SearchResultPageGridAdapter.VIEW_TYPE_HEADER -> {
+                                            outRect.set(0, 12.dp2px, 0, 12.dp2px)
+                                        }
+
+                                        else -> {
+                                            outRect.right =
+                                                if (position % spanCount == 0 || position % spanCount == 1) 12.dp2px else 0
+                                            outRect.bottom = 12.dp2px
+                                        }
                                     }
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
-                    gridAdapter.submitList(groupData.value)
+                    gridAdapter.submitList(getLimitGroupSearResults(groupData.value))
                 } else {
                     val source = groupData.value.filterIsInstance<SearchResultListItemType.Item>().map { it.data }
                     val list = when (getType()) {

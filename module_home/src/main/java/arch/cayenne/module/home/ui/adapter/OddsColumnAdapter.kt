@@ -9,10 +9,11 @@ import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
 import arch.cayenne.module.home.ui.adapter.compare.OddsDiffCallback
 
 class OddsColumnAdapter(
-    private val onOddsClick: (SelectionBeanLite, Boolean) -> Unit
+    private val onMatchItemClickListener: OnMatchItemClickListener?
 ) : BaseAdapter<Pair<MarketBeanLite, List<SelectionBeanLite>>, OddsColumnViewHolder, ItemOddsColumnBinding>(
     OddsDiffCallback()
 ) {
+    var onOddsClick: ((SelectionBeanLite, Boolean) -> Unit)? = null
     override fun convertPlus(
         holder: OddsColumnViewHolder,
         binding: ItemOddsColumnBinding,
@@ -34,7 +35,7 @@ class OddsColumnAdapter(
         binding: ItemOddsColumnBinding,
         viewType: Int
     ): OddsColumnViewHolder {
-        return OddsColumnViewHolder(binding, onOddsClick)
+        return OddsColumnViewHolder(binding, onMatchItemClickListener)
     }
 
     override fun onBindViewHolder(
