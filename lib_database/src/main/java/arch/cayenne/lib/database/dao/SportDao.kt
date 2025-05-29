@@ -2,8 +2,10 @@ package arch.cayenne.lib.database.dao
 
 import androidx.room.Dao
 import androidx.room.Query
+import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportDataModel
+import arch.cayenne.lib.database.entity.SportLiteBean
 
 @Dao
 abstract class SportDao : BaseDao<SportBean>() {
@@ -17,15 +19,15 @@ abstract class SportDao : BaseDao<SportBean>() {
 //    abstract fun querySportsMatchCount(playType: Int): List<PlayTypeSportCrossRef>
 
     @Query("SELECT bean.sportId as id, bean.matchCount as matchCount, bean.sportOrder as `order` " +
-            "FROM SportBean bean order by sportOrder")
-    abstract fun querySportsMatchCount(): List<SportDataModel>
+            "FROM SportBean bean WHERE bean.type = :type order by sportOrder")
+    abstract fun querySportsMatchCount(type: ShowType = ShowType.HOME): List<SportDataModel>
 
-    @Query("DELETE FROM SportBean")
-    abstract fun clearSports()
+    @Query("DELETE FROM SportBean WHERE type = :type")
+    abstract fun clearSports(type: ShowType = ShowType.HOME)
 
-    @Query("SELECT * FROM SportBean")
-    abstract fun getAllSports(): List<SportBean>
+    @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")
+    abstract fun getAllSports(type: ShowType = ShowType.ALL): List<SportLiteBean>
 
-    @Query("SELECT * FROM SportBean WHERE sportId = :id")
-    abstract fun getSportById(id: Int): SportBean?
+    @Query("SELECT sportId, sportName FROM SportBean WHERE sportId = :id and type = :type")
+    abstract fun getSportById(id: Int, type: ShowType = ShowType.ALL): SportLiteBean?
 }

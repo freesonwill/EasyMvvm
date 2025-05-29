@@ -2,12 +2,23 @@ package arch.cayenne.lib.database.entity
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["sportId"])
+@Entity(primaryKeys = ["sportId", "type"])
 data class SportBean(
     val sportId: Int,
     val sportName: String,
     val matchCount: Int,
-    val sportOrder: Int
+    val sportOrder: Int,
+    val type: ShowType
+)
+
+enum class ShowType {
+    ALL,
+    HOME,
+}
+
+data class SportLiteBean(
+    val sportId: Int,
+    val sportName: String,
 )
 
 //@Entity(primaryKeys = ["playType","sportId"])

@@ -17,7 +17,7 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
 
     init {
         viewModelScope.launch {
-            val sports = repo.getSportList()
+            val sports = repo.getAllSports()
             _onSportListener.value = sports
 
             // 如果初始化之前有選取請求，就處理它
