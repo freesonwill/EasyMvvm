@@ -1,15 +1,10 @@
 package arch.cayenne.module.betslip.ui.dialog
 
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.Gravity
-import android.view.ViewTreeObserver
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -26,7 +21,7 @@ import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
  * 提前结算报价
  * */
 class BetSlipEarlySettledFragment private constructor() :
-    BaseDialogFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
+    BaseBottomSheetFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
     private val betIdKey = "bet_id"
     private val betAmountKey = "bet_amount"
 
@@ -103,31 +98,6 @@ class BetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setDialogPosition()
-    }
-
-    override val dialogBackground: Drawable?
-        get() = ColorDrawable(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.black_65))
-
-    private fun setDialogPosition() {
-        dialog?.setCanceledOnTouchOutside(true)
-        dialog?.window?.apply {
-            mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    val layoutParams = attributes
-                    layoutParams.width = resources.displayMetrics.widthPixels
-                    layoutParams.height = resources.displayMetrics.heightPixels
-                    layoutParams.gravity = Gravity.BOTTOM
-                    attributes = layoutParams
-                }
-            })
-        }
-    }
-
     private fun initTab(tabLayout: SkinnableTabLayout) {
         val array = resources.getStringArray(R.array.keyboard_percent)
         array.forEach { text ->
@@ -139,8 +109,7 @@ class BetSlipEarlySettledFragment private constructor() :
         reflexPadding(tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val position = tab?.position
-                val value: Double = when (position) {
+                val value: Double = when (tab?.position) {
                     0 -> 1.0
                     1 -> 0.25
                     2 -> 0.5
@@ -191,8 +160,8 @@ class BetSlipEarlySettledFragment private constructor() :
         }
         mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
             mBinding.tvBetMoney.text = getString(
-                R.string.refund_amount, it
-            )
+                R.string.refund_amount
+            ).format(it)
         }
     }
 }
