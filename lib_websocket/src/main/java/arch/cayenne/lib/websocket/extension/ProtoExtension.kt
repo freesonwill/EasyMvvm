@@ -9,6 +9,7 @@ import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 import arch.cayenne.lib.websocket.data.SocketResponseData
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import com.google.protobuf.GeneratedMessageLite
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
@@ -71,12 +72,22 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
     }
-    send(request.invoke().asRemoteRequest(apiCode, rid))
-    return deferred.await() ?: SocketResponseData(
-        mid = apiCode.mid,
-        sid = apiCode.sid,
-        rid = rid,
-        data = null,
-        error = ResponseTimeOutError()
-    )
+    val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
+    return if (errorRes != null && errorRes is SocketResponseError) {
+        SocketResponseData(
+            mid = apiCode.mid,
+            sid = apiCode.sid,
+            rid = rid,
+            data = null,
+            error = errorRes
+        )
+    } else {
+        deferred.await() ?: SocketResponseData(
+            mid = apiCode.mid,
+            sid = apiCode.sid,
+            rid = rid,
+            data = null,
+            error = ResponseTimeOutError()
+        )
+    }
 }

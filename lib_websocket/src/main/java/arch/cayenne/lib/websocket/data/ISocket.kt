@@ -10,7 +10,7 @@ interface ISocket<REQ, RES, State> {
 
     fun reconnect()
 
-    fun send(data : REQ)
+    fun send(data : REQ): RES?
 
     //socket收到的後端資料
     fun responseObserve() : SharedFlow<RES>

@@ -68,4 +68,10 @@ data class LoginTokenFailedError(
     override val msg: String = "no token or uid data!!"
 ) : SocketResponseError
 
+data class InvalidNetworkError(
+    override val msg: String = "Network is not available, please check your connection!"
+) : IResponse, SocketResponseError
 
+data class InvalidEncryptDataError(
+    override val msg: String = "Invalid encrypted data, decryption failed!"
+) : IResponse, SocketResponseError
