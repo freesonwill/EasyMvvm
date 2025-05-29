@@ -254,6 +254,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
             }
 
+            homeHistoryVs.observe(viewLifecycleOwner) {
+//                "homeList:$it".logd("scoreIssue")
+                mBinding.includedMatchNotInProgress.homeHistory.setData(it)
+            }
+
             awayTeamName.observe(viewLifecycleOwner) {
                 it?.let { mBinding.includedMatchNotInProgress.tvAwayTeam.text = it }
             }
@@ -266,6 +271,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
                 }
+            }
+
+            awayHistoryVs.observe(viewLifecycleOwner) {
+//                "awayList:$it".logd("scoreIssue")
+                mBinding.includedMatchNotInProgress.awayHistory.setData(it)
             }
 
             titleText.observe(viewLifecycleOwner) {
@@ -347,7 +357,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     /**
      * 隐藏底部操作栏
      */
-    private fun hideButtonsAnimated(){
+    private fun hideButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
@@ -369,7 +379,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     /**
      * 展示底部操作栏
      */
-    private fun showButtonsAnimated(){
+    private fun showButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
