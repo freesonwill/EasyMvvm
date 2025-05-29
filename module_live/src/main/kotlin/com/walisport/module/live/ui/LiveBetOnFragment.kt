@@ -116,6 +116,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
         mainViewModel.matchId.observe(viewLifecycleOwner){
+            tabList.clear()
+            tabPosition = mutableListOf(0, 0)
+            selectionComboId = null
             mViewModel.observerSelectionComboByMatchId(it)
         }
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
