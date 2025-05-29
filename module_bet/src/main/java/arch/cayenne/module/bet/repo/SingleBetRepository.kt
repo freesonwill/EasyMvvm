@@ -57,6 +57,12 @@ class SingleBetRepository(
                 }
                 comboFlow.emit(detailBean)
             }
+        } ?: run {
+            comboFlow.emit(ComboMultiBetBean(
+                sumOdds = selection.odds,
+                minAmount = 0,
+                maxAmount = 0
+            ))
         }
     }
 
