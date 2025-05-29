@@ -1,10 +1,12 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -57,10 +59,10 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, price.toString(), order.earlyBetAmount
                 )
-                BetSlipEarlySettledFragment.instance(it.betId, money.toDouble()).apply {
-                    setOnEarlySettleListener { betId, money ->
+                BetSlipEarlySettledFragment.instance(money.toMoney()).apply {
+                    setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
-                            betId,
+                            it.betId,
                             money.toString(),
                             mViewModel.earlySettlePriceLiveData.value?.price ?: "0"
                         )

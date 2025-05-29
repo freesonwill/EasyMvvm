@@ -11,6 +11,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     private val _onEditNumber = MutableLiveData("")
     val onEditNumber: LiveData<String> get() =  _onEditNumber
 
+    val editValue: String get() = _onEditNumber.value.orEmpty()
 
     private val _onNumberLimit = MutableLiveData<Pair<Long, Long>>(Pair(0, 0))
     /***
@@ -22,8 +23,8 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     private val _onOverNumberListener = MutableLiveData(NumberOverEnum.DEFAULT)
     val onOverNumberListener: LiveData<NumberOverEnum> get() = _onOverNumberListener
 
-    private val mixMoney: Long get() = onNumberLimit.value?.first ?: 0
-    private val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
+    val mixMoney: Long get() = onNumberLimit.value?.first ?: 0
+    val maxMoney: Long get() = onNumberLimit.value?.second ?: Long.MAX_VALUE
     private var remainingNumber: Long = Long.MAX_VALUE
 
     fun addNumber(number: Int) {

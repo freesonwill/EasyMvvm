@@ -8,13 +8,14 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
-import com.google.android.material.tabs.TabLayout
-import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentEarlySettledNumberKeyboardBinding
 import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
+import com.google.android.material.tabs.TabLayout
+import kotlin.reflect.KClass
 
 
 /**
@@ -22,18 +23,16 @@ import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
  * */
 class BetSlipEarlySettledFragment private constructor() :
     BaseBottomSheetFragment<EarlySettledKeyboardViewModel, FragmentEarlySettledNumberKeyboardBinding>() {
-    private val betIdKey = "bet_id"
-    private val betAmountKey = "bet_amount"
 
     companion object {
+        private const val BET_AMOUNT_MONEY = "bet_amount_money"
+
         fun instance(
-            betId: String,
-            money: Double,
+            money: Long,
         ): BetSlipEarlySettledFragment {
             return BetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
-                    putString(betIdKey, betId)
-                    putDouble(betAmountKey, money)
+                    putLong(BET_AMOUNT_MONEY, money)
                 }
             }
         }
@@ -43,16 +42,13 @@ class BetSlipEarlySettledFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<EarlySettledKeyboardViewModel>
         get() = EarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((betId: String, money: Double) -> Unit)? = null
+    private var onEarlySettleClick: ((money: Long) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        val betId = arguments?.getString(betIdKey) ?: ""
-        val betAmount = arguments?.getDouble(betAmountKey) ?: 0.0
-        mViewModel.setArguments(betId, betAmount)
 
         with(mBinding) {
             initTab(tabLayout = llTab)
-            ViewUtils.hideKeyboard(requireContext(), etMoney){v ->
+            ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
                 if (!mBinding.groupKeyboard.isVisible) {
                     mBinding.groupKeyboard.isVisible = true
                 }
@@ -69,32 +65,13 @@ class BetSlipEarlySettledFragment private constructor() :
                 }
 
                 override fun onOtherClick() {
-                    mViewModel.setNumber(5000)
+                    mViewModel.setMaxMoney()
                 }
 
                 override fun getOtherText(): String {
-                    mViewModel.setPercentNumber(1.0)
                     return ContextCompat.getString(requireContext(), R.string.keyboard_max)
                 }
             })
-            btn100.setOnClickListener { mViewModel.setNumber(100) }
-            btn500.setOnClickListener { mViewModel.setNumber(500) }
-            btn2000.setOnClickListener { mViewModel.setNumber(2000) }
-            btn5000.setOnClickListener { mViewModel.setNumber(5000) }
-            btnBack.setOnClickListener { mViewModel.backNumber() }
-            btnClear.setOnClickListener { mViewModel.clearNumber() }
-            btnDouble.setOnClickListener { mViewModel.doubleNumber() }
-            btnCollapse.setOnClickListener {
-                mBinding.groupKeyboard.isVisible = false
-            }
-            btnPartSettle.clickNoRepeat {
-                onEarlySettleClick?.invoke(
-                    mViewModel.betId,
-                    mViewModel.earlySettlePriceLiveData.value ?: 0.0
-                )
-                dismiss()
-            }
-            btnCancel.setOnClickListener { dismiss() }
         }
     }
 
@@ -109,12 +86,12 @@ class BetSlipEarlySettledFragment private constructor() :
         reflexPadding(tabLayout)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                val value: Double = when (tab?.position) {
-                    0 -> 1.0
-                    1 -> 0.25
-                    2 -> 0.5
-                    3 -> 0.75
-                    else -> 0.0
+                val value: Int = when (tab?.position) {
+                    0 -> 100
+                    1 -> 25
+                    2 -> 50
+                    3 -> 75
+                    else -> 100
                 }
                 mViewModel.setPercentNumber(value)
             }
@@ -146,22 +123,49 @@ class BetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    override fun initListener() {
+    override fun initData() {
+        super.initData()
+        val betAmount = arguments?.getLong(BET_AMOUNT_MONEY) ?: 0L
+        mViewModel.setAmountMoney(betAmount)
     }
 
-    fun setOnEarlySettleListener(listener: (betId: String, money: Double) -> Unit) {
+    override fun initListener() {
+        mBinding.apply {
+            btn100.setOnClickListener { mViewModel.setNumber(10000) }
+            btn500.setOnClickListener { mViewModel.setNumber(50000) }
+            btn2000.setOnClickListener { mViewModel.setNumber(200000) }
+            btn5000.setOnClickListener { mViewModel.setNumber(500000) }
+            btnBack.setOnClickListener { mViewModel.backNumber() }
+            btnClear.setOnClickListener { mViewModel.clearNumber() }
+            btnDouble.setOnClickListener { mViewModel.doubleNumber() }
+            btnCollapse.setOnClickListener {
+                mBinding.groupKeyboard.isVisible = false
+            }
+            btnPartSettle.clickNoRepeat {
+                onEarlySettleClick?.invoke(
+                    mViewModel.editValue.toMoney()
+                )
+                dismiss()
+            }
+            btnCancel.setOnClickListener { dismiss() }
+        }
+    }
+
+    fun setOnEarlySettleListener(listener: (money: Long) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
     override fun createObserver() {
-        mViewModel.editNumber.observe(viewLifecycleOwner) {
+        mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
-            mBinding.etMoney.setSelection(it.length)
-        }
-        mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
+            val length = it.length
+            mBinding.etMoney.setSelection(length)
+            val money = it.ifEmpty {
+                "0"
+            }
             mBinding.tvBetMoney.text = getString(
                 R.string.refund_amount
-            ).format(it)
+            ).format(money)
         }
     }
 }
