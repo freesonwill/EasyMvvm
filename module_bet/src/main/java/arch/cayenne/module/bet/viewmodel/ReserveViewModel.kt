@@ -15,7 +15,16 @@ import kotlinx.coroutines.launch
 
 class ReserveViewModel(private val repo: ReserveRepository, private val singleRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
 
-    private val _onReserveSheetListener = MutableLiveData<BetSelectionBean>()
+    private val _onReserveSheetListener = MediatorLiveData<BetSelectionBean>().apply {
+        addSource(onNumberLimit) { number ->
+            val min = number.first
+            val max = number.second
+
+            value?.let {
+                value = it.copy(isActive = max != 0L && min != 0L && originData!!.isActive)
+            }
+        }
+    }
     val onReserveSheetListener: LiveData<BetSelectionBean> get() =  _onReserveSheetListener
 
     private val _onOddsListener = MutableLiveData<Int>()
@@ -25,6 +34,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val odds: Int get() = _onOddsListener.value ?: 1
+    private var originData: BetSelectionBean? = null
 
     private val _onReserveWinMoney = MediatorLiveData<String>().apply {
         addSource(onEditNumber) {
@@ -53,7 +63,7 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
             }
             launch {
                 repo.observeSelectionBean().collect {
-                    _onReserveSheetListener.value = it
+                    setBetSheet(it)
                 }
             }
             launch {
@@ -98,5 +108,15 @@ class ReserveViewModel(private val repo: ReserveRepository, private val singleRe
     fun sendReserve() {
         val money = onEditNumber.value?.toMoney() ?: return
         return repo.sendReserve(money)
+    }
+
+    private fun setBetSheet(bet: BetSelectionBean) {
+        originData = bet
+        val number = onNumberLimit.value
+        val min = number?.first ?: 0L
+        val max = number?.second ?: 0L
+
+        bet.isActive = max != 0L && min != 0L
+        _onReserveSheetListener.value = bet
     }
 }
