@@ -41,13 +41,17 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     private var isSubstitutes: Boolean = false
 
     override fun initView(savedInstanceState: Bundle?) {
-        mViewModel.geMatchLineupDetail(mainViewModel.matchId)
+
     }
 
     override fun initListener() {
     }
 
     override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            mViewModel.geMatchLineupDetail(it)
+        }
         mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
             it?.let {
                 mBinding.main.setVisibilityGone()
@@ -68,6 +72,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 )
             }
         }
+        //监听比赛详情数据
         mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 mBinding.homeSubstituteName.text = it.basicInfo.homeTeam

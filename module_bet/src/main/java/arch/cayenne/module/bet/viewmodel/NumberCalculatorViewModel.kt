@@ -102,7 +102,11 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     }
 
     fun setNumberLimit(min: Long, max: Long) {
-        _onNumberLimit.value = Pair(min, max)
+        if (min > max) {
+            _onNumberLimit.value = Pair(max, min)
+        } else {
+            _onNumberLimit.value = Pair(min, max)
+        }
     }
 
     fun setRemainingNumber(number: Long) {

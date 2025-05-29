@@ -40,35 +40,34 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
+        mViewModel.setMatchId(args.matchId)
+        mViewModel.setSportId(args.sportId)
         setVideoView()
         loadFragment()
-        mViewModel.matchId = args.matchId
-        mViewModel.sportId = args.sportId
     }
 
     override fun initListener() {
         with(titleBarBinding) {
             ivBack.clickNoRepeat { findNavController().navigateUp() }
-            tvCompetitionName.clickNoRepeat {
+            llcLeagueNameLogo.clickNoRepeat {
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
                         .apply {
-                            arguments.putLong("matchID", mViewModel.matchId)
-                            arguments.putInt("leagueID", mViewModel.leagueID)
-                            arguments.putString("leagueName", mViewModel.leagueName)
-                            arguments.putString("leagueLogo", mViewModel.leagueLogo)
+                            mViewModel.matchId.value?.let { value ->
+                                arguments.putLong(
+                                    "matchID",
+                                    value
+                                )
+                            }
+                            mViewModel.leagueID.value?.let { value ->
+                                arguments.putInt(
+                                    "leagueID",
+                                    value
+                                )
+                            }
+                            arguments.putString("leagueName", mViewModel.leagueName.value)
+                            arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
                         })
-            }
-            ivLandscapeLeagueIcon.clickNoRepeat {
-                navigate(
-                    LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply {
-                            arguments.putLong("matchID", mViewModel.matchId)
-                            arguments.putInt("leagueID", mViewModel.leagueID)
-                            arguments.putString("leagueName", mViewModel.leagueName)
-                            arguments.putString("leagueLogo", mViewModel.leagueLogo)
-                        }
-                )
             }
         }
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -80,34 +79,60 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
+        //根据matchId变动进行数据刷新
+        mViewModel.matchId.observe(viewLifecycleOwner) {
+            mViewModel.clearAllMatch()
+            mViewModel.getMainMatch(it)
+            mViewModel.observeMatchBean(it)
+            mViewModel.registerMatchInfoNotify(it)
+            mViewModel.registerStatisticsNotify(123456L)
+            mViewModel.observeMatchStaticsNotify()
+        }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "¥ ${it.getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
-                mViewModel.leagueID = it.basicInfo.tournamentId      //联赛ID
-                mViewModel.leagueName = it.basicInfo.tournamentName  //联赛名称
-                mViewModel.leagueLogo = it.basicInfo.tournamentIcon  //联赛LOGO
-                Glide.with(this).load(mViewModel.leagueLogo)
+                mViewModel.setLeagueID(it.basicInfo.tournamentId)    //联赛ID
+                mViewModel.setLeagueName(it.basicInfo.tournamentName)  //联赛名称
+                mViewModel.setLeagueLogo(it.basicInfo.tournamentIcon) //联赛LOGO
+                Glide.with(this).load(mViewModel.leagueLogo.value)
                     .error(R.drawable.title_league_icon).into(titleBarBinding.ivLandscapeLeagueIcon)
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
             }
         }
     }
 
+
+    //比赛ID发生变化,取消订阅,数据请空
+    private fun updateMatchId(matchId: Long) {
+        mViewModel.matchId.value?.let {
+            deleteDataAndSubscriptions(matchId)
+            mViewModel.setMatchId(matchId)
+        }
+    }
+
+    private fun deleteDataAndSubscriptions(matchId: Long) {
+        mViewModel.unregisterStatisticsNotify(matchId)
+        mViewModel.unregisterMatchInfoNotify(matchId)
+        mViewModel.clearAllMatch()
+    }
+
     override fun initData() {
         super.initData()
-        mViewModel.getMainMatch(mViewModel.matchId)
-        mViewModel.observeMatchBean(mViewModel.matchId)
-        mViewModel.registerMatchInfoNotify(mViewModel.matchId)
-        mViewModel.registerStatisticsNotify(123456L)
-        mViewModel.observeMatchStaticsNotify()
     }
 
     private fun setVideoView() {
         childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG) as? LiveVideoFragment
             ?: LiveVideoFragment().also {
-                it.arguments = Bundle().apply { putLong("matchId", args.matchId) }
+                it.arguments = Bundle().apply {
+                    mViewModel.matchId.value?.let { value ->
+                        putLong(
+                            "matchId",
+                            value
+                        )
+                    }
+                }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG).commitNow()
             }
@@ -121,8 +146,18 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_note_order.getString()) {
                         BetSlipFragment().apply {
                             arguments = Bundle().apply {
-                                putLong(BetSlipFragment.matchKey, args.matchId)
-                                putInt(BetSlipFragment.sportKey, args.sportId)
+                                mViewModel.matchId.value?.let {
+                                    putLong(
+                                        BetSlipFragment.matchKey,
+                                        it
+                                    )
+                                }
+                                mViewModel.sportId.value?.let {
+                                    putInt(
+                                        BetSlipFragment.sportKey,
+                                        it
+                                    )
+                                }
                             }
                         }
                     },
@@ -146,9 +181,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
-        mViewModel.unregisterStatisticsNotify()
-        mViewModel.unregisterMatchInfoNotify(mViewModel.matchId)
-        mViewModel.clearAllMatch()
+        mViewModel.matchId.value?.let {
+            deleteDataAndSubscriptions(it)
+        }
         super.onDestroyView()
     }
 }

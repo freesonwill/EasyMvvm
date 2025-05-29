@@ -9,4 +9,5 @@
     <string name="tab_tournament">League</string>
     <string name="tab_team">Team</string>
     <string name="tab_player">Player</string>
+    <string name="search_result_more">More</string>
 </resources>

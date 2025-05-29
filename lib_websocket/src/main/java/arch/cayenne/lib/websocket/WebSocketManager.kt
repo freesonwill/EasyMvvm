@@ -6,6 +6,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocket
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.websocket.extension.asRemoteRequest
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -77,8 +78,8 @@ class WebSocketManager(
         stopHeartbeat()
     }
 
-    fun send(data: IRequest) {
-        socket.send(data)
+    fun send(data: IRequest): IResponse? {
+        return socket.send(data)
     }
 
     private fun startReconnect() {

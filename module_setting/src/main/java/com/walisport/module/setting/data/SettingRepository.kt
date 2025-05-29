@@ -27,7 +27,7 @@ class SettingRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return manager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_BLACK_GREEN.value)
+        return manager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_CLASSIC.value)
     }
 
     //设置赔率显示方式
@@ -36,8 +36,8 @@ class SettingRepository(
     }
 
     //获取赔率显示方式
-    fun getOddsType(): String {
-        return manager.getValue(UserDataKey.KEY_ODDS, "EP")
+    fun getOddsType(): Int {
+        return manager.getValue(UserDataKey.KEY_ODDS, 0)
     }
 
     //设置语言类型
@@ -47,7 +47,7 @@ class SettingRepository(
 
     //获取语言类型
     fun getLanguageType(): String {
-        return manager.getValue(UserDataKey.KEY_LANGUAGE, "SIMPLE")
+        return manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
     }
 
     //设置系统通知-进球

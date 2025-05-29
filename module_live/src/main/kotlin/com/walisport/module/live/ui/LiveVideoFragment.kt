@@ -184,8 +184,18 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
-                        mBinding.videoView.setDataSource(url)
-                        mBinding.videoView.prepare()
+
+                        //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
+                        val matchBean = mViewModel.matchBeanLiveData.value
+                        matchBean?.let {
+                            val matchStatus =
+                                MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
+                            if (matchStatus == MatchStatus.IN_PROGRESS) {
+                                mBinding.videoView.setDataSource(url)
+                                mBinding.videoView.prepare()
+                            }
+                        }
+
                     }
 
                 }
@@ -217,6 +227,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             else -> {
                                 //其他情况
                                 mBinding.ctVideoPlay.visibility = View.GONE
+                                //比赛从正在进行中变更为其他状态时，需要停止视频播放
                                 mBinding.videoView.pause()
                             }
                         }

@@ -75,6 +75,47 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    fun getLimitGroupSearResults(
+        list: List<SearchResultListItemType>,
+        maxPerGroup: Int = 5
+    ): List<SearchResultListItemType> {
+        val result = mutableListOf<SearchResultListItemType>()
+        var currentGroupCount = 0
+        var totalGroupCount = 0
+
+        for (item in list) {
+            when (item) {
+                is SearchResultListItemType.Header -> {
+                    result += item
+                    currentGroupCount = 0
+                    totalGroupCount = 0
+                }
+
+                is SearchResultListItemType.Item -> {
+                    if (currentGroupCount < maxPerGroup) {
+                        result += item
+                        currentGroupCount++
+                    }
+                    totalGroupCount++
+                    if (totalGroupCount == maxPerGroup + 1) {
+                        result += SearchResultListItemType.More(
+                            type = when (item.data) {
+                                is SearchResultTournamentBeanBean -> SearchResultTypeEnum.TOURNAMENT
+                                is SearchResultTeamBeanBean -> SearchResultTypeEnum.TEAM
+                                is SearchResultPlayerBeanBean -> SearchResultTypeEnum.PLAYER
+                                else -> SearchResultTypeEnum.NONE
+                            }
+                        )
+                    }
+                }
+
+                else -> Unit
+            }
+        }
+
+        return result
+    }
+
     fun getSearchResult(context: Context, data: SearchResultBaseBean, startTime: Long? = null, endTime: Long? = null) {
         viewModelScope.launch {
             setResult(
