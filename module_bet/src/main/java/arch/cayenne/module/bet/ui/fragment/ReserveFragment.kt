@@ -136,6 +136,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
     private fun setBetData(data: BetSelectionBean) {
         ViewHelper.bindBetSheet(data, mBinding.layoutBet)
 
+        mBinding.btnCollusion.isEnabled = data.isParlay
         mBinding.btnReserve.isVisible = false
         mBinding.clCancelReserve.isVisible = true
         mBinding.layoutBet.ivDelete.isVisible = false
