@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.adapter
 
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.entity.MarketBeanLite
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemOddsColumnBinding
@@ -60,13 +61,13 @@ class OddsColumnViewHolder(
                 if ("parlay" in changes) individualChanges.add("parlay")
                 if ("isSelected" in changes) individualChanges.add("isSelected")
                 if ("trend" in changes) individualChanges.add("trend")
-
                 if (individualChanges.isNotEmpty()) {
                     cell.bindPayload(selection, listOf(individualChanges))
                 } else {
                     cell.bind(selection)
                 }
             } else {
+                "KC_ hideView ${market.marketName}".logd()
                 cell.hideView()
             }
         }

@@ -278,7 +278,6 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Transaction
     open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
-
         return getMatchById(matchId).let { matchBean ->
             val markets = geMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
