@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
+import arch.cayenne.lib.common.data.constants.SportEnum
 import com.bumptech.glide.Glide
 import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
@@ -53,8 +54,7 @@ class BetSlipInvalidItemManager(
         item?.let {
             val match = item.matchBasic
             with(binding) {
-                Glide.with(betInvalidIvBall.context).load(match.tournamentIcon)
-                    .into(betInvalidIvBall)
+                Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
                 betInvalidTvRace.text = match.matchName
                 betInvalidTvIntroduce.text = item.selectionName
                 betInvalidTvAodds.text = binding.root.resources.getString(

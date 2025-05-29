@@ -58,7 +58,7 @@ class BetSlipViewModel : BaseViewModel() {
     private val _isSupportEarlySettleLiveData = MutableLiveData<EarlySettlePrice>()
     val isSupportEarlySettleLiveData: LiveData<EarlySettlePrice> = _isSupportEarlySettleLiveData
 
-    val refreshLiveData:MutableLiveData<Boolean> = MutableLiveData()
+    val refreshLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
     //选择的提前结算注单
     var selectOrder: Order? = null
@@ -74,9 +74,15 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
-            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let { result ->
-                _orderLiveData.value = result.toBetSlipData()
-            }
+            _orderLiveData.value = repository.getOrderReq(
+                status.value,
+                page,
+                pageSize,
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.toBetSlipData() ?: arrayListOf()
             refreshLiveData.value = true
         }
     }
@@ -86,9 +92,9 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getReserveOrder() {
         viewModelScope.launch {
-            repository.getReserveOrder(sportId, matchId, startTime, endTime)?.let { result ->
-                _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
-            }
+            _reserveLiveData.value =
+                repository.getReserveOrder(sportId, matchId, startTime, endTime)
+                    ?.map { BetSlipData(reserve = it) }?.toList() ?: arrayListOf()
             refreshLiveData.value = true
         }
     }
@@ -135,7 +141,15 @@ class BetSlipViewModel : BaseViewModel() {
             return
         }
         viewModelScope.launch {
-            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let {  result ->
+            repository.getOrderReq(
+                status.value,
+                page,
+                pageSize,
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.let { result ->
                 if (result.isNotEmpty()) {
                     page++
                     val newList = mutableListOf<BetSlipData>()
