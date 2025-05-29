@@ -71,8 +71,6 @@ class OddsCellViewHolder(
             // 先隱藏所有效果
             ivTrendUp.visibility = View.GONE
             ivTrendDown.visibility = View.GONE
-            vTrendHighlight.clearAnimation()
-            vTrendHighlight.visibility = View.GONE
             val trendView = when {
                 trendDelta == null || trendDelta == 0 -> null
                 trendDelta < 0 -> ivTrendDown   // 賠率下降 → 變差
@@ -83,18 +81,15 @@ class OddsCellViewHolder(
             trendView?.let { trendImage ->
                 trendImage.alpha = 1f
                 trendImage.visibility = View.VISIBLE
-                vTrendHighlight.alpha = 1f
-                vTrendHighlight.visibility = View.VISIBLE
 
                 val animator = ValueAnimator.ofFloat(1f, 0f).apply {
-                    duration = 800
+                    duration = 667     //2000毫秒閃3次，每次耗時667毫秒
+                    repeatCount = 2
                     addUpdateListener { animation ->
                         val alpha = animation.animatedValue as Float
-                        vTrendHighlight.alpha = alpha
                         trendImage.alpha = alpha
                     }
                     addListener(onEnd = {
-                        vTrendHighlight.visibility = View.GONE
                         trendImage.visibility = View.GONE
                     })
                 }
