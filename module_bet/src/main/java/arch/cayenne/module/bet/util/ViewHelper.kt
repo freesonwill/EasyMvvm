@@ -1,16 +1,9 @@
 package arch.cayenne.module.bet.util
 
 import android.animation.ValueAnimator
-import android.transition.ChangeBounds
-import android.transition.TransitionManager
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.AnticipateOvershootInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
@@ -83,7 +76,6 @@ internal object ViewHelper {
     }
 
     fun expandView(view: View, fakerView: ImageView) {
-        Log.d("abcd", "++++++ expand")
 
         // 先確保原始 view 是隱藏狀態
         view.visibility = View.GONE
