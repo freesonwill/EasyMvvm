@@ -3,6 +3,8 @@ package arch.cayenne.module.betslip.ui.fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.PullRefreshLayout
+import arch.cayenne.module.betslip.R
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter

@@ -19,11 +19,11 @@ object BetSlipViewExt {
     /**
      * PullRefreshLayout 打开上拉加载和下啦刷新
      * */
-    internal fun PullRefreshLayout.initLoadMore() {
+    internal fun PullRefreshLayout.initLoadMore(loadMore:Boolean = true) {
         setEnableRefresh(true)
-        setEnableLoadMore(true)
+        setEnableLoadMore(loadMore)
         setEnableScrollContentWhenRefreshed(true)
-        setEnableScrollContentWhenLoaded(true)
+        setEnableScrollContentWhenLoaded(loadMore)
     }
 
     /**

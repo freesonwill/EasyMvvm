@@ -39,18 +39,14 @@ class BetSlipUnsettledFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
-            betSlipAdapter.submitList(it) {
-                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-            }
+            betSlipAdapter.submitList(it)
             showEmpty(it.isEmpty())
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
             mViewModel.getOrders(BetSlipEnum.UnSettled)
         }
-        mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
+        mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
             val price = it.price.toDoubleOrNull()
             if (price == null || price <= 0) {
                 showToast(getString(R.string.not_support_early_settle))
@@ -65,7 +61,7 @@ class BetSlipUnsettledFragment :
                         mViewModel.earlyPartSettled(
                             it.betId,
                             money.getMoney(),
-                            mViewModel.earlySettlePriceLiveData.value?.price ?: "0"
+                            mViewModel.isSupportEarlySettleLiveData.value?.price ?: "0"
                         )
                     }
                 }.show(childFragmentManager)
@@ -93,7 +89,7 @@ class BetSlipUnsettledFragment :
     }
 
     private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.refreshLayout)
+        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
     private fun initRecycler() {
@@ -107,7 +103,7 @@ class BetSlipUnsettledFragment :
                 item: BetSlipData?, position: Int
             ) {
                 item?.order?.let {
-                    mViewModel.earlySettledPrice(it)
+                    mViewModel.isSuppportEarlySettled(it)
                 }
             }
         })

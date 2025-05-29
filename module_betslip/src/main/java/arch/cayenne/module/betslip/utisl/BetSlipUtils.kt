@@ -22,10 +22,10 @@ object BetSlipUtils {
     /**
      * 计算输赢金额
      * */
-    fun winOrLoseAmount(betAmount: String, earlyBetAmount: String, returnAmount: String): String {
+    fun winOrLoseAmount(betAmount: String, earlyBetAmount: String, returnAmount: String): Double {
         return toBigDecimal(betAmount).minus(toBigDecimal(earlyBetAmount)).minus(
             toBigDecimal(returnAmount).setScale(2, RoundingMode.HALF_UP)
-        ).toString()
+        ).toDouble()
     }
 
     /***

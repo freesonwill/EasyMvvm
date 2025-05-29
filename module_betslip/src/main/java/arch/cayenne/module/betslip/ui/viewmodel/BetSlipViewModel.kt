@@ -57,8 +57,9 @@ class BetSlipViewModel : BaseViewModel() {
     val modifyOddsLiveData: LiveData<Boolean> = _modifyOddsLiveData
 
     //检查提前结算
-    private val _earlySettlePriceLiveData = MutableLiveData<EarlySettlePrice>()
-    val earlySettlePriceLiveData: LiveData<EarlySettlePrice> = _earlySettlePriceLiveData
+    private val _isSupportEarlySettleLiveData = MutableLiveData<EarlySettlePrice>()
+    val isSupportEarlySettleLiveData: LiveData<EarlySettlePrice> = _isSupportEarlySettleLiveData
+
 
     private val _state = MutableLiveData<Event<DynamicStateLayout.States>>()
     val state: LiveData<Event<DynamicStateLayout.States>> = _state
@@ -162,12 +163,12 @@ class BetSlipViewModel : BaseViewModel() {
     /**
      * 检查是否支持提前结算
      * */
-    fun earlySettledPrice(order: Order) {
+    fun isSuppportEarlySettled(order: Order) {
         selectOrder = order
         viewModelScope.launch {
             val result = repository.earlySettledPrice(order.betId)
             if (!result.isNullOrEmpty()) {
-                _earlySettlePriceLiveData.value = result.first()
+                _isSupportEarlySettleLiveData.value = result.first()
             }
         }
     }

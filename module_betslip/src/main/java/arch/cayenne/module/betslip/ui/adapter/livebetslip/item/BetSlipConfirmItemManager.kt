@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
+import arch.cayenne.lib.common.data.constants.SportEnum
 import com.bumptech.glide.Glide
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipConfirmBinding
@@ -20,10 +21,7 @@ class BetSlipConfirmItemManager(
     }
 
     override fun covertPlus(
-        position: Int,
-        count: Int,
-        expandedEnum: BetSlipExpandedEnum,
-        item: BetSlipSelectionData
+        position: Int, count: Int, expandedEnum: BetSlipExpandedEnum, item: BetSlipSelectionData
     ) {
         item.selection?.let { selection ->
             binding.also {
@@ -50,8 +48,7 @@ class BetSlipConfirmItemManager(
         item?.let {
             with(binding) {
                 val match = item.matchBasic
-                Glide.with(betConfirmIvBall.context).load(match.tournamentIcon)
-                    .into(betConfirmIvBall)
+                Glide.with(betConfirmIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betConfirmIvBall)
                 betConfirmTvRace.text = match.matchName
                 betConfirmTvIntroduce.text = item.selectionName
                 betConfirmTvAodds.text =

@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
@@ -51,14 +52,13 @@ class BetSlipSettledItemManager(
         item?.let {
             val match = item.matchBasic
             with(binding) {
-                Glide.with(betSettledIvBall.context).load(match.tournamentIcon)
-                    .into(betSettledIvBall)
+                Glide.with(betSettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betSettledIvBall)
                 betSettledTvRace.text = match.matchName
                 betSettledTvIntroduce.text = item.selectionName
                 betSettledTvAodds.text = "@${item.odds}"
 //                betSettledTvStatus.isVisible = it.inPlay
-                betSettledTvScore.text = item.marketName + "  (${item.betScore})"
-                betSettledTvScore1.text = item.endScore
+                betSettledTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
+                betSettledTvScore1.text =whenScoreIsNull(item.endScore)
             }
         }
     }

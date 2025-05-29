@@ -66,7 +66,7 @@ class BetSlipRemoteManager(
         startTime: Long? = null,
         endTime: Long? = null
     ): List<Common.ReserveOrder>? {
-        "getReserveOrder params matchId $matchId sportId $sportId".logd(TAG)
+        "getReserveOrder params matchId $matchId sportId $sportId $startTime  $endTime".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,

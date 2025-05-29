@@ -40,8 +40,15 @@ class BetSlipSettledAdapterManager(
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
             it.betSettledTvBettingValue.text = order.betAmount
-            it.betSettledTvExceptValue.text = winOrLoseAmount(order.betAmount,order.earlyBetAmount,order.returnAmount)
+            val amount = winOrLoseAmount(order.betAmount,order.earlyBetAmount,order.returnAmount)
             settledStatus(order)
+            it.betSettledTvExceptValue.text = "$amount"
+            it.betSettledTvExceptValue.setTextColor(
+                ContextCompat.getColorStateList(
+                    binding.root.context,
+                    if (amount >= 0) arch.cayenne.lib.res.R.color.win_color else arch.cayenne.lib.res.R.color.lose_color
+                )
+            )
         }
     }
 
