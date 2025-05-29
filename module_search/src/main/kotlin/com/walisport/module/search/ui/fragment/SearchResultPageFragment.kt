@@ -100,6 +100,8 @@ class SearchResultPageFragment :
                                 state: RecyclerView.State
                             ) {
                                 val position = parent.getChildAdapterPosition(view)
+                                if (position == RecyclerView.NO_POSITION) return
+
                                 when (gridAdapter.getItemViewType(position)) {
                                     SearchResultPageGridAdapter.VIEW_TYPE_HEADER -> {
                                         outRect.set(0, 12.dp2px, 0, 12.dp2px)
