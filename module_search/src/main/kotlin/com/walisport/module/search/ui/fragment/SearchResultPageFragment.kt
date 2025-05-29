@@ -92,29 +92,31 @@ class SearchResultPageFragment :
                             marginStart = 21.dp2px
                             marginEnd = 21.dp2px
                         }
-                        addItemDecoration(object : ItemDecoration() {
-                            override fun getItemOffsets(
-                                outRect: android.graphics.Rect,
-                                view: View,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val position = parent.getChildAdapterPosition(view)
-                                if (position == RecyclerView.NO_POSITION) return
+                        if (itemDecorationCount == 0) {
+                            addItemDecoration(object : ItemDecoration() {
+                                override fun getItemOffsets(
+                                    outRect: android.graphics.Rect,
+                                    view: View,
+                                    parent: RecyclerView,
+                                    state: RecyclerView.State
+                                ) {
+                                    val position = parent.getChildAdapterPosition(view)
+                                    if (position == RecyclerView.NO_POSITION) return
 
-                                when (gridAdapter.getItemViewType(position)) {
-                                    SearchResultPageGridAdapter.VIEW_TYPE_HEADER -> {
-                                        outRect.set(0, 12.dp2px, 0, 12.dp2px)
-                                    }
+                                    when (gridAdapter.getItemViewType(position)) {
+                                        SearchResultPageGridAdapter.VIEW_TYPE_HEADER -> {
+                                            outRect.set(0, 12.dp2px, 0, 12.dp2px)
+                                        }
 
-                                    else -> {
-                                        outRect.right =
-                                            if (position % spanCount == 0 || position % spanCount == 1) 12.dp2px else 0
-                                        outRect.bottom = 12.dp2px
+                                        else -> {
+                                            outRect.right =
+                                                if (position % spanCount == 0 || position % spanCount == 1) 12.dp2px else 0
+                                            outRect.bottom = 12.dp2px
+                                        }
                                     }
                                 }
-                            }
-                        })
+                            })
+                        }
                     }
                     gridAdapter.submitList(groupData.value)
                 } else {
