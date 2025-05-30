@@ -182,10 +182,29 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tabView.setOnClickListener {}
             }.attach()
-            reflexMargin(mBinding.tabLayout,8.dp2px,8.dp2px,0.dp2px)
+            reflexMargin(mBinding.tabLayout, 8.dp2px, 8.dp2px, 0.dp2px)
             mBinding.tabLayout.getTabAt(1)?.select()
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
+        }
+    }
+
+    //离开界面取消订阅
+    override fun onPause() {
+        super.onPause()
+        mViewModel.matchId.value?.let {
+            mViewModel.registerMatchInfoNotify(it)
+            mViewModel.registerStatisticsNotify(it)
+            mViewModel.observeMatchStaticsNotify()
+        }
+    }
+
+    //重新进入界面发起订阅
+    override fun onResume() {
+        super.onResume()
+        mViewModel.matchId.value?.let {
+            mViewModel.unregisterStatisticsNotify(it)
+            mViewModel.unregisterMatchInfoNotify(it)
         }
     }
 
