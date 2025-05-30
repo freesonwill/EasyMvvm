@@ -32,7 +32,9 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.transformToInt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -102,9 +104,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置
                     it.transformFromPlayerConfig(mBinding.videoView.getConfig())
 
-                    // 更改底层默认配置。默认加密流，需要开启解密
-                    it.isAudioDecrypt = false
-                    it.isVideoDecrypt = false
+                    // 默认不加密
+                    it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                    it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                    it.reconnectCount = -1 // Demo重试一百次, -1不限制
+                    //默认不开启硬件加速
                     it.isHWDecode = false
 
                     it.inited = true

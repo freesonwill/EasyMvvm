@@ -1,10 +1,10 @@
 package arch.cayenne.lib.qyplayer.ui.widget
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
-import arch.cayenne.lib.qyplayer.cache.PlayerCache
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.MediaInfo
 import com.xxx.qyplayer.MirrorMode
@@ -15,10 +15,10 @@ import com.xxx.qyplayer.RotateMode
 import com.xxx.qyplayer.ScaleMode
 import com.xxx.qyplayer.StateInfo
 import com.xxx.qyplayer.ViewportRatioMode
-import com.xxx.qyplayer.render.IRenderCallback
-import com.xxx.qyplayer.render.IRenderView
-import com.xxx.qyplayer.render.SurfaceRenderView
-import com.xxx.qyplayer.render.TextureRenderView
+import arch.cayenne.lib.qyplayer.render.IRenderCallback
+import arch.cayenne.lib.qyplayer.render.IRenderView
+import arch.cayenne.lib.qyplayer.render.SurfaceRenderView
+import arch.cayenne.lib.qyplayer.render.TextureRenderView
 
 enum class SurfaceType {
     /**
@@ -27,7 +27,7 @@ enum class SurfaceType {
     TEXTURE_VIEW,
 
     /**
-     * SurfaceView
+     * SurfacView
      */
     SURFACE_VIEW
 }
@@ -37,18 +37,7 @@ class QYRenderView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
-    private val mQYPlayer: QYPlayer by lazy {
-//        // 从缓存获取或创建新的 QYPlayer 实例
-//        PlayerCache.keys.firstOrNull()?.also { player ->
-//            // 增加引用计数，安全处理 null
-//            val count = PlayerCache.get(player)?.plus(1) ?: 1
-//            PlayerCache.put(player, count)
-//        } ?: QYPlayer(context.applicationContext).also { player ->
-//            PlayerCache.put(player, 1)
-//        }
-
-        QYPlayer(context.applicationContext)
-    }
+    private val mQYPlayer = QYPlayer(context)
     private var mIRenderView: IRenderView? = null
     private var mSurface: Surface? = null
 
@@ -94,6 +83,12 @@ class QYRenderView @JvmOverloads constructor(
         mQYPlayer.setOnUpdateStatisticsListener(onUpdateStatistics)
     }
 
+    fun setOnSnapshotListener(onSnapshot: (bitmap: Bitmap) -> Unit) {
+        mQYPlayer.setOnSnapShotListener { bitmap ->
+            onSnapshot(bitmap)
+        }
+    }
+
     fun prepare() {
         mQYPlayer.prepare()
     }
@@ -128,10 +123,6 @@ class QYRenderView @JvmOverloads constructor(
 
     fun setReconnectTime(intervalTime: Int) {
         mQYPlayer.setReconnectTime(intervalTime)
-    }
-
-    fun setBufferedTime(intervalTime: Int) {
-        mQYPlayer.setMaxCache(intervalTime)
     }
 
     fun reload() {
@@ -232,16 +223,56 @@ class QYRenderView @JvmOverloads constructor(
         return mQYPlayer.setVideoDecrypt(decrypt)
     }
 
-    fun setNoAudio(noAudio: Boolean): Int {
-        return mQYPlayer.setNoAudio(noAudio)
-    }
-
     fun setSpeed(speed: Int) {
         return mQYPlayer.setSpeed(speed)
     }
 
     fun setDecryptKey(key: String): Int {
         return mQYPlayer.setDecryptKey(key)
+    }
+
+    fun setCacheMin(cacheMin: Int): Int {
+        return mQYPlayer.setCacheMin(cacheMin)
+    }
+
+    fun setCacheReady(cacheReady: Int): Int {
+        return mQYPlayer.setCacheReady(cacheReady)
+    }
+
+    fun setCacheDropStart(cacheDropStart: Int): Int {
+        return mQYPlayer.setCacheDropStart(cacheDropStart)
+    }
+
+    fun setCacheDropEnd(cacheDropEnd: Int): Int {
+        return mQYPlayer.setCacheDropEnd(cacheDropEnd)
+    }
+
+    fun getCacheMin(): Int {
+        return mQYPlayer.getCacheMin()
+    }
+
+    fun getCacheReady(): Int {
+        return mQYPlayer.getCacheReady()
+    }
+
+    fun getCacheDropStart(): Int {
+        return mQYPlayer.getCacheDropStart()
+    }
+
+    fun getCacheDropEnd(): Int {
+        return mQYPlayer.getCacheDropEnd()
+    }
+
+    fun setPlayMode(mode: PlayerMode): Int {
+        return mQYPlayer.setPlayMode(mode)
+    }
+
+    fun setReconnectCount(count: Int): Int {
+        return mQYPlayer.setReconnectCount(count)
+    }
+
+    fun setLogLevel(level: Int) {
+        mQYPlayer.setLogLevel(level)
     }
 
     fun release() {
