@@ -22,6 +22,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
     override fun setStatusBar(config: StatusBarConfig, view: View) {
         val immersionBar = ImmersionBar.with(activity)
         immersionBar.statusBarDarkFont(config.statusBarDarkFont)
+            .navigationBarDarkIcon(config.statusBarDarkFont) // true 表示使用深色图标，false 表示浅色图标
         val statusBarHeight = ImmersionBar.getStatusBarHeight(activity)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
         if (viewPaddingTop == -1) {
@@ -79,4 +80,3 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
         }
     }
 }
-
