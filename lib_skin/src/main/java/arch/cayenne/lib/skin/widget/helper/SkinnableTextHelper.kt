@@ -38,6 +38,10 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
             mDrawableRightResId =
                 a.getResourceId(R.styleable.SportTextHelper_android_drawableRight, INVALID_ID)
         }
+        if (a.hasValue(R.styleable.SportTextHelper_android_drawableEnd)) {
+            mDrawableRightResId =
+                a.getResourceId(R.styleable.SportTextHelper_android_drawableEnd, INVALID_ID)
+        }
         if (a.hasValue(R.styleable.SportTextHelper_android_drawableBottom)) {
             mDrawableBottomResId =
                 a.getResourceId(R.styleable.SportTextHelper_android_drawableBottom, INVALID_ID)
