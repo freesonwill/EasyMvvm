@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.fragment.findNavController
@@ -68,6 +69,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             arguments.putString("leagueName", mViewModel.leagueName.value)
                             arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
                         })
+            }
+
+            tvMoney.clickNoRepeat {
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
