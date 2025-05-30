@@ -33,9 +33,9 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         changeSkinType(skinType)
         val binding =
             TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
-        binding.barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
+            barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
             tvBack.clickNoRepeat {
                 findNavController().navigateUp()
             }
@@ -58,37 +58,31 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         mBinding.layClassic.clickNoRepeat {
             skinType = SkinType.SKIN_CLASSIC.value
             mViewModel.setSkinType(SkinType.SKIN_CLASSIC)
-            mViewModel.updateBackgroundSetting(0)
             setImmColor(SkinType.SKIN_CLASSIC.value)
         }
         mBinding.layBlackBlue.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_BLUE)
-            mViewModel.updateBackgroundSetting(1)
             setImmColor(SkinType.SKIN_BLACK_BLUE.value)
         }
         mBinding.layBlackGreen.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_GREEN.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_GREEN)
-            mViewModel.updateBackgroundSetting(2)
             setImmColor(SkinType.SKIN_BLACK_GREEN.value)
         }
         mBinding.layBlackRed.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_RED.value
             mViewModel.setSkinType(SkinType.SKIN_BLACK_RED)
-            mViewModel.updateBackgroundSetting(3)
             setImmColor(SkinType.SKIN_BLACK_RED.value)
         }
         mBinding.layWhiteBlue.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(SkinType.SKIN_WHITE_BLUE)
-            mViewModel.updateBackgroundSetting(4)
             setImmColor(SkinType.SKIN_WHITE_BLUE.value)
         }
         mBinding.layWhiteGreen.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_GREEN.value
             mViewModel.setSkinType(SkinType.SKIN_WHITE_GREEN)
-            mViewModel.updateBackgroundSetting(5)
             setImmColor(SkinType.SKIN_WHITE_GREEN.value)
         }
     }
