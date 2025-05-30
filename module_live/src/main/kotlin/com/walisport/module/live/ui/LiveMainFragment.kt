@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -22,6 +24,7 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlin.reflect.KClass
 
 /**
@@ -179,6 +182,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tabView.setOnClickListener {}
             }.attach()
+            reflexMargin(mBinding.tabLayout,8.dp2px,8.dp2px,0.dp2px)
             mBinding.tabLayout.getTabAt(1)?.select()
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
