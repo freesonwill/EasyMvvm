@@ -48,9 +48,8 @@ internal object BetSlipUtils {
         return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }
 
-
     private fun multipy1000(value: String): BigDecimal {
-        return toBigDecimal(value).multiply(BigDecimal(100))
+        return toBigDecimal(value).multiply(BigDecimal(1000))
     }
 
     fun List<Order>.toBetSlipData(): List<BetSlipData> {

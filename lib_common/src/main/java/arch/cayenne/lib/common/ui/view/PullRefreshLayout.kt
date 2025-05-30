@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.ui.view
 import android.content.Context
 import android.util.AttributeSet
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
+import com.scwang.smart.refresh.layout.api.RefreshFooter
 
 class PullRefreshLayout: SmartRefreshLayout {
     constructor(context: Context?) : super(context) {
@@ -14,5 +15,9 @@ class PullRefreshLayout: SmartRefreshLayout {
 
     private fun init() {
         setRefreshHeader(PullRefreshHeader(context))
+    }
+
+    fun pullRefreshAddFooter(){
+        setRefreshFooter(PullRefreshFooter(context))
     }
 }

@@ -24,6 +24,7 @@ object BetSlipViewExt {
         setEnableLoadMore(loadMore)
         setEnableScrollContentWhenRefreshed(true)
         setEnableScrollContentWhenLoaded(loadMore)
+        pullRefreshAddFooter()
     }
 
     /**

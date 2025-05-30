@@ -72,7 +72,6 @@ class BetSlipUnsettledFragment :
     override fun updateState(state: DynamicStateLayout.States) {
         mBinding.refreshLayout.finishRefresh()
         mBinding.refreshLayout.finishLoadMore()
-        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
         if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
             mBinding.recyclerView.isVisible = false
             mBinding.emptyState.isVisible = true
