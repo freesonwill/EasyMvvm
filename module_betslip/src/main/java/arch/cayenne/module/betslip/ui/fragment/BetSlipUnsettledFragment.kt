@@ -75,7 +75,6 @@ class BetSlipUnsettledFragment :
         mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
         if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
             mBinding.recyclerView.isVisible = false
-            mBinding.refreshLayout.isVisible = false
             mBinding.emptyState.isVisible = true
             mBinding.emptyState.setState(state, getString(arch.cayenne.lib.common.R.string.error_net)
             ) {
@@ -83,7 +82,6 @@ class BetSlipUnsettledFragment :
             }
         } else {
             mBinding.recyclerView.isVisible = true
-            mBinding.refreshLayout.isVisible = true
             mBinding.emptyState.isVisible = false
         }
     }
