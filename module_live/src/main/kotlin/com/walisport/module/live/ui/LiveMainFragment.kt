@@ -3,11 +3,13 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -21,6 +23,8 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 /**
@@ -101,6 +105,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
             }
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            mViewModel.matchIdSportIdObserver.collect{
+                refreshBetSlip()
+            }
+        }
     }
 
 
@@ -143,24 +152,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mBinding.tabLayout.removeAllTabs()
             val list =
                 listOf(
-                    PagerBean(R.string.live_note_order.getString()) {
-                        BetSlipFragment().apply {
-                            arguments = Bundle().apply {
-                                mViewModel.matchId.value?.let {
-                                    putLong(
-                                        BetSlipFragment.matchKey,
-                                        it
-                                    )
-                                }
-                                mViewModel.sportId.value?.let {
-                                    putInt(
-                                        BetSlipFragment.sportKey,
-                                        it
-                                    )
-                                }
-                            }
-                        }
-                    },
+                    PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
@@ -178,6 +170,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
         }
+    }
+
+    fun refreshBetSlip() {
+        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
+        val tag = "f${adapter?.getItemId(0)}"
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
+        fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
+        "$fragment  ".logd("aaa")
     }
 
     override fun onDestroyView() {

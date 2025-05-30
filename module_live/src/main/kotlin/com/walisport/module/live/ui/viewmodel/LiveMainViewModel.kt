@@ -2,6 +2,7 @@ package com.walisport.module.live.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -13,6 +14,10 @@ import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
@@ -51,6 +56,10 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
+
+    //监听matchId和sportId，并设置1s的防抖
+    @OptIn(FlowPreview::class)
+    val matchIdSportIdObserver: Flow<Pair<Long, Int>> = matchId.asFlow().combine(sportId.asFlow()){ matchId, sportId -> matchId to sportId}.debounce(1000)
 
     override fun initViewModel() {
         super.initViewModel()
