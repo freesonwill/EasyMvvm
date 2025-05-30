@@ -6,6 +6,8 @@ import android.text.TextWatcher
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import com.walisport.module.feedback.R
 import com.walisport.module.feedback.databinding.FragmentFeedbackMainBinding
 import com.walisport.module.feedback.ui.viewmodel.FeedbackMainViewModel
@@ -41,6 +43,22 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                     if (inputLength == 0) "" else "$inputLength/${mViewModel.maxInputLength}"
             }
         })
+
+        mBinding.buttonSubmit.clickNoRepeat {
+            if (!mBinding.checkbox1.isChecked &&
+                !mBinding.checkbox2.isChecked &&
+                !mBinding.checkbox3.isChecked &&
+                !mBinding.checkbox4.isChecked &&
+                !mBinding.checkbox5.isChecked &&
+                !mBinding.checkbox6.isChecked
+            ) {
+                showToast(getString(R.string.select_feedback_type))
+            } else if (mBinding.editFeedback.length() == 0) {
+                showToast(getString(R.string.enter_feedback_description))
+            } else {
+                showToast(getString(R.string.no_interface))
+            }
+        }
 
     }
 

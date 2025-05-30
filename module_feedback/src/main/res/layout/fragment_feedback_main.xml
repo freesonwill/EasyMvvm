@@ -55,6 +55,7 @@
 
         <!-- 反馈类型 -->
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox1"
             style="@style/feedback_checkbox"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_96"
@@ -63,6 +64,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox2"
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_96"
             android:text="@string/gameplay_issue"
@@ -71,6 +73,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox3"
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_96"
             android:layout_marginEnd="@dimen/dp_20"
@@ -80,6 +83,7 @@
 
 
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox4"
             style="@style/feedback_checkbox"
             android:layout_marginStart="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_142"
@@ -88,6 +92,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox5"
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_142"
             android:text="@string/withdrawal_issue"
@@ -96,6 +101,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableCheckBox
+            android:id="@+id/checkbox6"
             style="@style/feedback_checkbox"
             android:layout_marginTop="@dimen/dp_142"
             android:layout_marginEnd="@dimen/dp_20"
