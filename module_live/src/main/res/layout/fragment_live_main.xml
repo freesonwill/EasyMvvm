@@ -27,7 +27,7 @@
         android:background="@color/live_main_tab_bg"
         android:paddingBottom="2dp"
         app:tabIndicatorAnimationMode="elastic"
-        app:tabIndicatorColor="@color/tab_indicator_color"
+        app:tabIndicatorColor="@color/live_tab_indicator_color"
         app:tabIndicatorFullWidth="false"
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
