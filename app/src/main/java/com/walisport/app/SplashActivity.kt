@@ -59,55 +59,35 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     //55468816
     // token=NTU0Njg4MTZfMTc0NzEyOTkzNTk1MTp0dm5oQ3lwcXhNeTR5Ykdu
 
-    //android1
-    //55468817
-    // token=NTU0Njg4MTdfMTc0Mjk2MTUxNzMxMzptSWpQekR3cjdRTUsyT1F2
-
-    //android2
-    //55468818
-    // token=NTU0Njg4MThfMTc0Mjk2MTU2Njc3MTpLejA1ZnpWUDFidkR1Mkd5
-
-    //android3
-    //55468819
-    // token=NTU0Njg4MTlfMTc0Mjk2MTY1MTM5MDpiZmFFRmhCOVZBTUVWcjUz
-
-    //android4
-    //55468820
-    // token=NTU0Njg4MjBfMTc0Mjk2MTY4NjkyMzpVZUVBdHh6d01GbngyZXBl
-
-    //android5
-    //55468821
-    // token=NTU0Njg4MjFfMTc0Mjk2MjA4NDE4OTpHZ1djRDh4OGJPQ2FuV2dl
-
     //qatest1
     //55468822
-    // token=NTU0Njg4MjJfMTc0Mjk2MjExMzc1MjpNclRlTHhQYjVyakRxOXhO
+    //token=NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV
 
     //qatest2
     //55468823
-    // token=NTU0Njg4MjNfMTc0Mjk2MjE0NjUxMDoweE96MGhVY242MEFrQ3c1
+    //token=NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM
 
     //qatest3
     //55468824
-    // token=NTU0Njg4MjRfMTc0Mjk2MjE3ODc4MTo2d1Zqa3lPSmlmSXdZVGla
+    //token=NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda
 
     //qatest4
     //55468825
-    // token=NTU0Njg4MjVfMTc0Mjk2MjIxOTgzOTp4Q2VGTXVzaWkweGZFSEZN
+    //token=NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls
 
     //qatest5
     //55468826
-    // token=NTU0Njg4MjZfMTc0Mjk2MjI0NzAxODpsUmdEU1o1MlkyZnRBQlV1
+    //token=NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX
 
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc0Mjk2MjExMzc1MjpNclRlTHhQYjVyakRxOXhO"),
-            Pair(55468823, "NTU0Njg4MjNfMTc0Mjk2MjE0NjUxMDoweE96MGhVY242MEFrQ3c1"),
-            Pair(55468824, "NTU0Njg4MjRfMTc0Mjk2MjE3ODc4MTo2d1Zqa3lPSmlmSXdZVGla"),
-            Pair(55468825, "NTU0Njg4MjVfMTc0Mjk2MjIxOTgzOTp4Q2VGTXVzaWkweGZFSEZN"),
-            Pair(55468826, "NTU0Njg4MjZfMTc0Mjk2MjI0NzAxODpsUmdEU1o1MlkyZnRBQlV1")
+            Pair(55468822, "NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV"),
+            Pair(55468823, "NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM"),
+            Pair(55468824, "NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda"),
+            Pair(55468825, "NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls"),
+            Pair(55468826, "NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")

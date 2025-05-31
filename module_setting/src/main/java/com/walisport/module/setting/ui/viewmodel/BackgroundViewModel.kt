@@ -6,7 +6,6 @@ import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
-import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -35,15 +34,5 @@ class BackgroundViewModel : BaseViewModel() {
     //获取皮肤类型
     fun getSkinData(): String {
         return repository.getSkinType()
-    }
-
-    //调用接口设置主题类型
-    fun updateBackgroundSetting(type: Int) {
-        viewModelScope.launch {
-            val req = Common.Setting.newBuilder().apply {
-                background = type
-            }.build()
-            repository.updateSettingReq(req)
-        }
     }
 }

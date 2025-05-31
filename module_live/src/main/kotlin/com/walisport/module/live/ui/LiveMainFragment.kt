@@ -1,14 +1,17 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -23,6 +26,7 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -72,6 +76,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             arguments.putString("leagueName", mViewModel.leagueName.value)
                             arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
                         })
+            }
+
+            tvMoney.clickNoRepeat {
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -166,6 +174,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tabView.setOnClickListener {}
             }.attach()
+            reflexMargin(mBinding.tabLayout, 8.dp2px, 8.dp2px, 0.dp2px)
             mBinding.tabLayout.getTabAt(1)?.select()
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
@@ -178,6 +187,25 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
         "$fragment  ".logd("aaa")
+    }
+
+    //离开界面取消订阅
+    override fun onPause() {
+        super.onPause()
+        mViewModel.matchId.value?.let {
+            mViewModel.registerMatchInfoNotify(it)
+            mViewModel.registerStatisticsNotify(it)
+            mViewModel.observeMatchStaticsNotify()
+        }
+    }
+
+    //重新进入界面发起订阅
+    override fun onResume() {
+        super.onResume()
+        mViewModel.matchId.value?.let {
+            mViewModel.unregisterStatisticsNotify(it)
+            mViewModel.unregisterMatchInfoNotify(it)
+        }
     }
 
     override fun onDestroyView() {

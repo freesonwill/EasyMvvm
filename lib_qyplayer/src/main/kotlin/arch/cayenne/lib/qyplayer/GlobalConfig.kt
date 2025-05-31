@@ -12,12 +12,13 @@ class GlobalConfig(private val context: Context) {
     private val kSPFileName = "player_config"
     private val kInited = "inited"
 
+    val SNAP_SHOT_PATH: String = "snapShot" + File.separator
+
     private val kBrightRatio = "bright_ratio"
     private val kAutoPlay = "auto_play"
     private val kLoop = "loop"
     private val kReconnectTime = "reconnect_time"
     private val kHWDecode = "hw_decode"
-    private val kMaxCache = "max_cache"
     private val kFlip = "flip"
     private val kRotation = "rotation"
     private val kFill = "fill"
@@ -31,7 +32,7 @@ class GlobalConfig(private val context: Context) {
     private val kRender = "render"
     private val kSubtitles = "subtitles"
     private val kDanmaku = "danmaku"
-    private val kNoAudio = "no_audio"
+    private val kReconnectCount = "reconnect_count"
 
     init {
         loadConfig()
@@ -100,17 +101,6 @@ class GlobalConfig(private val context: Context) {
             field = v
             context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
                 putBoolean(kHWDecode, v)
-            }
-        }
-
-    var maxCache = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kMaxCache, v)
             }
         }
 
@@ -206,25 +196,25 @@ class GlobalConfig(private val context: Context) {
             }
         }
 
-    var isAudioDecrypt = false
+    var audioDecrypt = 0
         set(v) {
             if (field == v) {
                 return
             }
             field = v
             context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kAudioDecrypt, v)
+                putInt(kAudioDecrypt, v)
             }
         }
 
-    var isVideoDecrypt = false
+    var videoDecrypt = 0
         set(v) {
             if (field == v) {
                 return
             }
             field = v
             context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kVideoDecrypt, v)
+                putInt(kVideoDecrypt, v)
             }
         }
 
@@ -250,6 +240,17 @@ class GlobalConfig(private val context: Context) {
             }
         }
 
+    var reconnectCount = 0
+        set(v) {
+            if (field == v) {
+                return
+            }
+            field = v
+            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
+                putInt(kReconnectCount, v)
+            }
+        }
+
     var isDanmaku = false
         set(v) {
             if (field == v) {
@@ -258,17 +259,6 @@ class GlobalConfig(private val context: Context) {
             field = v
             context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
                 putBoolean(kDanmaku, v)
-            }
-        }
-
-    var isNoAudio = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kNoAudio, v)
             }
         }
 
@@ -281,7 +271,6 @@ class GlobalConfig(private val context: Context) {
         isLoop = sp.getBoolean(kLoop, false)
         reconnectTime = sp.getInt(kReconnectTime, 0)
         isHWDecode = sp.getBoolean(kHWDecode, false)
-        maxCache = sp.getInt(kMaxCache, 0)
         flip = sp.getInt(kFlip, 0)
         rotation = sp.getInt(kRotation, 0)
         fill = sp.getInt(kFill, 0)
@@ -290,12 +279,12 @@ class GlobalConfig(private val context: Context) {
         isClear = sp.getBoolean(kClear, false)
         isMute = sp.getBoolean(kMute, false)
         volume = sp.getInt(kVolume, 0)
-        isAudioDecrypt = sp.getBoolean(kAudioDecrypt, false)
-        isVideoDecrypt = sp.getBoolean(kVideoDecrypt, false)
+        audioDecrypt = sp.getInt(kAudioDecrypt, 0)
+        videoDecrypt = sp.getInt(kVideoDecrypt, 0)
         render = sp.getInt(kRender, 0)
         isSubtitles = sp.getBoolean(kSubtitles, false)
         isDanmaku = sp.getBoolean(kDanmaku, false)
-        isNoAudio = sp.getBoolean(kNoAudio, false)
+        reconnectCount = sp.getInt(kReconnectCount, -1)
     }
 }
 
@@ -304,7 +293,6 @@ fun GlobalConfig.transformToPlayerConfig(): PlayerConfig = PlayerConfig().also {
     it.isLoop = if (isLoop) 1 else 0
     it.reconnectTime = reconnectTime
     it.isHWDecode = if (isHWDecode) 1 else 0
-    it.maxCache = maxCache
     it.flip = flip
     it.rotation = rotation
     it.fill = fill
@@ -313,12 +301,12 @@ fun GlobalConfig.transformToPlayerConfig(): PlayerConfig = PlayerConfig().also {
     it.isClear = if (isClear) 1 else 0
     it.isMute = if (isMute) 1 else 0
     it.volume = volume
-    it.audioDecrypt = if (isAudioDecrypt) 1 else 0
-    it.videoDecrypt = if (isVideoDecrypt) 1 else 0
+    it.audioDecrypt = audioDecrypt
+    it.videoDecrypt = videoDecrypt
     it.render = render
     it.isSubtitles = if (isSubtitles) 1 else 0
     it.isDanmaku = if (isDanmaku) 1 else 0
-    it.isNoAudio = if (isNoAudio) 1 else 0
+    it.reconnectCount = reconnectCount
 }
 
 fun GlobalConfig.transformFromPlayerConfig(cfg: PlayerConfig) {
@@ -326,7 +314,6 @@ fun GlobalConfig.transformFromPlayerConfig(cfg: PlayerConfig) {
     isLoop = cfg.isLoop != 0
     reconnectTime = cfg.reconnectTime
     isHWDecode = cfg.isHWDecode != 0
-    maxCache = cfg.maxCache
     flip = cfg.flip
     rotation = cfg.rotation
     fill = cfg.fill
@@ -335,10 +322,10 @@ fun GlobalConfig.transformFromPlayerConfig(cfg: PlayerConfig) {
     isClear = cfg.isClear != 0
     isMute = cfg.isMute != 0
     volume = cfg.volume
-    isAudioDecrypt = cfg.audioDecrypt != 0
-    isVideoDecrypt = cfg.videoDecrypt != 0
+    audioDecrypt = cfg.audioDecrypt
+    videoDecrypt = cfg.videoDecrypt
     render = cfg.render
     isSubtitles = cfg.isSubtitles != 0
     isDanmaku = cfg.isDanmaku != 0
-    isNoAudio = cfg.isNoAudio != 0
+    reconnectCount = cfg.reconnectCount
 }

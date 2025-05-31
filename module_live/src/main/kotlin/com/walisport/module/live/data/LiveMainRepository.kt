@@ -69,7 +69,9 @@ class LiveMainRepository(
             viewerCount = marketInfo.liveInfo.viewerCount,
             clockModified = marketInfo.liveInfo.clockModified,
         )
-        val selections = marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
+
+        val selections =
+            marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
         database.liveMatchDao().updateLiveSelectionBean(
             selections.selections,
             selections.selectionsRecord,

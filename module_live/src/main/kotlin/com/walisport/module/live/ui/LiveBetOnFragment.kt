@@ -25,6 +25,7 @@ import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -213,44 +214,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             newTab.text = text
             mBinding.tabLayout.addTab(newTab)
         }
-        reflexPadding(mBinding.tabLayout)
+        reflexMargin(mBinding.tabLayout,8.dp2px,8.dp2px,4.dp2px)
         mBinding.tabLayout.getTabAt(0)?.select()
-    }
-
-
-    //设置tab之间的外边距
-    private fun reflexPadding(tabLayout: TabLayout) {
-        tabLayout.post {
-            try {
-                val mTabStrip = tabLayout.getChildAt(0) as LinearLayout
-                val margin: Int = 4f.dp2px
-                val marginStart: Int = 8f.dp2px
-                for (i in 0 until mTabStrip.childCount) {
-                    val tabView = mTabStrip.getChildAt(i)
-                    val params = tabView.layoutParams as LinearLayout.LayoutParams
-                    when (i) {
-                        0 -> {
-                            params.leftMargin = marginStart
-                            params.rightMargin = margin
-                        }
-
-                        mTabStrip.childCount - 1 -> {
-                            params.leftMargin = margin
-                            params.rightMargin = marginStart
-                        }
-
-                        else -> {
-                            params.leftMargin = margin
-                            params.rightMargin = margin
-                        }
-                    }
-                    tabView.layoutParams = params
-                    tabView.invalidate()
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
     }
 
     override fun onDestroyView() {

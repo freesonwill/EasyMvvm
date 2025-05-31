@@ -16,9 +16,9 @@ class HistoryVsView @JvmOverloads constructor(
 
     private var historyVsList: List<Int>? = null
 
-    private val itemWidth = 15.dp2px
+    private val itemWidth = 8.dp2px
     private val itemSpacing = 6.dp2px
-    private val itemHeight = 15.dp2px
+    private val itemHeight = 8.dp2px
 
     private var paint: Paint = Paint()
 
@@ -41,15 +41,16 @@ class HistoryVsView @JvmOverloads constructor(
         historyVsList?.let {
             it.forEachIndexed { index, ele ->
 
+                //红色表示输，绿色表示赢， 灰色表示打平
                 val drawableId = when (ele) {
                     1 -> {
-                        R.drawable.r
+                        R.drawable.history_lose
                     }
                     -1 -> {
-                        R.drawable.b
+                        R.drawable.history_win
                     }
                     else -> {
-                        R.drawable.t
+                        R.drawable.history_tie
                     }
                 }
 
@@ -65,7 +66,11 @@ class HistoryVsView @JvmOverloads constructor(
 
     fun setData(historyVs: List<Int>) {
         post {
-            historyVsList = historyVs
+            //历史记录限定5个
+            //take(n) 返回列表中前 n 个元素的子列表。
+            //如果列表的元素少于 5 个，take(5) 会返回整个列表，不会抛出异常。
+            //如果列表为空，返回空列表。
+            historyVsList = historyVs.take(5)
             requestLayout()
         }
     }

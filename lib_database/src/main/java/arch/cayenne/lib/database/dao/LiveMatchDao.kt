@@ -20,9 +20,10 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMarkets(markets: List<LiveMarketBean>)
 
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelections(selections: List<LiveSelectionBean>)
-
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelectionsRecord(selections: List<LiveSelectionBeanRecord>)
 
@@ -69,10 +70,11 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("DELETE FROM LiveSelectionBeanRecord")
     abstract fun deleteSelectionBeanRecord()
 
-
+    @Transaction
     @Query("DELETE FROM LiveSelectionBean WHERE selectionId IN (:selectionsIds)")
     abstract fun deleteSelectionBeanById( selectionsIds: List<Long>)
 
+    @Transaction
     @Query("DELETE FROM LiveSelectionBeanRecord WHERE selectionId IN (:selectionsIds)")
     abstract fun deleteSelectionBeanRecordById(selectionsIds: List<Long>)
 
@@ -129,16 +131,16 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         selectionsRecord: List<LiveSelectionBeanRecord>,
         selectionsDeleteIds: List<Long>,
     ) {
-        if (selections.isNotEmpty()) {
-            insertSelections(selections)
-        }
-        if (selectionsRecord.isNotEmpty()) {
-            insertSelectionsRecord(selectionsRecord)
-        }
-        if (selectionsDeleteIds.isNotEmpty()){
-            deleteSelectionBeanById(selectionsDeleteIds)
-            deleteSelectionBeanRecordById(selectionsDeleteIds)
-        }
+            if (selections.isNotEmpty()) {
+                insertSelections(selections)
+            }
+            if (selectionsRecord.isNotEmpty()) {
+                insertSelectionsRecord(selectionsRecord)
+            }
+            if (selectionsDeleteIds.isNotEmpty()){
+                deleteSelectionBeanById(selectionsDeleteIds)
+                deleteSelectionBeanRecordById(selectionsDeleteIds)
+            }
     }
 
     @Transaction
