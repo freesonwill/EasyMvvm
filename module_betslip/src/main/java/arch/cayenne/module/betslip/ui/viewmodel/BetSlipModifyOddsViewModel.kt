@@ -23,6 +23,10 @@ class BetSlipModifyOddsViewModel : BaseViewModel() {
         } ?: "$number"
     }
 
+    fun setArgument(value:String){
+        _editNumber.value = value
+    }
+
     /**
      *值加0.01
      * */

@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
+import arch.cayenne.lib.common.utils.ViewUtils
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipModifybetBinding
@@ -26,12 +27,12 @@ class BetSlipModifyOddsFragment private constructor() :
     private var _confirmClick: ((value: String) -> Unit)? = null
 
     companion object {
-       const  val ODDS_KEY:String = "odds_key"
+        const val ODDS_KEY: String = "odds_key"
 
-        fun newInstance(odds:String): BetSlipModifyOddsFragment {
+        fun newInstance(odds: String): BetSlipModifyOddsFragment {
             return BetSlipModifyOddsFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ODDS_KEY,odds)
+                    putString(ODDS_KEY, odds)
                 }
             }
         }
@@ -39,7 +40,8 @@ class BetSlipModifyOddsFragment private constructor() :
 
     override fun initView(savedInstanceState: Bundle?) {
         setDialogPosition()
-
+        ViewUtils.hideKeyboard(requireContext(), mBinding.etOdds)
+        mBinding.etOdds.requestFocus()
         with(mBinding) {
             keyboardNumber.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
@@ -69,7 +71,7 @@ class BetSlipModifyOddsFragment private constructor() :
                 dismiss()
             }
             val odds = arguments?.getString(ODDS_KEY)
-            etOdds.setText(odds)
+            mViewModel.setArgument(odds ?: "")
         }
     }
 
@@ -84,6 +86,7 @@ class BetSlipModifyOddsFragment private constructor() :
     override fun createObserver() {
         mViewModel.editNumber.observe(viewLifecycleOwner) {
             mBinding.etOdds.setText(it)
+            mBinding.etOdds.setSelection(it.length)
         }
     }
 
