@@ -166,6 +166,7 @@ class BetSlipEarlySettledFragment private constructor() :
             mBinding.tvBetMoney.text = getString(
                 R.string.refund_amount
             ).format(money)
+            mBinding.earlySettleTvTip.isVisible = money.toMoney() != 0L
         }
     }
 }

@@ -10,21 +10,21 @@ import galaxy.common.proto.Common.Order
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-object BetSlipUtils {
+internal object BetSlipUtils {
     /**
      * 计算预计最高金额
      * */
     fun expectMaxAmount(betAmount: String, odds: String): String {
-        return toBigDecimal(betAmount).multiply(toBigDecimal(odds))
-            .setScale(2, RoundingMode.HALF_UP).toString()
+        return multipy1000(betAmount).multiply(multipy1000(odds))
+            .divide(BigDecimal(1000000)).setScale(2, RoundingMode.DOWN).toString()
     }
 
     /**
      * 计算输赢金额
      * */
     fun winOrLoseAmount(betAmount: String, earlyBetAmount: String, returnAmount: String): Double {
-        return toBigDecimal(betAmount).minus(toBigDecimal(earlyBetAmount)).minus(
-            toBigDecimal(returnAmount).setScale(2, RoundingMode.HALF_UP)
+        return multipy1000(betAmount).minus(multipy1000(earlyBetAmount)).minus(
+            multipy1000(returnAmount).divide(BigDecimal(1000)).setScale(2, RoundingMode.DOWN)
         ).toDouble()
     }
 
@@ -32,15 +32,27 @@ object BetSlipUtils {
      * 提前结算金额
      * */
     fun earlySettlePrice(betAmount: String, earlyPrice: String, earlyBetAmount: String): String {
-        return toBigDecimal(betAmount).multiply(toBigDecimal(earlyPrice))
-            .minus(toBigDecimal(earlyBetAmount)).setScale(2, RoundingMode.HALF_UP).toString()
+        val nBetAmount = multipy1000(betAmount)
+        val nEarlyPrice = multipy1000(earlyPrice)
+        val nEarlyBetAmount = toBigDecimal(earlyBetAmount).multiply(BigDecimal(1000000))
+        val multipyResult = nBetAmount.multiply(nEarlyPrice)
+        val result = multipyResult.minus(nEarlyBetAmount)
+        "$nBetAmount $nEarlyPrice $nEarlyBetAmount  multipyResult $multipyResult result  $result ".logd(
+            "betslip"
+        )
+        return result.divide(BigDecimal(10000000))
+            .setScale(3, RoundingMode.DOWN).toString()
     }
 
-    fun toBigDecimal(value: String?): BigDecimal {
+    private fun toBigDecimal(value: String?): BigDecimal {
         return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }
 
-    internal fun List<Common.Order>.toBetSlipData(): List<BetSlipData> {
+    private fun multipy1000(value: String): BigDecimal {
+        return toBigDecimal(value).multiply(BigDecimal(1000))
+    }
+
+    fun List<Order>.toBetSlipData(): List<BetSlipData> {
         return this.map {
             val expandedEnum =
                 if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
@@ -49,4 +61,6 @@ object BetSlipUtils {
             )
         }.toList()
     }
+
+
 }

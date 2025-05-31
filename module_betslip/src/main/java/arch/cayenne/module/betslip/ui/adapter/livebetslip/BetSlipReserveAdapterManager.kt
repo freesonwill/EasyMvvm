@@ -4,6 +4,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
@@ -23,7 +24,7 @@ class BetSlipReserveAdapterManager(
         }
     }
 
-    override fun covertPlus(position: Int, item: arch.cayenne.module.betslip.data.model.BetSlipData) {
+    override fun covertPlus(position: Int, item: BetSlipData) {
         item.reserve?.let {
             updateReserveData(position, it)
             submitReserveAdapter(it)

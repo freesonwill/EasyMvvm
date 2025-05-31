@@ -218,6 +218,7 @@
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_except">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/bet_unsettled_bt_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/live_bet_early_settle"
@@ -225,11 +226,18 @@
             android:textSize="@dimen/sp_16" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/bet_unsettled_tv_early_settle"
+            android:id="@+id/bet_unsettled_bt_amount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/color_016f4a"
             android:textSize="@dimen/sp_16" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bet_unsettled_bt_progress"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            />
     </LinearLayout>
 
     <View

@@ -252,6 +252,8 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_bottom_button"
         android:layout_width="match_parent"
@@ -312,6 +314,22 @@
                 app:layout_constraintTop_toBottomOf="@id/tv_bet_hint" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/early_settle_tv_tip"
+        android:layout_width="124dp"
+        android:layout_height="26dp"
+        android:background="@drawable/bg_early_settle_tip"
+        android:text="@string/refund_amount_include_principal"
+        android:gravity="center"
+        android:textColor="@color/color_311700"
+        app:layout_constraintRight_toRightOf="@id/cl_bottom_button"
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
+        android:layout_marginBottom="-4dp"
+        android:visibility="gone"
+        />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
