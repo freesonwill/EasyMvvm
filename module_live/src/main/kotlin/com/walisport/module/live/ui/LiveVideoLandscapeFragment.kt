@@ -7,7 +7,10 @@ import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.GONE
+import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.core.animation.doOnEnd
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -30,6 +33,7 @@ import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -56,6 +60,12 @@ class LiveVideoLandscapeFragment :
      * 隐藏操作栏的定时Job
      */
     private var scheduledHideButtonsJob: Job? = null
+
+    /**
+     * 视频加载时的动画
+     */
+    private var loadingAnim: ObjectAnimator? = null
+
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -106,6 +116,8 @@ class LiveVideoLandscapeFragment :
                     hideFragment()
                 }
             }
+
+            setPlayerStateListener { onPlayerStateReceived(it) }
 
         }
 
@@ -489,7 +501,7 @@ class LiveVideoLandscapeFragment :
         AutoSizeConfig.getInstance().setDesignHeightInDp(LANDSCAPE_HEIGHT)
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.root)
         mBinding.videoView.onResume()
 
     }
@@ -507,7 +519,7 @@ class LiveVideoLandscapeFragment :
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
-        setStatusBar(StatusBarConfig,mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.root)
         mBinding.videoView.onDestroy()
     }
 
@@ -527,10 +539,12 @@ class LiveVideoLandscapeFragment :
      * 跳转到联赛赛程页
      */
     private fun jumpToLeagueFragment() {
-        navigate(LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment().apply {
-            arguments.putLong("matchID", mViewModel.matchId())
-            arguments.putInt("leagueID", mViewModel.leagueID)
-        })
+        navigate(
+            LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment()
+                .apply {
+                    arguments.putLong("matchID", mViewModel.matchId())
+                    arguments.putInt("leagueID", mViewModel.leagueID)
+                })
     }
 
     /**
@@ -726,6 +740,61 @@ class LiveVideoLandscapeFragment :
             }
         }
 
+
+    }
+
+    private fun onPlayerStateReceived(state: PlayerState) {
+
+        when (state) {
+            PlayerState.PLAYING -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            PlayerState.PAUSED -> {
+                //没有暂停按钮，
+            }
+
+            PlayerState.CACHING, PlayerState.CONNECTING -> {
+                // 创建旋转动画
+                loadingAnim = ObjectAnimator.ofFloat(
+                    mBinding.ivVideoLoading,  // 目标 View
+                    "rotation",  // 属性名称
+                    0f, 360f // 从 0 度旋转到 360 度
+                ).run {
+                    // 设置动画属性
+                    setDuration(1000) // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    interpolator = LinearInterpolator() // 匀速旋转
+
+                    // 启动动画
+                    start()
+                    this
+                }
+
+                mBinding.ctLoading.visibility = VISIBLE
+                mBinding.ctError.visibility = GONE
+
+            }
+
+            PlayerState.ERROR -> {
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = VISIBLE
+            }
+
+            PlayerState.STOPPED -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            else -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+        }
 
     }
 
