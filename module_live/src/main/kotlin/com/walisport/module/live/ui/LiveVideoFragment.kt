@@ -13,6 +13,9 @@ import android.provider.Settings
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout.GONE
+import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
@@ -34,7 +37,10 @@ import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -57,6 +63,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
      * 隐藏操作栏的定时Job
      */
     private var scheduledHideButtonsJob: Job? = null
+
+    /**
+     * 视频加载时的动画
+     */
+    private var loadingAnim: ObjectAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +138,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     showButtonsAnimated()
                 }
             }
+
+            setPlayerStateListener { onPlayerStateReceived(it) }
 
         }
 
@@ -431,6 +444,62 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             buttonsDisplaying = false
             hideButtonsAnimated()
+        }
+
+    }
+
+
+    private fun onPlayerStateReceived(state: PlayerState) {
+
+        when (state) {
+            PlayerState.PLAYING -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            PlayerState.PAUSED -> {
+                //没有暂停按钮，
+            }
+
+            PlayerState.CACHING, PlayerState.CONNECTING -> {
+                // 创建旋转动画
+                loadingAnim = ObjectAnimator.ofFloat(
+                    mBinding.ivVideoLoading,  // 目标 View
+                    "rotation",  // 属性名称
+                    0f, 360f // 从 0 度旋转到 360 度
+                ).run {
+                    // 设置动画属性
+                    setDuration(1000) // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    interpolator = LinearInterpolator() // 匀速旋转
+
+                    // 启动动画
+                    start()
+                    this
+                }
+
+                mBinding.ctLoading.visibility = VISIBLE
+                mBinding.ctError.visibility = GONE
+
+            }
+
+            PlayerState.ERROR -> {
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = VISIBLE
+            }
+
+            PlayerState.STOPPED -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            else -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
         }
 
     }
