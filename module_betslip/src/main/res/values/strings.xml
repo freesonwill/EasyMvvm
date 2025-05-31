@@ -81,5 +81,7 @@
     <string name="sport_picker_title">选择体育类型</string>
     <string name="sport_picker_reset">重置</string>
     <string name="btn_confirm">确定</string>
+    <string name="refund_amount_include_principal">返还金额包含本金</string>
+    <string name="live_bet_in_early_settle">提前结算中</string>
 
 </resources>

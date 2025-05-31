@@ -1,9 +1,12 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip
 
 import android.annotation.SuppressLint
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
@@ -50,15 +53,7 @@ class BetSlipUnsettledAdapterManager(
             it.betUnsettledTvOddsValue.text = order.odds
             it.betUnsettledTvBettingValue.text = order.betAmount
             it.betUnsettledTvExceptValue.text = expectMaxAmount(order.betAmount, order.odds)
-            it.betUnsettledTvEarlySettle.let {
-                it.text = "$${
-                    earlySettlePrice(
-                        order.betAmount,
-                        order.earlySettlePrice.price,
-                        order.earlyBetAmount
-                    )
-                }"
-            }
+            it.betUnsettledBtAmount.text = "$${earlySettlePrice(order.betAmount, order.earlySettlePrice.price, order.earlyBetAmount)}"
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
@@ -69,6 +64,28 @@ class BetSlipUnsettledAdapterManager(
                 it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             }
         }
+        earlySettleStatus(order.earlySettlePrice.settleStatus)
+    }
+
+   /**
+    *当提前结算单在提前结算中时提前结算按钮显示为提前结算中
+    * */
+    private fun earlySettleStatus(settleStatus:Int){
+        binding.also {
+            if (settleStatus == 102) {
+                it.betUnsettledBtTv.text =
+                    ContextCompat.getString(it.root.context, R.string.live_bet_in_early_settle)
+                it.betUnsettledBtAmount.isVisible = false
+                it.betUnsettledBtProgress.isVisible = true
+                it.betUnsettledBtProgress.setImageDrawable(ProgressDrawable())
+            } else {
+                it.betUnsettledBtTv.text =
+                    ContextCompat.getString(it.root.context, R.string.live_bet_early_settle)
+                it.betUnsettledBtAmount.isVisible = true
+                it.betUnsettledBtProgress.isVisible = false
+            }
+        }
+
     }
 
 }
