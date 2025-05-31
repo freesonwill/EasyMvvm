@@ -55,9 +55,11 @@ class BetSlipReserveFragment :
     }
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
-            it.initLoadMore(false)
             it.setOnRefreshListener {
                 mViewModel.getReserveOrder()
+            }
+            it.setOnLoadMoreListener {
+                mViewModel.loadMoreReserve()
             }
         }
     }
@@ -74,7 +76,6 @@ class BetSlipReserveFragment :
             betSlipAdapter.submitList(it) {
                 mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
-            showEmpty(it.isEmpty())
         }
         mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
@@ -88,25 +89,6 @@ class BetSlipReserveFragment :
                 mViewModel.getReserveOrder()
             }
         }
-    }
-
-    override fun updateState(state: DynamicStateLayout.States) {
-        mBinding.refreshLayout.finishRefresh()
-        if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
-            mBinding.recyclerView.isVisible = false
-            mBinding.emptyState.isVisible = true
-            mBinding.emptyState.setState(state, getString(arch.cayenne.lib.common.R.string.error_net)
-            ) {
-                mViewModel.loadData(getBetSlipEnum())
-            }
-        } else {
-            mBinding.recyclerView.isVisible = true
-            mBinding.emptyState.isVisible = false
-        }
-    }
-
-    private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
     private fun cancelReserve(order: Common.ReserveOrder) {

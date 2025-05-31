@@ -19,6 +19,7 @@ class BetSlipRepository(
         status: Int,
         page: Int,
         pageSize: Int,
+        lastId:String,
         sportId: Int,
         matchId: Long,
         startTime: Long?,
@@ -29,6 +30,7 @@ class BetSlipRepository(
             status,
             page,
             pageSize,
+            lastId = lastId,
             sportId = if(sportId == -1) null else sportId,
             matchId = if(matchId == (-1).toLong()) null else matchId,
             startTime,
@@ -39,12 +41,13 @@ class BetSlipRepository(
 
 
     suspend fun getReserveOrder(
+        lastId: String,
         sportId: Int,
         matchId: Long,
         startTime: Long? = null,
         endTime: Long? = null
     ): List<Common.ReserveOrder>? {
-        val resp = remoteManager.getReserveOrder(scope, sportId, matchId, startTime, endTime)
+        val resp = remoteManager.getReserveOrder(scope, lastId,sportId, matchId, startTime, endTime)
         return resp
     }
 

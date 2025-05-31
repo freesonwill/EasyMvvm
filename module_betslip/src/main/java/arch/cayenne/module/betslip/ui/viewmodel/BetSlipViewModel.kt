@@ -78,8 +78,17 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getOrders(status: BetSlipEnum) {
         viewModelScope.launch {
-            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let { result ->
-                _state.value = Event(DynamicStateLayout.States.NULL)
+            repository.getOrderReq(
+                status.value,
+                page,
+                pageSize,
+                lastId = _orderLiveData.value?.lastOrNull()?.order?.betId ?: "",
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.let { result ->
+                _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
                 _orderLiveData.value = result.toBetSlipData()
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
@@ -92,8 +101,14 @@ class BetSlipViewModel : BaseViewModel() {
      * */
     fun getReserveOrder() {
         viewModelScope.launch {
-            repository.getReserveOrder(sportId, matchId, startTime, endTime)?.let { result ->
-                _state.value = Event(DynamicStateLayout.States.NULL)
+            repository.getReserveOrder(
+                lastId = _reserveLiveData.value?.lastOrNull()?.reserve?.reserveId ?: "",
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.let { result ->
+                _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
                 _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
@@ -138,12 +153,17 @@ class BetSlipViewModel : BaseViewModel() {
 
     fun loadMoreOrder(status: BetSlipEnum) {
         val list = _orderLiveData.value
-        // 如果列表为空或者不是整页数据，则不加载更多
-        if (list.isNullOrEmpty() || list.size % pageSize != 0) {
-            return
-        }
         viewModelScope.launch {
-            repository.getOrderReq(status.value, page, pageSize, sportId, matchId, startTime, endTime)?.let {  result ->
+            repository.getOrderReq(
+                status.value,
+                page,
+                pageSize,
+                lastId = list!!.last().order?.betId ?: "",
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
                     page++
@@ -153,6 +173,32 @@ class BetSlipViewModel : BaseViewModel() {
                     newList.addAll(oldList)
                     newList.addAll(resultList)
                     _orderLiveData.value = newList
+                }
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            }
+        }
+    }
+
+    fun loadMoreReserve() {
+        val list = _reserveLiveData.value
+        viewModelScope.launch {
+            repository.getReserveOrder(
+                lastId = list!!.last().order?.betId ?: "",
+                sportId,
+                matchId,
+                startTime,
+                endTime
+            )?.let { result ->
+                _state.value = Event(DynamicStateLayout.States.NULL)
+                if (result.isNotEmpty()) {
+                    page++
+                    val newList = mutableListOf<BetSlipData>()
+                    val oldList = _reserveLiveData.value ?: emptyList()
+                    val resultList = result.map { BetSlipData(reserve = it) }
+                    newList.addAll(oldList)
+                    newList.addAll(resultList)
+                    _reserveLiveData.value = newList
                 }
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
@@ -185,4 +231,16 @@ class BetSlipViewModel : BaseViewModel() {
             getOrders(status)
         }
     }
+
+    /**
+     * 预约注单如果列表为空或者不是整页数据，则不加载更多
+     *
+     * */
+    fun isReserveLoadMore() = !(_reserveLiveData.value.isNullOrEmpty() || (_reserveLiveData.value!!.size % pageSize != 0))
+
+    /**
+     * 注单如果列表为空或者不是整页数据，则不加载更多
+     * */
+    fun isOrderLoadMore() = !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % pageSize != 0))
+
 }

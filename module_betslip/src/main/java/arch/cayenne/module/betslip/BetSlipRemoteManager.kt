@@ -31,6 +31,7 @@ class BetSlipRemoteManager(
         status: Int,
         page: Int,
         pageSize: Int,
+        lastId:String,
         sportId: Int? = null,
         matchId: Long? = null,
         startTime: Long? = null,
@@ -61,6 +62,7 @@ class BetSlipRemoteManager(
 
     suspend fun getReserveOrder(
         scope: CoroutineScope,
+        lastId: String,
         sportId: Int,
         matchId: Long,
         startTime: Long? = null,
