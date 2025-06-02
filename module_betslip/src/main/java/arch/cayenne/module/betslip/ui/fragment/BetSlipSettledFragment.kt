@@ -1,17 +1,12 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import kotlin.reflect.KClass
 
 
@@ -41,7 +36,6 @@ class BetSlipSettledFragment :
 
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
-            it.initLoadMore()
             it.setOnRefreshListener {
                 mViewModel.refreshOrder(BetSlipEnum.Settled)
             }

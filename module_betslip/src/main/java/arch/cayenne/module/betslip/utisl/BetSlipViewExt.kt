@@ -1,11 +1,8 @@
 package arch.cayenne.module.betslip.utisl
 
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getString
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
@@ -15,17 +12,6 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 
 object BetSlipViewExt {
-
-    /**
-     * PullRefreshLayout 打开上拉加载和下啦刷新
-     * */
-    internal fun PullRefreshLayout.initLoadMore(loadMore:Boolean = true) {
-        setEnableRefresh(true)
-        setEnableLoadMore(loadMore)
-        setEnableScrollContentWhenRefreshed(true)
-        setEnableScrollContentWhenLoaded(loadMore)
-        pullRefreshAddFooter()
-    }
 
     /**
      * DynamicStateLayout 空数据的时候展示
