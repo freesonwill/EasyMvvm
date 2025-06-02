@@ -30,6 +30,8 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             findNavController().navigateUp()
         })
         //默认或者无网情况下从记录中获取数据
+        val skinType = mViewModel.getSkinType()
+        mViewModel.setSkinType(skinType)
         langType = mViewModel.getLanguageType()
         mBinding.tvLanguageType.text = getLanguage(langType)
         oddsType = mViewModel.getOddsType()

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.NotifyMatchType
 import com.walisport.module.setting.data.SettingBean
 import com.walisport.module.setting.data.SettingRepository
@@ -17,6 +18,7 @@ import plugin.koin.KoinViewModel
 class SettingViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
 
     private val _systemSetting = MutableLiveData<SettingBean?>()
     val systemSetting: LiveData<SettingBean?> get() = _systemSetting
@@ -41,9 +43,16 @@ class SettingViewModel : BaseViewModel() {
         return repository.getLanguageType()
     }
 
+    //获取皮肤背景
+    fun getSkinType(): String {
+        return repository.getSkinType()
+    }
+
     //设置皮肤背景
     fun setSkinType(type: String) {
-        repository.setSkinType(type)
+        viewModelScope.launch {
+            skinManager.loadSkin(type)
+        }
     }
 
     //设置系统通知-进球
