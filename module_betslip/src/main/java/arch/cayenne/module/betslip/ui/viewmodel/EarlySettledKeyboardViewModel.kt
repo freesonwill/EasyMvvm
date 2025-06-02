@@ -9,6 +9,8 @@ class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
         private const val MIX_LIMIT = 1L
     }
 
+    override var decimalNumber: Int = 3
+
     fun setAmountMoney(betAmount: Long) {
         setNumberLimit(MIX_LIMIT, betAmount)
         setRemainingNumber(betAmount)

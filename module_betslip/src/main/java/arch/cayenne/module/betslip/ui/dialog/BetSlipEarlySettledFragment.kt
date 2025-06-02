@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import arch.cayenne.module.betslip.R
@@ -28,11 +29,11 @@ class BetSlipEarlySettledFragment private constructor() :
         private const val BET_AMOUNT_MONEY = "bet_amount_money"
 
         fun instance(
-            money: Long,
+            money: String,
         ): BetSlipEarlySettledFragment {
             return BetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BET_AMOUNT_MONEY, money)
+                    putString(BET_AMOUNT_MONEY, money)
                 }
             }
         }
@@ -125,8 +126,8 @@ class BetSlipEarlySettledFragment private constructor() :
 
     override fun initData() {
         super.initData()
-        val betAmount = arguments?.getLong(BET_AMOUNT_MONEY) ?: 0L
-        mViewModel.setAmountMoney(betAmount)
+        val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
+        mViewModel.setAmountMoney(betAmount.toMoneyForScale(mViewModel.decimalNumber))
     }
 
     override fun initListener() {
