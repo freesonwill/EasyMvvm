@@ -6,6 +6,12 @@
     <color name="hot_word">#00D271</color>
     <color name="tab_item_text_select">#ffffff</color>
     <color name="tab_item_text_unselect">#929298</color>
+    <color name="search_result_date">#929298</color>
     <color name="search_result_more">#929298</color>
+    <color name="search_result_race_header">#FFFFFF</color>
     <color name="search_result_default_gradient_start">#065030</color>
+    <color name="search_result_race_divider">#3D3E4B</color>
+    <color name="search_result_race_text_1">#929298</color>
+    <color name="search_result_race_team_name">#ffffff</color>
+    <color name="search_result_race_no_score">#666666</color>
 </resources>

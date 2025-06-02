@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="please_input_content">Silakan masukkan konten</string>
+    <string name="delete_all">Hapus Semua</string>
+    <string name="search_finish">Selesai</string>
+    <string name="history_record">Riwayat</string>
+    <string name="hot_search">Pencarian Populer</string>
+    <string name="no_search_result">Tidak ada data, silakan coba yang lain</string>
+    <string name="tab_all">Semua</string>
+    <string name="tab_tournament">Turnamen</string>
+    <string name="tab_team">Tim</string>
+    <string name="tab_player">Pemain</string>
+    <string name="search_date_hint">Filter tanggal pertandingan</string>
+    <string name="search_result_sub_title_tournament">%1$s / Peringkat %2$d / %3$dMenang %4$dKalah</string>
+    <string name="search_result_sub_title_player">%1$s / %2$s / No.%3$d / %4$s</string>
+    <string name="search_result_more">Lainnya</string>
+    <string name="search_result_btn_bet">Pasang Taruhan</string>
+    <string name="search_result_btn_bet_finish">Selesai</string>
+    <string name="search_result_race_date_format_display">dd MMM EEEE</string>
+</resources>

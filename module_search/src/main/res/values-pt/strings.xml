@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="please_input_content">Por favor, insira o conteúdo</string>
+    <string name="delete_all">Excluir Tudo</string>
+    <string name="search_finish">Concluído</string>
+    <string name="history_record">Histórico</string>
+    <string name="hot_search">Pesquisas Populares</string>
+    <string name="no_search_result">Sem dados, por favor tente outro</string>
+    <string name="tab_all">Tudo</string>
+    <string name="tab_tournament">Torneio</string>
+    <string name="tab_team">Equipe</string>
+    <string name="tab_player">Jogador</string>
+    <string name="search_date_hint">Filtrar data da partida</string>
+    <string name="search_result_sub_title_tournament">%1$s / %2$dº Lugar / %3$dV %4$dD</string>
+    <string name="search_result_sub_title_player">%1$s / %2$s / Nº %3$d / %4$s</string>
+    <string name="search_result_more">Mais</string>
+    <string name="search_result_btn_bet">Apostar</string>
+    <string name="search_result_btn_bet_finish">Finalizado</string>
+    <string name="search_result_race_date_format_display">dd \'de\' MMM EEEE</string>
+</resources>

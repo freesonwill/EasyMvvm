@@ -9,5 +9,11 @@
     <string name="tab_tournament">League</string>
     <string name="tab_team">Team</string>
     <string name="tab_player">Player</string>
+    <string name="search_date_hint">Filter Match Date</string>
+    <string name="search_result_sub_title_tournament">%1$s / No.%2$d / %3$d Wins %4$d Losses</string>
+    <string name="search_result_sub_title_player">%1$s / %2$s / No.%3$d / %4$s</string>
     <string name="search_result_more">More</string>
+    <string name="search_result_btn_bet">Bet</string>
+    <string name="search_result_btn_bet_finish">Finished</string>
+    <string name="search_result_race_date_format_display">MMM dd, EEEE</string>
 </resources>
