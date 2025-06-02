@@ -1,13 +1,10 @@
 package arch.cayenne.lib.qyplayer.ui.widget
 
-import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.animation.LinearInterpolator
-import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -35,10 +32,6 @@ class LivePlayerView @JvmOverloads constructor(
     private lateinit var mRenderView: QYRenderView
     private lateinit var mGestureView: GestureView
 
-    private lateinit var ctLoading: ConstraintLayout
-    private lateinit var ctError: ConstraintLayout
-    private lateinit var ivLoading: ImageView
-
     private var mOnPlayStateBtnClickListener: (() -> Unit)? = null
     private var mOnUpdateStatisticsListener: ((category: String, json: String) -> Unit)? = null
 
@@ -46,6 +39,11 @@ class LivePlayerView @JvmOverloads constructor(
      * 单击事件处理
      */
     private var onSingleTapListener: (() -> Unit)? = null
+
+    /**
+     * 播放状态通知
+     */
+    private var playerStateListener: ((PlayerState) -> Unit)? = null
 
     private lateinit var mGestureDialogManager: GestureDialogManager
     private val mAudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -60,25 +58,21 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mPlayerMode: PlayerMode
 
-    private var loadingAnim: ObjectAnimator? = null
-
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
     fun init(playerMode: PlayerMode, screenMode: ScreenMode) {
         mPlayerMode = playerMode
-        initViews(
-            if (screenMode == ScreenMode.FULL) {
-                R.layout.layout_live_player_view_landscape
-            } else {
-                R.layout.layout_live_player_view
-            }
-        )
+        initViews(R.layout.layout_live_player_view)
         initListeners()
     }
 
     fun setOnSingleTapListener(listener: (() -> Unit)) {
         onSingleTapListener = listener
+    }
+
+    fun setPlayerStateListener(listener: (PlayerState) -> Unit) {
+        playerStateListener = listener
     }
 
     fun setDataSource(url: String) {
@@ -381,12 +375,10 @@ class LivePlayerView @JvmOverloads constructor(
             return
         }
         mPlayerState = state
+        playerStateListener?.invoke(mPlayerState)
+
         when (mPlayerState) {
             PlayerState.PLAYING -> {
-                loadingAnim?.cancel()
-                ctLoading.visibility = GONE
-                ctError.visibility = GONE
-
                 bufferingTimeoutJob?.cancel()
             }
 
@@ -395,45 +387,17 @@ class LivePlayerView @JvmOverloads constructor(
             }
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
-                // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    ivLoading,  // 目标 View
-                    "rotation",  // 属性名称
-                    0f, 360f // 从 0 度旋转到 360 度
-                ).run {
-                    // 设置动画属性
-                    setDuration(1000) // 持续时间 1 秒
-                    repeatCount = ObjectAnimator.INFINITE // 无限循环
-                    interpolator = LinearInterpolator() // 匀速旋转
-
-                    // 启动动画
-                    start()
-                    this
-                }
-
-                ctLoading.visibility = VISIBLE
-                ctError.visibility = GONE
-
                 // 启动协程，10秒超时
                 // 如果10秒后还在loading状态， 展示加载失败页面
                 bufferingTimeoutJob?.cancel()
                 bufferingTimeoutJob = coroutineScope.launch {
                     delay(10000)
-                    ctLoading.visibility = GONE
-                    ctError.visibility = VISIBLE
+                    playerStateListener?.invoke(PlayerState.ERROR)
                 }
             }
 
-            PlayerState.STOPPED -> {
-                loadingAnim?.cancel()
-                ctLoading.visibility = GONE
-                ctError.visibility = GONE
-            }
-
             else -> {
-                loadingAnim?.cancel()
-                ctLoading.visibility = GONE
-                ctError.visibility = GONE
+
             }
         }
     }
@@ -443,10 +407,6 @@ class LivePlayerView @JvmOverloads constructor(
         // 使用 LayoutInflater 加载 XML 布局
         LayoutInflater.from(context)
             .inflate(layoutId, this, true)
-
-        ctLoading = findViewById(R.id.ct_loading)
-        ctError = findViewById(R.id.ct_error)
-        ivLoading = findViewById(R.id.iv_video_loading)
 
         // 初始化子视图
         initRenderView()

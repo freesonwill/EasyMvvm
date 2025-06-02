@@ -8,6 +8,7 @@ import galaxy.common.proto.Common.Order
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 
 class BetSlipInvalidAdapterManager(
@@ -18,7 +19,7 @@ class BetSlipInvalidAdapterManager(
         initRecyclerView(binding.recyclerSelection,betSlipType)
     }
 
-    override fun covertPlus(position: Int, item: arch.cayenne.module.betslip.data.model.BetSlipData) {
+    override fun covertPlus(position: Int, item: BetSlipData) {
         item.order?.let {
             updateData(item.order, false)
         }

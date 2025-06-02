@@ -1,40 +1,39 @@
 package com.walisport.module.live.data
 
-import android.annotation.SuppressLint
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.LiveRemoteManager
-import galaxy.client.proto.Client
 import galaxy.client.proto.Client.MatchBasicUpdate
+import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 
 class LiveMainRepository(
     private val remoteManager: LiveRemoteManager, private val database: GameDatabase
 ) : BaseRepository() {
+
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchRes(matchId: Long,callback: (LiveMatchBean) -> Unit) {
-            clearMatchCache()
-            var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
-            if (matchFullData != null) {
-                matchFullData.match.find { it.matchId==matchId }?.let { scope.launch(Dispatchers.Main){callback(it)} }
-                database.liveMatchDao().insertFullMatch(
-                    matches = matchFullData.match,
-                    markets = matchFullData.markets,
-                    selections = matchFullData.selections,
-                    selectionsRecord = matchFullData.selectionsRecord,
-                )
-            }
+    suspend fun getMatchRes(matchId: Long, callback: (LiveMatchBean) -> Unit) {
+        clearMatchCache()
+        var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
+        if (matchFullData != null) {
+            matchFullData.match.find { it.matchId == matchId }
+                ?.let { scope.launch(Dispatchers.Main) { callback(it) } }
+            database.liveMatchDao().insertFullMatch(
+                matches = matchFullData.match,
+                markets = matchFullData.markets,
+                selections = matchFullData.selections,
+                selectionsRecord = matchFullData.selectionsRecord,
+            )
+        }
     }
 
     private fun clearMatchCache() {
@@ -47,8 +46,8 @@ class LiveMainRepository(
 
     suspend fun observeMatchInfoNotify() {
         remoteManager.observeMatchInfoNotify().collect {
-            scope.launch(Dispatchers.IO){
-                updateFullMatchInfo(it.basicUpdate,  it.marketUpdateList,it.matchId)
+            scope.launch(Dispatchers.IO) {
+                updateFullMatchInfo(it.basicUpdate, it.marketUpdateList, it.matchId)
             }
         }
     }
@@ -70,29 +69,35 @@ class LiveMainRepository(
             viewerCount = marketInfo.liveInfo.viewerCount,
             clockModified = marketInfo.liveInfo.clockModified,
         )
-        var selections = marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
-            database.liveMatchDao().updateLiveSelectionBean(selections.selections,selections.selectionsRecord,selections.selectionsDelete )
+
+        val selections =
+            marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
+        database.liveMatchDao().updateLiveSelectionBean(
+            selections.selections,
+            selections.selectionsRecord,
+            selections.selectionsDelete
+        )
     }
 
-     fun unregisterMatchInfoNotify(matchId: Long) {
+    fun unregisterMatchInfoNotify(matchId: Long) {
         remoteManager.unregisterMatchInfoNotify(scope, matchId)
     }
 
-     fun clearAllMatch(){
-        scope.launch(Dispatchers.IO){
+    fun clearAllMatch() {
+        scope.launch(Dispatchers.IO) {
             database.liveMatchDao().clearAllMatch()
         }
     }
 
-    suspend fun registerMatchStaticsNotify(matchId: Long) {
-        remoteManager.registerMatchStaticsNotify(scope, matchId)
+    suspend fun registerMatchStaticsNotify(matchId: Long): Sloth.MatchLiveData? {
+        return remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
     suspend fun unregisterStatisticsNotify(matchId: Long) {
         remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
-    suspend fun observeMatchStaticsNotify():Flow<Client.SubscribeMatchLiveResp> {
+    suspend fun observeMatchStaticsNotify(): Flow<Sloth.MatchLiveData> {
         return remoteManager.observeMatchStaticsNotify()
     }
 }

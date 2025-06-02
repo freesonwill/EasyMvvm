@@ -8,6 +8,7 @@ data class MatchLiveData @JvmOverloads constructor(
     val id: Long,                        // 比赛ID
     val team: List<MatchHalfTeamStats>,  // 比赛球队半全场统计数据
     val stats: List<Stat>,               // 比赛统计字段说明，可能不存在
+    val matchTrendData: MatchTrendData   // 比赛趋势
 )
 
 data class Stat @JvmOverloads constructor(
@@ -21,3 +22,5 @@ data class MatchHalfTeamStats @JvmOverloads constructor(
     val homeNum: Int,                     // 主队值
     val awayNum: Int                      // 客队值
 )
+
+

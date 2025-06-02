@@ -31,6 +31,7 @@ class BetSlipRemoteManager(
         status: Int,
         page: Int,
         pageSize: Int,
+        lastId:String,
         sportId: Int? = null,
         matchId: Long? = null,
         startTime: Long? = null,
@@ -61,12 +62,13 @@ class BetSlipRemoteManager(
 
     suspend fun getReserveOrder(
         scope: CoroutineScope,
+        lastId: String,
         sportId: Int,
         matchId: Long,
         startTime: Long? = null,
         endTime: Long? = null
     ): List<Common.ReserveOrder>? {
-        "getReserveOrder params matchId $matchId sportId $sportId".logd(TAG)
+        "getReserveOrder params matchId $matchId sportId $sportId $startTime  $endTime".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,

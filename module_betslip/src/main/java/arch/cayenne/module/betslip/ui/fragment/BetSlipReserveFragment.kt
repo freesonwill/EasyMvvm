@@ -14,6 +14,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
+import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
@@ -27,6 +28,7 @@ class BetSlipReserveFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
+        initLoadRefresh()
     }
 
     private fun initRecycler() {
@@ -51,6 +53,17 @@ class BetSlipReserveFragment :
             it.betSlipInit()
         }
     }
+    private fun initLoadRefresh() {
+        mBinding.refreshLayout.also {
+            it.setOnRefreshListener {
+                mViewModel.getReserveOrder()
+            }
+            it.setOnLoadMoreListener {
+                mViewModel.loadMoreReserve()
+            }
+        }
+    }
+
 
 
     override fun initListener() {
@@ -63,7 +76,6 @@ class BetSlipReserveFragment :
             betSlipAdapter.submitList(it) {
                 mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
-            showEmpty(it.isEmpty())
         }
         mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
@@ -77,24 +89,6 @@ class BetSlipReserveFragment :
                 mViewModel.getReserveOrder()
             }
         }
-    }
-
-    override fun updateState(state: DynamicStateLayout.States) {
-        if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
-            mBinding.recyclerView.isVisible = false
-            mBinding.emptyState.isVisible = true
-            mBinding.emptyState.setState(state, getString(arch.cayenne.lib.common.R.string.error_net)
-            ) {
-                mViewModel.loadData(getBetSlipEnum())
-            }
-        } else {
-            mBinding.recyclerView.isVisible = true
-            mBinding.emptyState.isVisible = false
-        }
-    }
-
-    private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.recyclerView)
     }
 
     private fun cancelReserve(order: Common.ReserveOrder) {
@@ -113,7 +107,7 @@ class BetSlipReserveFragment :
 
     private fun modifyReserve(order: Common.ReserveOrder) {
 
-        BetSlipModifyOddsFragment.newInstance().also {
+        BetSlipModifyOddsFragment.newInstance(order.selection.odds).also {
             it.setConfirmListener { odds ->
                 mViewModel.modifyReserve(order, odds)
             }

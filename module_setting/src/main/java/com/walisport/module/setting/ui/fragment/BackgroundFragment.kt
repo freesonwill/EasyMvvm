@@ -25,20 +25,26 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
     override val vmClass: KClass<BackgroundViewModel> = BackgroundViewModel::class
     private var skinType: String = ""
+    private var skinOld: String = ""
     private var defaultImmColor: Int = 0
     private var immColor: Int = 0
     override fun initView(savedInstanceState: Bundle?) {
         defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinData()
+        skinOld = skinType
         changeSkinType(skinType)
-        val binding =
-            TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
-        binding.barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
+        val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
+            barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
+            //点击返回，如果存在变动就恢复变动前的皮肤
             tvBack.clickNoRepeat {
+                if (skinOld != skinType) {
+                    mViewModel.setSkinData(skinOld)
+                }
                 findNavController().navigateUp()
             }
+            //点击确认，如果存在变动就使用变动后的皮肤
             tvTitleRight.clickNoRepeat {
                 defaultImmColor = immColor
                 mViewModel.setSkinData(skinType)
@@ -53,43 +59,36 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
         super.onStart()
     }
 
-    //接口中的背景参数 0-经典 1-黑蓝 2-黑绿 3-黑红 4-白蓝 5-白绿
     override fun initListener() {
         mBinding.layClassic.clickNoRepeat {
             skinType = SkinType.SKIN_CLASSIC.value
-            mViewModel.setSkinType(SkinType.SKIN_CLASSIC)
-            mViewModel.updateBackgroundSetting(0)
-            setImmColor(SkinType.SKIN_CLASSIC.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
         mBinding.layBlackBlue.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_BLUE.value
-            mViewModel.setSkinType(SkinType.SKIN_BLACK_BLUE)
-            mViewModel.updateBackgroundSetting(1)
-            setImmColor(SkinType.SKIN_BLACK_BLUE.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
         mBinding.layBlackGreen.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_GREEN.value
-            mViewModel.setSkinType(SkinType.SKIN_BLACK_GREEN)
-            mViewModel.updateBackgroundSetting(2)
-            setImmColor(SkinType.SKIN_BLACK_GREEN.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
         mBinding.layBlackRed.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_RED.value
-            mViewModel.setSkinType(SkinType.SKIN_BLACK_RED)
-            mViewModel.updateBackgroundSetting(3)
-            setImmColor(SkinType.SKIN_BLACK_RED.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
         mBinding.layWhiteBlue.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_BLUE.value
-            mViewModel.setSkinType(SkinType.SKIN_WHITE_BLUE)
-            mViewModel.updateBackgroundSetting(4)
-            setImmColor(SkinType.SKIN_WHITE_BLUE.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
         mBinding.layWhiteGreen.clickNoRepeat {
             skinType = SkinType.SKIN_WHITE_GREEN.value
-            mViewModel.setSkinType(SkinType.SKIN_WHITE_GREEN)
-            mViewModel.updateBackgroundSetting(5)
-            setImmColor(SkinType.SKIN_WHITE_GREEN.value)
+            mViewModel.setSkinType(skinType)
+            setImmColor(skinType)
         }
     }
 

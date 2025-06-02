@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
 
 import android.annotation.SuppressLint
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
@@ -50,8 +51,8 @@ class BetSlipReserveItemManager(
         nBinding: ItemLiveBetSlipReserveBinding
     ) {
         val match = item.matchBasic
-        Glide.with(nBinding.root.context).load(match.tournamentIcon).into(nBinding.betReserveIvBall)
         with(nBinding) {
+            Glide.with(betReserveIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betReserveIvBall)
             betReserveTvRace.text = match.matchName
             betReserveTvIntroduce.text = item.selectionName
             betReserveTvAodds.text = nBinding.root.context.getString(R.string.live_bet_except_odds, item.odds)

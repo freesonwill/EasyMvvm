@@ -1,10 +1,10 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -15,7 +15,6 @@ import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import kotlin.reflect.KClass
 
 
@@ -36,18 +35,13 @@ class BetSlipUnsettledFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            mBinding.refreshLayout.finishRefresh()
-            mBinding.refreshLayout.finishLoadMore()
-            betSlipAdapter.submitList(it) {
-                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-            }
-            showEmpty(it.isEmpty())
+            betSlipAdapter.submitList(it)
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
             showToast(if (it == true) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
             mViewModel.getOrders(BetSlipEnum.UnSettled)
         }
-        mViewModel.earlySettlePriceLiveData.observe(viewLifecycleOwner) {
+        mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
             val price = it.price.toDoubleOrNull()
             if (price == null || price <= 0) {
                 showToast(getString(R.string.not_support_early_settle))
@@ -57,40 +51,17 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, price.toString(), order.earlyBetAmount
                 )
-                BetSlipEarlySettledFragment.instance(it.betId, money.toDouble()).apply {
-                    setOnEarlySettleListener { betId, money ->
+                BetSlipEarlySettledFragment.instance(money.toMoney()).apply {
+                    setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
-                            betId,
-                            money.toString(),
-                            mViewModel.earlySettlePriceLiveData.value?.price ?: "0"
+                            it.betId,
+                            money.getMoney(),
+                            mViewModel.isSupportEarlySettleLiveData.value?.price ?: "0"
                         )
                     }
                 }.show(childFragmentManager)
             }
         }
-    }
-
-    override fun updateState(state: DynamicStateLayout.States) {
-        mBinding.refreshLayout.finishRefresh()
-        mBinding.refreshLayout.finishLoadMore()
-        mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
-        if (state == DynamicStateLayout.States.NETWORK_ANOMALY) {
-            mBinding.recyclerView.isVisible = false
-            mBinding.refreshLayout.isVisible = false
-            mBinding.emptyState.isVisible = true
-            mBinding.emptyState.setState(state, getString(arch.cayenne.lib.common.R.string.error_net)
-            ) {
-                mViewModel.refreshOrder(getBetSlipEnum())
-            }
-        } else {
-            mBinding.recyclerView.isVisible = true
-            mBinding.refreshLayout.isVisible = true
-            mBinding.emptyState.isVisible = false
-        }
-    }
-
-    private fun showEmpty(isEmpty: Boolean) {
-        mBinding.emptyState.showEmptyData(isEmpty, mBinding.refreshLayout)
     }
 
     private fun initRecycler() {
@@ -104,7 +75,7 @@ class BetSlipUnsettledFragment :
                 item: BetSlipData?, position: Int
             ) {
                 item?.order?.let {
-                    mViewModel.earlySettledPrice(it)
+                    mViewModel.isSuppportEarlySettled(it)
                 }
             }
         })

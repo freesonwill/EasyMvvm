@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.dialog
 
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.view.ViewTreeObserver
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
+import arch.cayenne.lib.common.utils.ViewUtils
 import kotlin.reflect.KClass
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipModifybetBinding
@@ -25,14 +27,21 @@ class BetSlipModifyOddsFragment private constructor() :
     private var _confirmClick: ((value: String) -> Unit)? = null
 
     companion object {
-        fun newInstance(): BetSlipModifyOddsFragment {
-            return BetSlipModifyOddsFragment()
+        const val ODDS_KEY: String = "odds_key"
+
+        fun newInstance(odds: String): BetSlipModifyOddsFragment {
+            return BetSlipModifyOddsFragment().apply {
+                arguments = Bundle().apply {
+                    putString(ODDS_KEY, odds)
+                }
+            }
         }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         setDialogPosition()
-
+        ViewUtils.hideKeyboard(requireContext(), mBinding.etOdds)
+        mBinding.etOdds.requestFocus()
         with(mBinding) {
             keyboardNumber.setOnCalculatorClickListener(object :
                 NumberKeyboardView.OnCalculatorClickListener {
@@ -58,6 +67,11 @@ class BetSlipModifyOddsFragment private constructor() :
                 _confirmClick?.invoke(mBinding.etOdds.text.toString())
                 dismiss()
             }
+            main.setOnClickListener {
+                dismiss()
+            }
+            val odds = arguments?.getString(ODDS_KEY)
+            mViewModel.setArgument(odds ?: "")
         }
     }
 
@@ -72,11 +86,12 @@ class BetSlipModifyOddsFragment private constructor() :
     override fun createObserver() {
         mViewModel.editNumber.observe(viewLifecycleOwner) {
             mBinding.etOdds.setText(it)
+            mBinding.etOdds.setSelection(it.length)
         }
     }
 
     override val dialogBackground: Drawable?
-        get() = ColorDrawable(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.black_75))
+        get() = ColorDrawable(Color.TRANSPARENT)
 
     private fun setDialogPosition() {
         dialog?.setCanceledOnTouchOutside(true)
@@ -86,9 +101,8 @@ class BetSlipModifyOddsFragment private constructor() :
                 override fun onGlobalLayout() {
                     mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                     val layoutParams = attributes
-                    layoutParams.width = LayoutParams.WRAP_CONTENT
-                    layoutParams.height = LayoutParams.WRAP_CONTENT
-                    layoutParams.gravity = Gravity.BOTTOM or Gravity.RIGHT
+                    layoutParams.width = LayoutParams.MATCH_PARENT
+                    layoutParams.height = LayoutParams.MATCH_PARENT
                     attributes = layoutParams
                 }
             })

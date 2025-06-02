@@ -26,8 +26,11 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
         market.marketDetailList.forEachIndexed { index, detail ->
             detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                 if (market.status==LiveMatchBetStatus.DELETE.code){
+                    LogUtils.e("selectionsToRoomData---delete--name${selection.name},${selection.name}-----")
                     selectionsDelete.add(selection.selectionId)
-                }else{
+                } else if  (market.status==LiveMatchBetStatus.DEFAULT.code){
+                   // status为0时不用做处理，因为用的相同数据结构，查询比赛列表或比赛详情时，market的status会是0
+                }else{//新增,修改
                     var data = rec.find { it.selectionId == selection.selectionId }
                     var status = if(data==null){ LiveOddsStatusEnum.SAME.status} else if (data.odds.toDouble() < selection.odds.toDouble()) {
                         LiveOddsStatusEnum.UP.status
@@ -36,7 +39,7 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                     } else {
                         LiveOddsStatusEnum.SAME.status
                     }
-                    LogUtils.e("selectionsToRoomData-----name${selection.shortName}------oddsRecord=${data?.odds?.toDouble()}-----odds${selection?.odds?.toDouble()}-----status =${status}")
+                    LogUtils.e("selectionsToRoomData-----name${selection.name}------oddsRecord=${data?.odds?.toDouble()}-----odds${selection?.odds?.toDouble()}-----status =${status}")
                     selectionsRecord.add(
                         LiveSelectionBeanRecord(
                             marketId = market.marketId,

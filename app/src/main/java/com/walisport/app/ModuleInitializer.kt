@@ -39,10 +39,12 @@ class ModuleInitializer : DefaultInitializer<String> {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 activityCount++
                 "Activity $activity has created. Count: $activityCount".logi(TAG)
-                TimesExitOnBackPressedHelper(activity as FragmentActivity,2){ remain, times->
-                    activity.showToast(R.string.more_taps_to_exit.getString())
-                    //activity.showToast(R.string.more_taps_to_exit2.getString(remain))
-                }.attach()
+                if(activity is FragmentActivity){
+                    TimesExitOnBackPressedHelper(activity as FragmentActivity,2){ remain, times->
+                        activity.showToast(R.string.more_taps_to_exit.getString())
+                        //activity.showToast(R.string.more_taps_to_exit2.getString(remain))
+                    }.attach()
+                }
             }
 
             override fun onActivityStarted(activity: Activity) {

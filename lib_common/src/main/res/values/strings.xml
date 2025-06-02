@@ -3,6 +3,12 @@
     <string name="pull_refresh">下拉刷新…</string>
     <string name="net_refresh">刷新</string>
     <string name="search_title">搜索</string>
+    <string name="loading">加载中…</string>
+    <string name="on_loading">加载中</string>
+    <string name="pull_load">上拉加载…</string>
 
     <string name="error_net">网络异常，请检查网络设置</string>
+
+    <string name="toast_over_remaining">余额不足</string>
+    <string name="toast_over_max">投注超限</string>
 </resources>

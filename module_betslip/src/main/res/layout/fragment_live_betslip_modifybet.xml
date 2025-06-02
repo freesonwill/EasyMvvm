@@ -2,30 +2,32 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="338dp"
-    android:layout_height="299dp"
-    android:background="@drawable/bg_modify_odds"
-    android:paddingHorizontal="@dimen/dp_12"
-    android:paddingVertical="@dimen/dp_7"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black_75"
     >
 
-    <!--    <arch.cayenne.lib.skin.widget.SkinnableImageView-->
-    <!--        android:id="@+id/iv1"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginEnd="99dp"-->
-    <!--        android:src="@drawable/icon_tips_arrow"-->
-    <!--        app:layout_constraintRight_toRightOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv1"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_10"
+        android:layout_marginEnd="99dp"
+        android:background="@drawable/icon_tips_arrow"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/main_bg"
+         />
 
-    <!--    <View-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:layout_marginTop="-2dp"-->
-    <!--        android:background="@drawable/bg_modify_odds"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        />-->
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/main_bg"
+        android:layout_width="314dp"
+        android:layout_height="276dp"
+        android:background="@drawable/shape_12dp"
+        android:backgroundTint="@color/keyboard_3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginRight="@dimen/dp_10"
+        app:layout_constraintRight_toRightOf="parent"
+        />
 
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -44,13 +46,13 @@
         android:id="@+id/fl1"
         android:layout_width="130dp"
         android:layout_height="@dimen/dp_36"
-        android:layout_marginTop="@dimen/dp_22"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
         android:background="@drawable/shape_8dp"
         android:backgroundTint="@color/input_box_2"
         android:orientation="horizontal"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintRight_toRightOf="@id/main_bg"
+        app:layout_constraintTop_toTopOf="@id/main_bg">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
@@ -80,7 +82,7 @@
         android:layout_height="204dp"
         android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_12"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/main_bg"
         app:layout_constraintTop_toBottomOf="@id/fl1" />
 
     <GridLayout
@@ -97,7 +99,7 @@
             style="@style/NumberKeyboardButton"
             android:layout_marginBottom="@dimen/dp_2"
             android:backgroundTint="@color/keyboard_1"
-            android:src="@drawable/icon_keyborad_back" />
+            android:src="@drawable/icon_keyboard_back" />
 
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_clear"

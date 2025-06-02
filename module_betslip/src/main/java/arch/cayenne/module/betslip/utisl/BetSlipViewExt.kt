@@ -19,11 +19,12 @@ object BetSlipViewExt {
     /**
      * PullRefreshLayout 打开上拉加载和下啦刷新
      * */
-    internal fun PullRefreshLayout.initLoadMore() {
+    internal fun PullRefreshLayout.initLoadMore(loadMore:Boolean = true) {
         setEnableRefresh(true)
-        setEnableLoadMore(true)
+        setEnableLoadMore(loadMore)
         setEnableScrollContentWhenRefreshed(true)
-        setEnableScrollContentWhenLoaded(true)
+        setEnableScrollContentWhenLoaded(loadMore)
+        pullRefreshAddFooter()
     }
 
     /**
@@ -33,9 +34,6 @@ object BetSlipViewExt {
         if (showEmpty) {
             isVisible = true
             otherView.isVisible = false
-            setState(
-                DynamicStateLayout.States.DATA_EMPTY, getString(context, R.string.lineup_empty)
-            )
         } else {
             this.isVisible = false
             otherView.isVisible = true

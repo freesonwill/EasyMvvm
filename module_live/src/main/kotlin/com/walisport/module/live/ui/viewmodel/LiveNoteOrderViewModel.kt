@@ -1,7 +1,0 @@
-package com.walisport.module.live.ui.viewmodel
-
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-
-class LiveNoteOrderViewModel : BaseViewModel() {
-    // TODO: Implement the ViewModel
-}

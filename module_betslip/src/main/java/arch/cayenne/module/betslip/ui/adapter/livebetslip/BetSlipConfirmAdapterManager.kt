@@ -4,6 +4,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 
 class BetSlipConfirmAdapterManager(
@@ -18,7 +19,7 @@ class BetSlipConfirmAdapterManager(
         }
     }
 
-    override fun covertPlus(position: Int, item: arch.cayenne.module.betslip.data.model.BetSlipData) {
+    override fun covertPlus(position: Int, item: BetSlipData) {
         updateData(item, position)
         submitAdapter(binding.recyclerSelection, item, position)
     }
@@ -28,7 +29,7 @@ class BetSlipConfirmAdapterManager(
      * 未结算 确认中 已结算 更新数据
      * */
     private fun updateData(
-        item: arch.cayenne.module.betslip.data.model.BetSlipData,
+        item:BetSlipData,
         position: Int
     ) {
         binding.also {

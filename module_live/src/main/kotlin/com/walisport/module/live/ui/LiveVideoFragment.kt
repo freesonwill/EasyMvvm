@@ -13,6 +13,9 @@ import android.provider.Settings
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout.GONE
+import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
@@ -32,7 +35,12 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
+import com.xxx.qyplayer.PlayerState
+import com.xxx.qyplayer.transformToInt
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -55,6 +63,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
      * 隐藏操作栏的定时Job
      */
     private var scheduledHideButtonsJob: Job? = null
+
+    /**
+     * 视频加载时的动画
+     */
+    private var loadingAnim: ObjectAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,9 +115,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 if (!it.inited) { // 首次启动从本地播放器获取默认配置
                     it.transformFromPlayerConfig(mBinding.videoView.getConfig())
 
-                    // 更改底层默认配置。默认加密流，需要开启解密
-                    it.isAudioDecrypt = false
-                    it.isVideoDecrypt = false
+                    // 默认不加密
+                    it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                    it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                    it.reconnectCount = -1 // Demo重试一百次, -1不限制
+                    //默认不开启硬件加速
                     it.isHWDecode = false
 
                     it.inited = true
@@ -123,6 +138,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     showButtonsAnimated()
                 }
             }
+
+            setPlayerStateListener { onPlayerStateReceived(it) }
 
         }
 
@@ -254,6 +271,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }
             }
 
+            homeHistoryVs.observe(viewLifecycleOwner) {
+//                "homeList:$it".logd("scoreIssue")
+                mBinding.includedMatchNotInProgress.homeHistory.setData(it)
+            }
+
             awayTeamName.observe(viewLifecycleOwner) {
                 it?.let { mBinding.includedMatchNotInProgress.tvAwayTeam.text = it }
             }
@@ -266,6 +288,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         .error(arch.cayenne.lib.common.R.color.color_333A45)
                         .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
                 }
+            }
+
+            awayHistoryVs.observe(viewLifecycleOwner) {
+//                "awayList:$it".logd("scoreIssue")
+                mBinding.includedMatchNotInProgress.awayHistory.setData(it)
             }
 
             titleText.observe(viewLifecycleOwner) {
@@ -347,7 +374,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     /**
      * 隐藏底部操作栏
      */
-    private fun hideButtonsAnimated(){
+    private fun hideButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
@@ -369,7 +396,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     /**
      * 展示底部操作栏
      */
-    private fun showButtonsAnimated(){
+    private fun showButtonsAnimated() {
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
@@ -417,6 +444,62 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             buttonsDisplaying = false
             hideButtonsAnimated()
+        }
+
+    }
+
+
+    private fun onPlayerStateReceived(state: PlayerState) {
+
+        when (state) {
+            PlayerState.PLAYING -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            PlayerState.PAUSED -> {
+                //没有暂停按钮，
+            }
+
+            PlayerState.CACHING, PlayerState.CONNECTING -> {
+                // 创建旋转动画
+                loadingAnim = ObjectAnimator.ofFloat(
+                    mBinding.ivVideoLoading,  // 目标 View
+                    "rotation",  // 属性名称
+                    0f, 360f // 从 0 度旋转到 360 度
+                ).run {
+                    // 设置动画属性
+                    setDuration(1000) // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    interpolator = LinearInterpolator() // 匀速旋转
+
+                    // 启动动画
+                    start()
+                    this
+                }
+
+                mBinding.ctLoading.visibility = VISIBLE
+                mBinding.ctError.visibility = GONE
+
+            }
+
+            PlayerState.ERROR -> {
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = VISIBLE
+            }
+
+            PlayerState.STOPPED -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
+
+            else -> {
+                loadingAnim?.cancel()
+                mBinding.ctLoading.visibility = GONE
+                mBinding.ctError.visibility = GONE
+            }
         }
 
     }
