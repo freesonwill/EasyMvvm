@@ -16,7 +16,7 @@ import galaxy.common.proto.Common
  * @property tournamentShortName 联赛简称
  * @property color 联赛配色
  */
-data class SearchResultPlayerBeanBean(
+data class SearchResultPlayerBean(
     override val id: Int,               //球员id
     override val name: String,          //名称
     override val icon: String,          //头像
@@ -30,8 +30,8 @@ data class SearchResultPlayerBeanBean(
     override val color: String          //联赛配色
 ): SearchResultBaseBean(id, name, icon, color) {
     companion object {
-        fun from(resp: Common.SearchPlayer): SearchResultPlayerBeanBean {
-            return SearchResultPlayerBeanBean(
+        fun from(resp: Common.SearchPlayer): SearchResultPlayerBean {
+            return SearchResultPlayerBean(
                 id = resp.id,
                 name = resp.name,
                 icon = resp.icon,

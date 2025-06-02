@@ -12,9 +12,9 @@ import com.walisport.module.search.data.model.RecordBean
 import com.walisport.module.search.data.model.SearchDailyMatchBean
 import com.walisport.module.search.data.model.SearchMatchBean
 import com.walisport.module.search.data.model.SearchResultBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
-import com.walisport.module.search.data.model.SearchResultTeamBeanBean
-import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import galaxy.client.proto.Client
@@ -169,9 +169,9 @@ class SearchRepository(
                 return SearchResultBean(
                     type = SearchResultTypeEnum.LIST,
                     dataList = listOfNotNull(
-                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBeanBean.fromList(it) },
-                        result.data?.dataList?.teamList?.let { SearchResultTeamBeanBean.fromList(it) },
-                        result.data?.dataList?.playerList?.let { SearchResultPlayerBeanBean.fromList(it) }
+                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBean.fromList(it) },
+                        result.data?.dataList?.teamList?.let { SearchResultTeamBean.fromList(it) },
+                        result.data?.dataList?.playerList?.let { SearchResultPlayerBean.fromList(it) }
                     ).flatten()
 
                 )
@@ -179,7 +179,7 @@ class SearchRepository(
             SearchResultTypeEnum.PLAYER -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.PLAYER,
-                    directData = result.data?.player?.let { SearchResultPlayerBeanBean.from(it) },
+                    directData = result.data?.player?.let { SearchResultPlayerBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->
@@ -190,7 +190,7 @@ class SearchRepository(
             SearchResultTypeEnum.TEAM -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.TEAM,
-                    directData = result.data?.team?.let { SearchResultTeamBeanBean.from(it) },
+                    directData = result.data?.team?.let { SearchResultTeamBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->
@@ -201,7 +201,7 @@ class SearchRepository(
             SearchResultTypeEnum.TOURNAMENT -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.TOURNAMENT,
-                    directData = result.data?.tournament?.let { SearchResultTournamentBeanBean.from(it) },
+                    directData = result.data?.tournament?.let { SearchResultTournamentBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->

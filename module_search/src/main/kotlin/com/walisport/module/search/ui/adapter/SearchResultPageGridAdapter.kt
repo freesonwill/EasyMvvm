@@ -14,7 +14,7 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.databinding.ItemSearchResultGridHeaderBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridItemBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridMoreBinding
@@ -51,7 +51,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultGridItemBinding
                 val itemData = (getItem(position) as SearchResultListItemType.Item).data
-                val isPlayer = itemData is SearchResultPlayerBeanBean
+                val isPlayer = itemData is SearchResultPlayerBean
 
                 with(itemBinding) {
                     with(itemData) {

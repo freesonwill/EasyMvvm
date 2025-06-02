@@ -14,7 +14,7 @@ import galaxy.common.proto.Common
  * @property win 获胜场次
  * @property lose 失败场次
  */
-data class SearchResultTeamBeanBean(
+data class SearchResultTeamBean(
     override val id: Int,               //球队id
     override val name: String,          //名称
     override val icon: String,          //图标
@@ -27,8 +27,8 @@ data class SearchResultTeamBeanBean(
     val lose: Int                       //失败场次
 ): SearchResultBaseBean(id, name, icon, color) {
     companion object {
-        fun from(resp: Common.SearchTeam): SearchResultTeamBeanBean {
-            return SearchResultTeamBeanBean(
+        fun from(resp: Common.SearchTeam): SearchResultTeamBean {
+            return SearchResultTeamBean(
                 id = resp.id,
                 name = resp.name,
                 icon = resp.icon,

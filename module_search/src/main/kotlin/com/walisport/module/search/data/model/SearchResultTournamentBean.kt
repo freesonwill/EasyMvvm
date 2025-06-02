@@ -13,7 +13,7 @@ import galaxy.common.proto.Common
  * @property color 配色
  * @property season 赛季
  */
-data class SearchResultTournamentBeanBean(
+data class SearchResultTournamentBean(
     override val id: Int,               //联赛id
     override val name: String,          //联赛名称
     val simpleName: String,             //缩写
@@ -25,8 +25,8 @@ data class SearchResultTournamentBeanBean(
     val season: String                  //赛季
 ): SearchResultBaseBean(id, name, icon, color) {
     companion object {
-        fun from(resp: Common.Tournament): SearchResultTournamentBeanBean {
-            return SearchResultTournamentBeanBean(
+        fun from(resp: Common.Tournament): SearchResultTournamentBean {
+            return SearchResultTournamentBean(
                 id = resp.id,
                 name = resp.name,
                 simpleName = resp.simpleName,

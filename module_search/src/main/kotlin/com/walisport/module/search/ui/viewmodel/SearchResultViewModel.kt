@@ -11,9 +11,9 @@ import com.walisport.module.search.data.constants.SearchResultUiState
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
-import com.walisport.module.search.data.model.SearchResultTeamBeanBean
-import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -57,15 +57,15 @@ class SearchResultViewModel : BaseViewModel() {
     private fun groupSearchResults(context: Context, list: List<SearchResultBaseBean>): List<SearchResultListItemType> {
         val groupedMap = mutableMapOf<String, List<SearchResultBaseBean>>()
 
-        list.filterIsInstance<SearchResultTournamentBeanBean>().takeIf { it.isNotEmpty() }?.let {
+        list.filterIsInstance<SearchResultTournamentBean>().takeIf { it.isNotEmpty() }?.let {
             groupedMap[ContextCompat.getString(context, R.string.tab_tournament)] = it
         }
 
-        list.filterIsInstance<SearchResultTeamBeanBean>().takeIf { it.isNotEmpty() }?.let {
+        list.filterIsInstance<SearchResultTeamBean>().takeIf { it.isNotEmpty() }?.let {
             groupedMap[ContextCompat.getString(context, R.string.tab_team)] = it
         }
 
-        list.filterIsInstance<SearchResultPlayerBeanBean>().takeIf { it.isNotEmpty() }?.let {
+        list.filterIsInstance<SearchResultPlayerBean>().takeIf { it.isNotEmpty() }?.let {
             groupedMap[ContextCompat.getString(context, R.string.tab_player)] = it
         }
 
@@ -100,9 +100,9 @@ class SearchResultViewModel : BaseViewModel() {
                     if (totalGroupCount == maxPerGroup + 1) {
                         result += SearchResultListItemType.More(
                             type = when (item.data) {
-                                is SearchResultTournamentBeanBean -> SearchResultTypeEnum.TOURNAMENT
-                                is SearchResultTeamBeanBean -> SearchResultTypeEnum.TEAM
-                                is SearchResultPlayerBeanBean -> SearchResultTypeEnum.PLAYER
+                                is SearchResultTournamentBean -> SearchResultTypeEnum.TOURNAMENT
+                                is SearchResultTeamBean -> SearchResultTypeEnum.TEAM
+                                is SearchResultPlayerBean -> SearchResultTypeEnum.PLAYER
                                 else -> SearchResultTypeEnum.NONE
                             }
                         )
@@ -122,15 +122,15 @@ class SearchResultViewModel : BaseViewModel() {
                 context,
                 repository.getSearchResult(
                     word = when (data) {
-                        is SearchResultTournamentBeanBean,
-                        is SearchResultTeamBeanBean,
-                        is SearchResultPlayerBeanBean -> data.id.toString()
+                        is SearchResultTournamentBean,
+                        is SearchResultTeamBean,
+                        is SearchResultPlayerBean -> data.id.toString()
                         else -> ""
                     },
                     type = when (data) {
-                        is SearchResultTournamentBeanBean -> SearchTypeEnum.TOURNAMENT_ID
-                        is SearchResultTeamBeanBean -> SearchTypeEnum.TEAM_ID
-                        is SearchResultPlayerBeanBean -> SearchTypeEnum.PLAYER_ID
+                        is SearchResultTournamentBean -> SearchTypeEnum.TOURNAMENT_ID
+                        is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
+                        is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
                         else -> SearchTypeEnum.NORMAL_WORD
                     },
                     startTime = startTime,

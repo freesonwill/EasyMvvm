@@ -16,9 +16,9 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
-import com.walisport.module.search.data.model.SearchResultTeamBeanBean
-import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
@@ -133,9 +133,9 @@ class SearchResultPageFragment :
                 } else {
                     val source = groupData.value.filterIsInstance<SearchResultListItemType.Item>().map { it.data }
                     val list = when (getType()) {
-                        TYPE_TOURNAMENT -> source.filterIsInstance<SearchResultTournamentBeanBean>()
-                        TYPE_TEAM -> source.filterIsInstance<SearchResultTeamBeanBean>()
-                        TYPE_PLAYER -> source.filterIsInstance<SearchResultPlayerBeanBean>()
+                        TYPE_TOURNAMENT -> source.filterIsInstance<SearchResultTournamentBean>()
+                        TYPE_TEAM -> source.filterIsInstance<SearchResultTeamBean>()
+                        TYPE_PLAYER -> source.filterIsInstance<SearchResultPlayerBean>()
                         else -> emptyList()
                     }
                     if (list.isEmpty()) {
