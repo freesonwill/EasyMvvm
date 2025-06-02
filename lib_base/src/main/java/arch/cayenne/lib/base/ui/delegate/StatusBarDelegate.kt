@@ -2,6 +2,8 @@ package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
 import android.view.View
+import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
@@ -14,16 +16,26 @@ import arch.cayenne.lib.base.ui._interface.IStatusBar
  * @date: 2025/3/31 14:26
  * @description:
  */
-class StatusBarDelegate(private val activity: Activity) : IStatusBar {
-    private var viewPaddingTop :Int = -1
+class StatusBarDelegate : IStatusBar {
+    private var viewPaddingTop: Int = -1
+    private var immersionBar: ImmersionBar
 
+    constructor(activity: Activity) {
+        immersionBar = ImmersionBar.with(activity)
+    }
 
+    constructor(fragment: Fragment) {
+        immersionBar = ImmersionBar.with(fragment)
+    }
+
+    constructor(fragment: DialogFragment) {
+        immersionBar = ImmersionBar.with(fragment)
+    }
 
     override fun setStatusBar(config: StatusBarConfig, view: View) {
-        val immersionBar = ImmersionBar.with(activity)
         immersionBar.statusBarDarkFont(config.statusBarDarkFont)
             .navigationBarDarkIcon(config.statusBarDarkFont) // true 表示使用深色图标，false 表示浅色图标
-        val statusBarHeight = ImmersionBar.getStatusBarHeight(activity)
+        val statusBarHeight = ImmersionBar.getStatusBarHeight(view.context)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
         if (viewPaddingTop == -1) {
             viewPaddingTop = view.paddingTop
@@ -39,7 +51,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
                 immersionBar.init()
                 setViewPadding(
                     view,
-                    viewPaddingTop+statusBarHeight,
+                    viewPaddingTop + statusBarHeight,
                     view.paddingBottom
                 )
             }
@@ -54,7 +66,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
             //ImmersionBar实现状态栏和底部虚拟home键透明
             StatusBarMode.DRAW_BEHIND -> {
                 view.fitsSystemWindows = false
-                val navigationBarHeight = ImmersionBar.getNavigationBarHeight(activity)
+                val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .transparentStatusBar() // 设置状态栏透明
@@ -62,7 +74,7 @@ class StatusBarDelegate(private val activity: Activity) : IStatusBar {
                 immersionBar.init()
                 setViewPadding(
                     view,
-                    viewPaddingTop+statusBarHeight,
+                    viewPaddingTop + statusBarHeight,
                     navigationBarHeight
                 )
             }

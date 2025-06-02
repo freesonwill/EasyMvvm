@@ -66,7 +66,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
 
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
-    private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
+    private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     @CallSuper
     override fun onCreateView(

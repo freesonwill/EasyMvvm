@@ -20,6 +20,7 @@ import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
 import android.view.animation.AccelerateDecelerateInterpolator
+import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -100,6 +101,8 @@ class LiveBetOnMenuFragment :
 
     override fun onStart() {
         super.onStart()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig,mBinding.root)
         // 设置 Dialog 的宽度和高度
         if (dialog != null && dialog!!.window != null) {
             // 获取屏幕高度
