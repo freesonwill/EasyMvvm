@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.content.res.Resources
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextPaint
 import android.util.TypedValue
@@ -107,6 +108,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                     if (!shouldDistributeEvenly) {
                         setPadding(18.dp2px, 0, 18.dp2px, 0)
                     }
+                    typeface = Typeface.DEFAULT
                 }
                 tab.customView = textView
             }.attach()
@@ -114,6 +116,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
                 viewPagerAnimHelper.doDirectViewPagerAnim(
                     targetPosition = tab?.position ?: 0,
                     viewPager = mBinding.viewPager,
@@ -122,6 +125,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
+                (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
             }
 
             override fun onTabReselected(tab: TabLayout.Tab?) {
