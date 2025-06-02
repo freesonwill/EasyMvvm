@@ -1,21 +1,24 @@
 package com.walisport.module.search.ui.fragment
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import com.walisport.module.search.data.constants.SearchResultTypeEnum
-import com.walisport.module.search.data.model.SearchDailyMatchBean
-import com.walisport.module.search.data.model.SearchMatchBean
-import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
-import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class SearchResultDirectMatchFragment :
-    BaseFragment<SearchResultDirectMatchViewModel, FragmentSearchResultDirectMatchBinding>() {
+    BaseFragment<SearchResultViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vbClass: KClass<FragmentSearchResultDirectMatchBinding>
         get() = FragmentSearchResultDirectMatchBinding::class
-    override val vmClass: KClass<SearchResultDirectMatchViewModel>
-        get() = SearchResultDirectMatchViewModel::class
+    override val vmClass: KClass<SearchResultViewModel>
+        get() = SearchResultViewModel::class
+
+    override fun createVM(): SearchResultViewModel {
+        return activityViewModel<SearchResultViewModel>().value
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
     }
@@ -24,5 +27,20 @@ class SearchResultDirectMatchFragment :
     }
 
     override fun createObserver() {
+        with(mBinding) {
+            with(mViewModel) {
+                lifecycleScope.launch {
+                    directData.collect { data ->
+                        //TODO
+                    }
+                }
+
+                lifecycleScope.launch {
+                    combineResult.collect { combineResult ->
+                        //TODO
+                    }
+                }
+            }
+        }
     }
 }

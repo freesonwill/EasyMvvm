@@ -6,17 +6,23 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
+import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchResultUiState
 import com.walisport.module.search.data.constants.SearchTypeEnum
+import com.walisport.module.search.data.model.SearchDailyMatchBean
+import com.walisport.module.search.data.model.SearchMatchBean
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
@@ -33,6 +39,15 @@ class SearchResultViewModel : BaseViewModel() {
     private val _groupData = MutableStateFlow<List<SearchResultListItemType>>(emptyList())
     val groupData: StateFlow<List<SearchResultListItemType>> = _groupData.asStateFlow()
 
+    private val _directData = MutableStateFlow<SearchResultBaseBean?>(null)
+    val directData: StateFlow<SearchResultBaseBean?> = _directData.asStateFlow()
+
+    private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>>(emptyList())
+    val combineResult: StateFlow<List<SearchResultRaceItemType>> = _combineResult.asStateFlow()
+
+    private val _gradientBgColor = MutableSharedFlow<Int?>(replay = 1)
+    val gradientBgColor: SharedFlow<Int?> = _gradientBgColor.asSharedFlow()
+
     fun setResult(context: Context, result: SearchResultBean) {
         when (result.type) {
             SearchResultTypeEnum.NONE -> {
@@ -47,11 +62,31 @@ class SearchResultViewModel : BaseViewModel() {
             SearchResultTypeEnum.TOURNAMENT,
             SearchResultTypeEnum.TEAM,
             SearchResultTypeEnum.PLAYER -> {
-                _uiState.value = SearchResultUiState.DirectMatch(
-                    type = result.type,
+                _uiState.value = SearchResultUiState.DirectMatch(type = result.type)
+                _directData.value = result.directData
+                _combineResult.value = groupMatchesByDailyCount(
+                    dailyCounts = result.dailyCount?.filter { it.count != 0 } ?: emptyList(),
+                    matches = result.matches ?: emptyList()
                 )
             }
         }
+    }
+
+    private fun groupMatchesByDailyCount(dailyCounts: List<SearchDailyMatchBean>, matches: List<SearchMatchBean>): List<SearchResultRaceItemType> {
+        val resultList = mutableListOf<SearchResultRaceItemType>()
+        val matchIterator = matches.iterator()
+
+        dailyCounts.filter { it.count > 0 }.forEach { daily ->
+            resultList += SearchResultRaceItemType.Header(daily.day)
+
+            repeat(daily.count) {
+                if (matchIterator.hasNext()) {
+                    resultList += SearchResultRaceItemType.Item(matchIterator.next())
+                }
+            }
+        }
+
+        return resultList
     }
 
     private fun groupSearchResults(context: Context, list: List<SearchResultBaseBean>): List<SearchResultListItemType> {
@@ -138,5 +173,9 @@ class SearchResultViewModel : BaseViewModel() {
                 )
             )
         }
+    }
+
+    suspend fun setGradientBgColor(color: Int? = null) {
+        _gradientBgColor.emit(color)
     }
 }
