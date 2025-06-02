@@ -1,12 +1,16 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.content.res.Resources
 import android.os.Bundle
+import android.text.TextPaint
+import android.util.TypedValue
+import android.view.Gravity
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -69,9 +73,44 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
     private fun setPage(pager: List<PagerBean>) {
         mBinding.viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, pager)
-        TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
-            tab.text = pager[position].title
-        }.attach()
+
+        mBinding.tabLayout.post {
+            val tabLayoutWidth = Resources.getSystem().displayMetrics.widthPixels
+            var totalTextWidth = 0
+
+            val tempPaint = TextPaint().apply {
+                textSize = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_SP, 15f, Resources.getSystem().displayMetrics
+                )
+            }
+
+            pager.forEach {
+                totalTextWidth += tempPaint.measureText(it.title).toInt() + 18.dp2px
+            }
+
+            val shouldDistributeEvenly = totalTextWidth < tabLayoutWidth
+
+            mBinding.tabLayout.tabMode =
+                if (shouldDistributeEvenly) TabLayout.MODE_FIXED else TabLayout.MODE_SCROLLABLE
+            mBinding.tabLayout.tabGravity =
+                if (shouldDistributeEvenly) TabLayout.GRAVITY_FILL else TabLayout.GRAVITY_CENTER
+
+            TabLayoutMediator(mBinding.tabLayout, mBinding.viewPager) { tab, position ->
+                val textView = TextView(requireContext()).apply {
+                    maxLines = 1
+                    isSingleLine = true
+                    ellipsize = null
+                    text = pager[position].title
+                    gravity = Gravity.CENTER
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
+                    setTextColor(SkinnableResourceManager.getColor(requireContext(), arch.cayenne.lib.common.R.color.main_text))
+                    if (!shouldDistributeEvenly) {
+                        setPadding(18.dp2px, 0, 18.dp2px, 0)
+                    }
+                }
+                tab.customView = textView
+            }.attach()
+        }
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
