@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="search_bg_white_blue">#eeeeee</color>
+    <color name="search_main_bg_white_blue">#EEEEEE</color>
     <color name="search_title_white_blue">#222222</color>
     <color name="search_divider_white_blue">#E8E8EA</color>
     <color name="hot_word_white_blue">#00D271</color>

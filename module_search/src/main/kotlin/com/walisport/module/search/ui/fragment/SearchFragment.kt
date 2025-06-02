@@ -1,15 +1,20 @@
 package com.walisport.module.search.ui.fragment
 
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -17,6 +22,9 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
+import arch.cayenne.lib.skin.res.SkinnableResourceManager.getSkinName
+import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
@@ -56,6 +64,11 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private val searchResultFragment by lazy {
         SearchResultFragment()
+    }
+
+    override fun onStart() {
+        updateStatusTitleBar()
+        super.onStart()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -105,9 +118,22 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         mBinding.groupResult.visibility = if (isShow) View.VISIBLE else View.GONE
         if(!isShow) {
             updateSearchText("")
+            setHistoryVisible(true)
+            setHotWordVisible(true)
+            updateResultBackground(false)
         } else {
             clearSearchRecommend()
+            setHistoryVisible(false)
+            setHotWordVisible(false)
         }
+    }
+
+    private fun setHistoryVisible(isShow: Boolean) {
+        mBinding.clHistory.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
+
+    private fun setHotWordVisible(isShow: Boolean) {
+        mBinding.clHotWord.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 
     private fun setTitleBar() {
@@ -334,6 +360,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ce_search)
     }
 
+    private fun getTitleBarBackIcon(): SkinnableImageView {
+        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ivBack)
+    }
+
     private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
         canSearch = false
         getSearchEditText()
@@ -343,6 +373,77 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
         afterChange?.invoke()
         canSearch = true
+    }
+
+    fun updateResultBackground(isShow: Boolean, color: Int? = null) {
+        mBinding.clRoot.apply {
+            if(isShow) {
+                background = GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(
+                        color ?:
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.search_result_default_gradient_start
+                        ),
+                        Color.BLACK
+                    )
+                )
+                updateStatusTitleBar(false)
+            } else {
+                setBackgroundColor(
+                    SkinnableResourceManager.getColor(requireContext(), R.color.search_main_bg)
+                )
+                updateStatusTitleBar()
+            }
+        }
+    }
+
+    private fun updateStatusTitleBar(isDefault: Boolean = true) {
+        with(mBinding) {
+            // 設置狀態欄進入沈浸模式
+            root.fitsSystemWindows = false
+            setStatusBar(StatusBarConfig.apply {
+                statusBarType = StatusBarMode.DRAW_BEHIND
+                statusBarColor = android.R.color.transparent
+            }, clRoot)
+
+            if(isDefault) {
+                with(SkinnableResourceManager) {
+                    // 設置狀態欄文字顏色
+                    setStatusBar(
+                        StatusBarConfig.apply {
+                            statusBarDarkFont =
+                                getSkinName().lowercase().startsWith("white")
+                        }, clRoot
+                    )
+                    // 設置返回鍵顏色
+                    getTitleBarBackIcon().setImageDrawable(
+                        getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+                    )
+                }
+            } else {
+                // 設置狀態欄文字顏色
+                setStatusBar(
+                    StatusBarConfig.apply { statusBarDarkFont = false },
+                    clRoot
+                )
+                // 設置返回鍵顏色
+                getTitleBarBackIcon().setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+                )
+            }
+
+            // 重置底部 Padding
+            clRoot.post {
+                clRoot.setPadding(
+                    clRoot.paddingLeft,
+                    clRoot.paddingTop,
+                    clRoot.paddingRight,
+                    0
+                )
+            }
+        }
     }
 
     override fun initListener() {

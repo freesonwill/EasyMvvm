@@ -2,9 +2,10 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/search_bg">
+    android:background="@color/search_main_bg">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_history"
@@ -174,7 +175,7 @@
         android:id="@+id/cl_search_recommend"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/main_background"
+        android:background="@color/search_main_bg"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"

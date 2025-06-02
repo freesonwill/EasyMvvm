@@ -15,6 +15,7 @@ import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatc
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
@@ -46,6 +47,15 @@ class SearchResultFragment: BaseFragment<SearchResultViewModel, FragmentSearchRe
             lifecycleScope.launch {
                 uiState.collect {
                     switchUi(it)
+                }
+            }
+
+            lifecycleScope.launch {
+                gradientBgColor.collect {
+                    (parentFragment as? SearchFragment)?.updateResultBackground(
+                        it != null,
+                        it ?: R.color.search_result_default_gradient_start
+                    )
                 }
             }
         }

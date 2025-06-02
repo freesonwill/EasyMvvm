@@ -1,8 +1,13 @@
 package com.walisport.module.search.ui.fragment
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import com.walisport.module.search.R
+import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
 import kotlinx.coroutines.launch
@@ -23,6 +28,16 @@ class SearchResultDirectMatchFragment :
     override fun initView(savedInstanceState: Bundle?) {
     }
 
+    @SuppressLint("SetTextI18n")
+    private suspend fun updateDirectInfo(data: SearchResultBaseBean) {
+        with(mBinding) {
+            mViewModel.setGradientBgColor(
+                if(data.color?.isNotEmpty() == true) Color.parseColor(data.color)
+                else ContextCompat.getColor(requireContext(), R.color.search_result_default_gradient_start)
+            )
+        }
+    }
+
     override fun initListener() {
     }
 
@@ -31,7 +46,7 @@ class SearchResultDirectMatchFragment :
             with(mViewModel) {
                 lifecycleScope.launch {
                     directData.collect { data ->
-                        //TODO
+                        data?.let { updateDirectInfo(it) }
                     }
                 }
 
