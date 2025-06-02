@@ -14,13 +14,50 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class TournamentListViewModel : BaseViewModel() {
-    private var type : TournamentListType = TournamentListType.MORE
+    private var type: TournamentListType = TournamentListType.MORE
     private var sportId = -1
-    private val repo : TournamentListRepository by inject()
+    private val repo: TournamentListRepository by inject()
 
     private val _isLoading = MutableLiveData<Boolean>()
 
     val tournaments by lazy { MutableLiveData<List<BaseTournamentData>>() }
+
+    private val _activeHeaderIndex = MutableLiveData<Int?>()
+    val activeHeaderIndex: MutableLiveData<Int?> get() = _activeHeaderIndex
+
+    private val letterPositionMap = mutableMapOf<Char, Int>()
+    fun setActiveHeaderIndex(index: Int?) {
+        if (_activeHeaderIndex.value != index) {
+            _activeHeaderIndex.value = index
+        }
+    }
+
+    fun getActiveHeaderIndex(): Int? = _activeHeaderIndex.value
+
+    fun selectLetter(letter: Char) {
+        val index = letterPositionMap[letter]
+        if (index != null) {
+            setActiveHeaderIndex(index)
+        }
+    }
+
+    fun setLetterPositionMap(map: Map<Char, Int>) {
+        letterPositionMap.clear()
+        letterPositionMap.putAll(map)
+    }
+
+    fun getHeaderIndex(letter: Char): Int? = letterPositionMap[letter]
+    fun getAvailableIndexLetters(): List<Char> {
+        return letterPositionMap.keys.sortedWith(compareBy {
+            when (it) {
+                '*' -> 0             // 熱門聯賽（星號）排最前
+                in 'A'..'Z' -> it.code // 英文字母照 ASCII 排序 ('A' = 65, 'B' = 66 ...)
+                '#' -> 999           // 其他無法分類的排字母之後
+                else -> 1000         // 剩下非預期字元排最後
+            }
+        })
+    }
+
 
     fun setType(type: TournamentListType) {
         this.type = type

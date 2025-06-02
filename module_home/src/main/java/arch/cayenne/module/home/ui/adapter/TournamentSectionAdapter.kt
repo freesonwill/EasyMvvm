@@ -14,11 +14,29 @@ import arch.cayenne.module.home.ui.compare.TournamentSectionCompare
 class TournamentSectionAdapter(
     private val onTournamentClick: (BaseTournamentData) -> Unit
 ) : BaseAdapter<TournamentListItem, BaseViewHolder, ViewBinding>(TournamentSectionCompare()) {
+    private var activeHeaderIndex: Int? = null
 
-    companion object {
-        private const val TYPE_HEADER = 0
-        private const val TYPE_ITEM = 1
+    fun updateActiveHeaderIndex(newIndex: Int?) {
+        if (newIndex == activeHeaderIndex) return
+
+        val oldIndex = activeHeaderIndex
+        activeHeaderIndex = newIndex
+
+        oldIndex?.takeIf { it >= 0 }?.let { notifyItemChanged(it, PAYLOAD_SELECTION_CHANGE) }
+        newIndex?.takeIf { it >= 0 }?.let { notifyItemChanged(it, PAYLOAD_SELECTION_CHANGE) }
     }
+
+    override fun onBindViewHolder(holder: BaseViewHolder, position: Int, payloads: List<Any>) {
+        if (payloads.contains(PAYLOAD_SELECTION_CHANGE)) {
+            if (holder is TournamentHeaderViewHolder) {
+                val isSelected = position == activeHeaderIndex
+                holder.updateSelectionState(isSelected)
+                return
+            }
+        }
+        super.onBindViewHolder(holder, position, payloads)
+    }
+
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -47,15 +65,21 @@ class TournamentSectionAdapter(
 
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         when (holder) {
-            is TournamentHeaderViewHolder -> holder.bind(
-                getItem(position) as TournamentListItem.Header,
-                position
-            )
+            is TournamentHeaderViewHolder -> {
+                val isSelected = position == activeHeaderIndex
+                holder.bind(getItem(position) as TournamentListItem.Header, isSelected)
+            }
 
-            is TournamentItemViewHolder -> holder.bind(
-                getItem(position) as TournamentListItem.TournamentItem,
-                onTournamentClick
-            )
+            is TournamentItemViewHolder -> {
+                val item = getItem(position) as TournamentListItem.TournamentItem
+                holder.bind(item, onTournamentClick)
+            }
         }
+    }
+
+    companion object {
+        private const val TYPE_HEADER = 0
+        private const val TYPE_ITEM = 1
+        private const val PAYLOAD_SELECTION_CHANGE = "selection_change"
     }
 }
