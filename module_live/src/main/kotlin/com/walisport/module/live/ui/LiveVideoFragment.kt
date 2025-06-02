@@ -14,6 +14,7 @@ import android.util.TypedValue.COMPLEX_UNIT_PX
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -25,22 +26,21 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
-import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
+import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
+import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -53,6 +53,8 @@ import kotlin.reflect.KClass
 class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBinding>() {
     override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
+
+    private lateinit var videoView: LivePlayerView
 
     private lateinit var audioManager: AudioManager
     private var volumeObserver: VolumeObserver? = null
@@ -108,42 +110,57 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     private fun initVideoView() {
-        mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY, ScreenMode.SMALL)
-            keepScreenOn = true
-            setConfig(GlobalConfig(requireContext()).also {
-                if (!it.inited) { // 首次启动从本地播放器获取默认配置
-                    it.transformFromPlayerConfig(mBinding.videoView.getConfig())
+        videoView = PlayerViewCache.acquirePlayerView {
+            LivePlayerView(requireActivity()).apply {
+                init(PlayerMode.FLUENCY)
+                keepScreenOn = true
+                setConfig(GlobalConfig(requireContext()).also {
+                    if (!it.inited) {
+                        // 首次启动从本地播放器获取默认配置
+                        it.transformFromPlayerConfig(videoView.getConfig())
+                        // 默认不加密
+                        it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                        it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                        it.reconnectCount = -1 // Demo重试一百次, -1不限制
+                        //默认不开启硬件加速
+                        it.isHWDecode = false
 
-                    // 默认不加密
-                    it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
-                    it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
-                    it.reconnectCount = -1 // Demo重试一百次, -1不限制
-                    //默认不开启硬件加速
-                    it.isHWDecode = false
-
-                    it.inited = true
-                }
-            }.transformToPlayerConfig())
-
-            setOnSingleTapListener {
-                //单击事件
-                if (buttonsDisplaying) {
-                    buttonsDisplaying = false
-
-                    hideButtonsAnimated()
-                } else {
-                    buttonsDisplaying = true
-
-                    showButtonsAnimated()
-                }
+                        it.inited = true
+                    }
+                }.transformToPlayerConfig())
             }
-
-            setPlayerStateListener { onPlayerStateReceived(it) }
-
         }
 
+        //单击事件处理
+        videoView.setOnSingleTapListener {
+            //单击事件
+            if (buttonsDisplaying) {
+                buttonsDisplaying = false
+
+                hideButtonsAnimated()
+            } else {
+                buttonsDisplaying = true
+
+                showButtonsAnimated()
+            }
+        }
+
+        //播放状态处理
+        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+
+        // 创建 LayoutParams，设置宽度和高度为 match_parent
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, // 宽度
+            LinearLayout.LayoutParams.MATCH_PARENT  // 高度
+        )
+
+        // 将 LayoutParams 应用到 VideoView
+        videoView.layoutParams = layoutParams
+
+        mBinding.videoViewContainer.addView(videoView)
+
     }
+
 
     override fun initListener() {
 
@@ -180,7 +197,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
 
             ivToFullscreen.clickNoRepeat {
-                destroyPlayer()
+                mBinding.videoViewContainer.removeAllViews()
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToVideoLandscapeFragment()
                         .apply { arguments.putLong("matchId", mViewModel.matchId()) })
@@ -192,8 +209,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun createObserver() {
-
-
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
@@ -208,8 +223,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             val matchStatus =
                                 MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
                             if (matchStatus == MatchStatus.IN_PROGRESS) {
-                                mBinding.videoView.setDataSource(url)
-                                mBinding.videoView.prepare()
+                                videoView.setDataSource(url)
+                                videoView.prepare()
                             }
                         }
 
@@ -223,7 +238,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     if (it) R.drawable.shape_muted else R.drawable.shape_immuted
                 )
 
-                mBinding.videoView.setMute(it)
+                videoView.setMute(it)
             }
 
             //比赛状态的监听
@@ -245,7 +260,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                                 //其他情况
                                 mBinding.ctVideoPlay.visibility = View.GONE
                                 //比赛从正在进行中变更为其他状态时，需要停止视频播放
-                                mBinding.videoView.pause()
+                                videoView.pause()
                             }
                         }
 
@@ -345,30 +360,20 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun onPause() {
         super.onPause()
-        mBinding.videoView.onPause()
+        videoView.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        mBinding.videoView.onResume()
+        videoView.onResume()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mBinding.videoView.onDestroy()
-    }
 
-    override fun onDestroyView() {
-        destroyPlayer()
-        super.onDestroyView()
-    }
-
-    private fun destroyPlayer() {
-
-        //todo: destroyPlayer
-//        mBinding.videoView.stopPlayback()
-//        mBinding.videoView.release(true)
-//        mBinding.videoView.stopBackgroundPlay()
+        PlayerViewCache.releasePlayerView(videoView) {
+            it.onDestroy()
+        }
     }
 
     /**
