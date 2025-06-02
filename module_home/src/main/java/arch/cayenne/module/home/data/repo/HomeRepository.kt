@@ -224,7 +224,6 @@ class HomeRepository(
             "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
                 HomeRepository::class.java.simpleName)
             val tournamentMatchRefs = resp.data!!.matchList.mapIndexed { index, match ->
-
                 TournamentMatchRef(
                     playType = playType,
                     tournamentId = tournamentId,
@@ -234,8 +233,8 @@ class HomeRepository(
                     order = page * 100 + index
                 )
             }
-            matchDao.insertFullMatch(
-                tournamentMatchRefs = tournamentMatchRefs,
+            matchDao.insertTournamentMatchRef(tournamentMatchRefs)
+            matchDao.insertMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,

@@ -3,15 +3,23 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.databinding.TitleBarFavoriteBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -36,6 +44,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         with (mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
                 findNavController().navigateUp()
+            }
+
+            refreshLayout.setOnRefreshListener {
+                mViewModel.reload()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -68,9 +80,24 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
     }
 
+    override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
+        val animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
+        if (enter) {
+            animation.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {}
+                override fun onAnimationEnd(animation: Animation?) {
+                    mViewModel.startObserveMatch()
+                }
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+        }
+
+        return animation
+    }
+
     override fun initData() {
         super.initData()
-        mViewModel.getCollect()
+
     }
 
     override fun initListener() {
@@ -85,6 +112,40 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             matchAdapter.submitList(matchList)
+        }
+        mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
+            with(mBinding) {
+                when (state) {
+                    MatchListState.FIRST_LOADING -> {
+                        clDynamics.visibility = View.GONE
+//                        homeViewModel.changeState(HomeState.LOADING_MATCH)
+                    }
+
+                    MatchListState.REFRESHING -> {
+                        clDynamics.visibility = View.GONE
+                    }
+
+                    MatchListState.IDLE -> {
+                        if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        clDynamics.visibility = View.GONE
+//                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                    }
+
+                    MatchListState.FAILED -> {
+                        mBinding.refreshLayout.finishRefresh()
+                        clDynamics.visibility = View.VISIBLE
+                        clDynamics.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
+//                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                    }
+
+                    MatchListState.LOADING_NEXT -> {
+                        clDynamics.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 }

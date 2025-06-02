@@ -51,7 +51,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         factory { HomeRepository(get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao()) }
         factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao()) }
-        factory { CollectListRepository(get(), get()) }
+        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao()) }
 
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)

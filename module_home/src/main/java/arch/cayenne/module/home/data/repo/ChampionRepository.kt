@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.data.repo
 
+import androidx.room.Transaction
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
@@ -27,7 +28,7 @@ class ChampionRepository(
     private val matchDao: MatchDao,
     private val betDao: BetDao
 ) : BaseRepository() {
-
+    @Transaction
     suspend fun getChampionDetail(matchId: Long) : MatchWithMarkets? {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
             scope = scope,
@@ -41,8 +42,7 @@ class ChampionRepository(
 
         if (resp.error == null && resp.data != null) {
             val matchFullData = listOf(resp.data!!.match).toRoomData()
-            matchDao.insertFullMatch(
-                tournamentMatchRefs = null,
+            matchDao.insertMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
