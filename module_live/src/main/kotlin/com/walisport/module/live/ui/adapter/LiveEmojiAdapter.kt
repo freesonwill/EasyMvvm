@@ -82,15 +82,6 @@ class LiveEmojiAdapter :
     override fun convertPlus(holder: LiveEmojiViewHolder, binding: ViewBinding, position: Int) {
 
         val item = getItem(position)
-//        if (position == itemCount - 1 && type == 0) {
-//            val nBinding = binding as ItemEmojiLayoutBinding
-//            val lp: ViewGroup.MarginLayoutParams = nBinding.iv.layoutParams as ViewGroup.MarginLayoutParams
-//            lp.width = 89.dp2px
-//            lp.height = 46.dp2px
-//            lp.setMargins(-10.dp2px,0,0,0)
-//            nBinding.iv.layoutParams = lp
-//        }
-
         holder.updateIv(item.resId, position)
     }
 

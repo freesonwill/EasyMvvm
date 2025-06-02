@@ -11,7 +11,7 @@
             type="com.walisport.module.live.ui.viewmodel.LiveChatViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -73,6 +73,6 @@
             android:layout_height="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </layout>

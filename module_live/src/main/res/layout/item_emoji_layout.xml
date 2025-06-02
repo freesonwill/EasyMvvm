@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv"
         android:layout_width="30dp"
         android:layout_height="30dp"
