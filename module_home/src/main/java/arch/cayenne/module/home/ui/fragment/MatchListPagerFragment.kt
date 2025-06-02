@@ -3,7 +3,7 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.ViewTreeObserver
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +39,7 @@ class MatchListPagerFragment :
     override val keepViewOnNavigation: Boolean = true
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
+    private val gameLayoutManager by lazy { LinearLayoutManager(context) }
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
@@ -68,54 +69,39 @@ class MatchListPagerFragment :
             val decoration = MatchCardItemDecoration(12.dp2px)
             val layoutManager = LinearLayoutManager(context)
             mBinding.rvHomeGameList.apply {
-                this.layoutManager = layoutManager
+                this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-
-            rvHomeGameList.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    if (matchAdapter.itemCount == 0) return
-                    rvHomeGameList.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                    val firstVisible = layoutManager.findFirstVisibleItemPosition()
-                    val lastVisible = layoutManager.findLastVisibleItemPosition()
-
-                    if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                        mViewModel.compareSubscribeMatch(
-                            matchAdapter.currentList
-                                .slice(firstVisible..lastVisible)
-                                .map { it.match.matchId }
-                                .toSet()
-                        )
-                    }
-                }
-
-            })
 
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     // 滑動停止時觸發
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        val firstVisible = layoutManager.findFirstVisibleItemPosition()
-                        val lastVisible = layoutManager.findLastVisibleItemPosition()
-                        val totalItemCount = layoutManager.itemCount
+                        subscribeVisibleMatch()
+                        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
+                        val totalItemCount = gameLayoutManager.itemCount
                         //讀取下一頁
                         if (lastVisible >= totalItemCount - 1) {
                             mViewModel.loadNextPage()
                         }
-                        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
-                            mViewModel.compareSubscribeMatch(
-                                matchAdapter.currentList
-                                    .slice(firstVisible..lastVisible)
-                                    .map { it.match.matchId }
-                                    .toSet()
-                            )
-                        }
                     }
                 }
             })
+        }
+    }
+
+    private fun subscribeVisibleMatch() {
+        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
+        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
+        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+            mViewModel.compareSubscribeMatch(
+                matchAdapter.currentList
+                    .slice(firstVisible..lastVisible)
+                    .map { it.match.matchId }
+                    .toSet()
+            )
         }
     }
 
@@ -128,7 +114,13 @@ class MatchListPagerFragment :
         }
 
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            val preEmpty = matchAdapter.currentList.isEmpty()
             matchAdapter.submitList(matchList)
+            if (preEmpty && matchList.isNotEmpty()) {
+                mBinding.rvHomeGameList.doOnPreDraw {
+                    subscribeVisibleMatch()
+                }
+            }
         }
 
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
