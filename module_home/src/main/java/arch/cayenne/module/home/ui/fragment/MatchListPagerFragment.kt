@@ -42,7 +42,6 @@ class MatchListPagerFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
-            refreshLayout.pullRefreshAddFooter()
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
