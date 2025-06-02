@@ -149,10 +149,6 @@ class MatchListPagerFragment :
         }
     }
 
-    fun test() {
-
-    }
-
     private fun refreshListByDate(date: Long) {
         if (date.toInt() == 0) {
             //切換後選回全部

@@ -4,9 +4,11 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.bet.data.BetInsertBean
 import arch.cayenne.module.home.data.model.CollectMatchRef
 import arch.cayenne.module.home.data.model.toRoomData
 import arch.cayenne.module.home.utils.setSelected
@@ -15,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.withContext
 
 class CollectListRepository(
     override val scope: CoroutineScope,
@@ -37,6 +40,9 @@ class CollectListRepository(
             }.build()
         }
         if (resp.error == null && resp.data != null) {
+            if (resp.data!!.matchList.isNullOrEmpty()) {
+                return false
+            }
             val matchFullData = resp.data!!.matchList.toRoomData()
             matchDao.insertMatch(
                 matches = matchFullData.match,
@@ -62,6 +68,37 @@ class CollectListRepository(
 
     fun clearCurrentMatch() {
         collectMatchChange.value = emptyMap()
+    }
+
+    suspend fun getSelectionInsertBean(selectionId: Long): BetInsertBean? = withContext(scope.coroutineContext) {
+        val matchId = matchDao.getMatchIdBySelectionId(selectionId) ?: return@withContext null
+        val match = matchDao.getOneMatchById(matchId)
+        val selectionBean = matchDao.getSelectionById(selectionId)
+        matchSelectionInsertBean(match, selectionBean)
+    }
+
+    private fun matchSelectionInsertBean(
+        match: MatchWithMarkets,
+        selectionBean: SelectionBean
+    ): BetInsertBean? {
+        match.markets.find { market ->
+            market.selections.find { it.selectionId == selectionBean.selectionId } != null
+        }?.let { market ->
+            return BetInsertBean(
+                matchId = match.match.matchId,
+                marketId = market.market.marketId,
+                marketName = market.market.marketName,
+                selectionId = selectionBean.selectionId,
+                name = selectionBean.name,
+                odds = selectionBean.odds,
+                leagueName = match.match.basicInfo.tournamentName,
+                matchName = match.match.basicInfo.matchName,
+                isActive = selectionBean.active,
+                isPlaying = match.match.basicInfo.status == 5,
+                isParlay = selectionBean.parlay
+            )
+        }
+        return null
     }
 
     fun observeMatchChange() : Flow<Map<Long, CollectMatchRef>> = collectMatchChange

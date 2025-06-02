@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -16,8 +17,11 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
@@ -26,6 +30,7 @@ import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 /**
@@ -46,8 +51,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 findNavController().navigateUp()
             }
 
+            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
+            }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.loadNextPage()
             }
 
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
@@ -60,14 +70,14 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
 
                 override fun onOddsCellClick(selection: SelectionBeanLite) {
-//                    lifecycleScope.launch {
-//                        val status = mViewModel.setSelection(selection.selectionId)
-//                        if (status == AddSelectionStatus.SINGLE) {
-//                            BetSheetFragment.newInstance().show(parentFragmentManager)
-//                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
-//                            showToast(getString(R.string.disabled_to_combo))
-//                        }
-//                    }
+                    lifecycleScope.launch {
+                        val status = mViewModel.setSelection(selection.selectionId)
+                        if (status == AddSelectionStatus.SINGLE) {
+                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                            showToast(getString(R.string.disabled_to_combo))
+                        }
+                    }
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
@@ -127,12 +137,14 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                     MatchListState.IDLE -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
 //                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
 
                     MatchListState.FAILED -> {
                         mBinding.refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -143,6 +155,9 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
+                    }
+                    MatchListState.NO_MORE_DATA -> {
+                        refreshLayout.finishLoadMore()
                     }
                 }
             }

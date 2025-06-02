@@ -4,12 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.CollectListRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -24,6 +28,7 @@ import plugin.koin.KoinViewModel
 class CollectListViewModel : BaseViewModel() {
     private val balanceRepository: BalanceRepository by inject()
     private val collectListRepository : CollectListRepository by inject()
+    private val betRepository: BetRepository by inject()
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     private var page = 1
@@ -41,11 +46,26 @@ class CollectListViewModel : BaseViewModel() {
                 }
             }
         }
+        
+        //觀察投注單的變化，主要用來做selection變更
+        viewModelScope.launch(Dispatchers.IO) {
+            betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
+                if (matchListChange.value == null) return@collect
+                val matchWithMarkets = collectListRepository.queryFullMatches(
+                    matchListChange.value!!.map { it.match.matchId },
+                    betSelectionBeans.map { it.selectionId }
+                )
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = matchWithMarkets
+                }
+            }
+        }
 
     }
 
     private fun getCollect() {
         viewModelScope.launch(Dispatchers.IO) {
+            "取得收藏賽事 $page".logi()
             isPageEnd = !collectListRepository.getCollectData(page)
             withContext(Dispatchers.Main) {
                 if (isPageEnd && page == 1) {
@@ -79,8 +99,21 @@ class CollectListViewModel : BaseViewModel() {
         }
     }
 
+    suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+        val bean = collectListRepository.getSelectionInsertBean(selectionId)
+        return if (bean == null) {
+            AddSelectionStatus.FAIL
+        } else {
+            betRepository.setSelection(bean)
+        }
+    }
+
     fun loadNextPage() {
-        if (_state.value?.peekContent() != MatchListState.IDLE || isPageEnd) return
+        if (isPageEnd) {
+            _state.value = Event(MatchListState.NO_MORE_DATA)
+            return
+        }
+        if (_state.value?.peekContent() != MatchListState.IDLE) return
         page++
         _state.value = Event(MatchListState.LOADING_NEXT)
         getCollect()
