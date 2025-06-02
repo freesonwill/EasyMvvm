@@ -14,7 +14,6 @@ import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBindi
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import kotlin.reflect.KClass
 
 
@@ -88,7 +87,6 @@ class BetSlipUnsettledFragment :
 
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
-            it.initLoadMore()
             it.setOnRefreshListener {
                 mViewModel.refreshOrder(BetSlipEnum.UnSettled)
             }
