@@ -6,7 +6,6 @@ import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -43,9 +42,16 @@ class MatchListPagerFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
+            refreshLayout.pullRefreshAddFooter()
+            refreshLayout.setEnableLoadMore(true)
+            refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
                 mViewModel.reload()
             }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.loadNextPage()
+            }
+
             matchAdapter = MatchItemAdapter(object : OnMatchItemClickListener {
                 override fun onLiveEntryClick(item: MatchWithMarkets) {
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${item.match.matchId}&sportId=${item.match.basicInfo.sportId}"))
@@ -67,28 +73,11 @@ class MatchListPagerFragment :
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
-            val layoutManager = LinearLayoutManager(context)
             mBinding.rvHomeGameList.apply {
                 this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-
-            rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    // 滑動停止時觸發
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        subscribeVisibleMatch()
-                        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
-                        val totalItemCount = gameLayoutManager.itemCount
-                        //讀取下一頁
-                        if (lastVisible >= totalItemCount - 1) {
-                            mViewModel.loadNextPage()
-                        }
-                    }
-                }
-            })
         }
     }
 
@@ -135,11 +124,13 @@ class MatchListPagerFragment :
                     }
                     MatchListState.IDLE -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
                     MatchListState.FAILED -> {
                         mBinding.refreshLayout.finishRefresh()
+                        refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -149,6 +140,9 @@ class MatchListPagerFragment :
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
+                    }
+                    MatchListState.NO_MORE_DATA -> {
+                        refreshLayout.finishLoadMore()
                     }
                 }
             }

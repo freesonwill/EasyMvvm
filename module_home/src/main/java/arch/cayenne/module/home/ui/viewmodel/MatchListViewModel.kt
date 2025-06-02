@@ -129,7 +129,11 @@ class MatchListViewModel : BaseViewModel() {
     }
 
     fun loadNextPage() {
-        if (_state.value?.peekContent() != MatchListState.IDLE || isPageEnd) return
+        if (isPageEnd) {
+            _state.value = Event(MatchListState.NO_MORE_DATA)
+            return
+        }
+        if (_state.value?.peekContent() != MatchListState.IDLE) return
         page++
         _state.value = Event(MatchListState.LOADING_NEXT)
         getCurrentMatch()
