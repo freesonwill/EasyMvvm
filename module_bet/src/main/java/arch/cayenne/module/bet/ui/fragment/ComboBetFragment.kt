@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -138,7 +139,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             setSumBetMoney(it)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "\$ ${it.getFormalMoney()}"
+            val money = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
         }
     }
@@ -149,7 +150,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        val sumWinMoney = getString(R.string.btn_bet_win_money).format(winMoney.getMoney())
+        val sumWinMoney =
+            getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY, winMoney.getMoney())
         mBinding.tvBetMoney.text = sumWinMoney
     }
 
