@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -89,7 +90,8 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
 
     override fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            tittleBarBinding.tvMoney.text = getString(R.string.balance_format, it.getFormalMoney())
+            tittleBarBinding.tvMoney.text =
+                getString(R.string.balance_format, CurrencySymbols.CNY, it.getFormalMoney())
         }
         mViewModel.matchWithMarketsChange.observe(viewLifecycleOwner) { matchWithMarkets ->
             with(mBinding) {
