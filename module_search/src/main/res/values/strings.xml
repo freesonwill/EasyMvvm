@@ -16,4 +16,7 @@
     <string name="search_result_btn_bet">投注</string>
     <string name="search_result_btn_bet_finish">已结束</string>
     <string name="search_result_race_date_format_display">MM月dd日 EEEE</string>
+    <string name="search_result_race_calendar_title">%1$s %2$s</string>
+    <string name="search_calendar_reset">重置</string>
+    <string name="search_calendar_confirm">确认</string>
 </resources>

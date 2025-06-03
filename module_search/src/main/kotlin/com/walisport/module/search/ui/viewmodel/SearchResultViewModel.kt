@@ -28,6 +28,8 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
+import java.time.LocalDate
+import java.util.Date
 
 @KoinViewModel
 class SearchResultViewModel : BaseViewModel() {
@@ -47,6 +49,9 @@ class SearchResultViewModel : BaseViewModel() {
 
     private val _gradientBgColor = MutableSharedFlow<Int?>(replay = 1)
     val gradientBgColor: SharedFlow<Int?> = _gradientBgColor.asSharedFlow()
+
+    private val _selectedDateFlow = MutableStateFlow(Date())
+    val selectedDateFlow: StateFlow<Date> = _selectedDateFlow.asStateFlow()
 
     fun setResult(context: Context, result: SearchResultBean) {
         when (result.type) {
@@ -177,5 +182,9 @@ class SearchResultViewModel : BaseViewModel() {
 
     suspend fun setGradientBgColor(color: Int? = null) {
         _gradientBgColor.emit(color)
+    }
+
+    fun setSelectedDate(date: Date) {
+        _selectedDateFlow.value = date
     }
 }

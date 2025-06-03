@@ -17,4 +17,7 @@
     <string name="search_result_btn_bet">Pasang Taruhan</string>
     <string name="search_result_btn_bet_finish">Selesai</string>
     <string name="search_result_race_date_format_display">dd MMM EEEE</string>
+    <string name="search_result_race_calendar_title">%1$s %2$s</string>
+    <string name="search_calendar_reset">Atur Ulang</string>
+    <string name="search_calendar_confirm">Konfirmasi</string>
 </resources>
