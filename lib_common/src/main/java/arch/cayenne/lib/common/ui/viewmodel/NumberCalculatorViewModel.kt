@@ -9,8 +9,8 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 
 open class NumberCalculatorViewModel : BaseViewModel() {
 
-    open var decimalNumber: Int = 2
-        protected set
+    private var _decimalNumber: Int = 2
+    val decimalNumber: Int get() = _decimalNumber
 
     private val _onEditNumber = MutableLiveData("")
     val onEditNumber: LiveData<String> get() =  _onEditNumber
@@ -139,5 +139,9 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     protected fun setOverNumberListener(value: NumberOverEnum) {
         _onOverNumberListener.value = value
         _onOverNumberListener.value = NumberOverEnum.DEFAULT
+    }
+
+    fun setDecimalNumber(decimal: Int) {
+        _decimalNumber = decimal
     }
 }

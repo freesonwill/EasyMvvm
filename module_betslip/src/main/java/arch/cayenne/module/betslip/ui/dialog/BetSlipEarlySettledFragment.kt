@@ -43,7 +43,7 @@ class BetSlipEarlySettledFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<EarlySettledKeyboardViewModel>
         get() = EarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((money: Long) -> Unit)? = null
+    private var onEarlySettleClick: ((money: String) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -127,7 +127,9 @@ class BetSlipEarlySettledFragment private constructor() :
     override fun initData() {
         super.initData()
         val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
-        mViewModel.setAmountMoney(betAmount.toMoneyForScale(mViewModel.decimalNumber))
+        val decimalDigitsCount = getDecimalDigitsCount(betAmount)
+        mViewModel.setDecimalNumber(decimalDigitsCount)
+        mViewModel.setAmountMoney(betAmount.toMoneyForScale(decimalDigitsCount))
     }
 
     override fun initListener() {
@@ -144,7 +146,7 @@ class BetSlipEarlySettledFragment private constructor() :
             }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
-                    mViewModel.editValue.toMoney()
+                    mViewModel.editValue
                 )
                 dismiss()
             }
@@ -152,7 +154,7 @@ class BetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    fun setOnEarlySettleListener(listener: (money: Long) -> Unit) {
+    fun setOnEarlySettleListener(listener: (money: String) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
@@ -168,6 +170,14 @@ class BetSlipEarlySettledFragment private constructor() :
                 R.string.refund_amount
             ).format(money)
             mBinding.earlySettleTvTip.isVisible = money.toMoney() != 0L
+        }
+    }
+
+    private fun getDecimalDigitsCount(str: String): Int {
+        return if (str.contains('.')) {
+            str.substringAfter('.').length
+        } else {
+            mViewModel.decimalNumber
         }
     }
 }
