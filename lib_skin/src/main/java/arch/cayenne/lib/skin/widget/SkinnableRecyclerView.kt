@@ -48,7 +48,7 @@ class SkinnableRecyclerView : RecyclerView {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 }

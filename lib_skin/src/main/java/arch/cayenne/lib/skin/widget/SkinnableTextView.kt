@@ -85,7 +85,7 @@ class SkinnableTextView : AppCompatTextView {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 }
