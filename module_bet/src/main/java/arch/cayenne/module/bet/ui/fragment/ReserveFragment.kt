@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -111,7 +112,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             setBetData(it)
         }
         mViewModel.onReserveWinMoney.observe(viewLifecycleOwner) {
-            val money = getString(R.string.btn_bet_win_money).format(it)
+            val money = getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY, it)
             mBinding.tvBetMoney.text = money
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
@@ -123,7 +124,7 @@ class ReserveFragment : BaseFragment<ReserveViewModel, FragmentSingleBetBinding>
             }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "\$ ${it.getFormalMoney()}"
+            val money = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
             mViewModel.setRemainingNumber(it)
         }
