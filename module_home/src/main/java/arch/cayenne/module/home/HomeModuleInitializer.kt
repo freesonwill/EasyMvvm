@@ -5,7 +5,9 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.module.home.data.repo.ChampionRepository
+import arch.cayenne.module.home.data.repo.CollectListRepository
 import arch.cayenne.module.home.data.repo.HomeRepository
+import arch.cayenne.module.home.data.repo.MatchListRepository
 import arch.cayenne.module.home.data.repo.TournamentListRepository
 import com.ibm.icu.text.Transliterator
 import kotlinx.coroutines.CoroutineScope
@@ -50,7 +52,8 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         factory { HomeRepository(get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao()) }
         factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao()) }
-
+        factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao()) }
+        factory { MatchListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, daoModule, repoModules)
 }
