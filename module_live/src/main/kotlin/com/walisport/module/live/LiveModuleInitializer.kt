@@ -22,7 +22,6 @@ import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
-import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
