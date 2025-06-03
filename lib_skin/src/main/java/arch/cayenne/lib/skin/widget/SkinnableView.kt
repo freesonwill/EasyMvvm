@@ -43,8 +43,8 @@ open class SkinnableView : View {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 
 }

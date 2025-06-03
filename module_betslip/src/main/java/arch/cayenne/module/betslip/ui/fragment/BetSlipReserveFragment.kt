@@ -1,11 +1,9 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -14,11 +12,8 @@ import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
-
 
 //注单预约
 class BetSlipReserveFragment :

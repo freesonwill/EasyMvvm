@@ -2,12 +2,10 @@ package arch.cayenne.module.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.database.entity.SportDataModel
-import arch.cayenne.module.home.R
-import arch.cayenne.module.home.databinding.ItemSportsBinding
 import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.databinding.ItemSportsBinding
 
 class SportsListAdapter(
     private val onItemClick: (SportDataModel) -> Unit
@@ -34,13 +32,6 @@ class SportsListAdapter(
             tvSportTitle.text = context.getString(sportType.titleResId)
             tvSportIcon.isEnabled = sport.matchCount > 0
             tvSportIcon.setImageResource(if (tvSportIcon.isEnabled) sportType.iconResActive else sportType.iconResInactive)
-
-            tvSportTitle.setTextColor(
-                ContextCompat.getColorStateList(
-                    context,
-                    R.color.selector_sport_tab_text_color
-                )
-            )
 
             // 依據選中狀態設定 UI
             root.isSelected = (holder.adapterPosition == selectedPosition)

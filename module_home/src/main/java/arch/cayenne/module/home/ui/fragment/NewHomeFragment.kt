@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -43,6 +43,7 @@ import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
+import galaxy.common.proto.Common
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -55,6 +56,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         SportsListAdapter { sport ->
         }
     }
+    private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
 
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
@@ -136,8 +138,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //init 三級導航欄位與日期
     private fun initTournamentLayout() {
-        // 取得未來 30 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureThirtyDays()
+        // 取得未來 31 天 (MMDD, 星期, timeStamp)
+        val dateTabs = getFutureThirtyOneDays()
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -151,9 +153,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val dateTimestamp: Long = if (dateTabIndex == 0) {
                         0L // 代表「全部」
                     } else {
-                        val dateTriple = getFutureThirtyDays()
+                        val dateTriple = getFutureThirtyOneDays()
                             .getOrNull(dateTabIndex - 1)
-                        "選中日期,時間戳:$dateTriple".logd()
                         dateTriple?.third ?: 0L
                     }
                     mViewModel.setSelectedDate(dateTimestamp)
@@ -172,8 +173,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 var tabSelectedDate = "0"
                 val index = mBinding.layoutContainer.tlDateList.selectedTabPosition
                 if (index > 0) {
-                    val endDateTriple = getFutureThirtyDays().getOrNull(index - 1)
-                    tabSelectedDate = DateUtils.getDate(endDateTriple?.third ?: 0L, "yyyyMMdd")
+                    val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index - 1)
+                    tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
                 }
                 showHomeCalendar(tabSelectedDate)
             }
@@ -237,23 +238,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun showHomeCalendar(tabSelectedDate: String) {
-        //設定標記紅色日期及可選取日期範圍
-        fun setSchemeDate(calendarView: CalendarView) {
-            val map: MutableMap<String, Calendar> = HashMap()
-            //設定可以標記為紅色字的日期區間，目前設定為30天
-            for (date in getFutureThirtyDays()) {
-                val dateArray = DateUtils.getDate(date.third ,"yyyy-MM-dd").split("-")
-                map[getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt()).toString()] =
-                    getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
-
-            }
-            val endDateTriple = getFutureThirtyDays()
-                .getOrNull(mBinding.layoutContainer.tlDateList.tabCount - 2)
-            val endDateArray = DateUtils.getDate(endDateTriple?.third ?: 0L ,"yyyy-MM-dd").split("-")
-            //設定可以選取的日期區間，目前設定為30天
-            calendarView.setRange(calendarView.curYear,calendarView.curMonth,calendarView.curDay,endDateArray[0].toInt(),endDateArray[1].toInt(),endDateArray[2].toInt())
-            calendarView.setSchemeDate(map)
-        }
 
         fun setCurrentDate(vb: HomeTourPopupCalendarViewBinding, tabSelectedDate: String) {
             val currentYear = vb.calendarView.curYear
@@ -280,32 +264,30 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         }
         // 使用 Builder 創建 Popup
-        val customPopup = HomeCalendarPopupWindow.Builder(requireContext(), HomeTourPopupCalendarViewBinding::inflate)
-            .build()
-        with(customPopup.binding) {
+        setCalendarPopup()
+        with(customPopup?.binding) {
             // 獲取當前日期
             var selectedDate = if (tabSelectedDate == "0") {
-                "${calendarView.selectedCalendar}"
+                "${this?.calendarView?.selectedCalendar}"
             } else {
                 tabSelectedDate
             }
             // 透過 binding 操作 Popup 內部的 View
-            ivRightClick.clickNoRepeat {
-                calendarView.scrollToNext(true)
+            this?.ivRightClick?.clickNoRepeat {
+                this?.calendarView?.scrollToNext(true)
             }
-            ivLeftClick.clickNoRepeat {
-                calendarView.scrollToPre(true)
+            this?.ivLeftClick?.clickNoRepeat {
+                this?.calendarView?.scrollToPre(true)
             }
-            calendarBtnCancel.clickNoRepeat {
-                customPopup.dismiss() // 關閉 Popup
+            this?.calendarBtnCancel?.clickNoRepeat {
+                customPopup?.dismiss() // 關閉 Popup
             }
-            calendarBtnOk.clickNoRepeat {
+            this?.calendarBtnOk?.clickNoRepeat {
                 setSelectedDateTab(selectedDate)
-                customPopup.dismiss()
+                customPopup?.dismiss()
             }
-            setSchemeDate(calendarView)
-            setCurrentDate(customPopup.binding,tabSelectedDate)
-            calendarView.setOnCalendarSelectListener(object :
+            setCurrentDate(customPopup!!.binding,tabSelectedDate)
+            this?.calendarView?.setOnCalendarSelectListener(object :
                 CalendarView.OnCalendarSelectListener {
                 override fun onCalendarOutOfRange(calendar: Calendar?) {
 
@@ -328,19 +310,46 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
         // 顯示 Popup
-        customPopup.showAsDropDown(mBinding.layoutContainer.tlDateList)
+        customPopup!!.showAsDropDown(mBinding.layoutContainer.tlDateList)
     }
+    //設定標記紅色日期及可選取日期範圍
+    private fun setSchemeDate(calendarView: CalendarView,list:List<Common.DailyMatchCount>) {
+        val map: MutableMap<String, Calendar> = HashMap()
+        for (date in list) {
+            //API回傳資料，有比賽的日期才需要標記紅字
+            if (date.count > 0) {
+                val dateArray = date.day.split("-")
+                map[getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt()).toString()] =
+                    getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+            }
+        }
+        //可選取日期區間為未來第31天
+        val endDateTriple = list.last()
+        val endDateArray = endDateTriple?.day!!.split("-")
+        //設定可以選取的日期區間，目前設定為31天
+        calendarView.setRange(calendarView.curYear,calendarView.curMonth,calendarView.curDay,endDateArray[0].toInt(),endDateArray[1].toInt(),endDateArray[2].toInt())
+        calendarView.setSchemeDate(map)
+    }
+    private fun setCalendarPopup() {
+        if (customPopup == null) {
+            customPopup = HomeCalendarPopupWindow.Builder(
+                requireContext(),
+                HomeTourPopupCalendarViewBinding::inflate
+            ).build()
+        }
+    }
+
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
     private fun setSelectedDateTab(selectedDate:String) {
         with(mBinding.layoutContainer) {
-            val dateIndex = getFutureThirtyDays().indexOfFirst {
-                DateUtils.getDate(it.third,"yyyyMMdd") == selectedDate
-            } + 1
+            val dateIndex = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.indexOfFirst {
+                it.day.replace("-","") == selectedDate
+            }?.plus(1) ?: 0
             tlDateList.getTabAt(dateIndex)?.select()
         }
     }
 
-    private fun getFutureThirtyDays() = DateUtils.getFutureDays(30, Locale.getDefault())
+    private fun getFutureThirtyOneDays() = DateUtils.getFutureDays(31, Locale.getDefault())
     private fun getSchemeCalendar(
         year: Int,
         month: Int,
@@ -366,7 +375,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             drawerContentFragment = DrawerContentFragment()
             drawerContentFragment?.also {
                 it.setOnFunctionClickListener {
-                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 }
             }
         }
@@ -443,11 +452,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { it.attach() }
-
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.customView?.isSelected = true
-                    vpGameList.currentItem = tab?.position ?: 0
+                    val selectedIndex = tab?.position ?: 0
+                    vpGameList.currentItem = selectedIndex
+                    getSelectedRecently31Scheduled(selectedIndex)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -455,6 +465,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             })
         }
     }
+
+    private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
+        if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+            val list = mViewModel.tournaments.value?.peekContent().orEmpty()
+            if (list.isEmpty()) return
+            mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
+        }
+    }
+
     override fun initData() {
         super.initData()
         mViewModel.setCurrentPlayType(PlayType.TODAY)
@@ -467,7 +486,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llFavoriteEntry.setOnClickListener {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToFavoriteListFragment())
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
 
             llSearchEntry.setOnClickListener {
@@ -511,7 +530,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            mBinding.tvWalletBalance.text = getString(R.string.balance_format, it.getFormalMoney())
+            mBinding.tvWalletBalance.text =
+                getString(R.string.balance_format, CurrencySymbols.CNY, it.getFormalMoney())
         }
 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->
@@ -526,7 +546,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 )
             }
         }
-
+        mViewModel.recently31MatchScheduleCount.observeEvent(viewLifecycleOwner, this) {list->
+            setCalendarPopup()
+            with (customPopup?.binding) {
+                setSchemeDate(this!!.calendarView,list)
+            }
+        }
         mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
             with(mBinding) {
                 when(state) {
@@ -555,7 +580,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     else -> Unit
                 }
             }
-
         }
     }
 

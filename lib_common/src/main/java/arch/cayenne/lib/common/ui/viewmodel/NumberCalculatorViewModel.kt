@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoneyForScale
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
+
 open class NumberCalculatorViewModel : BaseViewModel() {
+
+    private var _decimalNumber: Int = 2
+    val decimalNumber: Int get() = _decimalNumber
 
     private val _onEditNumber = MutableLiveData("")
     val onEditNumber: LiveData<String> get() =  _onEditNumber
@@ -32,13 +36,12 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
         val newValue = if (current.contains('.')) {
             val decimalPart = current.substringAfter('.', "")
-            if (decimalPart.length >= 2) return  // 最多兩位小數，直接返回不修改
+            if (decimalPart.length >= decimalNumber) return  // 最多兩位小數，直接返回不修改
             current + number
         } else {
             current + number
         }
-
-        setEditNumber(newValue.toMoney())
+        setEditNumber(newValue.toMoneyForScale(decimalNumber))
     }
 
     fun setDot() {
@@ -73,7 +76,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                 } else {
                     it
                 }
-                setEditNumber(money.toMoney() * 2)
+                setEditNumber(money.toMoneyForScale(decimalNumber) * 2)
             }
         } ?: ""
     }
@@ -91,14 +94,34 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     protected fun setEditNumber(value: Long) {
         _onEditNumber.value = if (value > maxMoney) {
             setOverNumberListener(NumberOverEnum.OVER_MAX)
-            maxMoney.getMoney()
+            maxMoney.getMoneyForScale(decimalNumber)
         } else if (value > remainingNumber) {
             setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-            remainingNumber.getMoney()
+            remainingNumber.getMoneyForScale(decimalNumber)
+        } else if (value == 0L) {
+            getZero()
         } else {
-            value.getMoney()
+            value.getMoneyForScale(decimalNumber)
         }
         _onOverNumberListener.value = NumberOverEnum.DEFAULT
+    }
+
+    private fun getZero(): String {
+        val lastValue = _onEditNumber.value
+        return if (lastValue.isNullOrEmpty()) {
+            "0"
+        } else {
+            if (!lastValue.startsWith("0.")) return lastValue
+
+            val decimalPart = lastValue.substringAfter("0.")
+            // 如果小數部分長度 >= scale，維持原字串
+            if (decimalPart.length >= decimalNumber) {
+                lastValue
+            } else {
+                // 補足到 scale 位數
+                "0." + decimalPart.padEnd(decimalPart.length + 1, '0')
+            }
+        }
     }
 
     fun setNumberLimit(min: Long, max: Long) {
@@ -116,5 +139,9 @@ open class NumberCalculatorViewModel : BaseViewModel() {
     protected fun setOverNumberListener(value: NumberOverEnum) {
         _onOverNumberListener.value = value
         _onOverNumberListener.value = NumberOverEnum.DEFAULT
+    }
+
+    fun setDecimalNumber(decimal: Int) {
+        _decimalNumber = decimal
     }
 }

@@ -19,6 +19,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     SINGLE_BET(500, 1015),   //500-1015: 單注下注
     RESERVE_BET(500, 1020),  //500-1020: 預約下注
     MATCH_LIVE_STREAM(700, 2005),//700-2005: 比赛直播流
+    LISt_COLLECT(500, 1042),  // 500-1042: 收藏列表
 
     GET_ORDER(500, 1012),    //500-1012: 获取下注记录
     GER_RESERVE_ORDER(500, 1021), //500-1021 获取预约下注记录
@@ -60,4 +61,5 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     SUBSCRIBE_MATCH_MARKET(500, 1104), // 500-1104: 订阅比赛盘口
     CANCEL_SUBSCRIBE_MATCH_MARKET(500, 1105), // 500-1105: 取消订阅比赛盘口
     MATCH_MARKET_NOTIFY(600, 1005), // 600-1005: 比赛盘口推送
+    RECENTLY_31_MATCH_SCHEDULE_COUNT(500, 1009), // 500-1009: 获取近31日比赛日程count
 }

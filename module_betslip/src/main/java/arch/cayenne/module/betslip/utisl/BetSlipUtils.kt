@@ -40,7 +40,7 @@ internal object BetSlipUtils {
         "$nBetAmount $nEarlyPrice $nEarlyBetAmount  multipyResult $multipyResult result  $result ".logd(
             "betslip"
         )
-        return result.divide(BigDecimal(10000000))
+        return result.divide(BigDecimal(1000000))
             .setScale(3, RoundingMode.DOWN).toString()
     }
 

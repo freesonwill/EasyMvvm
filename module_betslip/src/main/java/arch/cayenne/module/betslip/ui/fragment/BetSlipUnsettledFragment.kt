@@ -3,8 +3,6 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -14,7 +12,6 @@ import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBindi
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
-import arch.cayenne.module.betslip.utisl.BetSlipViewExt.initLoadMore
 import kotlin.reflect.KClass
 
 
@@ -51,11 +48,11 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, price.toString(), order.earlyBetAmount
                 )
-                BetSlipEarlySettledFragment.instance(order.betAmount.toMoney()).apply {
+                BetSlipEarlySettledFragment.instance(money).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
                             it.betId,
-                            money.getMoney(),
+                            money,
                             mViewModel.isSupportEarlySettleLiveData.value?.price ?: "0"
                         )
                     }
@@ -88,7 +85,6 @@ class BetSlipUnsettledFragment :
 
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
-            it.initLoadMore()
             it.setOnRefreshListener {
                 mViewModel.refreshOrder(BetSlipEnum.UnSettled)
             }
