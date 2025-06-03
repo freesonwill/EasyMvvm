@@ -229,7 +229,7 @@ message Setting {
     NotifyMatchType system_goal = 2;        //系统通知-进球
     NotifyMatchType system_kick_off = 3;    //系统通知-开球
     NotifyMatchType app_goal = 4;           //app内通知-开球
-    int32 background = 5;   //背景设置
+    int32 background = 5;   //背景设置 0-经典 1-黑篮 2-黑绿 3-黑红 4-白蓝 5-白绿
     string lang = 6;        //语言
 }
 

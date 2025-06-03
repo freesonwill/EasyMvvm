@@ -45,8 +45,8 @@ class BetSlipRemoteManager(
         ) {
             Client.GetOrderReq.newBuilder().apply {
                 this.status = status
-                this.page = page
-                this.pageSize = pageSize
+                this.cursorBetTime = 0
+                this.size = pageSize
                 sportId?.let { this.addSportId(sportId) }
                 matchId?.let { this.matchId = matchId }
                 startTime?.let { this.startTime = startTime }
