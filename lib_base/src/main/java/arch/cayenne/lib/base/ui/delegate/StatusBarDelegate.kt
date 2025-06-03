@@ -41,7 +41,6 @@ class StatusBarDelegate : IStatusBar {
     }
 
     override fun setStatusBar(config: StatusBarConfig, view: View) {
-        LogUtils.d("DialogFragment", "-----DialogFragment--setStatusBar${config.statusBarDarkFont}")
         immersionBar.statusBarDarkFont(config.statusBarDarkFont, 0.2f)
             .navigationBarDarkIcon(config.statusBarDarkFont) // true 表示使用深色图标，false 表示浅色图标
         val statusBarHeight = ImmersionBar.getStatusBarHeight(view.context)
@@ -59,9 +58,7 @@ class StatusBarDelegate : IStatusBar {
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
                 setViewPadding(
-                    view,
-                    viewPaddingTop + statusBarHeight,
-                    view.paddingBottom
+                    view, viewPaddingTop + statusBarHeight, view.paddingBottom
                 )
             }
             //全屏
@@ -78,14 +75,11 @@ class StatusBarDelegate : IStatusBar {
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
-
                     .transparentStatusBar() // 设置状态栏透明
                     .transparentNavigationBar() // 设置导航栏透明
                 immersionBar.init()
                 setViewPadding(
-                    view,
-                    viewPaddingTop + statusBarHeight,
-                    navigationBarHeight
+                    view, viewPaddingTop + statusBarHeight, navigationBarHeight
                 )
             }
         }
@@ -94,10 +88,8 @@ class StatusBarDelegate : IStatusBar {
     private fun setViewPadding(v: View, statusBarHeight: Int, navigationBarHeight: Int) {
         v.post {
             v.setPadding(
-                v.paddingLeft,
-                statusBarHeight, // paddingTop 设置为状态栏高度
-                v.paddingRight,
-                navigationBarHeight
+                v.paddingLeft, statusBarHeight, // paddingTop 设置为状态栏高度
+                v.paddingRight, navigationBarHeight
             )
         }
     }
