@@ -2,6 +2,9 @@ package com.walisport.module.live.ui.video
 
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 
+/**
+ * @description: LivePlayView的cache,  作用是在视频横竖屏切换时，共享LivePlayView实例， 实现横竖屏切换时的无缓冲播放效果
+ */
 object PlayerViewCache {
 
     private val map: HashMap<LivePlayerView, Int> = HashMap()

@@ -110,6 +110,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     private fun initVideoView() {
+//        "portrait.initVideoView".logd("videoCache")
+
         videoView = PlayerViewCache.acquirePlayerView {
             LivePlayerView(requireActivity()).apply {
                 init(PlayerMode.FLUENCY)
@@ -147,6 +149,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         //播放状态处理
         videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+
+        if (videoView.parent != null) {
+            (videoView.parent as ViewGroup).removeView(videoView)
+        }
 
         // 创建 LayoutParams，设置宽度和高度为 match_parent
         val layoutParams = LinearLayout.LayoutParams(
@@ -369,6 +375,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     override fun onDestroy() {
+//        "portrait.onDestroy".logd("videoCache")
+
         super.onDestroy()
 
         PlayerViewCache.releasePlayerView(videoView) {

@@ -7,8 +7,11 @@ import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
@@ -76,11 +79,13 @@ class LiveVideoLandscapeFragment :
         mViewModel.setMatchId(matchId)
 
         initVideoView()
+        initBackPress()
         scheduleHideButtons()
     }
 
     private fun initVideoView() {
         //横屏一般是从竖屏过来的，可以直接复用之前的播放器实例
+//        "landscape.initVideoView".logd("videoCache")
         videoView = PlayerViewCache.acquirePlayerView {
             LivePlayerView(requireActivity())
                 .apply {
@@ -139,6 +144,10 @@ class LiveVideoLandscapeFragment :
 
         // 将 LayoutParams 应用到 VideoView
         videoView.layoutParams = layoutParams
+
+        if (videoView.parent != null) {
+            (videoView.parent as ViewGroup).removeView(videoView)
+        }
 
         mBinding.videoViewContainer.addView(videoView)
     }
@@ -261,6 +270,21 @@ class LiveVideoLandscapeFragment :
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId())
     }
+
+    /**
+     * 监听返回键
+     */
+    private fun initBackPress(){
+        // 监听返回键
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    mBinding.videoViewContainer.removeAllViews()
+                }
+            })
+    }
+
 
     /**
      * 展示上边和下边的操作按钮，不带动画
@@ -531,6 +555,7 @@ class LiveVideoLandscapeFragment :
     }
 
     override fun onDestroy() {
+//        "landscape.onDestroy".logd("videoCache")
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig, mBinding.root)
