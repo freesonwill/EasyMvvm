@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/dp_66"
@@ -23,4 +23,4 @@
         android:textColor="@color/selector_sport_tab_text_color"
         android:textSize="12sp"
         tools:text="足球" />
-</LinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
