@@ -61,4 +61,5 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     SUBSCRIBE_MATCH_MARKET(500, 1104), // 500-1104: 订阅比赛盘口
     CANCEL_SUBSCRIBE_MATCH_MARKET(500, 1105), // 500-1105: 取消订阅比赛盘口
     MATCH_MARKET_NOTIFY(600, 1005), // 600-1005: 比赛盘口推送
+    RECENTLY_31_MATCH_SCHEDULE_COUNT(500, 1009), // 500-1009: 获取近31日比赛日程count
 }

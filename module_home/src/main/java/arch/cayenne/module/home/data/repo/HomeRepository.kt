@@ -12,6 +12,7 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
+import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 
@@ -156,5 +157,24 @@ class HomeRepository(
     }
     private fun clearMatchCache() {
         matchDao.clearAllMatch()
+    }
+    suspend fun getRecently31MatchScheduleCount(sportId: Int, playType: Int,tournamentId:Int, timeZone: Int = 8): List<Common.DailyMatchCount> {
+        val res = socketManager.sendAndWaitProtoMessageResponse<Client.Recently31MatchScheduleCountResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.RECENTLY_31_MATCH_SCHEDULE_COUNT,
+        ) {
+            Client.Recently31MatchScheduleCountReq.newBuilder().apply {
+                this.sportId = sportId
+                this.playType = playType
+                this.tournamentId = tournamentId
+                this.timeZone = timeZone
+            }.build()
+        }
+        return  if (res.error == null && res.data != null) {
+            res.data!!.dailyCountList
+        } else {
+            emptyList()
+        }
     }
 }
