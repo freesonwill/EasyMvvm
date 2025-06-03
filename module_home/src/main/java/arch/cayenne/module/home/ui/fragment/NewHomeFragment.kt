@@ -366,7 +366,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             drawerContentFragment = DrawerContentFragment()
             drawerContentFragment?.also {
                 it.setOnFunctionClickListener {
-                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+//                    mBinding.drawerLayout.closeDrawer(GravityCompat.START)
                 }
             }
         }
@@ -467,7 +467,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             llFavoriteEntry.setOnClickListener {
-                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToFavoriteListFragment())
+                navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
 
             llSearchEntry.setOnClickListener {
