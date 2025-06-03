@@ -482,6 +482,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override fun initListener() {
         with(mBinding) {
             llWalletEntry.setOnClickListener {
+                //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
 
