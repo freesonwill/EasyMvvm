@@ -1,14 +1,9 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
@@ -20,56 +15,16 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class MatchListViewModel : BaseViewModel() {
+class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _sportId = SportType.Init.id
     private var _playType = PlayType.TODAY.id
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
-    var page: Int = 1
-    var isPageEnd = false
-    private val subscribeMatchSet by lazy { HashSet<Long>() }
-    private val repository: MatchListRepository by inject { parametersOf(viewModelScope) }
-    private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
-
-    val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
-    private val _state  = MutableLiveData<Event<MatchListState>>()
-    val state : LiveData<Event<MatchListState>> = _state
-
-    override fun initViewModel() {
-        super.initViewModel()
-        // 觀察賽事訂閱後，後端主動送出的變化
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.observeMatchNotify().collect { matchWithMarket ->
-                if (matchListChange.value == null) return@collect
-                val old = matchListChange.value!!.toMutableList()
-                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                if (index != -1) { old[index] = matchWithMarket }
-//                val matchWithMarkets = repository.queryFullMatches(matchListChange.value!!.map { it.match.matchId })
-                withContext(Dispatchers.Main) {
-//                    matchListChange.value = matchWithMarkets
-                    matchListChange.value = old
-                }
-            }
-        }
-        //觀察投注單的變化，主要用來做selection變更
-        viewModelScope.launch(Dispatchers.IO) {
-            betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
-                if (matchListChange.value == null) return@collect
-                val matchWithMarkets = repository.queryFullMatches(
-                    matchListChange.value!!.map { it.match.matchId },
-                    betSelectionBeans.map { it.selectionId }
-                )
-                withContext(Dispatchers.Main) {
-                    matchListChange.value = matchWithMarkets
-                }
-            }
-        }
-    }
+    override val repository: MatchListRepository by inject()
 
     fun setSportId(id: Int) {
         _sportId = id
@@ -111,7 +66,7 @@ class MatchListViewModel : BaseViewModel() {
             }.collect { (selectedDate, refs) ->
                 val currentDateRefs = refs.filter { it.startTime == selectedDate }
                 if (currentDateRefs.isEmpty()) {
-                    getCurrentMatch()
+                    getMatchListData()
                     return@collect
                 }
                 //一次拿到當前頁面全部資料，會超過一頁，所以需要重新看一下page
@@ -128,19 +83,8 @@ class MatchListViewModel : BaseViewModel() {
         }
     }
 
-    fun loadNextPage() {
-        if (isPageEnd) {
-            _state.value = Event(MatchListState.NO_MORE_DATA)
-            return
-        }
-        if (_state.value?.peekContent() != MatchListState.IDLE) return
-        page++
-        _state.value = Event(MatchListState.LOADING_NEXT)
-        getCurrentMatch()
-    }
-
     //取得分頁的比賽列表
-    private fun getCurrentMatch() {
+    override fun getMatchListData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = ${_selectedDate.value}".logi(this::class.java.name)
@@ -158,54 +102,6 @@ class MatchListViewModel : BaseViewModel() {
         }
     }
 
-    fun compareSubscribeMatch(ids: Set<Long>) {
-        val subscribe = ids - subscribeMatchSet
-        val cancel = subscribeMatchSet - ids
-        subscribeMatchSet.clear()
-        subscribeMatchSet.addAll(ids)
-        cancelSubscribeMatch(cancel)
-        subscribeMatch(subscribe)
-    }
-    fun subscribeMatch(subscribe: Set<Long>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            "訂閱比賽  $subscribe".logi(this::class.java.name)
-            if (matchListChange.value != null && subscribe.isNotEmpty()) {
-                val matchWithMarkets = repository.subscribeMatch(subscribe.toList())
-                val old = matchListChange.value!!.toMutableList()
-                matchWithMarkets.forEach { matchWithMarket ->
-                    val index =
-                        old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                    if (index != -1) {
-                        old[index] = matchWithMarket
-                    }
-                }
-                withContext(Dispatchers.Main) {
-                    matchListChange.value = old
-                }
-            }
-        }
-    }
-
-    fun cancelSubscribeMatch(cancel: Set<Long>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            "取消訂閱比賽  $cancel".logi(this::class.java.name)
-            if (cancel.isNotEmpty()) {
-                repository.cancelSubscribeMatch(cancel.toList())
-            }
-        }
-    }
-
-    fun getCurrentSubscribeMatchSet() = subscribeMatchSet
-
-    suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
-        val bean = repository.getSelectionInsertBean(selectionId)
-        return if (bean == null) {
-            AddSelectionStatus.FAIL
-        } else {
-            betRepository.setSelection(bean)
-        }
-    }
-
     fun addMatchCollect(item: MatchWithMarkets, collect: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarket = repository.matchCollect(item, collect)
@@ -220,16 +116,7 @@ class MatchListViewModel : BaseViewModel() {
         }
     }
 
-    fun reload() {
-        isPageEnd = false
-        page = 1
-        val preState = _state.value?.peekContent()
-        _state.value = Event(MatchListState.REFRESHING)
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
-            if (preState == MatchListState.FAILED) {
-                getCurrentMatch()
-            }
-        }
+    override fun clearCurrentMatch() {
+        repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
     }
 }
