@@ -121,6 +121,8 @@
             app:layout_constraintTop_toBottomOf="@id/live_chat_ll_search"
             app:tabIndicatorFullWidth="false"
             android:background="@color/card_background"
+            app:tabBackground="@null"
+            app:tabRippleColor="@null"
             app:tabIndicatorHeight="0dp"
             app:tabMaxWidth="@dimen/dp_42"
             app:tabMode="scrollable"

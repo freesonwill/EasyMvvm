@@ -7,14 +7,14 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
+import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import com.walisport.module.live.utils.EmojiUtils
 import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class EmojiEditTextView : AppCompatEditText {
-   private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
    private val textHelper: SkinnableTextHelper = SkinnableTextHelper(this)
-//   private val backGroundHelper: SkinnableBackGroundHelper = SkinnableBackGroundHelper(this)
+   private val flowHelper:SkinnableViewFlowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -34,16 +34,12 @@ class EmojiEditTextView : AppCompatEditText {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
-            sportSkinManager.skinFlow.collect {
-//                backGroundHelper.updateSkin()
-                textHelper.updateSkin()
-            }
-        }
+       flowHelper.startSkinFlow {
+           textHelper.updateSkin()
+       }
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-//        backGroundHelper.loadFromAttributes(attrs, defStyleAttr)
         textHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
@@ -59,4 +55,8 @@ class EmojiEditTextView : AppCompatEditText {
         }
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        flowHelper.destroyFlow()
+    }
 }

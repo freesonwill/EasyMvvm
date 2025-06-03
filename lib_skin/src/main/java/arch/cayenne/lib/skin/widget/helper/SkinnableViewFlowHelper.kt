@@ -42,6 +42,7 @@ class SkinnableViewFlowHelper {
 
     fun destroyFlow() {
         skinFlowJob?.cancel()
+        languageFlowJob?.cancel()
     }
 
 }
