@@ -125,7 +125,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
 
     override fun initListener() {
         titleBarBinding.llWalletEntry.clickNoRepeat {
-
+            navigate(Uri.parse("walisport://module_topup/topUpFragment"))
         }
     }
 

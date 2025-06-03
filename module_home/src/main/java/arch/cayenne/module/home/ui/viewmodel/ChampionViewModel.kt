@@ -76,13 +76,13 @@ class ChampionViewModel : BaseViewModel() {
 
     fun subscribeMatch() {
         viewModelScope.launch(Dispatchers.IO) {
-            championRepository.subscribeMatch(matchId)
+            championRepository.subscribeMatch(arrayListOf(matchId))
         }
     }
     fun cancelSubscribeMatch() {
         viewModelScope.launch(Dispatchers.IO) {
             "取消訂閱比賽  $matchId".logi(this::class.java.name)
-            championRepository.cancelSubscribeMatch(matchId)
+            championRepository.cancelSubscribeMatch(arrayListOf(matchId))
         }
     }
 

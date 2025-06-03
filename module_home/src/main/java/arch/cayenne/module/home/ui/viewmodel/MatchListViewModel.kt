@@ -12,7 +12,7 @@ import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
-import arch.cayenne.module.home.data.repo.HomeRepository
+import arch.cayenne.module.home.data.repo.MatchListRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -33,7 +33,7 @@ class MatchListViewModel : BaseViewModel() {
     var page: Int = 1
     var isPageEnd = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
-    private val repository: HomeRepository by inject { parametersOf(viewModelScope) }
+    private val repository: MatchListRepository by inject { parametersOf(viewModelScope) }
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
