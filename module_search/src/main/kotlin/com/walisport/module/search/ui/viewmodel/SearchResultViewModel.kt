@@ -2,6 +2,8 @@ package com.walisport.module.search.ui.viewmodel
 
 import android.content.Context
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.R
@@ -35,24 +37,101 @@ import java.util.Date
 class SearchResultViewModel : BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
 
+    /** 歷史搜尋紀錄 */
+    private val _recordList = MutableLiveData<List<String>>()
+    val searchRecord: LiveData<List<String>> = _recordList
+
+    /** 熱門搜尋關鍵字 */
+    private val _searchHotWord = MutableLiveData<List<String>>()
+    val searchHotWord: LiveData<List<String>> = _searchHotWord
+
+    /** 推薦搜尋關鍵字 */
+    private val _searchRecommend = MutableLiveData<List<String>>()
+    val searchRecommend: LiveData<List<String>> = _searchRecommend
+
+    /** 搜尋結果 */
+    private val _searchResult = MutableLiveData<SearchResultBean>()
+    val searchResult: LiveData<SearchResultBean> = _searchResult
+
+    /** 搜尋結果頁 UI 狀態 */
     private val _uiState = MutableStateFlow<SearchResultUiState>(SearchResultUiState.Loading)
     val uiState: StateFlow<SearchResultUiState> = _uiState
 
+    /** 整理後搜尋結果 列表用 */
     private val _groupData = MutableStateFlow<List<SearchResultListItemType>>(emptyList())
     val groupData: StateFlow<List<SearchResultListItemType>> = _groupData.asStateFlow()
 
+    /** 精準搜尋結果 */
     private val _directData = MutableStateFlow<SearchResultBaseBean?>(null)
     val directData: StateFlow<SearchResultBaseBean?> = _directData.asStateFlow()
 
+    /** 整理後搜尋結果 賽事用 */
     private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>>(emptyList())
     val combineResult: StateFlow<List<SearchResultRaceItemType>> = _combineResult.asStateFlow()
 
+    /** 漸層背景顏色 */
     private val _gradientBgColor = MutableSharedFlow<Int?>(replay = 1)
     val gradientBgColor: SharedFlow<Int?> = _gradientBgColor.asSharedFlow()
 
+    /** 選擇的日期 */
     private val _selectedDateFlow = MutableStateFlow(Date())
     val selectedDateFlow: StateFlow<Date> = _selectedDateFlow.asStateFlow()
 
+    /** 以 UID 取得搜尋紀錄 */
+    fun getRecordByUID() {
+        viewModelScope.launch {
+            _recordList.value = repository.getRecordByUID()
+        }
+    }
+
+    /** 移除所有搜尋紀錄 */
+    fun deleteAllData() {
+        viewModelScope.launch {
+            repository.deleteAllData()
+        }
+    }
+
+    /** 新增一筆搜尋紀錄 */
+    fun addOneRecord(key: String) {
+        viewModelScope.launch {
+            repository.addOneRecord(key)
+        }
+    }
+
+    /** 刪除一筆搜尋紀錄 */
+    fun deleteOneRecord(keyword: String?) {
+        viewModelScope.launch {
+            repository.deleteOneRecord(keyword)
+        }
+    }
+
+    /** 取得搜尋結果 */
+    fun getSearchResult(keyword: String) {
+        viewModelScope.launch {
+            _searchResult.value = repository.getSearchResult(keyword)
+        }
+    }
+
+    /** 取得推薦關鍵字結果 */
+    fun getSearchRecommend(keyword: String? = "") {
+        viewModelScope.launch {
+            _searchRecommend.value = repository.getSearchRecommend(keyword)
+        }
+    }
+
+    /** 清除推薦關鍵字結果 */
+    fun clearSearchRecommend() {
+        _searchRecommend.value = emptyList()
+    }
+
+    /** 取得熱門搜尋關鍵字 */
+    fun getSearchHotWord() {
+        viewModelScope.launch {
+            _searchHotWord.value = repository.getSearchHotWord()
+        }
+    }
+
+    /** 處理搜尋結果 */
     fun setResult(context: Context, result: SearchResultBean) {
         when (result.type) {
             SearchResultTypeEnum.NONE -> {
@@ -77,6 +156,7 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    /** 處理精準搜尋結果 */
     private fun groupMatchesByDailyCount(dailyCounts: List<SearchDailyMatchBean>, matches: List<SearchMatchBean>): List<SearchResultRaceItemType> {
         val resultList = mutableListOf<SearchResultRaceItemType>()
         val matchIterator = matches.iterator()
@@ -94,6 +174,7 @@ class SearchResultViewModel : BaseViewModel() {
         return resultList
     }
 
+    /** 分類搜尋結果 列表用 */
     private fun groupSearchResults(context: Context, list: List<SearchResultBaseBean>): List<SearchResultListItemType> {
         val groupedMap = mutableMapOf<String, List<SearchResultBaseBean>>()
 
@@ -115,6 +196,7 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    /** 取得搜尋結果，包含分類標題 */
     fun getLimitGroupSearResults(
         list: List<SearchResultListItemType>,
         maxPerGroup: Int = 5
@@ -156,6 +238,7 @@ class SearchResultViewModel : BaseViewModel() {
         return result
     }
 
+    /** 取得精準搜尋結果 */
     fun getSearchResult(context: Context, data: SearchResultBaseBean, startTime: Long? = null, endTime: Long? = null) {
         viewModelScope.launch {
             setResult(
@@ -180,10 +263,12 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    /** 設定漸層背景顏色 */
     suspend fun setGradientBgColor(color: Int? = null) {
         _gradientBgColor.emit(color)
     }
 
+    /** 設定選擇的日期 */
     fun setSelectedDate(date: Date) {
         _selectedDateFlow.value = date
     }

@@ -22,15 +22,14 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
-import arch.cayenne.lib.skin.res.SkinnableResourceManager.getSkinName
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -39,11 +38,11 @@ import arch.cayenne.lib.common.R as Rc
  * @date: 2025/4/24 16:31
  * @description:搜索
  */
-class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
+class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding>() {
     override val vbClass: KClass<FragmentSearchBinding>
         get() = FragmentSearchBinding::class
-    override val vmClass: KClass<SearchViewModel>
-        get() = SearchViewModel::class
+    override val vmClass: KClass<SearchResultViewModel>
+        get() = SearchResultViewModel::class
 
     private var historyAdapter: SearchHistoryAdapter? = null
     private var isEditor: Boolean = false
@@ -64,6 +63,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private val searchResultFragment by lazy {
         SearchResultFragment()
+    }
+
+    override fun createVM(): SearchResultViewModel {
+        return activityViewModel<SearchResultViewModel>().value
     }
 
     override fun onStart() {
