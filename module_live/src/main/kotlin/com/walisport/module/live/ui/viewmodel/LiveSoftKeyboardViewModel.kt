@@ -3,6 +3,9 @@ package com.walisport.module.live.ui.viewmodel
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SportEnum
 import com.walisport.module.live.R
+import com.walisport.module.live.data.constants.BidEmojiEnum
+import com.walisport.module.live.data.constants.EmojiEnum
+import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
 
 class LiveSoftKeyboardViewModel : BaseViewModel() {
@@ -68,6 +71,18 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
             ),
             KeyBoardTabData(normal = R.drawable.pool_grey, select = SportEnum.Pool.resId, id = 13),
         )
+
+
+    fun getNormalEmojis(): List<EmojiData> {
+        val list = EmojiEnum.getEmojiMap().map {
+            EmojiData(it.value, it.key)
+        }.toMutableList()
+        return list
+    }
+
+    fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
+        EmojiData(it.value, it.key)
+    }.toList()
 
 
 }

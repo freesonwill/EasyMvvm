@@ -46,7 +46,6 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
                 mBinding.keyboardEmoji.layoutManager = layoutManager
                 val adapter = LiveEmojiAdapter()
                 adapter.setItemListener(itemListener)
-                adapter.setType(0)
                 adapter.submitList(mViewModel.getNormalEmojis())
                 mBinding.keyboardEmoji.adapter = adapter
             }
@@ -56,7 +55,6 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
                 mBinding.keyboardEmoji.layoutManager = layoutManager
                 val adapter = LiveEmojiAdapter()
                 adapter.setItemListener(itemListener)
-                adapter.setType(1)
                 adapter.submitList(mViewModel.getBidEmojis())
                 mBinding.keyboardEmoji.adapter = adapter
                 mBinding.emojiDel.isVisible = false
