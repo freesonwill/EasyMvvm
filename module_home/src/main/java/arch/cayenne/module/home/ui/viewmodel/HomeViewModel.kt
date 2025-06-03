@@ -206,10 +206,8 @@ class HomeViewModel : BaseViewModel() {
     fun getRecently31MatchScheduleCount(tournamentId: Int = TOURNAMENT_ALL_ID) {
         _state.value = Event(HomeState.LOADING_RECENTLY_31_SCHEDULE)
         viewModelScope.launch(Dispatchers.IO) {
-            "Get getRecently31MatchScheduleCount tournamentId:${selectedTournamentId.value}".loge(this@HomeViewModel::class.java.simpleName)
             val list = repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id,tournamentId)
             withContext(Dispatchers.Main) {
-                "Get getRecently31MatchScheduleCount selectedTournamentId!!".loge(this@HomeViewModel::class.java.simpleName)
                 if (list.isNullOrEmpty()) {
                     _state.value = Event(HomeState.FAILED)
                 } else {

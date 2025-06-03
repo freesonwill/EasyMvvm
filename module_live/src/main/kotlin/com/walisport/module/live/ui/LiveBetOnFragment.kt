@@ -214,7 +214,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             newTab.text = text
             mBinding.tabLayout.addTab(newTab)
         }
-        reflexMargin(mBinding.tabLayout,8.dp2px,8.dp2px,4.dp2px)
+        mBinding.tabLayout.reflexMargin(8.dp2px,8.dp2px,4.dp2px)
         mBinding.tabLayout.getTabAt(0)?.select()
     }
 
