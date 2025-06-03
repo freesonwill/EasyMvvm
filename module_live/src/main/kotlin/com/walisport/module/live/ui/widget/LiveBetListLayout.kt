@@ -292,7 +292,7 @@ class LiveBetListLayout @JvmOverloads constructor(
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         handler.removeCallbacksAndMessages(null)
+        super.onDetachedFromWindow()
     }
 }
