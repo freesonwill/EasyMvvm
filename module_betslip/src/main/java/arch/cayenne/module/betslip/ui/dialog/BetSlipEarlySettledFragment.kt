@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import arch.cayenne.module.betslip.R
@@ -28,11 +29,11 @@ class BetSlipEarlySettledFragment private constructor() :
         private const val BET_AMOUNT_MONEY = "bet_amount_money"
 
         fun instance(
-            money: Long,
+            money: String,
         ): BetSlipEarlySettledFragment {
             return BetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
-                    putLong(BET_AMOUNT_MONEY, money)
+                    putString(BET_AMOUNT_MONEY, money)
                 }
             }
         }
@@ -42,7 +43,7 @@ class BetSlipEarlySettledFragment private constructor() :
         get() = FragmentEarlySettledNumberKeyboardBinding::class
     override val vmClass: KClass<EarlySettledKeyboardViewModel>
         get() = EarlySettledKeyboardViewModel::class
-    private var onEarlySettleClick: ((money: Long) -> Unit)? = null
+    private var onEarlySettleClick: ((money: String) -> Unit)? = null
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -125,8 +126,10 @@ class BetSlipEarlySettledFragment private constructor() :
 
     override fun initData() {
         super.initData()
-        val betAmount = arguments?.getLong(BET_AMOUNT_MONEY) ?: 0L
-        mViewModel.setAmountMoney(betAmount)
+        val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
+        val decimalDigitsCount = getDecimalDigitsCount(betAmount)
+        mViewModel.setDecimalNumber(decimalDigitsCount)
+        mViewModel.setAmountMoney(betAmount.toMoneyForScale(decimalDigitsCount))
     }
 
     override fun initListener() {
@@ -143,7 +146,7 @@ class BetSlipEarlySettledFragment private constructor() :
             }
             btnPartSettle.clickNoRepeat {
                 onEarlySettleClick?.invoke(
-                    mViewModel.editValue.toMoney()
+                    mViewModel.editValue
                 )
                 dismiss()
             }
@@ -151,7 +154,7 @@ class BetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    fun setOnEarlySettleListener(listener: (money: Long) -> Unit) {
+    fun setOnEarlySettleListener(listener: (money: String) -> Unit) {
         this.onEarlySettleClick = listener
     }
 
@@ -167,6 +170,14 @@ class BetSlipEarlySettledFragment private constructor() :
                 R.string.refund_amount
             ).format(money)
             mBinding.earlySettleTvTip.isVisible = money.toMoney() != 0L
+        }
+    }
+
+    private fun getDecimalDigitsCount(str: String): Int {
+        return if (str.contains('.')) {
+            str.substringAfter('.').length
+        } else {
+            mViewModel.decimalNumber
         }
     }
 }

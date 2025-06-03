@@ -66,6 +66,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         leagueName = arguments?.getString("leagueName") ?: ""
         leagueLogo = arguments?.getString("leagueLogo") ?: ""
         mBinding.apply {
+            refreshLayout.setLeagueMode()
             refreshLayout.setOnRefreshListener {
                 mViewModel.getMatchLeagueData(leagueID)
             }

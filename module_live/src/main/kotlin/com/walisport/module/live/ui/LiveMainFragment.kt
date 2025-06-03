@@ -172,7 +172,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tabView.setOnClickListener {}
             }.attach()
-            reflexMargin(mBinding.tabLayout, 8.dp2px, 8.dp2px, 0.dp2px)
+            mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 0.dp2px)
             mBinding.tabLayout.getTabAt(1)?.select()
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()

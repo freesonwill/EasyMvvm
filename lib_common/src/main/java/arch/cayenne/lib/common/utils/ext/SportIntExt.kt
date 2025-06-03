@@ -22,6 +22,27 @@ object SportIntExt {
         }
     }
 
+    fun Long.getMoneyForScale(scale: Int = 2): String {
+        if (this == 0L) {
+            // 根據 scale 回傳格式化的零值字串
+            return "0." + "0".repeat(scale)
+        }
+
+        val divisor = BigDecimal.TEN.pow(scale)
+        val value = this.toBigDecimal().divide(divisor, scale, RoundingMode.DOWN)
+            .stripTrailingZeros() // 去除尾部多餘的 0
+
+        // 當結果是整數時，直接用 toPlainString() 會是整數表示，這裡如果想強制有小數點可特別處理
+        val resultStr = value.toPlainString()
+
+        // 如果結果是小數但末尾沒有小數點，補足小數點（視需求決定要不要）
+        return if (resultStr.contains(".")) {
+            resultStr
+        } else {
+            resultStr // 例如 "1" 就回傳 "1"，不強制補小數點
+        }
+    }
+
     /***
      * @param multiply 乘數: 通常為賠率
      */

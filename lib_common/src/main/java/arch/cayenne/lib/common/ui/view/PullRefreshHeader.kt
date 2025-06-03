@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.ui.view
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
@@ -12,10 +13,9 @@ import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.scwang.smart.refresh.layout.simple.SimpleComponent
 
-
 class PullRefreshHeader : SimpleComponent, RefreshHeader {
-    private lateinit var binding: ViewSportHeaderBinding
 
+    private lateinit var binding: ViewSportHeaderBinding
     private lateinit var progressDrawable: ProgressDrawable
 
     constructor(context: Context) : super(context, null, 0)
@@ -34,7 +34,10 @@ class PullRefreshHeader : SimpleComponent, RefreshHeader {
         binding = ViewSportHeaderBinding.inflate(inflater, this, true)
         progressDrawable = ProgressDrawable()
         binding.ivProgress.setImageDrawable(progressDrawable)
+    }
 
+    fun setLeagueMode() {
+        binding.tvTitle.setTextColor(Color.WHITE)
     }
 
     override fun onStateChanged(
@@ -48,11 +51,16 @@ class PullRefreshHeader : SimpleComponent, RefreshHeader {
                 binding.tvTitle.text = ContextCompat.getString(context, R.string.pull_refresh)
                 progressDrawable.start()
             }
-            RefreshState.Refreshing, RefreshState.RefreshReleased -> { binding.tvTitle.text = ContextCompat.getString(context, R.string.refreshing) }
+
+            RefreshState.Refreshing, RefreshState.RefreshReleased -> {
+                binding.tvTitle.text = ContextCompat.getString(context, R.string.refreshing)
+            }
+
             RefreshState.None -> {
                 progressDrawable.stop()
                 binding.tvTitle.text = ContextCompat.getString(context, R.string.pull_refresh)
             }
+
             else -> Unit
         }
     }

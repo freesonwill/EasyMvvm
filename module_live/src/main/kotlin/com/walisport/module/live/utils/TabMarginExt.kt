@@ -5,13 +5,13 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.google.android.material.tabs.TabLayout
 
 /**
- * @author: aquan
  * @date: 2025/5/30 11:55
- * @description:
+ * @description: tabLayout扩展
  */
 object TabMarginExt {
     //设置tab之间的外边距
-     fun reflexMargin(tabLayout: TabLayout,leftMargin:Int,rightMargin:Int,margin: Int) {
+    fun TabLayout.reflexMargin(leftMargin: Int, rightMargin: Int, margin: Int) {
+        val tabLayout = this
         tabLayout.post {
             try {
                 val mTabStrip = tabLayout.getChildAt(0) as LinearLayout
