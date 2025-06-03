@@ -11,13 +11,10 @@ import com.walisport.module.live.compare.LiveEmojiCompare
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.ItemBidEmojiLayoutBinding
 import com.walisport.module.live.databinding.ItemEmojiLayoutBinding
-import com.walisport.module.live.databinding.ItemLastEmojiLayoutBinding
 
 class LiveEmojiAdapter :
     BaseAdapter<EmojiData, LiveEmojiAdapter.LiveEmojiViewHolder, ViewBinding>(LiveEmojiCompare()) {
     private var type: Int = 0 //id 0 bid/soccer 1
-    private val TYPE_NORMAL = 0
-    private val TYPE_LAST = 1
     private var itemListener: RecyclerItemListener<EmojiData>? = null
 
 
@@ -38,11 +35,6 @@ class LiveEmojiAdapter :
                     nBinding.iv.setOnClickListener(listener)
                 }
 
-                is ItemLastEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemLastEmojiLayoutBinding
-                    nBinding.iv.setOnClickListener(listener)
-                }
-
                 is ItemBidEmojiLayoutBinding -> {
                     val nBinding = binding as ItemBidEmojiLayoutBinding
                     nBinding.iv.setOnClickListener(listener)
@@ -60,11 +52,6 @@ class LiveEmojiAdapter :
                     nBinding.iv.setImageResource(resId)
                 }
 
-                is ItemLastEmojiLayoutBinding -> {
-                    val nBinding = binding as ItemLastEmojiLayoutBinding
-                    nBinding.iv.tag = position
-                    nBinding.iv.setImageResource(resId)
-                }
 
                 is ItemBidEmojiLayoutBinding -> {
                     val nBinding = binding as ItemBidEmojiLayoutBinding
@@ -89,10 +76,7 @@ class LiveEmojiAdapter :
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
     ): ViewBinding {
-        val binding = if (type == 0 && viewType == TYPE_NORMAL) ItemEmojiLayoutBinding.inflate(
-            inflater, parent, false
-        )
-        else if (type == 0 && viewType == TYPE_LAST) ItemLastEmojiLayoutBinding.inflate(
+        val binding = if (type == 0) ItemEmojiLayoutBinding.inflate(
             inflater, parent, false
         )
         else ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
@@ -108,9 +92,4 @@ class LiveEmojiAdapter :
         return holder
     }
 
-
-    override fun getItemViewType(position: Int): Int {
-
-        return if (position == itemCount - 1) TYPE_LAST else TYPE_NORMAL
-    }
 }

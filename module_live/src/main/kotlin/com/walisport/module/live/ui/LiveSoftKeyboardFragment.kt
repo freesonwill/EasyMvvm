@@ -10,8 +10,10 @@ import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
@@ -75,6 +77,17 @@ class LiveSoftKeyboardFragment :
                 showSoftKeyBoard()
             }
         }
+        mBinding.liveChatEtInput.imeOptions = EditorInfo.IME_ACTION_SEND
+        mBinding.liveChatEtInput.setImeActionLabel("发送",EditorInfo.IME_ACTION_SEND)
+        mBinding.liveChatEtInput.setOnEditorActionListener { v, actionId, event ->
+            "actionId $actionId".logd("aaa")
+            if(actionId == EditorInfo.IME_ACTION_SEND){
+                showChat()
+                sendText()
+                return@setOnEditorActionListener true
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
 
@@ -132,13 +145,15 @@ class LiveSoftKeyboardFragment :
     private fun showSoftKeyBoard() {
 
         mBinding.apply {
+            liveChatEtInput.requestFocus()
+            liveChatEtInput.setSelection(liveChatEtInput.text?.length ?:0)
             liveChatIvKeyboard.isVisible = false
             liveChatTvSize.isVisible = false
             liveChatTvSend.isVisible = true
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
             keyboardTb.isVisible = false
-            keyboardEmoji.isVisible = false
+            keyboardInner.isVisible = false
             line.isVisible = false
             softKeyListener?.showKeyBoard()
         }
@@ -156,8 +171,11 @@ class LiveSoftKeyboardFragment :
             liveChatTvSize.isVisible = false
             liveChatIvEmoji.isVisible = true
             keyboardTb.isVisible = false
-            keyboardEmoji.isVisible = false
+            keyboardInner.isVisible= false
+            keyboardEmoji.isVisible= false
+            line.isVisible = false
             softKeyListener?.hideKeyboard()
+            main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.main_background))
         }
     }
 
@@ -165,13 +183,18 @@ class LiveSoftKeyboardFragment :
 
         hideSoftKeyBoard()
         mBinding.apply {
+            liveChatEtInput.requestFocus()
+            liveChatEtInput.setSelection(liveChatEtInput.text?.length ?:0)
             liveChatIvEmoji.isVisible = false
             liveChatTvSend.isVisible = true
             liveChatIvKeyboard.isVisible = true
             liveChatTvSize.isVisible = true
             liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
-            keyboardEmoji.isVisible = true
+            keyboardInner.isVisible= true
+            keyboardEmoji.isVisible= true
+            line.isVisible = true
+            main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.card_background))
             softKeyListener?.showKeyBoard()
         }
     }
@@ -180,6 +203,8 @@ class LiveSoftKeyboardFragment :
     override fun onSoftKeyboardOpened(keyboardHeightInPx: Int) {
 //        showSoftKeyBoard()
 //        softKeyListener?.showKeyBoard()
+        mBinding.main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.card_background))
+
     }
 
     override fun onSoftKeyboardClosed() {

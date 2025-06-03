@@ -186,7 +186,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tag = "f${adapter?.getItemId(0)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
-        "$fragment  ".logd("aaa")
     }
 
     //离开界面取消订阅

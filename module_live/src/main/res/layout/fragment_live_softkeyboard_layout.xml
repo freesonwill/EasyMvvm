@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
             name="viewModel"
             type="com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel" />
@@ -10,18 +11,30 @@
 
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/card_background">
+        android:layout_height="match_parent"
+        >
+
+        <View
+            android:id="@+id/top"
+            android:layout_width="1dp"
+            android:layout_height="62dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/live_chat_ll_search"
             android:layout_width="291dp"
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_10"
-            android:background="@drawable/input_shape_bg"
+            android:background="@drawable/shape_20"
+            android:backgroundTint="@color/card_odds_background"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@id/live_chat_keyboard"
+            app:layout_constraintTop_toTopOf="@id/top"
+            app:layout_constraintBottom_toBottomOf="@id/top"
             app:layout_constraintLeft_toLeftOf="parent">
 
             <com.walisport.module.live.ui.widget.EmojiEditTextView
@@ -33,7 +46,10 @@
                 android:gravity="center_vertical"
                 android:hint="@string/live_chat_talk"
                 android:paddingStart="@dimen/dp_16"
+                android:inputType="text"
                 android:textColor="@color/main_text"
+                android:imeOptions="actionSend"
+                android:imeActionLabel="@string/send"
                 android:textColorHint="@color/secondary_text"
                 android:textSize="@dimen/sp_15" />
 
@@ -49,8 +65,8 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/live_chat_iv_keyboard"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
+                android:layout_width="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_6"
                 android:scaleType="fitXY"
@@ -58,11 +74,11 @@
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/live_chat_iv_emoji"
-                android:layout_width="@dimen/dp_28"
-                android:layout_height="@dimen/dp_28"
+                android:layout_width="@dimen/dp_26"
+                android:layout_height="@dimen/dp_26"
                 android:layout_gravity="center_vertical"
-                android:layout_marginHorizontal="7dp"
-                android:background="@drawable/input_emoji_grey"
+                android:background="@drawable/icon_input_emoji"
+                android:layout_margin="@dimen/dp_4"
                 android:scaleType="fitXY" />
 
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -89,7 +105,7 @@
             android:layout_marginStart="@dimen/dp_4"
             android:background="@drawable/bg_keyboard_send"
             android:gravity="center"
-            android:text="发送"
+            android:text="@string/send"
             android:textColor="@color/text_on_theme_color"
             app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_search"
             app:layout_constraintLeft_toRightOf="@id/live_chat_ll_search"
@@ -102,28 +118,36 @@
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_11"
-            android:background="@color/card_background"
             app:layout_constraintTop_toBottomOf="@id/live_chat_ll_search"
             app:tabIndicatorFullWidth="false"
-            app:tabMaxWidth="@dimen/dp_42"
-            app:tabPaddingStart="0dp"
-            app:tabPaddingEnd="0dp"
+            android:background="@color/card_background"
             app:tabIndicatorHeight="0dp"
-            app:tabMode="scrollable" />
+            app:tabMaxWidth="@dimen/dp_42"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp" />
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:background="@color/input_box_2"
             android:layout_marginTop="@dimen/dp_10"
-            android:background="@color/card_odds_background"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tb" />
 
-        <androidx.viewpager2.widget.ViewPager2
-            android:id="@+id/keyboard_emoji"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line" />
+       <arch.cayenne.lib.common.ui.view.InnerViewPager2Container
+           android:id="@+id/keyboard_inner"
+           android:layout_width="match_parent"
+           android:layout_height="314dp"
+           app:layout_constraintLeft_toLeftOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/line"
+           >
+           <androidx.viewpager2.widget.ViewPager2
+               android:id="@+id/keyboard_emoji"
+               android:layout_width="match_parent"
+               android:layout_height="314dp"
+               android:visibility="gone"
+               />
+       </arch.cayenne.lib.common.ui.view.InnerViewPager2Container>
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

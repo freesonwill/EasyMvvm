@@ -87,11 +87,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun showKeyBoard() {
-        mBinding.liveChatGroupChat.isVisible = false
+//        mBinding.liveChatGroupChat.isVisible = false
     }
 
     override fun hideKeyboard() {
-        mBinding.liveChatGroupChat.isVisible = true
+//        mBinding.liveChatGroupChat.isVisible = true
     }
 
     override fun onDestroyView() {
