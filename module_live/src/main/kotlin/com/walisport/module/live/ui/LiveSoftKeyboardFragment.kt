@@ -109,15 +109,16 @@ class LiveSoftKeyboardFragment :
             }
         }.toList()
 
-        mBinding.keyboardEmoji.adapter = null
-        mBinding.keyboardEmoji.adapter = PagerAdapter(childFragmentManager, lifecycle, tabs)
+//        mBinding.keyboardEmoji.adapter = null
+//        mBinding.keyboardEmoji.adapter = PagerAdapter(childFragmentManager, lifecycle, tabs)
 
-        TabLayoutMediator(mBinding.keyboardTb, mBinding.keyboardEmoji) { tab, position ->
-            val view = LayoutInflater.from(context).inflate(R.layout.item_keyboard_tab_layout, null)
-            val iv: ImageView = view.findViewById(R.id.iv)
-            iv.setImageResource(if (position == 0) list[position].select else list[position].normal)
-            tab.setCustomView(view)
-        }.attach()
+//        TabLayoutMediator(mBinding.keyboardTb, mBinding.keyboardEmoji) { tab, position ->
+//            val view = LayoutInflater.from(context).inflate(R.layout.item_keyboard_tab_layout, null)
+//            val iv: ImageView = view.findViewById(R.id.iv)
+//            iv.setImageResource(if (position == 0) list[position].select else list[position].normal)
+//            tab.setCustomView(view)
+//        }.attach()
+
         mBinding.keyboardTb.removeAllTips()
 
         mBinding.keyboardTb.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -153,7 +154,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
             keyboardTb.isVisible = false
-            keyboardInner.isVisible = false
+//            keyboardInner.isVisible = false
             line.isVisible = false
             softKeyListener?.showKeyBoard()
         }
@@ -171,8 +172,8 @@ class LiveSoftKeyboardFragment :
             liveChatTvSize.isVisible = false
             liveChatIvEmoji.isVisible = true
             keyboardTb.isVisible = false
-            keyboardInner.isVisible= false
-            keyboardEmoji.isVisible= false
+//            keyboardInner.isVisible= false
+//            keyboardEmoji.isVisible= false
             line.isVisible = false
             softKeyListener?.hideKeyboard()
             main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.main_background))
@@ -191,8 +192,8 @@ class LiveSoftKeyboardFragment :
             liveChatTvSize.isVisible = true
             liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
-            keyboardInner.isVisible= true
-            keyboardEmoji.isVisible= true
+//            keyboardInner.isVisible= true
+//            keyboardEmoji.isVisible= true
             line.isVisible = true
             main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.card_background))
             softKeyListener?.showKeyBoard()
@@ -201,16 +202,14 @@ class LiveSoftKeyboardFragment :
 
 
     override fun onSoftKeyboardOpened(keyboardHeightInPx: Int) {
-//        showSoftKeyBoard()
-//        softKeyListener?.showKeyBoard()
         mBinding.main.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(requireContext(),arch.cayenne.lib.common.R.color.card_background))
 
     }
 
     override fun onSoftKeyboardClosed() {
-        if (!mBinding.keyboardEmoji.isVisible) {
-            softKeyListener?.hideKeyboard()
-        }
+//        if (!mBinding.keyboardEmoji.isVisible) {
+//            softKeyListener?.hideKeyboard()
+//        }
     }
 
     interface LiveChatSoftKeyListener {
