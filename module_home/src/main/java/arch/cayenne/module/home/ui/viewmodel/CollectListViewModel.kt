@@ -33,6 +33,7 @@ class CollectListViewModel : BaseViewModel() {
     val matchListChange by lazy { MutableLiveData<List<MatchWithMarkets>>() }
     private var page = 1
     private var isPageEnd = false
+    private val subscribeMatchSet by lazy { HashSet<Long>() }
 
     private val _state  = MutableLiveData<Event<MatchListState>>()
     val state : LiveData<Event<MatchListState>> = _state
@@ -46,7 +47,20 @@ class CollectListViewModel : BaseViewModel() {
                 }
             }
         }
-        
+        // 觀察賽事訂閱後，後端主動送出的變化
+        viewModelScope.launch(Dispatchers.IO) {
+            collectListRepository.observeMatchNotify().collect { matchWithMarket ->
+                if (matchListChange.value == null) return@collect
+                val old = matchListChange.value!!.toMutableList()
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+//                val matchWithMarkets = repository.queryFullMatches(matchListChange.value!!.map { it.match.matchId })
+                withContext(Dispatchers.Main) {
+//                    matchListChange.value = matchWithMarkets
+                    matchListChange.value = old
+                }
+            }
+        }
         //觀察投注單的變化，主要用來做selection變更
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
@@ -118,6 +132,59 @@ class CollectListViewModel : BaseViewModel() {
         _state.value = Event(MatchListState.LOADING_NEXT)
         getCollect()
     }
+
+    fun compareSubscribeMatch(ids: Set<Long>) {
+        val subscribe = ids - subscribeMatchSet
+        val cancel = subscribeMatchSet - ids
+        subscribeMatchSet.clear()
+        subscribeMatchSet.addAll(ids)
+        cancelSubscribeMatch(cancel)
+        subscribeMatch(subscribe)
+    }
+    fun subscribeMatch(subscribe: Set<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            "訂閱比賽  $subscribe".logi(this::class.java.name)
+            if (matchListChange.value != null && subscribe.isNotEmpty()) {
+                val matchWithMarkets = collectListRepository.subscribeMatch(subscribe.toList())
+                val old = matchListChange.value!!.toMutableList()
+                matchWithMarkets.forEach { matchWithMarket ->
+                    val index =
+                        old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                    if (index != -1) {
+                        old[index] = matchWithMarket
+                    }
+                }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = old
+                }
+            }
+        }
+    }
+
+    fun removeMatchCollect(item: MatchWithMarkets) {
+        viewModelScope.launch(Dispatchers.IO) {
+            collectListRepository.removeMatchCollect(item)
+//            val old = matchListChange.value!!.toMutableList()
+//            matchWithMarket?.apply {
+//                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+//                if (index != -1) { old[index] = matchWithMarket }
+//            }
+//            withContext(Dispatchers.Main) {
+//                matchListChange.value = old
+//            }
+        }
+    }
+
+    fun cancelSubscribeMatch(cancel: Set<Long>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            "取消訂閱比賽  $cancel".logi(this::class.java.name)
+            if (cancel.isNotEmpty()) {
+                collectListRepository.cancelSubscribeMatch(cancel.toList())
+            }
+        }
+    }
+
+    fun getCurrentSubscribeMatchSet() = subscribeMatchSet
 
     fun reload() {
         isPageEnd = false

@@ -6,6 +6,7 @@ import android.view.View
 import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -77,6 +78,17 @@ class MatchListPagerFragment :
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
+
+            rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 滑動停止時觸發
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        subscribeVisibleMatch()
+                    }
+                }
+            })
+
         }
     }
 

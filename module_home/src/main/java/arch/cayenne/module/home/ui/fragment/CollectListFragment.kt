@@ -6,9 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import androidx.core.view.doOnPreDraw
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -45,6 +47,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         TitleBarFavoriteBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
     private lateinit var matchAdapter: MatchItemAdapter
+    private val gameLayoutManager by lazy { LinearLayoutManager(context) }
+
     override fun initView(savedInstanceState: Bundle?) {
         with (mBinding) {
             titleBar.loadDynamicsTitleBar(titleBarBinding.root) {
@@ -66,7 +70,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
 
                 override fun onFavoriteClick(item: MatchWithMarkets) {
-//                    mViewModel.addMatchCollect(item, !item.match.collect)
+                    mViewModel.removeMatchCollect(item)
                 }
 
                 override fun onOddsCellClick(selection: SelectionBeanLite) {
@@ -81,12 +85,21 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
-            val layoutManager = LinearLayoutManager(context)
             rvCollectList.apply {
-                this.layoutManager = layoutManager
+                this.layoutManager = gameLayoutManager
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
+
+            rvCollectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    // 滑動停止時觸發
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        subscribeVisibleMatch()
+                    }
+                }
+            })
         }
     }
 
@@ -121,7 +134,13 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
             titleBarBinding.tvMoney.text = it.getFormalMoney()
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
+            val preEmpty = matchAdapter.currentList.isEmpty()
             matchAdapter.submitList(matchList)
+            if (preEmpty && matchList.isNotEmpty()) {
+                mBinding.rvCollectList.doOnPreDraw {
+                    subscribeVisibleMatch()
+                }
+            }
         }
         mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
             with(mBinding) {
@@ -162,5 +181,30 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             }
         }
+    }
+
+    private fun subscribeVisibleMatch() {
+        val firstVisible = gameLayoutManager.findFirstVisibleItemPosition()
+        val lastVisible = gameLayoutManager.findLastVisibleItemPosition()
+        if (firstVisible >= 0 && lastVisible <= matchAdapter.itemCount) {
+            mViewModel.compareSubscribeMatch(
+                matchAdapter.currentList
+                    .slice(firstVisible..lastVisible)
+                    .map { it.match.matchId }
+                    .toSet()
+            )
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        //暫時移除訂閱
+        mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //把暫時移除的訂閱加回來
+        mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
     }
 }
