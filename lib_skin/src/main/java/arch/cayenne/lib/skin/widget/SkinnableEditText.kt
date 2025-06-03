@@ -92,8 +92,8 @@ open class SkinnableEditText : AppCompatEditText {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 
 }

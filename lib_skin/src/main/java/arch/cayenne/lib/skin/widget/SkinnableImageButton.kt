@@ -90,8 +90,8 @@ class SkinnableImageButton : AppCompatImageButton{
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 
 }
