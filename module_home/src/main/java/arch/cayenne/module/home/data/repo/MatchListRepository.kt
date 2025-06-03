@@ -47,7 +47,7 @@ class MatchListRepository(
                 this.sportId = sportId
                 this.playType = playType
                 this.tournamentId = tournamentId
-                this.page = page
+                this.cursorMatchId = 0
                 this.size = DEFAULT_MATCH_SIZE
                 if (startTime != 0L){
                     this.startTime = startTime

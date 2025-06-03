@@ -31,7 +31,7 @@ class CollectListRepository(
             apiCode = ApiCode.LISt_COLLECT,
         ) {
             Client.ListCollectReq.newBuilder().apply {
-                this.page = page
+                this.cursorMatchId = 0
                 this.size = 3
             }.build()
         }
