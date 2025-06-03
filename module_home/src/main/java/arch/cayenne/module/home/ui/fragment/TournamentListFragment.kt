@@ -1,11 +1,18 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.PointF
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -65,8 +72,54 @@ class TournamentListFragment :
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            llRoot.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    if (ceSearch.hasFocus()) {
+                        // 清除focus, 隱藏鍵盤
+                        ceSearch.clearFocus()
+                        val imm =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(mBinding.ceSearch.windowToken, 0)
+                    }
+
+                    v.performClick()
+                }
+                false
+            }
+            ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+            ceSearch.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    // 離開搜尋框 → 回到列表頂端
+                    mBinding.rvTournamentList.smoothScrollToPosition(0)
+                }
+            }
+
+            ceSearch.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val keyword = s?.toString()?.trim().orEmpty()
+                    if (keyword.isNotEmpty()) {
+                        mViewModel.searchTournament(keyword)
+                    } else {
+                        mViewModel.clearSearch()
+                        mBinding.llIndexContainer.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    mBinding.llIndexContainer.visibility = View.GONE
+                }
+            })
 
             ivHomeLeagueCollapse.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
@@ -142,7 +195,30 @@ class TournamentListFragment :
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->
             updateAZIndexHighlight()
         }
+
+        mViewModel.searchDisplayList.observe(viewLifecycleOwner) { result ->
+            if (result == null) {
+                mViewModel.tournaments.value?.let { setTournamentList(it) }
+            } else {
+                val displayList = result.map { TournamentListItem.TournamentItem(it) }
+                adapter.submitList(displayList)
+            }
+        }
+
     }
+
+    private fun setSearchHint(list: List<TournamentListItem>) {
+        val firstItemName = list.firstOrNull {
+            it is TournamentListItem.TournamentItem
+        }?.let {
+            (it as TournamentListItem.TournamentItem).tournament.name
+        }?.takeIf { it.isNotBlank() }
+
+        firstItemName?.let {
+            mBinding.ceSearch.hint = it
+        }
+    }
+
 
     private fun setTournamentList(tournaments: List<BaseTournamentData>) {
         val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
@@ -181,6 +257,7 @@ class TournamentListFragment :
             displayList.add(TournamentListItem.Header('#'))
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
         }
+        setSearchHint(displayList)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
