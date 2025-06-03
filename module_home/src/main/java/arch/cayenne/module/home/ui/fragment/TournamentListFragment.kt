@@ -41,7 +41,6 @@ class TournamentListFragment :
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
-    private var lastSelectedLetter: Char? = null
     private val letterViewMap = mutableMapOf<Char, View>()
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
@@ -261,6 +260,7 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
+        val lastSelectedLetter = mViewModel.getLastSelectedLetter()
         if (currentLetter != lastSelectedLetter) {
             // 還原舊樣式
             lastSelectedLetter?.let { last ->
@@ -288,7 +288,7 @@ class TournamentListFragment :
                 is ImageView -> newView.setImageResource(R.drawable.ic_hot_league_index)
             }
 
-            lastSelectedLetter = currentLetter
+            mViewModel.setLastSelectedLetter(currentLetter)
         }
     }
 

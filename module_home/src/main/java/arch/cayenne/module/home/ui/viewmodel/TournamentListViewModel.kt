@@ -26,6 +26,13 @@ class TournamentListViewModel : BaseViewModel() {
     val activeHeaderIndex: MutableLiveData<Int?> get() = _activeHeaderIndex
 
     private val letterPositionMap = mutableMapOf<Char, Int>()
+
+    private var _lastSelectedLetter: Char? = null
+    fun getLastSelectedLetter(): Char? = _lastSelectedLetter
+    fun setLastSelectedLetter(letter: Char?) {
+        _lastSelectedLetter = letter
+    }
+
     fun setActiveHeaderIndex(index: Int?) {
         if (_activeHeaderIndex.value != index) {
             _activeHeaderIndex.value = index
