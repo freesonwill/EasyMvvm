@@ -1,7 +1,10 @@
 package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
+import android.os.Build
 import android.view.View
+import android.view.WindowManager
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -9,6 +12,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import arch.cayenne.lib.base.ui._interface.IStatusBar
+import arch.cayenne.lib.base.utils.LogUtils
 
 
 /**
@@ -29,11 +33,16 @@ class StatusBarDelegate : IStatusBar {
     }
 
     constructor(fragment: DialogFragment) {
+        fragment.dialog?.window?.let { window ->
+            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+        }
         immersionBar = ImmersionBar.with(fragment)
     }
 
     override fun setStatusBar(config: StatusBarConfig, view: View) {
-        immersionBar.statusBarDarkFont(config.statusBarDarkFont)
+        LogUtils.d("DialogFragment", "-----DialogFragment--setStatusBar${config.statusBarDarkFont}")
+        immersionBar.statusBarDarkFont(config.statusBarDarkFont, 0.2f)
             .navigationBarDarkIcon(config.statusBarDarkFont) // true 表示使用深色图标，false 表示浅色图标
         val statusBarHeight = ImmersionBar.getStatusBarHeight(view.context)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
@@ -69,6 +78,7 @@ class StatusBarDelegate : IStatusBar {
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
+
                     .transparentStatusBar() // 设置状态栏透明
                     .transparentNavigationBar() // 设置导航栏透明
                 immersionBar.init()

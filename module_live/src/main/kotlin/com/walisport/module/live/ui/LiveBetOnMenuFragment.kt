@@ -3,15 +3,15 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.database.entity.MarketTypeBean
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxTextViewBinding
@@ -19,6 +19,8 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
+import android.view.Window
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -46,7 +48,6 @@ class LiveBetOnMenuFragment :
     private var selectId: Long = 0
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        setStatusBar(StatusBarConfig,mBinding.root)
         mViewModel.getMarketType()
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe
@@ -94,8 +95,6 @@ class LiveBetOnMenuFragment :
         }
     }
 
-
-
     override fun initListener() {
     }
 
@@ -116,11 +115,7 @@ class LiveBetOnMenuFragment :
         dialog!!.window!!.setGravity(Gravity.END)
         // 设置手势监听
         setupSwipeGesture()
-        //解决底部虚拟键盘变白情况
-        dialog?.window?.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        )
+
     }
 
     @SuppressLint("ClickableViewAccessibility")

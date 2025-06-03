@@ -5,7 +5,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.google.android.material.tabs.TabLayout
 
 /**
- * @author: shuquan
+ * @author: aquan
  * @date: 2025/5/30 11:55
  * @description:
  */
