@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bg_main">#F3F3F4</color>
+    <color name="bg_main">#eeeeee</color>
     <color name="bg_card">#ffffff</color>
     <color name="data_bg">#FBFBFB</color>
     <color name="bg_card_gradient_start">#00FEFFFE</color>

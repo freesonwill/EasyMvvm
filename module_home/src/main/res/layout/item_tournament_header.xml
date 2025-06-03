@@ -4,28 +4,31 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:gravity="center_vertical"
-    android:paddingVertical="@dimen/dp_12"
-    android:paddingStart="@dimen/dp_16">
+    android:paddingStart="@dimen/dp_16"
+    android:paddingTop="@dimen/dp_12">
+
     <ImageView
         android:id="@+id/iv_header_hot"
         android:layout_width="20dp"
         android:layout_height="20dp"
+        android:layout_marginBottom="@dimen/dp_12"
         android:src="@drawable/ic_hot_league_index"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_header_name"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2.5dp"
+        android:layout_marginBottom="@dimen/dp_12"
         android:textColor="@color/secondary_text"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_header_hot"
-        app:layout_constraintTop_toTopOf="parent"
-        android:textSize="14sp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="match_parent"
@@ -33,5 +36,5 @@
         android:background="@color/list_separator"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
