@@ -10,6 +10,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
+import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
@@ -17,9 +18,10 @@ import kotlin.reflect.KClass
 
 //注单未结算
 class BetSlipUnsettledFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipUnsettledBinding>() {
+    BaseBetSlipFragment<UnsettledViewModel, FragmentLiveBetslipUnsettledBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
+    override val vmClass: KClass<UnsettledViewModel> = UnsettledViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -34,9 +36,15 @@ class BetSlipUnsettledFragment :
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it)
         }
-        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
-            mViewModel.getOrders(BetSlipEnum.UnSettled)
+        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
+                if (it) {
+                    parentFragmentManager.setFragmentResult("BetSlip", Bundle().apply {
+                        putBoolean("EarlySettled", true)
+                    })
+                }
+            }
         }
         mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
             val price = it.price.toDoubleOrNull()
@@ -46,14 +54,14 @@ class BetSlipUnsettledFragment :
             }
             mViewModel.selectOrder?.let { order ->
                 val money = BetSlipUtils.earlySettlePrice(
-                    order.betAmount, price.toString(), order.earlyBetAmount
+                    order.betAmount, order.earlyBetAmount
                 )
                 BetSlipEarlySettledFragment.instance(money).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
                             it.betId,
                             money,
-                            mViewModel.isSupportEarlySettleLiveData.value?.price ?: "0"
+                            it.price
                         )
                     }
                 }.show(childFragmentManager)
@@ -72,7 +80,7 @@ class BetSlipUnsettledFragment :
                 item: BetSlipData?, position: Int
             ) {
                 item?.order?.let {
-                    mViewModel.isSuppportEarlySettled(it)
+                    mViewModel.isSupportEarlySettled(it)
                 }
             }
         })
@@ -86,10 +94,10 @@ class BetSlipUnsettledFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.UnSettled)
+                mViewModel.refreshData(BetSlipEnum.UnSettled)
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.UnSettled)
+                mViewModel.loadMoreData(BetSlipEnum.UnSettled)
             }
         }
     }

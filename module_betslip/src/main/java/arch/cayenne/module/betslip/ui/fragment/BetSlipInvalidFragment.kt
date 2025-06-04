@@ -6,17 +6,18 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
+import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 //注单失效
 class BetSlipInvalidFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipInvalidBinding>() {
+    BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipInvalidBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipInvalidBinding> =
         FragmentLiveBetslipInvalidBinding::class
+    override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-
         initRecycler()
         initLoadRefresh()
     }
@@ -37,10 +38,10 @@ class BetSlipInvalidFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.Invalid)
+                mViewModel.refreshData(getBetSlipEnum())
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.Invalid)
+                mViewModel.loadMoreData(getBetSlipEnum())
             }
         }
     }

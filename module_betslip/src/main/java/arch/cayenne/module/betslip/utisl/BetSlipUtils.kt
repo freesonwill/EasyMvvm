@@ -1,11 +1,9 @@
 package arch.cayenne.module.betslip.utisl
 
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Order
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -31,17 +29,11 @@ internal object BetSlipUtils {
     /***
      * 提前结算金额
      * */
-    fun earlySettlePrice(betAmount: String, earlyPrice: String, earlyBetAmount: String): String {
-        val nBetAmount = multipy1000(betAmount)
-        val nEarlyPrice = multipy1000(earlyPrice)
-        val nEarlyBetAmount = toBigDecimal(earlyBetAmount).multiply(BigDecimal(1000000))
-        val multipyResult = nBetAmount.multiply(nEarlyPrice)
-        val result = multipyResult.minus(nEarlyBetAmount)
-        "$nBetAmount $nEarlyPrice $nEarlyBetAmount  multipyResult $multipyResult result  $result ".logd(
-            "betslip"
-        )
-        return result.divide(BigDecimal(1000000))
-            .setScale(3, RoundingMode.DOWN).toString()
+    fun earlySettlePrice(betAmount: String, earlyBetAmount: String): String {
+        val nBetAmount = betAmount.toMoney()
+        val nEarlyBetAmount = earlyBetAmount.toMoney()
+        val result = nBetAmount.minus(nEarlyBetAmount)
+        return BigDecimal(result.getMoney()).setScale(2, RoundingMode.DOWN).toPlainString()
     }
 
     private fun toBigDecimal(value: String?): BigDecimal {
