@@ -39,10 +39,10 @@ class BetSlipSettledFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.Settled)
+                mViewModel.refreshData(BetSlipEnum.Settled)
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.Settled)
+                mViewModel.loadMoreData(BetSlipEnum.Settled)
             }
         }
     }

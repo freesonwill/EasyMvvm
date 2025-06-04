@@ -26,16 +26,41 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
     /**
-     * 获取注单预约单列表
+     * 取消预约
      * */
-    fun getReserveOrder() {
+    fun cancelReserve(order: Common.ReserveOrder) {
+        viewModelScope.launch {
+            val result = repo.reserveCancel(order.reserveId)?.apply {
+                if (this.success) {
+                    updateData(BetSlipEnum.Reserve, order.reserveId)
+                }
+            }
+            _cancelReserveLiveData.value = Event(result?.success ?: false)
+        }
+    }
+
+    /**
+     * 修改预约
+     * */
+    fun modifyReserve(order: Common.ReserveOrder, odds: String) {
+        viewModelScope.launch {
+            val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)?.apply {
+                if (this.success) {
+                    updateData(BetSlipEnum.Reserve, order.reserveId)
+                }
+            }
+            _modifyOddsLiveData.value = Event(result?.success ?: false)
+        }
+    }
+
+    override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
             repo.getReserveOrder(
                 startTime,
                 endTime,
                 sportId,
                 matchId,
-                0L,
+                null,
                 SIZE
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
@@ -46,27 +71,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
         }
     }
 
-    /**
-     * 取消预约
-     * */
-    fun cancelReserve(order: Common.ReserveOrder) {
-        viewModelScope.launch {
-            val result = repo.reserveCancel(order.reserveId)
-            _cancelReserveLiveData.value = Event(result?.success ?: false)
-        }
-    }
-
-    /**
-     * 修改预约
-     * */
-    fun modifyReserve(order: Common.ReserveOrder, odds: String) {
-        viewModelScope.launch {
-            val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)
-            _modifyOddsLiveData.value = Event(result?.success ?: false)
-        }
-    }
-
-    fun loadMoreReserve() {
+    override fun loadMoreData(status: BetSlipEnum) {
         val list = _reserveLiveData.value
         viewModelScope.launch {
             repo.getReserveOrder(
@@ -74,7 +79,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 endTime,
                 sportId,
                 matchId,
-                0L,
+                list?.lastOrNull()?.reserve?.reserveTime,
                 SIZE
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
@@ -92,8 +97,32 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
         }
     }
 
-    override fun loadData(status: BetSlipEnum) {
-        getReserveOrder()
+    override fun updateData(status: BetSlipEnum, betId: String) {
+        val (index, previousItem) = _reserveLiveData.value?.let { list ->
+            val idx = list.indexOfFirst { it.order?.betId == betId }
+            val prev = if (idx > 0) list[idx - 1] else null
+            idx to prev
+        } ?: return
+
+        viewModelScope.launch {
+            repo.getReserveOrder(
+                startTime,
+                endTime,
+                sportId,
+                matchId,
+                previousItem?.order?.betTime,
+                1,
+            )?.let { result ->
+                val updatedItem = result.map { BetSlipData(reserve = it) }.toList().firstOrNull() ?: return@let
+                val currentList = _reserveLiveData.value?.toMutableList() ?: return@let
+                if (index in currentList.indices) {
+                    currentList[index] = updatedItem
+                    _reserveLiveData.value = currentList.toList() // 確保新 list 觸發 observer
+                }
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            }
+        }
     }
 
     override fun canLoadMore(): Boolean {

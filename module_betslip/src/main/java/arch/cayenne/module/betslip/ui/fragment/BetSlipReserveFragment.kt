@@ -53,10 +53,10 @@ class BetSlipReserveFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.getReserveOrder()
+                mViewModel.refreshData(getBetSlipEnum())
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreReserve()
+                mViewModel.loadMoreData(getBetSlipEnum())
             }
         }
     }
@@ -77,17 +77,11 @@ class BetSlipReserveFragment :
         mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 showToast(if (it) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
-                if (it) {
-                    mViewModel.getReserveOrder()
-                }
             }
         }
         mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 showToast(if (it) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
-                if (it) {
-                    mViewModel.getReserveOrder()
-                }
             }
         }
     }

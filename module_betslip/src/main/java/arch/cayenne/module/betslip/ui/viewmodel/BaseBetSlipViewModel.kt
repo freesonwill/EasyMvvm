@@ -33,6 +33,8 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
         this.times = Pair(startTime, endTime)
     }
 
-    abstract fun loadData(status: BetSlipEnum)
+    abstract fun refreshData(status: BetSlipEnum)
+    abstract fun loadMoreData(status: BetSlipEnum)
+    abstract fun updateData(status: BetSlipEnum, betId: String)
     abstract fun canLoadMore(): Boolean
 }

@@ -17,16 +17,13 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     private val _orderLiveData = MutableLiveData<List<BetSlipData>>()
     val orderLiveData: LiveData<List<BetSlipData>> = _orderLiveData
 
-    /**
-     * 获取注单列表
-     * */
-    fun getOrders(status: BetSlipEnum) {
+    override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
             repo.getOrderReq(
                 status.value,
                 startTime,
                 endTime,
-                0L,
+                null,
                 SIZE,
                 sportId,
                 matchId,
@@ -39,18 +36,14 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
         }
     }
 
-    fun refreshOrder(status: BetSlipEnum) {
-        getOrders(status)
-    }
-
-    fun loadMoreOrder(status: BetSlipEnum) {
+    override fun loadMoreData(status: BetSlipEnum) {
         val list = _orderLiveData.value
         viewModelScope.launch {
             repo.getOrderReq(
                 status.value,
                 startTime,
                 endTime,
-                0L,
+                list?.lastOrNull()?.order?.betTime,
                 SIZE,
                 sportId,
                 matchId,
@@ -70,8 +63,33 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
         }
     }
 
-    override fun loadData(status: BetSlipEnum) {
-        getOrders(status)
+    override fun updateData(status: BetSlipEnum, betId: String) {
+        val (index, previousItem) = _orderLiveData.value?.let { list ->
+            val idx = list.indexOfFirst { it.order?.betId == betId }
+            val prev = if (idx > 0) list[idx - 1] else null
+            idx to prev
+        } ?: return
+
+        viewModelScope.launch {
+            repo.getOrderReq(
+                status.value,
+                startTime,
+                endTime,
+                previousItem?.order?.betTime,
+                1,
+                sportId,
+                matchId,
+            )?.let { result ->
+                val updatedItem = result.toBetSlipData().firstOrNull() ?: return@let
+                val currentList = _orderLiveData.value?.toMutableList() ?: return@let
+                if (index in currentList.indices) {
+                    currentList[index] = updatedItem
+                    _orderLiveData.value = currentList.toList() // 確保新 list 觸發 observer
+                }
+            } ?: run {
+                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            }
+        }
     }
 
     override fun canLoadMore(): Boolean {

@@ -40,10 +40,10 @@ class BetSlipConfirmFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.Confirming)
+                mViewModel.refreshData(BetSlipEnum.Confirming)
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.Confirming)
+                mViewModel.loadMoreData(BetSlipEnum.Confirming)
             }
         }
     }

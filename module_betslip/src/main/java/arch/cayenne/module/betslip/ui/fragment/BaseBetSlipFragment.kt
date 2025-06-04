@@ -34,7 +34,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
             onFilterChangeListener.observe(viewLifecycleOwner) {
                 mViewModel.setIds(it.matchId, it.sportId)
                 mViewModel.setTime(it.startTime, it.endTime)
-                mViewModel.loadData(getBetSlipEnum())
+                mViewModel.refreshData(getBetSlipEnum())
             }
         }
         mViewModel.state.observe(viewLifecycleOwner) {
@@ -49,7 +49,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
         if (filterViewModel == null) {
             mViewModel.setIds(-1, -1)
             mViewModel.setTime(null, null)
-            mViewModel.loadData(getBetSlipEnum())
+            mViewModel.refreshData(getBetSlipEnum())
         }
     }
 

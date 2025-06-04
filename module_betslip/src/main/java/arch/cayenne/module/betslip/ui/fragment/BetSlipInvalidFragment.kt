@@ -18,7 +18,6 @@ class BetSlipInvalidFragment :
     override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-
         initRecycler()
         initLoadRefresh()
     }
@@ -39,10 +38,10 @@ class BetSlipInvalidFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.Invalid)
+                mViewModel.refreshData(getBetSlipEnum())
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.Invalid)
+                mViewModel.loadMoreData(getBetSlipEnum())
             }
         }
     }

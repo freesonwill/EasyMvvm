@@ -39,7 +39,6 @@ class BetSlipUnsettledFragment :
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 showToast(if (it) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
-                mViewModel.getOrders(BetSlipEnum.UnSettled)
             }
         }
         mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
@@ -90,10 +89,10 @@ class BetSlipUnsettledFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.UnSettled)
+                mViewModel.refreshData(BetSlipEnum.UnSettled)
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.UnSettled)
+                mViewModel.loadMoreData(BetSlipEnum.UnSettled)
             }
         }
     }
