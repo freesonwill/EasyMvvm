@@ -122,7 +122,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             mBinding.refreshLayout.finishLoadMore()
             it?.let {
                 mBinding.leagueMain.setVisibilityGone()
-                if (it.match.isEmpty()) {
+                if (it.match.isEmpty() && standsAdapter.currentList.isEmpty()) {
                     skeleton.dismiss()
                     mBinding.leagueMain.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
@@ -148,10 +148,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 }
             } ?: run {
                 skeleton.dismiss()
-                mBinding.leagueMain.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.lineup_empty.getString()
-                )
+                if (standsAdapter.currentList.isEmpty()) {
+                    mBinding.leagueMain.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                }
             }
         }
     }
