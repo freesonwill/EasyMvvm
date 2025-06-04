@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -554,14 +555,18 @@ class LiveVideoLandscapeFragment :
         videoView.onPause()
     }
 
-    override fun onDestroy() {
-//        "landscape.onDestroy".logd("videoCache")
-        super.onDestroy()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
-        setStatusBar(StatusBarConfig, mBinding.root)
+    override fun onDestroyView() {
+//        "landscape.onDestroyView".logd("videoCache")
+        super.onDestroyView()
         PlayerViewCache.releasePlayerView(videoView) {
             it.onDestroy()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 
 

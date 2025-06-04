@@ -376,15 +376,14 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         videoView.onResume()
     }
 
-    override fun onDestroy() {
-//        "portrait.onDestroy".logd("videoCache")
-
-        super.onDestroy()
-
+    override fun onDestroyView() {
+//        "portrait.onDestroyView".logd("videoCache")
+        super.onDestroyView()
         PlayerViewCache.releasePlayerView(videoView) {
             it.onDestroy()
         }
     }
+
 
     /**
      * 隐藏底部操作栏
