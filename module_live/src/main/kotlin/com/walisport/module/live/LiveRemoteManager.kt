@@ -110,23 +110,6 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }
     }
 
-    //获取比赛趋势的实时数据
-    suspend fun getMatchTrendReq(scope: CoroutineScope, matchId: Long): Sloth.MatchTrendData? {
-        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchTrendResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.MATCH_TREND
-        ) {
-            Client.MatchTrendReq.newBuilder().apply {
-                this.matchId = matchId
-            }.build()
-        }
-        if (result.error == null && result.data != null) {
-            return result.data!!.matchTrendData
-        }
-        return null
-    }
-
     //获取积分榜的实时数据
     suspend fun getCompetitionReq(scope: CoroutineScope, compId: Int): Sloth.CompetitionTables? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.CompetitionTableResp>(
@@ -148,7 +131,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     suspend fun getMatchLeagueReq(
         scope: CoroutineScope,
         tournamentId: Int,
-        page: Int
+        cursorMatchId: Long,
+        cursorMatchStartTime: Long
     ): Client.TournamentMatchResp? {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.TournamentMatchResp>(
             scope = scope,
@@ -157,29 +141,13 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         ) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
-                this.cursorMatchId = 0
-                this.size = 50
+                this.cursorMatchId = cursorMatchId
+                this.cursorMatchStartTime = cursorMatchStartTime
+                this.size = 10
             }.build()
         }
         if (result.error == null && result.data != null) {
             return result.data!!
-        }
-        return null
-    }
-
-    //获取比赛技术统计实时数据
-    suspend fun getMatchStatisticReq(scope: CoroutineScope, matchId: Long): Sloth.MatchLiveData? {
-        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MatchLiveResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.MATCH_LIVE
-        ) {
-            Client.MatchLiveReq.newBuilder().apply {
-                this.matchId = matchId
-            }.build()
-        }
-        if (result.error == null && result.data != null) {
-            return result.data!!.matchLiveData
         }
         return null
     }
