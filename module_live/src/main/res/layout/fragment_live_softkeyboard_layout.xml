@@ -117,8 +117,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_11"
-            app:layout_constraintTop_toBottomOf="@id/live_chat_ll_search"
+            app:layout_constraintTop_toBottomOf="@id/top"
             app:tabIndicatorFullWidth="false"
             android:background="@color/card_background"
             app:tabBackground="@null"
@@ -156,7 +155,6 @@
             android:layout_width="match_parent"
             android:layout_height="302dp"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all"
-            android:background="@color/main_background"
             android:layout_marginTop="@dimen/dp_12"
             />
         <arch.cayenne.lib.skin.widget.SkinnableImageView

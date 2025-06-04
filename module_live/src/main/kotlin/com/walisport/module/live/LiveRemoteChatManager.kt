@@ -14,6 +14,7 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
@@ -23,6 +24,10 @@ class LiveRemoteChatManager(
     private val TAG = this.javaClass.simpleName
 
     suspend fun startSocket(): ConnectState {
+        val state = socketManager.getConnectStateFlow().firstOrNull()
+        if (state == ConnectState.ConnectSuccess) {
+            return state
+        }
         return socketManager.connect("wss://ws.qxe68.com:7001/api/game/chat/ws").first()
     }
 

@@ -30,6 +30,8 @@ class SoftAdapter :
         fun iniAdapter() {
             val adapter = LiveEmojiAdapter()
             adapter.setItemListener(itemListener)
+            val manager = GridLayoutManager(nBinding.softRecycler.context,8)
+            nBinding.softRecycler.layoutManager = manager
             nBinding.softRecycler.adapter = adapter
         }
     }
@@ -44,8 +46,9 @@ class SoftAdapter :
             isInvisible = false
             val nManager = layoutManager?.let { it as GridLayoutManager }
             nManager?.spanCount = if (data.emojiType == EmojiTypeEnum.NORMAL) 8 else 4
-            val nAdapter = adapter?.let { it as LiveEmojiAdapter }
-            nAdapter?.submitList(data.emojis)
+            val nAdapter = LiveEmojiAdapter()
+            nAdapter.submitList(data.emojis)
+            adapter = nAdapter
         }
     }
 
@@ -54,7 +57,7 @@ class SoftAdapter :
         parent: ViewGroup,
         viewType: Int
     ): ItemSoftAdapterBinding {
-        return ItemSoftAdapterBinding.inflate(inflater, null, false)
+        return ItemSoftAdapterBinding.inflate(inflater, parent, false)
     }
 
     override fun createViewHolder(binding: ItemSoftAdapterBinding, viewType: Int): SoftViewHolder {

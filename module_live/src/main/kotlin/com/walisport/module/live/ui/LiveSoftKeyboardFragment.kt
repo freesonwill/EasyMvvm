@@ -9,6 +9,9 @@ import android.widget.ImageView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.removeAllTips
@@ -132,7 +135,8 @@ class LiveSoftKeyboardFragment :
                     when (position) {
                         0,
                         1 -> {
-                            mBinding.keyboardEmojiRecycler.scrollToPosition(position)
+                            mBinding.keyboardEmojiRecycler.smoothScrollToPosition(position)
+                            mBinding.keyboardEmojiRecycler.isInvisible = false
                         }
 
                         else -> {
@@ -156,13 +160,28 @@ class LiveSoftKeyboardFragment :
     }
 
     private fun initSoftRecycler() {
+        val snapHelper = PagerSnapHelper()
         mBinding.keyboardEmojiRecycler.apply {
-            layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
             val softAdapter = SoftAdapter()
             softAdapter.setItemListener(itemListener)
             softAdapter.submitList(mViewModel.softData())
             adapter = softAdapter
+            snapHelper.attachToRecyclerView(this)
+            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                        val currentView = snapHelper.findSnapView(recyclerView.layoutManager)
+                       currentView?.let {
+                           val position = recyclerView.getChildAdapterPosition(currentView)
+                           mBinding.keyboardTb.selectTab(mBinding.keyboardTb.getTabAt(position))
+                       }
+                    }
+                }
+            })
         }
+
     }
 
 
@@ -248,12 +267,6 @@ class LiveSoftKeyboardFragment :
      * 当软件盘弹出时
      * */
     override fun onSoftKeyboardOpened(keyboardHeightInPx: Int) {
-        mBinding.main.setBackgroundResource(
-            SkinnableResourceManager.getTargetResourceId(
-                requireContext(),
-                arch.cayenne.lib.common.R.color.card_background
-            )
-        )
 
     }
 

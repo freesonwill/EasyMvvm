@@ -136,6 +136,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
+        mViewModel.startChatServer()
     }
 
     private fun setVideoView() {
@@ -210,6 +211,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
+        mViewModel.disConnectChatServer()
         super.onDestroyView()
     }
 }
