@@ -14,11 +14,13 @@ import galaxy.common.proto.Common.EarlySettlePrice
 import galaxy.common.proto.Common.Order
 import galaxy.common.proto.Common.ReserveOrder
 import kotlinx.coroutines.launch
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 
 
-class BetSlipViewModel : BaseViewModel() {
+class BetSlipViewModel(private val repository: BetSlipRepository) : BaseViewModel() {
+
+    companion object {
+        private const val SIZE = 10
+    }
 
     private var ids: Pair<Long, Int> = Pair(-1, -1)
     private val matchId: Long get() = ids.first
@@ -27,14 +29,6 @@ class BetSlipViewModel : BaseViewModel() {
     private var times: Pair<Long?, Long?> = Pair(null, null)
     private val startTime: Long? get() = times.first
     private val endTime: Long? get() = times.second
-
-    private var page = 1
-    private val pageSize = 10
-    private val repository: BetSlipRepository by inject {
-        parametersOf(
-            viewModelScope
-        )
-    }
 
     //普通注单
     private val _orderLiveData = MutableLiveData<List<BetSlipData>>()
@@ -70,7 +64,6 @@ class BetSlipViewModel : BaseViewModel() {
 
     fun setIds(matchId: Long, sportId: Int) {
         this.ids = Pair(matchId, sportId)
-        page = 1
     }
 
     /**
@@ -80,13 +73,12 @@ class BetSlipViewModel : BaseViewModel() {
         viewModelScope.launch {
             repository.getOrderReq(
                 status.value,
-                page,
-                pageSize,
-                lastId = _orderLiveData.value?.lastOrNull()?.order?.betId ?: "",
+                startTime,
+                endTime,
+                0L,
+                SIZE,
                 sportId,
                 matchId,
-                startTime,
-                endTime
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
                 _orderLiveData.value = result.toBetSlipData()
@@ -102,11 +94,12 @@ class BetSlipViewModel : BaseViewModel() {
     fun getReserveOrder() {
         viewModelScope.launch {
             repository.getReserveOrder(
-                lastId = _reserveLiveData.value?.lastOrNull()?.reserve?.reserveId ?: "",
+                startTime,
+                endTime,
                 sportId,
                 matchId,
-                startTime,
-                endTime
+                0L,
+                SIZE
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
                 _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
@@ -147,7 +140,6 @@ class BetSlipViewModel : BaseViewModel() {
     }
 
     fun refreshOrder(status: BetSlipEnum) {
-        page = 1
         getOrders(status)
     }
 
@@ -156,17 +148,15 @@ class BetSlipViewModel : BaseViewModel() {
         viewModelScope.launch {
             repository.getOrderReq(
                 status.value,
-                page,
-                pageSize,
-                lastId = list!!.last().order?.betId ?: "",
+                startTime,
+                endTime,
+                0L,
+                SIZE,
                 sportId,
                 matchId,
-                startTime,
-                endTime
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
-                    page++
                     val newList = mutableListOf<BetSlipData>()
                     val oldList = _orderLiveData.value ?: emptyList()
                     val resultList = result.toBetSlipData()
@@ -184,15 +174,15 @@ class BetSlipViewModel : BaseViewModel() {
         val list = _reserveLiveData.value
         viewModelScope.launch {
             repository.getReserveOrder(
-                lastId = list!!.last().order?.betId ?: "",
+                startTime,
+                endTime,
                 sportId,
                 matchId,
-                startTime,
-                endTime
+                0L,
+                SIZE
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
-                    page++
                     val newList = mutableListOf<BetSlipData>()
                     val oldList = _reserveLiveData.value ?: emptyList()
                     val resultList = result.map { BetSlipData(reserve = it) }
@@ -221,7 +211,6 @@ class BetSlipViewModel : BaseViewModel() {
 
     fun setTime(startTime: Long?, endTime: Long?) {
         this.times = Pair(startTime, endTime)
-        page = 1
     }
 
     fun loadData(status: BetSlipEnum) {
@@ -236,11 +225,11 @@ class BetSlipViewModel : BaseViewModel() {
      * 预约注单如果列表为空或者不是整页数据，则不加载更多
      *
      * */
-    fun isReserveLoadMore() = !(_reserveLiveData.value.isNullOrEmpty() || (_reserveLiveData.value!!.size % pageSize != 0))
+    fun isReserveLoadMore() = !(_reserveLiveData.value.isNullOrEmpty() || (_reserveLiveData.value!!.size % SIZE != 0))
 
     /**
      * 注单如果列表为空或者不是整页数据，则不加载更多
      * */
-    fun isOrderLoadMore() = !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % pageSize != 0))
+    fun isOrderLoadMore() = !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % SIZE != 0))
 
 }

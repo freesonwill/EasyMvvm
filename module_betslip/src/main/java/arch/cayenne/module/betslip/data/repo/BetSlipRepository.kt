@@ -17,38 +17,42 @@ class BetSlipRepository(
 
     suspend fun getOrderReq(
         status: Int,
-        page: Int,
-        pageSize: Int,
-        lastId:String,
-        sportId: Int,
-        matchId: Long,
         startTime: Long?,
         endTime: Long?,
+        cursorBetTime: Long,
+        size: Int,
+        sportId: Int,
+        matchId: Long,
     ): List<Common.Order>? {
-        val resp = remoteManager.getOrderReq(
-            scope,
+        return remoteManager.getOrderReq(
             status,
-            page,
-            pageSize,
-            lastId = lastId,
-            sportId = if(sportId == -1) null else sportId,
-            matchId = if(matchId == (-1).toLong()) null else matchId,
             startTime,
-            endTime
-        )
-        return resp
+            endTime,
+            cursorBetTime,
+            size,
+            if (sportId == -1) null else sportId,
+            if (matchId == -1L) null else matchId,
+
+            )
     }
 
 
     suspend fun getReserveOrder(
-        lastId: String,
+        startTime: Long?,
+        endTime: Long?,
         sportId: Int,
         matchId: Long,
-        startTime: Long? = null,
-        endTime: Long? = null
+        cursorBetTime: Long?,
+        size: Int,
     ): List<Common.ReserveOrder>? {
-        val resp = remoteManager.getReserveOrder(scope, lastId,sportId, matchId, startTime, endTime)
-        return resp
+        return remoteManager.getReserveOrder(
+            startTime,
+            endTime,
+            sportId,
+            matchId,
+            cursorBetTime,
+            size
+        )
     }
 
     suspend fun earlySettle(
@@ -57,27 +61,23 @@ class BetSlipRepository(
         expectPrice: String,
         acceptPriceReduce: Boolean
     ): EarlySettleResp? {
-        val resp =
-            remoteManager.earlySettleReq(scope, betId, amount, expectPrice, acceptPriceReduce)
-        return resp
+        return remoteManager.earlySettleReq(betId, amount, expectPrice, acceptPriceReduce)
     }
 
     suspend fun reserveCancel(reserveId: String): ReserveCancelResp? {
-        val resp = remoteManager.reserveCancelReq(scope, reserveId)
-        return resp
+        return remoteManager.reserveCancelReq(reserveId)
     }
 
     suspend fun reserveUpdate(
-        reserveId:String,
+        reserveId: String,
         amount: String,
         odds: String
     ): ReserveUpdateResp? {
-        val resp = remoteManager.reserveUpdateReq(scope, reserveId,amount, odds)
-        return resp
+        return remoteManager.reserveUpdateReq(reserveId, amount, odds)
     }
 
     suspend fun earlySettledPrice(betId: String): List<EarlySettlePrice>? {
-        val resp = remoteManager.earlySettlePriceReq(scope, betId)
+        val resp = remoteManager.earlySettlePriceReq(betId)
         return resp?.priceList
     }
 
