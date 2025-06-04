@@ -7,7 +7,11 @@ import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import android.widget.LinearLayout
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
@@ -16,20 +20,22 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
-import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
+import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
+import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
@@ -52,6 +58,8 @@ class LiveVideoLandscapeFragment :
         FragmentLiveVideoLandscapeBinding::class
     override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
 
+    private lateinit var videoView: LivePlayerView
+
     private var videoViewFullScreen = true
 
     private var buttonsDisplaying = true
@@ -67,60 +75,82 @@ class LiveVideoLandscapeFragment :
     private var loadingAnim: ObjectAnimator? = null
 
 
-
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
         mViewModel.setMatchId(matchId)
 
         initVideoView()
+        initBackPress()
         scheduleHideButtons()
     }
 
     private fun initVideoView() {
-        mBinding.videoView.apply {
-            init(PlayerMode.FLUENCY, ScreenMode.FULL)
-            keepScreenOn = true
-            setConfig(GlobalConfig(requireContext()).also {
-                if (!it.inited) { // 首次启动从本地播放器获取默认配置
-                    it.transformFromPlayerConfig(mBinding.videoView.getConfig())
+        //横屏一般是从竖屏过来的，可以直接复用之前的播放器实例
+//        "landscape.initVideoView".logd("videoCache")
+        videoView = PlayerViewCache.acquirePlayerView {
+            LivePlayerView(requireActivity())
+                .apply {
+                    init(PlayerMode.FLUENCY)
+                    keepScreenOn = true
+                    setConfig(GlobalConfig(requireContext()).also {
+                        if (!it.inited) {
+                            // 首次启动从本地播放器获取默认配置
+                            it.transformFromPlayerConfig(videoView.getConfig())
+                            // 默认不加密
+                            it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                            it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
+                            it.reconnectCount = -1 // Demo重试一百次, -1不限制
+                            //默认不开启硬件加速
+                            it.isHWDecode = false
 
-                    // 默认不加密
-                    it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
-                    it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
-                    it.reconnectCount = 100 // Demo重试一百次, -1不限制
-                    //默认不开启硬件加速
-                    it.isHWDecode = false
+                            it.inited = true
+                        }
+                    }.transformToPlayerConfig())
 
-                    it.inited = true
                 }
-            }.transformToPlayerConfig())
-
-            setOnSingleTapListener {
-                if (videoViewFullScreen) {
-                    if (buttonsDisplaying) {
-                        buttonsDisplaying = false
-
-                        hideButtonsAnimated()
-                    } else {
-                        buttonsDisplaying = true
-
-                        showButtonsAnimated()
-                    }
-                } else {
-                    enlarge {
-                        showButtons()
-                        videoViewFullScreen = true
-                    }
-
-                    //隐藏子fragment
-                    hideFragment()
-                }
-            }
-
-            setPlayerStateListener { onPlayerStateReceived(it) }
-
         }
 
+        //单击事件处理
+        videoView.setOnSingleTapListener {
+            if (videoViewFullScreen) {
+                if (buttonsDisplaying) {
+                    buttonsDisplaying = false
+
+                    hideButtonsAnimated()
+                } else {
+                    buttonsDisplaying = true
+
+                    showButtonsAnimated()
+                }
+            } else {
+                enlarge {
+                    showButtons()
+                    videoViewFullScreen = true
+                }
+
+
+                //隐藏子fragment
+                hideFragment()
+            }
+        }
+
+        //播放状态处理
+        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+
+        // 创建 LayoutParams，设置宽度和高度为 match_parent
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, // 宽度
+            LinearLayout.LayoutParams.MATCH_PARENT  // 高度
+        )
+
+        // 将 LayoutParams 应用到 VideoView
+        videoView.layoutParams = layoutParams
+
+        if (videoView.parent != null) {
+            (videoView.parent as ViewGroup).removeView(videoView)
+        }
+
+        mBinding.videoViewContainer.addView(videoView)
     }
 
     override fun initListener() {
@@ -209,8 +239,8 @@ class LiveVideoLandscapeFragment :
 
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        mBinding.videoView.setDataSource(url)
-                        mBinding.videoView.prepare()
+                        videoView.setDataSource(url)
+                        videoView.prepare()
                     }
                 }
             }
@@ -241,6 +271,21 @@ class LiveVideoLandscapeFragment :
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId())
     }
+
+    /**
+     * 监听返回键
+     */
+    private fun initBackPress(){
+        // 监听返回键
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    mBinding.videoViewContainer.removeAllViews()
+                }
+            })
+    }
+
 
     /**
      * 展示上边和下边的操作按钮，不带动画
@@ -355,57 +400,59 @@ class LiveVideoLandscapeFragment :
      */
     private fun enlarge(onEndAction: () -> Unit) {
         //width， height， marginStart, marginTop
-        val currentHeight = mBinding.videoView.measuredHeight
+        val currentHeight = mBinding.videoViewContainer.measuredHeight
         val targetWidth = mBinding.root.measuredWidth
-        val currentWidth = mBinding.videoView.measuredWidth
+        val currentWidth = mBinding.videoViewContainer.measuredWidth
         val targetHeight = mBinding.root.measuredHeight
         val currentMarginTop =
-            (mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams).topMargin
+            (mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams).topMargin
         val targetMarginTop = 0
         val currentMarginStart =
-            (mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams).marginStart
+            (mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
 
         with(AnimatorSet()) {
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams
+                        val lp = mBinding.videoViewContainer.layoutParams
                         lp.height = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentWidth, targetWidth).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams
+                        val lp = mBinding.videoViewContainer.layoutParams
                         lp.width = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        val lp =
+                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
 
                     }
                 },
                 ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        val lp =
+                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
                         lp.marginEnd = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
 
                     }
                 })
             setDuration(ANIMATION_DURATION)
             doOnEnd {
-                mBinding.videoView.background =
+                mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
@@ -433,42 +480,44 @@ class LiveVideoLandscapeFragment :
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams
+                        val lp = mBinding.videoViewContainer.layoutParams
                         lp.height = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentWidth, targetWidth).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams
+                        val lp = mBinding.videoViewContainer.layoutParams
                         lp.width = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        val lp =
+                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
 
                     }
                 },
                 ValueAnimator.ofInt(currentMarginStart, targetHorizontalMargin).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoView.layoutParams as ConstraintLayout.LayoutParams
+                        val lp =
+                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
                         lp.marginEnd = it.animatedValue as Int
 
-                        mBinding.videoView.layoutParams = lp
+                        mBinding.videoViewContainer.layoutParams = lp
 
                     }
                 })
             setDuration(ANIMATION_DURATION)
             doOnEnd {
-                mBinding.videoView.background =
+                mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
                 onEndAction()
             }
@@ -478,18 +527,9 @@ class LiveVideoLandscapeFragment :
     }
 
     override fun onStop() {
-//        "onStop".logd(TAG)
         super.onStop()
 
-//        if (mBackPressed || !mBinding.videoView.isBackgroundPlayEnabled) {
-//            mBinding.videoView.stopPlayback()
-//            mBinding.videoView.release(true)
-//            mBinding.videoView.stopBackgroundPlay()
-//        } else {
-//            mBinding.videoView.enterBackground()
-//        }
-
-        mBinding.videoView.onStop()
+        videoView.onStop()
     }
 
     override fun onResume() {
@@ -502,8 +542,7 @@ class LiveVideoLandscapeFragment :
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         setStatusBar(StatusBarConfig, mBinding.root)
-        mBinding.videoView.onResume()
-
+        videoView.onResume()
     }
 
     override fun onPause() {
@@ -513,27 +552,23 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
-        mBinding.videoView.onPause()
+        videoView.onPause()
+    }
+
+    override fun onDestroyView() {
+//        "landscape.onDestroyView".logd("videoCache")
+        super.onDestroyView()
+        PlayerViewCache.releasePlayerView(videoView) {
+            it.onDestroy()
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig, mBinding.root)
-        mBinding.videoView.onDestroy()
     }
 
-//    private fun destroyPlayer() {
-//        mBinding.videoView.stopPlayback()
-//        mBinding.videoView.release(true)
-//        mBinding.videoView.stopBackgroundPlay()
-//    }
-
-
-//    override fun onBackPressed() {
-//        mBackPressed = true
-//        super.onBackPressed()
-//    }
 
     /**
      * 跳转到联赛赛程页
