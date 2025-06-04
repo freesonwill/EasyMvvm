@@ -39,8 +39,6 @@ import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
 import com.xxx.qyplayer.transformToInt
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -197,24 +195,26 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
-
-                    val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
-                    playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
+                    if (it.source.isEmpty()) {
+                        mBinding.videoView.onDataSourceEmpty()
+                    } else {
+                        val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
+                        playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
 
-                        //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
-                        val matchBean = mViewModel.matchBeanLiveData.value
-                        matchBean?.let {
-                            val matchStatus =
-                                MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
-                            if (matchStatus == MatchStatus.IN_PROGRESS) {
-                                mBinding.videoView.setDataSource(url)
-                                mBinding.videoView.prepare()
+                            //收到视频源信息时，需要判断当前比赛的状态，仅当比赛为正在进行中才播放视频
+                            val matchBean = mViewModel.matchBeanLiveData.value
+                            matchBean?.let {
+                                val matchStatus =
+                                    MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
+                                if (matchStatus == MatchStatus.IN_PROGRESS) {
+                                    mBinding.videoView.setDataSource(url)
+                                    mBinding.videoView.prepare()
+                                }
                             }
+
                         }
-
                     }
-
                 }
             }
 
