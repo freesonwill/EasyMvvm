@@ -80,11 +80,28 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 matchId,
             )?.let { result ->
                 val updatedItem = result.toBetSlipData().firstOrNull() ?: return@let
-                val currentList = _orderLiveData.value?.toMutableList() ?: return@let
-                if (index in currentList.indices) {
-                    currentList[index] = updatedItem
-                    _orderLiveData.value = currentList.toList() // 確保新 list 觸發 observer
+                if (updatedItem.order!!.betId == betId) {
+                    val currentList = _orderLiveData.value?.toMutableList() ?: return@let
+                    if (index in currentList.indices) {
+                        currentList[index] = updatedItem
+                        _orderLiveData.value = currentList.toList() // 確保新 list 觸發 observer
+                    }
+                } else {
+                    val resultBetId = updatedItem.order.betId
+                    val currentList = _orderLiveData.value?.toMutableList() ?: return@let
+
+                    // 移除原本 betId 對應的項目
+                    currentList.removeAll { it.order?.betId == betId }
+
+                    // 嘗試找出新的 betId 對應位置，若有則更新，否則新增
+                    val newIndex = currentList.indexOfFirst { it.order?.betId == resultBetId }
+                    if (newIndex >= 0) {
+                        currentList[newIndex] = updatedItem
+                    }
+
+                    _orderLiveData.value = currentList.toList()
                 }
+
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }

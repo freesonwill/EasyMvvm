@@ -53,8 +53,14 @@ class BetSlipSettledFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it)
+            betSlipAdapter.submitList(it) {
+                registerListener()
+            }
         }
+    }
+
+    private fun registerListener() {
+        parentFragmentManager.clearFragmentResultListener("BetSlip")
         parentFragmentManager.setFragmentResultListener("BetSlip", viewLifecycleOwner) { _, bundle ->
             val isUpdate = bundle.getBoolean("EarlySettled", false)
             if (isUpdate) {
