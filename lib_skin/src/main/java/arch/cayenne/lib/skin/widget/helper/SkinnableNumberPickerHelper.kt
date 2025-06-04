@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.EditText
 import android.widget.NumberPicker
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mView) {
 
@@ -28,10 +29,13 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
         }
         a.recycle()
 
-        updateSkin()
+        updateSkin(SkinMsgType.SELF)
     }
 
-    override fun updateSkin() {
+    override fun updateSkin(msgType: SkinMsgType) {
+        if(checkSkinName(msgType)){
+            return
+        }
         applyTextColorResource()
         applyTextSizeResource()
         disableEditTextInteraction()

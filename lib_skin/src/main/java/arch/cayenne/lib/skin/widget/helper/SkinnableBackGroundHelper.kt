@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget.helper
 import android.util.AttributeSet
 import android.view.View
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
     private var backgroundTintId:Int = INVALID_ID
@@ -24,10 +25,10 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
         } finally {
             a.recycle()
         }
-        updateSkin()
+        updateSkin(SkinMsgType.SELF)
     }
 
-    override fun updateSkin() {
+    override fun updateSkin(msgType: SkinMsgType) {
         if (checkResourceIdValid(mSrcId)) {
             val drawable = resourcesManager.getDrawable(context = mView.context,mSrcId)
             if (drawable != null) {
