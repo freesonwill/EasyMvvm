@@ -4,7 +4,6 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
-import java.util.Collections
 
 /**
  * @author: KC
@@ -18,6 +17,11 @@ open class Event<out T>(
     // 使用 HashMap 來儲存已處理的觀察者及其對應的 LifecycleObserver
     // Key: 用來標識事件是否被處理的 LifecycleOwner
     // Value: 註冊到 Key 上的 LifecycleObserver，用於在 Key 銷毀時自動清理
+    /**
+     * 備註：在SharedViewModel中，child fragment會創建observer觀察來自parent的livedata，一旦這個在parent ViewModel中的livedata被啟動，
+     * 那event的handledObservers會被加入child fragment的LifecycleOwner，但是當child fragment被destroy時，
+     * 因為這個liva data event還是存在於parent，所以會hold住已經destroy的child fragment lifecycleOwner，所以需要執行removeHandledObserver移除
+     * **/
     private val handledObservers = mutableMapOf<LifecycleOwner, LifecycleObserver>()
 
     fun getContentIfNotHandled(owner: LifecycleOwner): T? {
@@ -34,8 +38,7 @@ open class Event<out T>(
                 override fun onDestroy(owner: LifecycleOwner) {
                     // 當 keyOwner 被銷毀時，從 map 中移除它
                     // 並同時移除對 keyOwner 生命週期的觀察
-                    handledObservers.remove(owner)
-                    owner.lifecycle.removeObserver(this)
+                    removeHandledObserver(owner)
                 }
             }
             owner.lifecycle.addObserver(lifecycleObserver)
@@ -72,6 +75,7 @@ fun <T>LiveData<Event<T>>.observeEvent(
     key: LifecycleOwner,
     onEventUnhandledContent: (T) -> Unit
 ) {
+
     observe(owner) { event ->
         event?.getContentIfNotHandled(key)?.let {
             onEventUnhandledContent(it)
