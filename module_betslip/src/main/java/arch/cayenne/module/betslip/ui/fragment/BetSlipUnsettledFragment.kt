@@ -39,6 +39,11 @@ class BetSlipUnsettledFragment :
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 showToast(if (it) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
+                if (it) {
+                    parentFragmentManager.setFragmentResult("BetSlip", Bundle().apply {
+                        putBoolean("EarlySettled", true)
+                    })
+                }
             }
         }
         mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {

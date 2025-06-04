@@ -69,7 +69,6 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
             val prev = if (idx > 0) list[idx - 1] else null
             idx to prev
         } ?: return
-
         viewModelScope.launch {
             repo.getOrderReq(
                 status.value,

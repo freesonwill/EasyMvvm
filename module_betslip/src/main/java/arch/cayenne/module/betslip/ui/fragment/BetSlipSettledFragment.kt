@@ -55,6 +55,12 @@ class BetSlipSettledFragment :
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it)
         }
+        parentFragmentManager.setFragmentResultListener("BetSlip", viewLifecycleOwner) { _, bundle ->
+            val isUpdate = bundle.getBoolean("EarlySettled", false)
+            if (isUpdate) {
+                mViewModel.refreshData(getBetSlipEnum())
+            }
+        }
     }
 
 
