@@ -51,15 +51,12 @@ class StatusBarDelegate : IStatusBar {
         //默认
         when (config.statusBarType) {
             StatusBarMode.DEFAULT -> {
-                view.fitsSystemWindows = false
                 immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                setViewPadding(
-                    view, viewPaddingTop + statusBarHeight, view.paddingBottom
-                )
+                view.fitsSystemWindows = true
             }
             //全屏
             StatusBarMode.FULLSCREEN -> {
