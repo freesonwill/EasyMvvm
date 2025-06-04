@@ -8,15 +8,17 @@ import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
-import arch.cayenne.module.betslip.data.repo.BetSlipRepository
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
+import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
+import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.TimePickerViewModel
 
@@ -41,7 +43,6 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
 
     private val viewModules = module {
         includes(defaultModule)
-        viewModelOf(::BetSlipViewModel)
         viewModelOf(::BetSlipModifyOddsViewModel)
         viewModelOf(::EarlySettledKeyboardViewModel)
         viewModelOf(::DatePickerViewModel)
@@ -49,12 +50,15 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::HomeBetSlipViewModel)
         viewModelOf(::SportPickerViewModel)
         viewModelOf(::BetSlipFilterViewModel)
+        viewModelOf(::OrderSlipViewModel)
+        viewModelOf(::ReserveSlipViewModel)
     }
 
     private val repoModules = module {
         factoryOf(::HomeBetSlipRepository)
-        factoryOf(::BetSlipRepository)
         factoryOf(::SportPickerRepository)
+        factoryOf(::OrderSlipRepository)
+        factoryOf(::ReserveSlipRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)

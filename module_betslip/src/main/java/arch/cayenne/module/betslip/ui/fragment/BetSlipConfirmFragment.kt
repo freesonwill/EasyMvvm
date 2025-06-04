@@ -6,16 +6,18 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
+import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 
 //注单确认‰‰
 class BetSlipConfirmFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipConfirmBinding>() {
+    BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
 
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
+    override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()

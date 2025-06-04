@@ -11,15 +11,17 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
+import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 //注单预约
 class BetSlipReserveFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipReserveBinding>() {
+    BaseBetSlipFragment<ReserveSlipViewModel, FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
+    override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()

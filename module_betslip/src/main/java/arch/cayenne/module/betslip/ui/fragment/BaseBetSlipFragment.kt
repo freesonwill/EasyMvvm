@@ -10,13 +10,11 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BaseBetSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
-import kotlin.reflect.KClass
 
-abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewModel, VB>() {
+abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: BaseFragment<VM, VB>() {
 
-    override val vmClass: KClass<BetSlipViewModel> = BetSlipViewModel::class
     private val filterViewModel: BetSlipFilterViewModel? by lazy {
         try {
             ViewModelProvider(requireParentFragment())[BetSlipFilterViewModel::class.java]
@@ -59,7 +57,7 @@ abstract class BaseBetSlipFragment<VB : ViewBinding>: BaseFragment<BetSlipViewMo
          val refreshLayout = mBinding.root.findViewById<PullRefreshLayout>(R.id.refreshLayout)
          val emptyState = mBinding.root.findViewById<DynamicStateLayout>(R.id.empty_state)
          val recyclerView = mBinding.root.findViewById<RecyclerView>(R.id.recyclerView)
-         refreshLayout.setEnableLoadMore( if(getBetSlipEnum() == BetSlipEnum.Reserve) mViewModel.isReserveLoadMore() else mViewModel.isOrderLoadMore())
+         refreshLayout.setEnableLoadMore(mViewModel.canLoadMore())
          refreshLayout.finishRefresh()
          refreshLayout.finishLoadMore()
 

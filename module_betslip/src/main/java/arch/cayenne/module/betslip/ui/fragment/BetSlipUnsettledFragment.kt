@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -10,6 +11,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
+import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
@@ -17,9 +19,10 @@ import kotlin.reflect.KClass
 
 //注单未结算
 class BetSlipUnsettledFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipUnsettledBinding>() {
+    BaseBetSlipFragment<UnsettledViewModel, FragmentLiveBetslipUnsettledBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
+    override val vmClass: KClass<UnsettledViewModel> = UnsettledViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -72,7 +75,7 @@ class BetSlipUnsettledFragment :
                 item: BetSlipData?, position: Int
             ) {
                 item?.order?.let {
-                    mViewModel.isSuppportEarlySettled(it)
+                    mViewModel.isSupportEarlySettled(it)
                 }
             }
         })
