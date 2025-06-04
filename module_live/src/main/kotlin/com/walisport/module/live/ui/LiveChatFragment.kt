@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
@@ -44,10 +43,10 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
 
     override fun initListener() {
-        mBinding.main.clickNoRepeat {
+        mBinding.main.setOnClickListener {
             showChat()
         }
-        mBinding.liveChatRecycler.clickNoRepeat {
+        mBinding.liveChatRecycler.setOnClickListener {
             showChat()
         }
     }

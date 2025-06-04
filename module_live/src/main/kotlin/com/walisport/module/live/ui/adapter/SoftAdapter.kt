@@ -46,8 +46,8 @@ class SoftAdapter :
             isInvisible = false
             val nManager = layoutManager?.let { it as GridLayoutManager }
             nManager?.spanCount = if (data.emojiType == EmojiTypeEnum.NORMAL) 8 else 4
-            val nAdapter = LiveEmojiAdapter()
-            nAdapter.submitList(data.emojis)
+            val nAdapter = adapter?.let { it as LiveEmojiAdapter }
+            nAdapter?.submitList(data.emojis)
             adapter = nAdapter
         }
     }

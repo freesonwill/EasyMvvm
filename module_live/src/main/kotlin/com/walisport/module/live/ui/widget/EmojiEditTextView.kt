@@ -3,14 +3,9 @@ package com.walisport.module.live.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import com.walisport.module.live.utils.EmojiUtils
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 class EmojiEditTextView : AppCompatEditText {
    private val textHelper: SkinnableTextHelper = SkinnableTextHelper(this)

@@ -99,6 +99,11 @@ class LiveSoftKeyboardFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        showChat()
+    }
+
     /**
      * 发送消息
      * */
@@ -181,10 +186,7 @@ class LiveSoftKeyboardFragment :
                 }
             })
         }
-
     }
-
-
     /**
      * 展示软件盘
      * */
@@ -273,6 +275,7 @@ class LiveSoftKeyboardFragment :
     override fun onSoftKeyboardClosed() {
 
     }
+
 
     interface LiveChatSoftKeyListener {
         fun showKeyBoard()
