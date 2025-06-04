@@ -1,7 +1,10 @@
 package arch.cayenne.lib.common.ui.viewmodel
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import java.util.Collections
 
 /**
  * @author: KC
@@ -12,17 +15,47 @@ import androidx.lifecycle.LiveData
 open class Event<out T>(
     private val content: T
 ) {
-    private val handledObservers = mutableSetOf<LifecycleOwner>()
+    // 使用 HashMap 來儲存已處理的觀察者及其對應的 LifecycleObserver
+    // Key: 用來標識事件是否被處理的 LifecycleOwner
+    // Value: 註冊到 Key 上的 LifecycleObserver，用於在 Key 銷毀時自動清理
+    private val handledObservers = mutableMapOf<LifecycleOwner, LifecycleObserver>()
 
     fun getContentIfNotHandled(owner: LifecycleOwner): T? {
+        if (owner.lifecycle.currentState == androidx.lifecycle.Lifecycle.State.DESTROYED) {
+            // 如果 keyOwner 已銷毀，從 map 中移除 (如果存在的話)
+            removeHandledObserver(owner)
+            return null
+        }
         return if (handledObservers.contains(owner)) {
             null
         } else {
-            handledObservers.add(owner)
+            // 創建一個 LifecycleObserver 來監聽 keyOwner 的銷毀事件
+            val lifecycleObserver = object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    // 當 keyOwner 被銷毀時，從 map 中移除它
+                    // 並同時移除對 keyOwner 生命週期的觀察
+                    handledObservers.remove(owner)
+                    owner.lifecycle.removeObserver(this)
+                }
+            }
+            owner.lifecycle.addObserver(lifecycleObserver)
+            handledObservers[owner] = lifecycleObserver
             content
         }
     }
-
+    /**
+     * 移除觀察者，例如在 Fragment 的 onDestroyView 中，如果 key 是 viewLifecycleOwner
+     * 或者在特殊情況下需要重置狀態時。
+     * 這個方法現在也負責移除 LifecycleObserver。
+     */
+    private fun removeHandledObserver(keyOwner: LifecycleOwner) {
+        // 從 map 中移除 keyOwner，並獲取其對應的 lifecycleObserver
+        val observerToRemove = handledObservers.remove(keyOwner)
+        observerToRemove?.let {
+            // 如果找到了 observer，則從 keyOwner 的生命週期中移除它
+            keyOwner.lifecycle.removeObserver(it)
+        }
+    }
     fun peekContent(): T = content
 }
 
