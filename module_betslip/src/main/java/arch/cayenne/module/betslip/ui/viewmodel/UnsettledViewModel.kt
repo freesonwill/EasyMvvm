@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
@@ -10,8 +11,8 @@ import kotlinx.coroutines.launch
 class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewModel(repo) {
 
     //提前结算结果
-    private val _earlySettledResultLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val earlySettledResultLiveData: LiveData<Boolean> = _earlySettledResultLiveData
+    private val _earlySettledResultLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val earlySettledResultLiveData: LiveData<Event<Boolean>> = _earlySettledResultLiveData
 
     //检查提前结算
     private val _isSupportEarlySettleLiveData = MutableLiveData<Common.EarlySettlePrice>()
@@ -27,7 +28,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
         viewModelScope.launch {
             val result = repo.earlySettle(betId, money, expectPrice, false)
-            _earlySettledResultLiveData.value = result?.success ?: false
+            _earlySettledResultLiveData.value = Event(result?.success ?: false)
         }
     }
 

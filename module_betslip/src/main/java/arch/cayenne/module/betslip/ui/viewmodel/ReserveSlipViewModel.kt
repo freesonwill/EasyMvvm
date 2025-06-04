@@ -18,12 +18,12 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     val reserveLiveData: LiveData<List<BetSlipData>> = _reserveLiveData
 
     //取消预约
-    private val _cancelReserveLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val cancelReserveLiveData: LiveData<Boolean> = _cancelReserveLiveData
+    private val _cancelReserveLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val cancelReserveLiveData: LiveData<Event<Boolean>> = _cancelReserveLiveData
 
     //修改赔率
-    private val _modifyOddsLiveData: MutableLiveData<Boolean> = MutableLiveData()
-    val modifyOddsLiveData: LiveData<Boolean> = _modifyOddsLiveData
+    private val _modifyOddsLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
+    val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
     /**
      * 获取注单预约单列表
@@ -52,7 +52,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     fun cancelReserve(order: Common.ReserveOrder) {
         viewModelScope.launch {
             val result = repo.reserveCancel(order.reserveId)
-            _cancelReserveLiveData.value = result?.success ?: false
+            _cancelReserveLiveData.value = Event(result?.success ?: false)
         }
     }
 
@@ -62,7 +62,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     fun modifyReserve(order: Common.ReserveOrder, odds: String) {
         viewModelScope.launch {
             val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)
-            _modifyOddsLiveData.value = result?.success ?: false
+            _modifyOddsLiveData.value = Event(result?.success ?: false)
         }
     }
 

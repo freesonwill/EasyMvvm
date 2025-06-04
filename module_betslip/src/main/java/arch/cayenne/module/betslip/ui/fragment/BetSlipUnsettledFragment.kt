@@ -1,7 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -37,9 +36,11 @@ class BetSlipUnsettledFragment :
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it)
         }
-        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
-            mViewModel.getOrders(BetSlipEnum.UnSettled)
+        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
+                mViewModel.getOrders(BetSlipEnum.UnSettled)
+            }
         }
         mViewModel.isSupportEarlySettleLiveData.observe(viewLifecycleOwner) {
             val price = it.price.toDoubleOrNull()

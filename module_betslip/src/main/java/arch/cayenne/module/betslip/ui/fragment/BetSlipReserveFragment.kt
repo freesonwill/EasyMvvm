@@ -74,16 +74,20 @@ class BetSlipReserveFragment :
                 mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         }
-        mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
-            if (it) {
-                mViewModel.getReserveOrder()
+        mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
+                if (it) {
+                    mViewModel.getReserveOrder()
+                }
             }
         }
-        mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
-            if (it) {
-                mViewModel.getReserveOrder()
+        mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
+                if (it) {
+                    mViewModel.getReserveOrder()
+                }
             }
         }
     }
