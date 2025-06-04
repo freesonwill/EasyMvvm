@@ -43,6 +43,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM MarketSelectCrossRef WHERE matchId IN (:matchId) AND marketId IN (:marketId) ")
     abstract suspend fun deleteMarketSelectionCrossRef(matchId: List<Long>, marketId:List<Long>)
 
+    @Transaction
+    @Query("SELECT * " +
+            "FROM MatchBean bean " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.startTime = :startTime " +
+            "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1")
+    abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, startTime: Long) : MatchBean?
+
     @Query("SELECT *" +
             "FROM TournamentMatchRef " +
             "WHERE playType = :playType AND tournamentId = :tournamentId  ORDER BY `order`")
