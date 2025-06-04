@@ -62,6 +62,13 @@ data class MarketSelectCrossRef(
     val selectionId: Long,
 )
 
+@Entity(primaryKeys = ["playType", "tournamentId", "matchId", "startTime", "page"])
+data class CollectMatchRef(
+    val page: Int,
+    val matchId: Long,
+    val order: Int,
+)
+
 /*
 * Embedded Class
 * */

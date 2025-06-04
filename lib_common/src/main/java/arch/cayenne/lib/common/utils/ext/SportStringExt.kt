@@ -26,6 +26,32 @@ object SportStringExt {
     }
 
     /**
+     * @param scale 小數轉換倍數：1 -> *10, 2 -> *100, 3 -> *1000
+     * @return 轉換後的整數值，若轉換失敗則返回 0
+     * 範例：
+     *  scale=1 -> "1.23" → 12, "0.5" → 5
+     *  scale=2 -> "1.23" → 123, "0.5" → 50
+     *  scale=3 -> "1.23" → 1230, "0.5" → 500
+     */
+    fun String.toMoneyForScale(scale: Int = 2): Long {
+        if (this == "0L" || this.isEmpty()) return 0
+
+        val cleanValue = if (this.last() == '.') {
+            this.dropLast(1)
+        } else {
+            this
+        }
+
+        return try {
+            val decimal = BigDecimal(cleanValue).setScale(scale, RoundingMode.DOWN)
+            val multiplier = BigDecimal.TEN.pow(scale)
+            decimal.multiply(multiplier).toLong()
+        } catch (e: NumberFormatException) {
+            0
+        }
+    }
+
+    /**
      * @return 轉換後的整數值，若轉換失敗則返回 0, ex "1.23" -> 123, "0.5" -> 50
      */
     fun String.toOdds(): Int {

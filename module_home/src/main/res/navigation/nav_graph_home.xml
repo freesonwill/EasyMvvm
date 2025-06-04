@@ -11,6 +11,8 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
+        <deepLink app:uri="walisport://module_home/homeFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_secondFragment"
             app:destination="@id/secondFragment" />
@@ -123,8 +125,8 @@
             android:id="@+id/action_newHomeFragment_to_homeBetSlipFragment"
             app:destination="@id/homeBetSlipFragment" />
         <action
-            android:id="@+id/action_newHomeFragment_to_favoriteListFragment"
-            app:destination="@id/favoriteListFragment" />
+            android:id="@+id/action_newHomeFragment_to_collectListFragment"
+            app:destination="@id/collectListFragment" />
     </fragment>
 
     <fragment
@@ -158,7 +160,7 @@
         android:name="arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment"
         android:label="HomeBetSlipFragment" />
     <fragment
-        android:id="@+id/favoriteListFragment"
-        android:name="arch.cayenne.module.home.ui.fragment.FavoriteListFragment"
-        android:label="FavoriteListFragment" />
+        android:id="@+id/collectListFragment"
+        android:name="arch.cayenne.module.home.ui.fragment.CollectListFragment"
+        android:label="CollectListFragment" />
 </navigation>

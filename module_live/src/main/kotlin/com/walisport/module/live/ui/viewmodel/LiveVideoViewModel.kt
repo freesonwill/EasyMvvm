@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-
+import com.walisport.module.live.R
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
@@ -216,13 +216,13 @@ class LiveVideoViewModel(
                                         arch.cayenne.lib.common.R.color.color_fe3666
                                     _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
                                     _subTitleText.value = when (it) {
-                                        MatchStatus.FINISHED -> com.walisport.module.live.R.string.match_finished.getString()
-                                        MatchStatus.POSTPONED -> com.walisport.module.live.R.string.match_postponed.getString()
-                                        MatchStatus.INTERRUPTED -> com.walisport.module.live.R.string.match_interrupted.getString()
-                                        MatchStatus.CANCELED -> com.walisport.module.live.R.string.match_cancelled.getString()
-                                        MatchStatus.DELAYED -> com.walisport.module.live.R.string.match_delayed.getString()
-                                        MatchStatus.ABANDONED -> com.walisport.module.live.R.string.match_abandoned.getString()
-                                        MatchStatus.PAUSED -> com.walisport.module.live.R.string.match_suspended.getString()
+                                        MatchStatus.FINISHED -> R.string.match_finished.getString()
+                                        MatchStatus.POSTPONED -> R.string.match_postponed.getString()
+                                        MatchStatus.INTERRUPTED -> R.string.match_interrupted.getString()
+                                        MatchStatus.CANCELED -> R.string.match_cancelled.getString()
+                                        MatchStatus.DELAYED -> R.string.match_delayed.getString()
+                                        MatchStatus.ABANDONED -> R.string.match_abandoned.getString()
+                                        MatchStatus.PAUSED -> R.string.match_suspended.getString()
                                         else -> "" // 防止遗漏
                                     }
                                     _subTitleTextColor.value =

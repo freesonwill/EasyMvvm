@@ -26,13 +26,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertMatch(match: List<MatchBean>)
+    protected abstract suspend fun insertMatch(match: List<MatchBean>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertMarkets(markets: List<MarketBean>)
+    protected abstract suspend fun insertMarkets(markets: List<MarketBean>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertSelections(selections: List<SelectionBean>)
+    protected abstract suspend fun insertSelections(selections: List<SelectionBean>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMatchMarketCrossRef(crossRef: List<MatchMarketCrossRef>)
@@ -42,6 +42,13 @@ abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Query("DELETE FROM MarketSelectCrossRef WHERE matchId IN (:matchId) AND marketId IN (:marketId) ")
     abstract suspend fun deleteMarketSelectionCrossRef(matchId: List<Long>, marketId:List<Long>)
+
+    @Transaction
+    @Query("SELECT * " +
+            "FROM MatchBean bean " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.startTime = :startTime " +
+            "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1")
+    abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, startTime: Long) : MatchBean?
 
     @Query("SELECT *" +
             "FROM TournamentMatchRef " +
@@ -89,7 +96,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             "FROM MarketBean market " +
             "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
             "WHERE market.marketId = ref.marketId ")
-    abstract suspend fun geMarkets(matchId: Long): List<MarketBeanLite>
+    abstract suspend fun getMarkets(matchId: Long): List<MarketBeanLite>
 
     @Transaction
     @Query("SELECT sel.selectionId as selectionId, " +
@@ -171,16 +178,15 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         "UPDATE MatchBean SET collect = :collect WHERE matchId = :matchId")
     abstract fun updateOnlyMatchCollect(matchId: Long, collect: Boolean)
 
+
     @Transaction
-    open suspend fun insertFullMatch(
-        tournamentMatchRefs: List<TournamentMatchRef>?,
+    open suspend fun insertMatch(
         matches: List<MatchBean>,
         markets: List<MarketBean>,
         selections: List<SelectionBean>,
         marketCrossRef: List<MatchMarketCrossRef>,
         marketSelectCrossRefs: List<MarketSelectCrossRef>,
     ) {
-        tournamentMatchRefs?.apply { insertTournamentMatchRef(tournamentMatchRefs) }
         insertMatch(matches)
         insertMarkets(markets)
         insertSelections(selections)
@@ -244,7 +250,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): List<MatchWithMarkets> {
         return queryAllMatch(playType, tournamentId, page, startTime).map { matchBean ->
-            val markets = geMarkets(matchBean.matchId).map { marketBean ->
+            val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
                     getSelectionLites(matchBean.matchId, marketBean.marketId)
@@ -269,7 +275,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getOneMatchByIds(matchId: List<Long>): List<MatchWithMarkets> {
         return getMatchByIds(matchId).map { matchBean ->
-            val markets = geMarkets(matchBean.matchId).map { marketBean ->
+            val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,
                     getSelectionLites(matchBean.matchId, marketBean.marketId)
@@ -283,7 +289,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     open suspend fun getOneMatchById(matchId: Long): MatchWithMarkets {
         return getMatchById(matchId).let { matchBean ->
-            val markets = geMarkets(matchBean.matchId).map { marketBean ->
+            val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                 marketBean.marketId,
                 getSelectionLites(matchBean.matchId, marketBean.marketId)

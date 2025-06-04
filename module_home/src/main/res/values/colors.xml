@@ -28,4 +28,5 @@
     <color name="drawer_bottom_function_text">#929298</color>
     <color name="odds_highlight_overlay">#353848</color>
     <color name="home_card_odds_background">#232530</color>
+    <color name="brand_color_index_unselect">#4D24EE8A</color>
 </resources>

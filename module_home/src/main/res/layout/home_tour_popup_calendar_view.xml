@@ -68,7 +68,8 @@
         app:week_view="arch.cayenne.lib.common.ui.view.SimpleWeekView"
         app:day_text_size="@dimen/sp_12"
         app:week_view_scrollable="false"
-        app:year_view_scrollable="false" />
+        app:year_view_scrollable="false"
+        app:month_view_show_mode="mode_only_current"/>
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

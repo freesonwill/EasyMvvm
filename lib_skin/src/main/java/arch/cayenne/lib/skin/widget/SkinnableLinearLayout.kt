@@ -41,7 +41,7 @@ open class SkinnableLinearLayout : LinearLayout {
     }
 
     override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
         flowHelper.destroyFlow()
+        super.onDetachedFromWindow()
     }
 }
