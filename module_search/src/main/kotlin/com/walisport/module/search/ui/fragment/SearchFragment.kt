@@ -4,12 +4,17 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -19,16 +24,15 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.databinding.FragmentSearchBinding
-import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.RecommendAdapter
-import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
@@ -38,35 +42,24 @@ import arch.cayenne.lib.common.R as Rc
  * @date: 2025/4/24 16:31
  * @description:搜索
  */
-class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding>() {
+class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     override val vbClass: KClass<FragmentSearchBinding>
         get() = FragmentSearchBinding::class
-    override val vmClass: KClass<SearchResultViewModel>
-        get() = SearchResultViewModel::class
-
-    private var historyAdapter: SearchHistoryAdapter? = null
-    private var isEditor: Boolean = false
-
-    private val hotWordAdapter by lazy {
-        HotWordAdapter { hotWord ->
-            mViewModel.getSearchResult(hotWord)
-            updateSearchText(hotWord)
-            addSearchHistory(hotWord)
-            setResultVisible(true)
-        }
-    }
+    override val vmClass: KClass<SearchViewModel>
+        get() = SearchViewModel::class
 
     private val recommendAdapter by lazy {
-        RecommendAdapter()
+        RecommendAdapter { word ->
+            resetSearchRecommend()
+            mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(word))
+            mViewModel.setSearchKey(word)
+            mViewModel.addOneRecord(word)
+        }
     }
     private var canSearch: Boolean = true
 
-    private val searchResultFragment by lazy {
-        SearchResultFragment()
-    }
-
-    override fun createVM(): SearchResultViewModel {
-        return activityViewModel<SearchResultViewModel>().value
+    override fun createVM(): SearchViewModel {
+        return activityViewModel<SearchViewModel>().value
     }
 
     override fun onStart() {
@@ -76,67 +69,8 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         setTitleBar()
-        setHistory()
         setRecommend()
-        setHotWords()
-        setResultFragment()
-        initBackPress()
-    }
-
-    override fun initData() {
-        super.initData()
-        //获取搜索记录
-        mViewModel.getRecordByUID()
-
-        //获取热门搜索
-        mViewModel.getSearchHotWord()
-    }
-
-    private fun initBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (mBinding.groupResult.visibility == View.VISIBLE) {
-                    setResultVisible(false)
-                } else {
-                    isEnabled = false
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
-                }
-            }
-        })
-    }
-
-    private fun setResultFragment() {
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, searchResultFragment)
-            .commit()
-
-        with(mBinding) {
-            viewFakeBack.setOnClickListener {
-                setResultVisible(false)
-            }
-        }
-    }
-
-    private fun setResultVisible(isShow: Boolean) {
-        mBinding.groupResult.visibility = if (isShow) View.VISIBLE else View.GONE
-        if(!isShow) {
-            updateSearchText("")
-            setHistoryVisible(true)
-            setHotWordVisible(true)
-            updateResultBackground(false)
-        } else {
-            clearSearchRecommend()
-            setHistoryVisible(false)
-            setHotWordVisible(false)
-        }
-    }
-
-    private fun setHistoryVisible(isShow: Boolean) {
-        mBinding.clHistory.visibility = if (isShow) View.VISIBLE else View.GONE
-    }
-
-    private fun setHotWordVisible(isShow: Boolean) {
-        mBinding.clHotWord.visibility = if (isShow) View.VISIBLE else View.GONE
+        setBackPressHandler()
     }
 
     private fun setTitleBar() {
@@ -155,12 +89,13 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
                         if (!canSearch) return@loadSearchTitleBar
 
                         // 搜索自动补充词汇
-                        if (count > 0) clSearchRecommend.visibility = View.VISIBLE
+                        if (count > 0 && binding.ceSearch.hasFocus())
+                            clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    mViewModel.getSearchResult(recommendWord)
-                                    clearSearchRecommend()
+                                    mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(recommendWord))
+                                    resetSearchRecommend()
                                 }
                             }
                         }
@@ -174,21 +109,23 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
                             showToast(getString(R.string.please_input_content))
                             return@loadSearchTitleBar
                         }
-                        addSearchHistory(content)
-                        getSearchResult(content)
-                        clearSearchRecommend()
+                        resetSearchRecommend()
                         getRecordByUID()
-                        groupResult.visibility = View.VISIBLE
+                        mViewModel.addOneRecord(content)
+                        mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
+                    },
+                    onBack = {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
                 )
 
                 getSearchEditText().apply {
                     setOnFocusChangeListener { _, isFocused ->
-                        if(isFocused) clSearchRecommend.visibility = View.VISIBLE
+                        if (isFocused) clSearchRecommend.visibility = View.VISIBLE
                     }
                     setOnClickListener {
                         clSearchRecommend.visibility = View.VISIBLE
-                        if(text?.isNotEmpty() == true) {
+                        if (text?.isNotEmpty() == true) {
                             getSearchRecommend(text?.toString())
                         }
                     }
@@ -240,121 +177,35 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
             }
 
             clSearchRecommend.setOnClickListener {
-                clearSearchRecommend()
+                resetSearchRecommend()
             }
         }
     }
 
-    private fun setHistory() {
-        with(mBinding) {
-            with(mViewModel) {
-                //设置搜索历史
-                historyAdapter = SearchHistoryAdapter(
-                    closeAction = { position, text ->
-                        historyAdapter?.deleteData(position)
-                        mViewModel.deleteOneRecord(text)
-                        mViewModel.getRecordByUID()
-                    },
-                    onSearch = { content ->
-                        content?.let {
-                            mViewModel.getSearchResult(content)
-                            clearSearchRecommend()
-                            updateSearchText(content)
-                            mBinding.groupResult.visibility = View.VISIBLE
+    private fun setBackPressHandler() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
+                mBinding.clSearchRecommend.visibility = View.GONE
+            } else {
+                val navController = mBinding.fragmentContainer.findNavController()
+                val backStackId = navController.previousBackStackEntry?.destination?.id
+
+                when (backStackId) {
+                    R.id.searchResultBaseFragment -> {
+                        navController.popBackStack(R.id.searchMainFragment, false)
+                    }
+                    else -> {
+                        if (!navController.popBackStack()) {
+                            isEnabled = false
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
                         }
                     }
-                )
-                hfList.setAdapter(historyAdapter)
-
-                //删除图标，点击进入删除模式
-                ivClickShowDelete.clickNoRepeat {
-                    setHistoryButton()
-                }
-
-                //完成按钮
-                txtCompletedAll.clickNoRepeat {
-                    setHistoryButton()
-                }
-
-                //全部删除按钮
-                txtDeleteAll.clickNoRepeat {
-                    historyAdapter?.deleteAllData()
-                    deleteAllData()
-                    getRecordByUID()
-                    setHistoryButton()
                 }
             }
         }
     }
 
-    private fun setHotWords() {
-        with(mBinding) {
-            //热门搜索
-            rvHotWord.apply {
-                layoutManager = GridLayoutManager(context, 2)
-                adapter = hotWordAdapter.apply {
-                    if (itemDecorationCount == 0) {
-                        addItemDecoration(object : ItemDecoration() {
-                            private val dividerHeight = 0.5f.dp2px
-                            private val paint = Paint().apply {
-                                color = SkinnableResourceManager.getColor(
-                                    context,
-                                    R.color.search_divider
-                                )
-                                strokeWidth = dividerHeight.toFloat()
-                            }
-
-                            override fun onDraw(
-                                canvas: Canvas,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val spanCount = 2
-                                val itemCount = parent.adapter?.itemCount ?: 0
-                                val totalRowCount = (itemCount + spanCount - 1) / spanCount
-
-                                for (i in 0 until parent.childCount) {
-                                    val child = parent.getChildAt(i)
-                                    val position = parent.getChildAdapterPosition(child)
-                                    val currentRow = position / spanCount
-                                    val isLastRow = currentRow == totalRowCount - 1
-
-                                    if (!isLastRow) {
-                                        val left = child.left.toFloat()
-                                        val right = child.right.toFloat()
-                                        val y = child.bottom.toFloat()
-                                        canvas.drawLine(left, y, right, y, paint)
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    }
-
-    private fun addSearchHistory(word: String) {
-        historyAdapter?.addData(word)
-        mViewModel.addOneRecord(word)
-    }
-
-    private fun setHistoryButton() {
-        with(mBinding) {
-            isEditor = !isEditor
-            historyAdapter?.isDelete = isEditor
-            hfList.setEditor(isEditor)
-            if (isEditor) {
-                ivClickShowDelete.visibility = View.GONE
-                llShowCompleted.visibility = View.VISIBLE
-            } else {
-                ivClickShowDelete.visibility = View.VISIBLE
-                llShowCompleted.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun clearSearchRecommend() {
+    private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
         mViewModel.clearSearchRecommend()
     }
@@ -378,14 +229,13 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
         canSearch = true
     }
 
-    fun updateResultBackground(isShow: Boolean, color: Int? = null) {
+    private fun updateResultBackground(isShow: Boolean, color: Int? = null) {
         mBinding.clRoot.apply {
-            if(isShow) {
+            if (isShow) {
                 background = GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     intArrayOf(
-                        color ?:
-                        ContextCompat.getColor(
+                        color ?: ContextCompat.getColor(
                             requireContext(),
                             R.color.search_result_default_gradient_start
                         ),
@@ -411,7 +261,7 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
                 statusBarColor = android.R.color.transparent
             }, clRoot)
 
-            if(isDefault) {
+            if (isDefault) {
                 with(SkinnableResourceManager) {
                     // 設置狀態欄文字顏色
                     setStatusBar(
@@ -449,27 +299,75 @@ class SearchFragment : BaseFragment<SearchResultViewModel, FragmentSearchBinding
         }
     }
 
-    override fun initListener() {
+    private fun observeNavigation() {
+        with(mViewModel) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    navEvent.collect { event ->
+                        val navController = mBinding.fragmentContainer.findNavController()
+                        val currentId = navController.currentDestination?.id ?: return@collect
 
+                        when (event) {
+                            is SearchNavigationEvent.ToSearchResultBase -> {
+                                mapOf(
+                                    R.id.searchMainFragment to R.id.action_searchMainFragment_to_searchResultBaseFragment,
+                                    R.id.searchResultListFragment to R.id.action_searchResultListFragment_to_searchResultBaseFragment,
+                                    R.id.searchResultDirectMatchFragment to R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment
+                                )[currentId]?.let { actionId ->
+                                    navController.currentBackStackEntry
+                                        ?.savedStateHandle
+                                        ?.set("searchKey", event.searchKey)
+
+                                    navController.navigate(actionId)
+                                }
+                            }
+                            is SearchNavigationEvent.ToSearchDirectMatch -> {
+                                if (currentId == R.id.searchResultBaseFragment) {
+                                    navController.navigate(R.id.action_searchResultBaseFragment_to_searchResultDirectMatchFragment)
+                                } else if (currentId == R.id.searchResultListFragment) {
+                                    navController.navigate(R.id.action_searchResultListFragment_to_searchResultDirectMatchFragment)
+                                }
+                            }
+                            is SearchNavigationEvent.ToSearchList -> {
+                                if (currentId == R.id.searchResultBaseFragment) {
+                                    navController.navigate(R.id.action_searchResultBaseFragment_to_searchResultListFragment)
+                                }
+                            }
+
+                            is SearchNavigationEvent.ToLiveFragment -> {
+                                findNavController()
+                                    .navigate(Uri.parse(event.deepLink))
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
+    override fun initListener() = Unit
+
     override fun createObserver() {
-        with(mBinding) {
-            with(mViewModel) {
-                searchRecord.observe(viewLifecycleOwner) {
-                    historyAdapter?.setNewData(it.reversed().toMutableList())
-                    clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+        observeNavigation()
+        with(mViewModel) {
+            searchRecommend.observe(viewLifecycleOwner) {
+                recommendAdapter.submitList(it)
+            }
+
+            lifecycleScope.launch {
+                searchKey.collect { key ->
+                    updateSearchText(key)
+                    navigateTo(SearchNavigationEvent.ToSearchResultBase(key))
                 }
-                searchResult.observe(viewLifecycleOwner) { result ->
-                    searchResultFragment.setResult(result)
-                    setResultVisible(true)
-                }
-                searchRecommend.observe(viewLifecycleOwner) {
-                    recommendAdapter.submitList(it)
-                }
-                searchHotWord.observe(viewLifecycleOwner) {
-                    hotWordAdapter.submitList(it)
-                    clHotWord.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            }
+
+            lifecycleScope.launch {
+                gradientBgColor.collect {
+                    updateResultBackground(
+                        it != null,
+                        it ?: R.color.search_result_default_gradient_start
+                    )
                 }
             }
         }

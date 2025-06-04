@@ -6,7 +6,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.getFormatDate
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
@@ -30,16 +32,24 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
-import java.time.LocalDate
+import java.text.SimpleDateFormat
 import java.util.Date
 
 @KoinViewModel
-class SearchResultViewModel : BaseViewModel() {
+class SearchViewModel : BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
+
+    /** 搜尋關鍵字 */
+    private val _searchKey = MutableSharedFlow<String>()
+    val searchKey: SharedFlow<String> = _searchKey.asSharedFlow()
 
     /** 歷史搜尋紀錄 */
     private val _recordList = MutableLiveData<List<String>>()
     val searchRecord: LiveData<List<String>> = _recordList
+
+    /** 新增一筆搜尋紀錄 */
+    private val _addOneRecord = MutableSharedFlow<String>()
+    val addOneRecord: SharedFlow<String> = _addOneRecord.asSharedFlow()
 
     /** 熱門搜尋關鍵字 */
     private val _searchHotWord = MutableLiveData<List<String>>()
@@ -49,13 +59,9 @@ class SearchResultViewModel : BaseViewModel() {
     private val _searchRecommend = MutableLiveData<List<String>>()
     val searchRecommend: LiveData<List<String>> = _searchRecommend
 
-    /** 搜尋結果 */
-    private val _searchResult = MutableLiveData<SearchResultBean>()
-    val searchResult: LiveData<SearchResultBean> = _searchResult
-
     /** 搜尋結果頁 UI 狀態 */
-    private val _uiState = MutableStateFlow<SearchResultUiState>(SearchResultUiState.Loading)
-    val uiState: StateFlow<SearchResultUiState> = _uiState
+    private val _uiState = MutableSharedFlow<SearchResultUiState>()
+    val uiState: SharedFlow<SearchResultUiState> = _uiState.asSharedFlow()
 
     /** 整理後搜尋結果 列表用 */
     private val _groupData = MutableStateFlow<List<SearchResultListItemType>>(emptyList())
@@ -77,6 +83,11 @@ class SearchResultViewModel : BaseViewModel() {
     private val _selectedDateFlow = MutableStateFlow(Date())
     val selectedDateFlow: StateFlow<Date> = _selectedDateFlow.asStateFlow()
 
+    /** 導航事件 */
+    private val _navEvent = MutableSharedFlow<SearchNavigationEvent>()
+    val navEvent: SharedFlow<SearchNavigationEvent> = _navEvent.asSharedFlow()
+
+
     /** 以 UID 取得搜尋紀錄 */
     fun getRecordByUID() {
         viewModelScope.launch {
@@ -94,6 +105,7 @@ class SearchResultViewModel : BaseViewModel() {
     /** 新增一筆搜尋紀錄 */
     fun addOneRecord(key: String) {
         viewModelScope.launch {
+            _addOneRecord.emit(key)
             repository.addOneRecord(key)
         }
     }
@@ -102,13 +114,6 @@ class SearchResultViewModel : BaseViewModel() {
     fun deleteOneRecord(keyword: String?) {
         viewModelScope.launch {
             repository.deleteOneRecord(keyword)
-        }
-    }
-
-    /** 取得搜尋結果 */
-    fun getSearchResult(keyword: String) {
-        viewModelScope.launch {
-            _searchResult.value = repository.getSearchResult(keyword)
         }
     }
 
@@ -131,22 +136,45 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    /** 設定搜尋結果頁 UI 狀態 */
+    private fun setUiState(state: SearchResultUiState) {
+        viewModelScope.launch {
+            _uiState.emit(state)
+        }
+    }
+
+    /** 重置搜尋結果 */
+    private fun resetResult() {
+        _groupData.value = emptyList()
+        _directData.value = null
+        _combineResult.value = emptyList()
+    }
+
+    /** 取得搜尋結果 */
+    fun getSearchResult(context: Context, keyword: String) {
+        viewModelScope.launch {
+            resetResult()
+            setUiState(SearchResultUiState.Loading)
+            setResult(context, repository.getSearchResult(keyword))
+        }
+    }
+
     /** 處理搜尋結果 */
-    fun setResult(context: Context, result: SearchResultBean) {
+    private fun setResult(context: Context, result: SearchResultBean) {
         when (result.type) {
             SearchResultTypeEnum.NONE -> {
-                _uiState.value = SearchResultUiState.Empty
+                setUiState(SearchResultUiState.Empty)
             }
 
             SearchResultTypeEnum.LIST -> {
-                _uiState.value = SearchResultUiState.ResultList
+                setUiState(SearchResultUiState.ResultList)
                 _groupData.value = groupSearchResults(context, result.dataList ?: emptyList())
             }
 
             SearchResultTypeEnum.TOURNAMENT,
             SearchResultTypeEnum.TEAM,
             SearchResultTypeEnum.PLAYER -> {
-                _uiState.value = SearchResultUiState.DirectMatch(type = result.type)
+                setUiState(SearchResultUiState.DirectMatch(type = result.type))
                 _directData.value = result.directData
                 _combineResult.value = groupMatchesByDailyCount(
                     dailyCounts = result.dailyCount?.filter { it.count != 0 } ?: emptyList(),
@@ -154,24 +182,6 @@ class SearchResultViewModel : BaseViewModel() {
                 )
             }
         }
-    }
-
-    /** 處理精準搜尋結果 */
-    private fun groupMatchesByDailyCount(dailyCounts: List<SearchDailyMatchBean>, matches: List<SearchMatchBean>): List<SearchResultRaceItemType> {
-        val resultList = mutableListOf<SearchResultRaceItemType>()
-        val matchIterator = matches.iterator()
-
-        dailyCounts.filter { it.count > 0 }.forEach { daily ->
-            resultList += SearchResultRaceItemType.Header(daily.day)
-
-            repeat(daily.count) {
-                if (matchIterator.hasNext()) {
-                    resultList += SearchResultRaceItemType.Item(matchIterator.next())
-                }
-            }
-        }
-
-        return resultList
     }
 
     /** 分類搜尋結果 列表用 */
@@ -241,6 +251,7 @@ class SearchResultViewModel : BaseViewModel() {
     /** 取得精準搜尋結果 */
     fun getSearchResult(context: Context, data: SearchResultBaseBean, startTime: Long? = null, endTime: Long? = null) {
         viewModelScope.launch {
+            resetResult()
             setResult(
                 context,
                 repository.getSearchResult(
@@ -263,13 +274,38 @@ class SearchResultViewModel : BaseViewModel() {
         }
     }
 
+    /** 處理精準搜尋結果 */
+    private fun groupMatchesByDailyCount(dailyCounts: List<SearchDailyMatchBean>, matches: List<SearchMatchBean>): List<SearchResultRaceItemType> {
+        return matches.groupBy { match ->
+            match.basicInfo.startTime.getFormatDate()
+        }.toSortedMap().flatMap { (day, matchList) ->
+            listOf(SearchResultRaceItemType.Header(day)) + matchList.map { SearchResultRaceItemType.Item(it) }
+        }
+    }
+
     /** 設定漸層背景顏色 */
-    suspend fun setGradientBgColor(color: Int? = null) {
-        _gradientBgColor.emit(color)
+    fun setGradientBgColor(color: Int? = null) {
+        viewModelScope.launch {
+            _gradientBgColor.emit(color)
+        }
     }
 
     /** 設定選擇的日期 */
     fun setSelectedDate(date: Date) {
         _selectedDateFlow.value = date
+    }
+
+    /** 設定搜尋關鍵字 */
+    fun setSearchKey(key: String) {
+        viewModelScope.launch {
+            _searchKey.emit(key)
+        }
+    }
+
+    /** 導航到其他頁面 */
+    fun navigateTo(event: SearchNavigationEvent) {
+        viewModelScope.launch {
+            _navEvent.emit(event)
+        }
     }
 }

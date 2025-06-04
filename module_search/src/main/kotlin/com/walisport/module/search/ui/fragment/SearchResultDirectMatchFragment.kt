@@ -2,25 +2,29 @@ package com.walisport.module.search.ui.fragment
 
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.text.SimpleDateFormat
@@ -30,29 +34,59 @@ import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchResultDirectMatchFragment :
-    BaseFragment<SearchResultViewModel, FragmentSearchResultDirectMatchBinding>() {
+    BaseFragment<SearchViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vbClass: KClass<FragmentSearchResultDirectMatchBinding>
         get() = FragmentSearchResultDirectMatchBinding::class
-    override val vmClass: KClass<SearchResultViewModel>
-        get() = SearchResultViewModel::class
+    override val vmClass: KClass<SearchViewModel>
+        get() = SearchViewModel::class
 
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
             onBetClick = { match ->
-                navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}"))
+                mViewModel.navigateTo(SearchNavigationEvent.ToLiveFragment("walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}"))
             }
         }
     }
 
-    override fun createVM(): SearchResultViewModel {
-        return activityViewModel<SearchResultViewModel>().value
+    override fun createVM(): SearchViewModel {
+        return activityViewModel<SearchViewModel>().value
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                adapter = linearAdapter
+                adapter = linearAdapter.apply {
+                    if (itemDecorationCount == 0) {
+                        addItemDecoration(object : ItemDecoration() {
+                            override fun getItemOffsets(
+                                outRect: android.graphics.Rect,
+                                view: View,
+                                parent: RecyclerView,
+                                state: RecyclerView.State
+                            ) {
+                                val position = parent.getChildAdapterPosition(view)
+                                if (position == RecyclerView.NO_POSITION) return
+
+                                val currentType = linearAdapter.getItemViewType(position)
+                                when (currentType) {
+                                    SearchResultRaceAdapter.VIEW_TYPE_HEADER -> {
+                                        outRect.set(0, 0, 0, 0)
+                                    }
+
+                                    else -> {
+                                        val prevType = linearAdapter.getItemViewType(position - 1)
+                                        outRect.set(
+                                            0,
+                                            if (prevType == SearchResultRaceAdapter.VIEW_TYPE_HEADER) 0 else 12.dp2px,
+                                            0, 0
+                                        )
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
             }
             clDate.clickNoRepeat {
                 setCalendarState(clCalendar.visibility != View.VISIBLE)
@@ -138,7 +172,7 @@ class SearchResultDirectMatchFragment :
     }
 
     @SuppressLint("SetTextI18n")
-    private suspend fun updateDirectInfo(data: SearchResultBaseBean) {
+    private fun updateDirectInfo(data: SearchResultBaseBean) {
         with(mBinding) {
             val isPlayer = data is SearchResultPlayerBean
             when(data) {
@@ -162,7 +196,7 @@ class SearchResultDirectMatchFragment :
                     tvSubTitle.text =
                         requireContext().getString(
                             R.string.search_result_sub_title_player,
-                            data.tournamentShortName,
+                            data.name,
                             data.teamName,
                             data.number,
                             data.position
@@ -191,8 +225,7 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    override fun initListener() {
-    }
+    override fun initListener() = Unit
 
     override fun createObserver() {
         with(mViewModel) {
@@ -207,6 +240,13 @@ class SearchResultDirectMatchFragment :
                     linearAdapter.submitList(combineResult)
                 }
             }
+
+            viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onStop(owner: LifecycleOwner) {
+                    mViewModel.setGradientBgColor(null)
+                    super.onStop(owner)
+                }
+            })
         }
     }
 }

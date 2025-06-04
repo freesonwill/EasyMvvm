@@ -13,6 +13,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
@@ -22,19 +23,20 @@ import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class SearchResultPageFragment :
-    BaseFragment<SearchResultViewModel, FragmentSearchResultPageBinding>() {
+    BaseFragment<SearchViewModel, FragmentSearchResultPageBinding>() {
     override val vbClass: KClass<FragmentSearchResultPageBinding>
         get() = FragmentSearchResultPageBinding::class
-    override val vmClass: KClass<SearchResultViewModel>
-        get() = SearchResultViewModel::class
+    override val vmClass: KClass<SearchViewModel>
+        get() = SearchViewModel::class
 
     private val onItemClick = { item: SearchResultBaseBean ->
+        mViewModel.navigateTo(SearchNavigationEvent.ToSearchDirectMatch)
         mViewModel.getSearchResult(requireContext(), item)
     }
 
@@ -71,8 +73,8 @@ class SearchResultPageFragment :
         internal const val TYPE_PLAYER = "TYPE_PLAYER"
     }
 
-    override fun createVM(): SearchResultViewModel {
-        return activityViewModel<SearchResultViewModel>().value
+    override fun createVM(): SearchViewModel {
+        return activityViewModel<SearchViewModel>().value
     }
 
     override fun initView(savedInstanceState: Bundle?) {
