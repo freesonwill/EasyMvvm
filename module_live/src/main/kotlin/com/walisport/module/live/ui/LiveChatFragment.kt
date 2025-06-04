@@ -1,6 +1,9 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -20,6 +23,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
@@ -33,6 +44,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
     }
+
 
     override fun initListener() {
         mBinding.main.clickNoRepeat {

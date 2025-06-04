@@ -6,22 +6,19 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
-import arch.cayenne.lib.base.ui.adapter.PagerAdapter
-import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBinding
-import com.walisport.module.live.ui.adapter.LiveEmojiAdapter
+import com.walisport.module.live.ui.adapter.SoftAdapter
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.SoftKeyboardStateHelper
@@ -34,10 +31,13 @@ class LiveSoftKeyboardFragment :
         get() = FragmentLiveSoftkeyboardLayoutBinding::class
     override val vmClass: KClass<LiveSoftKeyboardViewModel>
         get() = LiveSoftKeyboardViewModel::class
+
     //监听软件盘状态
     lateinit var mKeyboardHelper: SoftKeyboardStateHelper
+
     //监听软件盘发送事件
     private var softKeyListener: LiveChatSoftKeyListener? = null
+
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData?, position: Int) {
@@ -55,8 +55,8 @@ class LiveSoftKeyboardFragment :
         mKeyboardHelper = SoftKeyboardStateHelper((context as Activity).window.decorView)
         mKeyboardHelper.addSoftKeyboardStateListener(this)
         initTab()
+        initSoftRecycler()
         showChat()
-        initEmojiRecycler()
     }
 
     fun setSoftKeyListener(listener: LiveChatSoftKeyListener) {
@@ -127,10 +127,17 @@ class LiveSoftKeyboardFragment :
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
                     iv.setImageResource(list[position].select)
+                    mBinding.emojiDel.isVisible = position == 0
+
                     when (position) {
-                        0 -> refreshNormalEmojiRecycler()
-                        1 -> refreshBidEmojiRecycler()
-                        else -> {}
+                        0,
+                        1 -> {
+                            mBinding.keyboardEmojiRecycler.scrollToPosition(position)
+                        }
+
+                        else -> {
+                            mBinding.keyboardEmojiRecycler.isInvisible = true
+                        }
                     }
                 }
             }
@@ -148,38 +155,16 @@ class LiveSoftKeyboardFragment :
         })
     }
 
-    private fun initEmojiRecycler() {
+    private fun initSoftRecycler() {
         mBinding.keyboardEmojiRecycler.apply {
-            layoutManager = GridLayoutManager(requireContext(), 4)
-            val emojiAdapter = LiveEmojiAdapter()
-            emojiAdapter.submitList(mViewModel.getNormalEmojis())
-            adapter = emojiAdapter
+            layoutManager = GridLayoutManager(requireContext(), 2)
+            val softAdapter = SoftAdapter()
+            softAdapter.setItemListener(itemListener)
+            softAdapter.submitList(mViewModel.softData())
+            adapter = softAdapter
         }
     }
 
-    /**
-     * 刷新赛事表情
-     * */
-    private fun refreshBidEmojiRecycler() {
-        mBinding.keyboardEmojiRecycler.apply {
-            val nManager = layoutManager?.let { it as GridLayoutManager }
-            nManager?.spanCount = 8
-            val nAdapter = adapter?.let { it as LiveEmojiAdapter }
-            nAdapter?.submitList(mViewModel.getBidEmojis())
-        }
-    }
-
-    /**
-     * 刷新普通表情
-     * */
-    private fun refreshNormalEmojiRecycler() {
-        mBinding.keyboardEmojiRecycler.apply {
-            val nManager = layoutManager?.let { it as GridLayoutManager }
-            nManager?.spanCount = 4
-            val nAdapter = adapter?.let { it as LiveEmojiAdapter }
-            nAdapter?.submitList(mViewModel.getNormalEmojis())
-        }
-    }
 
     /**
      * 展示软件盘
@@ -194,6 +179,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
             keyboardTb.isVisible = false
+            emojiDel.isVisible = false
             keyboardEmojiRecycler.isVisible = false
             line.isVisible = false
             softKeyListener?.showKeyBoard()
@@ -219,6 +205,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
             keyboardTb.isVisible = false
             keyboardEmojiRecycler.isVisible = false
+            emojiDel.isVisible = false
             line.isVisible = false
             softKeyListener?.hideKeyboard()
             main.setBackgroundResource(
@@ -245,6 +232,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
             keyboardEmojiRecycler.isVisible = true
+            emojiDel.isVisible = false
             line.isVisible = true
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(

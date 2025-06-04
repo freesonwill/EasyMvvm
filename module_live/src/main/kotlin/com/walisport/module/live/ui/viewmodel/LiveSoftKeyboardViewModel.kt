@@ -5,8 +5,10 @@ import arch.cayenne.lib.common.data.constants.SportEnum
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
+import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
+import com.walisport.module.live.data.model.SoftData
 
 class LiveSoftKeyboardViewModel : BaseViewModel() {
 
@@ -73,16 +75,19 @@ class LiveSoftKeyboardViewModel : BaseViewModel() {
         )
 
 
-    fun getNormalEmojis(): List<EmojiData> {
+   private fun getNormalEmojis(): List<EmojiData> {
         val list = EmojiEnum.getEmojiMap().map {
             EmojiData(it.value, it.key)
         }.toMutableList()
         return list
     }
 
-    fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
+   private fun getBidEmojis() = BidEmojiEnum.getEmojiMap().map {
         EmojiData(it.value, it.key)
     }.toList()
 
+    fun softData():List<SoftData>{
+        return arrayListOf(SoftData(EmojiTypeEnum.NORMAL,getNormalEmojis()),SoftData(EmojiTypeEnum.BID,getBidEmojis()))
+    }
 
 }

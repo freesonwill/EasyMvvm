@@ -17,10 +17,10 @@ import kotlinx.coroutines.flow.first
 import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
-    val socketManager: ChatWebSocketManager,
+    private val socketManager: ChatWebSocketManager,
+    private val userDataManager: UserDataManager
 ) {
     private val TAG = this.javaClass.simpleName
-    private val userDataManager: UserDataManager by inject(UserDataManager::class.java)
 
     suspend fun startSocket(): ConnectState {
         return socketManager.connect("wss://ws.qxe68.com:7001/api/game/chat/ws").first()
