@@ -47,7 +47,7 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     .map {
         "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
-            val proto = it.originProto?.let { byteArray ->
+            val bean = it.originProto?.let { byteArray ->
                 Gson().fromJson(String(byteArray), T::class.java)
             }
             "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
@@ -55,7 +55,7 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
-                data = proto,
+                data = bean,
             )
         } catch (e: Exception) {
             e.printStackTrace()
