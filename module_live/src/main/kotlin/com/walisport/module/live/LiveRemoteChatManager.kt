@@ -14,15 +14,21 @@ import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
-    val socketManager: ChatWebSocketManager,
+    private val scope: CoroutineScope,
+    private val socketManager: ChatWebSocketManager,
+    private val userDataManager: UserDataManager
 ) {
     private val TAG = this.javaClass.simpleName
-    private val userDataManager: UserDataManager by inject(UserDataManager::class.java)
 
     suspend fun startSocket(): ConnectState {
+        val state = socketManager.getConnectStateFlow().firstOrNull()
+        if (state == ConnectState.ConnectSuccess) {
+            return state
+        }
         return socketManager.connect("wss://ws.qxe68.com:7001/api/game/chat/ws").first()
     }
 
@@ -31,7 +37,7 @@ class LiveRemoteChatManager(
     }
 
 
-    suspend fun login(scope: CoroutineScope): ChatLoginResponseData? {
+    suspend fun login(): ChatLoginResponseData? {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 
@@ -43,12 +49,16 @@ class LiveRemoteChatManager(
         ) {
             ChatLoginRequestData(uid.toLong(), token, 5)
         }
-
         if (logResp.error != null && logResp.data != null) {
             return logResp.data
         }
         "login uid:$uid  token:$token   result ${Gson().toJson(logResp)}".logd(TAG)
         return null
     }
+
+    suspend fun receiveMsgNotify(){
+
+    }
+
 
 }

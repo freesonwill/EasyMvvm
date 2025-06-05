@@ -11,7 +11,7 @@
             type="com.walisport.module.live.ui.viewmodel.LiveChatViewModel" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -61,18 +61,19 @@
             android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintBottom_toTopOf="@id/live_chat_keyboard"
             app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/live_chat_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
-            />
+            app:layout_constraintBottom_toTopOf="@id/bottom" />
+
         <View
             android:id="@+id/bottom"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_34"
             app:layout_constraintBottom_toBottomOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </layout>

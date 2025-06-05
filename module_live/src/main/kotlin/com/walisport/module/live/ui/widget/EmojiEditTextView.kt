@@ -9,7 +9,7 @@ import com.walisport.module.live.utils.EmojiUtils
 
 class EmojiEditTextView : AppCompatEditText {
    private val textHelper: SkinnableTextHelper = SkinnableTextHelper(this)
-    private val flowHelper = SkinnableViewFlowHelper()
+   private val flowHelper:SkinnableViewFlowHelper = SkinnableViewFlowHelper()
 
     constructor(context: Context) : super(context) {
         initView(context)

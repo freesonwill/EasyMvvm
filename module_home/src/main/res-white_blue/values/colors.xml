@@ -30,4 +30,5 @@
     <color name="drawer_common_function_title_white_blue">#222222</color>
     <color name="drawer_common_function_text_white_blue">#666666</color>
     <color name="drawer_bottom_function_text_white_blue">#666666</color>
+    <color name="brand_color_index_unselect_white_blue">#4D00D271</color>
 </resources>

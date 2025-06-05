@@ -10,6 +10,10 @@ import androidx.core.graphics.drawable.toBitmap
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.R
 
+/**
+ *  @date: 2025/6/3 10:58
+ *  @description: 展示两队交锋历史记录
+ */
 class HistoryVsView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
@@ -22,6 +26,9 @@ class HistoryVsView @JvmOverloads constructor(
 
     private var paint: Paint = Paint()
 
+    /**
+     * 测量宽度
+     */
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         var width = 0
@@ -46,9 +53,11 @@ class HistoryVsView @JvmOverloads constructor(
                     1 -> {
                         R.drawable.history_lose
                     }
+
                     -1 -> {
                         R.drawable.history_win
                     }
+
                     else -> {
                         R.drawable.history_tie
                     }

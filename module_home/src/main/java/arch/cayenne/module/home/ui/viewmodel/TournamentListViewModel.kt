@@ -28,6 +28,26 @@ class TournamentListViewModel : BaseViewModel() {
     private val letterPositionMap = mutableMapOf<Char, Int>()
 
     private var _lastSelectedLetter: Char? = null
+
+    val searchDisplayList = MutableLiveData<List<BaseTournamentData>?>()
+
+
+    fun searchTournament(query: String) {
+        val all = tournaments.value ?: return
+        val result = all.filter {
+            it.name.contains(query, ignoreCase = true) || it.simpleName.contains(
+                query,
+                ignoreCase = true
+            )
+        }
+        searchDisplayList.value = result
+    }
+
+    fun clearSearch() {
+        searchDisplayList.value = null
+    }
+
+
     fun getLastSelectedLetter(): Char? = _lastSelectedLetter
     fun setLastSelectedLetter(letter: Char?) {
         _lastSelectedLetter = letter

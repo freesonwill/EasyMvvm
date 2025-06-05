@@ -118,14 +118,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 dismiss()
-            } else if (it.size > 1) {
-                betSelectionAdapter.submitList(it)
-                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
-            } else {
+            } else if (it.size == 1) {
                 navigate(
                     ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),
                     null
                 )
+            } else {
+                betSelectionAdapter.submitList(it)
+                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
             }
         }
         var hasLockBetSheetView = false

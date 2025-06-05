@@ -11,7 +11,10 @@ import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
-class ComboBetViewModel(private val repo: ComboBetRepository, private val balanceRepo: BalanceRepository) : BaseViewModel() {
+class ComboBetViewModel(
+    private val repo: ComboBetRepository,
+    private val balanceRepo: BalanceRepository
+) : BaseViewModel() {
 
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
@@ -41,10 +44,11 @@ class ComboBetViewModel(private val repo: ComboBetRepository, private val balanc
         viewModelScope.launch {
             launch {
                 repo.observeComboBet().collect {
-                    if (it.size <= 1) {
-                        if (it.isNotEmpty()) {
-                            repo.saveToSingleBet()
-                        }
+                    if (it.isEmpty()) {
+                        _onBetListListener.value = emptyList()
+                    } else if (it.size == 1) {
+                        repo.saveToSingleBet()
+                        _onBetListListener.value = it
                     } else {
                         setBetList(it)
                     }

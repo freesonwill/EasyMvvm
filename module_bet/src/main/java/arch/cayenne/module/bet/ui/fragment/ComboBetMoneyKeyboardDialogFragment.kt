@@ -10,6 +10,7 @@ import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
@@ -135,6 +136,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             it.msg?.let { msg ->
                 showToast(msg)
             }
+        }
+        mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
+            mBinding.tvMoney.text = it
         }
     }
 

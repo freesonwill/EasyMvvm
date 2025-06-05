@@ -2,9 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    >
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/keyboard_tv_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -20,9 +21,23 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/keyboard_emoji"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/dp_6"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
+        app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all"
+        android:paddingBottom="@dimen/dp_10"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+     <arch.cayenne.lib.skin.widget.SkinnableImageView
+         android:id="@+id/emoji_del"
+         android:layout_width="89dp"
+         android:layout_height="46dp"
+         app:layout_constraintBottom_toBottomOf="parent"
+         app:layout_constraintRight_toRightOf="parent"
+         android:layout_marginRight="@dimen/dp_2"
+         android:visibility="gone"
+         android:src="@drawable/icon_emoji_del"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
