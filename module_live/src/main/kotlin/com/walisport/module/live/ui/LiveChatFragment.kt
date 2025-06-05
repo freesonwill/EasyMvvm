@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.LogUtils
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
@@ -29,6 +30,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        LogUtils.d(TAG,"init_________LiveChatFragment")
         initFragment()
         initTab()
     }
@@ -67,6 +69,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun createObserver() {
+
     }
 
     private fun testData(): List<LiveChatBean> {

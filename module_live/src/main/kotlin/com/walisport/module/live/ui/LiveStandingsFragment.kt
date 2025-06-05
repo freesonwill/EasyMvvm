@@ -3,10 +3,13 @@ package com.walisport.module.live.ui
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -62,21 +65,23 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun createObserver() {
-        mViewModel.competitionTables.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                mBinding.mainLayout.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.standings_empty.getString()
-                )
-            } else {
-                mBinding.mainLayout.setVisibilityGone()
-                standsAdapter.submitList(it)
+        launch(Lifecycle.State.RESUMED) {
+            mViewModel.competitionTables.observe(viewLifecycleOwner) {
+                if (it.isEmpty()) {
+                    mBinding.mainLayout.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.standings_empty.getString()
+                    )
+                } else {
+                    mBinding.mainLayout.setVisibilityGone()
+                    standsAdapter.submitList(it)
+                }
             }
-        }
-        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            it?.let {
-                val leagueID = it.basicInfo.tournamentId
-                mViewModel.getCompetitionData(leagueID)
+            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+                it?.let {
+                    val leagueID = it.basicInfo.tournamentId
+                    mViewModel.getCompetitionData(leagueID)
+                }
             }
         }
     }

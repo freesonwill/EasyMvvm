@@ -1,7 +1,10 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -30,7 +33,8 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     private lateinit var awayName: String
     private lateinit var awayLogo: String
 
-    override fun initView(savedInstanceState: Bundle?) {}
+    override fun initView(savedInstanceState: Bundle?) {
+    }
 
     override fun initListener() {
         mBinding.viewTechStatic.setOnItemClickListener(object : TechnicalCountView.OnClickListener {
@@ -43,23 +47,25 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     }
 
     override fun createObserver() {
-        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            it?.let {
-                homeName = it.basicInfo.homeTeam
-                homeLogo = it.basicInfo.homeTeamIcon
-                awayName = it.basicInfo.awayTeam
-                awayLogo = it.basicInfo.awayTeamIcon
-                mBinding.viewTechStatic.setScore(it.liveInfo.score)
-                mBinding.viewTechStatic.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
-                mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
+        launch(Lifecycle.State.RESUMED) {
+            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+                it?.let {
+                    homeName = it.basicInfo.homeTeam
+                    homeLogo = it.basicInfo.homeTeamIcon
+                    awayName = it.basicInfo.awayTeam
+                    awayLogo = it.basicInfo.awayTeamIcon
+                    mBinding.viewTechStatic.setScore(it.liveInfo.score)
+                    mBinding.viewTechStatic.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
+                    mBinding.viewTechEvent.setTeamInfo(homeName, awayName, homeLogo, awayLogo)
+                }
             }
-        }
-        //比赛技术统计推送数据(WebSocket接口)
-        mainViewModel.statisticData.observe(viewLifecycleOwner) {
-            it?.let {
-                parseTrendData(it.matchTrendData)  //比赛趋势信息
-                parseStatsData(it.stats)           //统计进球红黄牌等信息
-                parseHalfTeamData(it.team)         //统计进度条相关信息
+            //比赛技术统计推送数据(WebSocket接口)
+            mainViewModel.statisticData.observe(viewLifecycleOwner) {
+                it?.let {
+                    parseTrendData(it.matchTrendData)  //比赛趋势信息
+                    parseStatsData(it.stats)           //统计进球红黄牌等信息
+                    parseHalfTeamData(it.team)         //统计进度条相关信息
+                }
             }
         }
     }
