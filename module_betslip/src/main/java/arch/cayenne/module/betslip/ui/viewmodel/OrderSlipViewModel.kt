@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
 
     //普通注单
-    private val _orderLiveData = MutableLiveData<List<BetSlipOrder>>()
+    protected val _orderLiveData = MutableLiveData<List<BetSlipOrder>>()
     val orderLiveData: LiveData<List<BetSlipOrder>> = _orderLiveData
 
     override fun refreshData(status: BetSlipEnum) {

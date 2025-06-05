@@ -31,7 +31,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
         viewModelScope.launch {
             val result = repo.earlySettle(betId, money, expectPrice, false)?.apply {
                 if (this.success) {
-                    updateData(BetSlipEnum.UnSettled, betId)
+                    setDataToEarlySettling(betId)
                 }
             }
             _earlySettledResultLiveData.value = Event(result?.success ?: false)
@@ -49,5 +49,26 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
                 _isSupportEarlySettleLiveData.value = result.first()
             }
         }
+    }
+
+    private fun setDataToEarlySettling(betId: String) {
+        val currentList = _orderLiveData.value ?: return
+
+        val updatedList = currentList.map { item ->
+            if (item.order.betId == betId) {
+                item.copy(
+                    order = item.order.copy(
+                        earlySettlePrice = item.order.earlySettlePrice.copy(
+                            settleStatus = 102
+                        )
+                    )
+                )
+
+            } else {
+                item
+            }
+        }
+
+        _orderLiveData.value = updatedList
     }
 }
