@@ -140,10 +140,12 @@ class HomeViewModel : BaseViewModel() {
                 SportType.fromId(it.id) != null  //去除目前沒有在code預設內的運動
             }
             withContext(Dispatchers.Main) {
-                if (list.isNullOrEmpty()) {
+                if (list == null) {
                     //TODO 拿取sport錯誤
                     "Get Sport List failed!!".loge(this@HomeViewModel::class.java.simpleName)
                     _state.value = Event(HomeState.FAILED)
+                } else if (list.isEmpty()) {
+                    _state.value = Event(HomeState.NO_DATA)
                 } else {
                     sportsStatistical.value = Event(list)
                 }
@@ -165,12 +167,14 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getTenTournaments(currentPlayType.id, currentSportId)
             "getCurrentTournament list: $list".logd()
-            if (list.isNullOrEmpty()) {
-                //TODO 拿取聯賽錯誤
-                "Get Tournament List failed!!".loge(this::class.java.simpleName)
-                _state.value = Event(HomeState.FAILED)
-            } else {
-                withContext(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
+                if (list == null) {
+                    //TODO 拿取聯賽錯誤
+                    "Get Tournament List failed!!".loge(this::class.java.simpleName)
+                    _state.value = Event(HomeState.FAILED)
+                } else if (list.isEmpty()) {
+                    _state.value = Event(HomeState.NO_DATA)
+                } else {
                     tournaments.value = Event(
                         ArrayList<TournamentDataModel>().apply {
                             add(TournamentDataModel.createAllItem(currentSportId))

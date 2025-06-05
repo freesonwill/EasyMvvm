@@ -573,7 +573,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             mViewModel.getCurrentTournament()
                         }
                     }
-                    HomeState.FAILED -> {
+                    HomeState.FAILED, HomeState.NO_DATA -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
                         loadingView.visibility = View.GONE
