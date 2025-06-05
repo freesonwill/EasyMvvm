@@ -27,7 +27,7 @@ class SettingRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return manager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_DEFAULT.value)
+        return manager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
     }
 
     //设置赔率显示方式

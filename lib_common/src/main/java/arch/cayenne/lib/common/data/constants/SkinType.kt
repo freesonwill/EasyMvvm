@@ -2,7 +2,6 @@ package arch.cayenne.lib.common.data.constants
 
 enum class SkinType(val value: String) {
 
-    SKIN_DEFAULT("classic"),
     SKIN_CLASSIC("classic"),
     SKIN_BLACK_BLUE("black_blue"),
     SKIN_BLACK_GREEN("black_green"),
@@ -10,7 +9,9 @@ enum class SkinType(val value: String) {
     SKIN_WHITE_BLUE("white_blue"),
     SKIN_WHITE_GREEN("white_green");
     ;
+
     companion object {
-        fun of(v:String):SkinType? = SkinType.values().find { it.value == v }
+        val DEFAULT = SKIN_CLASSIC.value
+        fun of(v: String): SkinType? = SkinType.values().find { it.value == v }
     }
 }

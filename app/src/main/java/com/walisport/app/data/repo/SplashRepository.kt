@@ -33,7 +33,7 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_DEFAULT.value)
+        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
     }
 
     suspend fun startSocket(): ConnectState {
