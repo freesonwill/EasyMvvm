@@ -231,8 +231,10 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                                 val matchStatus =
                                     MatchStatus.entries.find { status -> status.code == it.basicInfo.status }
                                 if (matchStatus == MatchStatus.IN_PROGRESS) {
-                                    videoView.setDataSource(url)
-                                    videoView.prepare()
+                                    if (url != videoView.getDataSource()) {
+                                        videoView.setDataSource(url)
+                                        videoView.prepare()
+                                    }
                                 }
                             }
 

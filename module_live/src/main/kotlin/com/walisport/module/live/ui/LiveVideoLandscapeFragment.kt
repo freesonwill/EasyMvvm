@@ -239,8 +239,10 @@ class LiveVideoLandscapeFragment :
 
                     val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                     playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
-                        videoView.setDataSource(url)
-                        videoView.prepare()
+                        if (url != videoView.getDataSource()) {
+                            videoView.setDataSource(url)
+                            videoView.prepare()
+                        }
                     }
                 }
             }
