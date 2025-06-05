@@ -34,7 +34,7 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
+        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_CLASSIC.value)
     }
 
 
