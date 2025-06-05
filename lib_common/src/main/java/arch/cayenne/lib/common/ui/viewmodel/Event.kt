@@ -1,5 +1,7 @@
 package arch.cayenne.lib.common.ui.viewmodel
 
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 
@@ -12,17 +14,51 @@ import androidx.lifecycle.LiveData
 open class Event<out T>(
     private val content: T
 ) {
-    private val handledObservers = mutableSetOf<LifecycleOwner>()
+    // 使用 HashMap 來儲存已處理的觀察者及其對應的 LifecycleObserver
+    // Key: 用來標識事件是否被處理的 LifecycleOwner.hashCode() 型別Int
+    // Value: 註冊到 Key 上的 LifecycleObserver，用於在 Key 銷毀時自動清理
+    /**
+     * 備註：在SharedViewModel中，child fragment會創建observer觀察來自parent的livedata，一旦這個在parent ViewModel中的livedata被啟動，
+     * 那event的handledObservers會被加入child fragment的LifecycleOwner，但是當child fragment被destroy時，
+     * 因為這個liva data event還是存在於parent，所以會hold住已經destroy的child fragment lifecycleOwner，所以需要執行removeHandledObserver移除
+     * **/
+    private val handledObservers = mutableMapOf<Int, LifecycleObserver>()
 
     fun getContentIfNotHandled(owner: LifecycleOwner): T? {
-        return if (handledObservers.contains(owner)) {
+        if (owner.lifecycle.currentState == androidx.lifecycle.Lifecycle.State.DESTROYED) {
+            // 如果 keyOwner 已銷毀，從 map 中移除 (如果存在的話)
+            removeHandledObserver(owner)
+            return null
+        }
+        return if (handledObservers.contains(owner.hashCode())) {
             null
         } else {
-            handledObservers.add(owner)
+            // 創建一個 LifecycleObserver 來監聽 keyOwner 的銷毀事件
+            val lifecycleObserver = object : DefaultLifecycleObserver {
+                override fun onDestroy(owner: LifecycleOwner) {
+                    // 當 keyOwner 被銷毀時，從 map 中移除它
+                    // 並同時移除對 keyOwner 生命週期的觀察
+                    removeHandledObserver(owner)
+                }
+            }
+            owner.lifecycle.addObserver(lifecycleObserver)
+            handledObservers[owner.hashCode()] = lifecycleObserver
             content
         }
     }
-
+    /**
+     * 移除觀察者，例如在 Fragment 的 onDestroyView 中，如果 key 是 viewLifecycleOwner
+     * 或者在特殊情況下需要重置狀態時。
+     * 這個方法現在也負責移除 LifecycleObserver。
+     */
+    private fun removeHandledObserver(keyOwner: LifecycleOwner) {
+        // 從 map 中移除 keyOwner，並獲取其對應的 lifecycleObserver
+        val observerToRemove = handledObservers.remove(keyOwner.hashCode())
+        observerToRemove?.let {
+            // 如果找到了 observer，則從 keyOwner 的生命週期中移除它
+            keyOwner.lifecycle.removeObserver(it)
+        }
+    }
     fun peekContent(): T = content
 }
 
@@ -39,6 +75,7 @@ fun <T>LiveData<Event<T>>.observeEvent(
     key: LifecycleOwner,
     onEventUnhandledContent: (T) -> Unit
 ) {
+
     observe(owner) { event ->
         event?.getContentIfNotHandled(key)?.let {
             onEventUnhandledContent(it)
