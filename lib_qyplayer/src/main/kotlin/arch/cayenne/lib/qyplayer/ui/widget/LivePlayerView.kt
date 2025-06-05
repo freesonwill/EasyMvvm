@@ -78,6 +78,10 @@ class LivePlayerView @JvmOverloads constructor(
         mRenderView.setDataSource(url)
     }
 
+    fun getDataSource(): String? {
+        return mPlayingPath
+    }
+
     fun setConfig(cfg: PlayerConfig) {
         mConfig = cfg
         mRenderView.setConfig(cfg)
