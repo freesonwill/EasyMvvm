@@ -15,14 +15,14 @@ open class Event<out T>(
     private val content: T
 ) {
     // 使用 HashMap 來儲存已處理的觀察者及其對應的 LifecycleObserver
-    // Key: 用來標識事件是否被處理的 LifecycleOwner
+    // Key: 用來標識事件是否被處理的 LifecycleOwner.hashCode() 型別Int
     // Value: 註冊到 Key 上的 LifecycleObserver，用於在 Key 銷毀時自動清理
     /**
      * 備註：在SharedViewModel中，child fragment會創建observer觀察來自parent的livedata，一旦這個在parent ViewModel中的livedata被啟動，
      * 那event的handledObservers會被加入child fragment的LifecycleOwner，但是當child fragment被destroy時，
      * 因為這個liva data event還是存在於parent，所以會hold住已經destroy的child fragment lifecycleOwner，所以需要執行removeHandledObserver移除
      * **/
-    private val handledObservers = mutableMapOf<LifecycleOwner, LifecycleObserver>()
+    private val handledObservers = mutableMapOf<Int, LifecycleObserver>()
 
     fun getContentIfNotHandled(owner: LifecycleOwner): T? {
         if (owner.lifecycle.currentState == androidx.lifecycle.Lifecycle.State.DESTROYED) {
@@ -30,7 +30,7 @@ open class Event<out T>(
             removeHandledObserver(owner)
             return null
         }
-        return if (handledObservers.contains(owner)) {
+        return if (handledObservers.contains(owner.hashCode())) {
             null
         } else {
             // 創建一個 LifecycleObserver 來監聽 keyOwner 的銷毀事件
@@ -42,7 +42,7 @@ open class Event<out T>(
                 }
             }
             owner.lifecycle.addObserver(lifecycleObserver)
-            handledObservers[owner] = lifecycleObserver
+            handledObservers[owner.hashCode()] = lifecycleObserver
             content
         }
     }
@@ -53,7 +53,7 @@ open class Event<out T>(
      */
     private fun removeHandledObserver(keyOwner: LifecycleOwner) {
         // 從 map 中移除 keyOwner，並獲取其對應的 lifecycleObserver
-        val observerToRemove = handledObservers.remove(keyOwner)
+        val observerToRemove = handledObservers.remove(keyOwner.hashCode())
         observerToRemove?.let {
             // 如果找到了 observer，則從 keyOwner 的生命週期中移除它
             keyOwner.lifecycle.removeObserver(it)
