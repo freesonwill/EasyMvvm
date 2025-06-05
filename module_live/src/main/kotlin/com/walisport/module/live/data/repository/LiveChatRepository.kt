@@ -20,6 +20,6 @@ class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
     }
 
     suspend fun login(): ChatLoginResponseData? {
-        return remote.login(scope)
+        return remote.login()
     }
 }

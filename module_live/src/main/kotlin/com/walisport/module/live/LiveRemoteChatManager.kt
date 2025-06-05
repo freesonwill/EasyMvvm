@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
+    private val scope: CoroutineScope,
     private val socketManager: ChatWebSocketManager,
     private val userDataManager: UserDataManager
 ) {
@@ -36,7 +37,7 @@ class LiveRemoteChatManager(
     }
 
 
-    suspend fun login(scope: CoroutineScope): ChatLoginResponseData? {
+    suspend fun login(): ChatLoginResponseData? {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 
@@ -48,12 +49,16 @@ class LiveRemoteChatManager(
         ) {
             ChatLoginRequestData(uid.toLong(), token, 5)
         }
-
         if (logResp.error != null && logResp.data != null) {
             return logResp.data
         }
         "login uid:$uid  token:$token   result ${Gson().toJson(logResp)}".logd(TAG)
         return null
     }
+
+    suspend fun receiveMsgNotify(){
+
+    }
+
 
 }
