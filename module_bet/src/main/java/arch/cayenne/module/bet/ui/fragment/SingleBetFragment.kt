@@ -17,6 +17,7 @@ import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
@@ -88,8 +89,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
-            mViewModel.sendBet()
-            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
+            sendBet()
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
@@ -169,6 +169,17 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.etMoney.requestFocus()
             mBinding.clMoney.isFocusableInTouchMode = true
             mBinding.clMoney.isFocusable = true
+        }
+    }
+
+    private fun sendBet() {
+        val minAmount = mViewModel.mixMoney
+        val curAmount = mViewModel.editValue.toMoney()
+        if (curAmount < minAmount) {
+            showToast(getString(R.string.hint_less_min_amount))
+        } else {
+            mViewModel.sendBet()
+            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
         }
     }
 }

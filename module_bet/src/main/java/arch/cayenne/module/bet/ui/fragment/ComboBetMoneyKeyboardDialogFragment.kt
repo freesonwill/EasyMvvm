@@ -93,7 +93,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override fun initListener() {
         mBinding.btnConfirm.setOnClickListener {
-            dismiss()
+            sendMoney()
         }
         mBinding.btnBack.setOnClickListener {
             mViewModel.backNumber()
@@ -194,6 +194,17 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         params.rightMargin = params.rightMargin - px
         mBinding.triangle.layoutParams = params
     }
+
+    private fun sendMoney() {
+        val minAmount = mViewModel.mixMoney
+        val curAmount = mViewModel.editValue.toMoney()
+        if (curAmount < minAmount) {
+            showToast(getString(R.string.hint_less_min_amount))
+        } else {
+            dismiss()
+        }
+    }
+
 
     override fun dismiss() {
         super.dismiss()
