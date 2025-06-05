@@ -8,8 +8,10 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentEarlySettledNumberKeyboardBinding
@@ -26,13 +28,16 @@ class BetSlipEarlySettledFragment private constructor() :
 
     companion object {
         private const val BET_AMOUNT_MONEY = "bet_amount_money"
+        private const val BET_AMOUNT_MIN = "bet_amount_min"
 
         fun instance(
             money: String,
+            minAmount: String
         ): BetSlipEarlySettledFragment {
             return BetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
                     putString(BET_AMOUNT_MONEY, money)
+                    putString(BET_AMOUNT_MIN, minAmount)
                 }
             }
         }
@@ -126,9 +131,10 @@ class BetSlipEarlySettledFragment private constructor() :
     override fun initData() {
         super.initData()
         val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
+        val minAmount = arguments?.getString(BET_AMOUNT_MIN) ?: "0"
         val decimalDigitsCount = getDecimalDigitsCount(betAmount)
         mViewModel.setDecimalNumber(decimalDigitsCount)
-        mViewModel.setAmountMoney(betAmount.toMoneyForScale(decimalDigitsCount))
+        mViewModel.setAmountMoney(betAmount.toMoneyForScale(decimalDigitsCount), minAmount.toMoney())
     }
 
     override fun initListener() {
@@ -144,10 +150,7 @@ class BetSlipEarlySettledFragment private constructor() :
                 mBinding.groupKeyboard.isVisible = false
             }
             btnPartSettle.clickNoRepeat {
-                onEarlySettleClick?.invoke(
-                    mViewModel.editValue
-                )
-                dismiss()
+                sendMoney()
             }
             btnCancel.setOnClickListener { dismiss() }
         }
@@ -176,5 +179,17 @@ class BetSlipEarlySettledFragment private constructor() :
         val decimalDigits = str.substringAfter('.', missingDelimiterValue = "")
         val actualLength = decimalDigits.length
         return maxOf(actualLength, mViewModel.decimalNumber)
+    }
+
+    private fun sendMoney() {
+        val minAmount = mViewModel.mixMoney
+        val curAmount = mViewModel.editValue.toMoney()
+        if (curAmount < minAmount) {
+            showToast(getString(R.string.hint_less_amount_early_settle))
+        } else {onEarlySettleClick?.invoke(
+            mViewModel.editValue
+        )
+            dismiss()
+        }
     }
 }
