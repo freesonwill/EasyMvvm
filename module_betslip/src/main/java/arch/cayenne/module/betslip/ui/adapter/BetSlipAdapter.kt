@@ -17,22 +17,24 @@ import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.livebetslip.BetSlipBaseAdapterManager
 import arch.cayenne.module.betslip.ui.compare.BetSlipCompare
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.BetSlipReserve
 
 class BetSlipAdapter(type: BetSlipEnum) :
     BaseAdapter<BetSlipData, BetSlipAdapter.LiveBetSlipViewHolder, ViewBinding>(BetSlipCompare()) {
     private val betSlipType = type
-    private var earlySettleListener: RecyclerItemListener<BetSlipData>? = null
-    private var cancelReserveListener: RecyclerItemListener<BetSlipData>? = null
-    private var modifyReserveListener: RecyclerItemListener<BetSlipData>? = null
+    private var earlySettleListener: RecyclerItemListener<BetSlipOrder>? = null
+    private var cancelReserveListener: RecyclerItemListener<BetSlipReserve>? = null
+    private var modifyReserveListener: RecyclerItemListener<BetSlipReserve>? = null
     private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
 
-    fun setEarlySettleListener(listener: RecyclerItemListener<BetSlipData>) {
+    fun setEarlySettleListener(listener: RecyclerItemListener<BetSlipOrder>) {
         this.earlySettleListener = listener
     }
 
     fun setReserveListener(
-        cancelListener: RecyclerItemListener<BetSlipData>,
-        modifyListener: RecyclerItemListener<BetSlipData>
+        cancelListener: RecyclerItemListener<BetSlipReserve>,
+        modifyListener: RecyclerItemListener<BetSlipReserve>
     ) {
         this.cancelReserveListener = cancelListener
         this.modifyReserveListener = modifyListener
@@ -78,7 +80,8 @@ class BetSlipAdapter(type: BetSlipEnum) :
 
 
     override fun convertPlus(holder: LiveBetSlipViewHolder, binding: ViewBinding, position: Int) {
-        holder.manager?.covertPlus(position, getItem(position))
+        val data = getItem(position)
+        holder.manager?.covertPlus(position, data)
     }
 
     inner class LiveBetSlipViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
@@ -95,17 +98,17 @@ class BetSlipAdapter(type: BetSlipEnum) :
             }
             manager?.earlySettleSubmitListener = object : RecyclerItemListener<String> {
                 override fun onItemClick(item: String?, position: Int) {
-                    earlySettleListener?.onItemClick(getItem(position), position)
+                    earlySettleListener?.onItemClick(getItem(position) as BetSlipOrder, position)
                 }
             }
             manager?.cancelReserveSubmitListener = object : RecyclerItemListener<String> {
                 override fun onItemClick(item: String?, position: Int) {
-                    cancelReserveListener?.onItemClick(getItem(position), position)
+                    cancelReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
                 }
             }
             manager?.reserveModifySubmitListener = object : RecyclerItemListener<String> {
                 override fun onItemClick(item: String?, position: Int) {
-                    modifyReserveListener?.onItemClick(getItem(position), position)
+                    modifyReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
                 }
             }
         }
