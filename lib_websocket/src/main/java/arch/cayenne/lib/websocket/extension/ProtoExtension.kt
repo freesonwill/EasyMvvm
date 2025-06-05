@@ -68,7 +68,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     timeout: Long? = null,
     request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> {
-    val rid = getKoin().get<ThreadSafeAutoIncrementID>().id.toShort()
+    val rid = generateRid()
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
