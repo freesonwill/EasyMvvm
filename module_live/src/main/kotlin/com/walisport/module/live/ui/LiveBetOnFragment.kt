@@ -40,7 +40,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-    private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
@@ -62,7 +61,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
                 override fun itemListCallback(marketI: Long, selectionId: Long) {
-                    lifecycleScope.launch {
+                    launch {
                         val status = mainViewModel.matchId.value?.let { mViewModel.setSelection(it, selectionId) }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
@@ -80,7 +79,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     fun showData(list: List<MarketMenuBean>?, marketIds: List<Long>) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         mViewModel.getLiveSelectionBean(marketIds)
-        lifecycleScope.launch {
+        launch {
             mViewModel.getLiveSelectionBean.collect {
                 mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                 liveBetOnAdapter.setHomeAway(
@@ -137,7 +136,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 mViewModel.getMarketType(it.matchId)
             }
             mViewModel.marketType.observe(viewLifecycleOwner) { list ->
-                LogUtils.e("marketTypeData${list}")
+            //    LogUtils.e("marketTypeData${list}")
                 if (list!!.isEmpty()) {
                     mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
                     return@observe
@@ -152,7 +151,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     list.forEach {
                         tabList.add(it.name)
                     }
-                    lifecycleScope.launch {
+                    launch {
                         addNewTab()
                     }
                 } else {
@@ -165,7 +164,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 it?.forEach {
                     marketIds.add(it.marketId)
                 }
-                LogUtils.e("showData${marketIds}")
+               // LogUtils.e("showData${marketIds}")
                 showData(it, marketIds)
             }
 
@@ -179,7 +178,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             return SNAP_TO_START
                         }
                     }
-                    scope.launch {
+                    launch {
                         delay(200)
                         smoothScroller.targetPosition = tabPosition[1]
                         mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
@@ -188,7 +187,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
 
             //盘口数据变动
-            lifecycleScope.launch {
+            launch {
                 mViewModel.observeSelection.collect {
                     isNotify = true
                     mViewModel.observeSelectionGetMarketList(
@@ -266,7 +265,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             return SNAP_TO_START
                         }
                     }
-                    scope.launch {
+                    launch {
                         delay(200)
                         smoothScroller.targetPosition = tabPosition[1]
                         mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
@@ -275,7 +274,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
 
             //盘口数据变动
-            lifecycleScope.launch {
+            launch {
                 mViewModel.observeSelection.collect {
                     isNotify = true
                     mViewModel.observeSelectionGetMarketList(
