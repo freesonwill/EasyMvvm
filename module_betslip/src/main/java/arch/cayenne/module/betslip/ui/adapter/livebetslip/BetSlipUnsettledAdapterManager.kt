@@ -10,11 +10,11 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.calculateMinSettlePrice
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.earlySettlePrice
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
-import galaxy.common.proto.Common.Order
 
 class BetSlipUnsettledAdapterManager(
     private val binding: AdapterLiveBetSlipUnsettleBinding, private val betSlipType: BetSlipEnum
@@ -42,7 +42,7 @@ class BetSlipUnsettledAdapterManager(
      * */
     @SuppressLint("SetTextI18n")
     private fun updateData(
-        order: Order,
+        order: OrderBean,
         position: Int
     ) {
         binding.also {

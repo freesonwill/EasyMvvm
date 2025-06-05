@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     val isSupportEarlySettleLiveData: LiveData<Common.EarlySettlePrice> = _isSupportEarlySettleLiveData
 
     //选择的提前结算注单
-    var selectOrder: Common.Order? = null
+    var selectOrder: OrderBean? = null
         private set
 
     /**
@@ -40,7 +41,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     /**
      * 检查是否支持提前结算
      * */
-    fun isSupportEarlySettled(order: Common.Order) {
+    fun isSupportEarlySettled(order: OrderBean) {
         selectOrder = order
         viewModelScope.launch {
             val result = repo.earlySettledPrice(order.betId)

@@ -7,8 +7,8 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipReserve
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
-import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 
 class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlipViewModel() {
@@ -28,7 +28,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     /**
      * 取消预约
      * */
-    fun cancelReserve(order: Common.ReserveOrder) {
+    fun cancelReserve(order: ReserveOrderBean) {
         viewModelScope.launch {
             val result = repo.reserveCancel(order.reserveId)?.apply {
                 if (this.success) {
@@ -42,7 +42,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     /**
      * 修改预约
      * */
-    fun modifyReserve(order: Common.ReserveOrder, odds: String) {
+    fun modifyReserve(order: ReserveOrderBean, odds: String) {
         viewModelScope.launch {
             val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)?.apply {
                 if (this.success) {

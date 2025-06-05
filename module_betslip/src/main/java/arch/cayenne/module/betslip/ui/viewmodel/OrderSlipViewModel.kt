@@ -65,7 +65,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
 
     override fun updateData(status: BetSlipEnum, betId: String) {
         val (index, previousItem) = _orderLiveData.value?.let { list ->
-            val idx = list.indexOfFirst { it.order?.betId == betId }
+            val idx = list.indexOfFirst { it.order.betId == betId }
             val prev = if (idx > 0) list[idx - 1] else null
             idx to prev
         } ?: return
@@ -80,7 +80,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 matchId,
             )?.let { result ->
                 val updatedItem = result.toBetSlipOrderData().firstOrNull() ?: return@let
-                if (updatedItem.order!!.betId == betId) {
+                if (updatedItem.order.betId == betId) {
                     val currentList = _orderLiveData.value?.toMutableList() ?: return@let
                     if (index in currentList.indices) {
                         currentList[index] = updatedItem
@@ -91,10 +91,10 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                     val currentList = _orderLiveData.value?.toMutableList() ?: return@let
 
                     // 移除原本 betId 對應的項目
-                    currentList.removeAll { it.order?.betId == betId }
+                    currentList.removeAll { it.order.betId == betId }
 
                     // 嘗試找出新的 betId 對應位置，若有則更新，否則新增
-                    val newIndex = currentList.indexOfFirst { it.order?.betId == resultBetId }
+                    val newIndex = currentList.indexOfFirst { it.order.betId == resultBetId }
                     if (newIndex >= 0) {
                         currentList[newIndex] = updatedItem
                     }

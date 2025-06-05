@@ -1,8 +1,8 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.module.betslip.BetSlipRemoteManager
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import galaxy.client.proto.Client
-import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 
 class ReserveSlipRepository(
@@ -17,7 +17,7 @@ class ReserveSlipRepository(
         matchId: Long,
         cursorBetTime: Long?,
         size: Int,
-    ): List<Common.ReserveOrder>? {
+    ): List<ReserveOrderBean>? {
         return remoteManager.getReserveOrder(
             startTime,
             endTime,

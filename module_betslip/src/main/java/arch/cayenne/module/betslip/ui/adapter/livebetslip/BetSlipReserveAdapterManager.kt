@@ -7,9 +7,9 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
-import galaxy.common.proto.Common.ReserveOrder
 
 class BetSlipReserveAdapterManager(
     private val binding: AdapterLiveBetSlipReserveBinding, private val betSlipType: BetSlipEnum
@@ -39,7 +39,7 @@ class BetSlipReserveAdapterManager(
      * 预约单数据更新
      * */
     private fun updateReserveData(
-        position: Int, order: ReserveOrder
+        position: Int, order: ReserveOrderBean
     ) {
         with(binding) {
             val selection = order.selection
@@ -56,7 +56,7 @@ class BetSlipReserveAdapterManager(
      * 预约单列表展示
      * */
     private fun submitReserveAdapter(
-        reserve: ReserveOrder,
+        reserve: ReserveOrderBean,
     ) {
         val list = arrayListOf(BetSlipSelectionData(reserve = reserve.selection))
         binding.recyclerSelection.adapter?.let {
