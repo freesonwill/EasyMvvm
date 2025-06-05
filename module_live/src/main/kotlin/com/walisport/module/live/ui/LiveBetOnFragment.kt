@@ -3,10 +3,12 @@ package com.walisport.module.live.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -38,7 +40,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
-    private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
@@ -60,7 +61,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
                 override fun itemListCallback(marketI: Long, selectionId: Long) {
-                    lifecycleScope.launch {
+                    launch {
                         val status = mainViewModel.matchId.value?.let { mViewModel.setSelection(it, selectionId) }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
@@ -78,7 +79,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     fun showData(list: List<MarketMenuBean>?, marketIds: List<Long>) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         mViewModel.getLiveSelectionBean(marketIds)
-        lifecycleScope.launch {
+        launch {
             mViewModel.getLiveSelectionBean.collect {
                 mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                 liveBetOnAdapter.setHomeAway(
@@ -116,93 +117,180 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
-        mainViewModel.matchId.observe(viewLifecycleOwner){
-            tabList.clear()
-            tabPosition = mutableListOf(0, 0)
-            selectionComboId = null
-            mViewModel.observerSelectionComboByMatchId(it)
-        }
-        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
-            if (it != null) {
-                if (it.basicInfo.betStop) {
-                    mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+            mainViewModel.matchId.observe(viewLifecycleOwner){
+                tabList.clear()
+                tabPosition = mutableListOf(0, 0)
+                selectionComboId = null
+                mViewModel.observerSelectionComboByMatchId(it)
+            }
+            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+                // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+                if (it != null) {
+                    if (it.basicInfo.betStop) {
+                        mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+                        return@observe
+                    } else {
+                        mBinding.clDynamics.setVisibilityGone()
+                    }
+                }
+                mViewModel.getMarketType(it.matchId)
+            }
+            mViewModel.marketType.observe(viewLifecycleOwner) { list ->
+            //    LogUtils.e("marketTypeData${list}")
+                if (list!!.isEmpty()) {
+                    mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
                     return@observe
                 } else {
                     mBinding.clDynamics.setVisibilityGone()
                 }
-            }
-            mViewModel.getMarketType(it.matchId)
-        }
-        mViewModel.marketType.observe(viewLifecycleOwner) { list ->
-            LogUtils.e("marketTypeData${list}")
-            if (list!!.isEmpty()) {
-                mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
-                return@observe
-            } else {
-                mBinding.clDynamics.setVisibilityGone()
-            }
-            if (tabList.isEmpty()) {
-                tabList.apply {
-                    clear()
-                    add(R.string.live_bet_tab_all.getString())
+                if (tabList.isEmpty()) {
+                    tabList.apply {
+                        clear()
+                        add(R.string.live_bet_tab_all.getString())
+                    }
+                    list.forEach {
+                        tabList.add(it.name)
+                    }
+                    launch {
+                        addNewTab()
+                    }
+                } else {
+                    mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
                 }
-                list.forEach {
-                    tabList.add(it.name)
-                }
-                lifecycleScope.launch {
-                    addNewTab()
-                }
-            } else {
-                mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
             }
-        }
-        //根据盘口分类code获取盘口列表
-        mViewModel.getMarketList.observe(viewLifecycleOwner) {
-            var marketIds: MutableList<Long> = mutableListOf()
-            it?.forEach {
-                marketIds.add(it.marketId)
+            //根据盘口分类code获取盘口列表
+            mViewModel.getMarketList.observe(viewLifecycleOwner) {
+                var marketIds: MutableList<Long> = mutableListOf()
+                it?.forEach {
+                    marketIds.add(it.marketId)
+                }
+               // LogUtils.e("showData${marketIds}")
+                showData(it, marketIds)
             }
-            LogUtils.e("showData${marketIds}")
-            showData(it, marketIds)
-        }
 
-        //侧边栏筛选
-        mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
-            mBinding.tabLayout.getTabAt(it[0])?.select()
-            tabPosition = it
-            mBinding.rvBetList.post {
-                val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
-                    override fun getVerticalSnapPreference(): Int {
-                        return SNAP_TO_START
+            //侧边栏筛选
+            mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
+                mBinding.tabLayout.getTabAt(it[0])?.select()
+                tabPosition = it
+                mBinding.rvBetList.post {
+                    val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_START
+                        }
+                    }
+                    launch {
+                        delay(200)
+                        smoothScroller.targetPosition = tabPosition[1]
+                        mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
                     }
                 }
-                scope.launch {
-                    delay(200)
-                    smoothScroller.targetPosition = tabPosition[1]
-                    mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+            }
+
+            //盘口数据变动
+            launch {
+                mViewModel.observeSelection.collect {
+                    isNotify = true
+                    mViewModel.observeSelectionGetMarketList(
+                        (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
+                            mBinding.tabLayout.selectedTabPosition - 1
+                        )?.code).toString()
+                    )
                 }
             }
-        }
 
-        //盘口数据变动
-        lifecycleScope.launch {
-            mViewModel.observeSelection.collect {
-                isNotify = true
-                mViewModel.observeSelectionGetMarketList(
-                    (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
-                        mBinding.tabLayout.selectedTabPosition - 1
-                    )?.code).toString()
-                )
+            //串关数据变动
+            mViewModel.observerSelectionCombo.observe(viewLifecycleOwner){
+                selectionComboId = it
+                liveBetOnAdapter.setSelectionComboId(selectionComboId)
+                liveBetOnAdapter.notifyDataSetChanged()
             }
-        }
+            mainViewModel.matchId.observe(viewLifecycleOwner){
+                tabList.clear()
+                tabPosition = mutableListOf(0, 0)
+                selectionComboId = null
+                mViewModel.observerSelectionComboByMatchId(it)
+            }
+            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+                // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+                if (it != null) {
+                    if (it.basicInfo.betStop) {
+                        mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+                        return@observe
+                    } else {
+                        mBinding.clDynamics.setVisibilityGone()
+                    }
+                }
+                mViewModel.getMarketType(it.matchId)
+            }
+            mViewModel.marketType.observe(viewLifecycleOwner) { list ->
+                LogUtils.e("marketTypeData${list}")
+                if (list!!.isEmpty()) {
+                    mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
+                    return@observe
+                } else {
+                    mBinding.clDynamics.setVisibilityGone()
+                }
+                if (tabList.isEmpty()) {
+                    tabList.apply {
+                        clear()
+                        add(R.string.live_bet_tab_all.getString())
+                    }
+                    list.forEach {
+                        tabList.add(it.name)
+                    }
+                    lifecycleScope.launch {
+                        addNewTab()
+                    }
+                } else {
+                    mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
+                }
+            }
+            //根据盘口分类code获取盘口列表
+            mViewModel.getMarketList.observe(viewLifecycleOwner) {
+                var marketIds: MutableList<Long> = mutableListOf()
+                it?.forEach {
+                    marketIds.add(it.marketId)
+                }
+                LogUtils.e("showData${marketIds}")
+                showData(it, marketIds)
+            }
 
-        //串关数据变动
-        mViewModel.observerSelectionCombo.observe(viewLifecycleOwner){
-            selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId)
-            liveBetOnAdapter.notifyDataSetChanged()
-        }
+            //侧边栏筛选
+            mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
+                mBinding.tabLayout.getTabAt(it[0])?.select()
+                tabPosition = it
+                mBinding.rvBetList.post {
+                    val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
+                        override fun getVerticalSnapPreference(): Int {
+                            return SNAP_TO_START
+                        }
+                    }
+                    launch {
+                        delay(200)
+                        smoothScroller.targetPosition = tabPosition[1]
+                        mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+                    }
+                }
+            }
+
+            //盘口数据变动
+            launch {
+                mViewModel.observeSelection.collect {
+                    isNotify = true
+                    mViewModel.observeSelectionGetMarketList(
+                        (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
+                            mBinding.tabLayout.selectedTabPosition - 1
+                        )?.code).toString()
+                    )
+                }
+            }
+
+            //串关数据变动
+            mViewModel.observerSelectionCombo.observe(viewLifecycleOwner){
+                selectionComboId = it
+                liveBetOnAdapter.setSelectionComboId(selectionComboId)
+                liveBetOnAdapter.notifyDataSetChanged()
+            }
     }
 
     // 动态添加Tab的方法
