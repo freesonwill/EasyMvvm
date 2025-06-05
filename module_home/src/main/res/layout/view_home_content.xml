@@ -13,9 +13,9 @@
         android:background="@color/bg_card"
         android:clipChildren="false"
         android:clipToPadding="false"
+        android:paddingVertical="@dimen/dp_9"
         android:paddingStart="@dimen/dp_8"
         android:paddingEnd="@dimen/dp_30"
-        android:paddingVertical="@dimen/dp_9"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,29 +28,57 @@
         app:tabSelectedTextColor="@color/league_tab_tint_select"
         app:tabTextColor="@color/league_tab_tint_unselect" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-        android:id="@+id/tl_date_list"
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/ll_date_filter_container"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_62"
-        android:layout_marginEnd="0dp"
         android:background="@color/data_bg"
         android:clipChildren="false"
         android:clipToPadding="false"
-        android:paddingHorizontal="@dimen/dp_8"
-        android:paddingVertical="@dimen/dp_6"
-        android:visibility="gone"
+        android:paddingStart="@dimen/dp_8"
         app:layout_constraintEnd_toStartOf="@id/ll_other_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_league_list"
-        app:tabGravity="center"
-        app:tabIndicator="@null"
-        app:tabIndicatorColor="@null"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
-        app:tabPaddingStart="0dp"
-        app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/date_text_select"
-        app:tabTextColor="@color/date_text_unselect" />
+        app:layout_constraintTop_toBottomOf="@id/tl_league_list">
+
+        <!-- 固定「全部」tab -->
+        <TextView
+            android:id="@+id/tv_tab_all"
+            android:layout_width="56dp"
+            android:layout_height="@dimen/dp_50"
+            android:layout_marginEnd="@dimen/dp_5"
+            android:background="@drawable/selector_date_tab_bg"
+            android:gravity="center"
+            android:text="@string/tab_text_all"
+            android:textColor="@color/selector_date_text"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            android:id="@+id/tl_date_list"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/data_bg"
+            android:clipToPadding="true"
+            android:overScrollMode="never"
+            android:paddingVertical="@dimen/dp_6"
+            android:paddingStart="0dp"
+            android:paddingEnd="@dimen/dp_8"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_tab_all"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tabGravity="center"
+            app:tabIndicator="@null"
+            app:tabIndicatorColor="@null"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="scrollable"
+            app:tabPaddingStart="0dp"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/date_text_select"
+            app:tabTextColor="@color/date_text_unselect" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
     <!--因為其他日期按扭是固定，先加上陰影，待figma規格更新再調整效果-->
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="23dp"
@@ -64,12 +92,12 @@
         android:id="@+id/ll_other_date"
         android:layout_width="64dp"
         android:layout_height="@dimen/dp_62"
-        android:paddingEnd="8dp"
         android:gravity="center"
         android:orientation="vertical"
+        android:paddingEnd="8dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/tl_date_list"
+        app:layout_constraintStart_toEndOf="@id/ll_date_filter_container"
         app:layout_constraintTop_toBottomOf="@+id/tl_league_list">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -101,6 +129,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tl_date_list" />
+        app:layout_constraintTop_toBottomOf="@+id/ll_date_filter_container" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
