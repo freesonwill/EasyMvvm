@@ -29,6 +29,7 @@
             android:background="@drawable/ripple_effect_top">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_simple"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
@@ -67,6 +68,7 @@
             android:background="@drawable/ripple_effect_rectangle">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_english"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
@@ -97,6 +99,7 @@
             android:background="@drawable/ripple_effect_rectangle">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_indonesia"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
@@ -135,6 +138,7 @@
             android:background="@drawable/ripple_effect_bottom">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_portugal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"

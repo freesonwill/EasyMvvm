@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.data.constants
 
 enum class SkinType(val value: String) {
 
+    SKIN_DEFAULT("classic"),
     SKIN_CLASSIC("classic"),
     SKIN_BLACK_BLUE("black_blue"),
     SKIN_BLACK_GREEN("black_green"),
