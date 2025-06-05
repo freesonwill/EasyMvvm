@@ -118,7 +118,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
-            LogUtils.d(TAG,"init_________LiveBetOnFragment____Lifecycle.State.STARTED")
             mainViewModel.matchId.observe(viewLifecycleOwner){
                 tabList.clear()
                 tabPosition = mutableListOf(0, 0)
