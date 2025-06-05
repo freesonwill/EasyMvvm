@@ -12,6 +12,7 @@ import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchLiveData
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
+import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
@@ -23,7 +24,7 @@ import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() {
+class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRepo:LiveChatRepository) : BaseViewModel() {
 
     //比赛ID
     private val _matchId = MutableLiveData<Long>(0)
@@ -183,5 +184,17 @@ class LiveMainViewModel(private val repo: LiveMainRepository) : BaseViewModel() 
         }
         val trend = MatchTrendData(incidents, list)
         return MatchLiveData(0, teams, stats, trend)
+    }
+
+    fun startChatServer() {
+        viewModelScope.launch {
+            chatRepo.startSocket()
+        }
+    }
+
+    fun disConnectChatServer() {
+        viewModelScope.launch {
+            chatRepo.disconnect()
+        }
     }
 }

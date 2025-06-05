@@ -136,6 +136,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
+        mViewModel.startChatServer()
     }
 
     private fun setVideoView() {
@@ -185,7 +186,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tag = "f${adapter?.getItemId(0)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
-        "$fragment  ".logd("aaa")
     }
 
     //离开界面取消订阅
@@ -211,6 +211,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
+        mViewModel.disConnectChatServer()
         super.onDestroyView()
     }
 }

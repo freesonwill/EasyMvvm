@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.NativeLib
@@ -62,6 +63,7 @@ class ChatSocketClientService(
     private var host: String = ""
 
     override suspend fun connect(host: String): SharedFlow<ConnectState> {
+        "connect $currentState".logd(this@ChatSocketClientService.javaClass.simpleName)
         if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
             throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")
         }
@@ -104,7 +106,7 @@ class ChatSocketClientService(
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen".loge(ChatSocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectOpen $currentState".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@ChatSocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
@@ -144,7 +146,7 @@ class ChatSocketClientService(
     }
 
     override fun reconnect() {
-        if (currentState != SocketConnectState.Connecting) {
+        if (currentState != SocketConnectState.Connecting && currentState != SocketConnectState.Closed) {
             openWebSocket()
         }
     }

@@ -1,11 +1,11 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
-import androidx.core.view.isVisible
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
@@ -20,10 +20,17 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
-        mViewModel.startChatServer()
     }
 
     private fun initTab() {
@@ -34,11 +41,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.adapter = adapter
     }
 
+
     override fun initListener() {
-        mBinding.main.clickNoRepeat {
+        mBinding.main.setOnClickListener {
             showChat()
         }
-        mBinding.liveChatRecycler.clickNoRepeat {
+        mBinding.liveChatRecycler.setOnClickListener {
             showChat()
         }
     }
@@ -87,15 +95,19 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun showKeyBoard() {
-        mBinding.liveChatGroupChat.isVisible = false
+//        mBinding.liveChatGroupChat.isVisible = false
     }
 
     override fun hideKeyboard() {
-        mBinding.liveChatGroupChat.isVisible = true
+//        mBinding.liveChatGroupChat.isVisible = true
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mViewModel.chatLogin()
     }
 
     override fun onDestroyView() {
-        mViewModel.disConnectChatServer()
         super.onDestroyView()
     }
 

@@ -12,7 +12,6 @@ class EmojiViewModel : BaseViewModel() {
         val list = EmojiEnum.getEmojiMap().map {
             EmojiData(it.value, it.key)
         }.toMutableList()
-        list.add(EmojiData(R.drawable.icon_emoji_del, "del"))
         return list
     }
 
