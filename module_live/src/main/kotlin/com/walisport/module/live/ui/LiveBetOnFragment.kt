@@ -47,7 +47,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var isNotify = false
     private var selectionComboId :Long? = null
     override fun initView(savedInstanceState: Bundle?) {
-        LogUtils.d(TAG,"init_________LiveBetOnFragment")
         initAdapter()
     }
 

@@ -30,7 +30,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        LogUtils.d(TAG,"init_________LiveChatFragment")
         initFragment()
         initTab()
     }
