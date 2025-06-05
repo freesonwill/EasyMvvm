@@ -18,23 +18,28 @@ class SkinnableViewFlowHelper {
 
     fun startSkinFlow(updateSkin: (skinName: String) -> Unit) {
         skinFlowJob?.cancel()
-        skinFlowJob = CoroutineScope(Dispatchers.Main).launch {
+        skinFlowJob = CoroutineScope(Dispatchers.IO).launch {
             sportSkinManager.skinFlow.collect {
                 if (it == lastSkin) {
                     return@collect
                 }
-                updateSkin.invoke(it)
-                lastSkin = it
+                launch(Dispatchers.Main) {
+                    updateSkin.invoke(it)
+                    lastSkin = it
+                }
+
             }
         }
     }
 
     fun startLanguageFlow(updateLanguage: (local: Locale) -> Unit) {
         languageFlowJob?.cancel()
-        languageFlowJob = CoroutineScope(Dispatchers.Main).launch {
+        languageFlowJob = CoroutineScope(Dispatchers.IO).launch {
             sportSkinManager.languageFlow.collect {
                 it?.let {
-                    updateLanguage(it)
+                    launch(Dispatchers.Main) {
+                        updateLanguage(it)
+                    }
                 } ?: "updateLanguage failed: local is null".loge(TAG)
             }
         }
@@ -42,6 +47,9 @@ class SkinnableViewFlowHelper {
 
     fun destroyFlow() {
         skinFlowJob?.cancel()
+        skinFlowJob = null
+        languageFlowJob?.cancel()
+        languageFlowJob = null
     }
 
 }

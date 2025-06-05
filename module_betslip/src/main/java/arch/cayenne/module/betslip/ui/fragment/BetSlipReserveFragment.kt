@@ -11,15 +11,17 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
+import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 //注单预约
 class BetSlipReserveFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipReserveBinding>() {
+    BaseBetSlipFragment<ReserveSlipViewModel, FragmentLiveBetslipReserveBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
+    override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -51,10 +53,10 @@ class BetSlipReserveFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.getReserveOrder()
+                mViewModel.refreshData(getBetSlipEnum())
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreReserve()
+                mViewModel.loadMoreData(getBetSlipEnum())
             }
         }
     }
@@ -72,16 +74,14 @@ class BetSlipReserveFragment :
                 mBinding.recyclerView.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         }
-        mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
-            if (it) {
-                mViewModel.getReserveOrder()
+        mViewModel.cancelReserveLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.cancel_reserve_success) else getString(R.string.cancel_reserve_fail))
             }
         }
-        mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) {
-            showToast(if (it == true) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
-            if (it) {
-                mViewModel.getReserveOrder()
+        mViewModel.modifyOddsLiveData.observe(viewLifecycleOwner) { event ->
+            event.getContentIfNotHandled(viewLifecycleOwner)?.let {
+                showToast(if (it) getString(R.string.modify_odds_success) else getString(R.string.modify_odds_fail))
             }
         }
     }

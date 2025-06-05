@@ -1,25 +1,33 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.PointF
 import android.os.Build
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Gravity
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -31,7 +39,8 @@ import com.ibm.icu.text.Transliterator
 import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
-class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTournamentListBinding>() {
+class TournamentListFragment :
+    BaseFragment<TournamentListViewModel, FragmentTournamentListBinding>() {
 
     override val vbClass: KClass<FragmentTournamentListBinding> =
         FragmentTournamentListBinding::class
@@ -39,9 +48,11 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
-    private val letterPositionMap = mutableMapOf<Char, Int>()
+    private val letterViewMap = mutableMapOf<Char, View>()
+    private var isJumpingByIndex = false
+    private var pendingJumpIndex: Int? = null
 
-    private val transliterator : Transliterator by inject()
+    private val transliterator: Transliterator by inject()
 
     override fun initData() {
         arguments?.apply {
@@ -61,20 +72,106 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
     }
 
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            rvTournamentList.layoutManager = LinearLayoutManager(context)
+            llRoot.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    if (ceSearch.hasFocus()) {
+                        // 清除focus, 隱藏鍵盤
+                        ceSearch.clearFocus()
+                        val imm =
+                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(mBinding.ceSearch.windowToken, 0)
+                    }
+
+                    v.performClick()
+                }
+                false
+            }
+            ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
+            ceSearch.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    // 離開搜尋框 → 回到列表頂端
+                    mBinding.rvTournamentList.smoothScrollToPosition(0)
+                }
+            }
+
+            ceSearch.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    val keyword = s?.toString()?.trim().orEmpty()
+                    if (keyword.isNotEmpty()) {
+                        mViewModel.searchTournament(keyword)
+                    } else {
+                        mViewModel.clearSearch()
+                        mBinding.llIndexContainer.visibility = View.VISIBLE
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    mBinding.llIndexContainer.visibility = View.GONE
+                }
+            })
 
             ivHomeLeagueCollapse.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
             }
-            adapter = TournamentSectionAdapter { tournamentId ->
-                homeViewModel.onTournamentListSelected(tournamentId)
-                if (mViewModel.getType() == TournamentListType.MORE) {
-                    homeViewModel.requestCollapseTournamentDropdown()
+
+            adapter = TournamentSectionAdapter(
+                onTournamentClick = { tournament ->
+                    homeViewModel.onTournamentListSelected(tournament)
+                    if (mViewModel.getType() == TournamentListType.MORE) {
+                        homeViewModel.requestCollapseTournamentDropdown()
+                    }
                 }
-            }
+            )
+            rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
+            rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    // 點字母時忽略以下頂部item判斷, 避免排序最底的字母分類, 因為底部空間不足無法吸頂時, 無法被選中
+                    if (isJumpingByIndex) return
+
+                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+                    val firstVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
+                    if (firstVisible == RecyclerView.NO_POSITION) return
+
+                    val newIndex = when (adapter.currentList.getOrNull(firstVisible)) {
+                        is TournamentListItem.Header -> firstVisible
+                        else -> (firstVisible downTo 0).firstOrNull {
+                            adapter.currentList[it] is TournamentListItem.Header
+                        }
+                    }
+                    if (newIndex != null) {
+                        mViewModel.setActiveHeaderIndex(newIndex)
+                    }
+                }
+
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        // 如果是點字母觸發的 scroll，直接選中
+                        if (isJumpingByIndex) {
+                            pendingJumpIndex?.let {
+                                mViewModel.setActiveHeaderIndex(it)
+                                adapter.updateActiveHeaderIndex(it)
+                            }
+                            isJumpingByIndex = false
+                            pendingJumpIndex = null
+                        } else {
+                            mViewModel.getActiveHeaderIndex()
+                                ?.let { adapter.updateActiveHeaderIndex(it) }
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -92,44 +189,83 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                     R.string.lineup_empty.getString()
                 )
             }
-
             homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
         }
+
+        mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->
+            updateAZIndexHighlight()
+        }
+
+        mViewModel.searchDisplayList.observe(viewLifecycleOwner) { result ->
+            if (result == null) {
+                mViewModel.tournaments.value?.let { setTournamentList(it) }
+            } else {
+                val displayList = result.map { TournamentListItem.TournamentItem(it) }
+                adapter.submitList(displayList)
+            }
+        }
+
     }
+
+    private fun setSearchHint(list: List<TournamentListItem>) {
+        val firstItemName = list.firstOrNull {
+            it is TournamentListItem.TournamentItem
+        }?.let {
+            (it as TournamentListItem.TournamentItem).tournament.name
+        }?.takeIf { it.isNotBlank() }
+
+        firstItemName?.let {
+            mBinding.ceSearch.hint = it
+        }
+    }
+
 
     private fun setTournamentList(tournaments: List<BaseTournamentData>) {
         val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
         val hotList = mutableListOf<BaseTournamentData>()
+        val otherList = mutableListOf<BaseTournamentData>()
+        val displayList = mutableListOf<TournamentListItem>()
+        val letterPositionMap = mutableMapOf<Char, Int>()
+
         tournaments.forEach { tournament ->
             val pinyin = transliterator.transliterate(tournament.name).trim()
             val firstChar = pinyin.firstOrNull()?.uppercaseChar()
-            val groupKey = if (firstChar != null && firstChar in 'A'..'Z') firstChar else '#'
+            when {
+                tournament.hot -> hotList.add(tournament)
+                firstChar != null && firstChar in 'A'..'Z' -> {
+                    groupedMap.getOrPut(firstChar) { mutableListOf() }.add(tournament)
+                }
 
-            // 歸類進字母列表
-            if (tournament.hot) {
-                hotList.add(tournament)
-            } else {
-                groupedMap.getOrPut(groupKey) { mutableListOf() }.add(tournament)
+                else -> otherList.add(tournament)
             }
         }
-        // 將熱門歸類進 '#' 區塊
+
         if (hotList.isNotEmpty()) {
-            groupedMap['#'] = hotList
+            displayList.add(TournamentListItem.Header('*'))
+            letterPositionMap['*'] = displayList.size - 1
+            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it) })
         }
 
-        val displayList = mutableListOf<TournamentListItem>()
-        letterPositionMap.clear()
         groupedMap.toSortedMap().forEach { (letter, list) ->
             letterPositionMap[letter] = displayList.size
             displayList.add(TournamentListItem.Header(letter))
             displayList.addAll(list.map { TournamentListItem.TournamentItem(it) })
         }
+
+        if (otherList.isNotEmpty()) {
+            letterPositionMap['#'] = displayList.size
+            displayList.add(TournamentListItem.Header('#'))
+            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
+        }
+        setSearchHint(displayList)
         adapter.submitList(displayList)
+        mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
     }
 
     private fun setupAZIndex() {
         mBinding.llIndexContainer.removeAllViews()
+        letterViewMap.clear()
 
         val container = LinearLayout(context).apply {
             orientation = LinearLayout.VERTICAL
@@ -139,41 +275,52 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
-        val hotIcon = ImageView(context).apply {
-            setImageResource(R.drawable.ic_hot_league_index)
-            layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
-            setOnClickListener { scrollToSection('#') }
-        }
-        container.addView(hotIcon)
 
-        ('A'..'Z').forEach { letter ->
-            if (letterPositionMap.containsKey(letter)) {
-                val tv = TextView(context).apply {
-                    text = letter.toString()
-                    textSize = 11f
-                    gravity = Gravity.CENTER
-                    layoutParams = LinearLayout.LayoutParams(20.dp2px, 18.dp2px)
-                    setTextColor(
-                        ContextCompat.getColor(
-                            context,
-                            arch.cayenne.lib.common.R.color.brand_color
-                        )
-                    ) // 非 stateList
-                    setOnClickListener { scrollToSection(letter) }
-                }
-                container.addView(tv)
-            }
+        mViewModel.getAvailableIndexLetters().forEach { letter ->
+            val view = createLetterView(letter)
+            letterViewMap[letter] = view
+            container.addView(view)
         }
-        container.isClickable = true
-        container.isFocusable = true
 
         mBinding.llIndexContainer.addView(container)
     }
 
+    private fun createLetterView(letter: Char): View {
+        val isSelected = mViewModel.getHeaderIndex(letter) == mViewModel.getActiveHeaderIndex()
+        return if (letter == '*') {
+            ImageView(context).apply {
+                setImageResource(if (isSelected) R.drawable.ic_hot_league_index else R.drawable.ic_hot_league_index_unselect)
+                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
+                setOnClickListener { scrollToSection('*') }
+            }
+        } else {
+            TextView(context).apply {
+                text = letter.toString()
+                textSize = 11f
+                gravity = Gravity.CENTER
+                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
+                setTextColor(
+                    SkinnableResourceManager.getColor(
+                        context,
+                        if (isSelected) arch.cayenne.lib.common.R.color.brand_color else R.color.brand_color_index_unselect
+                    )
+                )
+                setOnClickListener {
+                    mViewModel.selectLetter(letter)
+                    scrollToSection(letter)
+                }
+            }
+        }
+    }
+
     private fun scrollToSection(letter: Char) {
-        val position = letterPositionMap[letter] ?: return
+        val index = mViewModel.getHeaderIndex(letter) ?: return
         val layoutManager =
             mBinding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
+        isJumpingByIndex = true
+        pendingJumpIndex = index
+
+        updateAZIndexHighlight()
 
         val scroller = object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int = SNAP_TO_START
@@ -181,8 +328,45 @@ class TournamentListFragment : BaseFragment<TournamentListViewModel, FragmentTou
                 return layoutManager.computeScrollVectorForPosition(targetPosition)
             }
         }
-        scroller.targetPosition = position
+        scroller.targetPosition = index
         layoutManager.startSmoothScroll(scroller)
+    }
+
+    private fun updateAZIndexHighlight() {
+        val currentIndex = mViewModel.getActiveHeaderIndex()
+        val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
+            mViewModel.getHeaderIndex(it) == currentIndex
+        } ?: return
+        val lastSelectedLetter = mViewModel.getLastSelectedLetter()
+        if (currentLetter != lastSelectedLetter) {
+            // 還原舊樣式
+            lastSelectedLetter?.let { last ->
+                when (val oldView = letterViewMap[last]) {
+                    is TextView -> oldView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            requireContext(),
+                            R.color.brand_color_index_unselect
+                        )
+                    )
+
+                    is ImageView -> oldView.setImageResource(R.drawable.ic_hot_league_index_unselect)
+                }
+            }
+
+            // 套用新選中樣式
+            when (val newView = letterViewMap[currentLetter]) {
+                is TextView -> newView.setTextColor(
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        arch.cayenne.lib.common.R.color.brand_color
+                    )
+                )
+
+                is ImageView -> newView.setImageResource(R.drawable.ic_hot_league_index)
+            }
+
+            mViewModel.setLastSelectedLetter(currentLetter)
+        }
     }
 
     companion object {

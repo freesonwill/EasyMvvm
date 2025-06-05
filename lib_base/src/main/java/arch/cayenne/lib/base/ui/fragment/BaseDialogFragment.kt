@@ -51,7 +51,7 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     //#endregion VB,VM
 
     //设置颜色，默认根据主题颜色设定
-    private val statusBar: IStatusBar by lazy { StatusBarDelegate(requireActivity()) }
+    private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     /**
      * 对话框默认背景，默认白色，子类根据需求复写

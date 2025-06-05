@@ -8,7 +8,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
@@ -163,21 +162,19 @@ class BetSlipEarlySettledFragment private constructor() :
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)
+            mBinding.earlySettleTvTip.isVisible = it.isNullOrEmpty()
             val money = it.ifEmpty {
-                "0"
+                "0.00"
             }
             mBinding.tvBetMoney.text = getString(
                 R.string.refund_amount
             ).format(money)
-            mBinding.earlySettleTvTip.isVisible = money.toMoney() != 0L
         }
     }
 
     private fun getDecimalDigitsCount(str: String): Int {
-        return if (str.contains('.')) {
-            str.substringAfter('.').length
-        } else {
-            mViewModel.decimalNumber
-        }
+        val decimalDigits = str.substringAfter('.', missingDelimiterValue = "")
+        val actualLength = decimalDigits.length
+        return maxOf(actualLength, mViewModel.decimalNumber)
     }
 }

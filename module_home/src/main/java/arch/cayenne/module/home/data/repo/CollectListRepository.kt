@@ -25,14 +25,19 @@ class CollectListRepository(
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 
     suspend fun getCollectData(page: Int) : Boolean {
+
+        val last = collectMatchChange.value.maxByOrNull { it.value.order }?.value
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.LISt_COLLECT,
         ) {
             Client.ListCollectReq.newBuilder().apply {
-                this.page = page
-                this.size = 3
+                if (last != null) {
+                    this.cursorMatchId = last.matchId
+                    this.cursorMatchStartTime = last.startTime
+                }
+                this.size = DEFAULT_MATCH_SIZE
             }.build()
         }
         if (resp.error == null && resp.data != null) {
@@ -49,7 +54,7 @@ class CollectListRepository(
             )
 
             val map = resp.data!!.matchList.mapIndexed { index, match ->
-                match.matchId to CollectMatchRef(match.matchId, page, page * 100 + index)
+                match.matchId to CollectMatchRef(match.matchId, match.basicInfo.startTime, page, page * 100 + index)
             }.toMap()
             collectMatchChange.value = collectMatchChange.value + map
             return true
