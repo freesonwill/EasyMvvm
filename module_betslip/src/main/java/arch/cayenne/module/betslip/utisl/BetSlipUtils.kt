@@ -36,6 +36,17 @@ internal object BetSlipUtils {
         return BigDecimal(result.getMoney()).setScale(2, RoundingMode.DOWN).toPlainString()
     }
 
+    /***
+     * 计算最小结算金额
+     * */
+    fun calculateMinSettlePrice(betAmount: String, earlyBetAmount: String, minSettleAmount: String): Boolean {
+        val nBetAmount = betAmount.toMoney()
+        val nEarlyBetAmount = earlyBetAmount.toMoney()
+        val nMinSettleAmount = minSettleAmount.toMoney()
+        val result = nBetAmount.minus(nEarlyBetAmount)
+        return result >= nMinSettleAmount
+    }
+
     private fun toBigDecimal(value: String?): BigDecimal {
         return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }

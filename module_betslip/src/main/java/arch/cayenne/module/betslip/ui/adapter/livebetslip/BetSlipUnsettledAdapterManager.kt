@@ -7,9 +7,10 @@ import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
+import arch.cayenne.module.betslip.utisl.BetSlipUtils.calculateMinSettlePrice
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.earlySettlePrice
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 import galaxy.common.proto.Common.Order
@@ -20,10 +21,6 @@ class BetSlipUnsettledAdapterManager(
 
     override fun createViewHolder() {
         initRecyclerView(binding.recyclerSelection, betSlipType)
-        binding.betUnsettledBtSettle.clickNoRepeat {
-            val position = it.tag as Int
-            earlySettledSubmit(position)
-        }
         binding.ivTip.clickNoRepeat {
             showBetTip(binding.ivTip)
         }
@@ -47,13 +44,19 @@ class BetSlipUnsettledAdapterManager(
     ) {
         binding.also {
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
-            it.betUnsettledBtSettle.alpha = if (order.earlySupport) 1f else 0.5f
+
+            // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
+            it.betUnsettledBtSettle.isEnabled =
+                order.earlySupport && order.earlySettleTimes < order.earlySettlePrice.settleTotal && calculateMinSettlePrice(
+                    order.betAmount, order.earlyBetAmount, order.earlySettlePrice.settleMin
+                )
             it.betUnsettledBtSettle.tag = position
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
             it.betUnsettledTvBettingValue.text = order.betAmount
             it.betUnsettledTvExceptValue.text = expectMaxAmount(order.betAmount, order.odds)
-            it.betUnsettledBtAmount.text = "$${earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            it.betUnsettledBtAmount.text =
+                "$${earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
@@ -63,14 +66,19 @@ class BetSlipUnsettledAdapterManager(
             if (order.earlySupport) {
                 it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             }
+            binding.betUnsettledBtSettle.clickNoRepeat {
+                if (order.earlySettlePrice.settleStatus != 102) {
+                    earlySettledSubmit(position)
+                }
+            }
         }
         earlySettleStatus(order.earlySettlePrice.settleStatus)
     }
 
-   /**
-    *当提前结算单在提前结算中时提前结算按钮显示为提前结算中
-    * */
-    private fun earlySettleStatus(settleStatus:Int){
+    /**
+     *当提前结算单在提前结算中时提前结算按钮显示为提前结算中
+     * */
+    private fun earlySettleStatus(settleStatus: Int) {
         binding.also {
             if (settleStatus == 102) {
                 it.betUnsettledBtTv.text =
