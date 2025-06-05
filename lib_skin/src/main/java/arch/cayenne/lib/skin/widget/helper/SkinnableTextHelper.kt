@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
 
@@ -77,7 +78,7 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
             )
         }
         a.recycle()
-        updateSkin()
+        updateSkin(SkinMsgType.SELF)
     }
 
     fun onSetTextAppearance(context: Context, resId: Int) {
@@ -185,7 +186,10 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
         }
     }
 
-    override fun updateSkin() {
+    override fun updateSkin(msgType: SkinMsgType) {
+        if(checkSkinName(msgType)){
+            return
+        }
         applyCompoundDrawablesRelativeResource()
         applyTextColorResource()
         applyTextColorHintResource()

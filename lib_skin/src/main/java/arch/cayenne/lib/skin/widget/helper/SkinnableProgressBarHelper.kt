@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget.helper
 import android.util.AttributeSet
 import android.widget.ProgressBar
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 
 class SkinnableProgressBarHelper(private val view: ProgressBar) : SkinnableHelper(view) {
 
@@ -23,10 +24,13 @@ class SkinnableProgressBarHelper(private val view: ProgressBar) : SkinnableHelpe
         } finally {
             a.recycle()
         }
-        updateSkin()
+        updateSkin(SkinMsgType.SELF)
     }
 
-    override fun updateSkin() {
+    override fun updateSkin(msgType: SkinMsgType) {
+        if(checkSkinName(msgType)){
+            return
+        }
         if (!checkResourceIdValid(mSrcId)) {
             return
         }
