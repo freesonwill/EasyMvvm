@@ -6,6 +6,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.ChatSocketClientService
 import arch.cayenne.lib.websocket.chat.ChatWebSocketManager
+import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import arch.cayenne.lib.websocket.data.ISecurity
 import arch.cayenne.lib.websocket.data.ISocket
 import org.koin.android.ext.koin.androidContext
@@ -29,6 +30,7 @@ class SocketModuleInitializer : DefaultInitializer<String> {
         factory<ChatSocketClientService> { ChatSocketClientService(context = WeakReference(androidContext() as Application), get()) }
         single { WebSocketManager(get()) }
         single { ChatWebSocketManager(get()) }
+        single { ThreadSafeAutoIncrementID(max = 0xFF) }
     }
 
     private val moduleList:List<Module> = listOf(socketModules)

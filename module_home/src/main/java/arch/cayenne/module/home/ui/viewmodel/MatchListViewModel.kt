@@ -88,7 +88,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = ${_selectedDate.value}".logi(this::class.java.name)
-                isPageEnd = !repository.getAllMatch(_position, _playType, _sportId, _tournamentId, page, _selectedDate.value)
+                isPageEnd = !repository.getAllMatch(_playType, _sportId, _tournamentId, page, _selectedDate.value)
                 withContext(Dispatchers.Main) {
                     if (isPageEnd && page == 1) {
                         //沒有資料
