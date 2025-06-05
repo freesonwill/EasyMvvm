@@ -9,6 +9,7 @@ import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.calculateMinSettlePrice
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.earlySettlePrice
@@ -17,7 +18,7 @@ import galaxy.common.proto.Common.Order
 
 class BetSlipUnsettledAdapterManager(
     private val binding: AdapterLiveBetSlipUnsettleBinding, private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding, betSlipType) {
+) : BetSlipBaseAdapterManager(binding) {
 
     override fun createViewHolder() {
         initRecyclerView(binding.recyclerSelection, betSlipType)
@@ -28,9 +29,11 @@ class BetSlipUnsettledAdapterManager(
     }
 
     override fun covertPlus(position: Int, item: BetSlipData) {
-        item.order?.let {
-            updateData(it, position)
-            submitAdapter(binding.recyclerSelection, item, position)
+        if (item is BetSlipOrder) {
+            item.order.let {
+                updateData(it, position)
+                submitAdapter(binding.recyclerSelection, item, position)
+            }
         }
     }
 

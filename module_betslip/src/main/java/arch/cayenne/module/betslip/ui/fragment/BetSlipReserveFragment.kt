@@ -7,7 +7,7 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
@@ -29,12 +29,12 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipData> {
-            override fun onItemClick(item: BetSlipData?, position: Int) {
+        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipReserve> {
+            override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { cancelReserve(it) }
             }
-        }, modifyListener = object : RecyclerItemListener<BetSlipData> {
-            override fun onItemClick(item: BetSlipData?, position: Int) {
+        }, modifyListener = object : RecyclerItemListener<BetSlipReserve> {
+            override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { modifyReserve(it) }
             }
         })

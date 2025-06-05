@@ -6,16 +6,16 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
+import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipOrderData
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
 
     //普通注单
-    private val _orderLiveData = MutableLiveData<List<BetSlipData>>()
-    val orderLiveData: LiveData<List<BetSlipData>> = _orderLiveData
+    private val _orderLiveData = MutableLiveData<List<BetSlipOrder>>()
+    val orderLiveData: LiveData<List<BetSlipOrder>> = _orderLiveData
 
     override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
@@ -29,7 +29,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 matchId,
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _orderLiveData.value = result.toBetSlipData()
+                _orderLiveData.value = result.toBetSlipOrderData()
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
@@ -50,9 +50,9 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipData>()
+                    val newList = mutableListOf<BetSlipOrder>()
                     val oldList = _orderLiveData.value ?: emptyList()
-                    val resultList = result.toBetSlipData()
+                    val resultList = result.toBetSlipOrderData()
                     newList.addAll(oldList)
                     newList.addAll(resultList)
                     _orderLiveData.value = newList
@@ -79,7 +79,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 sportId,
                 matchId,
             )?.let { result ->
-                val updatedItem = result.toBetSlipData().firstOrNull() ?: return@let
+                val updatedItem = result.toBetSlipOrderData().firstOrNull() ?: return@let
                 if (updatedItem.order!!.betId == betId) {
                     val currentList = _orderLiveData.value?.toMutableList() ?: return@let
                     if (index in currentList.indices) {

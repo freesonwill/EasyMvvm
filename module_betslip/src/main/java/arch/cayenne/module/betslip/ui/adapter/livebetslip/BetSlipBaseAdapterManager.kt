@@ -16,15 +16,14 @@ import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 
 abstract class BetSlipBaseAdapterManager(
-    private val binding: ViewBinding,
-    private val liveBetSlip: BetSlipEnum
+    private val binding: ViewBinding
 ) : BetSlipAdapterMangerInterface {
     var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
     var earlySettleSubmitListener: RecyclerItemListener<String>? = null
@@ -87,10 +86,10 @@ abstract class BetSlipBaseAdapterManager(
      * 投注单列表展示
      * */
     fun submitAdapter(
-        recyclerView: RecyclerView, data: BetSlipData, position: Int
+        recyclerView: RecyclerView, data: BetSlipOrder, position: Int
     ) {
         var list =
-            data.order!!.selectionsList.map { BetSlipSelectionData(selection = it) }.toList()
+            data.order.selectionsList.map { BetSlipSelectionData(selection = it) }.toList()
 
         recyclerView.adapter?.let {
             val adapter = it as BetSlipSelectionAdapter

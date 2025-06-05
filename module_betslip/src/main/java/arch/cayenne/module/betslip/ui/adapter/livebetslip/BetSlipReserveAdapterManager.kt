@@ -5,6 +5,7 @@ import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
@@ -12,7 +13,7 @@ import galaxy.common.proto.Common.ReserveOrder
 
 class BetSlipReserveAdapterManager(
     private val binding: AdapterLiveBetSlipReserveBinding, private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding, betSlipType) {
+) : BetSlipBaseAdapterManager(binding) {
 
     override fun createViewHolder() {
         initRecyclerView(binding.recyclerSelection, betSlipType)
@@ -25,10 +26,13 @@ class BetSlipReserveAdapterManager(
     }
 
     override fun covertPlus(position: Int, item: BetSlipData) {
-        item.reserve?.let {
-            updateReserveData(position, it)
-            submitReserveAdapter(it)
+        if (item is BetSlipReserve) {
+            item.reserve.let {
+                updateReserveData(position, it)
+                submitReserveAdapter(it)
+            }
         }
+
     }
 
     /**

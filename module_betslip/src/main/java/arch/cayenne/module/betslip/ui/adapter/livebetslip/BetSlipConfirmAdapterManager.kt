@@ -5,12 +5,13 @@ import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 
 class BetSlipConfirmAdapterManager(
     private val binding: AdapterLiveBetSlipConfirmBinding,
     private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding, betSlipType) {
+) : BetSlipBaseAdapterManager(binding) {
 
     override fun createViewHolder() {
        initRecyclerView(binding.recyclerSelection,betSlipType)
@@ -20,8 +21,10 @@ class BetSlipConfirmAdapterManager(
     }
 
     override fun covertPlus(position: Int, item: BetSlipData) {
-        updateData(item, position)
-        submitAdapter(binding.recyclerSelection, item, position)
+        if (item is BetSlipOrder) {
+            updateData(item, position)
+            submitAdapter(binding.recyclerSelection, item, position)
+        }
     }
 
 
@@ -29,11 +32,11 @@ class BetSlipConfirmAdapterManager(
      * 未结算 确认中 已结算 更新数据
      * */
     private fun updateData(
-        item:BetSlipData,
+        item: BetSlipOrder,
         position: Int
     ) {
         binding.also {
-            item.order?.let { order ->
+            item.order.let { order ->
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
