@@ -6,7 +6,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISocket
-import arch.cayenne.lib.websocket.data.SocketResponseError
+import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import arch.cayenne.lib.websocket.extension.asRemoteRequest
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +31,9 @@ class WebSocketManager(
     private var reconnectDispatcher: ExecutorCoroutineDispatcher? = null
 
     private var retryCount = 0
+    //线程安全的自增Rid
+    private val autoIncrementRid by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
+    fun generateRid() = autoIncrementRid.id.toShort()
 
     companion object {
         private const val heartbeatInterval: Long = 10000
