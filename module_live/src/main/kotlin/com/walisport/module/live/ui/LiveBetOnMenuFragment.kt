@@ -112,18 +112,14 @@ class LiveBetOnMenuFragment :
 
     override fun onStart() {
         super.onStart()
-        // 设置状态栏为浅色文字（深色背景）
         // 设置 Dialog 的宽度和高度
         if (dialog != null && dialog!!.window != null) {
             launch{
                 delay((animTime))
-                // Ensure transparent background for dim overlay
                 dialog!!.window?.setBackgroundDrawableResource(R.color.tran_05_white)
-                // Set dim amount
                 dialog!!.window?.attributes?.dimAmount = 0.6f
                 dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
             }
-            // Fix status bar conflict
             // 获取屏幕高度
             val screenWidth = resources.displayMetrics.widthPixels
             // 设置宽度为屏幕的 89%（可调整）
