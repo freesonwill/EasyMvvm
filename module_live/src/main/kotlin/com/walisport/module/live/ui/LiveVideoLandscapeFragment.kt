@@ -95,7 +95,7 @@ class LiveVideoLandscapeFragment :
                     setConfig(GlobalConfig(requireContext()).also {
                         if (!it.inited) {
                             // 首次启动从本地播放器获取默认配置
-                            it.transformFromPlayerConfig(videoView.getConfig())
+                            it.transformFromPlayerConfig(this.getConfig())
                             // 默认不加密
                             it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                             it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
