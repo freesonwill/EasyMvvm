@@ -22,13 +22,17 @@ import android.view.ViewConfiguration
 import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
+import androidx.core.view.WindowCompat
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.math.atan2
 import kotlin.math.sqrt
+import com.walisport.module.live.R
+import kotlinx.coroutines.delay
 
 class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
@@ -38,6 +42,7 @@ class LiveBetOnMenuFragment :
     private var startX = 0f
     private var startY = 0f
     private var translationX = 0f
+    private var animTime = 500L
     private var isSwipingDialog = false
     private var isHorizontalSwipe = false
     private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
@@ -98,12 +103,27 @@ class LiveBetOnMenuFragment :
     override fun initListener() {
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
+
+        super.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // 设置状态栏为浅色文字（深色背景）
         // 设置 Dialog 的宽度和高度
         if (dialog != null && dialog!!.window != null) {
+            launch{
+                delay((animTime))
+                // Ensure transparent background for dim overlay
+                dialog!!.window?.setBackgroundDrawableResource(R.color.tran_05_white)
+                // Set dim amount
+                dialog!!.window?.attributes?.dimAmount = 0.6f
+                dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            }
+            // Fix status bar conflict
             // 获取屏幕高度
             val screenWidth = resources.displayMetrics.widthPixels
             // 设置宽度为屏幕的 89%（可调整）
@@ -115,7 +135,6 @@ class LiveBetOnMenuFragment :
         dialog!!.window!!.setGravity(Gravity.END)
         // 设置手势监听
         setupSwipeGesture()
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -182,7 +201,7 @@ class LiveBetOnMenuFragment :
     private fun animateDismiss() {
         mBinding.root.animate()
             .translationX(mBinding.root.width * 0.8f)
-            .setDuration(200)
+            .setDuration(animTime)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
@@ -195,7 +214,7 @@ class LiveBetOnMenuFragment :
     private fun animateReset() {
         mBinding.root.animate()
             .translationX(0f)
-            .setDuration(200)
+            .setDuration(animTime)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .setListener(null)
             .start()
