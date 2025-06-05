@@ -8,7 +8,6 @@ enum class SkinType(val value: String) {
     SKIN_BLACK_RED("black_red"),
     SKIN_WHITE_BLUE("white_blue"),
     SKIN_WHITE_GREEN("white_green");
-    ;
 
     companion object {
         val DEFAULT = SKIN_CLASSIC.value
