@@ -62,6 +62,7 @@
         android:layout_height="@dimen/dp_24"
         android:layout_marginStart="10dp"
         android:background="@drawable/title_live_money_background"
+        android:fontFamily="@font/sf_pro_display_regular"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_5"
         android:paddingEnd="@dimen/dp_9"

@@ -3,14 +3,14 @@
     <!-- 選中狀態 -->
     <item android:state_selected="true">
         <shape android:shape="rectangle">
-            <corners android:radius="4dp" />
+            <corners android:radius="8dp" />
             <solid android:color="@color/brand_color" />
         </shape>
     </item>
     <!-- 未選中狀態 -->
     <item>
         <shape android:shape="rectangle">
-            <corners android:radius="4dp" />
+            <corners android:radius="8dp" />
             <solid android:color="@color/home_card_odds_background" />
         </shape>
     </item>

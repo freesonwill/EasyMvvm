@@ -11,6 +11,8 @@
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
 
+        <deepLink app:uri="walisport://module_home/homeFragment" />
+
         <action
             android:id="@+id/action_homeFragment_to_secondFragment"
             app:destination="@id/secondFragment" />

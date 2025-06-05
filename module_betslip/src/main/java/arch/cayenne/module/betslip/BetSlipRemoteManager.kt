@@ -27,17 +27,15 @@ class BetSlipRemoteManager(
     private val TAG = this.javaClass.simpleName
 
     suspend fun getOrderReq(
-        scope: CoroutineScope,
         status: Int,
-        page: Int,
-        pageSize: Int,
-        lastId:String,
-        sportId: Int? = null,
-        matchId: Long? = null,
-        startTime: Long? = null,
-        endTime: Long? = null,
+        startTime: Long?,
+        endTime: Long?,
+        cursorBetTime: Long?,
+        size: Int,
+        sportId: Int?,
+        matchId: Long?,
     ): List<Common.Order>? {
-        "getOrderReq params status $status   page $page pageSize $pageSize matchId $matchId sportId $sportId".logd(TAG)
+        "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportId $sportId matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -45,12 +43,13 @@ class BetSlipRemoteManager(
         ) {
             Client.GetOrderReq.newBuilder().apply {
                 this.status = status
-                this.cursorBetTime = 0
-                this.size = pageSize
-                sportId?.let { this.addSportId(sportId) }
-                matchId?.let { this.matchId = matchId }
+                this.size = size
                 startTime?.let { this.startTime = startTime }
                 endTime?.let { this.endTime = endTime }
+                cursorBetTime?.let { this.cursorBetTime = it }
+                sportId?.let { this.addSportId(sportId) }
+                matchId?.let { this.matchId = matchId }
+
             }.build()
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
@@ -61,24 +60,26 @@ class BetSlipRemoteManager(
     }
 
     suspend fun getReserveOrder(
-        scope: CoroutineScope,
-        lastId: String,
+        startTime: Long?,
+        endTime: Long?,
         sportId: Int,
         matchId: Long,
-        startTime: Long? = null,
-        endTime: Long? = null
+        cursorBetTime: Long?,
+        size: Int
     ): List<Common.ReserveOrder>? {
-        "getReserveOrder params matchId $matchId sportId $sportId $startTime  $endTime".logd(TAG)
+        "getReserveOrder params startTime $startTime endTime $endTime sportId $sportId matchId $matchId cursorBetTime $cursorBetTime size $size".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GER_RESERVE_ORDER
         ) {
             Client.GetReserveOrderReq.newBuilder().apply {
-                this.matchId = matchId
                 startTime?.let { this.startTime = it }
                 endTime?.let { this.endTime = it }
+                this.matchId = matchId
                 this.addSportId(sportId)
+                cursorBetTime?.let { this.cursorBetTime = it }
+                this.size = size
             }.build()
         }
         "getReserveOrder  result ${result.data?.orderList?.size}".logd(TAG)
@@ -89,7 +90,6 @@ class BetSlipRemoteManager(
     }
 
     suspend fun earlySettleReq(
-        scope: CoroutineScope,
         betId: String,
         amount: String,
         expectPrice: String,
@@ -115,7 +115,7 @@ class BetSlipRemoteManager(
         return null
     }
 
-    suspend fun reserveCancelReq(scope: CoroutineScope, reserveId: String): ReserveCancelResp? {
+    suspend fun reserveCancelReq(reserveId: String): ReserveCancelResp? {
         val result = socketManager.sendAndWaitProtoMessageResponse<ReserveCancelResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -133,7 +133,6 @@ class BetSlipRemoteManager(
     }
 
     suspend fun reserveUpdateReq(
-        scope: CoroutineScope,
         reserveId: String,
         amount: String,
         odds: String
@@ -156,7 +155,7 @@ class BetSlipRemoteManager(
         return null
     }
 
-    suspend fun earlySettlePriceReq(scope: CoroutineScope, betId: String): EarlySettlePriceResp? {
+    suspend fun earlySettlePriceReq(betId: String): EarlySettlePriceResp? {
         val result = socketManager.sendAndWaitProtoMessageResponse<EarlySettlePriceResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,

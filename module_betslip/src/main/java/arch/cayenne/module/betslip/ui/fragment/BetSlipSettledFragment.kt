@@ -6,15 +6,17 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
+import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 
 //注单已结算
 class BetSlipSettledFragment :
-    BaseBetSlipFragment<FragmentLiveBetslipSettledLayoutBinding>() {
+    BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipSettledLayoutBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> =
         FragmentLiveBetslipSettledLayoutBinding::class
+    override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -37,10 +39,10 @@ class BetSlipSettledFragment :
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
-                mViewModel.refreshOrder(BetSlipEnum.Settled)
+                mViewModel.refreshData(BetSlipEnum.Settled)
             }
             it.setOnLoadMoreListener {
-                mViewModel.loadMoreOrder(BetSlipEnum.Settled)
+                mViewModel.loadMoreData(BetSlipEnum.Settled)
             }
         }
     }
@@ -51,10 +53,19 @@ class BetSlipSettledFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it)
+            betSlipAdapter.submitList(it) {
+                registerListener()
+            }
         }
-        mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) {
-            mViewModel.getOrders(BetSlipEnum.UnSettled)
+    }
+
+    private fun registerListener() {
+        parentFragmentManager.clearFragmentResultListener("BetSlip")
+        parentFragmentManager.setFragmentResultListener("BetSlip", viewLifecycleOwner) { _, bundle ->
+            val isUpdate = bundle.getBoolean("EarlySettled", false)
+            if (isUpdate) {
+                mViewModel.refreshData(getBetSlipEnum())
+            }
         }
     }
 

@@ -53,7 +53,7 @@ class BetSlipUnsettledAdapterManager(
             it.betUnsettledTvOddsValue.text = order.odds
             it.betUnsettledTvBettingValue.text = order.betAmount
             it.betUnsettledTvExceptValue.text = expectMaxAmount(order.betAmount, order.odds)
-            it.betUnsettledBtAmount.text = "$${earlySettlePrice(order.betAmount, order.earlySettlePrice.price, order.earlyBetAmount)}"
+            it.betUnsettledBtAmount.text = "$${earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {

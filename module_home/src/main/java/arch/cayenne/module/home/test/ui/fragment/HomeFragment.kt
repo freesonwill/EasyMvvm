@@ -51,7 +51,7 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
         setStatusBar(StatusBarConfig,mBinding.root)
     }
     override fun initListener() {

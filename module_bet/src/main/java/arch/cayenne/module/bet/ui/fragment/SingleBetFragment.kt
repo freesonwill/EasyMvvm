@@ -140,8 +140,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
+        }
+        mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
+            mBinding.tvMoney.text = it
         }
     }
 

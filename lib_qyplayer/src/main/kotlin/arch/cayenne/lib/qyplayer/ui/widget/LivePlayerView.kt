@@ -9,7 +9,6 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.qyplayer.R
-import arch.cayenne.lib.qyplayer.ScreenMode
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
 import arch.cayenne.lib.qyplayer.gesture.GestureListener
 import arch.cayenne.lib.qyplayer.gesture.GestureView
@@ -61,10 +60,9 @@ class LivePlayerView @JvmOverloads constructor(
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
-    fun init(playerMode: PlayerMode, screenMode: ScreenMode) {
+    fun init(playerMode: PlayerMode) {
         mPlayerMode = playerMode
         initViews(R.layout.layout_live_player_view)
-        initListeners()
     }
 
     fun setOnSingleTapListener(listener: (() -> Unit)) {
@@ -77,7 +75,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     fun setDataSource(url: String) {
         mPlayingPath = url
-//        mControlView.updateTitle(url)
         mRenderView.setDataSource(url)
     }
 
@@ -125,6 +122,13 @@ class LivePlayerView @JvmOverloads constructor(
     fun onDestroy() {
         "onDestroy".logd(TAG)
         mRenderView.release()
+    }
+
+    /**
+     * 数据源为空
+     */
+    fun onDataSourceEmpty(){
+        updatePlayState(PlayerState.ERROR)
     }
 
     /**
@@ -413,8 +417,6 @@ class LivePlayerView @JvmOverloads constructor(
         initGestureView()
     }
 
-    private fun initListeners() {
-    }
 
     companion object {
         const val TAG: String = "LivePlayerView"

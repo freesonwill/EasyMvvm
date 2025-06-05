@@ -17,8 +17,13 @@ class LiveLeagueRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     //获取联赛日程列表数据
-    suspend fun getMatchLeagueData(leagueId: Int, page: Int): LeagueMatchBean? {
-        val resp = remoteManager.getMatchLeagueReq(scope, leagueId, page)
+    suspend fun getMatchLeagueData(
+        leagueId: Int,
+        cursorMatchId: Long,
+        cursorMatchStartTime: Long
+    ): LeagueMatchBean? {
+        val resp =
+            remoteManager.getMatchLeagueReq(scope, leagueId, cursorMatchId, cursorMatchStartTime)
         val list = ArrayList<MatchBean>()
         val stringSet = mutableSetOf<String>()
         resp?.matchList?.mapIndexed { _, item ->
