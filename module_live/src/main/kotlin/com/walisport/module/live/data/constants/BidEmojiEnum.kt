@@ -22,7 +22,9 @@ enum class BidEmojiEnum(val key: String, val resId: Int) {
     BloodBoiling("/bid=17/", R.drawable.bid17),
     FinalMoment("/bid=18/", R.drawable.bid18),
     SuperPlayer("/bid=19/", R.drawable.bid19),
-    Siuuu("/bid=20/", R.drawable.bid20);
+    Siuuu("/bid=20/", R.drawable.bid20),
+    MajinBuu("/bid=21/", R.drawable.bid21);
+
 
     companion object {
         private val _map: MutableMap<String, Int> = mutableMapOf()

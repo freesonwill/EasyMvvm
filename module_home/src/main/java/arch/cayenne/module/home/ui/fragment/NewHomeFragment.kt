@@ -452,6 +452,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { it.attach() }
+            //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
+            //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
+            mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.customView?.isSelected = true

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import arch.cayenne.lib.skin.R
+import arch.cayenne.lib.skin.data.SkinMsgType
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.Tab
 
@@ -31,12 +32,15 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
         } finally {
             a?.recycle()
         }
-        updateSkin()
+        updateSkin(SkinMsgType.SELF)
 
 
     }
 
-    override fun updateSkin() {
+    override fun updateSkin(msgType: SkinMsgType) {
+        if(checkSkinName(msgType)){
+            return
+        }
         val context = mView.context
         if (checkResourceIdValid(indicatorColor)) {
             val color = resourcesManager.getColor(context, indicatorColor)

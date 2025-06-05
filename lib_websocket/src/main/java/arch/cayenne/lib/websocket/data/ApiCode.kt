@@ -53,6 +53,16 @@ enum class ApiCode(val mid: Short, val sid: Short) {
 
     CHAT_PING(0,2), //0 -2 聊天心跳
     CHAT_LOGIN(90,1101), //7-7 聊天登陆
+    CHAT_ENTER_ROOM(500,1001),//进入聊天室
+    CHAT_LEAVE_ROOM(500,1003),//离开房间
+    CHAT_SEND_MSG(500,1005),//发送消息
+    CHAT_HISTORY(500,1007),//历史聊天信息
+    CHAT_USER_STATISTIC(500,1009),//用户统计消息
+    CHAT_SET_USER_AVATAR(500,1011),//设置用户头像
+    CHAT_SYNC_USER(500,1013),//更新用户信息
+    CHAT_CHECK_BETAMOUNT(500,-1),//校验投注额
+    CHAT_MSG_NOTIFY(500,2001),//用户消息推送
+
 
     SEARCH(500, 1030), // 500-1030: 搜索
     SEARCH_HOT_WORD(500, 1031), // 500-1031: 热门搜索词

@@ -112,4 +112,6 @@
     <string name="early_settle_success">提前结算成功</string>
     <string name="early_settle_faile">提前结算失败</string>
     <string name="disabled_to_combo">当前赛事不支持串关</string>
+    <string name="send">发送</string>
+    <string name="all_emoji">全部表情</string>
 </resources>

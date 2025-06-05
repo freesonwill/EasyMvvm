@@ -25,6 +25,9 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
     }
 
     override fun initListener() {
+        mBinding.emojiDel.setOnClickListener {
+            itemListener?.onItemClick(EmojiData(-1, "del"), -1)
+        }
     }
 
     override fun createObserver() {
@@ -38,11 +41,11 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
         when (emojiType) {
             0 -> {
                 mBinding.keyboardTvAll.isVisible = true
+                mBinding.emojiDel.isVisible = true
                 val layoutManager = GridLayoutManager(context, 8)
                 mBinding.keyboardEmoji.layoutManager = layoutManager
                 val adapter = LiveEmojiAdapter()
                 adapter.setItemListener(itemListener)
-                adapter.setType(0)
                 adapter.submitList(mViewModel.getNormalEmojis())
                 mBinding.keyboardEmoji.adapter = adapter
             }
@@ -52,9 +55,10 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
                 mBinding.keyboardEmoji.layoutManager = layoutManager
                 val adapter = LiveEmojiAdapter()
                 adapter.setItemListener(itemListener)
-                adapter.setType(1)
                 adapter.submitList(mViewModel.getBidEmojis())
                 mBinding.keyboardEmoji.adapter = adapter
+                mBinding.emojiDel.isVisible = false
+
             }
         }
     }
