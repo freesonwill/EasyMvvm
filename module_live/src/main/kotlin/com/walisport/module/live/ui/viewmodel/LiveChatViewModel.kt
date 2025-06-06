@@ -18,9 +18,11 @@ import kotlinx.coroutines.launch
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
     private val TAG = this@LiveChatViewModel.javaClass.simpleName
     private var matchId: Long? = null
+    private val _softKeyBoardListener = MutableLiveData<Boolean>()
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _msgLiveData = MutableLiveData<String>()
+    val softKeyBoardListener:LiveData<Boolean> = _softKeyBoardListener
     val newMsgFlow = MutableStateFlow<MsgNotify?>(null)
     val loginLiveData: LiveData<ChatLoginResponseData?> = _loginLiveData
     val enterRoomLiveData = MutableLiveData<Boolean>()
@@ -110,6 +112,10 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         viewModelScope.launch {
             chatRepo.checkBetAmount()
         }
+    }
+
+    fun updateSoftKeyBoard(isVisible:Boolean){
+        _softKeyBoardListener.value = isVisible
     }
 
 

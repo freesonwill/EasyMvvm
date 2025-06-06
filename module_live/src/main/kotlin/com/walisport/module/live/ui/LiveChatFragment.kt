@@ -1,12 +1,18 @@
 package com.walisport.module.live.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT
+import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
@@ -56,6 +62,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.setOnClickListener {
             showChat()
         }
+        requireActivity().onBackPressedDispatcher.addCallback {
+            if (mViewModel.softKeyBoardListener.value == true) {
+                showChat()
+            } else {
+                isEnabled = false
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+        }
     }
 
     private fun showChat() {
@@ -77,18 +91,18 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mViewModel.loginLiveData.observe(viewLifecycleOwner) {
             it?.let {
 //                mainViewModel.matchId.value?.let { matchId -> mViewModel.enterRoom() }
-             mViewModel.enterRoom()
+                mViewModel.enterRoom()
             }
         }
-        mViewModel.enterRoomLiveData.observe(viewLifecycleOwner){
+        mViewModel.enterRoomLiveData.observe(viewLifecycleOwner) {
 
         }
-        mViewModel.msgLiveData.observe(viewLifecycleOwner){
+        mViewModel.msgLiveData.observe(viewLifecycleOwner) {
             mViewModel.sendMsgToServer(it)
         }
 
         lifecycleScope.launch {
-            mViewModel.newMsgFlow.collect{
+            mViewModel.newMsgFlow.collect {
 
             }
         }
@@ -121,10 +135,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun showKeyBoard() {
 //        mBinding.liveChatGroupChat.isVisible = false
+        mViewModel.updateSoftKeyBoard(true)
     }
 
     override fun hideKeyboard() {
 //        mBinding.liveChatGroupChat.isVisible = true
+        mViewModel.updateSoftKeyBoard(false)
     }
 
     override fun onResume() {
@@ -140,6 +156,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun onDestroyView() {
         mViewModel.leaveRoom()
         super.onDestroyView()
+    }
+
+    fun isSoftKeyboardVisible(): Boolean {
+        val flag = mViewModel.softKeyBoardListener.value ?: false
+        if (flag) {
+            showChat()
+        }
+        return flag
     }
 
 

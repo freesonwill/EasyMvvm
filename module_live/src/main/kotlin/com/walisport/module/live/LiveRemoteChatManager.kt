@@ -50,6 +50,9 @@ class LiveRemoteChatManager(
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 
+//        val uid = 55468987
+//        val token = "NTU0Njg5ODdfMTc0NzkwNzU4ODc0MjpnZlRzSGx6MnA5NWt2OVlD"
+
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
             scope, Dispatchers.IO, ApiCode.CHAT_LOGIN, responseCode = ChatResponseCode.LOGIN
         ) {

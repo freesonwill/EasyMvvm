@@ -92,7 +92,6 @@ class LiveSoftKeyboardFragment :
         mBinding.liveChatEtInput.imeOptions = EditorInfo.IME_ACTION_SEND
         mBinding.liveChatEtInput.setImeActionLabel("发送", EditorInfo.IME_ACTION_SEND)
         mBinding.liveChatEtInput.setOnEditorActionListener { v, actionId, event ->
-            "actionId $actionId".logd("aaa")
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 showChat()
                 sendText()
@@ -223,6 +222,7 @@ class LiveSoftKeyboardFragment :
      * 展示聊天界面
      * */
     fun showChat() {
+
         hideSoftKeyBoard()
         mBinding.apply {
             liveChatTvSend.isVisible = false
@@ -258,7 +258,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
             keyboardEmojiRecycler.isVisible = true
-            emojiDel.isVisible = false
+            emojiDel.isVisible = true
             line.isVisible = true
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
