@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -53,7 +54,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val keepViewOnNavigation: Boolean = true
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
-        SportsListAdapter { sport ->
+        SportsListAdapter { id ->
+            mViewModel.setCurrentSport(id)
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
@@ -67,6 +69,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initTournamentLayout()
         initDrawerContent()
         initFailedLayout()
+        (mBinding.rvSportsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
     }
 
     private fun initFailedLayout() {
@@ -539,11 +542,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun createObserver() {
         mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
-            if (it.isNotEmpty()) {
-                mViewModel.setCurrentSport(it[0].id)
-            }
-            sportsListAdapter.setData(it)
-            sportsListAdapter.notifyItemRangeChanged(0, it.size - 1)
+            sportsListAdapter.submitList(it)
         }
 
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
@@ -608,9 +607,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         }
                     }
                     HomeState.FAILED, HomeState.NO_DATA -> {
-                        groupHomeMain.visibility = View.GONE
-                        dslFailed.visibility = View.VISIBLE
-                        loadingView.visibility = View.GONE
+//                        groupHomeMain.visibility = View.GONE
+//                        dslFailed.visibility = View.VISIBLE
+//                        loadingView.visibility = View.GONE
                     }
                     HomeState.LOADING_MATCH_SUCCESS, HomeState.LOADING_TOURNAMENT_LIST_SUCCESS -> {
                         loadingView.visibility = View.GONE
