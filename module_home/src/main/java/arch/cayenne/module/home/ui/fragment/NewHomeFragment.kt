@@ -607,9 +607,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         }
                     }
                     HomeState.FAILED, HomeState.NO_DATA -> {
-//                        groupHomeMain.visibility = View.GONE
-//                        dslFailed.visibility = View.VISIBLE
-//                        loadingView.visibility = View.GONE
+                        groupHomeMain.visibility = View.GONE
+                        dslFailed.visibility = View.VISIBLE
+                        loadingView.visibility = View.GONE
                     }
                     HomeState.LOADING_MATCH_SUCCESS, HomeState.LOADING_TOURNAMENT_LIST_SUCCESS -> {
                         loadingView.visibility = View.GONE
