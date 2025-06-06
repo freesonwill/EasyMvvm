@@ -113,6 +113,10 @@ class MatchListPagerFragment :
             refreshListByDate(date)
         }
 
+        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
+            mViewModel.updateMatchLiveData()
+        }
+
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
             matchAdapter.submitList(matchList)
