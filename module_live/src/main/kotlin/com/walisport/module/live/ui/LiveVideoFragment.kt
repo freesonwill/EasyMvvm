@@ -17,6 +17,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
@@ -457,7 +458,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
      */
     private fun scheduleHideButtons() {
         scheduledHideButtonsJob?.cancel()
-        scheduledHideButtonsJob = mainScope.launch {
+        scheduledHideButtonsJob = lifecycleScope.launch {
             delay(HIDE_BUTTONS_TIMER)
 
             buttonsDisplaying = false
