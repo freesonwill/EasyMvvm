@@ -219,7 +219,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
                     if (it.source.isEmpty()) {
-                        videoView.onDataSourceEmpty()
+                        onDataSourceEmpty()
                     } else {
                         val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
@@ -505,6 +505,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             PlayerState.ERROR -> {
                 mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
+                mBinding.tvErrorTips.text = getString(R.string.live_video_error)
             }
 
             PlayerState.STOPPED -> {
@@ -520,6 +521,15 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
         }
 
+    }
+
+    /**
+     * 数据源为空
+     */
+    private fun onDataSourceEmpty(){
+        mBinding.ctLoading.visibility = GONE
+        mBinding.ctError.visibility = VISIBLE
+        mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
