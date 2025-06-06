@@ -20,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
