@@ -133,10 +133,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
                         return@observe
                     } else {
+                        mViewModel.getMarketType(it.matchId)
                         mBinding.clDynamics.setVisibilityGone()
                     }
                 }
-                mViewModel.getMarketType(it.matchId)
             }
             mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             //    LogUtils.e("marketTypeData${list}")
@@ -145,20 +145,20 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     return@observe
                 } else {
                     mBinding.clDynamics.setVisibilityGone()
-                }
-                if (tabList.isEmpty()) {
-                    tabList.apply {
-                        clear()
-                        add(R.string.live_bet_tab_all.getString())
+                    if (tabList.isEmpty()) {
+                        tabList.apply {
+                            clear()
+                            add(R.string.live_bet_tab_all.getString())
+                        }
+                        list.forEach {
+                            tabList.add(it.name)
+                        }
+                        launch {
+                            addNewTab()
+                        }
+                    } else {
+                        mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
                     }
-                    list.forEach {
-                        tabList.add(it.name)
-                    }
-                    launch {
-                        addNewTab()
-                    }
-                } else {
-                    mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
                 }
             }
             mainViewModel.matchId.observe(viewLifecycleOwner){
