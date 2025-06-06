@@ -271,7 +271,6 @@ class LiveVideoLandscapeFragment :
 
     override fun initData() {
         super.initData()
-        mViewModel.getMainMatch(mViewModel.matchId())
     }
 
     /**
