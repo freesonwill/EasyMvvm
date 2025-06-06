@@ -16,12 +16,14 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.databinding.FragmentLiveSoftkeyboardLayoutBinding
 import com.walisport.module.live.ui.adapter.SoftAdapter
+import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.SoftKeyboardStateHelper
@@ -34,6 +36,7 @@ class LiveSoftKeyboardFragment :
         get() = FragmentLiveSoftkeyboardLayoutBinding::class
     override val vmClass: KClass<LiveSoftKeyboardViewModel>
         get() = LiveSoftKeyboardViewModel::class
+    private val chatViewModel:LiveChatViewModel by sharedViewModel<LiveChatViewModel,LiveChatFragment>()
 
     //监听软件盘状态
     lateinit var mKeyboardHelper: SoftKeyboardStateHelper
@@ -89,7 +92,6 @@ class LiveSoftKeyboardFragment :
         mBinding.liveChatEtInput.imeOptions = EditorInfo.IME_ACTION_SEND
         mBinding.liveChatEtInput.setImeActionLabel("发送", EditorInfo.IME_ACTION_SEND)
         mBinding.liveChatEtInput.setOnEditorActionListener { v, actionId, event ->
-            "actionId $actionId".logd("aaa")
             if (actionId == EditorInfo.IME_ACTION_SEND) {
                 showChat()
                 sendText()
@@ -108,6 +110,8 @@ class LiveSoftKeyboardFragment :
      * 发送消息
      * */
     private fun sendText() {
+        val text = mBinding.liveChatEtInput.text.toString()
+        chatViewModel.sendMsgToChat(text)
         mBinding.liveChatEtInput.text?.clear()
     }
 
@@ -218,6 +222,7 @@ class LiveSoftKeyboardFragment :
      * 展示聊天界面
      * */
     fun showChat() {
+
         hideSoftKeyBoard()
         mBinding.apply {
             liveChatTvSend.isVisible = false
@@ -253,7 +258,7 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
             keyboardEmojiRecycler.isVisible = true
-            emojiDel.isVisible = false
+            emojiDel.isVisible = true
             line.isVisible = true
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(

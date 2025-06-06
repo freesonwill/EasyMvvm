@@ -56,7 +56,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initListener() {
         with(titleBarBinding) {
-            ivBack.clickNoRepeat { findNavController().navigateUp() }
+            ivBack.clickNoRepeat {
+                //软件盘开启后直接关闭软件盘，不返回
+                if (isSoftKeyBoardVisible()) {
+                    return@clickNoRepeat
+                }
+                findNavController().navigateUp()
+            }
             llcLeagueNameLogo.clickNoRepeat {
                 navigate(
                     LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
@@ -137,7 +143,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
-        mViewModel.startChatServer()
     }
 
     private fun setVideoView() {
@@ -187,6 +192,14 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         val tag = "f${adapter?.getItemId(0)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
+    }
+
+    fun isSoftKeyBoardVisible():Boolean{
+        val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
+        val tag = "f${adapter?.getItemId(2)}"
+        val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
+        val flag = fragment?.isSoftKeyboardVisible() ?: false
+        return flag
     }
 
     //离开界面取消订阅

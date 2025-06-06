@@ -6,7 +6,7 @@ enum class ChatResponseCode(val sid: Short, val mid: Short = 500) {
 
     LOGIN(1102), //登录结果 = 1102,
 
-    ENTER_CHAT_ROOM_RESP(1102), //进入房间结果 = 1002
+    ENTER_CHAT_ROOM_RESP(1002), //进入房间结果 = 1002
 
     LEAVE_CHAT_ROOM_RESP(1004), //离开房间结果 = 1004
 

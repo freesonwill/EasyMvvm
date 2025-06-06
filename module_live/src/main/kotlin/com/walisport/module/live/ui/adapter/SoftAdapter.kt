@@ -16,7 +16,7 @@ import com.walisport.module.live.databinding.ItemSoftAdapterBinding
 /**
  * @author: wenxi
  * @date: 4/6/25 10:02
- * @description:
+ * @description: 键盘adapter，用于显示键盘中的普通表情，赛事表情，方便recylerView横向滑动
  */
 class SoftAdapter :
     BaseAdapter<SoftData, SoftAdapter.SoftViewHolder, ItemSoftAdapterBinding>(compare = SoftDataCompare()) {
