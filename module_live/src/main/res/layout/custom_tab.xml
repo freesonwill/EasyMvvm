@@ -6,4 +6,7 @@
     android:textSize="14sp"
     android:paddingStart="3dp"
     android:paddingEnd="3dp"
+    android:singleLine="true"
+    android:ellipsize="end"
+    android:maxLines="1"
     android:gravity="center"/>
