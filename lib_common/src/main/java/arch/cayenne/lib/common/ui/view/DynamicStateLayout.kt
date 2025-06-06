@@ -35,17 +35,20 @@ class DynamicStateLayout @JvmOverloads constructor(
         currentState = state
         when (currentState) {
             States.DATA_EMPTY -> {
+                visibility  = VISIBLE
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_empty)
                 binding.btnRefresh.visibility = GONE
             }
 
             States.NETWORK_ANOMALY -> {
+                visibility  = VISIBLE
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_error_net)
                 binding.btnRefresh.visibility = VISIBLE
                 binding.btnRefresh.clickNoRepeat{ onRefresh?.invoke() }
             }
 
             States.CLOSE -> {
+                visibility  = VISIBLE
                 binding.ivIcon.setBackgroundResource(R.drawable.icon_close)
                 binding.btnRefresh.visibility = GONE
             }
@@ -60,6 +63,7 @@ class DynamicStateLayout @JvmOverloads constructor(
 
     fun setVisibilityGone() {
         if (currentState != States.NULL) {
+            visibility  = GONE
             removeView(binding.root)
             currentState = States.NULL
         }
