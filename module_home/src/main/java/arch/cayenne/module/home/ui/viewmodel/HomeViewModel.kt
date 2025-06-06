@@ -213,11 +213,9 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id,tournamentId)
             withContext(Dispatchers.Main) {
-                if (list.isNullOrEmpty()) {
-                    _state.value = Event(HomeState.FAILED)
-                } else {
-                    _state.value = Event(HomeState.LOADING_RECENTLY_31_SCHEDULE_SUCCESS)
+                if (list.isNotEmpty()) {
                     _recently31MatchScheduleCount.value = Event(list)
+                    _state.value = Event(HomeState.LOADING_RECENTLY_31_SCHEDULE_SUCCESS)
                 }
             }
         }
