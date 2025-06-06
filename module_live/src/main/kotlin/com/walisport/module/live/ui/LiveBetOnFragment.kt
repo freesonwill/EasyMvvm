@@ -2,11 +2,13 @@ package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.LinearLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
@@ -40,6 +42,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+    private val scope = CoroutineScope(Dispatchers.Main + Job())
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
@@ -158,52 +161,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
                 }
             }
-            //根据盘口分类code获取盘口列表
-            mViewModel.getMarketList.observe(viewLifecycleOwner) {
-                var marketIds: MutableList<Long> = mutableListOf()
-                it?.forEach {
-                    marketIds.add(it.marketId)
-                }
-               // LogUtils.e("showData${marketIds}")
-                showData(it, marketIds)
-            }
-
-            //侧边栏筛选
-            mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
-                mBinding.tabLayout.getTabAt(it[0])?.select()
-                tabPosition = it
-                mBinding.rvBetList.post {
-                    val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_START
-                        }
-                    }
-                    launch {
-                        delay(200)
-                        smoothScroller.targetPosition = tabPosition[1]
-                        mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
-                    }
-                }
-            }
-
-            //盘口数据变动
-            launch {
-                mViewModel.observeSelection.collect {
-                    isNotify = true
-                    mViewModel.observeSelectionGetMarketList(
-                        (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
-                            mBinding.tabLayout.selectedTabPosition - 1
-                        )?.code).toString()
-                    )
-                }
-            }
-
-            //串关数据变动
-            mViewModel.observerSelectionCombo.observe(viewLifecycleOwner){
-                selectionComboId = it
-                liveBetOnAdapter.setSelectionComboId(selectionComboId)
-                liveBetOnAdapter.notifyDataSetChanged()
-            }
             mainViewModel.matchId.observe(viewLifecycleOwner){
                 tabList.clear()
                 tabPosition = mutableListOf(0, 0)
@@ -260,15 +217,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 mBinding.tabLayout.getTabAt(it[0])?.select()
                 tabPosition = it
                 mBinding.rvBetList.post {
-                    val smoothScroller = object : LinearSmoothScroller(mBinding.rvBetList.context) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_START
-                        }
-                    }
                     launch {
                         delay(200)
-                        smoothScroller.targetPosition = tabPosition[1]
-                        mBinding.rvBetList.layoutManager?.startSmoothScroll(smoothScroller)
+                        val layoutManager =  mBinding.rvBetList.layoutManager as LinearLayoutManager
+                        layoutManager.scrollToPositionWithOffset( tabPosition[1],0)
                     }
                 }
             }

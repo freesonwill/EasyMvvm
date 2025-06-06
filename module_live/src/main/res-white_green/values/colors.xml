@@ -15,6 +15,5 @@
     <color name="video_landscape_fragment_bkg_white_green">#EEEEEE</color>
     <color name="video_share_fragment_title_color_white_green">#222222</color>
     <color name="video_share_fragment_subtitle_color_white_green">#666666</color>
-
-
+    <color name="title_money_text_white_green">#FF7700</color>
 </resources>
