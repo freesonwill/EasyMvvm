@@ -86,5 +86,8 @@
     <string name="lose">lose</string>
     <string name="lose_half">loseHalf</string>
     <string name="win_half">winHalf</string>
+    <string name="live_video_loading">Loading...</string>
+    <string name="live_video_error">Loading failed</string>
+    <string name="no_live_stream">No live stream for current match</string>
 
 </resources>

@@ -1,4 +1,3 @@
 <resources>
-    <string name="live_video_loading">加载中...</string>
-    <string name="live_video_error">加载失败</string>
+
 </resources>
