@@ -1,9 +1,12 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,10 +16,13 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
@@ -86,10 +92,26 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
+       // app:tabSelectedTextColor="@color/tab_selected_text_color"
+       // app:tabTextColor="@color/video_tab_text_color"
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {}
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+                    textView.setTextColor(SkinnableResourceManager.getColor(textView.context,R.color.tab_selected_text_color))
+                    textView.typeface = Typeface.DEFAULT_BOLD
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
+                    textView.setTextColor(SkinnableResourceManager.getColor(textView.context,R.color.video_tab_text_color))
+                    textView.typeface = Typeface.DEFAULT
+                }
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                // Handle reselect if needed
+            }
         })
     }
 
@@ -171,11 +193,20 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             vpPage.offscreenPageLimit = list.size
             TabLayoutMediator(tabLayout, vpPage) { tab, position ->
-                val tabView = tab.view
                 tab.text = list[position].title
-                tabView.setOnClickListener {}
+                tab.setCustomView(R.layout.custom_tab)
+                tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
+                   text = list[position].title
+                    if (position==1){
+                       setTextColor(SkinnableResourceManager.getColor(context,R.color.tab_selected_text_color))
+                       typeface = Typeface.DEFAULT_BOLD
+                    }else{
+                       setTextColor(SkinnableResourceManager.getColor(context,R.color.video_tab_text_color))
+                       typeface = Typeface.DEFAULT
+                    }
+                }
+                tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
-            mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 0.dp2px)
             mBinding.tabLayout.getTabAt(1)?.select()
             mBinding.vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
