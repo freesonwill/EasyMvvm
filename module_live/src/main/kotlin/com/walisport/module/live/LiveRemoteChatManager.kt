@@ -8,13 +8,25 @@ import arch.cayenne.lib.websocket.chat.data.ChatResponseCode
 import arch.cayenne.lib.websocket.chat.extension.chatSendAndWaitProtoMessageResponse
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
+import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
+import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.lib.websocket.chat.data.ChatRoomRequest
+import arch.cayenne.lib.websocket.chat.data.ChatSendMsgRequest
+import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
+import arch.cayenne.lib.websocket.chat.data.CheckBetAmountRequest
+import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
+import arch.cayenne.lib.websocket.chat.data.MsgNotify
+import arch.cayenne.lib.websocket.chat.extension.chatObserveProtoMessage
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.transform
 import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
@@ -23,12 +35,9 @@ class LiveRemoteChatManager(
     private val userDataManager: UserDataManager
 ) {
     private val TAG = this.javaClass.simpleName
+    private val PLATFORM = 5
 
     suspend fun startSocket(): ConnectState {
-        val state = socketManager.getConnectStateFlow().firstOrNull()
-        if (state == ConnectState.ConnectSuccess) {
-            return state
-        }
         return socketManager.connect("wss://ws.qxe68.com:7001/api/game/chat/ws").first()
     }
 
@@ -42,22 +51,90 @@ class LiveRemoteChatManager(
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
-            scope,
-            Dispatchers.IO,
-            ApiCode.CHAT_LOGIN,
-            responseCode = ChatResponseCode.LOGIN
+            scope, Dispatchers.IO, ApiCode.CHAT_LOGIN, responseCode = ChatResponseCode.LOGIN
         ) {
-            ChatLoginRequestData(uid.toLong(), token, 5)
+            ChatLoginRequestData(uid.toLong(), token, PLATFORM)
         }
-        if (logResp.error != null && logResp.data != null) {
+        if (logResp.error == null && logResp.data != null) {
             return logResp.data
         }
         "login uid:$uid  token:$token   result ${Gson().toJson(logResp)}".logd(TAG)
         return null
     }
 
-    suspend fun receiveMsgNotify(){
+    suspend fun enterChatRoom(matchId: Long): ChatEnterRoomResponse? {
+        val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatEnterRoomResponse>(
+            scope,
+            Dispatchers.IO,
+            ApiCode.CHAT_ENTER_ROOM,
+            responseCode = ChatResponseCode.ENTER_CHAT_ROOM_RESP
+        ) {
+            ChatRoomRequest(matchId, PLATFORM)
+        }
+        if (resp.error == null && resp.data != null) {
+            return resp.data
+        }
+        return null
+    }
 
+    suspend fun leaveChatRoom(matchId: Long): ChatLeaveRoomResponse? {
+        val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLeaveRoomResponse>(
+            scope,
+            Dispatchers.IO,
+            ApiCode.CHAT_LEAVE_ROOM,
+            responseCode = ChatResponseCode.LEAVE_CHAT_ROOM_RESP
+        ) {
+            ChatRoomRequest(matchId, PLATFORM)
+        }
+        if (resp.error == null && resp.data != null) {
+            return resp.data
+        }
+        return null
+    }
+
+    suspend fun sendMsgNotify(
+        roomId: Long,
+        content: String,
+        refUid: String? = null,
+        refPlatform: Int? = null
+    ): ChatSendMsgResponse? {
+        val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatSendMsgResponse>(
+            scope,
+            Dispatchers.IO,
+            ApiCode.CHAT_SEND_MSG,
+            responseCode = ChatResponseCode.SEND_MSG_RESP
+        ) {
+            ChatSendMsgRequest(roomId, content, refUid, refPlatform)
+        }
+        if (resp.error == null && resp.data != null) {
+            return resp.data
+        }
+
+        return null
+    }
+
+    suspend fun msgNotify(): Flow<MsgNotify> {
+        return socketManager.chatObserveProtoMessage<MsgNotify>(ChatResponseCode.MSG_NOTIFY)
+            .transform {
+                if (it.error != null && it.data != null) {
+                    emit(it.data!!)
+                }
+            }
+    }
+
+    suspend fun checkBetAmount(): CheckBetAmountResponse? {
+        val resp = socketManager.chatSendAndWaitProtoMessageResponse<CheckBetAmountResponse>(
+            scope,
+            Dispatchers.IO,
+            ApiCode.CHAT_CHECK_BETAMOUNT,
+            responseCode = ChatResponseCode.CHECK_BET_AMOUNT_RESP
+        ) {
+            CheckBetAmountRequest(PLATFORM)
+        }
+        if (resp.error == null && resp.data != null) {
+            return resp.data
+        }
+        return null
     }
 
 

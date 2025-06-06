@@ -186,11 +186,6 @@ class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRep
         return MatchLiveData(0, teams, stats, trend)
     }
 
-    fun startChatServer() {
-        viewModelScope.launch {
-            chatRepo.startSocket()
-        }
-    }
 
     fun disConnectChatServer() {
         viewModelScope.launch {

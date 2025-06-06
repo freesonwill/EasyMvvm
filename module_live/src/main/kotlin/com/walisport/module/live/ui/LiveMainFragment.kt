@@ -136,7 +136,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
-        mViewModel.startChatServer()
     }
 
     private fun setVideoView() {

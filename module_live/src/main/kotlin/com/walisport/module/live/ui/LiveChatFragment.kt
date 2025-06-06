@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 //聊天
@@ -19,6 +23,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     LiveSoftKeyboardFragment.LiveChatSoftKeyListener {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +38,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         initFragment()
         initTab()
     }
+
 
     private fun initTab() {
         val layoutManger = LinearLayoutManager(context)
@@ -67,6 +74,24 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun createObserver() {
+        mViewModel.loginLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+//                mainViewModel.matchId.value?.let { matchId -> mViewModel.enterRoom() }
+             mViewModel.enterRoom()
+            }
+        }
+        mViewModel.enterRoomLiveData.observe(viewLifecycleOwner){
+
+        }
+        mViewModel.msgLiveData.observe(viewLifecycleOwner){
+            mViewModel.sendMsgToServer(it)
+        }
+
+        lifecycleScope.launch {
+            mViewModel.newMsgFlow.collect{
+
+            }
+        }
     }
 
     private fun testData(): List<LiveChatBean> {
@@ -102,12 +127,18 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //        mBinding.liveChatGroupChat.isVisible = true
     }
 
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun onStart() {
         super.onStart()
-        mViewModel.chatLogin()
+        mViewModel.setArguments(mainViewModel.matchId.value)
+        mViewModel.startChatServer()
     }
 
     override fun onDestroyView() {
+        mViewModel.leaveRoom()
         super.onDestroyView()
     }
 

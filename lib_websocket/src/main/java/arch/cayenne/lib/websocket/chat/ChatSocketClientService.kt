@@ -118,16 +118,11 @@ class ChatSocketClientService(
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
-//                    "onMessage bytes $bytes".logi(this@ChatSocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
-                        workingScope.launch(Dispatchers.Main) {
-
-                        }
                         val data = security.decrypt(byteArray)
-                        "result ${String((data as SocketOriginResponseData).originProto ?: byteArrayOf())}".logi(
-                            this@ChatSocketClientService::class.java.simpleName
-                        )
+                        if((data as SocketOriginResponseData).originProto != null)
+                        "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {
