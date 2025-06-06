@@ -374,6 +374,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 tlDateList.getTabAt(dateIndex)?.select()
             } else {
                 tvTabAll.isSelected = true
+                clearDateTabSelection()
                 tlDateList.selectTab(null)
                 addDateTabListener()
                 mViewModel.setSelectedDate(0L)
