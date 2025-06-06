@@ -10,7 +10,6 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
-import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRoomRequest
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgRequest
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
@@ -25,9 +24,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.transform
-import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
     private val scope: CoroutineScope,
@@ -37,15 +34,23 @@ class LiveRemoteChatManager(
     private val TAG = this.javaClass.simpleName
     private val PLATFORM = 5
 
+    /**
+     * 连接聊天服务器
+     * */
     suspend fun startSocket(): ConnectState {
         return socketManager.connect("wss://ws.qxe68.com:7001/api/game/chat/ws").first()
     }
 
+    /**
+     * 关闭聊天服务器
+     * */
     suspend fun disConnect(): Boolean {
         return socketManager.disconnect()
     }
 
-
+    /**
+     * 聊天登陆
+     * */
     suspend fun login(): ChatLoginResponseData? {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
@@ -65,6 +70,9 @@ class LiveRemoteChatManager(
         return null
     }
 
+    /**
+     * 进入聊天室
+     * */
     suspend fun enterChatRoom(matchId: Long): ChatEnterRoomResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatEnterRoomResponse>(
             scope,
@@ -80,6 +88,9 @@ class LiveRemoteChatManager(
         return null
     }
 
+    /**
+     * 离开聊天室
+     * */
     suspend fun leaveChatRoom(matchId: Long): ChatLeaveRoomResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLeaveRoomResponse>(
             scope,
@@ -95,6 +106,9 @@ class LiveRemoteChatManager(
         return null
     }
 
+    /**
+     * 发送消息
+     * */
     suspend fun sendMsgNotify(
         roomId: Long,
         content: String,
@@ -116,6 +130,9 @@ class LiveRemoteChatManager(
         return null
     }
 
+    /**
+     * 离开聊天室
+     * */
     suspend fun msgNotify(): Flow<MsgNotify> {
         return socketManager.chatObserveProtoMessage<MsgNotify>(ChatResponseCode.MSG_NOTIFY)
             .transform {
@@ -125,6 +142,9 @@ class LiveRemoteChatManager(
             }
     }
 
+    /**
+     * 校验投注额
+     * */
     suspend fun checkBetAmount(): CheckBetAmountResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<CheckBetAmountResponse>(
             scope,

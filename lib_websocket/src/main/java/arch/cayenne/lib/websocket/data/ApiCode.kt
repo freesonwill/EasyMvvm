@@ -60,7 +60,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     CHAT_USER_STATISTIC(500,1009),//用户统计消息
     CHAT_SET_USER_AVATAR(500,1011),//设置用户头像
     CHAT_SYNC_USER(500,1013),//更新用户信息
-    CHAT_CHECK_BETAMOUNT(500,-1),//校验投注额
+    CHAT_CHECK_BETAMOUNT(500,1015),//校验投注额
     CHAT_MSG_NOTIFY(500,2001),//用户消息推送
 
 

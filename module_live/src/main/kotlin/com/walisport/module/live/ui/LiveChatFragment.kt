@@ -1,18 +1,13 @@
 package com.walisport.module.live.ui
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.window.OnBackInvokedCallback
-import android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT
 import androidx.activity.addCallback
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
@@ -66,6 +61,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             if (mViewModel.softKeyBoardListener.value == true) {
                 showChat()
             } else {
+                if(activity == null){
+                    return@addCallback
+                }
                 isEnabled = false
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
@@ -90,7 +88,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun createObserver() {
         mViewModel.loginLiveData.observe(viewLifecycleOwner) {
             it?.let {
-//                mainViewModel.matchId.value?.let { matchId -> mViewModel.enterRoom() }
                 mViewModel.enterRoom()
             }
         }
@@ -134,12 +131,10 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun showKeyBoard() {
-//        mBinding.liveChatGroupChat.isVisible = false
         mViewModel.updateSoftKeyBoard(true)
     }
 
     override fun hideKeyboard() {
-//        mBinding.liveChatGroupChat.isVisible = true
         mViewModel.updateSoftKeyBoard(false)
     }
 

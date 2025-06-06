@@ -36,10 +36,16 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         this.matchId = matchId
     }
 
+    /**
+     * 软件et传递消息
+     * */
     fun sendMsgToChat(msg:String){
         _msgLiveData.value = msg
     }
 
+    /**
+     * 校验投注额
+     * */
     fun startChatServer() {
         viewModelScope.launch {
             val state = chatRepo.startSocket()
@@ -49,19 +55,27 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         }
     }
 
+    /**
+     * 关闭聊天服务
+     * */
     private fun disConnectChatServer() {
         viewModelScope.launch {
             chatRepo.disconnect()
         }
     }
 
-
+    /**
+     * 聊天登陆
+     * */
     private fun chatLogin() {
         viewModelScope.launch {
             _loginLiveData.value = chatRepo.login()
         }
     }
 
+    /**
+     *进入聊天室
+     * */
     fun enterRoom() {
         if (matchId == null) {
             return
@@ -74,9 +88,13 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
                 code == ChatRequestCodeEnum.SUCCESS.code
             } ?: false
             "enterRoom room result ${resp?.code} ${chatRoomId}".logd(TAG)
+            checkBetAmount()
         }
     }
 
+    /**
+     *推出聊天室
+     * */
     fun leaveRoom() {
         if (matchId == null) {
             return
@@ -91,6 +109,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         }
     }
 
+    /**
+     *发送消息
+     * */
     fun sendMsgToServer(content: String, refUid: String? = null, refPlatform: Int? = null) {
         if(matchId == null){
             return
@@ -100,6 +121,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         }
     }
 
+    /**
+     *监听新消息
+     * */
      fun registerMsgFlow(){
        viewModelScope.launch {
            chatRepo.registerNotifyMsg().collect{
@@ -108,12 +132,18 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
        }
     }
 
+    /**
+     *检验投注额
+     * */
     fun checkBetAmount(){
         viewModelScope.launch {
             chatRepo.checkBetAmount()
         }
     }
 
+    /**
+     *更新软件盘显示
+     * */
     fun updateSoftKeyBoard(isVisible:Boolean){
         _softKeyBoardListener.value = isVisible
     }
