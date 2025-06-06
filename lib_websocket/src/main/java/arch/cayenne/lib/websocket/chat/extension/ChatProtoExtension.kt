@@ -17,14 +17,15 @@ import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.CoroutineContext
 
 @SuppressLint("SuspiciousIndentation")
 fun ChatRequestData.chatAsRemoteRequest(
@@ -75,23 +76,21 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     }
 
 suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitProtoMessageResponse(
-    scope: CoroutineScope,
-    dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
     responseCode: ChatResponseCode,
-    rid: Short = 0,
-    timeout: Long? = null,
-    request: () -> ChatRequestData
+    rid: Short = nextRid(),
+    timeout: Long = responseTimeout,
+    crossinline request: () -> ChatRequestData
 ): ChatResponseData<T> {
-    val deferred = scope.async(dispatcher) {
-        withTimeoutOrNull(timeout ?: responseTimeout) {
+    val response = withContext(Dispatchers.IO) {
+        send(request.invoke().chatAsRemoteRequest(apiCode, rid))
+        withTimeoutOrNull(timeout) {
             chatObserveProtoMessage<T>(responseCode).filter {
                 it.rid == rid
             }.first()
         }
     }
-    send(request.invoke().chatAsRemoteRequest(apiCode, rid))
-    return deferred.await() ?: ChatResponseData(
+    return response ?: ChatResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
         rid = rid,
