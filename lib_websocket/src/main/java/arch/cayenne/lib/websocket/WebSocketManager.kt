@@ -32,8 +32,8 @@ class WebSocketManager(
 
     private var retryCount = 0
     //线程安全的自增Rid
-    private val autoIncrementRid by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
-    fun generateRid() = autoIncrementRid.id.toShort()
+    private val ridGenerator by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
+    fun nextRid() = ridGenerator.id.toShort()
 
     companion object {
         private const val heartbeatInterval: Long = 10000

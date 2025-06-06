@@ -10,7 +10,6 @@ import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.websocket.chat.data.ChatEnterRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
-import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRoomRequest
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgRequest
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
@@ -22,12 +21,9 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.transform
-import org.koin.java.KoinJavaComponent.inject
 
 class LiveRemoteChatManager(
     private val scope: CoroutineScope,
@@ -54,7 +50,7 @@ class LiveRemoteChatManager(
 //        val token = "NTU0Njg5ODdfMTc0NzkwNzU4ODc0MjpnZlRzSGx6MnA5NWt2OVlD"
 
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
-            scope, Dispatchers.IO, ApiCode.CHAT_LOGIN, responseCode = ChatResponseCode.LOGIN
+            ApiCode.CHAT_LOGIN, responseCode = ChatResponseCode.LOGIN
         ) {
             ChatLoginRequestData(uid.toLong(), token, PLATFORM)
         }
@@ -67,10 +63,8 @@ class LiveRemoteChatManager(
 
     suspend fun enterChatRoom(matchId: Long): ChatEnterRoomResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatEnterRoomResponse>(
-            scope,
-            Dispatchers.IO,
             ApiCode.CHAT_ENTER_ROOM,
-            responseCode = ChatResponseCode.ENTER_CHAT_ROOM_RESP
+            responseCode = ChatResponseCode.ENTER_CHAT_ROOM_RESP,
         ) {
             ChatRoomRequest(matchId, PLATFORM)
         }
@@ -82,10 +76,8 @@ class LiveRemoteChatManager(
 
     suspend fun leaveChatRoom(matchId: Long): ChatLeaveRoomResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLeaveRoomResponse>(
-            scope,
-            Dispatchers.IO,
             ApiCode.CHAT_LEAVE_ROOM,
-            responseCode = ChatResponseCode.LEAVE_CHAT_ROOM_RESP
+            responseCode = ChatResponseCode.LEAVE_CHAT_ROOM_RESP,
         ) {
             ChatRoomRequest(matchId, PLATFORM)
         }
@@ -102,10 +94,8 @@ class LiveRemoteChatManager(
         refPlatform: Int? = null
     ): ChatSendMsgResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<ChatSendMsgResponse>(
-            scope,
-            Dispatchers.IO,
             ApiCode.CHAT_SEND_MSG,
-            responseCode = ChatResponseCode.SEND_MSG_RESP
+            responseCode = ChatResponseCode.SEND_MSG_RESP,
         ) {
             ChatSendMsgRequest(roomId, content, refUid, refPlatform)
         }
@@ -127,10 +117,8 @@ class LiveRemoteChatManager(
 
     suspend fun checkBetAmount(): CheckBetAmountResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<CheckBetAmountResponse>(
-            scope,
-            Dispatchers.IO,
             ApiCode.CHAT_CHECK_BETAMOUNT,
-            responseCode = ChatResponseCode.CHECK_BET_AMOUNT_RESP
+            responseCode = ChatResponseCode.CHECK_BET_AMOUNT_RESP,
         ) {
             CheckBetAmountRequest(PLATFORM)
         }

@@ -7,7 +7,7 @@
     android:layout_marginHorizontal="@dimen/dp_6"
     android:layout_marginVertical="@dimen/dp_6"
     android:background="@drawable/shape_10"
-    android:backgroundTint="@color/card_odds_background"
+    android:backgroundTint="@color/card_ooo_background"
     >
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
