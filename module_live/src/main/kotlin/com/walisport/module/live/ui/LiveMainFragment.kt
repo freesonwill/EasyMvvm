@@ -10,9 +10,7 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -97,8 +95,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.getMainMatch(it)
             mViewModel.observeMatchBean(it)
             mViewModel.registerMatchInfoNotify(it)
-            mViewModel.registerStatisticsNotify(it)
-            mViewModel.observeMatchStaticsNotify()
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
@@ -114,7 +110,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
-            mViewModel.matchIdSportIdObserver.collect{
+            mViewModel.matchIdSportIdObserver.collect {
                 refreshBetSlip()
             }
         }
@@ -130,7 +126,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun deleteDataAndSubscriptions(matchId: Long) {
-        mViewModel.unregisterStatisticsNotify(matchId)
         mViewModel.unregisterMatchInfoNotify(matchId)
         mViewModel.clearAllMatch()
     }
@@ -194,8 +189,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         super.onPause()
         mViewModel.matchId.value?.let {
             mViewModel.registerMatchInfoNotify(it)
-            mViewModel.registerStatisticsNotify(it)
-            mViewModel.observeMatchStaticsNotify()
         }
     }
 
@@ -203,7 +196,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onResume() {
         super.onResume()
         mViewModel.matchId.value?.let {
-            mViewModel.unregisterStatisticsNotify(it)
             mViewModel.unregisterMatchInfoNotify(it)
         }
     }
