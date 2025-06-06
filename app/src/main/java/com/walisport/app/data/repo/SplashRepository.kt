@@ -18,7 +18,6 @@ class SplashRepository(
 ) : BaseRepository() {
 
     private val countDownHelper = CountDownHelper()
-
     internal var countDown: Int by countDownHelper::countDown
     internal val countDownSecondsLD: SharedFlow<Int> by countDownHelper::countDownSecondsLD
     internal val isCountDownStart by countDownHelper::isCountDownStart
@@ -34,11 +33,8 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.SKIN_WHITE_BLUE.value)
+        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
     }
-
-
-
 
     suspend fun startSocket(): ConnectState {
         return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()

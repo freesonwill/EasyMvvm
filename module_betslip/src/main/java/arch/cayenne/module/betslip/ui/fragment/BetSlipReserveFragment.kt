@@ -7,13 +7,13 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
-import galaxy.common.proto.Common
 import kotlin.reflect.KClass
 
 //注单预约
@@ -29,12 +29,12 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipData> {
-            override fun onItemClick(item: BetSlipData?, position: Int) {
+        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipReserve> {
+            override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { cancelReserve(it) }
             }
-        }, modifyListener = object : RecyclerItemListener<BetSlipData> {
-            override fun onItemClick(item: BetSlipData?, position: Int) {
+        }, modifyListener = object : RecyclerItemListener<BetSlipReserve> {
+            override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { modifyReserve(it) }
             }
         })
@@ -86,7 +86,7 @@ class BetSlipReserveFragment :
         }
     }
 
-    private fun cancelReserve(order: Common.ReserveOrder) {
+    private fun cancelReserve(order: ReserveOrderBean) {
         CommonDialog.newInstance(
             "",
             getString(R.string.confirm_cancel_reserve),
@@ -100,7 +100,7 @@ class BetSlipReserveFragment :
         }
     }
 
-    private fun modifyReserve(order: Common.ReserveOrder) {
+    private fun modifyReserve(order: ReserveOrderBean) {
 
         BetSlipModifyOddsFragment.newInstance(order.selection.odds).also {
             it.setConfirmListener { odds ->

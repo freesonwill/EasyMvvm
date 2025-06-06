@@ -78,6 +78,10 @@ class LivePlayerView @JvmOverloads constructor(
         mRenderView.setDataSource(url)
     }
 
+    fun getDataSource(): String? {
+        return mPlayingPath
+    }
+
     fun setConfig(cfg: PlayerConfig) {
         mConfig = cfg
         mRenderView.setConfig(cfg)
@@ -122,13 +126,6 @@ class LivePlayerView @JvmOverloads constructor(
     fun onDestroy() {
         "onDestroy".logd(TAG)
         mRenderView.release()
-    }
-
-    /**
-     * 数据源为空
-     */
-    fun onDataSourceEmpty(){
-        updatePlayState(PlayerState.ERROR)
     }
 
     /**

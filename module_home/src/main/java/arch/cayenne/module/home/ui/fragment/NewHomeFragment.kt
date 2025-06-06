@@ -119,7 +119,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             TournamentListType.NONE
         )
         with(mBinding.layoutContainer) {
-            tlDateList.visibility = View.GONE
+            llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
         mViewModel.resetLiveData()
@@ -145,33 +145,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.isSaveEnabled = false
             vpGameList.adapter = null
 
-            // 日期 Tab 設定
+            // 日期 Tab 設定, 固定 "全部"
             updateDateTabs(tlDateList, dateTabs)
-            tlDateList.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    val dateTabIndex = tab?.position ?: 0
-                    val dateTimestamp: Long = if (dateTabIndex == 0) {
-                        0L // 代表「全部」
-                    } else {
-                        val dateTriple = getFutureThirtyOneDays()
-                            .getOrNull(dateTabIndex - 1)
-                        dateTriple?.third ?: 0L
-                    }
-                    mViewModel.setSelectedDate(dateTimestamp)
-                }
+            addDateTabListener()
 
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
-            mBinding.ivHomeLeagueMore.clickNoRepeat {
-                toggleTournamentMoreSection(true, TournamentListType.MORE)
+            tvTabAll.isSelected = true
+            mViewModel.setSelectedDate(0L)
+            tvTabAll.clickNoRepeat {
+                it.isSelected = true
+                clearDateTabSelection()
+                mViewModel.setSelectedDate(0L)
             }
+
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
                 //呼叫日曆popup元件
                 //TODO 傳入目前被選tab的日期
                 var tabSelectedDate = "0"
-                val index = mBinding.layoutContainer.tlDateList.selectedTabPosition
+                val index = tlDateList.selectedTabPosition
                 if (index > 0) {
                     val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index - 1)
                     tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
@@ -179,6 +170,40 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 showHomeCalendar(tabSelectedDate)
             }
         }
+
+        mBinding.ivHomeLeagueMore.clickNoRepeat {
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+    }
+
+    private fun addDateTabListener() {
+        mBinding.layoutContainer.tlDateList.addOnTabSelectedListener(object :
+            OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                mBinding.layoutContainer.tvTabAll.isSelected = false
+
+                tab?.position?.let { index ->
+                    val dateTriple = getFutureThirtyOneDays().getOrNull(index)
+                    val dateTimestamp = dateTriple?.third ?: return
+                    mViewModel.setSelectedDate(dateTimestamp)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })
+    }
+
+    private fun clearDateTabSelection() {
+        val tabLayout = mBinding.layoutContainer.tlDateList
+        val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return
+
+        for (i in 0 until tabStrip.childCount) {
+            tabStrip.getChildAt(i)?.isSelected = false
+            tabLayout.getTabAt(i)?.customView?.isSelected = false
+        }
+
+        tabLayout.selectTab(null)
     }
 
 
@@ -340,12 +365,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(selectedDate:String) {
+    private fun setSelectedDateTab(selectedDate: String) {
         with(mBinding.layoutContainer) {
-            val dateIndex = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.indexOfFirst {
-                it.day.replace("-","") == selectedDate
-            }?.plus(1) ?: 0
-            tlDateList.getTabAt(dateIndex)?.select()
+            val dateIndex = mViewModel.recently31MatchScheduleCount.value?.peekContent()
+                ?.indexOfFirst { it.day.replace("-", "") == selectedDate }
+                ?: -1
+            if (dateIndex != -1) {
+                tlDateList.getTabAt(dateIndex)?.select()
+            } else {
+                tvTabAll.isSelected = true
+                tlDateList.selectTab(null)
+                addDateTabListener()
+                mViewModel.setSelectedDate(0L)
+            }
         }
     }
 
@@ -394,23 +426,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     ) {
         tlDateList.apply {
             removeAllTabs()
-
-            fun createTab(date: String?, weekday: String?): TabLayout.Tab {
-                val tab = newTab()
-                val tabView =
-                    ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-                        root.layoutParams = ViewGroup.LayoutParams(56.dp2px, 50.dp2px)
-                        tvDate.text = date ?: context.getString(R.string.tab_text_all)
-                        tvWeekDay.visibility = if (weekday == null) View.GONE else View.VISIBLE
-                        tvWeekDay.text = weekday
-                    }
-                tab.customView = tabView.root
-                return tab
+            dateTabs.forEach { (date, weekday, _) ->
+                val tab = createDateTab(date, weekday)
+                addTab(tab)
             }
-            addTab(createTab(null, null))
-            dateTabs.forEach { (date, weekday, _) -> addTab(createTab(date, weekday)) }
-            // 調整間距與樣式
+
             post {
+                selectTab(null)
                 val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
@@ -419,25 +441,37 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         }
                         setPadding(0, 0, 0, 0)
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
+                        isSelected = false
                     }
                 }
             }
         }
     }
 
+    private fun createDateTab(date: String?, weekday: String?): TabLayout.Tab {
+        val tab = mBinding.layoutContainer.tlDateList.newTab()
+        val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
+            root.layoutParams = ViewGroup.LayoutParams(56.dp2px, 50.dp2px)
+            tvDate.text = date
+            tvWeekDay.visibility = View.VISIBLE
+            tvWeekDay.text = weekday
+        }
+        tab.customView = tabView.root
+        return tab
+    }
+
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
             if (tournaments.isNotEmpty()) {
                 if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
-                    tlDateList.visibility = View.GONE
+                    llDateFilterContainer.visibility = View.GONE
                     llOtherDate.visibility = View.GONE
                 } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
-                    tlDateList.visibility = View.VISIBLE
+                    llDateFilterContainer.visibility = View.VISIBLE
                     llOtherDate.visibility = View.VISIBLE
                 }
             }
             vpGameList.currentItem = 0
-            tlDateList.getTabAt(0)?.select()
 
             vpGameList.adapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
@@ -452,6 +486,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { it.attach() }
+            //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
+            //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
+            mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.customView?.isSelected = true
@@ -570,7 +607,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             mViewModel.getCurrentTournament()
                         }
                     }
-                    HomeState.FAILED -> {
+                    HomeState.FAILED, HomeState.NO_DATA -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
                         loadingView.visibility = View.GONE

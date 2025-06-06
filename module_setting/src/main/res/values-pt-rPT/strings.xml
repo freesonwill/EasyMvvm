@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="menu_language_set">Configurações de idioma</string>
     <string name="menu_language_simple">chinês</string>
     <string name="menu_language_english">Inglês</string>
     <string name="menu_language_indonesia">indonésio</string>

@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.WebSocketManager.Companion.responseTimeout
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import arch.cayenne.lib.websocket.data.InvalidProtoTypeResponseError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withTimeoutOrNull
+import org.koin.java.KoinJavaComponent.getKoin
 
 fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode, rid: Short) : SocketRequestData {
     return SocketRequestData(
@@ -63,10 +65,10 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
-    rid: Short = 0,
     timeout: Long? = null,
     request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> {
+    val rid = generateRid()
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout ?: responseTimeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()

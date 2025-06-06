@@ -1,5 +1,17 @@
 package arch.cayenne.module.betslip.data.model
 
-import galaxy.common.proto.Common
+import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 
-data class BetSlipData(val order:Common.Order? = null, val reserve:Common.ReserveOrder? = null, var expandedEnum: arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum = arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum.Hide)
+sealed class BetSlipData {
+    abstract var expandedEnum: BetSlipExpandedEnum
+}
+
+data class BetSlipOrder(
+    val order: OrderBean,
+    override var expandedEnum: BetSlipExpandedEnum = BetSlipExpandedEnum.Hide
+) : BetSlipData()
+
+data class BetSlipReserve(
+    val reserve: ReserveOrderBean,
+    override var expandedEnum: BetSlipExpandedEnum = BetSlipExpandedEnum.Hide
+) : BetSlipData()

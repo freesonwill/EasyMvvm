@@ -4,6 +4,10 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
+import arch.cayenne.module.betslip.data.model.toOrderBean
+import arch.cayenne.module.betslip.data.model.toReserveOrderBean
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
@@ -34,7 +38,7 @@ class BetSlipRemoteManager(
         size: Int,
         sportId: Int?,
         matchId: Long?,
-    ): List<Common.Order>? {
+    ): List<OrderBean>? {
         "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportId $sportId matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
@@ -54,7 +58,7 @@ class BetSlipRemoteManager(
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
-            return result.data!!.orderList
+            return result.data!!.orderList.map { it.toOrderBean() }
         }
         return null
     }
@@ -66,7 +70,7 @@ class BetSlipRemoteManager(
         matchId: Long,
         cursorBetTime: Long?,
         size: Int
-    ): List<Common.ReserveOrder>? {
+    ): List<ReserveOrderBean>? {
         "getReserveOrder params startTime $startTime endTime $endTime sportId $sportId matchId $matchId cursorBetTime $cursorBetTime size $size".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
@@ -84,7 +88,7 @@ class BetSlipRemoteManager(
         }
         "getReserveOrder  result ${result.data?.orderList?.size}".logd(TAG)
         if (result.error == null && result.data != null) {
-            return result.data!!.orderList
+            return result.data!!.orderList.map { it.toReserveOrderBean() }
         }
         return null
     }

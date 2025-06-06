@@ -2,6 +2,7 @@ package arch.cayenne.module.bet
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -173,8 +174,8 @@ class BettingRemoteManager(
                 SingleRiskDataModel(
                     matchId = data.matchId,
                     selectionId = data.selectionId,
-                    minAmount = data.min,
-                    maxAmount = data.max
+                    minAmount = data.min.toString().toMoney(),
+                    maxAmount = data.max.toString().toMoney()
                 )
             }
         } else {
@@ -205,8 +206,8 @@ class BettingRemoteManager(
             data.riskList.map {
                 ComboRiskDataModel(
                     combo = if (it.serialValue == 0) 1 else it.serialValue,
-                    minAmount = it.min,
-                    maxAmount = it.max
+                    minAmount = it.min.toString().toMoney(),
+                    maxAmount = it.max.toString().toMoney()
                 )
             }
         } else {

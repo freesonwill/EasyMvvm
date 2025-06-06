@@ -3,8 +3,8 @@ package arch.cayenne.module.betslip.utisl
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import galaxy.common.proto.Common.Order
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.OrderBean
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -36,6 +36,17 @@ internal object BetSlipUtils {
         return BigDecimal(result.getMoney()).setScale(2, RoundingMode.DOWN).toPlainString()
     }
 
+    /***
+     * 计算最小结算金额
+     * */
+    fun calculateMinSettlePrice(betAmount: String, earlyBetAmount: String, minSettleAmount: String): Boolean {
+        val nBetAmount = betAmount.toMoney()
+        val nEarlyBetAmount = earlyBetAmount.toMoney()
+        val nMinSettleAmount = minSettleAmount.toMoney()
+        val result = nBetAmount.minus(nEarlyBetAmount)
+        return result >= nMinSettleAmount
+    }
+
     private fun toBigDecimal(value: String?): BigDecimal {
         return value?.toBigDecimalOrNull() ?: BigDecimal(0)
     }
@@ -44,11 +55,11 @@ internal object BetSlipUtils {
         return toBigDecimal(value).multiply(BigDecimal(1000))
     }
 
-    fun List<Order>.toBetSlipData(): List<BetSlipData> {
+    fun List<OrderBean>.toBetSlipOrderData(): List<BetSlipOrder> {
         return this.map {
             val expandedEnum =
                 if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
-            BetSlipData(
+            BetSlipOrder(
                 order = it, expandedEnum = expandedEnum
             )
         }.toList()

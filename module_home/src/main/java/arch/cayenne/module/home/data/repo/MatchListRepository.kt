@@ -23,7 +23,7 @@ class MatchListRepository(
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
      * @param rid 主要用來資料回來時可以辨認用，因為有可能兩三個聯賽分頁同時拿取資料
      * */
-    suspend fun getAllMatch(rid: Int, playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : Boolean {
+    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : Boolean {
 //        val req = Client.ListMatchReq.newBuilder().apply {
 //            this.sportId = sportId
 //            this.playType = playType
@@ -42,7 +42,6 @@ class MatchListRepository(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.LIST_MATCH,
-            rid = rid.toShort(),
         ) {
             Client.ListMatchReq.newBuilder().apply {
                 this.sportId = sportId

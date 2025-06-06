@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.setting.data.LanguageType
 import com.walisport.module.setting.data.SettingRepository
+import galaxy.common.proto.Common
+import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
@@ -17,12 +19,25 @@ class LanguageViewModel : BaseViewModel() {
 
     //设置语言类型
     fun setLanguageType(type: LanguageType) {
-        languageType.value = type.value
-        repository.setLanguageType(type.value)
+        viewModelScope.launch {
+            languageType.value = type.value
+            repository.setLanguageType(type.value)
+        }
+        updateLanguageSetting(type.value)
     }
 
     //获取语言类型
     fun getLanguageType(): String {
         return repository.getLanguageType()
+    }
+
+    //调用接口设置语言
+    private fun updateLanguageSetting(type: String) {
+        viewModelScope.launch {
+            val req = Common.Setting.newBuilder().apply {
+                lang = type
+            }.build()
+            repository.updateSettingReq(req)
+        }
     }
 }

@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.RelativeLayout
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -41,44 +43,45 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     private var isSubstitutes: Boolean = false
 
     override fun initView(savedInstanceState: Bundle?) {
-
     }
 
     override fun initListener() {
     }
 
     override fun createObserver() {
-        //监听比赛id变化
-        mainViewModel.matchId.observe(viewLifecycleOwner){
-            mViewModel.geMatchLineupDetail(it)
-        }
-        mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
-            it?.let {
-                mBinding.main.setVisibilityGone()
-                upData(it)
-                if (it.awayOrBuilderList.isEmpty()) {
-                    mBinding.llContent.visibility = View.GONE
+        launch(Lifecycle.State.RESUMED){
+            //监听比赛id变化
+            mainViewModel.matchId.observe(viewLifecycleOwner){
+                mViewModel.geMatchLineupDetail(it)
+            }
+            mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
+                it?.let {
+                    mBinding.main.setVisibilityGone()
+                    upData(it)
+                    if (it.awayOrBuilderList.isEmpty()) {
+                        mBinding.llContent.visibility = View.GONE
+                        mBinding.main.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
+                    }else{
+                        mBinding.llContent.visibility = View.VISIBLE
+                    }
+                } ?: run {
                     mBinding.main.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
-                }else{
-                    mBinding.llContent.visibility = View.VISIBLE
                 }
-            } ?: run {
-                mBinding.main.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.lineup_empty.getString()
-                )
             }
-        }
-        //监听比赛详情数据
-        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-            it?.let {
-                mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
-                mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
-                mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
-                mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+            //监听比赛详情数据
+            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+                it?.let {
+                    mBinding.homeSubstituteName.text = it.basicInfo.homeTeam
+                    mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
+                    mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
+                    mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+                }
             }
         }
     }

@@ -45,7 +45,6 @@ class HomeRepository(
         return if (res.error == null && res.data != null) {
             return saveSports(res.data!!)
         } else {
-            res.error
             null
         }
 

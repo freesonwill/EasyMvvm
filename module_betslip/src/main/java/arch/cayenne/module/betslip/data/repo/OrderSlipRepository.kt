@@ -1,7 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.module.betslip.BetSlipRemoteManager
-import galaxy.common.proto.Common
+import arch.cayenne.module.betslip.data.model.OrderBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 
@@ -18,7 +18,7 @@ open class OrderSlipRepository(
         size: Int,
         sportId: Int,
         matchId: Long,
-    ): List<Common.Order>? {
+    ): List<OrderBean>? {
         return withContext(scope.coroutineContext){
             remoteManager.getOrderReq(
                 status,

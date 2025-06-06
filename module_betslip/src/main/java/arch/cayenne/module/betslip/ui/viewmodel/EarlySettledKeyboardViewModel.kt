@@ -5,12 +5,8 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.percent
 
 class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
 
-    companion object {
-        private const val MIX_LIMIT = 1L
-    }
-
-    fun setAmountMoney(betAmount: Long) {
-        setNumberLimit(MIX_LIMIT, betAmount)
+    fun setAmountMoney(betAmount: Long, minAmount: Long) {
+        setNumberLimit(minAmount, betAmount)
         setRemainingNumber(betAmount)
         setNumber(betAmount)
     }
