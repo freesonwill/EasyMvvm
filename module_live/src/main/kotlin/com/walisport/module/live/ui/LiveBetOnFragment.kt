@@ -124,6 +124,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 tabList.clear()
                 tabPosition = mutableListOf(0, 0)
                 selectionComboId = null
+                mBinding.tabLayout.removeAllTabs()
                 mViewModel.observerSelectionComboByMatchId(it)
             }
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
