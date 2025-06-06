@@ -148,6 +148,7 @@ class HomeViewModel : BaseViewModel() {
                     _state.value = Event(HomeState.NO_DATA)
                 } else {
                     sportsStatistical.value = Event(list)
+                    setCurrentSport(list.first().id)
                 }
             }
         }

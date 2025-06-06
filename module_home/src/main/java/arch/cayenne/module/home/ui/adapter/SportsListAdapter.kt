@@ -3,32 +3,25 @@ package arch.cayenne.module.home.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.ItemSportsBinding
+import arch.cayenne.module.home.ui.adapter.compare.SportDataModelCompare
 
 class SportsListAdapter(
-    private val onItemClick: (SportDataModel) -> Unit
-) : RecyclerView.Adapter<SportsListAdapter.SportViewHolder>() {
+    private val onItemClick: (Int) -> Unit
+) : BaseAdapter<SportDataModel, BaseViewHolder, ItemSportsBinding>(
+    SportDataModelCompare()
+) {
+
     private var selectedPosition = 0
-    private var sports: List<SportDataModel>? = null
-    class SportViewHolder(val binding: ItemSportsBinding) : RecyclerView.ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SportViewHolder {
-        val binding = ItemSportsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return SportViewHolder(binding)
-    }
-
-    fun setData(list: List<SportDataModel>) {
-        sports = list
-    }
-
-    override fun onBindViewHolder(holder: SportViewHolder, position: Int) {
-        if (sports.isNullOrEmpty()) return
-        val sport = sports!![position]
+    override fun convertPlus(holder: BaseViewHolder, binding: ItemSportsBinding, position: Int) {
+        val sport = getItem(position)
         val sportType = SportType.fromId(sport.id)!!
         val context = holder.itemView.context
-        holder.binding.apply {
+        binding.apply {
             tvSportTitle.text = context.getString(sportType.titleResId)
             tvSportIcon.isEnabled = sport.matchCount > 0
             tvSportIcon.setImageResource(if (tvSportIcon.isEnabled) sportType.iconResActive else sportType.iconResInactive)
@@ -49,10 +42,20 @@ class SportsListAdapter(
                 }
                 notifyItemChanged(selectedPosition)
 
-                onItemClick(sport)
+                onItemClick(sport.id)
             }
         }
     }
 
-    override fun getItemCount(): Int = sports?.size ?: 0
+    override fun createViewBinding(
+        inflater: LayoutInflater,
+        parent: ViewGroup,
+        viewType: Int
+    ): ItemSportsBinding {
+        return ItemSportsBinding.inflate(inflater, parent, false)
+    }
+
+    override fun createViewHolder(binding: ItemSportsBinding, viewType: Int): BaseViewHolder {
+        return BaseViewHolder(binding)
+    }
 }
