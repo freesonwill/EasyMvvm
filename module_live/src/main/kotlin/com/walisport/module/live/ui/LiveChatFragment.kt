@@ -62,7 +62,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.setOnClickListener {
             showChat()
         }
-        requireActivity().onBackPressedDispatcher.addCallback {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.softKeyBoardListener.value == true) {
                 showChat()
             } else {
