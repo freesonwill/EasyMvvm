@@ -77,6 +77,27 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
     }
 
     @CallSuper
+    override fun onStart() {
+        super.onStart()
+        uiBind.onStart()
+    }
+    @CallSuper
+    override fun onResume() {
+        super.onResume()
+        uiBind.onResume()
+    }
+    @CallSuper
+    override fun onPause() {
+        super.onPause()
+        uiBind.onPause()
+    }
+    @CallSuper
+    override fun onStop() {
+        super.onStop()
+        uiBind.onStop()
+    }
+
+    @CallSuper
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroyView()

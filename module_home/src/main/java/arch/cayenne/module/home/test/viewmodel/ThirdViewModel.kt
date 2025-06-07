@@ -13,7 +13,6 @@ import plugin.koin.KoinViewModel
  */
 @KoinViewModel
 class ThirdViewModel :BaseViewModel(){
-    private val TAG = "ThirdViewModel"
     var textColor:Int? = null
     var textString:String? = null
     var textColorFlow : MutableStateFlow<Int?> = MutableStateFlow(null)
