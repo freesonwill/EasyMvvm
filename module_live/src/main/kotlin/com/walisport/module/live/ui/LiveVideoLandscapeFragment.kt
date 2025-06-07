@@ -133,7 +133,9 @@ class LiveVideoLandscapeFragment :
         }
 
         //播放状态处理
-        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+        videoView.setPlayerStateListener {
+            mViewModel.setPlayerState(it)
+        }
 
         // 创建 LayoutParams，设置宽度和高度为 match_parent
         val layoutParams = LinearLayout.LayoutParams(
@@ -244,26 +246,32 @@ class LiveVideoLandscapeFragment :
                     }
                 }
             }
-        }
-        mViewModel.tournamentIcon.observe(viewLifecycleOwner) {
+
+            tournamentIcon.observe(viewLifecycleOwner) {
 //            "tournamentIcon: $it".logd("matchIssue")
-            it?.takeIf { it.isNotEmpty() }?.let { url ->
-                Glide.with(requireContext()).load(url)
-                    .placeholder(R.drawable.title_league_icon)
-                    .error(R.drawable.title_league_icon)
-                    .into(mBinding.ivVideoLandscapeTournamentIcon)
+                it?.takeIf { it.isNotEmpty() }?.let { url ->
+                    Glide.with(requireContext()).load(url)
+                        .placeholder(R.drawable.title_league_icon)
+                        .error(R.drawable.title_league_icon)
+                        .into(mBinding.ivVideoLandscapeTournamentIcon)
+                }
+            }
+            matchName.observe(viewLifecycleOwner) {
+                it?.takeIf { it.isNotEmpty() }?.let { name ->
+                    mBinding.tvMatchName.text = name
+                }
+            }
+            mainMatch.observe(viewLifecycleOwner) {
+                it?.let {
+                    mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
+                }
+            }
+
+            playerState.observe(viewLifecycleOwner) {
+                onPlayerStateReceived(it)
             }
         }
-        mViewModel.matchName.observe(viewLifecycleOwner) {
-            it?.takeIf { it.isNotEmpty() }?.let { name ->
-                mBinding.tvMatchName.text = name
-            }
-        }
-        mViewModel.mainMatch.observe(viewLifecycleOwner) {
-            it?.let {
-                mViewModel.leagueID = it.basicInfo.tournamentId //联赛ID
-            }
-        }
+
         mViewModel.createObserver()
     }
 

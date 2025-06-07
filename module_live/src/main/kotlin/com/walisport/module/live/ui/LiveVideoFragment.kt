@@ -148,7 +148,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         }
 
         //播放状态处理
-        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+        videoView.setPlayerStateListener {
+            mViewModel.setPlayerState(it)
+        }
 
         if (videoView.parent != null) {
             (videoView.parent as ViewGroup).removeView(videoView)
@@ -355,6 +357,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
             }
 
+            playerState.observe(viewLifecycleOwner){
+                onPlayerStateReceived(it)
+            }
 
         }
 
