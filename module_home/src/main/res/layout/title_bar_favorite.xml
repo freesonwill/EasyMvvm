@@ -24,7 +24,6 @@
         android:layout_height="28dp"
         android:background="@drawable/bg_wallet_entry"
         android:gravity="center_vertical|end"
-        android:minWidth="97dp"
         android:orientation="horizontal"
         android:paddingEnd="7dp"
         app:layout_constraintBottom_toBottomOf="parent"
