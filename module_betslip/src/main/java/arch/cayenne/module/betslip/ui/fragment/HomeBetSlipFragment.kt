@@ -182,10 +182,9 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             ) { _, bundle ->
                 childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
                 if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
-                    val id = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
-                    val name = bundle.getString(Config.VALUE_SELECTED_SPORT_NAME)!!
-                    mViewModel.setSportFilter(id, name)
-                    betSlipFilterViewModel.setIds(-1, id)
+                    val ids = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
+//                    mViewModel.setSportFilter(id, name)
+//                    betSlipFilterViewModel.setIds(-1, id)
                 }
                 setFilterText(mBinding.tvSportFilter, false)
             }

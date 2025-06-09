@@ -14,11 +14,14 @@ class SportPickerRepository(
 ) : BaseRepository() {
 
     suspend fun getAllSports() = withContext(scope.coroutineContext) {
-        sportDao.getAllSports().map {
-            SportFilterBean(
-                sportId = it.sportId,
-                sportName = it.sportName
-            )
+        mutableListOf<SportFilterBean>().apply {
+            add(SportFilterBean.getAllTypeBean())
+            addAll(sportDao.getAllSports().map {
+                SportFilterBean(
+                    sportId = it.sportId,
+                    sportName = it.sportName
+                )
+            })
         }
     }
 
