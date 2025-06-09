@@ -23,7 +23,11 @@
         <!--从直播详情页跳转到联赛日程页-->
         <action
             android:id="@+id/action_liveMainFragment_to_leagueFragment"
-            app:destination="@id/leagueFragment"/>
+            app:destination="@id/leagueFragment"
+            app:enterAnim="@anim/slide_bottom_to_top"
+            app:exitAnim="@null"
+            app:popEnterAnim="@null"
+            app:popExitAnim="@anim/slide_top_to_bottom"/>
 
         <action
             android:id="@+id/action_liveMainFragment_to_VideoLandscapeFragment"
