@@ -11,7 +11,7 @@ class SearchResultGridCompare:DiffUtil.ItemCallback<SearchResultListItemType>() 
     ): Boolean {
         return when {
             oldItem is SearchResultListItemType.Header && newItem is SearchResultListItemType.Header ->
-                oldItem.title == newItem.title
+                oldItem.resId == newItem.resId
 
             oldItem is SearchResultListItemType.Item && newItem is SearchResultListItemType.Item ->
                 oldItem.data.id == newItem.data.id

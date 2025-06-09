@@ -102,8 +102,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             return@loadSearchTitleBar
                         }
                         resetSearchRecommend()
-//                        getRecordByUID()
-                        //TODO 呼叫子層
                         addSearchRecord(content)
                         navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
                     },

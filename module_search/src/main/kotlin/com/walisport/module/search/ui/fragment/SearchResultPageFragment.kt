@@ -79,7 +79,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     override fun initData() {
         super.initData()
-        mViewModel.setResult(requireContext(), data)
+        mViewModel.setResult(data)
     }
 
     private fun updateUI() {

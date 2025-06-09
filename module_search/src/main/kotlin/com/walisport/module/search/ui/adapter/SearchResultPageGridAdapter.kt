@@ -49,7 +49,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
             VIEW_TYPE_HEADER -> {
                 val headerBinding = binding as ItemSearchResultGridHeaderBinding
                 val item = getItem(position) as SearchResultListItemType.Header
-                headerBinding.tvTitle.text = item.title
+                headerBinding.tvTitle.text = holder.itemView.context.getString(item.resId)
             }
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultGridItemBinding

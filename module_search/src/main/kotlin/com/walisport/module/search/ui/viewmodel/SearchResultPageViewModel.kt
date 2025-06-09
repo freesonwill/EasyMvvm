@@ -1,7 +1,5 @@
 package com.walisport.module.search.ui.viewmodel
 
-import android.content.Context
-import androidx.core.content.ContextCompat
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
@@ -23,29 +21,29 @@ class SearchResultPageViewModel: BaseViewModel() {
     val groupData: StateFlow<List<SearchResultListItemType>> = _groupData.asStateFlow()
 
     /** 處理搜尋結果 */
-    fun setResult(context: Context, result: SearchResultBean) {
+    fun setResult(result: SearchResultBean) {
         when (result.type) {
             SearchResultTypeEnum.LIST -> {
-                _groupData.value = groupSearchResults(context, result.dataList ?: emptyList())
+                _groupData.value = groupSearchResults(result.dataList ?: emptyList())
             }
             else -> Unit
         }
     }
 
     /** 分類搜尋結果 列表用 */
-    private fun groupSearchResults(context: Context, list: List<SearchResultBaseBean>): List<SearchResultListItemType> {
-        val groupedMap = mutableMapOf<String, List<SearchResultBaseBean>>()
+    private fun groupSearchResults(list: List<SearchResultBaseBean>): List<SearchResultListItemType> {
+        val groupedMap = mutableMapOf<Int, List<SearchResultBaseBean>>()
 
         list.filterIsInstance<SearchResultTournamentBean>().takeIf { it.isNotEmpty() }?.let {
-            groupedMap[ContextCompat.getString(context, R.string.tab_tournament)] = it
+            groupedMap[R.string.tab_tournament] = it
         }
 
         list.filterIsInstance<SearchResultTeamBean>().takeIf { it.isNotEmpty() }?.let {
-            groupedMap[ContextCompat.getString(context, R.string.tab_team)] = it
+            groupedMap[R.string.tab_team] = it
         }
 
         list.filterIsInstance<SearchResultPlayerBean>().takeIf { it.isNotEmpty() }?.let {
-            groupedMap[ContextCompat.getString(context, R.string.tab_player)] = it
+            groupedMap[R.string.tab_player] = it
         }
 
         return groupedMap.flatMap { (title, items) ->
