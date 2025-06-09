@@ -1,6 +1,7 @@
 package com.walisport.module.search.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -9,9 +10,11 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.MatchStatusEnum
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
@@ -63,7 +66,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                             Locale.getDefault()
                         )
                     }.run {
-                        SimpleDateFormat("yyyy-M-d", Locale.getDefault()).parse(item.title)
+                        SimpleDateFormat("yyyy/M/d", Locale.getDefault()).parse(item.title)
                             ?.let { format(it) } ?: item.title
                     }
             }
@@ -75,8 +78,15 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                     with(itemData) {
                         tvTitle.text = basicInfo.matchName
                         tvTime.text = run {
-                            SimpleDateFormat("HH:mm", Locale.getDefault())
-                                .format(Date(basicInfo.startTime))
+                            when (basicInfo.status) {
+                                MatchStatusEnum.ONGOING ->
+                                    holder.itemView.context.getString(R.string.search_result_race_playing)
+
+                                else -> {
+                                    SimpleDateFormat("HH:mm", Locale.getDefault())
+                                        .format(Date(basicInfo.startTime))
+                                }
+                            }
                         }
                         Glide.with(holder.itemView.context)
                             .load(basicInfo.homeTeamIcon)
@@ -112,9 +122,20 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                                 )
                             )
                         }
-                        //TODO current team
-                        //TODO favorite
-                        btnFavorite.isSelected = false
+                        if (basicInfo.status == MatchStatusEnum.ENDED) {
+                            val homeScore = basicInfo.liveInfo?.homeScore ?: 0
+                            val awayScore = basicInfo.liveInfo?.awayScore ?: 0
+                            if (homeScore > awayScore) {
+                                ivArrowTeamHome.visibility = View.VISIBLE
+                                ivArrowTeamAway.visibility = View.GONE
+                            } else if (homeScore < awayScore) {
+                                ivArrowTeamHome.visibility = View.GONE
+                                ivArrowTeamAway.visibility = View.VISIBLE
+                            } else {
+                                ivArrowTeamHome.visibility = View.GONE
+                                ivArrowTeamAway.visibility = View.GONE
+                            }
+                        }
                         btnBet.apply {
                             if(basicInfo.betStop) {
                                 text = holder.itemView.context.getString(R.string.search_result_btn_bet_finish)
@@ -122,7 +143,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                             } else {
                                 text = holder.itemView.context.getString(R.string.search_result_btn_bet)
                                 isEnabled = true
-                                setOnClickListener {
+                                clickNoRepeat {
                                     onBetClick?.invoke(itemData)
                                 }
                             }

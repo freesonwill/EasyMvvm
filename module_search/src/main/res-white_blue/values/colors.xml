@@ -7,6 +7,7 @@
     <color name="tab_item_text_select_white_blue">#222222</color>
     <color name="tab_item_text_unselect_white_blue">#666666</color>
     <color name="search_result_date_white_blue">#666666</color>
+    <color name="search_result_date_selected_white_blue">#00D271</color>
     <color name="search_result_more_white_blue">#666666</color>
     <color name="search_result_race_header_white_blue">#222222</color>
     <color name="search_result_race_divider_white_blue">#E8E8EA</color>

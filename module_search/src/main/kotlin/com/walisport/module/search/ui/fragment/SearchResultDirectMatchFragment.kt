@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -43,9 +44,17 @@ class SearchResultDirectMatchFragment :
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
             onBetClick = { match ->
-                mViewModel.navigateTo(SearchNavigationEvent.ToLiveFragment("walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}"))
+                mViewModel.navigateTo(
+                    SearchNavigationEvent.ToLiveFragment(
+                        "walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}"
+                    )
+                )
             }
         }
+    }
+
+    enum class RaceViewState {
+        Loading, Empty, Success
     }
 
     override fun createVM(): SearchViewModel {
@@ -54,6 +63,10 @@ class SearchResultDirectMatchFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            dynamicState.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                ContextCompat.getString(requireContext(), R.string.no_search_result)
+            )
             recyclerView.apply {
                 layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                 adapter = linearAdapter.apply {
@@ -91,7 +104,9 @@ class SearchResultDirectMatchFragment :
             clDate.clickNoRepeat {
                 setCalendarState(clCalendar.visibility != View.VISIBLE)
             }
+            tvDate.text = getString(R.string.search_date_hint)
             calendarView.apply {
+                clearSingleSelect()
                 setAllMode()
                 setOnMonthChangeListener { year, month ->
                     setCalendarTitle(year, month)
@@ -121,22 +136,51 @@ class SearchResultDirectMatchFragment :
                 calendarView.scrollToNext(true)
             }
             tvReset.clickNoRepeat {
-                Calendar.getInstance().apply {
-                    timeInMillis = mViewModel.selectedDateFlow.value.time
-                }.apply {
-                    calendarView.scrollToCalendar(
-                        get(Calendar.YEAR),
-                        get(Calendar.MONTH) + 1,
-                        get(Calendar.DAY_OF_MONTH),
-                        true
+                calendarView.clearSingleSelect()
+                setCalendarState(clCalendar.visibility != View.VISIBLE)
+                mViewModel.setSelectedDate(null)
+                mViewModel.directMatchType?.let { type ->
+                    mViewModel.getSearchResult(
+                        requireContext(),
+                        mViewModel.directMatchId.toString(),
+                        type
                     )
                 }
             }
             tvConfirm.clickNoRepeat {
-                mViewModel.setSelectedDate(Date(calendarView.selectedCalendar.timeInMillis))
                 setCalendarState(clCalendar.visibility != View.VISIBLE)
+                mViewModel.setSelectedDate(Date(calendarView.selectedCalendar.timeInMillis))
+                mViewModel.directMatchType?.let { type ->
+                    mViewModel.getSearchResult(
+                        requireContext(),
+                        mViewModel.directMatchId.toString(),
+                        type,
+                        calendarView.selectedCalendar.timeInMillis.toDateStartTime(),
+                        calendarView.selectedCalendar.timeInMillis.toDateEndTime()
+                    )
+                }
             }
         }
+    }
+
+    private fun Long.toDateStartTime(): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = this@toDateStartTime
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+    }
+
+    private fun Long.toDateEndTime(): Long {
+        return Calendar.getInstance().apply {
+            timeInMillis = this@toDateEndTime
+            set(Calendar.HOUR_OF_DAY, 23)
+            set(Calendar.MINUTE, 59)
+            set(Calendar.SECOND, 59)
+            set(Calendar.MILLISECOND, 999)
+        }.timeInMillis
     }
 
     private fun setCalendarState(isOpen: Boolean = true) {
@@ -169,6 +213,14 @@ class SearchResultDirectMatchFragment :
                 monthStr,
                 "$year"
             )
+    }
+
+    private fun switchUI(state: RaceViewState) {
+        with(mBinding) {
+            loadingView.visibility = if(state == RaceViewState.Loading) View.VISIBLE else View.GONE
+            dynamicState.visibility = if (state ==  RaceViewState.Empty) View.VISIBLE else View.GONE
+            recyclerView.visibility = if (state == RaceViewState.Success) View.VISIBLE else View.GONE
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -237,7 +289,37 @@ class SearchResultDirectMatchFragment :
 
             lifecycleScope.launch {
                 combineResult.collect { combineResult ->
-                    linearAdapter.submitList(combineResult)
+                    when {
+                        combineResult == null -> switchUI(RaceViewState.Loading)
+                        combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
+                        else -> {
+                            linearAdapter.submitList(combineResult) {
+                                switchUI(RaceViewState.Success)
+                                mBinding.recyclerView.smoothScrollToPosition(0)
+                            }
+                        }
+                    }
+                }
+            }
+
+            lifecycleScope.launch {
+                selectedDateFlow.collect { date ->
+                    mBinding.tvDate.apply {
+                        text =
+                            if (date == null) getString(R.string.search_date_hint)
+                            else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
+                        setTextColor(
+                            if (date == null)
+                                SkinnableResourceManager.getColor(requireContext(), R.color.search_result_date)
+                            else
+                                SkinnableResourceManager.getColor(requireContext(), R.color.search_result_date_selected)
+                        )
+                    }
+                    mBinding.ivDateArrow.imageTintList =
+                        if(date == null)
+                            SkinnableResourceManager.getColorStateList(requireContext(), R.color.search_result_date)
+                        else
+                            SkinnableResourceManager.getColorStateList(requireContext(), R.color.search_result_date_selected)
                 }
             }
 

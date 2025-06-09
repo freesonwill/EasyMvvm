@@ -47,9 +47,7 @@ class SearchResultListFragment :
         mBinding.viewPager.setCurrentItem(position, isSmooth)
     }
 
-    override fun initListener() {
-    }
+    override fun initListener() = Unit
 
-    override fun createObserver() {
-    }
+    override fun createObserver() = Unit
 }

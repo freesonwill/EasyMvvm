@@ -72,20 +72,30 @@ class SearchViewModel : BaseViewModel() {
     val directData: StateFlow<SearchResultBaseBean?> = _directData.asStateFlow()
 
     /** 整理後搜尋結果 賽事用 */
-    private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>>(emptyList())
-    val combineResult: StateFlow<List<SearchResultRaceItemType>> = _combineResult.asStateFlow()
+    private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>?>(emptyList())
+    val combineResult: StateFlow<List<SearchResultRaceItemType>?> = _combineResult.asStateFlow()
 
     /** 漸層背景顏色 */
     private val _gradientBgColor = MutableSharedFlow<Int?>(replay = 1)
     val gradientBgColor: SharedFlow<Int?> = _gradientBgColor.asSharedFlow()
 
     /** 選擇的日期 */
-    private val _selectedDateFlow = MutableStateFlow(Date())
-    val selectedDateFlow: StateFlow<Date> = _selectedDateFlow.asStateFlow()
+    private val _selectedDateFlow = MutableStateFlow<Date?>(null)
+    val selectedDateFlow: StateFlow<Date?> = _selectedDateFlow.asStateFlow()
 
     /** 導航事件 */
     private val _navEvent = MutableSharedFlow<SearchNavigationEvent>()
     val navEvent: SharedFlow<SearchNavigationEvent> = _navEvent.asSharedFlow()
+
+    /** 精準搜尋結果類型 */
+    private var _directMatchType: SearchTypeEnum? = null
+    val directMatchType: SearchTypeEnum?
+        get() = _directMatchType
+
+    /** 精準搜尋結果 ID */
+    private var _directMatchId: Int? = null
+    val directMatchId: Int?
+        get() = _directMatchId
 
 
     /** 以 UID 取得搜尋紀錄 */
@@ -147,7 +157,7 @@ class SearchViewModel : BaseViewModel() {
     private fun resetResult() {
         _groupData.value = emptyList()
         _directData.value = null
-        _combineResult.value = emptyList()
+        _combineResult.value = null
     }
 
     /** 取得搜尋結果 */
@@ -175,6 +185,13 @@ class SearchViewModel : BaseViewModel() {
             SearchResultTypeEnum.TEAM,
             SearchResultTypeEnum.PLAYER -> {
                 setUiState(SearchResultUiState.DirectMatch(type = result.type))
+                _directMatchType = when(result.directData) {
+                    is SearchResultTournamentBean -> SearchTypeEnum.TOURNAMENT_ID
+                    is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
+                    is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
+                    else -> null
+                }
+                _directMatchId = result.directData?.id
                 _directData.value = result.directData
                 _combineResult.value = groupMatchesByDailyCount(
                     dailyCounts = result.dailyCount?.filter { it.count != 0 } ?: emptyList(),
@@ -249,24 +266,14 @@ class SearchViewModel : BaseViewModel() {
     }
 
     /** 取得精準搜尋結果 */
-    fun getSearchResult(context: Context, data: SearchResultBaseBean, startTime: Long? = null, endTime: Long? = null) {
+    fun getSearchResult(context: Context, id: String, type: SearchTypeEnum, startTime: Long? = null, endTime: Long? = null) {
         viewModelScope.launch {
             resetResult()
             setResult(
                 context,
                 repository.getSearchResult(
-                    word = when (data) {
-                        is SearchResultTournamentBean,
-                        is SearchResultTeamBean,
-                        is SearchResultPlayerBean -> data.id.toString()
-                        else -> ""
-                    },
-                    type = when (data) {
-                        is SearchResultTournamentBean -> SearchTypeEnum.TOURNAMENT_ID
-                        is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
-                        is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
-                        else -> SearchTypeEnum.NORMAL_WORD
-                    },
+                    word = id,
+                    type = type,
                     startTime = startTime,
                     endTime = endTime
                 )
@@ -291,7 +298,7 @@ class SearchViewModel : BaseViewModel() {
     }
 
     /** 設定選擇的日期 */
-    fun setSelectedDate(date: Date) {
+    fun setSelectedDate(date: Date?) {
         _selectedDateFlow.value = date
     }
 

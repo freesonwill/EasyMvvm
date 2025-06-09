@@ -16,6 +16,7 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
@@ -35,9 +36,9 @@ class SearchResultPageFragment :
     override val vmClass: KClass<SearchViewModel>
         get() = SearchViewModel::class
 
-    private val onItemClick = { item: SearchResultBaseBean ->
+    private val onItemClick = { id: String, type: SearchTypeEnum ->
         mViewModel.navigateTo(SearchNavigationEvent.ToSearchDirectMatch)
-        mViewModel.getSearchResult(requireContext(), item)
+        mViewModel.getSearchResult(requireContext(), id, type)
     }
 
     private val gridAdapter by lazy {

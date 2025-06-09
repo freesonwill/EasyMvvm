@@ -99,7 +99,7 @@
             tools:layout_editor_absoluteX="8dp">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_data"
+                android:id="@+id/tv_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="7dp"
@@ -120,9 +120,9 @@
                 android:layout_marginStart="4dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tv_data"
+                app:layout_constraintStart_toEndOf="@id/tv_date"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_search_result_date_arrow_white_blue" />
+                app:srcCompat="@drawable/ic_search_result_date_arrow" />
 
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
@@ -135,6 +135,24 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_date" />
 
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dynamic_state"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_date" />
+
+        <arch.cayenne.lib.common.ui.view.LoadingView
+            android:id="@+id/loading_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cl_date" />
+
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_calendar"
             android:layout_width="match_parent"
@@ -144,7 +162,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cl_date"
-            tools:visibility="visible">
+            tools:visibility="gone">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/iv_prev_month"

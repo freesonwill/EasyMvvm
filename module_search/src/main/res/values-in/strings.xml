@@ -20,4 +20,5 @@
     <string name="search_result_race_calendar_title">%1$s %2$s</string>
     <string name="search_calendar_reset">Atur Ulang</string>
     <string name="search_calendar_confirm">Konfirmasi</string>
+    <string name="search_result_race_playing">Sedang Berlangsung</string>
 </resources>

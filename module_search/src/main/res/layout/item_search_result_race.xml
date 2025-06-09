@@ -80,13 +80,13 @@
         android:textColor="@color/search_result_race_team_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
-        app:layout_constraintEnd_toStartOf="@id/iv_current_team_home"
+        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_home"
         app:layout_constraintStart_toStartOf="@id/barrier_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
         tools:text="2" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_current_team_home"
+        android:id="@+id/iv_arrow_team_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
@@ -133,13 +133,13 @@
         android:textColor="@color/search_result_race_team_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
-        app:layout_constraintEnd_toStartOf="@id/iv_current_team_away"
+        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_away"
         app:layout_constraintStart_toStartOf="@id/barrier_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         tools:text="299" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_current_team_away"
+        android:id="@+id/iv_arrow_team_away"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
@@ -177,10 +177,6 @@
         android:layout_height="34dp"
         android:background="@drawable/bg_search_result_bet_btn_state"
         android:gravity="center"
-        android:paddingStart="12dp"
-        android:paddingTop="7dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="7dp"
         android:text="@string/search_result_btn_bet"
         android:textColor="@color/btn_search_result_bet_text"
         android:textStyle="bold"
