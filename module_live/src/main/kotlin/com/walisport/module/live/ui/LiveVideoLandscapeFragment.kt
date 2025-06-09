@@ -535,8 +535,6 @@ class LiveVideoLandscapeFragment :
 
     override fun onStop() {
         super.onStop()
-
-        videoView.onStop()
     }
 
     override fun onResume() {
