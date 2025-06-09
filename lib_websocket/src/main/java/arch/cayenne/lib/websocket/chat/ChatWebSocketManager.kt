@@ -56,7 +56,10 @@ class ChatWebSocketManager(
                         stopReconnect()
                         startHeartbeat()
                     }
-                    is ConnectState.ConnectClosed -> Unit
+                    is ConnectState.ConnectClosed -> {
+                        stopReconnect()
+                        stopHeartbeat()
+                    }
                     else -> {
                         stopHeartbeat()
                         startReconnect()

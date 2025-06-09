@@ -44,7 +44,7 @@
         android:label="fragment_live_league"
         tools:layout="@layout/fragment_league">
 
-        <deepLink app:uri="walisport://module_live/leagueFragment" />
+        <deepLink app:uri="@string/nav_module_league_fragment" />
 
         <!--从联赛日程页跳转到直播详情页-->
         <action

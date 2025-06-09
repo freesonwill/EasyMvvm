@@ -121,8 +121,9 @@ class ChatSocketClientService(
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         val data = security.decrypt(byteArray)
-                        if((data as SocketOriginResponseData).originProto?.isNotEmpty() == true)
-                        "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
+                        if((data as SocketOriginResponseData).originProto?.isNotEmpty() == true){
+                            "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
+                        }
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {

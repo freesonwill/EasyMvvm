@@ -7,5 +7,6 @@
     <string name="nav_module_handicap_fragment">walisport://module_handicap/HandicapFragment</string>
     <string name="nav_module_feedback_fragment">walisport://module_feedback/feedbackFragment</string>
     <string name="nav_module_live_fragment">walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}</string>
+    <string name="nav_module_league_fragment">walisport://module_live/leagueFragment</string>
 
 </resources>
