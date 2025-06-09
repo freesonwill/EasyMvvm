@@ -119,6 +119,9 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             launch {
                 betRepo.observeBetType().collect {
                     _betTypeListener.value = it
+                    if (it == BetTypeEnum.RESERVE) {
+                        _onReserveOddsListener.value = betRepo.getReserveOdds()
+                    }
                 }
             }
         }
@@ -154,7 +157,6 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
 
     fun saveToReserve(odds: Int) {
         betRepo.saveToReserve(odds)
-        _onReserveOddsListener.value = odds
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {

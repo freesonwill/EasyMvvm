@@ -101,6 +101,15 @@ class SingleBetRepository(
         }
     }
 
+    suspend fun getReserveOdds(): Int {
+        val bet = betDao.getCurrentBet()
+        if (bet?.betType == BetTypeEnum.RESERVE) {
+            val detail = betDao.getDetail(bet.betId).firstOrNull()
+            return detail?.sumOdds ?: 0
+        }
+        return 0
+    }
+
     fun saveInputMoney(money: Long) {
         scope.launch {
             betDao.getCurrentBet()?.let {
