@@ -9,9 +9,10 @@ data class SportFilterBean(
     var isSelected: Boolean = false
 ) {
     companion object {
+        const val ALL_TYPE_ID = -1
         fun getAllTypeBean(): SportFilterBean {
             return SportFilterBean(
-                sportId = -1,
+                sportId = ALL_TYPE_ID,
                 sportName = R.string.sport_picker_all.getString(),
                 isSelected = true
             )

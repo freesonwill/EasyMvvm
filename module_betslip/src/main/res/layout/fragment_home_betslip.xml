@@ -27,8 +27,8 @@
             android:layout_height="wrap_content"
             android:layout_marginVertical="12dp"
             android:text="@string/title_betslip"
-            android:textSize="17sp"
             android:textColor="@color/navigation_bar"
+            android:textSize="17sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,18 +68,24 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_sport_filter"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:background="@drawable/bg_filter"
             android:drawablePadding="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
             android:textColor="@color/main_text"
             app:drawableEndCompat="@mipmap/ic_bet_slip_filter"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tv_date_filter"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_default="wrap" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_date_filter"

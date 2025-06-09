@@ -14,9 +14,9 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
         const val SIZE = 10
     }
 
-    private var ids: Pair<Long, Int> = Pair(-1, -1)
+    private var ids: Pair<Long, List<Int>> = Pair(-1, listOf(-1))
     protected val matchId: Long get() = ids.first
-    protected val sportId: Int get() = ids.second
+    protected val sportIds: List<Int> get() = ids.second
 
     private var times: Pair<Long?, Long?> = Pair(null, null)
     protected val startTime: Long? get() = times.first
@@ -26,7 +26,11 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
     val state: LiveData<Event<DynamicStateLayout.States>> = _state
 
     fun setIds(matchId: Long, sportId: Int) {
-        this.ids = Pair(matchId, sportId)
+        this.ids = Pair(matchId, listOf(sportId))
+    }
+
+    fun setIds(matchId: Long, sportIds: List<Int>) {
+        this.ids = Pair(matchId, sportIds)
     }
 
     fun setTime(startTime: Long?, endTime: Long?) {

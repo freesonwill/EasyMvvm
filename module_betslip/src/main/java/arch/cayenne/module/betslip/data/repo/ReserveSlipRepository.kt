@@ -13,7 +13,7 @@ class ReserveSlipRepository(
     suspend fun getReserveOrder(
         startTime: Long?,
         endTime: Long?,
-        sportId: Int,
+        sportIds: List<Int>,
         matchId: Long,
         cursorBetTime: Long?,
         size: Int,
@@ -21,8 +21,8 @@ class ReserveSlipRepository(
         return remoteManager.getReserveOrder(
             startTime,
             endTime,
-            sportId,
-            matchId,
+            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
+            if (matchId == -1L) null else matchId,
             cursorBetTime,
             size
         )

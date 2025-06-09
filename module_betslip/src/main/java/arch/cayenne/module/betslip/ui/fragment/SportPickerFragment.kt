@@ -23,11 +23,11 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     companion object {
         const val TAG = "SportPickerFragment"
         private const val ANCHOR_Y = "anchorY"
-        fun newInstance(anchorY: Int, sportId: Int): SportPickerFragment {
+        fun newInstance(anchorY: Int, sportIds: List<Int>): SportPickerFragment {
             return SportPickerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ANCHOR_Y, anchorY)
-                    putInt(Config.VALUE_SELECTED_SPORT_ID, sportId)
+                    putIntArray(Config.VALUE_SELECTED_SPORT_ID, sportIds.toIntArray())
                 }
             }
         }
@@ -67,19 +67,18 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     }
 
     override fun initData() {
-        val sportId = requireArguments().getInt(Config.VALUE_SELECTED_SPORT_ID, -1)
-        mViewModel.setSelectedById(sportId)
+        requireArguments().getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.let {  sportIds ->
+            mViewModel.setSelectedById(sportIds)
+        }
     }
 
     override fun initListener() {
         mBinding.tvReset.setOnClickListener {
-            mViewModel.setSelectedById(-1)
+            mViewModel.reset()
+            sendResult()
         }
         mBinding.tvConfirm.setOnClickListener {
-            val bean = mViewModel.getSelectedSportBean()
-            resultBundle.putInt(Config.VALUE_SELECTED_SPORT_ID, bean.sportId)
-            resultBundle.putString(Config.VALUE_SELECTED_SPORT_NAME, bean.sportName)
-            collapseView()
+            sendResult()
         }
         mBinding.maskView.setOnClickListener {
             collapseView()
@@ -169,5 +168,11 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
                 .add(containerId, this, this.javaClass.simpleName)
                 .commit()
         }
+    }
+
+    private fun sendResult() {
+        val bean = mViewModel.getSelectedSportBean()
+        resultBundle.putIntArray(Config.VALUE_SELECTED_SPORT_ID, bean.map { it.sportId }.toIntArray())
+        collapseView()
     }
 }

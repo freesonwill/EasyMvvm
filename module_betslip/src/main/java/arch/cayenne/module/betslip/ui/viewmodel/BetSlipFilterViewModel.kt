@@ -12,7 +12,7 @@ class BetSlipFilterViewModel: BaseViewModel() {
 
     private var startTime: Long? = null
     private var endTime: Long? = null
-    private var sportId: Int = -1
+    private var sportId: List<Int> = listOf(-1)
     private var matchId: Long = -1
 
     fun init() {
@@ -27,13 +27,20 @@ class BetSlipFilterViewModel: BaseViewModel() {
 
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
-        this.sportId = sportId
+        this.sportId = listOf(sportId)
         updateFilter()
     }
 
+    fun setIds(matchId: Long, sportIds: List<Int>) {
+        this.matchId = matchId
+        this.sportId = sportIds
+        updateFilter()
+    }
+
+
     private fun updateFilter() {
         _onFilterChangeListener.value = BetSlipFilterBean(
-            sportId = sportId,
+            sportIds = sportId,
             matchId = matchId,
             startTime = startTime,
             endTime = endTime

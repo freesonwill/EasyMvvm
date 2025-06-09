@@ -25,7 +25,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 endTime,
                 null,
                 SIZE,
-                sportId,
+                sportIds,
                 matchId,
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
@@ -45,7 +45,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 endTime,
                 list?.lastOrNull()?.order?.betTime,
                 SIZE,
-                sportId,
+                sportIds,
                 matchId,
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
@@ -76,7 +76,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 endTime,
                 previousItem?.order?.betTime,
                 1,
-                sportId,
+                sportIds,
                 matchId,
             )?.let { result ->
                 val updatedItem = result.toBetSlipOrderData().firstOrNull() ?: return@let
