@@ -5,7 +5,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import com.walisport.module.search.R
@@ -15,22 +14,18 @@ import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatc
 import com.walisport.module.search.data.constants.SearchResultUiState.Empty
 import com.walisport.module.search.data.constants.SearchResultUiState.Loading
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
+import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class SearchResultBaseFragment :
-    BaseFragment<SearchViewModel, FragmentSearchResultBaseBinding>() {
+    BaseFragment<SearchResultBaseViewModel, FragmentSearchResultBaseBinding>() {
     override val vbClass: KClass<FragmentSearchResultBaseBinding>
         get() = FragmentSearchResultBaseBinding::class
-    override val vmClass: KClass<SearchViewModel>
-        get() = SearchViewModel::class
-
-    override fun createVM(): SearchViewModel {
-        return activityViewModel<SearchViewModel>().value
-    }
+    override val vmClass: KClass<SearchResultBaseViewModel>
+        get() = SearchResultBaseViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -48,7 +43,7 @@ class SearchResultBaseFragment :
             ?.get<String>("searchKey")
             ?.let { key ->
                 if (key.isNotEmpty()) {
-                    mViewModel.getSearchResult(requireContext(), key)
+                    mViewModel.getSearchResult(key)
 
                     findNavController().previousBackStackEntry
                         ?.savedStateHandle
@@ -64,8 +59,8 @@ class SearchResultBaseFragment :
             lifecycleScope.launch {
                 uiState.collect {
                     when (it) {
-                        is ResultList -> goToListResult()
-                        is DirectMatch -> goToDirectMatch()
+                        is ResultList -> goToListResult(it.data)
+                        is DirectMatch -> goToDirectMatch(it.data)
                         is Loading -> switchUi(it)
                         is Empty -> switchUi(it)
                     }
@@ -85,11 +80,15 @@ class SearchResultBaseFragment :
         }
     }
 
-    private fun goToListResult() {
-        mViewModel.navigateTo(SearchNavigationEvent.ToSearchList)
+    private fun goToListResult(data: SearchResultBean) {
+        navigateTo(SearchNavigationEvent.ToSearchList(data))
     }
 
-    private fun goToDirectMatch() {
-        mViewModel.navigateTo(SearchNavigationEvent.ToSearchDirectMatch)
+    private fun goToDirectMatch(data: SearchResultBean) {
+        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(data))
+    }
+
+    private fun navigateTo(event: SearchNavigationEvent) {
+        (requireParentFragment().parentFragment as SearchFragment).navigateTo(event)
     }
 }

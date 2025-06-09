@@ -10,9 +10,6 @@ import android.text.TextUtils
 import android.view.View
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,11 +26,10 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -51,16 +47,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private val recommendAdapter by lazy {
         RecommendAdapter { word ->
             resetSearchRecommend()
-            mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(word))
-            mViewModel.setSearchKey(word)
-            mViewModel.addOneRecord(word)
+            navigateTo(SearchNavigationEvent.ToSearchResultBase(word))
+            updateSearchKey(word)
+            addSearchRecord(word)
         }
     }
     private var canSearch: Boolean = true
-
-    override fun createVM(): SearchViewModel {
-        return activityViewModel<SearchViewModel>().value
-    }
 
     override fun onStart() {
         updateStatusTitleBar()
@@ -94,7 +86,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(recommendWord))
+                                    navigateTo(SearchNavigationEvent.ToSearchResultBase(recommendWord))
                                     resetSearchRecommend()
                                 }
                             }
@@ -110,9 +102,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             return@loadSearchTitleBar
                         }
                         resetSearchRecommend()
-                        getRecordByUID()
-                        mViewModel.addOneRecord(content)
-                        mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
+//                        getRecordByUID()
+                        //TODO 呼叫子層
+                        addSearchRecord(content)
+                        navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
                     },
                     onBack = {
                         requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -182,6 +175,13 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
 
+    fun addSearchRecord(word: String) {
+        if (word.isNotEmpty()) {
+            mViewModel.addOneRecord(word)
+            notifyUpdateRecordList(word)
+        }
+    }
+
     private fun setBackPressHandler() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
@@ -207,7 +207,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
-        mViewModel.clearSearchRecommend()
+        clearSearchRecommend()
     }
 
     private fun getSearchEditText(): ClearableEditText {
@@ -229,7 +229,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         canSearch = true
     }
 
-    private fun updateResultBackground(isShow: Boolean, color: Int? = null) {
+    private fun setResultBackground(isShow: Boolean, color: Int? = null) {
         mBinding.clRoot.apply {
             if (isShow) {
                 background = GradientDrawable(
@@ -299,76 +299,90 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
 
-    private fun observeNavigation() {
-        with(mViewModel) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    navEvent.collect { event ->
-                        val navController = mBinding.fragmentContainer.findNavController()
-                        val currentId = navController.currentDestination?.id ?: return@collect
+    private fun doNavigate(event: SearchNavigationEvent) {
+        val navController = mBinding.fragmentContainer.findNavController()
+        val currentId = navController.currentDestination?.id ?: return
 
-                        when (event) {
-                            is SearchNavigationEvent.ToSearchResultBase -> {
-                                mapOf(
-                                    R.id.searchMainFragment to R.id.action_searchMainFragment_to_searchResultBaseFragment,
-                                    R.id.searchResultListFragment to R.id.action_searchResultListFragment_to_searchResultBaseFragment,
-                                    R.id.searchResultDirectMatchFragment to R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment
-                                )[currentId]?.let { actionId ->
-                                    navController.currentBackStackEntry
-                                        ?.savedStateHandle
-                                        ?.set("searchKey", event.searchKey)
+        when (event) {
+            is SearchNavigationEvent.ToSearchResultBase -> {
+                mapOf(
+                    R.id.searchMainFragment to R.id.action_searchMainFragment_to_searchResultBaseFragment,
+                    R.id.searchResultListFragment to R.id.action_searchResultListFragment_to_searchResultBaseFragment,
+                    R.id.searchResultDirectMatchFragment to R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment
+                )[currentId]?.let { actionId ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("searchKey", event.searchKey)
 
-                                    navController.navigate(actionId)
-                                }
-                            }
-                            is SearchNavigationEvent.ToSearchDirectMatch -> {
-                                if (currentId == R.id.searchResultBaseFragment) {
-                                    navController.navigate(R.id.action_searchResultBaseFragment_to_searchResultDirectMatchFragment)
-                                } else if (currentId == R.id.searchResultListFragment) {
-                                    navController.navigate(R.id.action_searchResultListFragment_to_searchResultDirectMatchFragment)
-                                }
-                            }
-                            is SearchNavigationEvent.ToSearchList -> {
-                                if (currentId == R.id.searchResultBaseFragment) {
-                                    navController.navigate(R.id.action_searchResultBaseFragment_to_searchResultListFragment)
-                                }
-                            }
-
-                            is SearchNavigationEvent.ToLiveFragment -> {
-                                findNavController()
-                                    .navigate(Uri.parse(event.deepLink))
-                            }
-                        }
-                    }
-
+                    navController.navigate(actionId)
                 }
             }
+            is SearchNavigationEvent.ToSearchDirectMatch -> {
+                if (currentId == R.id.searchResultBaseFragment) {
+                    val action =
+                        SearchResultBaseFragmentDirections
+                            .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
+                                event.data, null, SearchTypeEnum.UNKNOWN
+                            )
+                    navController.navigate(action)
+                } else if (currentId == R.id.searchResultListFragment) {
+                    val action =
+                        SearchResultListFragmentDirections
+                            .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
+                                null, event.id, event.type ?: SearchTypeEnum.UNKNOWN
+                            )
+                    navController.navigate(action)
+                }
+            }
+            is SearchNavigationEvent.ToSearchList -> {
+                if (currentId == R.id.searchResultBaseFragment) {
+                    val action = SearchResultBaseFragmentDirections
+                        .actionSearchResultBaseFragmentToSearchResultListFragment(event.data)
+                    navController.navigate(action)
+                }
+            }
+
+            is SearchNavigationEvent.ToLiveFragment -> {
+                findNavController()
+                    .navigate(Uri.parse(event.deepLink))
+            }
         }
+    }
+
+    private fun notifyUpdateRecordList(key: String) {
+        childFragmentManager.fragments
+            .filterIsInstance<SearchMainFragment>()
+            .forEach { fragment ->
+                (fragment as? SearchMainFragment)?.notifyUpdateRecordList(key)
+            }
+    }
+
+    fun navigateTo(event: SearchNavigationEvent) {
+        doNavigate(event)
+    }
+
+    fun updateSearchKey(key: String) {
+        updateSearchText(key)
+        navigateTo(SearchNavigationEvent.ToSearchResultBase(key))
+    }
+
+    fun clearSearchRecommend() {
+        mViewModel.clearSearchRecommend()
+    }
+
+    fun updateResultBackground(color: Int?) {
+        setResultBackground(
+            color != null,
+            color ?: R.color.search_result_default_gradient_start
+        )
     }
 
     override fun initListener() = Unit
 
     override fun createObserver() {
-        observeNavigation()
         with(mViewModel) {
             searchRecommend.observe(viewLifecycleOwner) {
                 recommendAdapter.submitList(it)
-            }
-
-            lifecycleScope.launch {
-                searchKey.collect { key ->
-                    updateSearchText(key)
-                    navigateTo(SearchNavigationEvent.ToSearchResultBase(key))
-                }
-            }
-
-            lifecycleScope.launch {
-                gradientBgColor.collect {
-                    updateResultBackground(
-                        it != null,
-                        it ?: R.color.search_result_default_gradient_start
-                    )
-                }
             }
         }
     }

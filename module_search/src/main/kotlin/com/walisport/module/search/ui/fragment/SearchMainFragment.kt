@@ -4,7 +4,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -17,30 +16,24 @@ import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.databinding.FragmentSearchMainBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.walisport.module.search.ui.viewmodel.SearchMainViewModel
 import kotlin.reflect.KClass
 
-class SearchMainFragment: BaseFragment<SearchViewModel, FragmentSearchMainBinding>() {
+class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBinding>() {
     override val vbClass: KClass<FragmentSearchMainBinding>
         get() = FragmentSearchMainBinding::class
-    override val vmClass: KClass<SearchViewModel>
-        get() = SearchViewModel::class
+    override val vmClass: KClass<SearchMainViewModel>
+        get() = SearchMainViewModel::class
 
     private var historyAdapter: SearchHistoryAdapter? = null
     private var isEditor: Boolean = false
 
     private val hotWordAdapter by lazy {
         HotWordAdapter { hotWord ->
-            mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(hotWord))
-            mViewModel.setSearchKey(hotWord)
-            mViewModel.addOneRecord(hotWord)
+            navigateTo(SearchNavigationEvent.ToSearchResultBase(hotWord))
+            updateSearchKey(hotWord)
+            (requireParentFragment().parentFragment as? SearchFragment)?.addSearchRecord(hotWord)
         }
-    }
-
-    override fun createVM(): SearchViewModel {
-        return activityViewModel<SearchViewModel>().value
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -70,12 +63,6 @@ class SearchMainFragment: BaseFragment<SearchViewModel, FragmentSearchMainBindin
                     hotWordAdapter.submitList(it)
                     clHotWord.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
                 }
-
-                lifecycleScope.launch {
-                    addOneRecord.collect { word ->
-                        historyAdapter?.addData(word)
-                    }
-                }
             }
         }
     }
@@ -92,9 +79,9 @@ class SearchMainFragment: BaseFragment<SearchViewModel, FragmentSearchMainBindin
                     },
                     onSearch = { content ->
                         content?.let {
-                            mViewModel.setSearchKey(content)
-                            mViewModel.navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
+                            updateSearchKey(content)
                             clearSearchRecommend()
+                            navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
                         }
                     }
                 )
@@ -181,5 +168,21 @@ class SearchMainFragment: BaseFragment<SearchViewModel, FragmentSearchMainBindin
                 llShowCompleted.visibility = View.GONE
             }
         }
+    }
+
+    private fun navigateTo(event: SearchNavigationEvent) {
+        (requireParentFragment().parentFragment as? SearchFragment)?.navigateTo(event)
+    }
+
+    private fun updateSearchKey(key: String) {
+        (requireParentFragment().parentFragment as? SearchFragment)?.updateSearchKey(key)
+    }
+
+    private fun clearSearchRecommend() {
+        (requireParentFragment().parentFragment as? SearchFragment)?.clearSearchRecommend()
+    }
+
+    fun notifyUpdateRecordList(word: String) {
+        historyAdapter?.addData(word)
     }
 }

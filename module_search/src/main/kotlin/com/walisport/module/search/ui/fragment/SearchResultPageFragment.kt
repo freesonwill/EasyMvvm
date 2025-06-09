@@ -17,28 +17,26 @@ import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
-import com.walisport.module.search.data.model.SearchResultBaseBean
+import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultPageViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
-class SearchResultPageFragment :
-    BaseFragment<SearchViewModel, FragmentSearchResultPageBinding>() {
+class SearchResultPageFragment(val data: SearchResultBean) :
+    BaseFragment<SearchResultPageViewModel, FragmentSearchResultPageBinding>() {
     override val vbClass: KClass<FragmentSearchResultPageBinding>
         get() = FragmentSearchResultPageBinding::class
-    override val vmClass: KClass<SearchViewModel>
-        get() = SearchViewModel::class
+    override val vmClass: KClass<SearchResultPageViewModel>
+        get() = SearchResultPageViewModel::class
 
     private val onItemClick = { id: String, type: SearchTypeEnum ->
-        mViewModel.navigateTo(SearchNavigationEvent.ToSearchDirectMatch)
-        mViewModel.getSearchResult(requireContext(), id, type)
+        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(id = id, type = type))
     }
 
     private val gridAdapter by lazy {
@@ -64,9 +62,10 @@ class SearchResultPageFragment :
     }
 
     companion object {
-        fun newInstance(type: String) = SearchResultPageFragment().apply {
-            arguments = Bundle().apply { putString("type", type) }
-        }
+        fun newInstance(type: String, data: SearchResultBean) =
+            SearchResultPageFragment(data).apply {
+                arguments = Bundle().apply { putString("type", type) }
+            }
 
         internal const val TYPE_ALL = "TYPE_ALL"
         internal const val TYPE_TOURNAMENT = "TYPE_TOURNAMENT"
@@ -74,12 +73,13 @@ class SearchResultPageFragment :
         internal const val TYPE_PLAYER = "TYPE_PLAYER"
     }
 
-    override fun createVM(): SearchViewModel {
-        return activityViewModel<SearchViewModel>().value
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         updateUI()
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.setResult(requireContext(), data)
     }
 
     private fun updateUI() {
@@ -165,6 +165,10 @@ class SearchResultPageFragment :
 
     private fun getType(): String {
         return arguments?.getString("type") ?: TYPE_ALL
+    }
+
+    private fun navigateTo(event: SearchNavigationEvent) {
+        (requireParentFragment().requireParentFragment().parentFragment as? SearchFragment)?.navigateTo(event)
     }
 
     override fun initListener() {

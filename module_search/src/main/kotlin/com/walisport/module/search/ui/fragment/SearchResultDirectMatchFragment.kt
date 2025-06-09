@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -25,9 +26,8 @@ import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -35,16 +35,18 @@ import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchResultDirectMatchFragment :
-    BaseFragment<SearchViewModel, FragmentSearchResultDirectMatchBinding>() {
+    BaseFragment<SearchResultDirectMatchViewModel, FragmentSearchResultDirectMatchBinding>() {
     override val vbClass: KClass<FragmentSearchResultDirectMatchBinding>
         get() = FragmentSearchResultDirectMatchBinding::class
-    override val vmClass: KClass<SearchViewModel>
-        get() = SearchViewModel::class
+    override val vmClass: KClass<SearchResultDirectMatchViewModel>
+        get() = SearchResultDirectMatchViewModel::class
+
+    private val args: SearchResultDirectMatchFragmentArgs by navArgs()
 
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
             onBetClick = { match ->
-                mViewModel.navigateTo(
+                navigateTo(
                     SearchNavigationEvent.ToLiveFragment(
                         "walisport://module_live/liveFragment?matchId=${match.matchId}&sportId=${match.basicInfo.sportId}"
                     )
@@ -55,10 +57,6 @@ class SearchResultDirectMatchFragment :
 
     enum class RaceViewState {
         Loading, Empty, Success
-    }
-
-    override fun createVM(): SearchViewModel {
-        return activityViewModel<SearchViewModel>().value
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -141,7 +139,6 @@ class SearchResultDirectMatchFragment :
                 mViewModel.setSelectedDate(null)
                 mViewModel.directMatchType?.let { type ->
                     mViewModel.getSearchResult(
-                        requireContext(),
                         mViewModel.directMatchId.toString(),
                         type
                     )
@@ -152,13 +149,24 @@ class SearchResultDirectMatchFragment :
                 mViewModel.setSelectedDate(Date(calendarView.selectedCalendar.timeInMillis))
                 mViewModel.directMatchType?.let { type ->
                     mViewModel.getSearchResult(
-                        requireContext(),
                         mViewModel.directMatchId.toString(),
                         type,
                         calendarView.selectedCalendar.timeInMillis.toDateStartTime(),
                         calendarView.selectedCalendar.timeInMillis.toDateEndTime()
                     )
                 }
+            }
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        args.data?.let { data ->
+            mViewModel.getSearchResult(data)
+        }
+        args.id?.let { id ->
+            args.type.let { type ->
+                mViewModel.getSearchResult(id, type)
             }
         }
     }
@@ -270,11 +278,19 @@ class SearchResultDirectMatchFragment :
             ivPlayer.visibility = if(isPlayer) View.VISIBLE else View.GONE
             ivIcon.visibility = if(!isPlayer) View.VISIBLE else View.GONE
 
-            mViewModel.setGradientBgColor(
+            updateResultBackground(
                 if(data.color?.isNotEmpty() == true) Color.parseColor(data.color)
                 else ContextCompat.getColor(requireContext(), R.color.search_result_default_gradient_start)
             )
         }
+    }
+
+    private fun navigateTo(event: SearchNavigationEvent) {
+        (requireParentFragment().parentFragment as SearchFragment).navigateTo(event)
+    }
+
+    private fun updateResultBackground(color: Int? = null) {
+        (requireParentFragment().parentFragment as? SearchFragment)?.updateResultBackground(color)
     }
 
     override fun initListener() = Unit
@@ -325,7 +341,7 @@ class SearchResultDirectMatchFragment :
 
             viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
                 override fun onStop(owner: LifecycleOwner) {
-                    mViewModel.setGradientBgColor(null)
+                    updateResultBackground(null)
                     super.onStop(owner)
                 }
             })

@@ -20,12 +20,25 @@
         android:name="com.walisport.module.search.ui.fragment.SearchResultBaseFragment"
         android:label="SearchResultBase"
         tools:layout="@layout/fragment_search_result_base">
+
         <action
             android:id="@+id/action_searchResultBaseFragment_to_searchResultListFragment"
-            app:destination="@id/searchResultListFragment" />
+            app:destination="@id/searchResultListFragment">
+
+            <argument
+                android:name="data"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
+
         <action
             android:id="@+id/action_searchResultBaseFragment_to_searchResultDirectMatchFragment"
-            app:destination="@id/searchResultDirectMatchFragment" />
+            app:destination="@id/searchResultDirectMatchFragment">
+
+            <argument
+                android:name="data"
+                app:nullable="true"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
     </fragment>
 
     <fragment
@@ -33,9 +46,20 @@
         android:name="com.walisport.module.search.ui.fragment.SearchResultListFragment"
         android:label="SearchResultList"
         tools:layout="@layout/fragment_search_result_list" >
+
+        <argument
+            android:name="data"
+            app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+
         <action
             android:id="@+id/action_searchResultListFragment_to_searchResultDirectMatchFragment"
-            app:destination="@id/searchResultDirectMatchFragment" />
+            app:destination="@id/searchResultDirectMatchFragment">
+
+            <argument
+                android:name="data"
+                app:nullable="true"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
         <action
             android:id="@+id/action_searchResultListFragment_to_searchResultBaseFragment"
             app:destination="@id/searchResultBaseFragment" />
@@ -46,8 +70,33 @@
         android:name="com.walisport.module.search.ui.fragment.SearchResultDirectMatchFragment"
         android:label="SearchResultList"
         tools:layout="@layout/fragment_search_result_direct_match" >
+
+        <argument
+            android:name="data"
+            app:nullable="true"
+            app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+
+        <argument
+            android:name="id"
+            app:nullable="true"
+            app:argType="string"/>
+
+        <argument
+            android:name="type"
+            app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
+
         <action
             android:id="@+id/action_searchResultDirectMatchFragment_to_searchResultBaseFragment"
-            app:destination="@id/searchResultBaseFragment" />
+            app:destination="@id/searchResultBaseFragment">
+
+            <argument
+                android:name="id"
+                app:nullable="true"
+                app:argType="string"/>
+
+            <argument
+                android:name="type"
+                app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
+        </action>
     </fragment>
 </navigation>
