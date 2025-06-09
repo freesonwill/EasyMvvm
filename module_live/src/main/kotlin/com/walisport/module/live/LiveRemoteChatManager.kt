@@ -23,13 +23,11 @@ import arch.cayenne.lib.websocket.chat.extension.chatObserveProtoMessage
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.google.gson.Gson
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transform
 
 class LiveRemoteChatManager(
-    private val scope: CoroutineScope,
     private val socketManager: ChatWebSocketManager,
     private val userDataManager: UserDataManager
 ) {
@@ -65,7 +63,8 @@ class LiveRemoteChatManager(
         val token = "NTU0NjkwMTJfMTc0OTI4MDMzNDY2ODpJeXE5NkJDaUl5OW9XWEVv" //真机
 
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
-            ApiCode.CHAT_LOGIN, responseCode = ChatResponseCode.LOGIN
+            ApiCode.CHAT_LOGIN,
+            responseCode = ChatResponseCode.LOGIN
         ) {
             ChatLoginRequestData(uid.toLong(), token, PLATFORM)
         }

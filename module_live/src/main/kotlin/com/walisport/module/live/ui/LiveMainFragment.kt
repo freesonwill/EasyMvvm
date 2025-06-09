@@ -1,22 +1,18 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -31,7 +27,6 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -220,9 +215,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
     }
 
-    fun isSoftKeyBoardVisible():Boolean{
+    private fun isSoftKeyBoardVisible():Boolean{
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
-        val tag = "f${adapter?.getItemId(2)}"
+        val index = adapter!!.pages.indexOfFirst{ it.title == R.string.live_chat.getString() }
+        val tag = "f${adapter.getItemId(index)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
         val flag = fragment?.isSoftKeyboardVisible() ?: false
         return flag

@@ -12,7 +12,7 @@ import arch.cayenne.lib.base.data.model.PagerBean
 class PagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
-    private val pages: List<PagerBean>
+    val pages: List<PagerBean>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemCount(): Int = pages.size
