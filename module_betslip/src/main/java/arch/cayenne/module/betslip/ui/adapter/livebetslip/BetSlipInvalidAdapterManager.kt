@@ -4,33 +4,34 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import galaxy.common.proto.Common.Order
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
 
 class BetSlipInvalidAdapterManager(
     private val binding: AdapterLiveBetSlipInvalidBinding, private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding, betSlipType) {
+) : BetSlipBaseAdapterManager(binding) {
 
     override fun createViewHolder() {
         initRecyclerView(binding.recyclerSelection,betSlipType)
     }
 
     override fun covertPlus(position: Int, item: BetSlipData) {
-        item.order?.let {
+        if (item is BetSlipOrder) {
             updateData(item.order, false)
+            submitAdapter(binding.recyclerSelection,item,position)
         }
-        submitAdapter(binding.recyclerSelection,item,position)
     }
 
     /**
      * 失效更新数据
      * */
     private fun updateData(
-        item: Order, isReserve: Boolean
+        item: OrderBean, isReserve: Boolean
     ) {
         if (isReserve) {
             updateReserve(item)
@@ -39,7 +40,7 @@ class BetSlipInvalidAdapterManager(
         }
     }
 
-    private fun updateReserve(item: Order) {
+    private fun updateReserve(item: OrderBean) {
         with(binding) {
             betExpiredTvStatus.text =
                 root.context.resources.getString(R.string.live_bet_reserve_expired)
@@ -63,7 +64,7 @@ class BetSlipInvalidAdapterManager(
         }
     }
 
-    private fun updateInvalid(item: Order) {
+    private fun updateInvalid(item: OrderBean) {
         with(binding) {
             betExpiredTvDate.text = item.betTime.getDetailFormatDate()
             betExpiredTvStatus.text = root.context.resources.getString(R.string.live_bet_rejection)

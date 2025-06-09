@@ -20,6 +20,8 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import com.walisport.module.live.R
+import com.xxx.qyplayer.PlayerState
+
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
@@ -111,6 +113,12 @@ class LiveVideoViewModel(
     private val muteManager: MuteManager by inject { parametersOf() }
 
     fun mutedData() = muteManager.mutedLiveData
+
+    /**
+     * 播放状态
+     */
+    private val _playerState = MutableLiveData(PlayerState.IDLE)
+    val playerState: LiveData<PlayerState> get() = _playerState
 
     /**
      * 改变静音状态
@@ -251,5 +259,9 @@ class LiveVideoViewModel(
                 _mainMatch.value = it
             }
         }
+    }
+
+    fun setPlayerState(it: PlayerState) {
+        _playerState.value = it
     }
 }

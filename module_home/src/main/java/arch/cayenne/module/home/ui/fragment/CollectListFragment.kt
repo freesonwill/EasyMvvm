@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -129,9 +131,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = it.getFormalMoney()
+            titleBarBinding.tvMoney.text = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()

@@ -11,4 +11,9 @@
     <color name="dynamic_text_white_green">#666666</color>
     <color name="progress_text_white_green">#222222</color>
     <color name="list_separator_white_green">#F6F6F6</color>
+
+    <color name="main_background_white_green">#EEEEEE</color>
+    <color name="card_background_white_green">#FFFFFF</color>
+    <color name="champions_list_white_green">#FEFFFE</color>
+    <color name="card_odds_background_white_green">#F3F3F4</color>
 </resources>

@@ -129,13 +129,6 @@ class LivePlayerView @JvmOverloads constructor(
     }
 
     /**
-     * 数据源为空
-     */
-    fun onDataSourceEmpty(){
-        updatePlayState(PlayerState.ERROR)
-    }
-
-    /**
      * 切换播放状态。点播放按钮之后的操作
      */
     private fun switchPlayerState() {

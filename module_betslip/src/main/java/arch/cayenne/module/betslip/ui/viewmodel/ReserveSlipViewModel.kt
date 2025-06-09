@@ -6,16 +6,16 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipReserve
+import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
-import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 
 class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlipViewModel() {
 
     //预约注单
-    private val _reserveLiveData = MutableLiveData<List<BetSlipData>>()
-    val reserveLiveData: LiveData<List<BetSlipData>> = _reserveLiveData
+    private val _reserveLiveData = MutableLiveData<List<BetSlipReserve>>()
+    val reserveLiveData: LiveData<List<BetSlipReserve>> = _reserveLiveData
 
     //取消预约
     private val _cancelReserveLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
@@ -28,7 +28,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     /**
      * 取消预约
      * */
-    fun cancelReserve(order: Common.ReserveOrder) {
+    fun cancelReserve(order: ReserveOrderBean) {
         viewModelScope.launch {
             val result = repo.reserveCancel(order.reserveId)?.apply {
                 if (this.success) {
@@ -42,7 +42,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     /**
      * 修改预约
      * */
-    fun modifyReserve(order: Common.ReserveOrder, odds: String) {
+    fun modifyReserve(order: ReserveOrderBean, odds: String) {
         viewModelScope.launch {
             val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)?.apply {
                 if (this.success) {
@@ -64,7 +64,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 SIZE
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _reserveLiveData.value = result.map { BetSlipData(reserve = it) }.toList()
+                _reserveLiveData.value = result.map { BetSlipReserve(reserve = it) }.toList()
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
@@ -84,9 +84,9 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipData>()
+                    val newList = mutableListOf<BetSlipReserve>()
                     val oldList = _reserveLiveData.value ?: emptyList()
-                    val resultList = result.map { BetSlipData(reserve = it) }
+                    val resultList = result.map { BetSlipReserve(reserve = it) }
                     newList.addAll(oldList)
                     newList.addAll(resultList)
                     _reserveLiveData.value = newList
@@ -99,7 +99,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
 
     override fun updateData(status: BetSlipEnum, betId: String) {
         val (index, previousItem) = _reserveLiveData.value?.let { list ->
-            val idx = list.indexOfFirst { it.order?.betId == betId }
+            val idx = list.indexOfFirst { it.reserve.reserveId == betId }
             val prev = if (idx > 0) list[idx - 1] else null
             idx to prev
         } ?: return
@@ -110,10 +110,10 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 endTime,
                 sportId,
                 matchId,
-                previousItem?.order?.betTime,
+                previousItem?.reserve?.reserveTime,
                 1,
             )?.let { result ->
-                val updatedItem = result.map { BetSlipData(reserve = it) }.toList().firstOrNull() ?: return@let
+                val updatedItem = result.map { BetSlipReserve(reserve = it) }.toList().firstOrNull() ?: return@let
                 val currentList = _reserveLiveData.value?.toMutableList() ?: return@let
                 if (index in currentList.indices) {
                     currentList[index] = updatedItem

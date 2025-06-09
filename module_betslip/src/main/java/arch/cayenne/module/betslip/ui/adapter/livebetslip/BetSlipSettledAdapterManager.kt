@@ -8,14 +8,14 @@ import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.utisl.BetSlipUtils.winOrLoseAmount
-import galaxy.common.proto.Common.Order
 
 class BetSlipSettledAdapterManager(
     private val binding: AdapterLiveBetSlipSettledBinding,
     private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding, betSlipType) {
+) : BetSlipBaseAdapterManager(binding) {
 
     override fun createViewHolder() {
         initRecyclerView(binding.recyclerSelection, betSlipType)
@@ -25,16 +25,18 @@ class BetSlipSettledAdapterManager(
     }
 
     override fun covertPlus(position: Int, item: BetSlipData) {
-        item.order?.let {
-            updateData(it)
-            submitAdapter(binding.recyclerSelection, item, position)
+        if (item is BetSlipOrder) {
+            item.order.let {
+                updateData(it)
+                submitAdapter(binding.recyclerSelection, item, position)
+            }
         }
     }
 
     /**
      *未结算 确认中 已结算 更新数据
      */
-    private fun updateData(order: Order) {
+    private fun updateData(order: OrderBean) {
         binding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
@@ -52,7 +54,7 @@ class BetSlipSettledAdapterManager(
         }
     }
 
-    private fun settledStatus(item: Order) {
+    private fun settledStatus(item: OrderBean) {
         binding.also {
             val status = BetSlipResultOrderStatusEnum.getStatus(item.resultStatus)
             status?.let { st ->

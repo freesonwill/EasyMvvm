@@ -1,18 +1,27 @@
 package com.walisport.module.live.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.window.OnBackInvokedCallback
+import android.window.OnBackInvokedDispatcher.PRIORITY_DEFAULT
+import androidx.activity.addCallback
+import androidx.annotation.RequiresApi
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
 import com.walisport.module.live.data.model.LiveChatBean
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 //聊天
@@ -20,6 +29,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     LiveSoftKeyboardFragment.LiveChatSoftKeyListener {
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,6 +44,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         initFragment()
         initTab()
     }
+
 
     private fun initTab() {
         val layoutManger = LinearLayoutManager(context)
@@ -49,6 +61,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
         mBinding.liveChatRecycler.setOnClickListener {
             showChat()
+        }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (mViewModel.softKeyBoardListener.value == true) {
+                showChat()
+            } else {
+                isEnabled = false
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
     }
 
@@ -68,7 +88,24 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun createObserver() {
+        mViewModel.loginLiveData.observe(viewLifecycleOwner) {
+            it?.let {
+//                mainViewModel.matchId.value?.let { matchId -> mViewModel.enterRoom() }
+                mViewModel.enterRoom()
+            }
+        }
+        mViewModel.enterRoomLiveData.observe(viewLifecycleOwner) {
 
+        }
+        mViewModel.msgLiveData.observe(viewLifecycleOwner) {
+            mViewModel.sendMsgToServer(it)
+        }
+
+        lifecycleScope.launch {
+            mViewModel.newMsgFlow.collect {
+
+            }
+        }
     }
 
     private fun testData(): List<LiveChatBean> {
@@ -98,19 +135,35 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun showKeyBoard() {
 //        mBinding.liveChatGroupChat.isVisible = false
+        mViewModel.updateSoftKeyBoard(true)
     }
 
     override fun hideKeyboard() {
 //        mBinding.liveChatGroupChat.isVisible = true
+        mViewModel.updateSoftKeyBoard(false)
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        mViewModel.chatLogin()
+        mViewModel.setArguments(mainViewModel.matchId.value)
+        mViewModel.startChatServer()
     }
 
     override fun onDestroyView() {
+        mViewModel.leaveRoom()
         super.onDestroyView()
+    }
+
+    fun isSoftKeyboardVisible(): Boolean {
+        val flag = mViewModel.softKeyBoardListener.value ?: false
+        if (flag) {
+            showChat()
+        }
+        return flag
     }
 
 

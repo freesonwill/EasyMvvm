@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.chat.extension
 
+import android.annotation.SuppressLint
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.chat.ChatSocketClientService
@@ -16,20 +17,23 @@ import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.CoroutineContext
 
+@SuppressLint("SuspiciousIndentation")
 fun ChatRequestData.chatAsRemoteRequest(
     apiCode: ApiCode,
     rid: Short
 ): SocketRequestData {
     val json = toJson()
+    if(apiCode != ApiCode.CHAT_PING)
     "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
@@ -43,11 +47,13 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     responseCode: ChatResponseCode
 ): Flow<ChatResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
-    .filter { it.mid == responseCode.mid && it.sid == responseCode.sid }
+    .filter {
+        "it mid ${it.mid} ${responseCode.mid}  sid ${it.sid} ${responseCode.sid}".logd(ChatWebSocketManager::class.java.simpleName)
+        it.mid == responseCode.mid && it.sid == responseCode.sid }
     .map {
         "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
-            val proto = it.originProto?.let { byteArray ->
+            val bean = it.originProto?.let { byteArray ->
                 Gson().fromJson(String(byteArray), T::class.java)
             }
             "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
@@ -55,7 +61,7 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
-                data = proto,
+                data = bean,
             )
         } catch (e: Exception) {
             e.printStackTrace()
@@ -70,23 +76,21 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     }
 
 suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitProtoMessageResponse(
-    scope: CoroutineScope,
-    dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
     responseCode: ChatResponseCode,
-    rid: Short = 0,
-    timeout: Long? = null,
-    request: () -> ChatRequestData
+    rid: Short = nextRid(),
+    timeout: Long = responseTimeout,
+    crossinline request: () -> ChatRequestData
 ): ChatResponseData<T> {
-    val deferred = scope.async(dispatcher) {
-        withTimeoutOrNull(timeout ?: responseTimeout) {
+    val response = withContext(Dispatchers.IO) {
+        send(request.invoke().chatAsRemoteRequest(apiCode, rid))
+        withTimeoutOrNull(timeout) {
             chatObserveProtoMessage<T>(responseCode).filter {
                 it.rid == rid
             }.first()
         }
     }
-    send(request.invoke().chatAsRemoteRequest(apiCode, rid))
-    return deferred.await() ?: ChatResponseData(
+    return response ?: ChatResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
         rid = rid,

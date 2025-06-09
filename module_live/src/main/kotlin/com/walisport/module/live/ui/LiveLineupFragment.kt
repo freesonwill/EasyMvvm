@@ -57,15 +57,17 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
                 it?.let {
                     mBinding.main.setVisibilityGone()
-                    upData(it)
                     if (it.awayOrBuilderList.isEmpty()) {
-                        mBinding.llContent.visibility = View.GONE
+                        mBinding.llContent.visibility = View.INVISIBLE
                         mBinding.main.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
                     }else{
-                        mBinding.llContent.visibility = View.VISIBLE
+                        mBinding.llContent.post{
+                           mBinding.llContent.visibility = View.VISIBLE
+                            upData(it)
+                        }
                     }
                 } ?: run {
                     mBinding.main.setState(

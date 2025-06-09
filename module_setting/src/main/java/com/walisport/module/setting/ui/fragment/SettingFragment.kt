@@ -22,8 +22,8 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
-    private var oddsType: Int = 0                                  //赔率显示类型
-    private var langType: String = "zh-CN"                         //语言类型
+    private var oddsType: Int = 0                                     //赔率显示类型
+    private var langType: String = LanguageType.LANGUAGE_SIMPLE.value //语言类型
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), {

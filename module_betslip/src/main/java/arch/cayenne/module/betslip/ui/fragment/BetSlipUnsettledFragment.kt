@@ -6,7 +6,7 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
@@ -56,7 +56,7 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, order.earlyBetAmount
                 )
-                BetSlipEarlySettledFragment.instance(money).apply {
+                BetSlipEarlySettledFragment.instance(money, it.settleMin).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
                             it.betId,
@@ -75,9 +75,9 @@ class BetSlipUnsettledFragment :
             it.adapter = betSlipAdapter
             it.betSlipInit()
         }
-        betSlipAdapter.setEarlySettleListener(object : RecyclerItemListener<BetSlipData> {
+        betSlipAdapter.setEarlySettleListener(object : RecyclerItemListener<BetSlipOrder> {
             override fun onItemClick(
-                item: BetSlipData?, position: Int
+                item: BetSlipOrder?, position: Int
             ) {
                 item?.order?.let {
                     mViewModel.isSupportEarlySettled(it)

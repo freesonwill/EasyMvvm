@@ -6,16 +6,16 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
+import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipData
+import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipOrderData
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
 
     //普通注单
-    private val _orderLiveData = MutableLiveData<List<BetSlipData>>()
-    val orderLiveData: LiveData<List<BetSlipData>> = _orderLiveData
+    protected val _orderLiveData = MutableLiveData<List<BetSlipOrder>>()
+    val orderLiveData: LiveData<List<BetSlipOrder>> = _orderLiveData
 
     override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
@@ -29,7 +29,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 matchId,
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _orderLiveData.value = result.toBetSlipData()
+                _orderLiveData.value = result.toBetSlipOrderData()
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
@@ -50,9 +50,9 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
             )?.let { result ->
                 _state.value = Event(DynamicStateLayout.States.NULL)
                 if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipData>()
+                    val newList = mutableListOf<BetSlipOrder>()
                     val oldList = _orderLiveData.value ?: emptyList()
-                    val resultList = result.toBetSlipData()
+                    val resultList = result.toBetSlipOrderData()
                     newList.addAll(oldList)
                     newList.addAll(resultList)
                     _orderLiveData.value = newList
@@ -65,7 +65,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
 
     override fun updateData(status: BetSlipEnum, betId: String) {
         val (index, previousItem) = _orderLiveData.value?.let { list ->
-            val idx = list.indexOfFirst { it.order?.betId == betId }
+            val idx = list.indexOfFirst { it.order.betId == betId }
             val prev = if (idx > 0) list[idx - 1] else null
             idx to prev
         } ?: return
@@ -79,8 +79,8 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 sportId,
                 matchId,
             )?.let { result ->
-                val updatedItem = result.toBetSlipData().firstOrNull() ?: return@let
-                if (updatedItem.order!!.betId == betId) {
+                val updatedItem = result.toBetSlipOrderData().firstOrNull() ?: return@let
+                if (updatedItem.order.betId == betId) {
                     val currentList = _orderLiveData.value?.toMutableList() ?: return@let
                     if (index in currentList.indices) {
                         currentList[index] = updatedItem
@@ -91,10 +91,10 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                     val currentList = _orderLiveData.value?.toMutableList() ?: return@let
 
                     // 移除原本 betId 對應的項目
-                    currentList.removeAll { it.order?.betId == betId }
+                    currentList.removeAll { it.order.betId == betId }
 
                     // 嘗試找出新的 betId 對應位置，若有則更新，否則新增
-                    val newIndex = currentList.indexOfFirst { it.order?.betId == resultBetId }
+                    val newIndex = currentList.indexOfFirst { it.order.betId == resultBetId }
                     if (newIndex >= 0) {
                         currentList[newIndex] = updatedItem
                     }

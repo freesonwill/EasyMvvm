@@ -20,8 +20,8 @@
         android:orientation="vertical"
         android:paddingTop="7dp"
         android:paddingStart="7dp"
+        android:visibility="invisible"
         android:paddingEnd="7dp"
-        android:visibility="gone"
         >
 <RelativeLayout
     android:layout_width="match_parent"

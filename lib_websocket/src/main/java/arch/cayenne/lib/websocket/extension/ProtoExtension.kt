@@ -63,12 +63,12 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     scope: CoroutineScope,
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
-    rid: Short = 0,
-    timeout: Long? = null,
+    timeout: Long = responseTimeout,
     request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> {
+    val rid = nextRid()
     val deferred = scope.async(dispatcher) {
-        withTimeoutOrNull(timeout ?: responseTimeout) {
+        withTimeoutOrNull(timeout) {
             observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
         }
     }

@@ -17,9 +17,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -148,7 +148,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         }
 
         //播放状态处理
-        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+        videoView.setPlayerStateListener {
+            mViewModel.setPlayerState(it)
+        }
 
         if (videoView.parent != null) {
             (videoView.parent as ViewGroup).removeView(videoView)
@@ -219,7 +221,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
                     if (it.source.isEmpty()) {
-                        videoView.onDataSourceEmpty()
+                        onDataSourceEmpty()
                     } else {
                         val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
@@ -355,6 +357,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
             }
 
+            playerState.observe(viewLifecycleOwner){
+                onPlayerStateReceived(it)
+            }
 
         }
 
@@ -457,7 +462,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
      */
     private fun scheduleHideButtons() {
         scheduledHideButtonsJob?.cancel()
-        scheduledHideButtonsJob = mainScope.launch {
+        scheduledHideButtonsJob = lifecycleScope.launch {
             delay(HIDE_BUTTONS_TIMER)
 
             buttonsDisplaying = false
@@ -505,6 +510,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             PlayerState.ERROR -> {
                 mBinding.ctLoading.visibility = GONE
                 mBinding.ctError.visibility = VISIBLE
+                mBinding.tvErrorTips.text = getString(R.string.live_video_error)
             }
 
             PlayerState.STOPPED -> {
@@ -520,6 +526,15 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
         }
 
+    }
+
+    /**
+     * 数据源为空
+     */
+    private fun onDataSourceEmpty(){
+        mBinding.ctLoading.visibility = GONE
+        mBinding.ctError.visibility = VISIBLE
+        mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {

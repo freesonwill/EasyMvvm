@@ -3,8 +3,6 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -19,16 +17,17 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import kotlin.math.abs
 import kotlin.reflect.KClass
 import android.view.ViewConfiguration
-import android.view.Window
 import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import kotlin.math.atan2
 import kotlin.math.sqrt
+import kotlinx.coroutines.delay
 
 class LiveBetOnMenuFragment :
     BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
@@ -38,6 +37,7 @@ class LiveBetOnMenuFragment :
     private var startX = 0f
     private var startY = 0f
     private var translationX = 0f
+    private var animTime = 500L
     private var isSwipingDialog = false
     private var isHorizontalSwipe = false
     private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
@@ -98,12 +98,23 @@ class LiveBetOnMenuFragment :
     override fun initListener() {
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig,mBinding.root)
+
+        super.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
         // 设置 Dialog 的宽度和高度
         if (dialog != null && dialog!!.window != null) {
+            launch{
+                delay((animTime))
+                dialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
+                dialog!!.window?.attributes?.dimAmount = 0.6f
+                dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+            }
             // 获取屏幕高度
             val screenWidth = resources.displayMetrics.widthPixels
             // 设置宽度为屏幕的 89%（可调整）
@@ -115,7 +126,6 @@ class LiveBetOnMenuFragment :
         dialog!!.window!!.setGravity(Gravity.END)
         // 设置手势监听
         setupSwipeGesture()
-
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -195,7 +205,7 @@ class LiveBetOnMenuFragment :
     private fun animateReset() {
         mBinding.root.animate()
             .translationX(0f)
-            .setDuration(200)
+            .setDuration(animTime)
             .setInterpolator(AccelerateDecelerateInterpolator())
             .setListener(null)
             .start()

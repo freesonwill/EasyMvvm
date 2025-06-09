@@ -211,7 +211,7 @@
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/gradient_button"
+        android:background="@drawable/selector_send_button"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

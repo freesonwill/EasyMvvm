@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -48,6 +47,10 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
 
     override fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
+            mainViewModel.matchId.observe(viewLifecycleOwner) {
+                mainViewModel.registerStatisticsNotify(it)
+                mainViewModel.observeMatchStaticsNotify()
+            }
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
                 it?.let {
                     homeName = it.basicInfo.homeTeam
@@ -140,5 +143,13 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 putSerializable(matchTrend, data)
             }
         }.show(fragmentManager)
+    }
+
+    //离开界面取消订阅
+    override fun onPause() {
+        super.onPause()
+        mainViewModel.matchId.value?.let {
+            mainViewModel.unregisterStatisticsNotify(it)
+        }
     }
 }

@@ -31,7 +31,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_10"
             android:background="@drawable/shape_20"
-            android:backgroundTint="@color/card_odds_background"
+            android:backgroundTint="@color/card_ooo_background"
             android:orientation="horizontal"
             app:layout_constraintTop_toTopOf="@id/top"
             app:layout_constraintBottom_toBottomOf="@id/top"
