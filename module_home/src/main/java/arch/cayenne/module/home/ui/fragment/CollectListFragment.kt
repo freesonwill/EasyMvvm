@@ -21,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
@@ -34,6 +35,7 @@ import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
 import arch.cayenne.module.home.ui.adapter.OnMatchItemClickListener
 import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.CollectListViewModel
+import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -51,6 +53,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     }
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
+    private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         with (mBinding) {
@@ -137,8 +140,12 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
         }
+        homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
+            mViewModel.updateMatchLiveData()
+        }
         mViewModel.matchListChange.observe(viewLifecycleOwner) { matchList ->
             val preEmpty = matchAdapter.currentList.isEmpty()
+
             matchAdapter.submitList(matchList)
             if (preEmpty && matchList.isNotEmpty()) {
                 mBinding.rvCollectList.doOnPreDraw {
