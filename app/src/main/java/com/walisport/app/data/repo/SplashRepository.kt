@@ -33,7 +33,17 @@ class SplashRepository(
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
+        val skinType = userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
+        return getLogicSkinType(skinType)
+    }
+
+    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
+    private fun getLogicSkinType(skinType: String): String {
+        return when (skinType) {
+            SkinType.SKIN_WHITE_BLUE.value -> SkinType.SKIN_WHITE_BLUE.value
+            SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
+            else -> SkinType.SKIN_CLASSIC.value
+        }
     }
 
     suspend fun startSocket(): ConnectState {
