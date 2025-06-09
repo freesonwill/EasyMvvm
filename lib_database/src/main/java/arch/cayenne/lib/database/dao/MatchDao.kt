@@ -197,6 +197,36 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
+    open suspend fun updateOnlyMatch(
+        updateIds: List<Long>,     //更新的賽事id
+        matchLites: List<MatchBeanLite>,
+    ) : List<MatchWithMarkets>{
+        matchLites.forEach { bean ->
+            updateNotifyMatchBasic(
+                matchId = bean.matchId,
+                status = bean.status,
+                betStop = bean.betStop,
+                startTime = bean.startTime,
+
+                )
+            if (bean.liveInfo != null) {
+                updateNotifyMatchLive(
+                    matchId = bean.matchId,
+                    clock = bean.liveInfo.clock,
+                    rollClock = bean.liveInfo.rollClock,
+                    period = bean.liveInfo.period,
+                    score = bean.liveInfo.score,
+                    liveVideo = bean.liveInfo.liveVideo,
+                    charRoom = bean.liveInfo.charRoom,
+                    viewerCount = bean.liveInfo.viewerCount,
+                    clockModified = bean.liveInfo.clockModified,
+                )
+            }
+        }
+        return getOneMatchByIds(updateIds)
+    }
+
+    @Transaction
     open suspend fun updateFullMatch(
         updateIds: List<Long>,     //更新的賽事id
         matchLites: List<MatchBeanLite>,

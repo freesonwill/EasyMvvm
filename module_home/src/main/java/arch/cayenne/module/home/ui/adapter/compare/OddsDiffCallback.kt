@@ -32,7 +32,7 @@ class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<Selecti
                     oldSel.odds == newSel.odds &&
                     oldSel.active == newSel.active &&
                     oldSel.parlay == newSel.parlay &&
-                    oldSel.trend == newSel.trend &&
+                    newSel.trend == 0 &&
                     oldSel.isSelected == newSel.isSelected
         }
     }
@@ -55,7 +55,9 @@ class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<Selecti
             if (old.shortName != new.shortName) diff.add("shortName")
             if (old.active != new.active) diff.add("active")
             if (old.parlay != new.parlay) diff.add("parlay")
-            if (old.trend != new.trend) diff.add("trend")
+            if (new.trend != 0) {
+                diff.add("trend")
+            }
             if (old.isSelected != new.isSelected) diff.add("isSelected")
         }
         return if (diff.isEmpty()) null else diff

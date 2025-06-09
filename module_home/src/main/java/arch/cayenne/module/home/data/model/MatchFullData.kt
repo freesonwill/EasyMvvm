@@ -62,7 +62,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                 liveInfo = MatchLiveInfoBean(
                     clock = match.basicInfo.liveInfo.clock,
                     rollClock = match.basicInfo.liveInfo.rollClock,
-                    period = match.basicInfo.liveInfo.period,
+                    period = match.basicInfo.liveInfo.periodName,
                     score = match.basicInfo.liveInfo.score,
                     liveVideo = match.basicInfo.liveInfo.liveVideo,
                     charRoom = match.basicInfo.liveInfo.chatRoom,
@@ -143,7 +143,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                 MatchLiveInfoBean(
                     clock = matchNotify.basicUpdate.liveInfo.clock,
                     rollClock = matchNotify.basicUpdate.liveInfo.rollClock,
-                    period = matchNotify.basicUpdate.liveInfo.period,
+                    period = matchNotify.basicUpdate.liveInfo.periodName,
                     score = matchNotify.basicUpdate.liveInfo.score,
                     liveVideo = matchNotify.basicUpdate.liveInfo.liveVideo,
                     charRoom = matchNotify.basicUpdate.liveInfo.chatRoom,
@@ -229,7 +229,7 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
             liveInfo = MatchLiveInfoBean(
                 clock = this.basicUpdate.liveInfo.clock,
                 rollClock = this.basicUpdate.liveInfo.rollClock,
-                period = this.basicUpdate.liveInfo.period,
+                period = this.basicUpdate.liveInfo.periodName,
                 score = this.basicUpdate.liveInfo.score,
                 liveVideo = this.basicUpdate.liveInfo.liveVideo,
                 charRoom = this.basicUpdate.liveInfo.chatRoom,
@@ -349,7 +349,7 @@ fun List<Common.Match>.toMatchWithMarket(): List<MatchWithMarkets> {
                     liveInfo = MatchLiveInfoBean(
                         clock = originMatch.basicInfo.liveInfo.clock,
                         rollClock = originMatch.basicInfo.liveInfo.rollClock,
-                        period = originMatch.basicInfo.liveInfo.period,
+                        period = originMatch.basicInfo.liveInfo.periodName,
                         score = originMatch.basicInfo.liveInfo.score,
                         liveVideo = originMatch.basicInfo.liveInfo.liveVideo,
                         charRoom = originMatch.basicInfo.liveInfo.chatRoom,

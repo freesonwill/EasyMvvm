@@ -49,7 +49,8 @@
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layout_odds_title"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title"
             tools:text="加時下半場" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -59,9 +60,9 @@
             android:layout_marginStart="@dimen/dp_4"
             android:textColor="@color/secondary_text"
             android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_game_status"
             app:layout_constraintStart_toEndOf="@+id/tv_game_status"
-            app:layout_constraintTop_toTopOf="@+id/tv_game_status"
+            app:layout_constraintTop_toTopOf="@+id/layout_odds_title"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title"
             tools:text="117’" />
 
         <!-- 主隊區塊 -->

@@ -18,6 +18,9 @@ import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -57,6 +60,10 @@ class HomeViewModel : BaseViewModel() {
 
     private var _recently31MatchScheduleCount = MutableLiveData<Event<List<Common.DailyMatchCount>>>()
     val recently31MatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> = _recently31MatchScheduleCount
+
+    private var timerJob: Job? = null
+    private val _timer = MutableLiveData<Event<Long>>()
+    val timer: LiveData<Event<Long>> = _timer
 
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
@@ -114,7 +121,7 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         }
-
+        startTimer()
     }
 
     fun refreshAll() {
@@ -219,5 +226,28 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         }
+    }
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = viewModelScope.launch(Dispatchers.IO) {
+            var count = 0L
+            while (isActive) {
+                delay(1000L)
+                withContext(Dispatchers.Main) {
+                    _timer.value = Event(count++)
+                }
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        timerJob?.cancel()
+        timerJob = null
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        stopTimer()
     }
 }
