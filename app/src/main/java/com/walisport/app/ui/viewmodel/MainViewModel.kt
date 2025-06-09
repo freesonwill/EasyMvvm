@@ -2,7 +2,6 @@ package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
-import arch.cayenne.lib.common.data.constants.SkinType.Companion.of
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.MainRepository
 import org.koin.core.parameter.parametersOf
