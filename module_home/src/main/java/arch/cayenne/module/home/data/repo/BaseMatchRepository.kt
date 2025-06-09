@@ -160,7 +160,7 @@ abstract class BaseMatchRepository(
                 )
             )
         }
-        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites)
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites).setSelected(betDao)
     }
 
     /**
