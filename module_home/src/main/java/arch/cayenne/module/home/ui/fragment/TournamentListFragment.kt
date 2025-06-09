@@ -32,7 +32,9 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
+import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
+import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.ibm.icu.text.Transliterator
@@ -93,7 +95,8 @@ class TournamentListFragment :
             ceSearch.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     // 離開搜尋框 → 回到列表頂端
-                    mBinding.rvTournamentList.smoothScrollToPosition(0)
+                    rvTournamentList.smoothScrollToPosition(0)
+                    llIndexContainer.visibility = View.VISIBLE
                 }
             }
 
@@ -153,26 +156,31 @@ class TournamentListFragment :
                     if (newIndex != null) {
                         mViewModel.setActiveHeaderIndex(newIndex)
                     }
+                    // 偵測是否最後一個 header 正在吸頂
+                    val lastHeaderIndex =
+                        adapter.currentList.indexOfLast { it is TournamentListItem.Header }
+                    if (adapter.isLastHeaderSticking(lastHeaderIndex, layoutManager)) {
+                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                    } else {
+                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
+                    }
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        // 如果是點字母觸發的 scroll，直接選中
+                        // 如果是點字母觸發的 scroll，直接選中並更新 ViewModel 狀態
                         if (isJumpingByIndex) {
                             pendingJumpIndex?.let {
                                 mViewModel.setActiveHeaderIndex(it)
-                                adapter.updateActiveHeaderIndex(it)
                             }
                             isJumpingByIndex = false
                             pendingJumpIndex = null
-                        } else {
-                            mViewModel.getActiveHeaderIndex()
-                                ?.let { adapter.updateActiveHeaderIndex(it) }
                         }
                     }
                 }
             })
         }
+        setupStickyHeader()
     }
 
     override fun initListener() {
@@ -194,6 +202,7 @@ class TournamentListFragment :
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->
             updateAZIndexHighlight()
+            mBinding.rvTournamentList.invalidateItemDecorations()
         }
 
         mViewModel.searchDisplayList.observe(viewLifecycleOwner) { result ->
@@ -258,6 +267,7 @@ class TournamentListFragment :
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
         }
         setSearchHint(displayList)
+        displayList.add(TournamentListItem.FooterView)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
@@ -367,6 +377,39 @@ class TournamentListFragment :
 
             mViewModel.setLastSelectedLetter(currentLetter)
         }
+    }
+
+    private fun setupStickyHeader() {
+        val decoration = StickyHeaderItemDecoration(
+            isHeader = { position ->
+                adapter.currentList.getOrNull(position) is TournamentListItem.Header
+            },
+            createHeaderView = {
+                ItemTournamentHeaderBinding.inflate(layoutInflater).root
+            },
+            bindHeaderView = { view, position ->
+                val item = adapter.currentList.getOrNull(position) as? TournamentListItem.Header
+                    ?: return@StickyHeaderItemDecoration
+                val binding = ItemTournamentHeaderBinding.bind(view)
+
+                if (item.letter == '*') {
+                    binding.ivHeaderHot.visibility = View.VISIBLE
+                    binding.tvHeaderName.text = getString(R.string.tournament_section_title_hot)
+                } else {
+                    binding.ivHeaderHot.visibility = View.GONE
+                    binding.tvHeaderName.text = item.letter.toString()
+                }
+
+                binding.root.setBackgroundColor(
+                    SkinnableResourceManager.getColor(
+                        view.context,
+                        R.color.home_card_odds_background
+                    )
+                )
+            }
+        )
+
+        mBinding.rvTournamentList.addItemDecoration(decoration)
     }
 
     companion object {
