@@ -17,7 +17,7 @@ class OddDiffCompare : DiffUtil.ItemCallback<SelectionBeanLite>(){
                 oldItem.odds == newItem.odds &&
                 oldItem.active == newItem.active &&
                 oldItem.parlay == newItem.parlay &&
-                oldItem.trend == newItem.trend &&
+                newItem.trend == 0 &&
                 oldItem.isSelected == newItem.isSelected
     }
 
@@ -27,7 +27,9 @@ class OddDiffCompare : DiffUtil.ItemCallback<SelectionBeanLite>(){
         if (oldItem.shortName != newItem.shortName) diff.add("shortName")
         if (oldItem.active != newItem.active) diff.add("active")
         if (oldItem.parlay != newItem.parlay) diff.add("parlay")
-        if (oldItem.trend != newItem.trend) diff.add("trend")
+        if (newItem.trend != 0) {
+            diff.add("trend")
+        }
         if (oldItem.isSelected != newItem.isSelected) diff.add("isSelected")
         return if (diff.isEmpty()) null else diff
     }

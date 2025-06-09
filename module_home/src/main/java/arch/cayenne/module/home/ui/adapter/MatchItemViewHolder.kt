@@ -127,7 +127,8 @@ class MatchItemViewHolder(
             rvOddsGrid.setRecycledViewPool(viewPool)
 
             val selectionsGrouped = data.markets.map { it.market to it.selections }
-            oddsColumnAdapter.submitList(selectionsGrouped)
+            if (oddsColumnAdapter.itemCount == 0)
+                oddsColumnAdapter.submitList(selectionsGrouped)
         }
     }
 
@@ -154,7 +155,6 @@ class MatchItemViewHolder(
                 if (basicInfo.status == 5) {  //開賽中
                     tvGameStatus.visibility = View.VISIBLE
                     tvGameStatus.text = liveInfo.period
-                    tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
                 } else {
                     tvGameStatus.visibility = View.GONE
                     tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
@@ -162,7 +162,7 @@ class MatchItemViewHolder(
             }
 
             if ("clock" in changes) {
-                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+                tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
             }
             if ("score" in changes) {
                 tvAwayScore.text = liveInfo.score.getAwayScore()
