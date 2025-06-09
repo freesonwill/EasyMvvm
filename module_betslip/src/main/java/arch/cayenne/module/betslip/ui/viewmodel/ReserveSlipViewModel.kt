@@ -58,7 +58,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             repo.getReserveOrder(
                 startTime,
                 endTime,
-                sportId,
+                sportIds,
                 matchId,
                 null,
                 SIZE
@@ -77,7 +77,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             repo.getReserveOrder(
                 startTime,
                 endTime,
-                sportId,
+                sportIds,
                 matchId,
                 list?.lastOrNull()?.reserve?.reserveTime,
                 SIZE
@@ -108,7 +108,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             repo.getReserveOrder(
                 startTime,
                 endTime,
-                sportId,
+                sportIds,
                 matchId,
                 previousItem?.reserve?.reserveTime,
                 1,

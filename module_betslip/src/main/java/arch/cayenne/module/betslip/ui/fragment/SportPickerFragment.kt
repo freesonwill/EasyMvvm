@@ -23,11 +23,11 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     companion object {
         const val TAG = "SportPickerFragment"
         private const val ANCHOR_Y = "anchorY"
-        fun newInstance(anchorY: Int, sportId: Int): SportPickerFragment {
+        fun newInstance(anchorY: Int, sportIds: List<Int>): SportPickerFragment {
             return SportPickerFragment().apply {
                 arguments = Bundle().apply {
                     putInt(ANCHOR_Y, anchorY)
-                    putInt(Config.VALUE_SELECTED_SPORT_ID, sportId)
+                    putIntArray(Config.VALUE_SELECTED_SPORT_ID, sportIds.toIntArray())
                 }
             }
         }

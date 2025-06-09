@@ -18,15 +18,12 @@ class HomeBetSlipRepository(
         userManager.setKeyValue(UserDataKey.KEY_BETSLIP_DETAIL, true)
     }
 
-    suspend fun getSportById(id: Int) = withContext(scope.coroutineContext) {
-        val bean = sportDao.getSportById(id)
-        if (bean == null) {
-            null
-        } else {
+    suspend fun getSportByIds(ids: List<Int>) = withContext(scope.coroutineContext) {
+        sportDao.getSportByIds(ids).map {
             SportFilterBean(
-                sportId = bean.sportId,
-                sportName = bean.sportName,
-                isSelected = true
+                sportId = it.sportId,
+                sportName = it.sportName,
+                isSelected = ids.contains(it.sportId)
             )
         }
     }

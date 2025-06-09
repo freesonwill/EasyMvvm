@@ -36,10 +36,10 @@ class BetSlipRemoteManager(
         endTime: Long?,
         cursorBetTime: Long?,
         size: Int,
-        sportId: Int?,
+        sportIds: List<Int>?,
         matchId: Long?,
     ): List<OrderBean>? {
-        "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportId $sportId matchId $matchId".logd(TAG)
+        "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -48,11 +48,11 @@ class BetSlipRemoteManager(
             Client.GetOrderReq.newBuilder().apply {
                 this.status = status
                 this.size = size
-                startTime?.let { this.startTime = startTime }
-                endTime?.let { this.endTime = endTime }
+                startTime?.let { this.startTime = it }
+                endTime?.let { this.endTime = it }
                 cursorBetTime?.let { this.cursorBetTime = it }
-                sportId?.let { this.addSportId(sportId) }
-                matchId?.let { this.matchId = matchId }
+                sportIds?.let { this.addAllSportId(it) }
+                matchId?.let { this.matchId = it }
 
             }.build()
         }
@@ -66,8 +66,8 @@ class BetSlipRemoteManager(
     suspend fun getReserveOrder(
         startTime: Long?,
         endTime: Long?,
-        sportId: Int,
-        matchId: Long,
+        sportId: List<Int>?,
+        matchId: Long?,
         cursorBetTime: Long?,
         size: Int
     ): List<ReserveOrderBean>? {
@@ -80,8 +80,8 @@ class BetSlipRemoteManager(
             Client.GetReserveOrderReq.newBuilder().apply {
                 startTime?.let { this.startTime = it }
                 endTime?.let { this.endTime = it }
-                this.matchId = matchId
-                this.addSportId(sportId)
+                sportId?.let { this.addAllSportId(it) }
+                matchId?.let { this.matchId = it }
                 cursorBetTime?.let { this.cursorBetTime = it }
                 this.size = size
             }.build()

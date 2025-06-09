@@ -67,8 +67,15 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         mViewModel.onDateFilter.observe(viewLifecycleOwner) {
             mBinding.tvDateFilter.text = it.title
         }
-        mViewModel.onSportFilter.observe(viewLifecycleOwner) {
-            mBinding.tvSportFilter.text = it.sportName
+        mViewModel.onSportFilter.observe(viewLifecycleOwner) { list ->
+            val selectedNames = list.map { it.sportName }
+
+            val displayText = when (selectedNames.size) {
+                1 -> selectedNames.first()
+                else -> selectedNames.joinToString(", ")
+            }
+
+            mBinding.tvSportFilter.text = displayText
         }
     }
 
@@ -182,15 +189,18 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             ) { _, bundle ->
                 childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
                 if (bundle.containsKey(Config.VALUE_SELECTED_SPORT_ID)) {
-                    val ids = bundle.getInt(Config.VALUE_SELECTED_SPORT_ID)
-//                    mViewModel.setSportFilter(id, name)
-//                    betSlipFilterViewModel.setIds(-1, id)
+                    bundle.getIntArray(Config.VALUE_SELECTED_SPORT_ID)?.toList()?.let { ids ->
+                        mViewModel.setSportFilter(ids)
+                        betSlipFilterViewModel.setIds(-1, ids)
+                    }
                 }
                 setFilterText(mBinding.tvSportFilter, false)
             }
             SportPickerFragment.newInstance(
                 mBinding.clTitle.height + mBinding.clFilter.height + mBinding.tabLayout.height,
-                it.sportId
+                it.map { bean ->
+                    bean.sportId
+                }
             ).show(childFragmentManager, mBinding.main.id)
         }
     }

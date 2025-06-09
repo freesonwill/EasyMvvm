@@ -16,7 +16,7 @@ open class OrderSlipRepository(
         endTime: Long?,
         cursorBetTime: Long?,
         size: Int,
-        sportId: Int,
+        sportIds: List<Int>,
         matchId: Long,
     ): List<OrderBean>? {
         return withContext(scope.coroutineContext){
@@ -26,7 +26,7 @@ open class OrderSlipRepository(
                 endTime,
                 cursorBetTime,
                 size,
-                if (sportId == -1) null else sportId,
+                if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
                 if (matchId == -1L) null else matchId)
         }
     }
