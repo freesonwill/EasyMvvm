@@ -75,30 +75,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     }
 
     /**
-     * 校验投注额
-     * */
-    fun startChatServer() {
-        viewModelScope.launch {
-            val state = chatRepo.startSocket()
-            if (state == ConnectState.ConnectSuccess) {
-                chatLogin()
-            }
-        }
-    }
-
-    /**
-     * 关闭聊天服务
-     * */
-    private fun disConnectChatServer() {
-        viewModelScope.launch {
-            chatRepo.disconnect()
-        }
-    }
-
-    /**
      * 聊天登陆
      * */
-    private fun chatLogin() {
+     fun chatLogin() {
         viewModelScope.launch {
             _loginLiveData.value = chatRepo.login()
         }
@@ -136,7 +115,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
                 it.code == ChatRequestCodeEnum.SUCCESS.code
             } ?: false
             "leave room result $flag".logd(TAG)
-            disConnectChatServer()
         }
     }
 

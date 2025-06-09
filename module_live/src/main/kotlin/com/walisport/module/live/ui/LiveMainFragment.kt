@@ -242,6 +242,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             mViewModel.unregisterMatchInfoNotify(it)
         }
+        mViewModel.startChatServer()
     }
 
     override fun onDestroyView() {

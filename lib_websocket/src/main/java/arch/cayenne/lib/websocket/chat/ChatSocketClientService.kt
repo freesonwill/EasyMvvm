@@ -107,7 +107,7 @@ class ChatSocketClientService(
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen $currentState".loge(ChatSocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectOpen ".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@ChatSocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }

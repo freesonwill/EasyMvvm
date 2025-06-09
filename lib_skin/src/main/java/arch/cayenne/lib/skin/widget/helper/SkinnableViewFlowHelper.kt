@@ -40,7 +40,7 @@ class SkinnableViewFlowHelper {
                     launch(Dispatchers.Main) {
                         updateLanguage(it)
                     }
-                } ?: "updateLanguage failed: local is null".loge(TAG)
+                }
             }
         }
     }

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
@@ -17,6 +19,7 @@ import galaxy.client.proto.Sloth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
@@ -24,7 +27,10 @@ import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRepo:LiveChatRepository) : BaseViewModel() {
+class LiveMainViewModel(
+    private val repo: LiveMainRepository,
+    private val chatRepo: LiveChatRepository
+) : BaseViewModel() {
 
     //比赛ID
     private val _matchId = MutableLiveData<Long>(0)
@@ -60,7 +66,12 @@ class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRep
 
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
-    val matchIdSportIdObserver: Flow<Pair<Long, Int>> = matchId.asFlow().combine(sportId.asFlow()){ matchId, sportId -> matchId to sportId}.debounce(1000)
+    val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
+        matchId.asFlow().combine(sportId.asFlow()) { matchId, sportId -> matchId to sportId }
+            .debounce(1000)
+
+    //监听聊天服务器变化
+    val chatSocketServerState = MutableStateFlow<ConnectState?>(null)
 
     override fun initViewModel() {
         super.initViewModel()
@@ -186,10 +197,27 @@ class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRep
         return MatchLiveData(0, teams, stats, trend)
     }
 
+    /**
+     * 开启聊天服务
+     * */
+    fun startChatServer() {
+        "startChatserver ${chatSocketServerState.value}".logd("chat")
+        if (chatSocketServerState.value == ConnectState.ConnectSuccess) {
+            return
+        }
+        viewModelScope.launch {
+            val state = chatRepo.startSocket()
+            chatSocketServerState.emit(state)
+        }
+    }
 
+    /**
+     * 关闭聊天服务
+     * */
     fun disConnectChatServer() {
         viewModelScope.launch {
             chatRepo.disconnect()
+            chatSocketServerState.emit(ConnectState.ConnectClosed)
         }
     }
 }

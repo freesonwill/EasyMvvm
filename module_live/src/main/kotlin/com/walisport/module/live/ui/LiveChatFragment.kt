@@ -1,11 +1,6 @@
 package com.walisport.module.live.ui
 
-import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
+import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
@@ -38,8 +34,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun initData() {
         super.initData()
-        mViewModel.setArguments(mainViewModel.matchId.value)
-        mViewModel.startChatServer()
     }
 
     private fun initTab() {
@@ -71,27 +65,25 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     }
 
     override fun createObserver() {
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
+            "matchId observer ".logd(TAG)
+            mViewModel.setArguments(mainViewModel.matchId.value)
+        }
+
         mViewModel.loginLiveData.observe(viewLifecycleOwner) {
             it?.let {
                 mViewModel.enterRoom()
             }
         }
+
         mViewModel.enterRoomLiveData.observe(viewLifecycleOwner) {
 
         }
+
         mViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
             mViewModel.sendMsgToServer(it)
             mViewModel.addLocalMsg(it)
             refreshChatList()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            mViewModel.newMsgFlow.collect {
-                it?.let { msg ->
-                    mViewModel.addNewMsgs(msg)
-                    refreshChatList()
-                }
-            }
         }
 
         mViewModel.historyLiveData.observe(viewLifecycleOwner) {
@@ -101,6 +93,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //           val msg = if(it?.code == 0) getString(R.string.send_success) else it?.errorMessage ?: getString(R.string.send_fail)
 //            showToast(msg)
         }
+
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
             if (it != CheckBetResultEnum.SUCCESS) {
                 val msg =
@@ -109,6 +102,25 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 showToast(msg)
             }
             getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            launch {
+                mViewModel.newMsgFlow.collect {
+                    it?.let { msg ->
+                        mViewModel.addNewMsgs(msg)
+                        refreshChatList()
+                    }
+                }
+            }
+            launch {
+                mainViewModel.chatSocketServerState.collect {
+                    "startChatserver flow $it".logd("chat")
+                    if (it == ConnectState.ConnectSuccess) {
+                        mViewModel.chatLogin()
+                    }
+                }
+            }
         }
     }
 
@@ -134,16 +146,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //            if (isKeyBoardVisible) keyBoardHeight else 62.dp2px
 //    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        "onCreate ".logd(TAG)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        "onAttach ".logd(TAG)
-    }
-
     /**
      * 显示键盘时调用
      * */
@@ -156,14 +158,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 隐藏键盘时调用
      * */
     override fun hideKeyboard() {
-//        showChatAnimation(false)
         mViewModel.updateSoftKeyBoard(false)
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun onDestroyView() {
-        mViewModel.leaveRoom()
-        super.onDestroyView()
     }
 
     /**
@@ -192,5 +187,10 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        mViewModel.leaveRoom()
+        super.onStop()
     }
 }

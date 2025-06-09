@@ -131,7 +131,7 @@ class FragivityFragmentNavigator(
         }
 
         //暂时注释，因为会影响联赛日程Fragment弹出动画，导致底部Fragment空白
-        //ft.setPrimaryNavigationFragment(fragment)
+        ft.setPrimaryNavigationFragment(fragment)
 
         val isSingleTopReplacement = !initialNavigation
             && navOptions != null && navOptions.shouldLaunchSingleTop()
