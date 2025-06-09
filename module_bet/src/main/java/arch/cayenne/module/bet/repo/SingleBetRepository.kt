@@ -68,6 +68,7 @@ class SingleBetRepository(
 
     fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
+    fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
 
     fun removeBet() {
         scope.launch {
@@ -83,7 +84,7 @@ class SingleBetRepository(
         }
     }
 
-    fun saveReserve(odds: Int) {
+    fun saveToReserve(odds: Int) {
         scope.launch {
             betDao.getCurrentBet()?.let {
                 if (it.betType == BetTypeEnum.SINGLE) {
@@ -153,6 +154,44 @@ class SingleBetRepository(
                             status = BetResultStatusEnum.CONFIRMING
                         )
                     }
+                    betDao.insertDetail(detailBean)
+                    betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
+                }
+            }
+        }
+    }
+
+    fun removeReserve() {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                if (bet.betType == BetTypeEnum.RESERVE) {
+                    betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE)
+                }
+            }
+        }
+    }
+
+    fun sendReserve(money: Long) {
+        scope.launch {
+            betDao.getCurrentBet()?.let { bet ->
+                if (bet.betType == BetTypeEnum.RESERVE) {
+                    val betId = bet.betId
+                    betDao.updateBetStatus(betId, BetStatusEnum.BETTING)
+
+                    val selection = betDao.getSelections(betId).first()
+                    val detail = betDao.getDetail(betId).first()
+
+                    val resp = remoteManager.reserveBet(selection, detail.sumOdds, money)
+                    val status =
+                        if (resp?.isSuccessful == true) BetResultStatusEnum.SUCCESS_BET else BetResultStatusEnum.REJECT
+
+                    val detailBean = BetDetailBean(
+                        betId = betId,
+                        orderId = "",
+                        sumOdds = detail.sumOdds,
+                        inputMoney = money,
+                        status = status
+                    )
                     betDao.insertDetail(detailBean)
                     betDao.updateBetStatus(betId, BetStatusEnum.COMPLETE)
                 }
