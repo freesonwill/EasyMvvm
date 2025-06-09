@@ -7,23 +7,16 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -50,7 +43,6 @@ class TournamentListFragment :
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
-    private val letterViewMap = mutableMapOf<Char, View>()
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
 
@@ -274,51 +266,11 @@ class TournamentListFragment :
     }
 
     private fun setupAZIndex() {
-        mBinding.llIndexContainer.removeAllViews()
-        letterViewMap.clear()
-
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        }
-
-        mViewModel.getAvailableIndexLetters().forEach { letter ->
-            val view = createLetterView(letter)
-            letterViewMap[letter] = view
-            container.addView(view)
-        }
-
-        mBinding.llIndexContainer.addView(container)
-    }
-
-    private fun createLetterView(letter: Char): View {
-        val isSelected = mViewModel.getHeaderIndex(letter) == mViewModel.getActiveHeaderIndex()
-        return if (letter == '*') {
-            ImageView(context).apply {
-                setImageResource(if (isSelected) R.drawable.ic_hot_league_index else R.drawable.ic_hot_league_index_unselect)
-                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
-                setOnClickListener { scrollToSection('*') }
-            }
-        } else {
-            TextView(context).apply {
-                text = letter.toString()
-                textSize = 11f
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
-                setTextColor(
-                    SkinnableResourceManager.getColor(
-                        context,
-                        if (isSelected) arch.cayenne.lib.common.R.color.brand_color else R.color.brand_color_index_unselect
-                    )
-                )
-                setOnClickListener {
-                    mViewModel.selectLetter(letter)
-                    scrollToSection(letter)
-                }
+        with(mBinding.llIndexContainer) {
+            setLetters(mViewModel.getAvailableIndexLetters())
+            onLetterTouch = { letter ->
+                mViewModel.selectLetter(letter)
+                scrollToSection(letter)
             }
         }
     }
@@ -347,36 +299,8 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
-        val lastSelectedLetter = mViewModel.getLastSelectedLetter()
-        if (currentLetter != lastSelectedLetter) {
-            // 還原舊樣式
-            lastSelectedLetter?.let { last ->
-                when (val oldView = letterViewMap[last]) {
-                    is TextView -> oldView.setTextColor(
-                        SkinnableResourceManager.getColor(
-                            requireContext(),
-                            R.color.brand_color_index_unselect
-                        )
-                    )
-
-                    is ImageView -> oldView.setImageResource(R.drawable.ic_hot_league_index_unselect)
-                }
-            }
-
-            // 套用新選中樣式
-            when (val newView = letterViewMap[currentLetter]) {
-                is TextView -> newView.setTextColor(
-                    SkinnableResourceManager.getColor(
-                        requireContext(),
-                        arch.cayenne.lib.common.R.color.brand_color
-                    )
-                )
-
-                is ImageView -> newView.setImageResource(R.drawable.ic_hot_league_index)
-            }
-
-            mViewModel.setLastSelectedLetter(currentLetter)
-        }
+        mViewModel.setLastSelectedLetter(currentLetter)
+        mBinding.llIndexContainer.setSelectedLetter(currentLetter)
     }
 
     private fun setupStickyHeader() {
