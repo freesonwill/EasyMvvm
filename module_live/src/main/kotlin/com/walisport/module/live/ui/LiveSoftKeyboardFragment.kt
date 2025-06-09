@@ -39,7 +39,7 @@ class LiveSoftKeyboardFragment :
     private val chatViewModel:LiveChatViewModel by sharedViewModel<LiveChatViewModel,LiveChatFragment>()
 
     //监听软件盘状态
-    lateinit var mKeyboardHelper: SoftKeyboardStateHelper
+     var mKeyboardHelper: SoftKeyboardStateHelper? = null
 
     //监听软件盘发送事件
     private var softKeyListener: LiveChatSoftKeyListener? = null
@@ -59,7 +59,7 @@ class LiveSoftKeyboardFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mKeyboardHelper = SoftKeyboardStateHelper((context as Activity).window.decorView)
-        mKeyboardHelper.addSoftKeyboardStateListener(this)
+        mKeyboardHelper?.addSoftKeyboardStateListener(this)
         initTab()
         initSoftRecycler()
         showChat()
@@ -270,6 +270,16 @@ class LiveSoftKeyboardFragment :
         }
     }
 
+    fun updateInputVisible(value:Boolean){
+        mBinding.groupInput.isVisible = value
+    }
+
+    override fun onDestroyView() {
+        mKeyboardHelper?.removeSoftKeyboardStateListener(this)
+        mKeyboardHelper = null
+        super.onDestroyView()
+    }
+
     /**
      * 当软件盘弹出时
      * */
@@ -280,7 +290,6 @@ class LiveSoftKeyboardFragment :
     override fun onSoftKeyboardClosed() {
 
     }
-
 
     interface LiveChatSoftKeyListener {
         fun showKeyBoard()

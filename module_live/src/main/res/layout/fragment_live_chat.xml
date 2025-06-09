@@ -59,20 +59,20 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintBottom_toTopOf="@id/live_chat_keyboard"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginBottom="@dimen/dp_62"
+            />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/live_chat_keyboard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/bottom" />
-
-        <View
-            android:id="@+id/bottom"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_34"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="@dimen/dp_12"
+            app:layout_constraintVertical_bias="1"
+            />
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 

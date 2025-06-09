@@ -62,14 +62,14 @@ data class ChatLeaveRoomResponse( override val code: Int):IResponse,ChatResponse
  * */
 data class ChatSendMsgRequest(val roomId: Long,val content:String,val refUid:String? = null,val refPlatform:Int? = null):ChatRequestData
 
-data class ChatSendMsgResponse(override val code: Int,val errorMessage:String = ""):IResponse,ChatResponseBase()
+data class ChatSendMsgResponse(override val code: Int,val errorMessage:String? = ""):IResponse,ChatResponseBase()
 
 /**
  * 获取聊天记录
  * */
 data class GetChatHistoryRequest(val roomId: Long,val page:Int,val pageSize:Int,val requestId:String?):ChatRequestData
 
-data class GetChatHistoryResponse(override val code: Int,val msgs:ChatMsg,val totalPages:Int,val totalRecords:Int,val requestId:String?):IResponse,ChatResponseBase()
+data class GetChatHistoryResponse(override val code: Int,val msgs:List<ChatMsg>,val totalPages:Int,val totalRecords:Int,val requestId:String?):IResponse,ChatResponseBase()
 
 
 data class MsgNotify(val roomId:Long,val msg:ChatMsg):IResponse
@@ -77,7 +77,7 @@ data class MsgNotify(val roomId:Long,val msg:ChatMsg):IResponse
 /**
  * 消息Bean
  * */
-data class ChatMsg(val uid:String,val userName:String,val avatarId:Int,val msgId:String,val content:String,val timestamp:Long,val refUid:String,val refUserName:String,
+data class ChatMsg(val uid:String,val userName:String,val avatarId:Int,val msgId:String,val content:String,val timestamp:String,val refUid:String,val refUserName:String,
                    val refAvatarId:Int,val onlyForSelf:Int,val platform:Int)
 
 /**

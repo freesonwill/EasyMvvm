@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.chat
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
@@ -116,6 +117,7 @@ class ChatSocketClientService(
                 "onMessage text $text".logi(this@ChatSocketClientService::class.java.simpleName)
             }
 
+            @SuppressLint("SuspiciousIndentation")
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
                     if (bytes.size != 0) {

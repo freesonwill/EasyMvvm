@@ -6,6 +6,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatLeaveRoomResponse
 import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
 import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
+import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteChatManager
@@ -42,5 +43,7 @@ class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
     suspend fun registerNotifyMsg(): Flow<MsgNotify> = remote.msgNotify()
 
     suspend fun checkBetAmount():CheckBetAmountResponse? = remote.checkBetAmount()
+
+    suspend fun getChatHistory(roomId: Long, page: Int, pageSize: Int, requestId: String = ""):GetChatHistoryResponse? = remote.getChatHistory(roomId, page, pageSize, requestId)
 
 }
