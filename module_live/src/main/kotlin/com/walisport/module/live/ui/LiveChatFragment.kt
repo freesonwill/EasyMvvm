@@ -129,21 +129,22 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             val keyboardFragment = it as LiveSoftKeyboardFragment
             keyboardFragment
         }
+
     }
 
-    fun showChatAnimation(isKeyBoardVisible: Boolean) {
-        val height = mBinding.main.height
-        val keyBoardHeight = mBinding.main.height - 12.dp2px
-        mBinding.liveChatKeyboard.layoutParams.height =
-            if (isKeyBoardVisible) keyBoardHeight else 62.dp2px
-    }
+//    fun showChatAnimation(isKeyBoardVisible: Boolean) {
+//        val height = mBinding.main.height
+//        val keyBoardHeight = mBinding.main.height - 12.dp2px
+//        mBinding.liveChatKeyboard.layoutParams.height =
+//            if (isKeyBoardVisible) keyBoardHeight else 62.dp2px
+//    }
 
 
     /**
      * 显示键盘时调用
      * */
     override fun showKeyBoard() {
-        showChatAnimation(true)
+//        showChatAnimation(true)
         mViewModel.updateSoftKeyBoard(true)
     }
 
@@ -151,7 +152,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 隐藏键盘时调用
      * */
     override fun hideKeyboard() {
-        showChatAnimation(false)
+//        showChatAnimation(false)
         mViewModel.updateSoftKeyBoard(false)
     }
 

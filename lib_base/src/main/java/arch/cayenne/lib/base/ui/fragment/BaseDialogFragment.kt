@@ -83,6 +83,27 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     }
 
     @CallSuper
+    override fun onStart() {
+        super.onStart()
+        uiBind.onStart()
+    }
+    @CallSuper
+    override fun onResume() {
+        super.onResume()
+        uiBind.onResume()
+    }
+    @CallSuper
+    override fun onPause() {
+        super.onPause()
+        uiBind.onPause()
+    }
+    @CallSuper
+    override fun onStop() {
+        super.onStop()
+        uiBind.onStop()
+    }
+
+    @CallSuper
     override fun onDestroyView() {
         super.onDestroyView()
         uiBind.onDestroyView()

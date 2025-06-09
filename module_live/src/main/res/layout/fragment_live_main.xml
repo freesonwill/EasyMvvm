@@ -32,11 +32,8 @@
         app:tabIndicatorGravity="bottom"
         app:tabIndicatorHeight="2dp"
         app:tabGravity="start"
-        app:tabMode="scrollable"
+        app:tabMode="fixed"
         app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/tab_selected_text_color"
-        app:tabTextAppearance="@style/CustomTabText"
-        app:tabTextColor="@color/video_tab_text_color"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.viewpager2.widget.ViewPager2

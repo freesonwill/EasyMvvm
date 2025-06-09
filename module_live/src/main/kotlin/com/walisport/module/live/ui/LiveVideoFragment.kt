@@ -17,9 +17,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ThreadUtils.mainScope
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -148,7 +148,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         }
 
         //播放状态处理
-        videoView.setPlayerStateListener { onPlayerStateReceived(it) }
+        videoView.setPlayerStateListener {
+            mViewModel.setPlayerState(it)
+        }
 
         if (videoView.parent != null) {
             (videoView.parent as ViewGroup).removeView(videoView)
@@ -355,6 +357,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
             }
 
+            playerState.observe(viewLifecycleOwner){
+                onPlayerStateReceived(it)
+            }
 
         }
 
@@ -457,7 +462,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
      */
     private fun scheduleHideButtons() {
         scheduledHideButtonsJob?.cancel()
-        scheduledHideButtonsJob = mainScope.launch {
+        scheduledHideButtonsJob = lifecycleScope.launch {
             delay(HIDE_BUTTONS_TIMER)
 
             buttonsDisplaying = false

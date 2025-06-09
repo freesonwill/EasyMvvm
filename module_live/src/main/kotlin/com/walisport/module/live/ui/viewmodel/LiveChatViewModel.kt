@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
-    private val TAG = this@LiveChatViewModel.javaClass.simpleName
     private var matchId: Long? = null
     private val _softKeyBoardListener = MutableLiveData<Boolean>()
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()

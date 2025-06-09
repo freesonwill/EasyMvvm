@@ -28,4 +28,8 @@
 
     </style>
 
+    <style name="Theme.Wsl.Android.Main" parent="Theme.Wsl.Android">
+        <item name="android:windowIsTranslucent">false</item>
+    </style>
+
 </resources>

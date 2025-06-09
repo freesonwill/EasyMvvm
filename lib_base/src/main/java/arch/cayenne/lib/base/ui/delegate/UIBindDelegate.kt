@@ -41,7 +41,8 @@ class UIBindDelegate<UIOwner, VM, VB>(
     //是否第一次初始化
     private var firstInit: Boolean = false
     private var destroyRunnable:Runnable? = null
-
+    private val logEnabled = true
+            
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
         destroyRunnable?.let { binding.root.removeCallbacks(it) }
         if(_binding == null || !keepViewOnNavigation) {
@@ -54,12 +55,13 @@ class UIBindDelegate<UIOwner, VM, VB>(
         } else {
             firstInit = false
         }
+        if(logEnabled) "onCreateView==>$uiOwner".logd(TAG)
         return _binding!!.root
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(firstInit) {
-            binding.root.fitsSystemWindows = true
+            view.fitsSystemWindows = true
             trackLoadingTime()
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)
@@ -69,14 +71,33 @@ class UIBindDelegate<UIOwner, VM, VB>(
         } else {
             uiOwner.createObserver()
         }
+        if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
+    }
+
+    fun onStart(){
+        if(logEnabled) "onStart==>$uiOwner".logd(TAG)
+    }
+
+    fun onResume() {
+        if(logEnabled) "onResume==>$uiOwner".logd(TAG)
+    }
+
+    fun onPause() {
+        if(logEnabled) "onPause==>$uiOwner".logd(TAG)
+    }
+
+    fun onStop() {
+        if(logEnabled) "onStop==>$uiOwner".logd(TAG)
     }
 
     fun onDestroyView() {
         if(!keepViewOnNavigation) performDestroy()
+        if(logEnabled) "onDestroyView==>$uiOwner".logd(TAG)
     }
 
     fun onDestroy(){
         performDestroy()
+        if(logEnabled) "onDestroy==>$uiOwner".logd(TAG)
     }
 
     /**

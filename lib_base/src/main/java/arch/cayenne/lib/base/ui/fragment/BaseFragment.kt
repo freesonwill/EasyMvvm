@@ -84,7 +84,26 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         super.onViewCreated(view, savedInstanceState)
         uiBind.onViewCreated(view,savedInstanceState)
     }
-
+    @CallSuper
+    override fun onStart() {
+        super.onStart()
+        uiBind.onStart()
+    }
+    @CallSuper
+    override fun onResume() {
+        super.onResume()
+        uiBind.onResume()
+    }
+    @CallSuper
+    override fun onPause() {
+        super.onPause()
+        uiBind.onPause()
+    }
+    @CallSuper
+    override fun onStop() {
+        super.onStop()
+        uiBind.onStop()
+    }
     @CallSuper
     override fun onDestroyView() {
         super.onDestroyView()

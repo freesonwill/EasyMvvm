@@ -127,6 +127,25 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         }
     }
 
+    fun updateMatchLiveData() {
+        val ids = matchListChange.value?.filter { it.match.basicInfo.status == 5 && it.match.liveInfo.rollClock }?.map { it.match.matchId }?.toList() ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            val matchWithMarkets = repository.updateLiveMatch(ids)
+            val old = matchListChange.value!!.toMutableList()
+            matchWithMarkets.forEach { matchWithMarket ->
+                val index =
+                    old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) {
+                    old[index] = matchWithMarket
+                }
+            }
+            withContext(Dispatchers.Main) {
+                matchListChange.value = old
+            }
+        }
+
+    }
+
     fun reload() {
         isPageEnd = false
         page = 1

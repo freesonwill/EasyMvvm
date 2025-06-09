@@ -13,7 +13,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_input"
@@ -36,7 +36,7 @@
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_10"
             android:background="@drawable/shape_20"
-            android:backgroundTint="@color/card_odds_background"
+            android:backgroundTint="@color/card_ooo_background"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@id/top"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -157,9 +157,8 @@
         <arch.cayenne.lib.common.ui.view.HorizontalRecyclerView
             android:id="@+id/keyboard_emoji_recycler"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="302dp"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView

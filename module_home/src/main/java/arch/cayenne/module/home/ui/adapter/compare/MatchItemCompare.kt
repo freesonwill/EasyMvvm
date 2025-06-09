@@ -22,6 +22,7 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
         val oldLiveInfo = oldItem.match.liveInfo
         val newLiveInfo = newItem.match.liveInfo
 
+        if (oldItem.match.basicInfo.status != newItem.match.basicInfo.status) diff.add("status")
         if (oldLiveInfo.clock != newLiveInfo.clock) diff.add("clock")
         if (oldLiveInfo.score != newLiveInfo.score) diff.add("score")
         if (oldLiveInfo.viewerCount != newLiveInfo.viewerCount) diff.add("viewerCount")
@@ -39,7 +40,7 @@ class MatchItemCompare : DiffUtil.ItemCallback<MatchWithMarkets>() {
                     oldSelection.shortName != newSelection.shortName ||
                     oldSelection.parlay != newSelection.parlay ||
                     oldSelection.isSelected != newSelection.isSelected ||
-                    oldSelection.trend != newSelection.trend
+                    newSelection.trend != 0
                 ) {
                     diff.add("odds") // 如果有其中任何一個不同就記錄 odds
                     return@forEachIndexed

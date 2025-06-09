@@ -5,6 +5,8 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.MatchDao
+import arch.cayenne.lib.database.entity.MatchBeanLite
+import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -30,7 +32,7 @@ abstract class BaseMatchRepository(
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
-        const val DEFAULT_MATCH_SIZE = 10
+        const val DEFAULT_MATCH_SIZE = 5
     }
 
     /**
@@ -133,6 +135,32 @@ abstract class BaseMatchRepository(
             updateData.matchMarketCrossRefs,
             updateData.marketSelectCrossRefs
         ).setSelected(betDao)
+    }
+
+    suspend fun updateLiveMatch(matchIds: List<Long>) : List<MatchWithMarkets> {
+        val matchLites = arrayListOf<MatchBeanLite>()
+        matchDao.getMatchByIds(matchIds).forEach { match ->
+            val liveInfo = MatchLiveInfoBean(
+                clock = match.liveInfo.clock + 1,
+                rollClock = match.liveInfo.rollClock,
+                period = match.liveInfo.period,
+                score = match.liveInfo.score,
+                liveVideo =match.liveInfo.liveVideo,
+                charRoom = match.liveInfo.charRoom,
+                viewerCount = match.liveInfo.viewerCount,
+                clockModified = match.liveInfo.clockModified + 1000
+            )
+            matchLites.add(
+                MatchBeanLite(
+                    matchId = match.matchId,
+                    status = match.basicInfo.status,
+                    betStop = match.basicInfo.betStop,
+                    startTime = match.basicInfo.startTime,
+                    liveInfo = liveInfo,
+                )
+            )
+        }
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites)
     }
 
     /**

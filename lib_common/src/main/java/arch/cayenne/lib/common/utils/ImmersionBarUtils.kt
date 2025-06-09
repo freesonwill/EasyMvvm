@@ -24,7 +24,7 @@ object ImmersionBarUtils {
                 SkinType.SKIN_WHITE_BLUE->{
                     R.color.title_bg_white_blue
                 }
-            else -> throw IllegalStateException("❌ Unsupported type: $type")
+                else -> throw IllegalStateException("❌ Unsupported type: $type")
         }
     }
 

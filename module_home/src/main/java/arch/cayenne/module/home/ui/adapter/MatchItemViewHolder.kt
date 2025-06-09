@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.ui.adapter
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
@@ -85,6 +86,7 @@ class MatchItemViewHolder(
         }
     }
 
+    @SuppressLint("SetTextI18n")
     fun init(data: MatchWithMarkets) {
 //        oddsColumnAdapter.onOddsClick = { selection, b ->
 //            onMatchItemClickListener?.onOddsCellClick(data, selection)
@@ -100,14 +102,14 @@ class MatchItemViewHolder(
                 ivTournamentIcon
             )
             tvTournamentName.text = basicInfo.tournamentName
-            //TODO 階段與時間待確認
-            if (basicInfo.status == 4) {
-                tvGameStatus.text = basicInfo.startTime.toLocalDateTimeString()
-                tvGameTime.visibility = TextView.GONE
-            } else {
+
+            if (basicInfo.status == 5) {  //開賽中
+                tvGameStatus.visibility = View.VISIBLE
                 tvGameStatus.text = liveInfo.period
-                tvGameTime.visibility = TextView.VISIBLE
-                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+                tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
+            } else {
+                tvGameStatus.visibility = View.GONE
+                tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
             }
 
             //客隊
@@ -125,7 +127,8 @@ class MatchItemViewHolder(
             rvOddsGrid.setRecycledViewPool(viewPool)
 
             val selectionsGrouped = data.markets.map { it.market to it.selections }
-            oddsColumnAdapter.submitList(selectionsGrouped)
+            if (oddsColumnAdapter.itemCount == 0)
+                oddsColumnAdapter.submitList(selectionsGrouped)
         }
     }
 
@@ -137,6 +140,7 @@ class MatchItemViewHolder(
             .into(view)
     }
 
+    @SuppressLint("SetTextI18n")
     fun bindPayload(item: MatchWithMarkets, payloads: List<Any>) {
         val changes = payloads.firstOrNull() as? Set<*> ?: return
         with(mBinding) {
@@ -148,18 +152,17 @@ class MatchItemViewHolder(
 //            }
 
             if ("status" in changes) {
-                if (basicInfo.status == 4) {
-                    tvGameStatus.text = basicInfo.startTime.toLocalDateTimeString()
-                    tvGameTime.visibility = TextView.GONE
-                } else {
+                if (basicInfo.status == 5) {  //開賽中
+                    tvGameStatus.visibility = View.VISIBLE
                     tvGameStatus.text = liveInfo.period
-                    tvGameTime.visibility = TextView.VISIBLE
-                    tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+                } else {
+                    tvGameStatus.visibility = View.GONE
+                    tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
                 }
             }
 
             if ("clock" in changes) {
-                tvGameTime.text = liveInfo.clock.toMinuteSecondFormat()
+                tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
             }
             if ("score" in changes) {
                 tvAwayScore.text = liveInfo.score.getAwayScore()
@@ -177,4 +180,7 @@ class MatchItemViewHolder(
             }
         }
     }
+
+    private fun liveClock(clock: Int, modified: Long) : String =
+        (clock).toMinuteSecondFormat()
 }
