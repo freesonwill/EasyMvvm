@@ -143,6 +143,32 @@ class SearchRepository(
         return Gson().fromJson(value, type)
     }
 
+    suspend fun addCollect(matchId: Long): Boolean {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.AddCollectResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.ADD_COLLECT
+        ) {
+            Client.AddCollectReq.newBuilder().apply {
+                addMatchId(matchId)
+            }.build()
+        }
+        return result.data?.success ?: false
+    }
+
+    suspend fun removeCollect(matchId: Long): Boolean {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.RemoveCollectResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.REMOVE_COLLECT
+        ) {
+            Client.RemoveCollectReq.newBuilder().apply {
+                addMatchId(matchId)
+            }.build()
+        }
+        return result.data?.success ?: false
+    }
+
     /** * 获取搜索结果
      * @param word 搜索关键词 / 聯賽ID / 球隊ID / 球員ID
      * @param type 搜索类型 （1-普通词 / 2-热门词 / 10-球员 / 11-球队 / 12-联赛）

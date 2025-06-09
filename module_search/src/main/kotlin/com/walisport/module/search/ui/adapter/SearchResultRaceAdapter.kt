@@ -41,6 +41,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
     }
 
     var onBetClick: ((SearchMatchBean) -> Unit)? = null
+    var onFavoriteClick: ((SearchMatchBean) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -136,6 +137,13 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                                 ivArrowTeamAway.visibility = View.GONE
                             }
                         }
+                        btnFavorite.apply {
+                            isSelected = collect
+                            clickNoRepeat {
+                                onFavoriteClick?.invoke(itemData)
+                                isSelected = !isSelected
+                            }
+                        }
                         btnBet.apply {
                             if(basicInfo.betStop) {
                                 text = holder.itemView.context.getString(R.string.search_result_btn_bet_finish)
@@ -168,5 +176,21 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {
         return BaseViewHolder(binding)
+    }
+
+    fun updateFavoriteStatus(matchId: Long, collectStatus: Boolean) {
+        val index = currentList.indexOfFirst {
+            (it as? SearchResultRaceItemType.Item)?.data?.matchId == matchId
+        }
+        if (index < 0) return
+
+        val oldItem = currentList[index] as SearchResultRaceItemType.Item
+        if (oldItem.data.collect == collectStatus) return
+
+        val updatedItem = oldItem.copy(data = oldItem.data.copy(collect = collectStatus))
+        val newList = currentList.toMutableList().apply {
+            this[index] = updatedItem
+        }
+        submitList(newList)
     }
 }

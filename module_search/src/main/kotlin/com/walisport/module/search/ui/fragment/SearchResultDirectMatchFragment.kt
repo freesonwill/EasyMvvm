@@ -52,6 +52,21 @@ class SearchResultDirectMatchFragment :
                     )
                 )
             }
+            onFavoriteClick = { match ->
+                lifecycleScope.launch {
+                    val success = if (match.collect) {
+                        mViewModel.removeCollect(match.matchId)
+                    } else {
+                        mViewModel.addCollect(match.matchId)
+                    }
+
+                    if(success) {
+                        this@apply.updateFavoriteStatus(
+                            match.matchId, !match.collect
+                        )
+                    }
+                }
+            }
         }
     }
 

@@ -67,7 +67,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         id: String,
         type: SearchTypeEnum,
         startTime: Long? = null,
-        endTime: Long? = null
+        endTime: Long? = null,
     ) {
         viewModelScope.launch {
             resetResult()
@@ -111,6 +111,16 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         }.toSortedMap().flatMap { (day, matchList) ->
             listOf(SearchResultRaceItemType.Header(day)) + matchList.map { SearchResultRaceItemType.Item(it) }
         }
+    }
+
+    /** 新增收藏賽事 */
+    suspend fun addCollect(matchId: Long): Boolean {
+        return repository.addCollect(matchId)
+    }
+
+    /** 移除收藏賽事 */
+    suspend fun removeCollect(matchId: Long): Boolean {
+        return repository.removeCollect(matchId)
     }
 
     /** 設定選擇的日期 */
