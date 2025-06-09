@@ -45,6 +45,7 @@ import kotlin.reflect.KClass
 class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectListBinding>() {
     override val vbClass: KClass<FragmentCollectListBinding> = FragmentCollectListBinding::class
     override val vmClass: KClass<CollectListViewModel> = CollectListViewModel::class
+    override val keepViewOnNavigation: Boolean = true
     private val titleBarBinding: TitleBarFavoriteBinding by lazy {
         TitleBarFavoriteBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
