@@ -123,8 +123,8 @@ class ChatSocketClientService(
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         val data = security.decrypt(byteArray)
-                        if((data as SocketOriginResponseData).originProto?.isNotEmpty() == true)
-                        "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
+                        if ((data as SocketOriginResponseData).originProto?.isNotEmpty() == true)
+                            "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {
@@ -137,12 +137,14 @@ class ChatSocketClientService(
     }
 
     override fun disConnect(): Boolean {
+        "disconnect ".logi(this@ChatSocketClientService::class.java.simpleName)
         val result = webSocket?.close(1001, null) ?: false
         currentState = SocketConnectState.Closed
         return result
     }
 
     override fun reconnect() {
+        "reconnect "
         if (currentState != SocketConnectState.Connecting && currentState != SocketConnectState.Closed) {
             openWebSocket()
         }

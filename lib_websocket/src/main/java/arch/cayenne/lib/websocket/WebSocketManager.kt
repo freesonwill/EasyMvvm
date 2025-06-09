@@ -69,6 +69,7 @@ class WebSocketManager(
     }
 
     fun disconnect() {
+        stopHeartbeat()
         socket.disConnect()
     }
 
@@ -90,7 +91,7 @@ class WebSocketManager(
         reconnectJob?.cancel()
         reconnectDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         reconnectJob = CoroutineScope(reconnectDispatcher!!).launch {
-            while (true) {
+            while (retryCount < 5) {
                 delay(reconnectInterval)
                 retryCount++
                 "try to reconnect! retry count = $retryCount".logi(this.javaClass.simpleName)
