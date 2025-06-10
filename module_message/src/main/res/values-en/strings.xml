@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notification_message">Notification Message</string>
+    <string name="notification_all">All Message</string>
+    <string name="notification_sys">System Message</string>
+    <string name="notification_activity">Activity Message</string>
+    <string name="notification_match">Match Message</string>
+    <string name="notification_wallet">Wallet Message</string>
 </resources>
