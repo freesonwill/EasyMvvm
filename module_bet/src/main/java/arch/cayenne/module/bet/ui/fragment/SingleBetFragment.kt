@@ -88,6 +88,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnCollusion.setOnClickListener {
             mViewModel.saveToCombo()
+            dismiss()
         }
         mBinding.clBet.setOnClickListener {
             sendBet()
@@ -161,7 +162,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     mBinding.btnReserve.isVisible = false
                     mBinding.clCancelReserve.isVisible = true
                 }
-                else -> dismiss()
+                else -> {}
             }
         }
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { value ->

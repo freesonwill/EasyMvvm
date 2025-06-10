@@ -2,9 +2,9 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root"
     android:background="@color/background">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -44,8 +44,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_class">
@@ -54,7 +54,7 @@
                         android:id="@+id/radio_classic"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_classic" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_classic"
@@ -86,8 +86,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_black_blue">
@@ -96,7 +96,7 @@
                         android:id="@+id/radio_black_blue"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_black_blue" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_black_blue"
@@ -128,8 +128,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_black_green">
@@ -138,7 +138,7 @@
                         android:id="@+id/radio_black_green"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_black_green" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_black_green"
@@ -177,8 +177,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_black_red">
@@ -187,7 +187,7 @@
                         android:id="@+id/radio_black_red"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_black_red" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_black_red"
@@ -219,8 +219,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_white_blue">
@@ -229,7 +229,7 @@
                         android:id="@+id/radio_white_blue"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_white_blue" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_white_blue"
@@ -261,8 +261,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:orientation="horizontal"
                     android:gravity="center_vertical"
+                    android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/iv_white_green">
@@ -271,7 +271,7 @@
                         android:id="@+id/radio_white_green"
                         android:layout_width="@dimen/dp_16"
                         android:layout_height="@dimen/dp_16"
-                        android:background="@drawable/selector_radio_button"/>
+                        android:background="@drawable/skin_radio_white_green" />
 
                     <arch.cayenne.lib.skin.widget.SkinnableTextView
                         android:id="@+id/tv_white_green"
