@@ -104,10 +104,12 @@ class MatchItemViewHolder(
             tvTournamentName.text = basicInfo.tournamentName
 
             if (basicInfo.status == 5) {  //開賽中
+                tvRoll.visibility = View.VISIBLE
                 tvGameStatus.visibility = View.VISIBLE
                 tvGameStatus.text = liveInfo.period
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
             } else {
+                tvRoll.visibility = View.GONE
                 tvGameStatus.visibility = View.GONE
                 tvGameTime.text = basicInfo.startTime.toLocalDateTimeString()
             }
