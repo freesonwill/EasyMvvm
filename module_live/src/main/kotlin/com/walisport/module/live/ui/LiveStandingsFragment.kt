@@ -67,7 +67,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     override fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
             mViewModel.competitionTables.observe(viewLifecycleOwner) {
-                if (it.isEmpty()) {
+                if (it.isEmpty() && standsAdapter.itemCount == 0) {
                     mBinding.mainLayout.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.standings_empty.getString()
