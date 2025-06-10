@@ -6,8 +6,10 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
@@ -16,12 +18,14 @@ import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
@@ -69,9 +73,6 @@ class LiveMainViewModel(
     val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
         matchId.asFlow().combine(sportId.asFlow()) { matchId, sportId -> matchId to sportId }
             .debounce(1000)
-
-    //监听聊天服务器变化
-    val chatSocketServerState = MutableStateFlow<ConnectState?>(null)
 
     override fun initViewModel() {
         super.initViewModel()
@@ -201,13 +202,13 @@ class LiveMainViewModel(
      * 开启聊天服务
      * */
     fun startChatServer() {
-        "startChatserver ${chatSocketServerState.value}".logd("chat")
-        if (chatSocketServerState.value == ConnectState.ConnectSuccess) {
-            return
-        }
         viewModelScope.launch {
-            val state = chatRepo.startSocket()
-            chatSocketServerState.emit(state)
+            val state = chatRepo.getConnectStateFlow().value
+            "startChatserver $state".logd(TAG)
+            if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
+                return@launch
+            }
+             chatRepo.startSocket()
         }
     }
 
@@ -216,8 +217,14 @@ class LiveMainViewModel(
      * */
     fun disConnectChatServer() {
         viewModelScope.launch {
-            chatRepo.disconnect()
-            chatSocketServerState.emit(ConnectState.ConnectClosed)
+            try{
+                val value =  chatRepo.disconnect(viewModelScope)
+                "chat disconnect viewModel $value".logd(TAG)
+            }catch (e:CancellationException){
+                "chat disconnect viewModel canceled".logi(TAG)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
     }
 }

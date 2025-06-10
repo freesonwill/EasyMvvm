@@ -11,12 +11,14 @@ import arch.cayenne.lib.websocket.chat.data.ChatRequestCodeEnum
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.google.gson.Gson
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
@@ -188,6 +190,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * 添加本地数据
      * */
     fun addLocalMsg(content: String) {
+
         val id = System.currentTimeMillis().toString()
         val user = _loginLiveData.value!!
         val msg = ChatMsg(
@@ -205,6 +208,8 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         )
         msgLists.add(msgLists.size, msg)
     }
+
+    fun getConnectStateFlow():StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
 
 
 }

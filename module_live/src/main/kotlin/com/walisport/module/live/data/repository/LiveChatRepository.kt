@@ -9,10 +9,12 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.LiveRemoteChatManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
@@ -21,8 +23,8 @@ class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
         return remote.startSocket()
     }
 
-    suspend fun disconnect(): Boolean {
-        return remote.disConnect()
+    suspend fun disconnect(scope: CoroutineScope): Boolean {
+        return remote.disConnect(scope)
     }
 
     suspend fun login(): ChatLoginResponseData? {
@@ -45,5 +47,7 @@ class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
     suspend fun checkBetAmount():CheckBetAmountResponse? = remote.checkBetAmount()
 
     suspend fun getChatHistory(roomId: Long, page: Int, pageSize: Int, requestId: String = ""):GetChatHistoryResponse? = remote.getChatHistory(roomId, page, pageSize, requestId)
+
+    fun getConnectStateFlow():StateFlow<SocketConnectState> = remote.getConnectStateFlow()
 
 }

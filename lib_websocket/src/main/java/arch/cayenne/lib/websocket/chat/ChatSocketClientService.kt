@@ -24,8 +24,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.*
@@ -41,6 +43,8 @@ class ChatSocketClientService(
 ) : ISocket<IRequest, IResponse, ConnectState> {
     private var currentState: SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
+    private val socketConnectStateFlow: MutableStateFlow<SocketConnectState> =
+        MutableStateFlow(SocketConnectState.None)
     private val connectStateFlow: MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
             replay = 0,
@@ -84,6 +88,9 @@ class ChatSocketClientService(
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
+                workingScope.launch {
+                    socketConnectStateFlow.emit(currentState)
+                }
                 if (!hasNetworkConnection()) {
                     "Socket Client -> NetworkUnavailable".loge(ChatSocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
@@ -102,6 +109,9 @@ class ChatSocketClientService(
                     workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
                     SocketConnectState.Closed
                 }
+                workingScope.launch {
+                    socketConnectStateFlow.emit(currentState)
+                }
 
             }
 
@@ -110,7 +120,10 @@ class ChatSocketClientService(
                 "Socket Client -> ConnectOpen ".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@ChatSocketClientService.webSocket = webSocket
-                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
+                workingScope.launch {
+                    connectStateFlow.emit(ConnectState.ConnectSuccess)
+                    socketConnectStateFlow.emit(currentState)
+                }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
@@ -139,7 +152,6 @@ class ChatSocketClientService(
     override fun disConnect(): Boolean {
         "disconnect ".logi(this@ChatSocketClientService::class.java.simpleName)
         val result = webSocket?.close(1001, null) ?: false
-        currentState = SocketConnectState.Closed
         return result
     }
 
@@ -172,6 +184,8 @@ class ChatSocketClientService(
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow
 
     override fun stateChangeObserve(): SharedFlow<ConnectState> = connectStateFlow
+
+    fun socketConnectStateFlow(): StateFlow<SocketConnectState> = socketConnectStateFlow
 
 
     private fun hasNetworkConnection(): Boolean {

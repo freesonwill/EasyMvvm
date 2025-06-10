@@ -22,8 +22,11 @@ import arch.cayenne.lib.websocket.chat.data.MsgNotify
 import arch.cayenne.lib.websocket.chat.extension.chatObserveProtoMessage
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.transform
 
@@ -44,23 +47,22 @@ class LiveRemoteChatManager(
     /**
      * 关闭聊天服务器
      * */
-    suspend fun disConnect(): Boolean {
-        return socketManager.disconnect()
+    suspend fun disConnect(scope: CoroutineScope): Boolean {
+        return socketManager.disconnect(scope)
     }
 
     /**
      * 聊天登陆
      * */
     suspend fun login(): ChatLoginResponseData? {
-//        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
-//        val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
+        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
+        val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
 //
 //        val uid = 55469011
 //        val token = "NTU0NjkwMTFfMTc0OTI4MDM1NTA0OTpTakJVNGZXSGlOMWx0dTNL" //虚拟机
 
-
-        val uid = 55469012
-        val token = "NTU0NjkwMTJfMTc0OTI4MDMzNDY2ODpJeXE5NkJDaUl5OW9XWEVv" //真机
+//        val uid = 55469012
+//        val token = "NTU0NjkwMTJfMTc0OTI4MDMzNDY2ODpJeXE5NkJDaUl5OW9XWEVv" //真机
 
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
             ApiCode.CHAT_LOGIN,
@@ -71,7 +73,7 @@ class LiveRemoteChatManager(
         if (logResp.error == null && logResp.data != null) {
             return logResp.data
         }
-        "login uid:$uid  token:$token   result ${Gson().toJson(logResp)}".logd(TAG)
+        "login uid:$uid  result ${Gson().toJson(logResp)}".logd(TAG)
         return null
     }
 
@@ -85,6 +87,8 @@ class LiveRemoteChatManager(
         ) {
             ChatRoomRequest(matchId, PLATFORM)
         }
+        "enterChatRoom matchId:$matchId   result ${Gson().toJson(resp)}".logd(TAG)
+
         if (resp.error == null && resp.data != null) {
             return resp.data
         }
@@ -101,6 +105,8 @@ class LiveRemoteChatManager(
         ) {
             ChatRoomRequest(matchId, PLATFORM)
         }
+        "leaveChatRoom matchId:$matchId   result ${Gson().toJson(resp)}".logd(TAG)
+
         if (resp.error == null && resp.data != null) {
             return resp.data
         }
@@ -122,6 +128,8 @@ class LiveRemoteChatManager(
         ) {
             ChatSendMsgRequest(roomId, content, refUid, refPlatform)
         }
+        "sendMsgNotify matchId:$roomId   result ${Gson().toJson(resp)}".logd(TAG)
+
         if (resp.error == null && resp.data != null) {
             return resp.data
         }
@@ -135,6 +143,7 @@ class LiveRemoteChatManager(
         return socketManager.chatObserveProtoMessage<MsgNotify>(ChatResponseCode.MSG_NOTIFY)
             .transform {
                 if (it.error == null && it.data != null) {
+                    "msgNotify  result ${Gson().toJson(it.data)}".logd(TAG)
                     emit(it.data!!)
                 }
             }
@@ -150,6 +159,8 @@ class LiveRemoteChatManager(
         ) {
             CheckBetAmountRequest(PLATFORM)
         }
+        "checkBetAmount  result ${Gson().toJson(resp)}".logd(TAG)
+
         if (resp.error == null && resp.data != null) {
             return resp.data
         }
@@ -157,18 +168,27 @@ class LiveRemoteChatManager(
     }
 
 
-    suspend fun getChatHistory(roomId: Long, page: Int, pageSize: Int, requestId: String): GetChatHistoryResponse?{
+    suspend fun getChatHistory(
+        roomId: Long,
+        page: Int,
+        pageSize: Int,
+        requestId: String
+    ): GetChatHistoryResponse? {
         val resp = socketManager.chatSendAndWaitProtoMessageResponse<GetChatHistoryResponse>(
             ApiCode.CHAT_HISTORY,
             responseCode = ChatResponseCode.CHAT_HISTORY
         ) {
-            GetChatHistoryRequest(roomId,page,pageSize,requestId)
+            GetChatHistoryRequest(roomId, page, pageSize, requestId)
         }
+        "getChatHistory matchId:$roomId  result ${resp.data?.msgs?.size}".logd(TAG)
+
         if (resp.error == null && resp.data != null) {
             return resp.data
         }
         return null
     }
 
+    fun getConnectStateFlow(): StateFlow<SocketConnectState> =
+        socketManager.getSocketConnectStateFlow()
 
 }

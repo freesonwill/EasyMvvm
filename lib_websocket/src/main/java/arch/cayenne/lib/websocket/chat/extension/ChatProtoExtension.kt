@@ -33,8 +33,8 @@ fun ChatRequestData.chatAsRemoteRequest(
     rid: Short
 ): SocketRequestData {
     val json = toJson()
-    if(apiCode != ApiCode.CHAT_PING)
-    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
+//    if(apiCode != ApiCode.CHAT_PING)
+//    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,
@@ -56,7 +56,7 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
             val bean = it.originProto?.let { byteArray ->
                 Gson().fromJson(String(byteArray), T::class.java)
             }
-            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
+//            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
             return@map ChatResponseData(
                 mid = it.mid,
                 sid = it.sid,

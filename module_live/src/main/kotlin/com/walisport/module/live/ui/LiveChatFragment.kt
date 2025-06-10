@@ -9,7 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
-import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
@@ -66,7 +66,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     override fun createObserver() {
         mainViewModel.matchId.observe(viewLifecycleOwner) {
-            "matchId observer ".logd(TAG)
             mViewModel.setArguments(mainViewModel.matchId.value)
         }
 
@@ -81,6 +80,17 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mViewModel.sendMsgLiveData.observe(viewLifecycleOwner) {
+            val checkBetAmount = mViewModel.checkBetAmountLiveData.value
+            if (checkBetAmount != CheckBetResultEnum.SUCCESS) {
+                val msg =
+                    if (checkBetAmount == CheckBetResultEnum.BET_AMOUNT) getString(R.string.insufficient_bet_amount)
+                    else getString(R.string.insufficient_balance)
+                showToast(msg)
+                return@observe
+            }
+            if(mViewModel.loginLiveData.value == null){
+                return@observe
+            }
             mViewModel.sendMsgToServer(it)
             mViewModel.addLocalMsg(it)
             refreshChatList()
@@ -101,7 +111,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     else getString(R.string.insufficient_balance)
                 showToast(msg)
             }
-            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
+          //  TODO暂时隐藏，便于测试
+//            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -114,13 +125,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
             }
             launch {
-                mainViewModel.chatSocketServerState.collect {
-                    "startChatserver flow $it".logd("chat")
-                    if (it == ConnectState.ConnectSuccess) {
+                mViewModel.getConnectStateFlow().collect {
+//                    "startChatserver flow $it shoulderLogin:${mViewModel.loginLiveData.value == null}".logd("chat")
+                    if (it == SocketConnectState.Connecting && mViewModel.loginLiveData.value == null) {
                         mViewModel.chatLogin()
                     }
                 }
             }
+
         }
     }
 
