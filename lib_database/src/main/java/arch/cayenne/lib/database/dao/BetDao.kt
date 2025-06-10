@@ -138,4 +138,14 @@ abstract class BetDao : BaseDao<BetBean>() {
                 "    )"
     )
     abstract suspend fun getCurrentSelectionIds(status: BetStatusEnum = BetStatusEnum.PENDING): List<Long>
+
+    @Query(
+        "SELECT betType FROM BetBean WHERE betId = (" +
+                "        SELECT betId FROM BetBean" +
+                "        WHERE status = :status" +
+                "        ORDER BY betId DESC" +
+                "        LIMIT 1" +
+                "    )"
+    )
+    abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetTypeEnum?>
 }

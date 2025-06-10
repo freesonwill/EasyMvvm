@@ -11,6 +11,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
@@ -32,6 +33,13 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
 
     private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
+
+    private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
+    val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
+
+    private val _onReserveOddsListener = MutableLiveData<Int?>()
+    val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
+
     val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
     val moneySymbol: String
         get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
@@ -39,7 +47,20 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
         addSource(_onBetSheetListener) { data ->
-            odds = data.odds
+            if (_onReserveOddsListener.value == null) {
+                odds = data.odds
+                value = editValue.toMoney().getMoney(odds)
+            }
+        }
+        addSource(_onReserveOddsListener) { reserveOdds ->
+            if (reserveOdds == null) {
+                _onBetSheetListener.value?.let {
+                    odds = it.odds
+                }
+            } else {
+                odds = reserveOdds
+            }
+            value = editValue.toMoney().getMoney(odds)
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -95,16 +116,34 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
                     setRemainingNumber(it)
                 }
             }
+            launch {
+                betRepo.observeBetType().collect {
+                    _betTypeListener.value = it
+                    if (it == BetTypeEnum.RESERVE) {
+                        _onReserveOddsListener.value = betRepo.getReserveOdds()
+                    }
+                }
+            }
         }
     }
 
     fun sendBet() {
         val money = onEditNumber.value?.toMoney() ?: return
-        return betRepo.sendBet(money)
+        val type = _betTypeListener.value ?: return
+        if (type == BetTypeEnum.SINGLE) {
+            betRepo.sendBet(money)
+        } else if (type == BetTypeEnum.RESERVE) {
+            betRepo.sendReserve(money)
+        }
     }
 
     fun removeBet() {
         betRepo.removeBet()
+    }
+
+    fun removeReserve() {
+        betRepo.removeReserve()
+        _onReserveOddsListener.value = null
     }
 
     fun saveToCombo() {
@@ -116,8 +155,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         betRepo.saveToCombo()
     }
 
-    fun saveReserveOdds(odds: Int) {
-        betRepo.saveReserve(odds)
+    fun saveToReserve(odds: Int) {
+        betRepo.saveToReserve(odds)
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {
