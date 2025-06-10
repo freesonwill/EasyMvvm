@@ -11,7 +11,6 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -20,6 +19,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -63,6 +63,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         setTitleBar()
         setRecommend()
         setBackPressHandler()
+    }
+
+    override fun initListener() = Unit
+
+    override fun createObserver() {
+        with(mViewModel) {
+            searchRecommend.observe(viewLifecycleOwner) {
+                recommendAdapter.submitList(it)
+            }
+        }
     }
 
     private fun setTitleBar() {
@@ -341,8 +351,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
 
             is SearchNavigationEvent.ToLiveFragment -> {
-                findNavController()
-                    .navigate(Uri.parse(event.deepLink))
+                navigate(Uri.parse(event.deepLink))
             }
         }
     }
@@ -375,12 +384,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         )
     }
 
-    override fun initListener() = Unit
-
-    override fun createObserver() {
-        with(mViewModel) {
-            searchRecommend.observe(viewLifecycleOwner) {
-                recommendAdapter.submitList(it)
+    fun setTitleBarMask(isEnable: Boolean, onClick:(() -> Unit)? = null) {
+        with(mBinding.maskTitleBar) {
+            if (isEnable) {
+                visibility = View.VISIBLE
+                setOnClickListener {
+                    onClick?.invoke()
+                }
+            } else {
+                visibility = View.GONE
+                setOnClickListener(null)
             }
         }
     }

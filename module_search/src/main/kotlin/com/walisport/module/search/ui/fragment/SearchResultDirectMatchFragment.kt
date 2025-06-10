@@ -27,9 +27,12 @@ import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_END
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -60,7 +63,7 @@ class SearchResultDirectMatchFragment :
                         mViewModel.addCollect(match.matchId)
                     }
 
-                    if(success) {
+                    if (success) {
                         this@apply.updateFavoriteStatus(
                             match.matchId, !match.collect
                         )
@@ -81,7 +84,8 @@ class SearchResultDirectMatchFragment :
                 ContextCompat.getString(requireContext(), R.string.no_search_result)
             )
             recyclerView.apply {
-                layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
                 adapter = linearAdapter.apply {
                     if (itemDecorationCount == 0) {
                         addItemDecoration(object : ItemDecoration() {
@@ -115,62 +119,9 @@ class SearchResultDirectMatchFragment :
                 }
             }
             clDate.clickNoRepeat {
-                setCalendarState(clCalendar.visibility != View.VISIBLE)
+                openDatePicker()
             }
             tvDate.text = getString(R.string.search_date_hint)
-            calendarView.apply {
-                clearSingleSelect()
-                setAllMode()
-                setOnMonthChangeListener { year, month ->
-                    setCalendarTitle(year, month)
-                }
-                setWeeColor(
-                    Color.TRANSPARENT,
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_week_text_color)
-                )
-                setTextColor(
-                    Color.parseColor("#ff0000"),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_current_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_other_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_current_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_other_month_text_color)
-                )
-                setSelectedColor(
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_selected_theme_color),
-                    Color.WHITE,
-                    Color.TRANSPARENT
-                )
-                setCalendarTitle(curYear, curMonth)
-            }
-            ivPrevMonth.clickNoRepeat {
-                calendarView.scrollToPre(true)
-            }
-            ivNextMonth.clickNoRepeat {
-                calendarView.scrollToNext(true)
-            }
-            tvReset.clickNoRepeat {
-                calendarView.clearSingleSelect()
-                setCalendarState(clCalendar.visibility != View.VISIBLE)
-                mViewModel.setSelectedDate(null)
-                mViewModel.directMatchType?.let { type ->
-                    mViewModel.getSearchResult(
-                        mViewModel.directMatchId.toString(),
-                        type
-                    )
-                }
-            }
-            tvConfirm.clickNoRepeat {
-                setCalendarState(clCalendar.visibility != View.VISIBLE)
-                mViewModel.setSelectedDate(Date(calendarView.selectedCalendar.timeInMillis))
-                mViewModel.directMatchType?.let { type ->
-                    mViewModel.getSearchResult(
-                        mViewModel.directMatchId.toString(),
-                        type,
-                        calendarView.selectedCalendar.timeInMillis.toDateStartTime(),
-                        calendarView.selectedCalendar.timeInMillis.toDateEndTime()
-                    )
-                }
-            }
         }
     }
 
@@ -186,32 +137,50 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    private fun Long.toDateStartTime(): Long {
-        return Calendar.getInstance().apply {
-            timeInMillis = this@toDateStartTime
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }.timeInMillis
+    private fun openDatePicker() {
+        val parentSearchFragment = requireParentFragment().parentFragment as? SearchFragment
+        val oldDate = mViewModel.getSelectedDate()
+
+        childFragmentManager.setFragmentResultListener(DATE_PICKER_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
+            childFragmentManager.clearFragmentResultListener(DATE_PICKER_RESULT_KEY)
+
+            parentSearchFragment?.setTitleBarMask(false)
+            setDateBarStatus(false)
+
+            val newDate =
+                bundle.getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
+                    .takeIf { bundle.containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS) }
+                    ?.let { Date(it) }
+            mViewModel.setSelectedDate(newDate)
+
+            if (oldDate != newDate) {
+                mViewModel.directMatchType?.let { type ->
+                    mViewModel.getSearchResult(
+                        mViewModel.directMatchId.toString(),
+                        type,
+                        bundle.getLong(DATE_PICKER_RESULT_START),
+                        bundle.getLong(DATE_PICKER_RESULT_END)
+                    )
+                }
+            }
+        }
+
+        val marginTop = mBinding.clBasicInfo.height + 28.dp2px + mBinding.clDate.height - 1.dp2px
+        val datePicker = SearchDatePickerFragment.newInstance(
+            marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
+        )
+
+        datePicker.show(childFragmentManager, mBinding.clRoot.id)
+        parentSearchFragment?.setTitleBarMask(true) {
+            datePicker.close()
+        }
+        setDateBarStatus(true)
     }
 
-    private fun Long.toDateEndTime(): Long {
-        return Calendar.getInstance().apply {
-            timeInMillis = this@toDateEndTime
-            set(Calendar.HOUR_OF_DAY, 23)
-            set(Calendar.MINUTE, 59)
-            set(Calendar.SECOND, 59)
-            set(Calendar.MILLISECOND, 999)
-        }.timeInMillis
-    }
-
-    private fun setCalendarState(isOpen: Boolean = true) {
+    private fun setDateBarStatus(isOpen: Boolean) {
         with(mBinding) {
-            clCalendar.visibility =
-                if (!isOpen) View.GONE else View.VISIBLE
             ivDateArrow.rotation =
-                if(isOpen) 180f else 0f
+                if (isOpen) 180f else 0f
             clDate.background =
                 SkinnableResourceManager.getDrawable(
                     requireContext(),
@@ -221,28 +190,12 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    private fun setCalendarTitle(year: Int, month: Int) {
-        val monthStr =
-            SimpleDateFormat("MMMM", Locale.getDefault())
-                .format(
-                    Calendar.getInstance(Locale.getDefault()).apply {
-                        set(Calendar.YEAR, year)
-                        set(Calendar.MONTH, month - 1)
-                    }.time
-                )
-        mBinding.tvCalendarTitle.text =
-            requireContext().getString(
-                R.string.search_result_race_calendar_title,
-                monthStr,
-                "$year"
-            )
-    }
-
     private fun switchUI(state: RaceViewState) {
         with(mBinding) {
-            loadingView.visibility = if(state == RaceViewState.Loading) View.VISIBLE else View.GONE
-            dynamicState.visibility = if (state ==  RaceViewState.Empty) View.VISIBLE else View.GONE
-            recyclerView.visibility = if (state == RaceViewState.Success) View.VISIBLE else View.GONE
+            loadingView.visibility = if (state == RaceViewState.Loading) View.VISIBLE else View.GONE
+            dynamicState.visibility = if (state == RaceViewState.Empty) View.VISIBLE else View.GONE
+            recyclerView.visibility =
+                if (state == RaceViewState.Success) View.VISIBLE else View.GONE
         }
     }
 
@@ -250,11 +203,12 @@ class SearchResultDirectMatchFragment :
     private fun updateDirectInfo(data: SearchResultBaseBean) {
         with(mBinding) {
             val isPlayer = data is SearchResultPlayerBean
-            when(data) {
+            when (data) {
                 is SearchResultTournamentBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text = data.season
                 }
+
                 is SearchResultTeamBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
@@ -266,6 +220,7 @@ class SearchResultDirectMatchFragment :
                             data.lose
                         )
                 }
+
                 is SearchResultPlayerBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
@@ -282,20 +237,23 @@ class SearchResultDirectMatchFragment :
             Glide.with(requireContext())
                 .load(data.icon)
                 .placeholder(
-                    if(isPlayer) R.drawable.ic_search_result_player_placeholder
+                    if (isPlayer) R.drawable.ic_search_result_player_placeholder
                     else R.drawable.ic_search_result_placeholder
                 )
                 .into(
-                    if(isPlayer) ivPlayer
+                    if (isPlayer) ivPlayer
                     else ivIcon
                 )
 
-            ivPlayer.visibility = if(isPlayer) View.VISIBLE else View.GONE
-            ivIcon.visibility = if(!isPlayer) View.VISIBLE else View.GONE
+            ivPlayer.visibility = if (isPlayer) View.VISIBLE else View.GONE
+            ivIcon.visibility = if (!isPlayer) View.VISIBLE else View.GONE
 
             updateResultBackground(
-                if(data.color?.isNotEmpty() == true) Color.parseColor(data.color)
-                else ContextCompat.getColor(requireContext(), R.color.search_result_default_gradient_start)
+                if (data.color?.isNotEmpty() == true) Color.parseColor(data.color)
+                else ContextCompat.getColor(
+                    requireContext(),
+                    R.color.search_result_default_gradient_start
+                )
             )
         }
     }
@@ -341,16 +299,28 @@ class SearchResultDirectMatchFragment :
                             else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
                         setTextColor(
                             if (date == null)
-                                SkinnableResourceManager.getColor(requireContext(), R.color.search_result_date)
+                                SkinnableResourceManager.getColor(
+                                    requireContext(),
+                                    R.color.search_result_date
+                                )
                             else
-                                SkinnableResourceManager.getColor(requireContext(), R.color.search_result_date_selected)
+                                SkinnableResourceManager.getColor(
+                                    requireContext(),
+                                    R.color.search_result_date_selected
+                                )
                         )
                     }
                     mBinding.ivDateArrow.imageTintList =
-                        if(date == null)
-                            SkinnableResourceManager.getColorStateList(requireContext(), R.color.search_result_date)
+                        if (date == null)
+                            SkinnableResourceManager.getColorStateList(
+                                requireContext(),
+                                R.color.search_result_date
+                            )
                         else
-                            SkinnableResourceManager.getColorStateList(requireContext(), R.color.search_result_date_selected)
+                            SkinnableResourceManager.getColorStateList(
+                                requireContext(),
+                                R.color.search_result_date_selected
+                            )
                 }
             }
 

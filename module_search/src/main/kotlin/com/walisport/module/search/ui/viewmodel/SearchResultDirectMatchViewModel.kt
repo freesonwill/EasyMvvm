@@ -127,4 +127,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     fun setSelectedDate(date: Date?) {
         _selectedDateFlow.value = date
     }
+
+    /** 取得選擇的日期 */
+    fun getSelectedDate(): Date? = selectedDateFlow.value
 }

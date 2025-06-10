@@ -67,12 +67,10 @@ class SearchCustomMonthView(context: Context?) : MonthView(context) {
         when {
             isSelected -> mSelectTextPaint
             hasScheme -> when {
-//                calendar.isCurrentDay -> mCurDayTextPaint
                 calendar.isCurrentMonth -> mSchemeTextPaint
                 else -> mOtherMonthTextPaint
             }
             else -> when {
-//                calendar.isCurrentDay -> mCurDayTextPaint
                 calendar.isCurrentMonth -> mCurMonthTextPaint
                 else -> mOtherMonthTextPaint
             }

@@ -25,6 +25,16 @@
         android:layout_height="wrap_content"
         tools:layout_height="46dp" />
 
+    <View
+        android:id="@+id/mask_title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/title_bar"
+        app:layout_constraintTop_toTopOf="@id/title_bar" />
+
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_search_recommend"
         android:layout_width="match_parent"
