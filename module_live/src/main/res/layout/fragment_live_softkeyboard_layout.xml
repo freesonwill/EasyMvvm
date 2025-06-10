@@ -13,17 +13,22 @@
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/group_input"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="top,live_chat_ll_search,live_chat_tv_send,live_chat_iv_share"
+            />
 
         <View
             android:id="@+id/top"
             android:layout_width="1dp"
             android:layout_height="62dp"
             android:visibility="invisible"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/live_chat_ll_search"
@@ -33,9 +38,9 @@
             android:background="@drawable/shape_20"
             android:backgroundTint="@color/card_ooo_background"
             android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="@id/top"
             app:layout_constraintBottom_toBottomOf="@id/top"
-            app:layout_constraintLeft_toLeftOf="parent">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="@id/top">
 
             <com.walisport.module.live.ui.widget.EmojiEditTextView
                 android:id="@+id/live_chat_et_input"
@@ -45,11 +50,11 @@
                 android:background="@null"
                 android:gravity="center_vertical"
                 android:hint="@string/live_chat_talk"
-                android:paddingStart="@dimen/dp_16"
-                android:inputType="text"
-                android:textColor="@color/main_text"
-                android:imeOptions="actionSend"
                 android:imeActionLabel="@string/send"
+                android:imeOptions="actionSend"
+                android:inputType="text"
+                android:paddingStart="@dimen/dp_16"
+                android:textColor="@color/main_text"
                 android:textColorHint="@color/secondary_text"
                 android:textSize="@dimen/sp_15" />
 
@@ -77,8 +82,8 @@
                 android:layout_width="@dimen/dp_26"
                 android:layout_height="@dimen/dp_26"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/icon_input_emoji"
                 android:layout_margin="@dimen/dp_4"
+                android:background="@drawable/icon_input_emoji"
                 android:scaleType="fitXY" />
 
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
@@ -117,23 +122,23 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_30"
             android:layout_marginStart="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/top"
-            app:tabIndicatorFullWidth="false"
             android:background="@color/card_background"
+            app:layout_constraintTop_toBottomOf="@id/top"
             app:tabBackground="@null"
-            app:tabRippleColor="@null"
+            app:tabIndicatorFullWidth="false"
             app:tabIndicatorHeight="0dp"
             app:tabMaxWidth="@dimen/dp_42"
             app:tabMode="scrollable"
             app:tabPaddingEnd="0dp"
-            app:tabPaddingStart="0dp" />
+            app:tabPaddingStart="0dp"
+            app:tabRippleColor="@null" />
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/line"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/input_box_2"
             android:layout_marginTop="@dimen/dp_10"
+            android:background="@color/input_box_2"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tb" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -147,25 +152,23 @@
             android:textSize="@dimen/sp_12"
             android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/line"
-            />
+            app:layout_constraintTop_toBottomOf="@id/line" />
 
         <arch.cayenne.lib.common.ui.view.HorizontalRecyclerView
             android:id="@+id/keyboard_emoji_recycler"
             android:layout_width="match_parent"
             android:layout_height="302dp"
-            app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all"
             android:layout_marginTop="@dimen/dp_12"
-            />
+            app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
+
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/emoji_del"
             android:layout_width="89dp"
             android:layout_height="46dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
             android:layout_marginRight="@dimen/dp_2"
-            android:visibility="gone"
             android:src="@drawable/icon_emoji_del"
-            />
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

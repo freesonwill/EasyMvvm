@@ -84,8 +84,12 @@ class InnerViewPager2Container @JvmOverloads constructor(
         } else if (disY > disX) {
             parent.requestDisallowInterceptTouchEvent(false)
         }
+    }
 
 
+    override fun onDetachedFromWindow() {
+        viewPager2 = null
+        super.onDetachedFromWindow()
     }
 
 

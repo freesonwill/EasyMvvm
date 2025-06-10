@@ -33,8 +33,8 @@ fun ChatRequestData.chatAsRemoteRequest(
     rid: Short
 ): SocketRequestData {
     val json = toJson()
-    if(apiCode != ApiCode.CHAT_PING)
-    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
+//    if(apiCode != ApiCode.CHAT_PING)
+//    "chat request json  $json".logd(ChatSocketClientService::class.java.simpleName)
     return SocketRequestData(
         mid = apiCode.mid,
         sid = apiCode.sid,
@@ -48,15 +48,15 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
 ): Flow<ChatResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
     .filter {
-        "it mid ${it.mid} ${responseCode.mid}  sid ${it.sid} ${responseCode.sid}".logd(ChatWebSocketManager::class.java.simpleName)
+//        "it mid ${it.mid} ${responseCode.mid}  sid ${it.sid} ${responseCode.sid}  ${String(it.originProto ?: byteArrayOf())}".logd(ChatWebSocketManager::class.java.simpleName)
         it.mid == responseCode.mid && it.sid == responseCode.sid }
     .map {
-        "chat map".logi(ChatWebSocketManager::class.java.simpleName)
+//        "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
             val bean = it.originProto?.let { byteArray ->
                 Gson().fromJson(String(byteArray), T::class.java)
             }
-            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
+//            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
             return@map ChatResponseData(
                 mid = it.mid,
                 sid = it.sid,

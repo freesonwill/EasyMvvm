@@ -5,7 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
@@ -14,17 +18,23 @@ import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
 import com.walisport.module.live.data.repository.LiveChatRepository
 import galaxy.client.proto.Sloth
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRepo:LiveChatRepository) : BaseViewModel() {
+class LiveMainViewModel(
+    private val repo: LiveMainRepository,
+    private val chatRepo: LiveChatRepository
+) : BaseViewModel() {
 
     //比赛ID
     private val _matchId = MutableLiveData<Long>(0)
@@ -60,7 +70,9 @@ class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRep
 
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
-    val matchIdSportIdObserver: Flow<Pair<Long, Int>> = matchId.asFlow().combine(sportId.asFlow()){ matchId, sportId -> matchId to sportId}.debounce(1000)
+    val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
+        matchId.asFlow().combine(sportId.asFlow()) { matchId, sportId -> matchId to sportId }
+            .debounce(1000)
 
     override fun initViewModel() {
         super.initViewModel()
@@ -186,10 +198,33 @@ class LiveMainViewModel(private val repo: LiveMainRepository,private val chatRep
         return MatchLiveData(0, teams, stats, trend)
     }
 
+    /**
+     * 开启聊天服务
+     * */
+    fun startChatServer() {
+        viewModelScope.launch {
+            val state = chatRepo.getConnectStateFlow().value
+            "startChatserver $state".logd(TAG)
+            if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
+                return@launch
+            }
+             chatRepo.startSocket()
+        }
+    }
 
+    /**
+     * 关闭聊天服务
+     * */
     fun disConnectChatServer() {
         viewModelScope.launch {
-            chatRepo.disconnect()
+            try{
+                val value =  chatRepo.disconnect(viewModelScope)
+                "chat disconnect viewModel $value".logd(TAG)
+            }catch (e:CancellationException){
+                "chat disconnect viewModel canceled".logi(TAG)
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
         }
     }
 }

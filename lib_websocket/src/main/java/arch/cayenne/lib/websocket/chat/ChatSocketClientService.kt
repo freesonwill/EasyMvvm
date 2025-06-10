@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.chat
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
@@ -23,8 +24,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import okhttp3.*
@@ -40,6 +43,8 @@ class ChatSocketClientService(
 ) : ISocket<IRequest, IResponse, ConnectState> {
     private var currentState: SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
+    private val socketConnectStateFlow: MutableStateFlow<SocketConnectState> =
+        MutableStateFlow(SocketConnectState.None)
     private val connectStateFlow: MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
             replay = 0,
@@ -83,6 +88,9 @@ class ChatSocketClientService(
             override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
+                workingScope.launch {
+                    socketConnectStateFlow.emit(currentState)
+                }
                 if (!hasNetworkConnection()) {
                     "Socket Client -> NetworkUnavailable".loge(ChatSocketClientService::class.java.simpleName)
                     workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
@@ -101,29 +109,35 @@ class ChatSocketClientService(
                     workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
                     SocketConnectState.Closed
                 }
+                workingScope.launch {
+                    socketConnectStateFlow.emit(currentState)
+                }
 
             }
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen $currentState".loge(ChatSocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectOpen ".loge(ChatSocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@ChatSocketClientService.webSocket = webSocket
-                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
+                workingScope.launch {
+                    connectStateFlow.emit(ConnectState.ConnectSuccess)
+                    socketConnectStateFlow.emit(currentState)
+                }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
                 "onMessage text $text".logi(this@ChatSocketClientService::class.java.simpleName)
             }
 
+            @SuppressLint("SuspiciousIndentation")
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         val data = security.decrypt(byteArray)
-                        if((data as SocketOriginResponseData).originProto?.isNotEmpty() == true){
+                        if ((data as SocketOriginResponseData).originProto?.isNotEmpty() == true)
                             "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
-                        }
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
                 } catch (e: Exception) {
@@ -136,8 +150,8 @@ class ChatSocketClientService(
     }
 
     override fun disConnect(): Boolean {
+        "disconnect ".logi(this@ChatSocketClientService::class.java.simpleName)
         val result = webSocket?.close(1001, null) ?: false
-        currentState = SocketConnectState.Closed
         return result
     }
 
@@ -169,6 +183,8 @@ class ChatSocketClientService(
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow
 
     override fun stateChangeObserve(): SharedFlow<ConnectState> = connectStateFlow
+
+    fun socketConnectStateFlow(): StateFlow<SocketConnectState> = socketConnectStateFlow
 
 
     private fun hasNetworkConnection(): Boolean {

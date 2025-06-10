@@ -5,12 +5,14 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -155,6 +157,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
+        launch(Lifecycle.State.RESUMED){
+            mViewModel.startChatServer()
+        }
     }
 
     private fun setVideoView() {
@@ -224,6 +229,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         return flag
     }
 
+
+
     //离开界面取消订阅
     override fun onPause() {
         super.onPause()
@@ -240,11 +247,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        mViewModel.disConnectChatServer()
+    }
+
     override fun onDestroyView() {
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
-        mViewModel.disConnectChatServer()
         super.onDestroyView()
     }
 }

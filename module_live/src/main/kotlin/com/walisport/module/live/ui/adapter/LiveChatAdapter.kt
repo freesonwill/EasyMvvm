@@ -9,19 +9,20 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.LiveChatCompare
 import com.walisport.module.live.data.model.LiveChatBean
 import com.walisport.module.live.databinding.ItemLiveChatBinding
 
 class LiveChatAdapter :
-    BaseAdapter<LiveChatBean, LiveChatAdapter.LiveChatViewHolder, ViewBinding>(LiveChatCompare()) {
+    BaseAdapter<ChatMsg, LiveChatAdapter.LiveChatViewHolder, ViewBinding>(LiveChatCompare()) {
 
     class LiveChatViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         val nBinding = binding as ItemLiveChatBinding
 
-        fun setText(bean: LiveChatBean) {
-            val first = "${bean.name}:"
+        fun setText(bean: ChatMsg) {
+            val first = "${bean.userName}:"
             val second = bean.content
 
             val builder = SpannableStringBuilder()

@@ -118,4 +118,7 @@
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
     <string name="no_live_stream">当前比赛无直播源</string>
+    <string name="insufficient_bet_amount">有效投注额不足</string>
+    <string name="insufficient_balance">余额不足</string>
+
 </resources>
