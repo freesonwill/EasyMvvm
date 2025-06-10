@@ -127,8 +127,9 @@ class MatchItemViewHolder(
             rvOddsGrid.setRecycledViewPool(viewPool)
 
             val selectionsGrouped = data.markets.map { it.market to it.selections }
-            if (oddsColumnAdapter.itemCount == 0)
+            if (oddsColumnAdapter.itemCount == 0) {
                 oddsColumnAdapter.submitList(selectionsGrouped)
+            }
         }
     }
 
