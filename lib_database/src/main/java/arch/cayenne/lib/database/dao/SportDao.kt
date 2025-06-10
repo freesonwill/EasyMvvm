@@ -28,6 +28,6 @@ abstract class SportDao : BaseDao<SportBean>() {
     @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")
     abstract fun getAllSports(type: ShowType = ShowType.ALL): List<SportLiteBean>
 
-    @Query("SELECT sportId, sportName FROM SportBean WHERE sportId = :id and type = :type")
-    abstract fun getSportById(id: Int, type: ShowType = ShowType.ALL): SportLiteBean?
+    @Query("SELECT sportId, sportName FROM SportBean WHERE sportId IN (:ids) AND type = :type")
+    abstract fun getSportByIds(ids: List<Int>, type: ShowType = ShowType.ALL): List<SportLiteBean>
 }

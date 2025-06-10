@@ -7,23 +7,16 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -32,7 +25,9 @@ import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
+import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
+import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
 import com.ibm.icu.text.Transliterator
@@ -48,7 +43,6 @@ class TournamentListFragment :
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
-    private val letterViewMap = mutableMapOf<Char, View>()
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
 
@@ -93,7 +87,8 @@ class TournamentListFragment :
             ceSearch.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     // 離開搜尋框 → 回到列表頂端
-                    mBinding.rvTournamentList.smoothScrollToPosition(0)
+                    rvTournamentList.smoothScrollToPosition(0)
+                    llIndexContainer.visibility = View.VISIBLE
                 }
             }
 
@@ -153,26 +148,31 @@ class TournamentListFragment :
                     if (newIndex != null) {
                         mViewModel.setActiveHeaderIndex(newIndex)
                     }
+                    // 偵測是否最後一個 header 正在吸頂
+                    val lastHeaderIndex =
+                        adapter.currentList.indexOfLast { it is TournamentListItem.Header }
+                    if (adapter.isLastHeaderSticking(lastHeaderIndex, layoutManager)) {
+                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+                    } else {
+                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
+                    }
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        // 如果是點字母觸發的 scroll，直接選中
+                        // 如果是點字母觸發的 scroll，直接選中並更新 ViewModel 狀態
                         if (isJumpingByIndex) {
                             pendingJumpIndex?.let {
                                 mViewModel.setActiveHeaderIndex(it)
-                                adapter.updateActiveHeaderIndex(it)
                             }
                             isJumpingByIndex = false
                             pendingJumpIndex = null
-                        } else {
-                            mViewModel.getActiveHeaderIndex()
-                                ?.let { adapter.updateActiveHeaderIndex(it) }
                         }
                     }
                 }
             })
         }
+        setupStickyHeader()
     }
 
     override fun initListener() {
@@ -194,6 +194,7 @@ class TournamentListFragment :
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->
             updateAZIndexHighlight()
+            mBinding.rvTournamentList.invalidateItemDecorations()
         }
 
         mViewModel.searchDisplayList.observe(viewLifecycleOwner) { result ->
@@ -258,57 +259,18 @@ class TournamentListFragment :
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
         }
         setSearchHint(displayList)
+        displayList.add(TournamentListItem.FooterView)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
     }
 
     private fun setupAZIndex() {
-        mBinding.llIndexContainer.removeAllViews()
-        letterViewMap.clear()
-
-        val container = LinearLayout(context).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            layoutParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-        }
-
-        mViewModel.getAvailableIndexLetters().forEach { letter ->
-            val view = createLetterView(letter)
-            letterViewMap[letter] = view
-            container.addView(view)
-        }
-
-        mBinding.llIndexContainer.addView(container)
-    }
-
-    private fun createLetterView(letter: Char): View {
-        val isSelected = mViewModel.getHeaderIndex(letter) == mViewModel.getActiveHeaderIndex()
-        return if (letter == '*') {
-            ImageView(context).apply {
-                setImageResource(if (isSelected) R.drawable.ic_hot_league_index else R.drawable.ic_hot_league_index_unselect)
-                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
-                setOnClickListener { scrollToSection('*') }
-            }
-        } else {
-            TextView(context).apply {
-                text = letter.toString()
-                textSize = 11f
-                gravity = Gravity.CENTER
-                layoutParams = LinearLayout.LayoutParams(24.dp2px, 18.dp2px)
-                setTextColor(
-                    SkinnableResourceManager.getColor(
-                        context,
-                        if (isSelected) arch.cayenne.lib.common.R.color.brand_color else R.color.brand_color_index_unselect
-                    )
-                )
-                setOnClickListener {
-                    mViewModel.selectLetter(letter)
-                    scrollToSection(letter)
-                }
+        with(mBinding.llIndexContainer) {
+            setLetters(mViewModel.getAvailableIndexLetters())
+            onLetterTouch = { letter ->
+                mViewModel.selectLetter(letter)
+                scrollToSection(letter)
             }
         }
     }
@@ -337,36 +299,41 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
-        val lastSelectedLetter = mViewModel.getLastSelectedLetter()
-        if (currentLetter != lastSelectedLetter) {
-            // 還原舊樣式
-            lastSelectedLetter?.let { last ->
-                when (val oldView = letterViewMap[last]) {
-                    is TextView -> oldView.setTextColor(
-                        SkinnableResourceManager.getColor(
-                            requireContext(),
-                            R.color.brand_color_index_unselect
-                        )
-                    )
+        mViewModel.setLastSelectedLetter(currentLetter)
+        mBinding.llIndexContainer.setSelectedLetter(currentLetter)
+    }
 
-                    is ImageView -> oldView.setImageResource(R.drawable.ic_hot_league_index_unselect)
+    private fun setupStickyHeader() {
+        val decoration = StickyHeaderItemDecoration(
+            isHeader = { position ->
+                adapter.currentList.getOrNull(position) is TournamentListItem.Header
+            },
+            createHeaderView = {
+                ItemTournamentHeaderBinding.inflate(layoutInflater).root
+            },
+            bindHeaderView = { view, position ->
+                val item = adapter.currentList.getOrNull(position) as? TournamentListItem.Header
+                    ?: return@StickyHeaderItemDecoration
+                val binding = ItemTournamentHeaderBinding.bind(view)
+
+                if (item.letter == '*') {
+                    binding.ivHeaderHot.visibility = View.VISIBLE
+                    binding.tvHeaderName.text = getString(R.string.tournament_section_title_hot)
+                } else {
+                    binding.ivHeaderHot.visibility = View.GONE
+                    binding.tvHeaderName.text = item.letter.toString()
                 }
-            }
 
-            // 套用新選中樣式
-            when (val newView = letterViewMap[currentLetter]) {
-                is TextView -> newView.setTextColor(
+                binding.root.setBackgroundColor(
                     SkinnableResourceManager.getColor(
-                        requireContext(),
-                        arch.cayenne.lib.common.R.color.brand_color
+                        view.context,
+                        R.color.home_card_odds_background
                     )
                 )
-
-                is ImageView -> newView.setImageResource(R.drawable.ic_hot_league_index)
             }
+        )
 
-            mViewModel.setLastSelectedLetter(currentLetter)
-        }
+        mBinding.rvTournamentList.addItemDecoration(decoration)
     }
 
     companion object {

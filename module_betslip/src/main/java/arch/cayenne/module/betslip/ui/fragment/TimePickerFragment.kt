@@ -121,15 +121,11 @@ class TimePickerFragment private constructor() :
     private fun updateDayPicker(year: Int, month: Int, day: Int) {
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1)
+        calendar.set(Calendar.DAY_OF_MONTH, 1)
         val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        if (day > maxDay) {
-            mBinding.dayPicker.value = maxDay
-            mBinding.dayPicker.maxValue = maxDay
-            calendar.set(year, month - 1, maxDay)
-        } else {
-            mBinding.dayPicker.value = day
-            mBinding.dayPicker.maxValue = maxDay
-            calendar.set(year, month - 1, day)
-        }
+        val newDay = if (day > maxDay) maxDay else day
+        mBinding.dayPicker.displayedValues = null
+        calendar.set(Calendar.DAY_OF_MONTH, newDay)
+        initDayPicker()
     }
 }

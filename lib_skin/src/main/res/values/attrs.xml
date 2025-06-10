@@ -47,7 +47,6 @@
     </declare-styleable>
 
     <declare-styleable name="SportNumberPickerHelper">
-        <attr name="android:textColor"/>
-        <attr name="android:textSize"/>
+        <attr name="android:textAppearance"/>
     </declare-styleable>
 </resources>

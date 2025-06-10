@@ -32,7 +32,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     override fun createObserver() {
         filterViewModel?.apply {
             onFilterChangeListener.observe(viewLifecycleOwner) {
-                mViewModel.setIds(it.matchId, it.sportId)
+                mViewModel.setIds(it.matchId, it.sportIds)
                 mViewModel.setTime(it.startTime, it.endTime)
                 mViewModel.refreshData(getBetSlipEnum())
             }

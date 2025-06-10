@@ -17,7 +17,9 @@ import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
@@ -86,7 +88,6 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnCollusion.setOnClickListener {
             mViewModel.saveToCombo()
-            dismiss()
         }
         mBinding.clBet.setOnClickListener {
             sendBet()
@@ -97,8 +98,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
                         val odds = bundle.getInt(KEY_ODDS_RESULT)
-                        mViewModel.saveReserveOdds(odds)
-                        navigate(SingleBetFragmentDirections.actionSingleBetFragmentToReserveFragment())
+                        mViewModel.saveToReserve(odds)
                     }
                 }
                 val location = IntArray(2)
@@ -109,6 +109,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                     odds = it.odds
                 ).show(childFragmentManager)
             }
+        }
+        mBinding.ivCancelReserve.setOnClickListener {
+            mViewModel.removeReserve()
         }
         mBinding.btnCollapse.setOnClickListener {
             hideKeyboard()
@@ -145,6 +148,27 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
             mBinding.tvMoney.text = it
+        }
+        mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
+            when (type) {
+                BetTypeEnum.SINGLE -> {
+                    mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
+                    mBinding.btnReserve.isVisible = true
+                    mBinding.clCancelReserve.isVisible = false
+                }
+                BetTypeEnum.RESERVE -> {
+                    mBinding.tvBetHint.text = getString(R.string.title_reserve)
+                    mBinding.btnReserve.isVisible = false
+                    mBinding.clCancelReserve.isVisible = true
+                }
+                else -> dismiss()
+            }
+        }
+        mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { value ->
+            value?.let {
+                val odds = "@${it.getOdds()}"
+                mBinding.tvCancelReserve.text = odds
+            }
         }
     }
 

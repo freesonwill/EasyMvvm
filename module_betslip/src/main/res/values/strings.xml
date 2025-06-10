@@ -77,7 +77,7 @@
     <string name="date_picker_month">%d月</string>
     <string name="date_picker_day">%d日</string>
     <string name="date_picker_date_before">%s及以前</string>
-    <string name="sport_picker_all">体育</string>
+    <string name="sport_picker_all">全部</string>
     <string name="sport_picker_title">选择体育类型</string>
     <string name="sport_picker_reset">重置</string>
     <string name="btn_confirm">确定</string>

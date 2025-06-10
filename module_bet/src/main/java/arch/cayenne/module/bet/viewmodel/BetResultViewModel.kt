@@ -45,7 +45,7 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     }
 
     private fun setModeByDetail(data: List<BetDetailBean>) {
-        val status = if (data.any { it.status == BetResultStatusEnum.CONFIRMING }) {
+        val status = if (data.any { it.status == BetResultStatusEnum.CONFIRMING || it.status == null }) {
             BetResultStatusEnum.CONFIRMING
         } else if (data.all { it.status == BetResultStatusEnum.SUCCESS_BET }) {
             BetResultStatusEnum.SUCCESS_BET

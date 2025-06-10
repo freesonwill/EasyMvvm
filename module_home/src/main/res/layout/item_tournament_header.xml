@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="48dp"
     android:gravity="center_vertical"
+    android:background="@color/champions_list"
     android:paddingHorizontal="@dimen/dp_16"
     android:paddingTop="@dimen/dp_12">
 

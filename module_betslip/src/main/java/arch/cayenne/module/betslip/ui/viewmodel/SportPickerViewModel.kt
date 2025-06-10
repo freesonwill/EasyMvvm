@@ -13,17 +13,17 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
     private val _onSportListener = MutableLiveData<List<SportFilterBean>>()
     val onSportListener: LiveData<List<SportFilterBean>> get() = _onSportListener
 
-    private var pendingSelectedId: Int? = null
+    private var pendingSelectedId: IntArray? = null
 
     init {
         viewModelScope.launch {
             val sports = repo.getAllSports()
-            _onSportListener.value = sports
-
-            // 如果初始化之前有選取請求，就處理它
             pendingSelectedId?.let {
-                setSelectedById(it)
+                sports.forEach { sport ->
+                    sport.isSelected = it.contains(sport.sportId)
+                }
             }
+            _onSportListener.value = sports
         }
     }
 
@@ -31,19 +31,52 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
         val current = _onSportListener.value
         if (current == null) {
             // 尚未載入完，先暫存選擇 ID
-            pendingSelectedId = id
+            pendingSelectedId = listOf(id).toIntArray()
             return
         }
-        _onSportListener.value?.let { data ->
-            _onSportListener.value = if (id == -1) {
-                data.map { it.copy(isSelected = false) }
-            } else {
-                data.map { it.copy(isSelected = it.sportId == id) }
+        val defaultId = SportFilterBean.ALL_TYPE_ID
+        _onSportListener.value = if (id == defaultId) {
+            current.map { sport ->
+                if (sport.sportId == defaultId)  {
+                    sport.copy(isSelected = true)
+                } else {
+                    sport.copy(isSelected = false)
+                }
+            }
+        } else {
+            current.map { sport ->
+                when (sport.sportId) {
+                    defaultId -> sport.copy(isSelected = false)
+                    id -> sport.copy(isSelected = !sport.isSelected)
+                    else -> sport
+                }
+            }
+        }
+
+
+    }
+
+    fun setSelectedById(ids: IntArray) {
+        val current = _onSportListener.value
+        if (current == null) {
+            // 尚未載入完，先暫存選擇 ID
+            pendingSelectedId = ids
+            return
+        }
+        if (ids.size == 1) {
+            setSelectedById(ids[0])
+        } else {
+            _onSportListener.value = current.map { sport ->
+                sport.copy(isSelected = ids.contains(sport.sportId))
             }
         }
     }
 
-    fun getSelectedSportBean(): SportFilterBean {
-        return _onSportListener.value?.find { it.isSelected } ?: SportFilterBean.getAllTypeBean()
+    fun getSelectedSportBean(): List<SportFilterBean> {
+        return _onSportListener.value?.filter { it.isSelected } ?: listOf(SportFilterBean.getAllTypeBean())
+    }
+
+    override fun reset() {
+        setSelectedById(intArrayOf(-1))
     }
 }

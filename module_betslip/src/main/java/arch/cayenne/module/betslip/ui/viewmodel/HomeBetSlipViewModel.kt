@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.getFormatDate
@@ -10,14 +11,15 @@ import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
 import arch.cayenne.module.betslip.data.model.SportFilterBean
 import arch.cayenne.module.betslip.data.repo.HomeBetSlipRepository
+import kotlinx.coroutines.launch
 
-class HomeBetSlipViewModel(repo: HomeBetSlipRepository) : BaseViewModel() {
+class HomeBetSlipViewModel(private val repo: HomeBetSlipRepository) : BaseViewModel() {
 
     private val _onDateFilter = MutableLiveData<DateFilterBean>()
     val onDateFilter: LiveData<DateFilterBean> get() = _onDateFilter
 
-    private val _onSportFilter = MutableLiveData<SportFilterBean>()
-    val onSportFilter: LiveData<SportFilterBean> get() = _onSportFilter
+    private val _onSportFilter = MutableLiveData<List<SportFilterBean>>()
+    val onSportFilter: LiveData<List<SportFilterBean>> get() = _onSportFilter
 
     var customTime: Long? = null
         private set
@@ -27,7 +29,7 @@ class HomeBetSlipViewModel(repo: HomeBetSlipRepository) : BaseViewModel() {
             title = BetSlipDateFilterEnum.ALL.title,
             date = BetSlipDateFilterEnum.ALL
         )
-        _onSportFilter.value = SportFilterBean.getAllTypeBean()
+        _onSportFilter.value = listOf(SportFilterBean.getAllTypeBean())
         repo.setDetail()
     }
 
@@ -48,11 +50,13 @@ class HomeBetSlipViewModel(repo: HomeBetSlipRepository) : BaseViewModel() {
         )
     }
 
-    fun setSportFilter(id: Int, name: String) {
-        _onSportFilter.value = SportFilterBean(
-            sportId = id,
-            sportName = name,
-            isSelected = true
-        )
+    fun setSportFilter(ids: List<Int>) {
+        if (ids.size == 1 && ids.first() == SportFilterBean.ALL_TYPE_ID) {
+            _onSportFilter.value = listOf(SportFilterBean.getAllTypeBean())
+        } else {
+            viewModelScope.launch {
+                _onSportFilter.value = repo.getSportByIds(ids)
+            }
+        }
     }
 }

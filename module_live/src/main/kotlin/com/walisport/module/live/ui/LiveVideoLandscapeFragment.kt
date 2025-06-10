@@ -180,13 +180,6 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-        mBinding.ivVideoLandscapeTournamentIcon.clickNoRepeat {
-            jumpToLeagueFragment()
-        }
-
-        mBinding.tvMatchName.clickNoRepeat {
-            jumpToLeagueFragment()
-        }
 
         mBinding.ivShare.clickNoRepeat {
             hideButtons()
@@ -535,8 +528,6 @@ class LiveVideoLandscapeFragment :
 
     override fun onStop() {
         super.onStop()
-
-        videoView.onStop()
     }
 
     override fun onResume() {
@@ -576,18 +567,6 @@ class LiveVideoLandscapeFragment :
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 
-
-    /**
-     * 跳转到联赛赛程页
-     */
-    private fun jumpToLeagueFragment() {
-        navigate(
-            LiveVideoLandscapeFragmentDirections.actionLiveVideoLandscapeFragmentToLeagueFragment()
-                .apply {
-                    arguments.putLong("matchID", mViewModel.matchId())
-                    arguments.putInt("leagueID", mViewModel.leagueID)
-                })
-    }
 
     /**
      *  创建视频分享页

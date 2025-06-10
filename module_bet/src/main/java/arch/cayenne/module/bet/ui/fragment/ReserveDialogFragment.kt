@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -17,6 +18,7 @@ import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
+import android.content.DialogInterface
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -45,6 +47,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override val vmClass: KClass<ReserveDialogViewModel>
         get() = ReserveDialogViewModel::class
 
+    private var isDismissing = false
+
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
@@ -69,7 +73,17 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                         layoutParams.y = positionY - (mBinding.triangle.height * 1.8).toInt()
 
                         it.attributes = layoutParams
+                        
+                        // 設置初始位置在螢幕右側
+                        mBinding.root.translationX = resources.displayMetrics.widthPixels.toFloat()
                         mBinding.root.visibility = View.VISIBLE
+                        
+                        // 執行滑入動畫
+                        mBinding.root.animate()
+                            .translationX(0f)
+                            .setDuration(300)
+                            .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .start()
                     }
                 })
             }
@@ -120,7 +134,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     putInt(KEY_ODDS_RESULT, odds)
                 }
             }
-            dismiss()
+            startDismissAnimation()
         }
     }
 
@@ -133,8 +147,44 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         }
     }
 
-    override fun dismiss() {
-        super.dismiss()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : Dialog(requireContext(), theme) {
+            override fun dismiss() {
+                if (!isDismissing) {
+                    startDismissAnimation()
+                }
+            }
+        }
+    }
+
+    private fun startDismissAnimation() {
+        if (isDismissing) return
+        isDismissing = true
+        mBinding.root.animate()
+            .translationX(resources.displayMetrics.widthPixels.toFloat())
+            .setDuration(300)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withEndAction {
+                // 實際結束 Fragment
+                isDismissing = false
+                superDismiss()
+            }
+            .start()
+    }
+
+    private fun superDismiss() {
+        try {
+            // 防止 FragmentManager 錯誤
+            if (isAdded && !isRemoving) {
+                super.dismissAllowingStateLoss()
+            }
+        } catch (e: Exception) {
+            dismissAllowingStateLoss()
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
         setFragmentResult(KEY_RESULT, arguments ?: Bundle())
+        super.onDismiss(dialog)
     }
 }
