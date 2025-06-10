@@ -1,5 +1,6 @@
 package com.walisport.module.search.ui.fragment
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -8,6 +9,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
@@ -50,6 +53,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             navigateTo(SearchNavigationEvent.ToSearchResultBase(word))
             updateSearchKey(word)
             addSearchRecord(word)
+            hideKeyboard(requireContext(), getSearchEditText())
         }
     }
     private var canSearch: Boolean = true
@@ -114,6 +118,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         resetSearchRecommend()
                         addSearchRecord(content)
                         navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
+                        hideKeyboard(requireContext(), getSearchEditText())
                     },
                     onBack = {
                         requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -122,7 +127,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
                 getSearchEditText().apply {
                     setOnFocusChangeListener { _, isFocused ->
-                        if (isFocused) clSearchRecommend.visibility = View.VISIBLE
+                        if (isFocused) {
+                            clSearchRecommend.visibility = View.VISIBLE
+                            if (text?.isNotEmpty() == true) {
+                                getSearchRecommend(text.toString())
+                            }
+                        }
                     }
                     setOnClickListener {
                         clSearchRecommend.visibility = View.VISIBLE
@@ -178,6 +188,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
 
             clSearchRecommend.setOnClickListener {
+                hideKeyboard(requireContext(), getSearchEditText())
                 resetSearchRecommend()
             }
         }
@@ -193,6 +204,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private fun setBackPressHandler() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
+                hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
             } else {
                 val navController = mBinding.fragmentContainer.findNavController()
@@ -305,6 +317,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 )
             }
         }
+    }
+
+    private fun hideKeyboard(context: Context?, editText: EditText) {
+        val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.hideSoftInputFromWindow(editText.windowToken, 0)
+        editText.clearFocus()
     }
 
     private fun doNavigate(event: SearchNavigationEvent) {
