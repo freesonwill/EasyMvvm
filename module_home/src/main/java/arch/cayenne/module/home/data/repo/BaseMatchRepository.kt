@@ -32,7 +32,7 @@ abstract class BaseMatchRepository(
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
-        const val DEFAULT_MATCH_SIZE = 5
+        const val DEFAULT_MATCH_SIZE = 10
     }
 
     /**
@@ -96,7 +96,7 @@ abstract class BaseMatchRepository(
         }
         if (res.error == null && res.data != null) {
             matchDao.updateOnlyMatchCollect(item.match.matchId, collect)
-            return matchDao.getOneMatchById(item.match.matchId)
+            return matchDao.getOneMatchById(item.match.matchId).setSelected(betDao)
         }
         return null
     }
@@ -160,7 +160,7 @@ abstract class BaseMatchRepository(
                 )
             )
         }
-        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites)
+        return matchDao.updateOnlyMatch(matchLites.map { it.matchId }, matchLites).setSelected(betDao)
     }
 
     /**
