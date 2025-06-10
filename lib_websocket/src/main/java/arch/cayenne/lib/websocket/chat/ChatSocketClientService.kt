@@ -156,7 +156,6 @@ class ChatSocketClientService(
     }
 
     override fun reconnect() {
-        "reconnect "
         if (currentState != SocketConnectState.Connecting && currentState != SocketConnectState.Closed) {
             openWebSocket()
         }
