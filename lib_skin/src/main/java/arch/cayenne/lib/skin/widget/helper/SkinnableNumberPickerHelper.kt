@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.EditText
 import android.widget.NumberPicker
 import arch.cayenne.lib.skin.R
@@ -21,29 +22,25 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
         val context = mView.context
 
         val a = context.obtainStyledAttributes(attrs, R.styleable.SportNumberPickerHelper, defStyleAttr, 0)
-        if (a.hasValue(R.styleable.SportNumberPickerHelper_android_textAppearance)) {
-            val textAppearanceId = a.getResourceId(R.styleable.SportNumberPickerHelper_android_textAppearance, -1)
+        val textAppearanceId = a.getResourceId(R.styleable.SportNumberPickerHelper_android_textAppearance, INVALID_ID)
+        if (textAppearanceId != INVALID_ID) {
+            val ta = context.obtainStyledAttributes(textAppearanceId, R.styleable.SportNumberPickerTextAppearance)
+            if (ta.hasValue(R.styleable.SportNumberPickerTextAppearance_android_textColor)) {
+                textColorResId = ta.getResourceId(R.styleable.SportNumberPickerTextAppearance_android_textColor, INVALID_ID)
+            }
+            if (ta.hasValue(R.styleable.SportNumberPickerTextAppearance_android_textSize)) {
+                val textSize = ta.getDimensionPixelSize(R.styleable.SportNumberPickerTextAppearance_android_textSize, INVALID_ID)
+                if (textSize != INVALID_ID) {
+                    val fontScale = context.resources.configuration.fontScale
+                    val density = context.resources.displayMetrics.density
+                    val textSizeInSp = (textSize / density) / fontScale
 
-            if (textAppearanceId != -1) {
-                val typedArray = context.obtainStyledAttributes(textAppearanceId, androidx.appcompat.R.styleable.TextAppearance)
-
-                val textColor = typedArray.getColor(androidx.appcompat.R.styleable.TextAppearance_android_textColor, -1)
-                val textSize = typedArray.getDimensionPixelSize(androidx.appcompat.R.styleable.TextAppearance_android_textSize, -1)
-
-                typedArray.recycle()
-
-                if (textColor > 0) {
-                    textColorResId = textColor
-                }
-
-                val fontScale = context.resources.configuration.fontScale
-                val density = context.resources.displayMetrics.density
-                val textSizeInSp = (textSize / density) / fontScale
-
-                if (textSize > 0) {
-                    textSizeSp = textSizeInSp
+                    if (textSize > 0) {
+                        textSizeSp = textSizeInSp
+                    }
                 }
             }
+            ta.recycle()
         }
         a.recycle()
 
@@ -80,9 +77,9 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
     private fun applyTextSizeResource() {
         if (textSizeSp > 0f) {
             if (Build.VERSION.SDK_INT >= 29) {
-                mView.textSize = 17f
+                mView.textSize = textSizeSp
             } else {
-                applyToEditTextViews { it.textSize = 17f }
+                applyToEditTextViews { it.textSize = textSizeSp }
             }
         }
     }
