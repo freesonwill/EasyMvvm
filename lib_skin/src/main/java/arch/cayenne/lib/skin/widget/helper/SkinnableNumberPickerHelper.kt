@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
-import android.util.Log
 import android.widget.EditText
 import android.widget.NumberPicker
 import arch.cayenne.lib.skin.R
@@ -67,7 +66,22 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
                 mView.textColor = color
             } else {
                 applyToEditTextViews {
+                    it.setHintTextColor(color)
                     it.setTextColor(color)
+                }
+                try {
+                    val pickerFields = NumberPicker::class.java.declaredFields
+                    for (field in pickerFields) {
+                        if (field.name == "mSelectorWheelPaint") {
+                            field.isAccessible = true
+                            field.get(mView)?.let { paint ->
+                                paint.javaClass.getMethod("setColor", Int::class.java).invoke(paint, color)
+                            }
+                            break
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
             mView.invalidate()
@@ -79,7 +93,25 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
             if (Build.VERSION.SDK_INT >= 29) {
                 mView.textSize = textSizeSp
             } else {
-                applyToEditTextViews { it.textSize = textSizeSp }
+                applyToEditTextViews {
+                    it.textSize = textSizeSp
+                }
+                try {
+                    val pickerFields = NumberPicker::class.java.declaredFields
+                    for (field in pickerFields) {
+                        if (field.name == "mSelectorWheelPaint") {
+                            field.isAccessible = true
+                            field.get(mView)?.let { paint ->
+                                val density = mView.context.resources.displayMetrics.density
+                                val textSizeInPx = textSizeSp * density
+                                paint.javaClass.getMethod("setTextSize", Float::class.java).invoke(paint, textSizeInPx)
+                            }
+                            break
+                        }
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
