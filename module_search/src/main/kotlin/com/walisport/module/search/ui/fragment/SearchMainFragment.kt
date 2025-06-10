@@ -67,6 +67,13 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
         }
     }
 
+    override fun onDestroyView() {
+        historyAdapter?.setOnDataChangedListener(null)
+        historyAdapter = null
+        mBinding.rvHotWord.adapter = null
+        super.onDestroyView()
+    }
+
     private fun setHistory() {
         with(mBinding) {
             with(mViewModel) {

@@ -137,6 +137,78 @@ class SearchResultDirectMatchFragment :
         }
     }
 
+    override fun initListener() = Unit
+
+    override fun createObserver() {
+        with(mViewModel) {
+            lifecycleScope.launch {
+                directData.collect { data ->
+                    data?.let { updateDirectInfo(it) }
+                }
+            }
+
+            lifecycleScope.launch {
+                combineResult.collect { combineResult ->
+                    when {
+                        combineResult == null -> switchUI(RaceViewState.Loading)
+                        combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
+                        else -> {
+                            linearAdapter.submitList(combineResult) {
+                                switchUI(RaceViewState.Success)
+                                mBinding.recyclerView.smoothScrollToPosition(0)
+                            }
+                        }
+                    }
+                }
+            }
+
+            lifecycleScope.launch {
+                selectedDateFlow.collect { date ->
+                    mBinding.tvDate.apply {
+                        text =
+                            if (date == null) getString(R.string.search_date_hint)
+                            else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
+                        setTextColor(
+                            if (date == null)
+                                SkinnableResourceManager.getColor(
+                                    requireContext(),
+                                    R.color.search_result_date
+                                )
+                            else
+                                SkinnableResourceManager.getColor(
+                                    requireContext(),
+                                    R.color.search_result_date_selected
+                                )
+                        )
+                    }
+                    mBinding.ivDateArrow.imageTintList =
+                        if (date == null)
+                            SkinnableResourceManager.getColorStateList(
+                                requireContext(),
+                                R.color.search_result_date
+                            )
+                        else
+                            SkinnableResourceManager.getColorStateList(
+                                requireContext(),
+                                R.color.search_result_date_selected
+                            )
+                }
+            }
+
+            viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onStop(owner: LifecycleOwner) {
+                    updateResultBackground(null)
+                    super.onStop(owner)
+                }
+            })
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.recyclerView.adapter = null
+        super.onDestroyView()
+    }
+
     private fun openDatePicker() {
         val parentSearchFragment = requireParentFragment().parentFragment as? SearchFragment
         val oldDate = mViewModel.getSelectedDate()
@@ -264,72 +336,5 @@ class SearchResultDirectMatchFragment :
 
     private fun updateResultBackground(color: Int? = null) {
         (requireParentFragment().parentFragment as? SearchFragment)?.updateResultBackground(color)
-    }
-
-    override fun initListener() = Unit
-
-    override fun createObserver() {
-        with(mViewModel) {
-            lifecycleScope.launch {
-                directData.collect { data ->
-                    data?.let { updateDirectInfo(it) }
-                }
-            }
-
-            lifecycleScope.launch {
-                combineResult.collect { combineResult ->
-                    when {
-                        combineResult == null -> switchUI(RaceViewState.Loading)
-                        combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
-                        else -> {
-                            linearAdapter.submitList(combineResult) {
-                                switchUI(RaceViewState.Success)
-                                mBinding.recyclerView.smoothScrollToPosition(0)
-                            }
-                        }
-                    }
-                }
-            }
-
-            lifecycleScope.launch {
-                selectedDateFlow.collect { date ->
-                    mBinding.tvDate.apply {
-                        text =
-                            if (date == null) getString(R.string.search_date_hint)
-                            else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
-                        setTextColor(
-                            if (date == null)
-                                SkinnableResourceManager.getColor(
-                                    requireContext(),
-                                    R.color.search_result_date
-                                )
-                            else
-                                SkinnableResourceManager.getColor(
-                                    requireContext(),
-                                    R.color.search_result_date_selected
-                                )
-                        )
-                    }
-                    mBinding.ivDateArrow.imageTintList =
-                        if (date == null)
-                            SkinnableResourceManager.getColorStateList(
-                                requireContext(),
-                                R.color.search_result_date
-                            )
-                        else
-                            SkinnableResourceManager.getColorStateList(
-                                requireContext(),
-                                R.color.search_result_date_selected
-                            )
-                }
-            }
-
-            viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                override fun onStop(owner: LifecycleOwner) {
-                    updateResultBackground(null)
-                    super.onStop(owner)
-                }
-            })
-        }
     }
 }

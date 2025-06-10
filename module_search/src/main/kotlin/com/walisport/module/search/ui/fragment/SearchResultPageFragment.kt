@@ -82,6 +82,23 @@ class SearchResultPageFragment(val data: SearchResultBean) :
         mViewModel.setResult(data)
     }
 
+    override fun initListener() = Unit
+
+    override fun createObserver() {
+        with(mViewModel) {
+            lifecycleScope.launch {
+                groupData.collect {
+                    updateUI()
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.recyclerView.adapter = null
+        super.onDestroyView()
+    }
+
     private fun updateUI() {
         with(mBinding) {
             with(mViewModel) {
@@ -169,18 +186,5 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     private fun navigateTo(event: SearchNavigationEvent) {
         (requireParentFragment().requireParentFragment().parentFragment as? SearchFragment)?.navigateTo(event)
-    }
-
-    override fun initListener() {
-    }
-
-    override fun createObserver() {
-        with(mViewModel) {
-            lifecycleScope.launch {
-                groupData.collect {
-                    updateUI()
-                }
-            }
-        }
     }
 }

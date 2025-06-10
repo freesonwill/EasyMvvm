@@ -20,6 +20,7 @@ class SearchResultListFragment :
         get() = SearchResultListViewModel::class
 
     private val args: SearchResultListFragmentArgs by navArgs()
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -31,7 +32,7 @@ class SearchResultListFragment :
                     )
                 (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 
-                TabLayoutMediator(tlSearch, viewPager) { tab, position ->
+                tabMediator = TabLayoutMediator(tlSearch, viewPager) { tab, position ->
                     tab.text = when (position) {
                         0 -> getString(R.string.tab_all)
                         1 -> getString(R.string.tab_tournament)
@@ -39,17 +40,26 @@ class SearchResultListFragment :
                         3 -> getString(R.string.tab_player)
                         else -> ""
                     }
-                }.attach()
+                }.apply {
+                    attach()
+                }
                 switchTab(0, false)
             }
         }
     }
 
-    fun switchTab(position: Int, isSmooth: Boolean = true) {
-        mBinding.viewPager.setCurrentItem(position, isSmooth)
-    }
-
     override fun initListener() = Unit
 
     override fun createObserver() = Unit
+
+    override fun onDestroyView() {
+        mBinding.viewPager.adapter = null
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
+    }
+
+    fun switchTab(position: Int, isSmooth: Boolean = true) {
+        mBinding.viewPager.setCurrentItem(position, isSmooth)
+    }
 }
