@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui.video
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 
 /**
@@ -43,6 +44,7 @@ object PlayerViewCache {
         } else {
             //引用计数小于等于0时，从map中移除实例， 同时对实例执行清理操作
             map.remove(playerView)
+            "noRefAction.invoke".logd("PlayerViewCache")
             noRefAction.invoke(playerView)
         }
     }

@@ -21,7 +21,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
@@ -559,6 +558,7 @@ class LiveVideoLandscapeFragment :
         PlayerViewCache.releasePlayerView(videoView) {
             it.onDestroy()
         }
+        mViewModel.landscapeVideoFragmentDestroyedEvent().value = true
     }
 
     override fun onDestroy() {
