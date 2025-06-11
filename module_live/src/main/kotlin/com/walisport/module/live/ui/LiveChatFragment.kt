@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -60,6 +62,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
                 return false
             }
+
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
             }
 
@@ -127,6 +130,9 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
+            if (it != CheckBetResultEnum.SUCCESS) {
+                updateChatUi()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -213,6 +219,39 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
         }
     }
+
+    /**
+     * 进入直播间不成功时修改
+     * */
+    fun updateChatUi() {
+        //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+        val status = mainViewModel.mainMatch.value?.basicInfo?.status
+        "updateUi $status".logd(TAG)
+//        val chatRoomIsOpen = mainViewModel.observeMainMatch.value?.liveInfo?.charRoom ?: false
+        mBinding.also {
+            when (status) {
+               0, 3, 7 -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_closed)
+                    it.liveChatTvStatus.setText(R.string.live_chat_end)
+                }
+
+                1, 4, 6 -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_empty)
+                    it.liveChatTvStatus.setText(R.string.live_chat_empty)
+                }
+
+                else -> {
+                    it.liveChatGroupChat.isVisible = true
+                    it.liveChatGroupStatus.isVisible = false
+                }
+            }
+        }
+    }
+
 
     override fun onStop() {
         mViewModel.leaveRoom()
