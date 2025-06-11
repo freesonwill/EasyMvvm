@@ -40,6 +40,7 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        disablePadding()
         setHistory()
         setHotWords()
     }
@@ -75,6 +76,12 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
         historyAdapter = null
         mBinding.rvHotWord.adapter = null
         super.onDestroyView()
+    }
+
+    private fun disablePadding() {
+        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
+            insets
+        }
     }
 
     private fun setHistory() {

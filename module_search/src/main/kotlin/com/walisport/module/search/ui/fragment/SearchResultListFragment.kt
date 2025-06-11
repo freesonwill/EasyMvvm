@@ -23,6 +23,28 @@ class SearchResultListFragment :
     private var tabMediator: TabLayoutMediator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
+        disablePadding()
+        setViewPager()
+    }
+
+    override fun initListener() = Unit
+
+    override fun createObserver() = Unit
+
+    override fun onDestroyView() {
+        mBinding.viewPager.adapter = null
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
+    }
+
+    private fun disablePadding() {
+        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
+            insets
+        }
+    }
+
+    private fun setViewPager() {
         with(mBinding) {
             if (viewPager.adapter == null) {
                 viewPager.adapter =
@@ -46,17 +68,6 @@ class SearchResultListFragment :
                 switchTab(0, false)
             }
         }
-    }
-
-    override fun initListener() = Unit
-
-    override fun createObserver() = Unit
-
-    override fun onDestroyView() {
-        mBinding.viewPager.adapter = null
-        tabMediator?.detach()
-        tabMediator = null
-        super.onDestroyView()
     }
 
     fun switchTab(position: Int, isSmooth: Boolean = true) {
