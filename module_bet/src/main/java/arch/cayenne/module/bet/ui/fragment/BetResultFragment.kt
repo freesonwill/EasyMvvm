@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
 import androidx.core.view.isVisible
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -65,7 +66,12 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             mBinding.rvComboOdds.isVisible = it.size > 1
-            betSelectionAdapter.submitList(it)
+            val isFirst = betSelectionAdapter.currentList.isEmpty()
+            betSelectionAdapter.submitList(it) {
+                if (isFirst) {
+                    scrollToDown()
+                }
+            }
             mBinding.tvMaxWin.text = if (it.size == 1 && mViewModel.type == BetTypeEnum.SINGLE) {
                 getString(R.string.title_result_win_single_bet)
             } else {
@@ -130,6 +136,12 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     private fun setComboOdds(data: List<BetDetailBean>) {
         detailAdapter.submitList(data)
+    }
+
+    private fun scrollToDown() {
+        mBinding.nsv.postDelayed( {
+            mBinding.nsv.fullScroll(NestedScrollView.FOCUS_DOWN)
+        }, 60L)
     }
 
     override fun dismiss(key: String, value: String) {
