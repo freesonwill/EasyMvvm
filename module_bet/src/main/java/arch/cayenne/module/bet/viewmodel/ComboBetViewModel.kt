@@ -5,6 +5,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
@@ -39,6 +40,11 @@ class ComboBetViewModel(
                 balance - betAmount
             } ?: balance
         } ?: 0
+
+    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
+    val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
+    val moneySymbol: String
+        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
 
     init {
         viewModelScope.launch {

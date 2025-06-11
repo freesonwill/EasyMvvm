@@ -77,6 +77,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             override fun getSize(): Int {
                 return mViewModel.onBetListListener.value?.size ?: 0
             }
+
+            override fun getMoneySymbol(): String {
+                return mViewModel.moneySymbol
+            }
         })
     }
 
@@ -139,19 +143,19 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             setSumBetMoney(it)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
         }
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "\$${sumMoney.getMoney()}"
+        val money = "${mViewModel.moneySymbol}${sumMoney.getMoney()}"
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
         val sumWinMoney =
-            getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY, winMoney.getMoney())
+            getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, winMoney.getMoney())
         mBinding.tvBetMoney.text = sumWinMoney
     }
 
