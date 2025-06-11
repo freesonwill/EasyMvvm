@@ -1,6 +1,7 @@
 package com.walisport.module.search.data.model
 
 import galaxy.common.proto.Common
+import java.io.Serializable
 
 /** * 搜索结果中的比赛直播信息
  * @property clock 走表时间，以秒为单位
@@ -27,7 +28,7 @@ data class SearchMatchLiveInfoBean(
     val homeScore: Int,            //主队得分
     val awayScore: Int,            //客队得分
     val periodName: String         //阶段名称
-) {
+): Serializable {
     companion object {
         fun from(resp: Common.MatchLiveInfo): SearchMatchLiveInfoBean {
             return SearchMatchLiveInfoBean(
