@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
@@ -17,6 +18,7 @@ import com.walisport.module.search.databinding.FragmentSearchMainBinding
 import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.ui.viewmodel.SearchMainViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlin.reflect.KClass
 
 class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBinding>() {
@@ -25,6 +27,7 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
     override val vmClass: KClass<SearchMainViewModel>
         get() = SearchMainViewModel::class
 
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private var historyAdapter: SearchHistoryAdapter? = null
     private var isEditor: Boolean = false
 
@@ -178,15 +181,15 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {
-        (requireParentFragment().parentFragment as? SearchFragment)?.navigateTo(event)
+        sharedViewModel.setNavigationEvent(event)
     }
 
     private fun updateSearchKey(key: String) {
-        (requireParentFragment().parentFragment as? SearchFragment)?.updateSearchKey(key)
+        sharedViewModel.setSearchKeyWord(key)
     }
 
     private fun clearSearchRecommend() {
-        (requireParentFragment().parentFragment as? SearchFragment)?.clearSearchRecommend()
+        sharedViewModel.clearSearchRecommendList()
     }
 
     fun notifyUpdateRecordList(word: String) {

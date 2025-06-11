@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -13,6 +15,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +38,7 @@ import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.databinding.FragmentSearchBinding
 import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -50,8 +56,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private val recommendAdapter by lazy {
         RecommendAdapter { word ->
             resetSearchRecommend()
-            navigateTo(SearchNavigationEvent.ToSearchResultBase(word))
-            updateSearchKey(word)
+            mViewModel.setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(word))
+            mViewModel.setSearchKeyWord(word)
             addSearchRecord(word)
             hideKeyboard(requireContext(), getSearchEditText())
         }
@@ -59,7 +65,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private var canSearch: Boolean = true
 
     override fun onStart() {
-        updateStatusTitleBar()
+        mViewModel.setStatusBarState(true)
         super.onStart()
     }
 
@@ -73,8 +79,55 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     override fun createObserver() {
         with(mViewModel) {
-            searchRecommend.observe(viewLifecycleOwner) {
-                recommendAdapter.submitList(it)
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    launch {
+                        searchRecommendList.collect { list ->
+                            recommendAdapter.submitList(list)
+                        }
+                    }
+                    launch {
+                        navigationEvent.collect { event ->
+                            doNavigate(event)
+                        }
+                    }
+                    launch {
+                        searchKeyWord.collect { key ->
+                            if (key.isNotEmpty()) {
+                                updateSearchText(key)
+                                setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
+                            }
+                        }
+                    }
+                    launch {
+                        resultBackgroundColor.collect { color ->
+                            setResultBackground(
+                                color != null,
+                                color ?: R.color.search_result_default_gradient_start
+                            )
+                        }
+                    }
+                    launch {
+                        statusBarState.collect { isDefault ->
+                            updateStatusTitleBar(isDefault)
+                        }
+                    }
+                    launch {
+                        titleBarMaskEvent.collect { event ->
+                            with(mBinding.maskTitleBar) {
+                                if (event.first) {
+                                    visibility = View.VISIBLE
+                                    setOnClickListener {
+                                        event.second?.invoke()
+                                    }
+                                } else {
+                                    visibility = View.GONE
+                                    setOnClickListener(null)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -100,14 +153,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    navigateTo(SearchNavigationEvent.ToSearchResultBase(recommendWord))
+                                    setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
                                     resetSearchRecommend()
                                 }
                             }
                         }
                         with(text?.toString()) {
                             recommendAdapter.updateMatchKeyword(this)
-                            getSearchRecommend(this)
+                            getSearchRecommendList(this)
                         }
                     },
                     onSearch = { content, _ ->
@@ -117,7 +170,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         }
                         resetSearchRecommend()
                         addSearchRecord(content)
-                        navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
+                        setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
                         hideKeyboard(requireContext(), getSearchEditText())
                     },
                     onBack = {
@@ -130,14 +183,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         if (isFocused) {
                             clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
-                                getSearchRecommend(text.toString())
+                                getSearchRecommendList(text.toString())
                             }
                         }
                     }
                     setOnClickListener {
                         clSearchRecommend.visibility = View.VISIBLE
                         if (text?.isNotEmpty() == true) {
-                            getSearchRecommend(text?.toString())
+                            getSearchRecommendList(text?.toString())
                         }
                     }
                 }
@@ -227,7 +280,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
-        clearSearchRecommend()
+        mViewModel.clearSearchRecommendList()
     }
 
     private fun getSearchEditText(): ClearableEditText {
@@ -251,23 +304,31 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun setResultBackground(isShow: Boolean, color: Int? = null) {
         mBinding.clRoot.apply {
+            val duration = 100
             if (isShow) {
-                background = GradientDrawable(
+                GradientDrawable(
                     GradientDrawable.Orientation.TOP_BOTTOM,
                     intArrayOf(
-                        color ?: ContextCompat.getColor(
-                            requireContext(),
-                            R.color.search_result_default_gradient_start
-                        ),
+                        color ?: ContextCompat.getColor(context, R.color.search_result_default_gradient_start),
                         Color.BLACK
                     )
-                )
-                updateStatusTitleBar(false)
+                ).let { newDrawable ->
+                    background = TransitionDrawable(
+                        arrayOf(background, newDrawable)
+                    ).apply {
+                        startTransition(duration)
+                    }
+                }
             } else {
-                setBackgroundColor(
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_main_bg)
-                )
-                updateStatusTitleBar()
+                ColorDrawable(
+                    SkinnableResourceManager.getColor(context, R.color.search_main_bg)
+                ).let { newDrawable ->
+                    background = TransitionDrawable(
+                        arrayOf(background, newDrawable)
+                    ).apply {
+                        startTransition(duration)
+                    }
+                }
             }
         }
     }
@@ -380,39 +441,5 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             .forEach { fragment ->
                 (fragment as? SearchMainFragment)?.notifyUpdateRecordList(key)
             }
-    }
-
-    fun navigateTo(event: SearchNavigationEvent) {
-        doNavigate(event)
-    }
-
-    fun updateSearchKey(key: String) {
-        updateSearchText(key)
-        navigateTo(SearchNavigationEvent.ToSearchResultBase(key))
-    }
-
-    fun clearSearchRecommend() {
-        mViewModel.clearSearchRecommend()
-    }
-
-    fun updateResultBackground(color: Int?) {
-        setResultBackground(
-            color != null,
-            color ?: R.color.search_result_default_gradient_start
-        )
-    }
-
-    fun setTitleBarMask(isEnable: Boolean, onClick:(() -> Unit)? = null) {
-        with(mBinding.maskTitleBar) {
-            if (isEnable) {
-                visibility = View.VISIBLE
-                setOnClickListener {
-                    onClick?.invoke()
-                }
-            } else {
-                visibility = View.GONE
-                setOnClickListener(null)
-            }
-        }
     }
 }

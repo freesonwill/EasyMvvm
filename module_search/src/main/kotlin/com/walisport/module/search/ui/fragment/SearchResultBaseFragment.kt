@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultUiState
@@ -17,6 +18,7 @@ import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -26,6 +28,8 @@ class SearchResultBaseFragment :
         get() = FragmentSearchResultBaseBinding::class
     override val vmClass: KClass<SearchResultBaseViewModel>
         get() = SearchResultBaseViewModel::class
+
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -89,6 +93,6 @@ class SearchResultBaseFragment :
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {
-        (requireParentFragment().parentFragment as SearchFragment).navigateTo(event)
+        sharedViewModel.setNavigationEvent(event)
     }
 }

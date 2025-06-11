@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +19,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
@@ -31,6 +35,8 @@ import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companio
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_END
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,6 +50,7 @@ class SearchResultDirectMatchFragment :
     override val vmClass: KClass<SearchResultDirectMatchViewModel>
         get() = SearchResultDirectMatchViewModel::class
 
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private val args: SearchResultDirectMatchFragmentArgs by navArgs()
 
     private val linearAdapter by lazy {
@@ -209,14 +216,18 @@ class SearchResultDirectMatchFragment :
         super.onDestroyView()
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        sharedViewModel.setStatusBarState(hidden)
+        super.onHiddenChanged(hidden)
+    }
+
     private fun openDatePicker() {
-        val parentSearchFragment = requireParentFragment().parentFragment as? SearchFragment
         val oldDate = mViewModel.getSelectedDate()
 
         childFragmentManager.setFragmentResultListener(DATE_PICKER_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
             childFragmentManager.clearFragmentResultListener(DATE_PICKER_RESULT_KEY)
 
-            parentSearchFragment?.setTitleBarMask(false)
+            setTitleBarMask(false)
             setDateBarStatus(false)
 
             val newDate =
@@ -243,7 +254,7 @@ class SearchResultDirectMatchFragment :
         )
 
         datePicker.show(childFragmentManager, mBinding.clRoot.id)
-        parentSearchFragment?.setTitleBarMask(true) {
+        setTitleBarMask(true) {
             datePicker.close()
         }
         setDateBarStatus(true)
@@ -331,10 +342,19 @@ class SearchResultDirectMatchFragment :
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {
-        (requireParentFragment().parentFragment as SearchFragment).navigateTo(event)
+        sharedViewModel.setNavigationEvent(event)
     }
 
     private fun updateResultBackground(color: Int? = null) {
-        (requireParentFragment().parentFragment as? SearchFragment)?.updateResultBackground(color)
+        sharedViewModel.setResultBackgroundColor(color)
+        setStatusBarState(color == null)
+    }
+
+    private fun setStatusBarState(isEnabled: Boolean) {
+        sharedViewModel.setStatusBarState(isEnabled)
+    }
+
+    private fun setTitleBarMask(isEnabled: Boolean, onClick: (() -> Unit)? = null) {
+        sharedViewModel.setTitleBarMaskEvent(isEnabled, onClick)
     }
 }

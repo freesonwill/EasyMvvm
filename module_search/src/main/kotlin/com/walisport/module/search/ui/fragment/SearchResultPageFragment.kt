@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
@@ -25,6 +26,7 @@ import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultPageViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -35,6 +37,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     override val vmClass: KClass<SearchResultPageViewModel>
         get() = SearchResultPageViewModel::class
 
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private val onItemClick = { id: String, type: SearchTypeEnum ->
         navigateTo(SearchNavigationEvent.ToSearchDirectMatch(id = id, type = type))
     }
@@ -185,6 +188,6 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {
-        (requireParentFragment().requireParentFragment().parentFragment as? SearchFragment)?.navigateTo(event)
+        sharedViewModel.setNavigationEvent(event)
     }
 }
