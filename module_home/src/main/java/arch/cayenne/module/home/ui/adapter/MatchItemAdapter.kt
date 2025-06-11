@@ -2,6 +2,7 @@ package arch.cayenne.module.home.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
@@ -10,6 +11,7 @@ import arch.cayenne.module.home.ui.adapter.compare.MatchItemCompare
 
 class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickListener? = null) :
     BaseAdapter<MatchWithMarkets, MatchItemViewHolder, ItemMatchCardBinding>(MatchItemCompare()) {
+    private val viewPool = RecyclerView.RecycledViewPool()
     override fun convertPlus(
         holder: MatchItemViewHolder,
         binding: ItemMatchCardBinding,
@@ -38,7 +40,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
         binding: ItemMatchCardBinding,
         viewType: Int
     ): MatchItemViewHolder {
-        return MatchItemViewHolder(binding, onMatchItemClickListener)
+        return MatchItemViewHolder(binding, onMatchItemClickListener, viewPool)
     }
 
     override fun onBindViewHolder(
