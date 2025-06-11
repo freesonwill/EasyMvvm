@@ -28,6 +28,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     private var skinOld: String = ""
     private var defaultImmColor: Int = 0
     private var immColor: Int = 0
+
     override fun initView(savedInstanceState: Bundle?) {
         defaultImmColor = getStatusBarColor()
         skinType = mViewModel.getSkinData()

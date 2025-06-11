@@ -3,6 +3,7 @@ package com.walisport.module.setting.ui.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.launch
@@ -20,7 +21,8 @@ class BackgroundViewModel : BaseViewModel() {
     //设置皮肤背景，这个方法只换肤不写入记录
     fun setSkinType(type: String) {
         viewModelScope.launch {
-            skinManager.loadSkin(type)
+            val logicSkin = getLogicSkinType(type)
+            skinManager.loadSkin(logicSkin)
             skinType.value = type
         }
     }
@@ -33,5 +35,14 @@ class BackgroundViewModel : BaseViewModel() {
     //获取皮肤类型
     fun getSkinData(): String {
         return repository.getSkinType()
+    }
+
+    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
+    private fun getLogicSkinType(skinType: String): String {
+        return when (skinType) {
+            SkinType.SKIN_WHITE_BLUE.value -> SkinType.SKIN_WHITE_BLUE.value
+            SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
+            else -> SkinType.SKIN_CLASSIC.value
+        }
     }
 }

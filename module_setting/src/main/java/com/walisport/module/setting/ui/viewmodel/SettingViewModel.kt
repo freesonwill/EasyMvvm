@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.NotifyMatchType
 import com.walisport.module.setting.data.SettingBean
@@ -45,7 +46,8 @@ class SettingViewModel : BaseViewModel() {
 
     //获取皮肤背景
     fun getSkinType(): String {
-        return repository.getSkinType()
+        val skinType = repository.getSkinType()
+        return getLogicSkinType(skinType)
     }
 
     //设置皮肤背景
@@ -107,6 +109,15 @@ class SettingViewModel : BaseViewModel() {
                 oddType = type
             }.build()
             repository.updateSettingReq(req)
+        }
+    }
+
+    //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
+    private fun getLogicSkinType(skinType: String): String {
+        return when (skinType) {
+            SkinType.SKIN_WHITE_BLUE.value -> SkinType.SKIN_WHITE_BLUE.value
+            SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
+            else -> SkinType.SKIN_CLASSIC.value
         }
     }
 }

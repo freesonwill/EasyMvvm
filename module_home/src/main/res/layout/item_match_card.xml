@@ -42,13 +42,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_tournament_icon">
         <!-- 上下半場 + 比賽時間 -->
+        <TextView
+            android:id="@+id/tv_roll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_match_item_card_roll"
+            android:textColor="@color/match_item_roll"
+            android:text="@string/match_item_roll_title"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_8"
+            android:textSize="@dimen/sp_13"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layout_odds_title"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title" />
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_game_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_text"
+            android:layout_marginStart="@dimen/dp_4"
             android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_roll"
             app:layout_constraintTop_toTopOf="@+id/layout_odds_title"
             app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title"
             tools:text="加時下半場" />

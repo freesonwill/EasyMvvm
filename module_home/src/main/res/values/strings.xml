@@ -46,6 +46,7 @@
     <string name="drawer_notification_time_2">周一</string>
     <string name="drawer_notification_message">通知消息</string>
     <string name="drawer_nickname_title">设置头像和昵称</string>
+    <string name="match_item_roll_title">滚球</string>
 
     <string name="disabled_to_combo">当前赛事不支持串关</string>
     <string name="lineup_empty">暂无数据,请换个试一试</string>

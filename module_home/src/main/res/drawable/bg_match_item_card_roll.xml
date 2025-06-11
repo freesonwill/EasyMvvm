@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/item_answer_white_green" />
+    <solid android:color="@color/bg_match_item_roll" />
     <corners
-        android:radius="@dimen/dp_5" />
+        android:radius="4dp" />
 </shape>
