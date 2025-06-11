@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
+            android:id="@+id/rl_text_delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_17"
+            android:paddingStart="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_10"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/history_record"
+                android:textColor="@color/search_title"
+                android:textSize="15sp" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_click_show_delete"
+                    android:layout_width="@dimen/dp_20"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    app:srcCompat="@drawable/history_delete_icon" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                    android:id="@+id/ll_show_completed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/txt_delete_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/delete_all"
+                        android:textColor="@color/search_title"
+                        android:textSize="15sp" />
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginLeft="@dimen/dp_10"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:background="@color/white"
+                        android:text="|"
+                        android:textSize="15sp"
+                        tools:ignore="HardcodedText" />
+
+                    <arch.cayenne.lib.skin.widget.SkinnableTextView
+                        android:id="@+id/txt_completed_all"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/search_finish"
+                        android:textColor="@color/search_title"
+                        android:textSize="15sp" />
+                </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+            </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableRelativeLayout>
+
+        <com.walisport.module.search.ui.view.HistoryFoldLayout
+            android:id="@+id/hf_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_17"
+            android:layout_marginEnd="@dimen/dp_10"
+            app:flow_equally="false"
+            app:flow_fold="true"
+            app:flow_foldLines="2"
+            app:flow_horizontalSpacing="@dimen/dp_10"
+            app:flow_verticalSpacing="@dimen/dp_10"
+            app:layout_constraintTop_toBottomOf="@+id/rl_text_delete" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_hot_word"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/cl_history"
+        tools:visibility="visible">
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_hot_word"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_60"
+            android:src="@drawable/ic_hot_word"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_3"
+            android:text="@string/hot_search"
+            android:textColor="@color/search_title"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_hot_word"
+            app:layout_constraintStart_toEndOf="@id/iv_hot_word"
+            app:layout_constraintTop_toTopOf="@id/iv_hot_word" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+            android:id="@+id/rv_hot_word"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_13"
+            android:layout_marginTop="@dimen/dp_7"
+            android:layout_marginEnd="@dimen/dp_11"
+            android:overScrollMode="never"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/iv_hot_word" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

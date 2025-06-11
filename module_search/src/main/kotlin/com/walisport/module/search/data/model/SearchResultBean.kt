@@ -1,6 +1,7 @@
 package com.walisport.module.search.data.model
 
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
+import java.io.Serializable
 
 /** * 搜索结果数据模型
  * @property type 搜索结果类型
@@ -17,4 +18,4 @@ data class SearchResultBean(
     val matchTotal: Int? = null,                                //比赛数量
     val matches: List<SearchMatchBean>? = null,                 //比赛信息，不含盘口数据
     val dailyCount: List<SearchDailyMatchBean>? = null          //每日比赛数量
-)
+): Serializable

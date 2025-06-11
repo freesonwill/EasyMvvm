@@ -13,8 +13,11 @@ import com.bumptech.glide.Glide
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.ItemSearchResultGridHeaderBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridItemBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridMoreBinding
@@ -29,7 +32,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
         const val VIEW_TYPE_MORE = 2
     }
 
-    var onItemClick: ((SearchResultBaseBean) -> Unit)? = null
+    var onItemClick: ((id: String, type: SearchTypeEnum) -> Unit)? = null
     var onMoreClick: ((SearchResultTypeEnum) -> Unit)? = null
 
     override fun getItemViewType(position: Int): Int {
@@ -46,12 +49,12 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
             VIEW_TYPE_HEADER -> {
                 val headerBinding = binding as ItemSearchResultGridHeaderBinding
                 val item = getItem(position) as SearchResultListItemType.Header
-                headerBinding.tvTitle.text = item.title
+                headerBinding.tvTitle.text = holder.itemView.context.getString(item.resId)
             }
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultGridItemBinding
                 val itemData = (getItem(position) as SearchResultListItemType.Item).data
-                val isPlayer = itemData is SearchResultPlayerBeanBean
+                val isPlayer = itemData is SearchResultPlayerBean
 
                 with(itemBinding) {
                     with(itemData) {
@@ -85,7 +88,15 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
                         }
 
                         root.setOnClickListener {
-                            onItemClick?.invoke(this)
+                            onItemClick?.invoke(
+                                id.toString(),
+                                when (itemData) {
+                                    is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
+                                    is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
+                                    is SearchResultTournamentBean -> SearchTypeEnum.TOURNAMENT_ID
+                                    else -> SearchTypeEnum.UNKNOWN
+                                }
+                            )
                         }
                     }
                 }

@@ -8,7 +8,12 @@ import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchResultTypeEnum
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBaseBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.ItemSearchResultLinearBinding
 import com.walisport.module.search.ui.compare.SearchResultLinearCompare
 import com.walisport.module.search.ui.fragment.SearchResultPageFragment
@@ -16,7 +21,7 @@ import com.walisport.module.search.ui.fragment.SearchResultPageFragment
 class SearchResultPageLinearAdapter(private val type: String): BaseAdapter<SearchResultBaseBean, BaseViewHolder, ViewBinding>(
     SearchResultLinearCompare()
 ) {
-    var onItemClick: ((SearchResultBaseBean) -> Unit)? = null
+    var onItemClick: ((id: String, type: SearchTypeEnum) -> Unit)? = null
 
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         with(binding as ItemSearchResultLinearBinding) {
@@ -33,7 +38,15 @@ class SearchResultPageLinearAdapter(private val type: String): BaseAdapter<Searc
                     .into(ivIcon)
 
                 root.setOnClickListener {
-                    onItemClick?.invoke(this)
+                    onItemClick?.invoke(
+                        id.toString(),
+                        when (this) {
+                            is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
+                            is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
+                            is SearchResultTournamentBean -> SearchTypeEnum.TOURNAMENT_ID
+                            else -> SearchTypeEnum.UNKNOWN
+                        }
+                    )
                 }
             }
         }

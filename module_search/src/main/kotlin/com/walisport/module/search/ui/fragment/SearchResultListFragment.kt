@@ -2,56 +2,64 @@ package com.walisport.module.search.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
 import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
 import kotlin.reflect.KClass
 
 class SearchResultListFragment :
-    BaseFragment<SearchResultViewModel, FragmentSearchResultListBinding>() {
+    BaseFragment<SearchResultListViewModel, FragmentSearchResultListBinding>() {
     override val vbClass: KClass<FragmentSearchResultListBinding>
         get() = FragmentSearchResultListBinding::class
-    override val vmClass: KClass<SearchResultViewModel>
-        get() = SearchResultViewModel::class
+    override val vmClass: KClass<SearchResultListViewModel>
+        get() = SearchResultListViewModel::class
 
-    private val pagerAdapter by lazy {
-        SearchResultPagerAdapter(this)
-    }
-
-    override fun createVM(): SearchResultViewModel {
-        return activityViewModel<SearchResultViewModel>().value
-    }
+    private val args: SearchResultListFragmentArgs by navArgs()
+    private var tabMediator: TabLayoutMediator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            viewPager.adapter = pagerAdapter
-            (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
+            if (viewPager.adapter == null) {
+                viewPager.adapter =
+                    SearchResultPagerAdapter(
+                        this@SearchResultListFragment,
+                        args.data
+                    )
+                (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 
-            TabLayoutMediator(tlSearch, viewPager) { tab, position ->
-                tab.text = when (position) {
-                    0 -> getString(R.string.tab_all)
-                    1 -> getString(R.string.tab_tournament)
-                    2 -> getString(R.string.tab_team)
-                    3 -> getString(R.string.tab_player)
-                    else -> ""
+                tabMediator = TabLayoutMediator(tlSearch, viewPager) { tab, position ->
+                    tab.text = when (position) {
+                        0 -> getString(R.string.tab_all)
+                        1 -> getString(R.string.tab_tournament)
+                        2 -> getString(R.string.tab_team)
+                        3 -> getString(R.string.tab_player)
+                        else -> ""
+                    }
+                }.apply {
+                    attach()
                 }
-            }.attach()
-            switchTab(0, false)
+                switchTab(0, false)
+            }
         }
+    }
+
+    override fun initListener() = Unit
+
+    override fun createObserver() = Unit
+
+    override fun onDestroyView() {
+        mBinding.viewPager.adapter = null
+        tabMediator?.detach()
+        tabMediator = null
+        super.onDestroyView()
     }
 
     fun switchTab(position: Int, isSmooth: Boolean = true) {
         mBinding.viewPager.setCurrentItem(position, isSmooth)
-    }
-
-    override fun initListener() {
-    }
-
-    override fun createObserver() {
     }
 }

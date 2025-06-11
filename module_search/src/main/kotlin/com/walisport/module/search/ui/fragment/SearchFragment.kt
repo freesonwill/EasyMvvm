@@ -1,28 +1,44 @@
 package com.walisport.module.search.ui.fragment
 
+import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.TransitionDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import androidx.activity.OnBackPressedCallback
-import androidx.recyclerview.widget.GridLayoutManager
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.databinding.FragmentSearchBinding
-import com.walisport.module.search.ui.adapter.HotWordAdapter
 import com.walisport.module.search.ui.adapter.RecommendAdapter
-import com.walisport.module.search.ui.adapter.SearchHistoryAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -37,76 +53,82 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     override val vmClass: KClass<SearchViewModel>
         get() = SearchViewModel::class
 
-    private var historyAdapter: SearchHistoryAdapter? = null
-    private var isEditor: Boolean = false
-
-    private val hotWordAdapter by lazy {
-        HotWordAdapter { hotWord ->
-            mViewModel.getSearchResult(hotWord)
-            updateSearchText(hotWord)
-            addSearchHistory(hotWord)
-            setResultVisible(true)
-        }
-    }
-
     private val recommendAdapter by lazy {
-        RecommendAdapter()
+        RecommendAdapter { word ->
+            resetSearchRecommend()
+            mViewModel.setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(word))
+            mViewModel.setSearchKeyWord(word)
+            addSearchRecord(word)
+            hideKeyboard(requireContext(), getSearchEditText())
+        }
     }
     private var canSearch: Boolean = true
 
-    private val searchResultFragment by lazy {
-        SearchResultFragment()
+    override fun onStart() {
+        mViewModel.setStatusBarState(true)
+        super.onStart()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         setTitleBar()
-        setHistory()
         setRecommend()
-        setHotWords()
-        setResultFragment()
-        initBackPress()
+        setBackPressHandler()
     }
 
-    override fun initData() {
-        super.initData()
-        //获取搜索记录
-        mViewModel.getRecordByUID()
+    override fun initListener() = Unit
 
-        //获取热门搜索
-        mViewModel.getSearchHotWord()
-    }
-
-    private fun initBackPress() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (mBinding.groupResult.visibility == View.VISIBLE) {
-                    setResultVisible(false)
-                } else {
-                    isEnabled = false
-                    requireActivity().onBackPressedDispatcher.onBackPressed()
+    override fun createObserver() {
+        with(mViewModel) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    launch {
+                        searchRecommendList.collect { list ->
+                            recommendAdapter.submitList(list)
+                        }
+                    }
+                    launch {
+                        navigationEvent.collect { event ->
+                            doNavigate(event)
+                        }
+                    }
+                    launch {
+                        searchKeyWord.collect { key ->
+                            if (key.isNotEmpty()) {
+                                updateSearchText(key)
+                                setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
+                            }
+                        }
+                    }
+                    launch {
+                        resultBackgroundColor.collect { color ->
+                            setResultBackground(
+                                color != null,
+                                color ?: R.color.search_result_default_gradient_start
+                            )
+                        }
+                    }
+                    launch {
+                        statusBarState.collect { isDefault ->
+                            updateStatusTitleBar(isDefault)
+                        }
+                    }
+                    launch {
+                        titleBarMaskEvent.collect { event ->
+                            with(mBinding.maskTitleBar) {
+                                if (event.first) {
+                                    visibility = View.VISIBLE
+                                    setOnClickListener {
+                                        event.second?.invoke()
+                                    }
+                                } else {
+                                    visibility = View.GONE
+                                    setOnClickListener(null)
+                                }
+                            }
+                        }
+                    }
                 }
             }
-        })
-    }
-
-    private fun setResultFragment() {
-        childFragmentManager.beginTransaction()
-            .replace(R.id.fragment_container, searchResultFragment)
-            .commit()
-
-        with(mBinding) {
-            viewFakeBack.setOnClickListener {
-                setResultVisible(false)
-            }
-        }
-    }
-
-    private fun setResultVisible(isShow: Boolean) {
-        mBinding.groupResult.visibility = if (isShow) View.VISIBLE else View.GONE
-        if(!isShow) {
-            updateSearchText("")
-        } else {
-            clearSearchRecommend()
         }
     }
 
@@ -126,18 +148,19 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         if (!canSearch) return@loadSearchTitleBar
 
                         // 搜索自动补充词汇
-                        if (count > 0) clSearchRecommend.visibility = View.VISIBLE
+                        if (count > 0 && binding.ceSearch.hasFocus())
+                            clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    mViewModel.getSearchResult(recommendWord)
-                                    clearSearchRecommend()
+                                    setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
+                                    resetSearchRecommend()
                                 }
                             }
                         }
                         with(text?.toString()) {
                             recommendAdapter.updateMatchKeyword(this)
-                            getSearchRecommend(this)
+                            getSearchRecommendList(this)
                         }
                     },
                     onSearch = { content, _ ->
@@ -145,22 +168,29 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             showToast(getString(R.string.please_input_content))
                             return@loadSearchTitleBar
                         }
-                        addSearchHistory(content)
-                        getSearchResult(content)
-                        clearSearchRecommend()
-                        getRecordByUID()
-                        groupResult.visibility = View.VISIBLE
+                        resetSearchRecommend()
+                        addSearchRecord(content)
+                        setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
+                        hideKeyboard(requireContext(), getSearchEditText())
+                    },
+                    onBack = {
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
                 )
 
                 getSearchEditText().apply {
                     setOnFocusChangeListener { _, isFocused ->
-                        if(isFocused) clSearchRecommend.visibility = View.VISIBLE
+                        if (isFocused) {
+                            clSearchRecommend.visibility = View.VISIBLE
+                            if (text?.isNotEmpty() == true) {
+                                getSearchRecommendList(text.toString())
+                            }
+                        }
                     }
                     setOnClickListener {
                         clSearchRecommend.visibility = View.VISIBLE
-                        if(text?.isNotEmpty() == true) {
-                            getSearchRecommend(text?.toString())
+                        if (text?.isNotEmpty() == true) {
+                            getSearchRecommendList(text?.toString())
                         }
                     }
                 }
@@ -211,127 +241,54 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
 
             clSearchRecommend.setOnClickListener {
-                clearSearchRecommend()
+                hideKeyboard(requireContext(), getSearchEditText())
+                resetSearchRecommend()
             }
         }
     }
 
-    private fun setHistory() {
-        with(mBinding) {
-            with(mViewModel) {
-                //设置搜索历史
-                historyAdapter = SearchHistoryAdapter(
-                    closeAction = { position, text ->
-                        historyAdapter?.deleteData(position)
-                        mViewModel.deleteOneRecord(text)
-                        mViewModel.getRecordByUID()
-                    },
-                    onSearch = { content ->
-                        content?.let {
-                            mViewModel.getSearchResult(content)
-                            clearSearchRecommend()
-                            updateSearchText(content)
-                            mBinding.groupResult.visibility = View.VISIBLE
+    fun addSearchRecord(word: String) {
+        if (word.isNotEmpty()) {
+            mViewModel.addOneRecord(word)
+            notifyUpdateRecordList(word)
+        }
+    }
+
+    private fun setBackPressHandler() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
+                hideKeyboard(requireContext(), getSearchEditText())
+                mBinding.clSearchRecommend.visibility = View.GONE
+            } else {
+                val navController = mBinding.fragmentContainer.findNavController()
+                val backStackId = navController.previousBackStackEntry?.destination?.id
+
+                when (backStackId) {
+                    R.id.searchResultBaseFragment -> {
+                        navController.popBackStack(R.id.searchMainFragment, false)
+                    }
+                    else -> {
+                        if (!navController.popBackStack()) {
+                            isEnabled = false
+                            requireActivity().onBackPressedDispatcher.onBackPressed()
                         }
                     }
-                )
-                hfList.setAdapter(historyAdapter)
-
-                //删除图标，点击进入删除模式
-                ivClickShowDelete.clickNoRepeat {
-                    setHistoryButton()
-                }
-
-                //完成按钮
-                txtCompletedAll.clickNoRepeat {
-                    setHistoryButton()
-                }
-
-                //全部删除按钮
-                txtDeleteAll.clickNoRepeat {
-                    historyAdapter?.deleteAllData()
-                    deleteAllData()
-                    getRecordByUID()
-                    setHistoryButton()
                 }
             }
         }
     }
 
-    private fun setHotWords() {
-        with(mBinding) {
-            //热门搜索
-            rvHotWord.apply {
-                layoutManager = GridLayoutManager(context, 2)
-                adapter = hotWordAdapter.apply {
-                    if (itemDecorationCount == 0) {
-                        addItemDecoration(object : ItemDecoration() {
-                            private val dividerHeight = 0.5f.dp2px
-                            private val paint = Paint().apply {
-                                color = SkinnableResourceManager.getColor(
-                                    context,
-                                    R.color.search_divider
-                                )
-                                strokeWidth = dividerHeight.toFloat()
-                            }
-
-                            override fun onDraw(
-                                canvas: Canvas,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val spanCount = 2
-                                val itemCount = parent.adapter?.itemCount ?: 0
-                                val totalRowCount = (itemCount + spanCount - 1) / spanCount
-
-                                for (i in 0 until parent.childCount) {
-                                    val child = parent.getChildAt(i)
-                                    val position = parent.getChildAdapterPosition(child)
-                                    val currentRow = position / spanCount
-                                    val isLastRow = currentRow == totalRowCount - 1
-
-                                    if (!isLastRow) {
-                                        val left = child.left.toFloat()
-                                        val right = child.right.toFloat()
-                                        val y = child.bottom.toFloat()
-                                        canvas.drawLine(left, y, right, y, paint)
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
-            }
-        }
-    }
-
-    private fun addSearchHistory(word: String) {
-        historyAdapter?.addData(word)
-        mViewModel.addOneRecord(word)
-    }
-
-    private fun setHistoryButton() {
-        with(mBinding) {
-            isEditor = !isEditor
-            historyAdapter?.isDelete = isEditor
-            hfList.setEditor(isEditor)
-            if (isEditor) {
-                ivClickShowDelete.visibility = View.GONE
-                llShowCompleted.visibility = View.VISIBLE
-            } else {
-                ivClickShowDelete.visibility = View.VISIBLE
-                llShowCompleted.visibility = View.GONE
-            }
-        }
-    }
-
-    private fun clearSearchRecommend() {
+    private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
-        mViewModel.clearSearchRecommend()
+        mViewModel.clearSearchRecommendList()
     }
 
     private fun getSearchEditText(): ClearableEditText {
         return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ce_search)
+    }
+
+    private fun getTitleBarBackIcon(): SkinnableImageView {
+        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ivBack)
     }
 
     private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
@@ -345,29 +302,144 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         canSearch = true
     }
 
-    override fun initListener() {
-
-    }
-
-    override fun createObserver() {
-        with(mBinding) {
-            with(mViewModel) {
-                searchRecord.observe(viewLifecycleOwner) {
-                    historyAdapter?.setNewData(it.reversed().toMutableList())
-                    clHistory.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+    private fun setResultBackground(isShow: Boolean, color: Int? = null) {
+        mBinding.clRoot.apply {
+            val duration = 100
+            if (isShow) {
+                GradientDrawable(
+                    GradientDrawable.Orientation.TOP_BOTTOM,
+                    intArrayOf(
+                        color ?: ContextCompat.getColor(context, R.color.search_result_default_gradient_start),
+                        Color.BLACK
+                    )
+                ).let { newDrawable ->
+                    background = TransitionDrawable(
+                        arrayOf(background, newDrawable)
+                    ).apply {
+                        startTransition(duration)
+                    }
                 }
-                searchResult.observe(viewLifecycleOwner) { result ->
-                    searchResultFragment.setResult(result)
-                    setResultVisible(true)
-                }
-                searchRecommend.observe(viewLifecycleOwner) {
-                    recommendAdapter.submitList(it)
-                }
-                searchHotWord.observe(viewLifecycleOwner) {
-                    hotWordAdapter.submitList(it)
-                    clHotWord.visibility = if (it.isEmpty()) View.GONE else View.VISIBLE
+            } else {
+                ColorDrawable(
+                    SkinnableResourceManager.getColor(context, R.color.search_main_bg)
+                ).let { newDrawable ->
+                    background = TransitionDrawable(
+                        arrayOf(background, newDrawable)
+                    ).apply {
+                        startTransition(duration)
+                    }
                 }
             }
         }
+    }
+
+    private fun updateStatusTitleBar(isDefault: Boolean = true) {
+        with(mBinding) {
+            // 設置狀態欄進入沈浸模式
+            root.fitsSystemWindows = false
+            setStatusBar(StatusBarConfig.apply {
+                statusBarType = StatusBarMode.DRAW_BEHIND
+                statusBarColor = android.R.color.transparent
+            }, clRoot)
+
+            if (isDefault) {
+                with(SkinnableResourceManager) {
+                    // 設置狀態欄文字顏色
+                    setStatusBar(
+                        StatusBarConfig.apply {
+                            statusBarDarkFont =
+                                getSkinName().lowercase().startsWith("white")
+                        }, clRoot
+                    )
+                    // 設置返回鍵顏色
+                    getTitleBarBackIcon().setImageDrawable(
+                        getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+                    )
+                }
+            } else {
+                // 設置狀態欄文字顏色
+                setStatusBar(
+                    StatusBarConfig.apply { statusBarDarkFont = false },
+                    clRoot
+                )
+                // 設置返回鍵顏色
+                getTitleBarBackIcon().setImageDrawable(
+                    ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+                )
+            }
+
+            // 重置底部 Padding
+            clRoot.post {
+                clRoot.setPadding(
+                    clRoot.paddingLeft,
+                    clRoot.paddingTop,
+                    clRoot.paddingRight,
+                    0
+                )
+            }
+        }
+    }
+
+    private fun hideKeyboard(context: Context?, editText: EditText) {
+        val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.hideSoftInputFromWindow(editText.windowToken, 0)
+        editText.clearFocus()
+    }
+
+    private fun doNavigate(event: SearchNavigationEvent) {
+        val navController = mBinding.fragmentContainer.findNavController()
+        val currentId = navController.currentDestination?.id ?: return
+
+        when (event) {
+            is SearchNavigationEvent.ToSearchResultBase -> {
+                mapOf(
+                    R.id.searchMainFragment to R.id.action_searchMainFragment_to_searchResultBaseFragment,
+                    R.id.searchResultListFragment to R.id.action_searchResultListFragment_to_searchResultBaseFragment,
+                    R.id.searchResultDirectMatchFragment to R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment
+                )[currentId]?.let { actionId ->
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("searchKey", event.searchKey)
+
+                    navController.navigate(actionId)
+                }
+            }
+            is SearchNavigationEvent.ToSearchDirectMatch -> {
+                if (currentId == R.id.searchResultBaseFragment) {
+                    val action =
+                        SearchResultBaseFragmentDirections
+                            .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
+                                event.data, null, SearchTypeEnum.UNKNOWN
+                            )
+                    navController.navigate(action)
+                } else if (currentId == R.id.searchResultListFragment) {
+                    val action =
+                        SearchResultListFragmentDirections
+                            .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
+                                null, event.id, event.type ?: SearchTypeEnum.UNKNOWN
+                            )
+                    navController.navigate(action)
+                }
+            }
+            is SearchNavigationEvent.ToSearchList -> {
+                if (currentId == R.id.searchResultBaseFragment) {
+                    val action = SearchResultBaseFragmentDirections
+                        .actionSearchResultBaseFragmentToSearchResultListFragment(event.data)
+                    navController.navigate(action)
+                }
+            }
+
+            is SearchNavigationEvent.ToLiveFragment -> {
+                navigate(Uri.parse(event.deepLink))
+            }
+        }
+    }
+
+    private fun notifyUpdateRecordList(key: String) {
+        childFragmentManager.fragments
+            .filterIsInstance<SearchMainFragment>()
+            .forEach { fragment ->
+                (fragment as? SearchMainFragment)?.notifyUpdateRecordList(key)
+            }
     }
 }

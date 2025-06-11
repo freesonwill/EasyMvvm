@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="search_bg_white_blue">#eeeeee</color>
+    <color name="search_main_bg_white_blue">#EEEEEE</color>
     <color name="search_title_white_blue">#222222</color>
     <color name="search_divider_white_blue">#E8E8EA</color>
     <color name="hot_word_white_blue">#00D271</color>
     <color name="tab_item_text_select_white_blue">#222222</color>
     <color name="tab_item_text_unselect_white_blue">#666666</color>
+    <color name="search_result_date_white_blue">#666666</color>
+    <color name="search_result_date_selected_white_blue">#00D271</color>
     <color name="search_result_more_white_blue">#666666</color>
+    <color name="search_result_race_header_white_blue">#222222</color>
+    <color name="search_result_race_divider_white_blue">#E8E8EA</color>
+    <color name="search_result_race_text_1_white_blue">#666666</color>
+    <color name="search_result_race_team_name_white_blue">#222222</color>
+    <color name="search_result_race_no_score_white_blue">#929298</color>
+    <color name="search_calendar_current_month_text_color_white_blue">#222222</color>
+    <color name="search_calendar_other_month_text_color_white_blue">#929298</color>
+    <color name="search_calendar_selected_theme_color_white_blue">#00D271</color>
+    <color name="search_calendar_week_text_color_white_blue">#666666</color>
+    <color name="search_calendar_reset_btn_text_color_white_blue">#222222</color>
 </resources>

@@ -2,8 +2,7 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/CustomToolbarStyle"
-    android:background="@color/search_bg">
+    style="@style/CustomToolbarStyle">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/ivBack"
@@ -15,6 +14,7 @@
         style="@style/CustomToolbarLine"
         android:layout_marginStart="3dp"
         android:background="@drawable/search_rounded_background"
+        android:backgroundTint="@color/search_bg"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvSearchText"

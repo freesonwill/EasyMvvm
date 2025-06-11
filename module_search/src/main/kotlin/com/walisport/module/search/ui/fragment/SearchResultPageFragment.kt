@@ -12,30 +12,34 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.search.R
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
-import com.walisport.module.search.data.model.SearchResultBaseBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
-import com.walisport.module.search.data.model.SearchResultTeamBeanBean
-import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.constants.SearchTypeEnum
+import com.walisport.module.search.data.model.SearchResultBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultViewModel
+import com.walisport.module.search.ui.viewmodel.SearchResultPageViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
-class SearchResultPageFragment :
-    BaseFragment<SearchResultViewModel, FragmentSearchResultPageBinding>() {
+class SearchResultPageFragment(val data: SearchResultBean) :
+    BaseFragment<SearchResultPageViewModel, FragmentSearchResultPageBinding>() {
     override val vbClass: KClass<FragmentSearchResultPageBinding>
         get() = FragmentSearchResultPageBinding::class
-    override val vmClass: KClass<SearchResultViewModel>
-        get() = SearchResultViewModel::class
+    override val vmClass: KClass<SearchResultPageViewModel>
+        get() = SearchResultPageViewModel::class
 
-    private val onItemClick = { item: SearchResultBaseBean ->
-        mViewModel.getSearchResult(requireContext(), item)
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
+    private val onItemClick = { id: String, type: SearchTypeEnum ->
+        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(id = id, type = type))
     }
 
     private val gridAdapter by lazy {
@@ -61,9 +65,10 @@ class SearchResultPageFragment :
     }
 
     companion object {
-        fun newInstance(type: String) = SearchResultPageFragment().apply {
-            arguments = Bundle().apply { putString("type", type) }
-        }
+        fun newInstance(type: String, data: SearchResultBean) =
+            SearchResultPageFragment(data).apply {
+                arguments = Bundle().apply { putString("type", type) }
+            }
 
         internal const val TYPE_ALL = "TYPE_ALL"
         internal const val TYPE_TOURNAMENT = "TYPE_TOURNAMENT"
@@ -71,12 +76,30 @@ class SearchResultPageFragment :
         internal const val TYPE_PLAYER = "TYPE_PLAYER"
     }
 
-    override fun createVM(): SearchResultViewModel {
-        return activityViewModel<SearchResultViewModel>().value
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         updateUI()
+    }
+
+    override fun initData() {
+        super.initData()
+        mViewModel.setResult(data)
+    }
+
+    override fun initListener() = Unit
+
+    override fun createObserver() {
+        with(mViewModel) {
+            lifecycleScope.launch {
+                groupData.collect {
+                    updateUI()
+                }
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        mBinding.recyclerView.adapter = null
+        super.onDestroyView()
     }
 
     private fun updateUI() {
@@ -133,9 +156,9 @@ class SearchResultPageFragment :
                 } else {
                     val source = groupData.value.filterIsInstance<SearchResultListItemType.Item>().map { it.data }
                     val list = when (getType()) {
-                        TYPE_TOURNAMENT -> source.filterIsInstance<SearchResultTournamentBeanBean>()
-                        TYPE_TEAM -> source.filterIsInstance<SearchResultTeamBeanBean>()
-                        TYPE_PLAYER -> source.filterIsInstance<SearchResultPlayerBeanBean>()
+                        TYPE_TOURNAMENT -> source.filterIsInstance<SearchResultTournamentBean>()
+                        TYPE_TEAM -> source.filterIsInstance<SearchResultTeamBean>()
+                        TYPE_PLAYER -> source.filterIsInstance<SearchResultPlayerBean>()
                         else -> emptyList()
                     }
                     if (list.isEmpty()) {
@@ -164,16 +187,7 @@ class SearchResultPageFragment :
         return arguments?.getString("type") ?: TYPE_ALL
     }
 
-    override fun initListener() {
-    }
-
-    override fun createObserver() {
-        with(mViewModel) {
-            lifecycleScope.launch {
-                groupData.collect {
-                    updateUI()
-                }
-            }
-        }
+    private fun navigateTo(event: SearchNavigationEvent) {
+        sharedViewModel.setNavigationEvent(event)
     }
 }
