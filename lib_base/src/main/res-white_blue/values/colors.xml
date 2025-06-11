@@ -2,4 +2,5 @@
 <resources>
 
     <color name="bottom_sheet_main_background_white_blue">#EEEEEE</color>
+    <color name="background_base_dialog_white_blue">#F3F3F4</color>
 </resources>
