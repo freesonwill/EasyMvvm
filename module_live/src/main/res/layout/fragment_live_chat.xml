@@ -70,7 +70,6 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginTop="@dimen/dp_12"
             app:layout_constraintVertical_bias="1"
             />
 

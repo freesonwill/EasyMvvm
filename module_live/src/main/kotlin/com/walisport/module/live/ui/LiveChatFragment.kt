@@ -1,11 +1,15 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.addCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
@@ -26,14 +30,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
+    //软件盘时获取的高度有误，onResume时获取固定值
+    private var keyBoardHeight: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
-    }
-
-    override fun initData() {
-        super.initData()
     }
 
     private fun initTab() {
@@ -43,7 +45,28 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.adapter = adapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        keyBoardHeight = mBinding.main.height
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+
+        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if (e.action == MotionEvent.ACTION_UP && mViewModel.softKeyBoardListener.value == true) {
+                    showChat()
+                }
+                return false
+            }
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+            }
+        })
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.softKeyBoardListener.value == true) {
                 showChat()
@@ -88,7 +111,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 showToast(msg)
                 return@observe
             }
-            if(mViewModel.loginLiveData.value == null){
+            if (mViewModel.loginLiveData.value == null) {
                 return@observe
             }
             mViewModel.sendMsgToServer(it)
@@ -100,8 +123,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             refreshChatList()
         }
         mViewModel.sendMsgResultLiveData.observe(viewLifecycleOwner) {
-//           val msg = if(it?.code == 0) getString(R.string.send_success) else it?.errorMessage ?: getString(R.string.send_fail)
-//            showToast(msg)
+
         }
 
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
@@ -111,8 +133,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     else getString(R.string.insufficient_balance)
                 showToast(msg)
             }
-          //  TODO暂时隐藏，便于测试
-//            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
+            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -151,18 +172,16 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     }
 
-//    fun showChatAnimation(isKeyBoardVisible: Boolean) {
-//        val height = mBinding.main.height
-//        val keyBoardHeight = mBinding.main.height - 12.dp2px
-//        mBinding.liveChatKeyboard.layoutParams.height =
-//            if (isKeyBoardVisible) keyBoardHeight else 62.dp2px
-//    }
+    private fun showChatAnimation(isKeyBoardVisible: Boolean, isEmoji: Boolean) {
+        mBinding.liveChatKeyboard.layoutParams.height =
+            if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+    }
 
     /**
      * 显示键盘时调用
      * */
-    override fun showKeyBoard() {
-//        showChatAnimation(true)
+    override fun showKeyBoard(isEmoji: Boolean) {
+        showChatAnimation(true, isEmoji)
         mViewModel.updateSoftKeyBoard(true)
     }
 
@@ -170,6 +189,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 隐藏键盘时调用
      * */
     override fun hideKeyboard() {
+        showChatAnimation(false, isEmoji = false)
         mViewModel.updateSoftKeyBoard(false)
     }
 

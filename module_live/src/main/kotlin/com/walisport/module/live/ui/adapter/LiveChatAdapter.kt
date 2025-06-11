@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.LiveChatCompare
@@ -29,7 +30,7 @@ class LiveChatAdapter :
             builder.append("$first  ")
             builder.setSpan(
                 ForegroundColorSpan(
-                    ContextCompat.getColor(
+                    SkinnableResourceManager.getColor(
                         binding.root.context, arch.cayenne.lib.common.R.color.live_name
                     )
                 ), 0, first.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
@@ -37,7 +38,7 @@ class LiveChatAdapter :
             builder.append(second)
             builder.setSpan(
                 ForegroundColorSpan(
-                    ContextCompat.getColor(
+                    SkinnableResourceManager.getColor(
                         binding.root.context, arch.cayenne.lib.common.R.color.secondary_text
                     )
                 ), first.length, builder.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
