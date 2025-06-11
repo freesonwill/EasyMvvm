@@ -208,9 +208,7 @@ class LiveMainViewModel(
             if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
                 return@launch
             }
-            withContext(Dispatchers.IO){
-                chatRepo.startSocket()
-            }
+            chatRepo.startSocket(viewModelScope)
         }
     }
 
@@ -220,10 +218,8 @@ class LiveMainViewModel(
     fun disConnectChatServer() {
         viewModelScope.launch {
             try{
-              withContext(Dispatchers.IO){
-                  val value =  chatRepo.disconnect(viewModelScope)
-                  "chat disconnect viewModel $value".logd(TAG)
-              }
+                val value =  chatRepo.disconnect(viewModelScope)
+                "chat disconnect viewModel $value".logd(TAG)
             }catch (e:CancellationException){
                 "chat disconnect viewModel canceled".logi(TAG)
             }catch (e:Exception){

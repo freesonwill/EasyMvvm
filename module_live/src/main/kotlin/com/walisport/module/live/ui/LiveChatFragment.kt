@@ -127,13 +127,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
 
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
-            if (it != CheckBetResultEnum.SUCCESS) {
-                val msg =
-                    if (it == CheckBetResultEnum.BET_AMOUNT) getString(R.string.insufficient_bet_amount)
-                    else getString(R.string.insufficient_balance)
-                showToast(msg)
-            }
-            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
