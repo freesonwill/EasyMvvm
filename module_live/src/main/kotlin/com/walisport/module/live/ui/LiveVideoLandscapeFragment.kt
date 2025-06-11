@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
@@ -77,7 +78,6 @@ class LiveVideoLandscapeFragment :
         mViewModel.setMatchId(matchId)
 
         initVideoView()
-        initBackPress()
         scheduleHideButtons()
     }
 
@@ -270,21 +270,6 @@ class LiveVideoLandscapeFragment :
     override fun initData() {
         super.initData()
     }
-
-    /**
-     * 监听返回键
-     */
-    private fun initBackPress(){
-        // 监听返回键
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    mBinding.videoViewContainer.removeAllViews()
-                }
-            })
-    }
-
 
     /**
      * 展示上边和下边的操作按钮，不带动画
