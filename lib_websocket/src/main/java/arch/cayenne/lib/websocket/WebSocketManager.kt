@@ -1,5 +1,9 @@
 package arch.cayenne.lib.websocket
 
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
@@ -20,7 +24,8 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
 class WebSocketManager(
-   private val socket : ISocket<IRequest, IResponse, ConnectState>
+    private val socket : ISocket<IRequest, IResponse, ConnectState>,
+    private val connectionManager: ConnectivityManager
 ) {
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
@@ -35,6 +40,8 @@ class WebSocketManager(
     private val ridGenerator by lazy { ThreadSafeAutoIncrementID(max = 0xFFF) } //4095
     fun nextRid() = ridGenerator.id.toShort()
 
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
+
     companion object {
         private const val heartbeatInterval: Long = 10000
         private const val reconnectInterval: Long = 5000
@@ -46,7 +53,29 @@ class WebSocketManager(
     }
 
     suspend fun connect(host: String) : Flow<ConnectState> {
+        setNetWorkCallback()
         return socket.connect(host)
+    }
+
+    /***
+     * 監聽網路如果重新連線，即時的去做一次重連動作，可以避免等待重連
+     * */
+    private fun setNetWorkCallback() {
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        networkCallback = object : ConnectivityManager.NetworkCallback() {
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                if (networkCapabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) {
+                    "network is available, reconnect immediately!".logi(this@WebSocketManager::class.java.simpleName)
+                    reconnect()
+                }
+            }
+        }
+        connectionManager.registerNetworkCallback(request, networkCallback!!)
     }
 
     private fun observeState(){
@@ -79,6 +108,7 @@ class WebSocketManager(
 
     fun reset() {
         socket.reset()
+        networkCallback?.apply { connectionManager.unregisterNetworkCallback(this) }
         stopHeartbeat()
     }
 
@@ -87,6 +117,7 @@ class WebSocketManager(
     }
 
     private fun startReconnect() {
+        if (reconnectJob?.isActive == true) return
         "startReconnect!".logi(this.javaClass.simpleName)
         reconnectJob?.cancel()
         reconnectDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()

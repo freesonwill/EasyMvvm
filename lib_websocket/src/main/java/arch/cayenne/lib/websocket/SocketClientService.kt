@@ -139,7 +139,7 @@ class SocketClientService(
     }
 
     override fun reconnect() {
-        if (currentState != SocketConnectState.Connecting) {
+        if (currentState != SocketConnectState.None && currentState != SocketConnectState.Connecting) {
             openWebSocket()
         }
     }
