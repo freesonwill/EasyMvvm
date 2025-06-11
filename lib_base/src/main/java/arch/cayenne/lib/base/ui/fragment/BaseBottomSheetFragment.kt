@@ -13,7 +13,6 @@ import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import androidx.annotation.CallSuper
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -77,7 +76,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
             val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
 
             backgroundView = root.getChildAt(0) // 通常是背景 View（透明灰）
-            sheetContainer = root.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) // sheet 本體
+            sheetContainer = root.findViewById(com.google.android.material.R.id.design_bottom_sheet) // sheet 本體
 
             backgroundView.setOnClickListener {
                 if (isCancelable) {
@@ -107,7 +106,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
         savedInstanceState: Bundle?
     ): View {
         uiBind.onCreateView(inflater,container,savedInstanceState)
-        setScrollView()
         setKeyboardEvent()
         return mBinding.root
     }
@@ -147,23 +145,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroy()
-    }
-
-    private fun setScrollView() {
-        mBinding.root.let { view ->
-            if (view is NestedScrollView) {
-                view.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, _ ->
-                    mScrollY = scrollY
-                })
-                mScrollY?.let {
-                    view.post {
-                        view.scrollTo(0, it)
-                    }
-                } ?: run {
-                    mScrollY = 0
-                }
-            }
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

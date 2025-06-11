@@ -54,20 +54,15 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-    }
-
-    override fun initListener() {
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         lifecycleScope.launch {
             mViewModel.getBetType()?.let { type ->
                 setStartDestination(type)
                 setFitToContents()
             }
         }
+    }
 
+    override fun initListener() {
     }
 
     private fun setFitToContents() {
@@ -76,13 +71,18 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
             val behavior = BottomSheetBehavior.from(sheet)
 
             behavior.isDraggable = true
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
             behavior.skipCollapsed = false  // ← 允許收合
             behavior.isHideable = true      // ← 允許向下滑關閉
             behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
-
+            mBinding.root.post {
+                behavior.isFitToContents = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
+            }
         }
+
+
     }
 
     private fun setStartDestination(type: BetTypeEnum) {
