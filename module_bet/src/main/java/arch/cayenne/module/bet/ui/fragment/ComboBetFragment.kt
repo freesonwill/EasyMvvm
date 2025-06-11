@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
@@ -77,6 +78,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             override fun getSize(): Int {
                 return mViewModel.onBetListListener.value?.size ?: 0
             }
+
+            override fun getMoneySymbol(): String {
+                return mViewModel.moneySymbol
+            }
         })
     }
 
@@ -124,7 +129,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
-                betSelectionAdapter.submitList(it)
+                val isFirst = betSelectionAdapter.currentList.isEmpty()
+                betSelectionAdapter.submitList(it) {
+                    if (isFirst) {
+                        scrollToDown()
+                    }
+                }
                 mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
             }
         }
@@ -134,24 +144,25 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 if (!hasLockBetSheetView) {
                     hasLockBetSheetView = true
                     setBetSheetView()
+                    scrollToDown()
                 }
             }
             setSumBetMoney(it)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${CurrencySymbols.CNY} ${it.getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${it.getFormalMoney()}"
             mBinding.tvBalance.text = money
         }
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "\$${sumMoney.getMoney()}"
+        val money = "${mViewModel.moneySymbol}${sumMoney.getMoney()}"
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
         val sumWinMoney =
-            getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY, winMoney.getMoney())
+            getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, winMoney.getMoney())
         mBinding.tvBetMoney.text = sumWinMoney
     }
 
@@ -160,6 +171,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val paddingBottom = mBinding.clMultiBet.height + 22.dp2px
             mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
         }
+    }
+
+    private fun scrollToDown() {
+        mBinding.nsv.postDelayed( {
+            mBinding.nsv.fullScroll(NestedScrollView.FOCUS_DOWN)
+        }, 60L)
     }
 
     override fun dismiss(key: String, value: String) {
