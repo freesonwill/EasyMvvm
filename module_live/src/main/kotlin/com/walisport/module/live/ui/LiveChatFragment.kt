@@ -18,6 +18,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
@@ -225,19 +226,19 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * */
     fun updateChatUi() {
         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
-        val status = mainViewModel.mainMatch.value?.basicInfo?.status
-        "updateUi $status".logd(TAG)
+        val code = mainViewModel.mainMatch.value?.basicInfo?.status
+        val status = MatchStatus.entries.find { status -> status.code == code }
 //        val chatRoomIsOpen = mainViewModel.observeMainMatch.value?.liveInfo?.charRoom ?: false
         mBinding.also {
             when (status) {
-               0, 3, 7 -> {
+                MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
                     it.liveChatGroupChat.isVisible = false
                     it.liveChatGroupStatus.isVisible = true
                     it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_closed)
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
 
-                1, 4, 6 -> {
+                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.DELAYED -> {
                     it.liveChatGroupChat.isVisible = false
                     it.liveChatGroupStatus.isVisible = true
                     it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_empty)
