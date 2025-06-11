@@ -1,35 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
+
         <variable
             name="model"
             type="com.walisport.module.message.ui.viewmodel.MessageMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/title_bg">
+        android:background="@color/title_bg"
+        android:orientation="vertical">
 
-        <!-- 标题 -->
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/title_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content" />
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
             android:id="@+id/lay_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="@dimen/dp_10"
-            app:layout_constraintTop_toBottomOf="@+id/title_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:orientation="horizontal">
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                 android:layout_width="0dp"
@@ -41,15 +36,15 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_all"/>
+                    android:background="@drawable/icon_notice_all" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_all"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/title_bar"/>
+                    android:textColor="@color/title_bar"
+                    android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -62,15 +57,15 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_sys"/>
+                    android:background="@drawable/icon_notice_sys" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_sys"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/title_bar"/>
+                    android:textColor="@color/title_bar"
+                    android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -83,15 +78,15 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_activity"/>
+                    android:background="@drawable/icon_notice_activity" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_activity"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/title_bar"/>
+                    android:textColor="@color/title_bar"
+                    android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -104,15 +99,15 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_match"/>
+                    android:background="@drawable/icon_notice_match" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_match"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/title_bar"/>
+                    android:textColor="@color/title_bar"
+                    android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
@@ -125,18 +120,23 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_wallet"/>
+                    android:background="@drawable/icon_notice_wallet" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_wallet"
-                    android:textSize="@dimen/sp_12"
-                    android:textColor="@color/title_bar"/>
+                    android:textColor="@color/title_bar"
+                    android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:overScrollMode="never" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </layout>
