@@ -14,6 +14,7 @@
         style="@style/CustomToolbarLine"
         android:layout_marginStart="3dp"
         android:background="@drawable/search_rounded_background"
+        android:backgroundTint="@color/search_bg"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/tvSearchText"
