@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -20,15 +19,7 @@ class ComboBetViewModel(
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBetListListener = MediatorLiveData<List<BetSelectionBean>>().apply {
-        addSource(_onComboMultiBetBeanListener) { comboList ->
-            if (comboList.isEmpty()) {
-                value = value?.map { selection ->
-                    selection.copy(isActive = false)
-                }
-            }
-        }
-    }
+    private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
     private val _onBalanceListener = MutableLiveData<Long>()
@@ -118,6 +109,12 @@ class ComboBetViewModel(
     }
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
+        if (data.isEmpty()) {
+            _onBetListListener.value?.let { list ->
+                _onBetListListener.value = list.map { it.copy(isActive = false) }
+            }
+            if (!_onComboMultiBetBeanListener.value.isNullOrEmpty()) return
+        }
         _onComboMultiBetBeanListener.value = data
     }
 

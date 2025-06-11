@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.launch
 
@@ -23,16 +24,19 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             val max = number.second
 
             value?.let {
-                value = it.copy(isActive = max != 0L && min != 0L && originData!!.isActive)
+                if (_onComboMultiBetBeanListener.value != null) {
+                    value = it.copy(isActive = max != 0L && min != 0L && originData!!.isActive)
+                }
             }
         }
     }
     val onBetSheetListener: LiveData<BetSelectionBean> get() =  _onBetSheetListener
 
+    private val _onComboMultiBetBeanListener = MutableLiveData<ComboMultiBetBean>()
+    val onComboMultiBetBeanListener: LiveData<ComboMultiBetBean> get() = _onComboMultiBetBeanListener
+
     private val _onBalanceListener = MutableLiveData<Long>()
     val onBalanceListener: LiveData<Long> get() = _onBalanceListener
-
-    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
 
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
@@ -40,6 +44,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
+    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
     val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
     val moneySymbol: String
         get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
@@ -89,6 +94,9 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             }
             launch {
                 betRepo.observeComboBean().collect {
+                    if (_onComboMultiBetBeanListener.value == null) {
+                        _onComboMultiBetBeanListener.value = it
+                    }
                     setNumberLimit(it.minAmount, it.maxAmount)
                     val oriData = onEditNumber.value
                     if (oriData.isNullOrEmpty()) {
