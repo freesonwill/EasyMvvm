@@ -2,6 +2,7 @@ package arch.cayenne.lib.websocket
 
 import android.app.Application
 import android.content.Context
+import android.net.ConnectivityManager
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.chat.ChatSocketClientService
@@ -24,10 +25,11 @@ class SocketModuleInitializer : DefaultInitializer<String> {
     }
 
     private val socketModules = module {
+        factory { androidContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager }
         factory<ISocket<*, *, *>> { SocketClientService(context = WeakReference(androidContext() as Application), get()) }
         factory<ISecurity<*, *, *>> { NativeLib() }
         factory<ChatSocketClientService> { ChatSocketClientService(context = WeakReference(androidContext() as Application), get()) }
-        single { WebSocketManager(get()) }
+        single { WebSocketManager(get(), get()) }
         single { ChatWebSocketManager(get()) }
     }
 
