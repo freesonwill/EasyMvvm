@@ -29,7 +29,7 @@
             android:id="@+id/live_chat_group_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="live_chat_recycler" />
+            app:constraint_referenced_ids="live_chat_recycler,live_chat_keyboard" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/live_chat_iv_status"
