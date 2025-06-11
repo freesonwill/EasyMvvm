@@ -55,12 +55,14 @@ message MatchLiveInfo {
 
 //盘口
 message Market {
-    int64 market_id = 1;      //盘口id
-    string market_name = 2;   //盘口名称
-    repeated MarketDetail market_detail = 3;
-    int32 status = 4;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
-    int32 style = 5;          //0-默认 1-一列 2-两列 3-三列 4-波胆
-    repeated int32 market_type = 6;
+    int64 market_id = 1;      //盘口id, 盘口唯一id
+    int64 market_type = 2;    //盘口类型, 例如： 独赢、让分、大小、波胆
+    int64 market_period = 3;  //盘口阶段, 例如: 上半场、下半场、全场、加时
+    string market_name = 4;   //盘口名称
+    repeated MarketDetail market_detail = 5;
+    int32 status = 6;         //0-默认 1-新增 2-修改 3-删除 (仅在推送时使用)
+    int32 style = 7;          //0-默认 1-一列 2-两列 3-三列 4-波胆
+    repeated int32 market_category = 8; //盘口分类
 }
 
 //盘口详情
@@ -131,13 +133,15 @@ message Order {
     string return_amount = 5; //正常结算派奖金额
     repeated OrderSelection selections = 6; //选项
     int32 combo_type = 7;           //串关类型，0-单关  1-串关  2-全串关(4串11)
-    string parlay_name = 8;         //串关名称
+    int32 combo_k = 8;         //串关k 4串11*11 为4
+    int32 combo_v = 17;         //串关v 4串11*11 为11
+    int32 combo_count = 18;         //串关组合数量 4串11*11 为11
     string odds = 9;                //赔率
     int32 status = 10;              //订单状态 1投注确认中，2拒单，3取消订单，4接单成功，5已结算
     bool early_support = 11;            //是否支持提前结算
     string early_bet_amount = 12;        //提前结算总本金
     string early_return_amount = 13;    //提前结算派彩金额
-    int32 early_settle_times = 14;      //已经提前结算的次数
+    int32 early_count = 14;      //已经提前结算的次数
     int32 result_status = 15;           //订单结果, 0-未结算 1-赢 2-和局 3-输 4-输一半 5-赢一半 6-退款 7-提前结算
     EarlySettlePrice early_settle_price = 16; //提前结算报价
 }
@@ -177,7 +181,14 @@ message ReserveOrderSelection {
     string specifier = 6;       //盘口说明符
     MatchBasicInfo match_basic = 8; //比赛基本信息
 }
-
+// 系统消息
+message MsgRecord {
+    int64 id = 1;     //消息记录id
+    int32 type = 2;            //消息类型 1系统通知 2活动通知
+    int32 status = 3;        //状态 0未读 1已读
+    string title = 4;       //标题
+    string content = 5;       //内容
+}
 // 提前结算报价
 message EarlySettlePrice {
     string bet_id = 1; //订单ID
@@ -241,14 +252,16 @@ message NotifyMatchType {
 }
 
 // 盘口分类
-message MarketType {
+message MarketCategory {
     string code = 1; // code
     string name = 2; // name
     repeated MarketBase market_base = 3; //market基础信息
 }
 message MarketBase {
-    int64 market_id = 1;      //盘口id
-    string market_name = 2;   //盘口名称
+    int64 market_id = 1;        //盘口id
+    int32 market_type = 2;      //盘口类型
+    int32 market_period = 3;    //盘口阶段
+    string market_name = 4;     //盘口名称
 }
 
 //搜索球员信息

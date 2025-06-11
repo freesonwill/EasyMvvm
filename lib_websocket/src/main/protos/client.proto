@@ -134,12 +134,12 @@ message TournamentMatchResp {
 }
 
 // 500-1007: 盘口分类
-message MarketTypeReq {
+message MarketCategoryReq {
     int64 match_id = 1; //required 比赛id
 }
 
-message MarketTypeResp {
-    repeated galaxy.common.proto.MarketType marketType = 1;
+message MarketCategoryResp {
+    repeated galaxy.common.proto.MarketCategory market_category = 1;
 }
 
 // 500-1008: 获取首页冠军赛列表
@@ -305,6 +305,7 @@ message SearchReq {
     int32 page = 5;         //请求的页数,从1开始
     int32 size = 6;         //每页显示数量,最大50
     int32 time_zone = 7;    //时区，例如上海时间+8就传8, utc时间传0
+    bool disable_match_data = 8; //是否返回比赛数据, false-返回 true-不返回
 }
 
 message SearchResp {
@@ -317,6 +318,22 @@ message SearchResp {
     int32 match_total = 7;                              //比赛数量
     repeated galaxy.common.proto.DailyMatchCount daily_count = 8;    //每日比赛数量
 }
+
+//500-1033: 比赛搜索
+message SearchMatchReq {
+    int32 team_id = 1;
+    int32 tournament_id = 2;
+    int64 start_time = 3;   //开始时间
+    int64 end_time = 4;     //结束时间
+    int32 page = 5;         //请求的页数,从1开始
+    int32 size = 6;         //每页显示数量,最大50
+}
+
+message SearchMatchResp {
+    repeated galaxy.common.proto.Match matches = 1;     //比赛信息， 不含盘口数据
+    int32 match_total = 2;                              //比赛数量
+}
+
 
 // 500-1031: 热门搜索词
 message SearchHotWordReq {
@@ -440,6 +457,24 @@ message SubscribeMatchMarketReq {
 message SubscribeMatchMarketResp {
     repeated MatchMarketNotify match_notify = 1;
 }
+// 500-1106: 获取用户消息列表
+message GetSystemMsgReq {
+    int32 id = 1; //消息ID，最大的一条
+    int32 size = 2; //每页展示的数量
+    int32 type = 3; //消息类型 0.全部 1.系统通知  2.活动通知
+}
+message GetSystemMsgResp {
+    repeated galaxy.common.proto.MsgRecord msgRecord = 1; // 消息记录
+}
+// 500-1107： 修改消息状态 已读或删除
+message SystemMsgStatusReq {
+    int32 id = 1; //消息ID
+    int32 status = 3; // 0未读 1已读 2删除
+
+}
+message SystemMsgStatusUpdateResp {
+    bool success = 1;
+}
 
 // 600-1005: 比赛盘口推送
 message MatchMarketNotify {
@@ -489,8 +524,10 @@ message ReserveStatusNotify {
 
 message OrderStatus {
     string order_id = 1;
-    int32 serial_value = 2;     // 串关选项个数, 如：投注4场比赛的3串1，此字段为3，如果是全串关（4串11*11)，此字段为0
-    int32 status = 3;   //2-拒单 4-接单成功
+    int32 combo_k = 2;         //串关k 4串11*11 为4
+    int32 combo_v = 3;         //串关v 4串11*11 为11
+    int32 combo_count = 4;         //串关组合数量 4串11*11 为11
+    int32 status = 5;   //2-拒单 4-接单成功
 }
 
 //600-1010: 异常推送
@@ -504,6 +541,19 @@ message NoticeNotify {
     string content = 2;
 }
 
+//600-1012:  提前结算推送
+message EarlySettleNotify {
+     galaxy.common.proto.Order order = 1; // 下注记录
+}
+
+//600-1013: 消息通知
+message SystemMsgNotify {
+    int32 type = 1;
+    int32 id = 2;
+    string title = 3;
+    string content = 4;
+    int64 createTime = 5;
+}
 
 //700-2001: 比赛统计数据
 message MatchLiveReq {
