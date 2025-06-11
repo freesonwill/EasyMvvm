@@ -10,10 +10,10 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.navigation.ActivityNavigatorExtras
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.view.BasePopup
+import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
@@ -38,6 +38,10 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
@@ -272,6 +276,28 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
                     "response------>$it}".logd(TAG)
                     Toast.makeText(requireContext(),it.data,Toast.LENGTH_SHORT).show()
                 }*/
+            }
+        }
+        mBinding.illegalOperation.clickNoRepeat {
+            launch {
+                //模拟UI线程网络请求
+                try {
+                    val url = URL("https://jsonplaceholder.typicode.com/posts/1")
+                    val connection = url.openConnection() as HttpURLConnection
+                    connection.requestMethod = "GET"
+                    connection.connectTimeout = 5000
+                    connection.readTimeout = 5000
+
+                    val responseCode = connection.responseCode
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        val inputStream = BufferedReader(InputStreamReader(connection.inputStream))
+                        val response = inputStream.readText()
+                        inputStream.close()
+                    }
+                    connection.disconnect()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }

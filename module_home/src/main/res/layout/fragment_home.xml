@@ -90,11 +90,18 @@
             android:text="测试WebFragment" />
 
         <TextView
-            android:id="@+id/http测试"
+            android:id="@+id/http"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:text="http测试" />
+
+        <TextView
+            android:id="@+id/illegalOperation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="非法测试" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </androidx.constraintlayout.widget.ConstraintLayout>
