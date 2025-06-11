@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:elevation="8dp"
     android:orientation="vertical"
     android:paddingTop="16dp">
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_common_dialog_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -18,7 +18,7 @@
         android:textColor="@color/dialog_title"
         android:textSize="16sp" />
 
-    <TextView
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_common_dialog_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,14 +32,14 @@
         android:textColor="@color/secondary_text"
         android:textSize="15sp" />
 
-    <View
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"
+        android:layout_height="0.8dp"
         android:layout_gravity="bottom"
         android:background="@color/district_line" />
 
     <!--分隔線-->
-    <LinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
@@ -47,7 +47,7 @@
         android:orientation="horizontal"
         android:paddingHorizontal="12dp">
 
-        <Button
+        <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_common_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -58,12 +58,12 @@
             android:textColor="@color/secondary_text"
             android:textSize="15sp" />
 
-        <View
-            android:layout_width="0.5dp"
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:layout_width="0.8dp"
             android:layout_height="match_parent"
             android:background="@color/district_line" />
 
-        <Button
+        <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_common_dialog_ok"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -74,5 +74,5 @@
             android:text=""
             android:textColor="@color/dialog_title"
             android:textSize="15sp" />
-    </LinearLayout>
-</LinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
