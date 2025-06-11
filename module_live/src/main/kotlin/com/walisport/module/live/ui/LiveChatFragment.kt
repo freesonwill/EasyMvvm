@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,6 +18,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
@@ -60,6 +63,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 }
                 return false
             }
+
             override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
             }
 
@@ -128,12 +132,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
             if (it != CheckBetResultEnum.SUCCESS) {
-                val msg =
-                    if (it == CheckBetResultEnum.BET_AMOUNT) getString(R.string.insufficient_bet_amount)
-                    else getString(R.string.insufficient_balance)
-                showToast(msg)
+                updateChatUi()
             }
-            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -220,6 +220,39 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
         }
     }
+
+    /**
+     * 进入直播间不成功时修改
+     * */
+    fun updateChatUi() {
+        //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+        val code = mainViewModel.mainMatch.value?.basicInfo?.status
+        val status = MatchStatus.entries.find { status -> status.code == code }
+//        val chatRoomIsOpen = mainViewModel.observeMainMatch.value?.liveInfo?.charRoom ?: false
+        mBinding.also {
+            when (status) {
+                MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_closed)
+                    it.liveChatTvStatus.setText(R.string.live_chat_end)
+                }
+
+                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.DELAYED -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_empty)
+                    it.liveChatTvStatus.setText(R.string.live_chat_empty)
+                }
+
+                else -> {
+                    it.liveChatGroupChat.isVisible = true
+                    it.liveChatGroupStatus.isVisible = false
+                }
+            }
+        }
+    }
+
 
     override fun onStop() {
         mViewModel.leaveRoom()
