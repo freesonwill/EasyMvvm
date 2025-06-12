@@ -69,6 +69,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/msg_title"
             android:textSize="@dimen/sp_30"
+            android:textStyle="bold"
             android:gravity="center_horizontal"
             android:layout_gravity="center_horizontal"/>
 
