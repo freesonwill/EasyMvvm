@@ -110,7 +110,7 @@
     <color name="panel_outline">#1A1C29</color>
     <color name="message_fill_color">#30303E</color>
     <color name="live_background">#4D121321</color>
-    <color name="card_title">#98FFFFFF</color>
+    <color name="card_title">#05FFFFFF</color>
     <color name="league_line">#1D1F2A</color>
     <color name="district_line">#282A34</color>
     <color name="race_line">#54555E</color>

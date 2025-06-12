@@ -23,9 +23,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
         }
     }
 
-    protected val betSlipAdapter: BetSlipAdapter by lazy {
-        BetSlipAdapter(getBetSlipEnum())
-    }
+    protected abstract val betSlipAdapter: BetSlipAdapter
 
     abstract fun getBetSlipEnum(): BetSlipEnum
 

@@ -8,24 +8,14 @@ class BetSlipSelectionCompare : DiffUtil.ItemCallback<BetSlipSelectionData>() {
         oldItem: BetSlipSelectionData,
         newItem: BetSlipSelectionData
     ): Boolean {
-        if (oldItem.selection != null) {
-            return oldItem.selection.selectionId == newItem.selection?.selectionId
-        } else if (oldItem.reserve != null) {
-            return oldItem.reserve.selectionId == newItem.selection?.selectionId
-        }
-        return true
+        return oldItem == newItem
     }
 
     override fun areContentsTheSame(
         oldItem: BetSlipSelectionData,
         newItem: BetSlipSelectionData
     ): Boolean {
-        if (oldItem.selection != null) {
-            return oldItem.selection.selectionId == newItem.selection?.selectionId
-        } else if (oldItem.reserve != null) {
-            return oldItem.reserve.selectionId == newItem.selection?.selectionId
-        }
-        return true
+        return oldItem == newItem
     }
 
 }

@@ -6,12 +6,11 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_betslip_card">
 
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/bet_settled_iv_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_37"
-        android:scaleType="fitXY"
-        android:src="@mipmap/betslip_card_top"
+        android:background="@drawable/bg_card_top"
         app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
