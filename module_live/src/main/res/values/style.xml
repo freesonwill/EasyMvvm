@@ -23,5 +23,5 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="layout_constrainedWidth">true</item>
-    </style> l
+    </style>
 </resources>
