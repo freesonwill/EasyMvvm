@@ -45,13 +45,16 @@ class LiveEmojiAdapter() :
                 is ItemEmojiLayoutBinding -> {
                     val nBinding = binding as ItemEmojiLayoutBinding
                     nBinding.iv.tag = position
-                    Glide.with(binding.root.context).load(resId).into(nBinding.iv)
+                    Glide.with(binding.root.context).load(resId).override(30,30).into(nBinding.iv)
                 }
+
                 is ItemBidEmojiLayoutBinding -> {
                     val nBinding = binding as ItemBidEmojiLayoutBinding
                     nBinding.iv.tag = position
-                    Glide.with(binding.root.context).load(resId).into(nBinding.iv)
+                    Glide.with(binding.root.context).load(resId).override(77,21).into(nBinding.iv)
                 }
+
+
                 else -> {}
             }
 
@@ -69,10 +72,10 @@ class LiveEmojiAdapter() :
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
     ): ViewBinding {
-        val binding = if (viewType == EmojiTypeEnum.NORMAL.value) ItemEmojiLayoutBinding.inflate(
-            inflater, parent, false
-        )
-        else ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
+        val binding = if (viewType == EmojiTypeEnum.NORMAL.value)
+            ItemEmojiLayoutBinding.inflate(inflater, parent, false)
+        else
+            ItemBidEmojiLayoutBinding.inflate(inflater, parent, false)
         return binding
     }
 
@@ -86,7 +89,7 @@ class LiveEmojiAdapter() :
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if(getItem(position).key.contains("bid") ) EmojiTypeEnum.BID.value else EmojiTypeEnum.NORMAL.value
+        return if (getItem(position).key.contains("bid")) EmojiTypeEnum.BID.value else EmojiTypeEnum.NORMAL.value
     }
 
 }

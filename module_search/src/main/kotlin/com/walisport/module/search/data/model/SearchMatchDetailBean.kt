@@ -2,6 +2,7 @@ package com.walisport.module.search.data.model
 
 import com.walisport.module.search.data.constants.MatchStatusEnum
 import galaxy.common.proto.Common
+import java.io.Serializable
 
 /** * 搜索结果中的比赛详细信息
  * @property matchId 比赛id
@@ -46,7 +47,7 @@ data class SearchMatchDetailBean(
     val betStop: Boolean = false,               // false: 未停止投注, true: 已停止投注
     val tournamentHot: Boolean = false,         //是否热门联赛
     val tournamentWeight: Int = 0,              //联赛权重
-) {
+): Serializable {
     companion object {
         fun from(resp: Common.MatchBasicInfo): SearchMatchDetailBean {
             return SearchMatchDetailBean(

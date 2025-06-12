@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
@@ -54,20 +53,19 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        lifecycleScope.launch {
+            mViewModel.getSelectionSize().let { size ->
+                if (size == 0) {
+                    dismiss()
+                } else {
+                    setStartDestination(size)
+                    setFitToContents()
+                }
+            }
+        }
     }
 
     override fun initListener() {
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        lifecycleScope.launch {
-            mViewModel.getBetType()?.let { type ->
-                setStartDestination(type)
-                setFitToContents()
-            }
-        }
-
     }
 
     private fun setFitToContents() {
@@ -76,20 +74,25 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
             val behavior = BottomSheetBehavior.from(sheet)
 
             behavior.isDraggable = true
-            behavior.isFitToContents = true
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+
             behavior.skipCollapsed = false  // ← 允許收合
             behavior.isHideable = true      // ← 允許向下滑關閉
             behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
-
+            mBinding.root.post {
+                behavior.isFitToContents = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
+            }
         }
+
+
     }
 
-    private fun setStartDestination(type: BetTypeEnum) {
+    private fun setStartDestination(size: Int) {
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
-        if (type == BetTypeEnum.COMBO) {
+        if (size == 1) {
             navGraph.setStartDestination(R.id.comboBetFragment)
         } else {
             navGraph.setStartDestination(R.id.singleBetFragment)

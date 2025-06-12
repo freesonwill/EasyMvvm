@@ -1,11 +1,12 @@
 package com.walisport.module.search.ui.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.repo.SearchRepository
-import com.walisport.module.search.data.model.SearchResultBean
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -15,61 +16,83 @@ import plugin.koin.KoinViewModel
 class SearchViewModel : BaseViewModel() {
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
 
-    private val _recordList = MutableLiveData<List<String>>()
-    val searchRecord: LiveData<List<String>> = _recordList
+    /** 推薦搜尋關鍵字列表 */
+    private val _searchRecommendList = MutableSharedFlow<List<String>>()
+    val searchRecommendList: SharedFlow<List<String>> = _searchRecommendList.asSharedFlow()
 
-    private val _searchHotWord = MutableLiveData<List<String>>()
-    val searchHotWord: LiveData<List<String>> = _searchHotWord
+    /** 搜尋關鍵字 */
+    private val _searchKeyWord = MutableSharedFlow<String>()
+    val searchKeyWord: SharedFlow<String> = _searchKeyWord.asSharedFlow()
 
-    private val _searchRecommend = MutableLiveData<List<String>>()
-    val searchRecommend: LiveData<List<String>> = _searchRecommend
+    /** 導航事件 */
+    private val _navigateEvent = MutableSharedFlow<SearchNavigationEvent>()
+    val navigationEvent: SharedFlow<SearchNavigationEvent> = _navigateEvent.asSharedFlow()
 
-    private val _searchResult = MutableLiveData<SearchResultBean>()
-    val searchResult: LiveData<SearchResultBean> = _searchResult
+    /** 結果頁背景顏色 */
+    private val _resultBackgroundColor = MutableSharedFlow<Int?>()
+    val resultBackgroundColor: SharedFlow<Int?> = _resultBackgroundColor.asSharedFlow()
 
-    fun getRecordByUID() {
-        viewModelScope.launch {
-            _recordList.value = repository.getRecordByUID()
-        }
-    }
+    /** 狀態欄狀態 */
+    private val _statusBarState = MutableSharedFlow<Boolean>()
+    val statusBarState: SharedFlow<Boolean> = _statusBarState.asSharedFlow()
 
-    fun deleteAllData() {
-        viewModelScope.launch {
-            repository.deleteAllData()
-        }
-    }
+    /** 標題欄遮罩狀態 */
+    private val _titleBarMaskEvent = MutableSharedFlow<Pair<Boolean, (() -> Unit)?>>()
+    val titleBarMaskEvent: SharedFlow<Pair<Boolean, (() -> Unit)?>> = _titleBarMaskEvent
 
+    /** 新增一筆搜尋紀錄 */
     fun addOneRecord(key: String) {
         viewModelScope.launch {
             repository.addOneRecord(key)
         }
     }
 
-    fun deleteOneRecord(keyword: String?) {
+    /** 取得推薦關鍵字結果 */
+    fun getSearchRecommendList(keyword: String? = "") {
         viewModelScope.launch {
-            repository.deleteOneRecord(keyword)
+            _searchRecommendList.emit(repository.getSearchRecommend(keyword))
         }
     }
 
-    fun getSearchResult(keyword: String) {
+    /** 清除推薦關鍵字結果 */
+    fun clearSearchRecommendList() {
         viewModelScope.launch {
-            _searchResult.value = repository.getSearchResult(keyword)
+            _searchRecommendList.emit(emptyList())
         }
     }
 
-    fun getSearchRecommend(keyword: String? = "") {
+    /** 設置導航事件 */
+    fun setNavigationEvent(event: SearchNavigationEvent) {
         viewModelScope.launch {
-            _searchRecommend.value = repository.getSearchRecommend(keyword)
+            _navigateEvent.emit(event)
         }
     }
 
-    fun clearSearchRecommend() {
-        _searchRecommend.value = emptyList()
+    /** 設置搜尋關鍵字 */
+    fun setSearchKeyWord(key: String) {
+        viewModelScope.launch {
+            _searchKeyWord.emit(key)
+        }
     }
 
-    fun getSearchHotWord() {
+    /** 設置結果背景顏色 */
+    fun setResultBackgroundColor(color: Int?) {
         viewModelScope.launch {
-            _searchHotWord.value = repository.getSearchHotWord()
+            _resultBackgroundColor.emit(color)
+        }
+    }
+
+    /** 設置狀態欄狀態 */
+    fun setStatusBarState(isDefault: Boolean) {
+        viewModelScope.launch {
+            _statusBarState.emit(isDefault)
+        }
+    }
+
+    /** 設置標題欄遮罩狀態 */
+    fun setTitleBarMaskEvent(isEnabled: Boolean, onClick: (() -> Unit)? = null) {
+        viewModelScope.launch {
+            _titleBarMaskEvent.emit(Pair(isEnabled, onClick))
         }
     }
 }

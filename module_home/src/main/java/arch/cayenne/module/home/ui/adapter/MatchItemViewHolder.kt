@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
@@ -24,10 +25,10 @@ import com.bumptech.glide.Glide
 
 class MatchItemViewHolder(
     private val mBinding: ItemMatchCardBinding,
-    private val onMatchItemClickListener: OnMatchItemClickListener?
+    private val onMatchItemClickListener: OnMatchItemClickListener?,
+    private val viewPool: RecycledViewPool
 ) : BaseViewHolder(mBinding) {
     private var oddsColumnAdapter: OddsColumnAdapter = OddsColumnAdapter(onMatchItemClickListener)
-    private val viewPool = RecyclerView.RecycledViewPool()
     init {
         //右半盤口
         val defaultTitleList = listOf(
@@ -59,7 +60,9 @@ class MatchItemViewHolder(
                 layoutOddsTitle.addView(titleView, lp)
             }
 
+            rvOddsGrid.itemAnimator = null
             rvOddsGrid.apply {
+                setRecycledViewPool(viewPool)
                 layoutManager = GridLayoutManager(root.context, 3)
                 adapter = oddsColumnAdapter
 
@@ -126,8 +129,6 @@ class MatchItemViewHolder(
             tvWatchCount.text = liveInfo.viewerCount.toString()
             ivFavorite.isSelected = data.match.collect
 
-            rvOddsGrid.setRecycledViewPool(viewPool)
-
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
         }
@@ -147,10 +148,6 @@ class MatchItemViewHolder(
         with(mBinding) {
             val basicInfo = item.match.basicInfo
             val liveInfo = item.match.liveInfo
-
-//            oddsColumnAdapter.onOddsClick = { selection, _ ->
-//                onMatchItemClickListener?.onOddsCellClick(item, selection)
-//            }
 
             if ("status" in changes) {
                 if (basicInfo.status == 5) {  //開賽中

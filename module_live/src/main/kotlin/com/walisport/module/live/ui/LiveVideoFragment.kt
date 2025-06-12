@@ -110,8 +110,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     private fun initVideoView() {
-//        "portrait.initVideoView".logd("videoCache")
+        acquireVideoView()
+        attachVideoView()
+    }
 
+    private fun acquireVideoView(){
         videoView = PlayerViewCache.acquirePlayerView {
             LivePlayerView(requireActivity()).apply {
                 init(PlayerMode.FLUENCY)
@@ -132,7 +135,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 }.transformToPlayerConfig())
             }
         }
+    }
 
+    private fun attachVideoView() {
         //单击事件处理
         videoView.setOnSingleTapListener {
             //单击事件
@@ -166,7 +171,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         videoView.layoutParams = layoutParams
 
         mBinding.videoViewContainer.addView(videoView)
-
     }
 
 
@@ -253,6 +257,12 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 )
 
                 videoView.setMute(it)
+            }
+
+            //监听横屏播放fragment销毁事件
+            landscapeVideoFragmentDestroyedEvent().observe(viewLifecycleOwner){
+                attachVideoView()
+                videoView.onResume()
             }
 
             //比赛状态的监听

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph_search_child"
+    app:startDestination="@id/searchMainFragment">
+
+    <fragment
+        android:id="@+id/searchMainFragment"
+        android:name="com.walisport.module.search.ui.fragment.SearchMainFragment"
+        android:label="SearchMain"
+        tools:layout="@layout/fragment_search_main">
+        <action
+            android:id="@+id/action_searchMainFragment_to_searchResultBaseFragment"
+            app:destination="@id/searchResultBaseFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultBaseFragment"
+        android:name="com.walisport.module.search.ui.fragment.SearchResultBaseFragment"
+        android:label="SearchResultBase"
+        tools:layout="@layout/fragment_search_result_base">
+
+        <action
+            android:id="@+id/action_searchResultBaseFragment_to_searchResultListFragment"
+            app:destination="@id/searchResultListFragment">
+
+            <argument
+                android:name="data"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
+
+        <action
+            android:id="@+id/action_searchResultBaseFragment_to_searchResultDirectMatchFragment"
+            app:destination="@id/searchResultDirectMatchFragment">
+
+            <argument
+                android:name="data"
+                app:nullable="true"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultListFragment"
+        android:name="com.walisport.module.search.ui.fragment.SearchResultListFragment"
+        android:label="SearchResultList"
+        tools:layout="@layout/fragment_search_result_list" >
+
+        <argument
+            android:name="data"
+            app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+
+        <action
+            android:id="@+id/action_searchResultListFragment_to_searchResultDirectMatchFragment"
+            app:destination="@id/searchResultDirectMatchFragment">
+
+            <argument
+                android:name="data"
+                app:nullable="true"
+                app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+        </action>
+        <action
+            android:id="@+id/action_searchResultListFragment_to_searchResultBaseFragment"
+            app:destination="@id/searchResultBaseFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/searchResultDirectMatchFragment"
+        android:name="com.walisport.module.search.ui.fragment.SearchResultDirectMatchFragment"
+        android:label="SearchResultList"
+        tools:layout="@layout/fragment_search_result_direct_match" >
+
+        <argument
+            android:name="data"
+            app:nullable="true"
+            app:argType="com.walisport.module.search.data.model.SearchResultBean" />
+
+        <argument
+            android:name="id"
+            app:nullable="true"
+            app:argType="string"/>
+
+        <argument
+            android:name="type"
+            app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
+
+        <action
+            android:id="@+id/action_searchResultDirectMatchFragment_to_searchResultBaseFragment"
+            app:destination="@id/searchResultBaseFragment">
+
+            <argument
+                android:name="id"
+                app:nullable="true"
+                app:argType="string"/>
+
+            <argument
+                android:name="type"
+                app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
+        </action>
+    </fragment>
+</navigation>

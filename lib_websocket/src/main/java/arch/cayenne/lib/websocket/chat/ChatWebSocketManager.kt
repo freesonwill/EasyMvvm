@@ -1,7 +1,6 @@
 package arch.cayenne.lib.websocket.chat
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.websocket.chat.data.ChatLoginResponseData
 import arch.cayenne.lib.websocket.chat.data.ChatPinRequestData
 import arch.cayenne.lib.websocket.chat.extension.chatAsRemoteRequest
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -11,18 +10,16 @@ import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.data.ThreadSafeAutoIncrementID
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExecutorCoroutineDispatcher
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.async
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.Executors
 
 class ChatWebSocketManager(
@@ -56,12 +53,13 @@ class ChatWebSocketManager(
         observeState()
     }
 
-    suspend fun connect(host: String): Flow<ConnectState> {
-//        if (disconnectDeffer?.isActive == true) {
-//            disconnectDeffer?.cancel()
-//            disconnectDeffer = null
-//        }
-        return socket.connect(host)
+    suspend fun connect(scope: CoroutineScope,host: String): Flow<ConnectState>? {
+      val deferred =  scope.async(Dispatchers.IO) {
+            withTimeoutOrNull(responseTimeout){
+                socket.connect(host)
+            }
+        }
+        return deferred.await()
     }
 
     private fun observeState() {
@@ -97,7 +95,12 @@ class ChatWebSocketManager(
 //            socket.disConnect()
 //        }
 //        return disconnectDeffer?.await() ?: true
-        return socket.disConnect()
+        val deferred = scope.async(Dispatchers.IO) {
+            withTimeoutOrNull(responseTimeout){
+                socket.disConnect()
+            }
+        }
+        return deferred.await() ?: false
     }
 
     private fun reconnect() {

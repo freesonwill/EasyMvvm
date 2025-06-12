@@ -15,12 +15,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
 class LiveChatRepository(val remote: LiveRemoteChatManager) : BaseRepository() {
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    suspend fun startSocket(): ConnectState {
-        return remote.startSocket()
+    suspend fun startSocket(scope: CoroutineScope): ConnectState? {
+        return remote.startSocket(scope)
     }
 
     suspend fun disconnect(scope: CoroutineScope): Boolean {

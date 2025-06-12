@@ -22,6 +22,7 @@ class ChampionItemViewHolder(
         with(mBinding) {
             tvMarketName.text = data.market.marketName
             val spanCount = 2
+            rvOddsGrid.itemAnimator = null
             rvOddsGrid.apply {
                 layoutManager = GridLayoutManager(root.context, spanCount)
                 adapter = oddsGridAdapter

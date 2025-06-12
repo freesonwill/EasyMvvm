@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import com.walisport.module.live.R
+import com.walisport.module.live.data.LandscapeVideoFragmentLifeCycle
 import com.xxx.qyplayer.PlayerState
 
 /**
@@ -113,6 +114,10 @@ class LiveVideoViewModel(
     private val muteManager: MuteManager by inject { parametersOf() }
 
     fun mutedData() = muteManager.mutedLiveData
+
+    private val landscapeVideoFragmentLifeCycle: LandscapeVideoFragmentLifeCycle by inject { parametersOf() }
+
+    fun landscapeVideoFragmentDestroyedEvent() = landscapeVideoFragmentLifeCycle.destroyedEvent
 
     /**
      * 播放状态

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_search_result_race_item_bg"
+    android:paddingStart="12dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="10dp">
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/search_result_race_text_1"
+        android:textSize="14sp"
+        tools:text="英超" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/search_result_race_text_1"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        tools:text="09:00" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/view_divider"
+        android:layout_width="1dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="18dp"
+        android:background="@color/search_result_race_divider"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
+        app:layout_constraintEnd_toStartOf="@id/iv_icon_home_team"
+        app:layout_constraintStart_toEndOf="@id/tv_time"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_home_team" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_icon_home_team"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="5dp"
+        android:paddingStart="3.5dp"
+        android:paddingEnd="3.5dp"
+        app:layout_constraintStart_toEndOf="@id/view_divider"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:src="@drawable/ic_search_result_placeholder" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_name_home_team"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/search_result_race_team_name"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
+        app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_home_team"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        tools:text="阿根廷" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_score_home_team"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:gravity="center"
+        android:textColor="@color/search_result_race_team_name"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
+        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_home"
+        app:layout_constraintStart_toStartOf="@id/barrier_score_start"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        tools:text="2" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_arrow_team_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
+        app:layout_constraintEnd_toStartOf="@id/btn_favorite"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
+        app:srcCompat="@drawable/ic_search_result_current_team"
+        tools:visibility="visible" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_icon_away_team"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:paddingStart="3.5dp"
+        android:paddingEnd="3.5dp"
+        app:layout_constraintStart_toStartOf="@id/iv_icon_home_team"
+        app:layout_constraintTop_toBottomOf="@id/iv_icon_home_team"
+        tools:src="@drawable/ic_search_result_placeholder" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_name_away_team"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@color/search_result_race_team_name"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
+        app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
+        app:layout_constraintStart_toStartOf="@id/tv_name_home_team"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
+        tools:text="马恩岛" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_score_away_team"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:gravity="center"
+        android:textColor="@color/search_result_race_team_name"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
+        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_away"
+        app:layout_constraintStart_toStartOf="@id/barrier_score_start"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
+        tools:text="299" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_arrow_team_away"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
+        app:layout_constraintEnd_toStartOf="@id/btn_favorite"
+        app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
+        app:srcCompat="@drawable/ic_search_result_current_team"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_score_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="tv_score_home_team,tv_score_away_team" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageButton
+        android:id="@+id/btn_favorite"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/shape_search_result_favorite_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_search_result_favorite_selector"
+        app:layout_constraintEnd_toStartOf="@id/btn_bet"
+        app:layout_constraintTop_toTopOf="@id/btn_bet" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableButton
+        android:id="@+id/btn_bet"
+        android:layout_width="63dp"
+        android:layout_height="34dp"
+        android:background="@drawable/bg_search_result_bet_btn_state"
+        android:gravity="center"
+        android:text="@string/search_result_btn_bet"
+        android:textColor="@color/btn_search_result_bet_text"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

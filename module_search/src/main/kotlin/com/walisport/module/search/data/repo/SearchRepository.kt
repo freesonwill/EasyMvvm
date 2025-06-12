@@ -12,9 +12,9 @@ import com.walisport.module.search.data.model.RecordBean
 import com.walisport.module.search.data.model.SearchDailyMatchBean
 import com.walisport.module.search.data.model.SearchMatchBean
 import com.walisport.module.search.data.model.SearchResultBean
-import com.walisport.module.search.data.model.SearchResultPlayerBeanBean
-import com.walisport.module.search.data.model.SearchResultTeamBeanBean
-import com.walisport.module.search.data.model.SearchResultTournamentBeanBean
+import com.walisport.module.search.data.model.SearchResultPlayerBean
+import com.walisport.module.search.data.model.SearchResultTeamBean
+import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import galaxy.client.proto.Client
@@ -28,7 +28,9 @@ class SearchRepository(
     private val userDataManager: UserDataManager
 ) : BaseRepository() {
 
-    //删除某搜索关键字
+    /** * 删除一条搜索记录
+     * @param keyword 要删除的关键字
+     */
     fun deleteOneRecord(keyword: String?) {
         val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
         if (record.isNotEmpty()) {
@@ -47,7 +49,9 @@ class SearchRepository(
         }
     }
 
-    //增加一条搜索关键字
+    /** * 添加一条搜索记录
+     * @param key 要添加的关键字
+     */
     fun addOneRecord(key: String) {
         val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
@@ -81,7 +85,9 @@ class SearchRepository(
         }
     }
 
-    //删除本账户对应的所有搜索记录
+    /**
+     * 删除本账户对应的所有搜索记录
+     */
     fun deleteAllData() {
         val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
         if (record.isNotEmpty()) {
@@ -98,7 +104,10 @@ class SearchRepository(
         }
     }
 
-    //根据本账号uid来匹配搜索记录
+    /**
+     * 获取本账户的搜索记录
+     * @return 返回一个字符串列表，包含本账户的搜索记录
+     */
     fun getRecordByUID(): List<String> {
         val historyList: MutableList<String> = ArrayList()
         val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
@@ -124,10 +133,40 @@ class SearchRepository(
         return historyList
     }
 
-    //JSON格式 {"uid": 43213,"record":"衣服;男鞋;香蕉;苹果;红薯"}
+    /**
+     * 将JSON字符串转换为RecordBean列表
+     * JSON格式 {"uid": 43213,"record":"衣服;男鞋;香蕉;苹果;红薯"}
+     * @param value JSON字符串
+     */
     private fun getRecordList(value: String): List<RecordBean> {
         val type = object : TypeToken<List<RecordBean>>() {}.type
         return Gson().fromJson(value, type)
+    }
+
+    suspend fun addCollect(matchId: Long): Boolean {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.AddCollectResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.ADD_COLLECT
+        ) {
+            Client.AddCollectReq.newBuilder().apply {
+                addMatchId(matchId)
+            }.build()
+        }
+        return result.data?.success ?: false
+    }
+
+    suspend fun removeCollect(matchId: Long): Boolean {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.RemoveCollectResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.REMOVE_COLLECT
+        ) {
+            Client.RemoveCollectReq.newBuilder().apply {
+                addMatchId(matchId)
+            }.build()
+        }
+        return result.data?.success ?: false
     }
 
     /** * 获取搜索结果
@@ -169,9 +208,9 @@ class SearchRepository(
                 return SearchResultBean(
                     type = SearchResultTypeEnum.LIST,
                     dataList = listOfNotNull(
-                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBeanBean.fromList(it) },
-                        result.data?.dataList?.teamList?.let { SearchResultTeamBeanBean.fromList(it) },
-                        result.data?.dataList?.playerList?.let { SearchResultPlayerBeanBean.fromList(it) }
+                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBean.fromList(it) },
+                        result.data?.dataList?.teamList?.let { SearchResultTeamBean.fromList(it) },
+                        result.data?.dataList?.playerList?.let { SearchResultPlayerBean.fromList(it) }
                     ).flatten()
 
                 )
@@ -179,7 +218,7 @@ class SearchRepository(
             SearchResultTypeEnum.PLAYER -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.PLAYER,
-                    directData = result.data?.player?.let { SearchResultPlayerBeanBean.from(it) },
+                    directData = result.data?.player?.let { SearchResultPlayerBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->
@@ -190,7 +229,7 @@ class SearchRepository(
             SearchResultTypeEnum.TEAM -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.TEAM,
-                    directData = result.data?.team?.let { SearchResultTeamBeanBean.from(it) },
+                    directData = result.data?.team?.let { SearchResultTeamBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->
@@ -201,7 +240,7 @@ class SearchRepository(
             SearchResultTypeEnum.TOURNAMENT -> {
                 return SearchResultBean(
                     type = SearchResultTypeEnum.TOURNAMENT,
-                    directData = result.data?.tournament?.let { SearchResultTournamentBeanBean.from(it) },
+                    directData = result.data?.tournament?.let { SearchResultTournamentBean.from(it) },
                     matchTotal = result.data?.matchTotal ?: 0,
                     matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
                     dailyCount = result.data?.dailyCountList?.let { list ->
@@ -213,6 +252,10 @@ class SearchRepository(
         }
     }
 
+    /**
+     * 获取搜索推荐词
+     * @param keyword 搜索关键词
+     */
     suspend fun getSearchRecommend(keyword: String? = ""): List<String> {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchRecommendResp>(
             scope = scope,
@@ -226,6 +269,10 @@ class SearchRepository(
         return resp.data?.recommendList?.toList() ?: listOf()
     }
 
+    /**
+     * 获取搜索热词
+     * @return 返回热词列表
+     */
     suspend fun getSearchHotWord(): List<String> {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchHotWordResp>(
             scope = scope,

@@ -14,11 +14,4 @@ class FloatingButtonRepository(
 
     fun observeComboBetCount() = betDao.observeComboCount()
 
-    fun saveToSingleBet() {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                betDao.updateBetType(it.betId, BetTypeEnum.SINGLE)
-            }
-        }
-    }
 }

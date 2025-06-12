@@ -54,11 +54,6 @@ class RecommendAdapter(var onClick: ((String) -> Unit?)? = null) :
         if (binding is ItemRecommendBinding) {
             binding.tvTitle.text = getHighlightedText(holder.itemView.context, word, keyword)
             holder.itemView.clickNoRepeat {
-                Toast.makeText(
-                    holder.itemView.context,
-                    word,
-                    Toast.LENGTH_SHORT
-                ).show()
                 onClick?.invoke(word)
             }
         }

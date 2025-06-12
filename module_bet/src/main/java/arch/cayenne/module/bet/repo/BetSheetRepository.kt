@@ -30,8 +30,10 @@ class BetSheetRepository(
         }
     }
 
-    suspend fun getBetType() = withContext(scope.coroutineContext) {
-        betDao.getCurrentBet()?.betType
+    suspend fun getSelectionSize() = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let { bet ->
+            betDao.getSelections(bet.betId).size
+        } ?: 0
     }
 
     fun register() {

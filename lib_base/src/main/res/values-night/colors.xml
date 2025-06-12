@@ -2,7 +2,6 @@
 <resources>
     <color name="background_dialog">#232530</color>
     <color name="color_dialog_window_background">#80000000</color>
-    <color name="background_base_dialog">#232530</color>
 
     <color name="bottom_sheet_main_background">#EEEEEE</color>
 </resources>

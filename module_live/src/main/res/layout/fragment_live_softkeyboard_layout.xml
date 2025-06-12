@@ -10,10 +10,11 @@
     </data>
 
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        >
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_input"
@@ -157,9 +158,11 @@
         <arch.cayenne.lib.common.ui.view.HorizontalRecyclerView
             android:id="@+id/keyboard_emoji_recycler"
             android:layout_width="match_parent"
-            android:layout_height="302dp"
+            android:layout_height="0dp"
             android:layout_marginTop="@dimen/dp_12"
-            app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
+            app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
+            />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/emoji_del"
@@ -168,7 +171,14 @@
             android:layout_marginRight="@dimen/dp_2"
             android:src="@drawable/icon_emoji_del"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintRight_toRightOf="parent" />
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        <View
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_34"
+            app:layout_constraintBottom_toBottomOf="parent"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

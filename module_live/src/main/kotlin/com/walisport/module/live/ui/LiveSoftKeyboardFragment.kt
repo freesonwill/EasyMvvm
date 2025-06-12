@@ -36,10 +36,10 @@ class LiveSoftKeyboardFragment :
         get() = FragmentLiveSoftkeyboardLayoutBinding::class
     override val vmClass: KClass<LiveSoftKeyboardViewModel>
         get() = LiveSoftKeyboardViewModel::class
-    private val chatViewModel:LiveChatViewModel by sharedViewModel<LiveChatViewModel,LiveChatFragment>()
+    private val chatViewModel: LiveChatViewModel by sharedViewModel<LiveChatViewModel, LiveChatFragment>()
 
     //监听软件盘状态
-     var mKeyboardHelper: SoftKeyboardStateHelper? = null
+    var mKeyboardHelper: SoftKeyboardStateHelper? = null
 
     //监听软件盘发送事件
     private var softKeyListener: LiveChatSoftKeyListener? = null
@@ -47,13 +47,7 @@ class LiveSoftKeyboardFragment :
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData?, position: Int) {
-            if (item?.key == "del") {
-                val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
-                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-                ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
-            } else {
-                mBinding.liveChatEtInput.text?.append(item?.key)
-            }
+            mBinding.liveChatEtInput.text?.append(item?.key)
         }
     }
 
@@ -70,6 +64,12 @@ class LiveSoftKeyboardFragment :
     }
 
     override fun initListener() {
+        mBinding.emojiDel.setOnClickListener {
+            val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
+            ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+            ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
+        }
+
         mBinding.liveChatEtInput.setOnClickListener {
             showSoftKeyBoard()
         }
@@ -171,26 +171,28 @@ class LiveSoftKeyboardFragment :
     private fun initSoftRecycler() {
         val snapHelper = PagerSnapHelper()
         mBinding.keyboardEmojiRecycler.apply {
-            layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.HORIZONTAL,false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             val softAdapter = SoftAdapter()
             softAdapter.setItemListener(itemListener)
             softAdapter.submitList(mViewModel.softData())
             adapter = softAdapter
             snapHelper.attachToRecyclerView(this)
-            addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val currentView = snapHelper.findSnapView(recyclerView.layoutManager)
-                       currentView?.let {
-                           val position = recyclerView.getChildAdapterPosition(currentView)
-                           mBinding.keyboardTb.selectTab(mBinding.keyboardTb.getTabAt(position))
-                       }
+                        currentView?.let {
+                            val position = recyclerView.getChildAdapterPosition(currentView)
+                            mBinding.keyboardTb.selectTab(mBinding.keyboardTb.getTabAt(position))
+                        }
                     }
                 }
             })
         }
     }
+
     /**
      * 展示软件盘
      * */
@@ -198,16 +200,17 @@ class LiveSoftKeyboardFragment :
         mBinding.apply {
             liveChatEtInput.requestFocus()
             liveChatEtInput.setSelection(liveChatEtInput.text?.length ?: 0)
-            liveChatIvKeyboard.isVisible = false
-            liveChatTvSize.isVisible = false
             liveChatTvSend.isVisible = true
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
+            liveChatIvKeyboard.isVisible = false
+            liveChatTvSize.isVisible = false
             keyboardTb.isVisible = false
             emojiDel.isVisible = false
             keyboardEmojiRecycler.isVisible = false
             line.isVisible = false
-            softKeyListener?.showKeyBoard()
+            bottom.isVisible = false
+            softKeyListener?.showKeyBoard(false)
         }
     }
 
@@ -222,17 +225,17 @@ class LiveSoftKeyboardFragment :
      * 展示聊天界面
      * */
     fun showChat() {
-
         hideSoftKeyBoard()
         mBinding.apply {
+            liveChatIvEmoji.isVisible = true
             liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
             liveChatTvSize.isVisible = false
-            liveChatIvEmoji.isVisible = true
             keyboardTb.isVisible = false
             keyboardEmojiRecycler.isVisible = false
             emojiDel.isVisible = false
             line.isVisible = false
+            bottom.isVisible = false
             softKeyListener?.hideKeyboard()
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
@@ -255,22 +258,22 @@ class LiveSoftKeyboardFragment :
             liveChatTvSend.isVisible = true
             liveChatIvKeyboard.isVisible = true
             liveChatTvSize.isVisible = true
-            liveChatIvEmoji.isVisible = false
             keyboardTb.isVisible = true
             keyboardEmojiRecycler.isVisible = true
             emojiDel.isVisible = true
             line.isVisible = true
+            bottom.isVisible = true
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
                     requireContext(),
                     arch.cayenne.lib.common.R.color.card_background
                 )
             )
-            softKeyListener?.showKeyBoard()
+            softKeyListener?.showKeyBoard(true)
         }
     }
 
-    fun updateInputVisible(value:Boolean){
+    fun updateInputVisible(value: Boolean) {
         mBinding.groupInput.isVisible = value
     }
 
@@ -292,7 +295,7 @@ class LiveSoftKeyboardFragment :
     }
 
     interface LiveChatSoftKeyListener {
-        fun showKeyBoard()
+        fun showKeyBoard(isEmoji: Boolean)
 
         fun hideKeyboard()
     }

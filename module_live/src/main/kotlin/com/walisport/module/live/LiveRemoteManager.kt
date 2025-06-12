@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import okio.utf8Size
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
@@ -66,7 +67,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
-            LogUtils.dTag("result", "matchMainMatchresult----->${result}")
+            LogUtils.dTag("result", "matchMainMatchResult----->${result.toString()}")
             return result.data!!.match
         }
         return null
@@ -153,18 +154,19 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     // 500-1007: 盘口分类
-    suspend fun getMarketTypeReq(scope: CoroutineScope, matchId: Long): List<Common.MarketType>? {
-        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MarketTypeResp>(
+    suspend fun getMarketTypeReq(scope: CoroutineScope, matchId: Long): List<Common.MarketCategory>? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.MarketCategoryResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_MARKET_TYPE
         ) {
-            Client.MatchTrendReq.newBuilder().apply {
+            Client.MarketCategoryReq.newBuilder().apply {
                 this.matchId = matchId
             }.build()
         }
         if (result.error == null && result.data != null) {
-            return result.data!!.marketTypeList
+            LogUtils.dTag("盘口分类","盘口分类----${result.data.toString()}")
+            return result.data!!.marketCategoryList
         }
         return null
     }

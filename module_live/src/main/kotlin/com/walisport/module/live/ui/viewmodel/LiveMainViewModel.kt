@@ -208,7 +208,7 @@ class LiveMainViewModel(
             if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
                 return@launch
             }
-             chatRepo.startSocket()
+            chatRepo.startSocket(viewModelScope)
         }
     }
 

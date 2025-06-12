@@ -12,9 +12,7 @@ class BetResultRepository(
     private val betDao: BetDao
 ) : BaseRepository() {
 
-    suspend fun getLastOrderBet() = withContext(scope.coroutineContext) {
-        betDao.getLastBetOrder()
-    }
+    fun observeLastBetOrder() = betDao.observeLastBetOrder()
 
     suspend fun getSelection(betId: Long) = withContext(scope.coroutineContext) {
         betDao.getSelections(betId)

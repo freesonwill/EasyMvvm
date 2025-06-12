@@ -1,17 +1,24 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import androidx.activity.addCallback
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
+import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
@@ -26,14 +33,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
+    //软件盘时获取的高度有误，onResume时获取固定值
+    private var keyBoardHeight: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
-    }
-
-    override fun initData() {
-        super.initData()
     }
 
     private fun initTab() {
@@ -43,7 +48,29 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mBinding.liveChatRecycler.adapter = adapter
     }
 
+    override fun onResume() {
+        super.onResume()
+        keyBoardHeight = mBinding.main.height
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+
+        mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                if (e.action == MotionEvent.ACTION_UP && mViewModel.softKeyBoardListener.value == true) {
+                    showChat()
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+            }
+        })
+
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
             if (mViewModel.softKeyBoardListener.value == true) {
                 showChat()
@@ -88,7 +115,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 showToast(msg)
                 return@observe
             }
-            if(mViewModel.loginLiveData.value == null){
+            if (mViewModel.loginLiveData.value == null) {
                 return@observe
             }
             mViewModel.sendMsgToServer(it)
@@ -100,19 +127,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             refreshChatList()
         }
         mViewModel.sendMsgResultLiveData.observe(viewLifecycleOwner) {
-//           val msg = if(it?.code == 0) getString(R.string.send_success) else it?.errorMessage ?: getString(R.string.send_fail)
-//            showToast(msg)
+
         }
 
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
             if (it != CheckBetResultEnum.SUCCESS) {
-                val msg =
-                    if (it == CheckBetResultEnum.BET_AMOUNT) getString(R.string.insufficient_bet_amount)
-                    else getString(R.string.insufficient_balance)
-                showToast(msg)
+                updateChatUi()
             }
-          //  TODO暂时隐藏，便于测试
-//            getSoftKeyBoardFragment()?.updateInputVisible(it == CheckBetResultEnum.SUCCESS)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -151,18 +172,16 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
     }
 
-//    fun showChatAnimation(isKeyBoardVisible: Boolean) {
-//        val height = mBinding.main.height
-//        val keyBoardHeight = mBinding.main.height - 12.dp2px
-//        mBinding.liveChatKeyboard.layoutParams.height =
-//            if (isKeyBoardVisible) keyBoardHeight else 62.dp2px
-//    }
+    private fun showChatAnimation(isKeyBoardVisible: Boolean, isEmoji: Boolean) {
+        mBinding.liveChatKeyboard.layoutParams.height =
+            if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+    }
 
     /**
      * 显示键盘时调用
      * */
-    override fun showKeyBoard() {
-//        showChatAnimation(true)
+    override fun showKeyBoard(isEmoji: Boolean) {
+        showChatAnimation(true, isEmoji)
         mViewModel.updateSoftKeyBoard(true)
     }
 
@@ -170,6 +189,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 隐藏键盘时调用
      * */
     override fun hideKeyboard() {
+        showChatAnimation(false, isEmoji = false)
         mViewModel.updateSoftKeyBoard(false)
     }
 
@@ -200,6 +220,39 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
         }
     }
+
+    /**
+     * 进入直播间不成功时修改
+     * */
+    fun updateChatUi() {
+        //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+        val code = mainViewModel.mainMatch.value?.basicInfo?.status
+        val status = MatchStatus.entries.find { status -> status.code == code }
+//        val chatRoomIsOpen = mainViewModel.observeMainMatch.value?.liveInfo?.charRoom ?: false
+        mBinding.also {
+            when (status) {
+                MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_closed)
+                    it.liveChatTvStatus.setText(R.string.live_chat_end)
+                }
+
+                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.DELAYED -> {
+                    it.liveChatGroupChat.isVisible = false
+                    it.liveChatGroupStatus.isVisible = true
+                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_empty)
+                    it.liveChatTvStatus.setText(R.string.live_chat_empty)
+                }
+
+                else -> {
+                    it.liveChatGroupChat.isVisible = true
+                    it.liveChatGroupStatus.isVisible = false
+                }
+            }
+        }
+    }
+
 
     override fun onStop() {
         mViewModel.leaveRoom()
