@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
-
     <data>
-
         <variable
             name="model"
             type="com.walisport.module.message.ui.viewmodel.MessageMainViewModel" />
@@ -27,6 +25,7 @@
             android:orientation="horizontal">
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_all"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -34,20 +33,23 @@
                 android:orientation="vertical">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_all"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_all" />
+                    android:background="@drawable/selector_message_all" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_all"
-                    android:textColor="@color/title_bar"
+                    android:textColor="@drawable/selector_message_text"
                     android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_sys"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -55,20 +57,23 @@
                 android:orientation="vertical">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_sys"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_sys" />
+                    android:background="@drawable/selector_message_sys" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_sys"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_sys"
-                    android:textColor="@color/title_bar"
+                    android:textColor="@drawable/selector_message_text"
                     android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_act"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -76,20 +81,23 @@
                 android:orientation="vertical">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_act"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_activity" />
+                    android:background="@drawable/selector_message_act" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_act"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_activity"
-                    android:textColor="@color/title_bar"
+                    android:textColor="@drawable/selector_message_text"
                     android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_match"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -97,20 +105,23 @@
                 android:orientation="vertical">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_mat"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_match" />
+                    android:background="@drawable/selector_message_match" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_mat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_match"
-                    android:textColor="@color/title_bar"
+                    android:textColor="@drawable/selector_message_text"
                     android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
             <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_pay"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -118,16 +129,18 @@
                 android:orientation="vertical">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_pay"
                     android:layout_width="@dimen/dp_42"
                     android:layout_height="@dimen/dp_42"
-                    android:background="@drawable/icon_notice_wallet" />
+                    android:background="@drawable/selector_message_wallet" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_pay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
                     android:text="@string/notification_wallet"
-                    android:textColor="@color/title_bar"
+                    android:textColor="@drawable/selector_message_text"
                     android:textSize="@dimen/sp_12" />
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

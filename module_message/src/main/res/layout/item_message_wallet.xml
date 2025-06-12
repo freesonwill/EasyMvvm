@@ -129,6 +129,7 @@
             android:background="@color/msg_line"/>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/lay_detail"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_45">
 

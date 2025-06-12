@@ -29,7 +29,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             binding.tvMsgTitle.text = item.title
             binding.tvMsgContent.text = item.content
             binding.ivMsgDelete.setOnClickListener {
-                clicklistener?.onDelete(position)
+                clicklistener?.onDelete(item.id)
             }
         } else if (binding is ItemMessageActivityBinding) {
             binding.tvMsgType.text = item.bar
@@ -37,7 +37,10 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             binding.tvMsgTitle.text = item.title
             binding.tvMsgContent.text = item.content
             binding.ivMsgDelete.setOnClickListener {
-                clicklistener?.onDelete(position)
+                clicklistener?.onDelete(item.id)
+            }
+            binding.layDetail.setOnClickListener {
+                clicklistener?.onDetail(item.id)
             }
         } else if (binding is ItemMessageMatchBinding) {
             binding.tvMsgType.text = item.bar
@@ -45,7 +48,10 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             binding.tvMsgTitle.text = item.title
             binding.tvMsgContent.text = item.content
             binding.ivMsgDelete.setOnClickListener {
-                clicklistener?.onDelete(position)
+                clicklistener?.onDelete(item.id)
+            }
+            binding.layDetail.setOnClickListener {
+                clicklistener?.onDetail(item.id)
             }
             Glide.with(binding.root).load(item.url).into(binding.ivMsgImage)
         } else if (binding is ItemMessageWalletBinding) {
@@ -55,7 +61,10 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             binding.tvPayMethod.text = item.channel
             binding.tvPayMoney.text = item.money
             binding.ivMsgDelete.setOnClickListener {
-                clicklistener?.onDelete(position)
+                clicklistener?.onDelete(item.id)
+            }
+            binding.layDetail.setOnClickListener {
+                clicklistener?.onDetail(item.id)
             }
         }
     }
@@ -87,6 +96,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
     }
 
     interface OnClickListener {
-        fun onDelete(position: Int)
+        fun onDelete(id: Long)
+        fun onDetail(id: Long)
     }
 }

@@ -13,6 +13,9 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     private val _notificationBean = MutableLiveData<List<NotificationBean>>()
     val notificationBean: LiveData<List<NotificationBean>> = _notificationBean
 
+    private val _notificationSelect = MutableLiveData<List<NotificationBean>>()
+    val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
+
     fun getMessageData() {
         val tmp = NotificationBean(
             1,
@@ -64,5 +67,23 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
         )
         val list = listOf(tmp, tmp1, tmp2, tmp3)
         _notificationBean.value = list
+    }
+
+    fun deleteMessage(iid: Long) {
+        val list = _notificationBean.value?.toMutableList()
+        list?.let {
+            _notificationBean.value = list.filterNot { it.id == iid }
+        }
+    }
+
+    fun selectMessage(type: Int) {
+        val list = _notificationBean.value?.toMutableList()
+        list?.let {
+            if (type == 0) {
+                _notificationSelect.value = list.ifEmpty { emptyList() }
+            } else {
+                _notificationSelect.value = list.filter { it.type == type }
+            }
+        }
     }
 }
