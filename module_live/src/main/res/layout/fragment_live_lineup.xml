@@ -341,14 +341,14 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"></androidx.appcompat.widget.LinearLayoutCompat>
+                        android:orientation="vertical" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/llcAwaySubstitute"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical"></androidx.appcompat.widget.LinearLayoutCompat>
+                        android:orientation="vertical" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
