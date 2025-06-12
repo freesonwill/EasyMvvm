@@ -22,7 +22,7 @@
         android:id="@+id/homeTopLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -118,7 +118,7 @@
         android:id="@+id/homeBottomLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

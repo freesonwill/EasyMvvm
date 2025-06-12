@@ -19,7 +19,7 @@
         android:id="@+id/imageLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
