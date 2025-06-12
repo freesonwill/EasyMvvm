@@ -46,11 +46,11 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
     }
 
     suspend fun insertWithAutoIncrement(data: List<MarketMenuBean>): List<Long> {
-        // 获取当前最大 orderNumber，默认为 0 如果表为空
+        // 获取当前最大 number，默认为 0 如果表为空
         val maxOrderNumber =  database.marketTypeMenuDao().getMaxOrderNumber() ?: 0
-        // 为每条记录设置递增的 orderNumber
+        // 为每条记录设置递增的 number
         val updatedData = data.mapIndexed { index, bean ->
-            bean.copy(orderNumber = maxOrderNumber + index + 1)
+            bean.copy(number = maxOrderNumber + index + 1)
         }
         // 插入数据
         return  database.marketTypeMenuDao().insert(updatedData)

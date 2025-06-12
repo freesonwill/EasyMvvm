@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "MarketMenuBean")
 data class MarketMenuBean(
     @PrimaryKey
-    val orderNumber:Int =  0,
+    val number:Int =  0,
     val marketId: Long = 0, // 盘口id
     val marketName: String = "", // 盘口名称
     var isSelect: Boolean = false,// 是否选中
