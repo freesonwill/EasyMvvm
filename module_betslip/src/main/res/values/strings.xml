@@ -84,4 +84,5 @@
     <string name="refund_amount_include_principal">返还金额包含本金</string>
     <string name="live_bet_in_early_settle">提前结算中</string>
     <string name="hint_less_amount_early_settle">小於最小投注额</string>
+    <string name="title_combo_bet_odds">%d串%d</string>
 </resources>

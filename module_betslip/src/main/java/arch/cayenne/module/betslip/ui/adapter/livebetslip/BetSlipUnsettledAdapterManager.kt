@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.ui.view.ProgressDrawable
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.R
@@ -63,7 +64,8 @@ class BetSlipUnsettledAdapterManager(
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
-                it.betUnsettledTvCrossborderValue.text = order.parlayName
+                val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
+                it.betUnsettledTvCrossborderValue.text = "$combo*${order.comboCount}"
             }
             it.groupEarlysettle.isVisible = order.earlySupport
             if (order.earlySupport) {
