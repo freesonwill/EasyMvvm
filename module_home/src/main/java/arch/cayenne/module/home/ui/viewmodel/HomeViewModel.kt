@@ -65,6 +65,12 @@ class HomeViewModel : BaseViewModel() {
     private val _timer = MutableLiveData<Event<Long>>()
     val timer: LiveData<Event<Long>> = _timer
 
+    private val _isHomeLoading = MutableLiveData(false)
+    val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
+    fun setIsHomeLoading(isLoading: Boolean) {
+        _isHomeLoading.value = isLoading
+    }
+
     fun requestCollapseTournamentDropdown() {
         _collapseTournamentDropdown.value = Event(true)
     }
