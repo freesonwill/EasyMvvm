@@ -25,6 +25,7 @@ import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.utils.TabMarginExt.reflexMargin
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -72,9 +73,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     @SuppressLint("NotifyDataSetChanged")
     fun showData(list: List<MarketMenuBean>?, marketIds: List<Long>) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
+        //根据盘口获取投注注区
         mViewModel.getLiveSelectionBean(marketIds)
         launch {
             mViewModel.getLiveSelectionBean.collect {
+               launch(Main) {
                     mBinding.clDynamics.setVisibilityGone()
                     mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                     liveBetOnAdapter.setHomeAway(
@@ -83,9 +86,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         baseInfo?.awayTeam.toString(),
                         baseInfo?.awayTeamIcon.toString(), it, isNotify
                     )
+
                     liveBetOnAdapter.submitList(list)
                     liveBetOnAdapter.setSelectionComboId(selectionComboId)
                     liveBetOnAdapter.notifyDataSetChanged()
+                }
             }
         }
     }
@@ -159,7 +164,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 it?.forEach {
                     marketIds.add(it.marketId)
                 }
-                LogUtils.e("showData${marketIds}")
+               // LogUtils.e("showData${marketIds}")
                 showData(it, marketIds)
             }
 
@@ -205,8 +210,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             newTab.text = text
             mBinding.tabLayout.addTab(newTab)
         }
-        mBinding.tabLayout.reflexMargin(8.dp2px,8.dp2px,4.dp2px)
         mBinding.tabLayout.getTabAt(0)?.select()
+        mBinding.tabLayout.reflexMargin(8.dp2px,8.dp2px,4.dp2px)
     }
 
     override fun onDestroyView() {

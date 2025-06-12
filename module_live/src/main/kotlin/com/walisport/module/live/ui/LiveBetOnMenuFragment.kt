@@ -65,30 +65,33 @@ class LiveBetOnMenuFragment :
                     }
                     tvName.text = items.name
                 }
-                items.marketMenuBean.withIndex().forEach {(index, bean)->
-                    val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
-                        LayoutInflater.from(context),
-                        mBinding.llc,
-                        false
-                    )
-                    if (bean.isSelect) {
-                        selectCode = items.code
-                        selectId = bean.marketId
-                    }
-                    textBinding.apply {
-                        tvContent.text = bean.marketName
-                        betOnViewModel.observeMarketMenu.value?.let {
-                            if (indexItems== (it[0]-1)&&index==it[1]){
-                                tvContent.isSelected = true
+                mViewModel.getMarketMenuByCode(items.code){listMenu->
+                    listMenu.withIndex().forEach { (index, bean) ->
+                        val textBinding = LiveBetMenuFlexboxTextViewBinding.inflate(
+                            LayoutInflater.from(context),
+                            mBinding.llc,
+                            false
+                        )
+                        if (bean.isSelect) {
+                            selectCode = items.code
+                            selectId = bean.marketId
+                        }
+                        textBinding.apply {
+                            tvContent.text = bean.marketName
+                            betOnViewModel.observeMarketMenu.value?.let {
+                                if (indexItems == (it[0] - 1) && index == it[1]) {
+                                    tvContent.isSelected = true
+                                }
+                            }
+                            tvContent.clickNoRepeat {
+                                betOnViewModel.setMarketMenuPosition((indexItems + 1), index)
+                                animateDismiss()
                             }
                         }
-                        tvContent.clickNoRepeat {
-                            betOnViewModel.setMarketMenuPosition((indexItems+1),index)
-                            animateDismiss()
-                        }
+                        binding.flexboxLayout.addView(textBinding.root)
                     }
-                    binding.flexboxLayout.addView(textBinding.root)
                 }
+
                 mBinding.llc.addView(binding.root)
                 currentIndex++
             }
