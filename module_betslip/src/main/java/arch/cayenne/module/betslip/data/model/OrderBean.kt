@@ -30,13 +30,13 @@ fun Common.Order.toOrderBean(): OrderBean {
         returnAmount = returnAmount,
         selectionsList = selectionsList,
         comboType = comboType,
-        parlayName = parlayName,
+        parlayName = "${comboK}串${comboV}*${comboCount}",
         odds = odds,
         status = status,
         earlySupport = earlySupport,
         earlyBetAmount = earlyBetAmount,
         earlyReturnAmount = earlyReturnAmount,
-        earlySettleTimes = earlySettleTimes,
+        earlySettleTimes = earlyCount,
         resultStatus = resultStatus,
         earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean()
     )

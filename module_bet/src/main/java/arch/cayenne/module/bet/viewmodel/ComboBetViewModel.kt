@@ -44,7 +44,6 @@ class ComboBetViewModel(
                     if (it.isEmpty()) {
                         _onBetListListener.value = emptyList()
                     } else if (it.size == 1) {
-                        repo.saveToSingleBet()
                         _onBetListListener.value = it
                     } else {
                         setBetList(it)

@@ -20,6 +20,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.qyplayer.GlobalConfig
@@ -77,7 +78,6 @@ class LiveVideoLandscapeFragment :
         mViewModel.setMatchId(matchId)
 
         initVideoView()
-        initBackPress()
         scheduleHideButtons()
     }
 
@@ -272,21 +272,6 @@ class LiveVideoLandscapeFragment :
     }
 
     /**
-     * 监听返回键
-     */
-    private fun initBackPress(){
-        // 监听返回键
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    mBinding.videoViewContainer.removeAllViews()
-                }
-            })
-    }
-
-
-    /**
      * 展示上边和下边的操作按钮，不带动画
      */
     private fun showButtons() {
@@ -399,53 +384,53 @@ class LiveVideoLandscapeFragment :
      */
     private fun enlarge(onEndAction: () -> Unit) {
         //width， height， marginStart, marginTop
-        val currentHeight = mBinding.videoViewContainer.measuredHeight
+        val currentHeight = mBinding.videoArea.measuredHeight
         val targetWidth = mBinding.root.measuredWidth
-        val currentWidth = mBinding.videoViewContainer.measuredWidth
+        val currentWidth = mBinding.videoArea.measuredWidth
         val targetHeight = mBinding.root.measuredHeight
         val currentMarginTop =
-            (mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams).topMargin
+            (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).topMargin
         val targetMarginTop = 0
         val currentMarginStart =
-            (mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams).marginStart
+            (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
 
         with(AnimatorSet()) {
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoViewContainer.layoutParams
+                        val lp = mBinding.videoArea.layoutParams
                         lp.height = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentWidth, targetWidth).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoViewContainer.layoutParams
+                        val lp = mBinding.videoArea.layoutParams
                         lp.width = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
                     addUpdateListener {
                         val lp =
-                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
+                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
 
                     }
                 },
                 ValueAnimator.ofInt(currentMarginStart, targetMarginStart).apply {
                     addUpdateListener {
                         val lp =
-                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
+                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
                         lp.marginEnd = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
 
                     }
                 })
@@ -479,38 +464,38 @@ class LiveVideoLandscapeFragment :
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoViewContainer.layoutParams
+                        val lp = mBinding.videoArea.layoutParams
                         lp.height = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentWidth, targetWidth).apply {
                     addUpdateListener {
-                        val lp = mBinding.videoViewContainer.layoutParams
+                        val lp = mBinding.videoArea.layoutParams
                         lp.width = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
                     }
                 },
                 ValueAnimator.ofInt(currentMarginTop, targetMarginTop).apply {
                     addUpdateListener {
                         val lp =
-                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
+                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
 
                     }
                 },
                 ValueAnimator.ofInt(currentMarginStart, targetHorizontalMargin).apply {
                     addUpdateListener {
                         val lp =
-                            mBinding.videoViewContainer.layoutParams as ConstraintLayout.LayoutParams
+                            mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams
                         lp.marginStart = it.animatedValue as Int
                         lp.marginEnd = it.animatedValue as Int
 
-                        mBinding.videoViewContainer.layoutParams = lp
+                        mBinding.videoArea.layoutParams = lp
 
                     }
                 })

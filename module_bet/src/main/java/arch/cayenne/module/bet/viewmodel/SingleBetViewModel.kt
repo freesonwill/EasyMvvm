@@ -14,6 +14,8 @@ import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class SingleBetViewModel(private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
@@ -125,7 +127,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
                 }
             }
             launch {
-                betRepo.observeBetType().collect {
+                betRepo.getBetType()?.let {
                     _betTypeListener.value = it
                     if (it == BetTypeEnum.RESERVE) {
                         _onReserveOddsListener.value = betRepo.getReserveOdds()
@@ -137,12 +139,25 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
 
     fun sendBet() {
         val money = onEditNumber.value?.toMoney() ?: return
-        val type = _betTypeListener.value ?: return
-        if (type == BetTypeEnum.SINGLE) {
-            betRepo.sendBet(money)
-        } else if (type == BetTypeEnum.RESERVE) {
-            betRepo.sendReserve(money)
+        val reserveOdds = _onReserveOddsListener.value
+        viewModelScope.launch(Dispatchers.IO) {
+            if (reserveOdds == null) {
+                val isSuccess = async {
+                    betRepo.saveToSingle()
+                }.await()
+                if (isSuccess) {
+                    betRepo.sendBet(money)
+                }
+            } else {
+                val isSuccess = async {
+                    betRepo.saveToReserve(reserveOdds)
+                }.await()
+                if (isSuccess) {
+                    betRepo.sendReserve(money)
+                }
+            }
         }
+
     }
 
     fun removeBet() {
@@ -150,7 +165,6 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     }
 
     fun removeReserve() {
-        betRepo.removeReserve()
         _onReserveOddsListener.value = null
     }
 
@@ -164,7 +178,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     }
 
     fun saveToReserve(odds: Int) {
-        betRepo.saveToReserve(odds)
+        _onReserveOddsListener.value = odds
+//        betRepo.saveToReserve(odds)
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {

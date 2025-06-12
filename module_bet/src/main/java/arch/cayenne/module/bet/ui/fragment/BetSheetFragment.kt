@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
@@ -55,9 +54,13 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
 
     override fun initView(savedInstanceState: Bundle?) {
         lifecycleScope.launch {
-            mViewModel.getBetType()?.let { type ->
-                setStartDestination(type)
-                setFitToContents()
+            mViewModel.getSelectionSize().let { size ->
+                if (size == 0) {
+                    dismiss()
+                } else {
+                    setStartDestination(size)
+                    setFitToContents()
+                }
             }
         }
     }
@@ -85,11 +88,11 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
 
     }
 
-    private fun setStartDestination(type: BetTypeEnum) {
+    private fun setStartDestination(size: Int) {
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
-        if (type == BetTypeEnum.COMBO) {
+        if (size == 1) {
             navGraph.setStartDestination(R.id.comboBetFragment)
         } else {
             navGraph.setStartDestination(R.id.singleBetFragment)

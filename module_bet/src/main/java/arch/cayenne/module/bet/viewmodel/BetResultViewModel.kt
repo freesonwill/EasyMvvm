@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.repo.BetResultRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel() {
@@ -28,16 +29,18 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
 
     init {
         viewModelScope.launch {
-            repo.getLastOrderBet()?.let {
-                type = it.betType
-                val selection = repo.getSelection(it.betId)
+            repo.observeLastBetOrder().collect { bean ->
+                bean?.let {
+                    type = it.betType
+                    val selection = repo.getSelection(it.betId)
 
-                _onBetSheetListener.value = selection
+                    _onBetSheetListener.value = selection
 
-                launch {
-                    repo.observeDetail(it.betId).collect { detail ->
-                        _onDetailListener.value = detail
-                        setModeByDetail(detail)
+                    launch {
+                        repo.observeDetail(it.betId).collect { detail ->
+                            _onDetailListener.value = detail
+                            setModeByDetail(detail)
+                        }
                     }
                 }
             }

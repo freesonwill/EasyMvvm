@@ -1,25 +1,27 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
-import arch.cayenne.lib.common.ui.view.NumberKeyboardView
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
-import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlin.reflect.KClass
@@ -59,7 +61,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     override fun initListener() {
         mBinding.ivClose.setOnClickListener {
-            mViewModel.removeBet()
+            val type = mViewModel.betTypeListener.value
+            if (type != BetTypeEnum.COMBO) {
+                mViewModel.removeBet()
+            }
             dismiss()
         }
         mBinding.btnBack.setOnClickListener {
@@ -95,7 +100,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
-                childFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { _, bundle ->
+                childFragmentManager.setFragmentResultListener(
+                    KEY_RESULT,
+                    viewLifecycleOwner
+                ) { _, bundle ->
                     childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                     if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
                         val odds = bundle.getInt(KEY_ODDS_RESULT)
@@ -120,6 +128,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.clMoney.setOnClickListener {
             showKeyboard()
         }
+        mBinding.btnDelete.setOnClickListener {
+            mViewModel.removeBet()
+            dismiss()
+        }
     }
 
     override fun createObserver() {
@@ -136,7 +148,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             mBinding.tvBetMoney.text = money
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            mBinding.etMoney.hint =
+                getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
@@ -150,25 +163,33 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
             mBinding.tvMoney.text = it
         }
-        mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
-            when (type) {
-                BetTypeEnum.SINGLE -> {
-                    mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
-                    mBinding.btnReserve.isVisible = true
-                    mBinding.clCancelReserve.isVisible = false
-                }
-                BetTypeEnum.RESERVE -> {
-                    mBinding.tvBetHint.text = getString(R.string.title_reserve)
-                    mBinding.btnReserve.isVisible = false
-                    mBinding.clCancelReserve.isVisible = true
-                }
-                else -> {}
+        mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
+            if (odds == null) {
+                mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
+                mBinding.btnReserve.isVisible = true
+                mBinding.clCancelReserve.isVisible = false
+            } else {
+                mBinding.tvBetHint.text = getString(R.string.title_reserve)
+                mBinding.btnReserve.isVisible = false
+                mBinding.clCancelReserve.isVisible = true
+
+                val value = "@${odds.getOdds()}"
+                mBinding.tvCancelReserve.text = value
             }
         }
-        mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { value ->
-            value?.let {
-                val odds = "@${it.getOdds()}"
-                mBinding.tvCancelReserve.text = odds
+        mViewModel.betTypeListener.observe(viewLifecycleOwner) { type ->
+            when (type) {
+                BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
+                    mBinding.btnCollusion.visibility = View.VISIBLE
+                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
+                }
+
+                BetTypeEnum.COMBO -> {
+                    mBinding.btnCollusion.visibility = View.INVISIBLE
+                    mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
+                }
+
+                else -> {}
             }
         }
     }
