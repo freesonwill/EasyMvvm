@@ -8,6 +8,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 
@@ -40,8 +41,8 @@ class BetSlipInvalidItemManager(
                 it.ilMore.llMore
             )
         }
-        item.selection?.let {
-            updateData(it)
+        if (item is BetSlipOrderSelectionData) {
+            updateData(item.selection)
         }
         binding.ivCircleArrow.tag = position
     }

@@ -7,6 +7,7 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import galaxy.common.proto.Common
@@ -23,22 +24,25 @@ class BetSlipConfirmItemManager(
     override fun covertPlus(
         position: Int, count: Int, expandedEnum: BetSlipExpandedEnum, item: BetSlipSelectionData
     ) {
-        item.selection?.let { selection ->
-            binding.also {
-                configView(
-                    expandedEnum,
-                    it.line,
-                    it.ilMore.groupGradient,
-                    it.ilMore.tvMore,
-                    it.ilMore.ivArrow,
-                    position,
-                    count,
-                    it.ilMore.llMore
-                )
+        if (item is BetSlipOrderSelectionData) {
+            item.selection.let { selection ->
+                binding.also {
+                    configView(
+                        expandedEnum,
+                        it.line,
+                        it.ilMore.groupGradient,
+                        it.ilMore.tvMore,
+                        it.ilMore.ivArrow,
+                        position,
+                        count,
+                        it.ilMore.llMore
+                    )
+                }
+                updateData(selection)
+                binding.ivCircleArrow.tag = position
             }
-            updateData(selection)
-            binding.ivCircleArrow.tag = position
         }
+
     }
 
     @SuppressLint("SetTextI18n")

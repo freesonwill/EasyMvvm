@@ -10,6 +10,8 @@ import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
+import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 
 class BetSlipReserveItemManager(
     private val binding: ItemLiveBetSlipReserveBinding,
@@ -39,9 +41,10 @@ class BetSlipReserveItemManager(
                 it.ilMore.llMore
             )
         }
-        item.reserve?.let {
-            updateReserveData(it, binding)
+        if (item is BetSlipReserveSelectionData) {
+            updateReserveData(item.reserve, binding)
         }
+
         binding.ivCircleArrow.tag = position
     }
 

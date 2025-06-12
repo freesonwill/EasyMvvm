@@ -6,6 +6,7 @@ import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipReserve
+import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
@@ -58,7 +59,7 @@ class BetSlipReserveAdapterManager(
     private fun submitReserveAdapter(
         reserve: ReserveOrderBean,
     ) {
-        val list = arrayListOf(BetSlipSelectionData(reserve = reserve.selection))
+        val list = listOf(BetSlipReserveSelectionData(reserve = reserve.selection))
         binding.recyclerSelection.adapter?.let {
             val adapter = it as BetSlipSelectionAdapter
             adapter.submitList(list)

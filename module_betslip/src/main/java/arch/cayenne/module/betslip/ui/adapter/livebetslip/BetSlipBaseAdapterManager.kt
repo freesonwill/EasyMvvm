@@ -21,6 +21,7 @@ import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 
 abstract class BetSlipBaseAdapterManager(
     private val binding: ViewBinding
@@ -89,7 +90,7 @@ abstract class BetSlipBaseAdapterManager(
         recyclerView: RecyclerView, data: BetSlipOrder, position: Int
     ) {
         var list =
-            data.order.selectionsList.map { BetSlipSelectionData(selection = it) }.toList()
+            data.order.selectionsList.map { BetSlipOrderSelectionData(selection = it) }.toList()
 
         recyclerView.adapter?.let {
             val adapter = it as BetSlipSelectionAdapter

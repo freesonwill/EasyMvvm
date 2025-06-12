@@ -6,6 +6,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import com.bumptech.glide.Glide
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import galaxy.common.proto.Common
@@ -38,8 +39,8 @@ class BetSlipUnsettledItemManager(
                 it.ilMore.llMore
             )
         }
-        item.selection?.let {
-            updateData(it)
+        if (item is BetSlipOrderSelectionData) {
+            updateData(item.selection)
         }
         binding.ivCircleArrow.tag = position
     }
