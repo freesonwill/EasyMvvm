@@ -353,21 +353,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
                     else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
                 )
-
-                titleBar.post {
-                    val statusBarHeight = ViewCompat.getRootWindowInsets(clRoot)?.getInsets(
-                        WindowInsetsCompat.Type.statusBars())?.top ?: 0
-                    titleBar.setPadding(
-                        0, statusBarHeight , 0, 0
-                    )
-                }
-
-                // 重置 Padding
-                clRoot.post {
-                    clRoot.setPadding(
-                        clRoot.paddingLeft, 0, clRoot.paddingRight, 0
-                    )
-                }
             }
         }
     }

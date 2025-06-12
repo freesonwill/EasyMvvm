@@ -32,7 +32,6 @@ class SearchResultBaseFragment :
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
-        disablePadding()
         setEmptyView()
     }
 
@@ -66,12 +65,6 @@ class SearchResultBaseFragment :
                     }
                 }
             }
-        }
-    }
-
-    private fun disablePadding() {
-        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
-            insets
         }
     }
 

@@ -23,7 +23,6 @@ class SearchResultListFragment :
     private var tabMediator: TabLayoutMediator? = null
 
     override fun initView(savedInstanceState: Bundle?) {
-        disablePadding()
         setViewPager()
     }
 
@@ -38,11 +37,6 @@ class SearchResultListFragment :
         super.onDestroyView()
     }
 
-    private fun disablePadding() {
-        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
-            insets
-        }
-    }
 
     private fun setViewPager() {
         with(mBinding) {

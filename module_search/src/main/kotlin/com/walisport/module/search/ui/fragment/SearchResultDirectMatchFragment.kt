@@ -85,7 +85,6 @@ class SearchResultDirectMatchFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        disablePadding()
         setEmptyView()
         setRaceView()
 
@@ -184,12 +183,6 @@ class SearchResultDirectMatchFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         sharedViewModel.setStatusBarState(hidden)
         super.onHiddenChanged(hidden)
-    }
-
-    private fun disablePadding() {
-        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
-            insets
-        }
     }
 
     private fun setEmptyView() {

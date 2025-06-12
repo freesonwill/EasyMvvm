@@ -77,7 +77,6 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        disablePadding()
         updateUI()
     }
 
@@ -103,11 +102,6 @@ class SearchResultPageFragment(val data: SearchResultBean) :
         super.onDestroyView()
     }
 
-    private fun disablePadding() {
-        mBinding.root.setOnApplyWindowInsetsListener { _, insets ->
-            insets
-        }
-    }
 
     private fun updateUI() {
         with(mBinding) {
