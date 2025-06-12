@@ -3,6 +3,8 @@ package com.walisport.module.live.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
 import com.walisport.module.live.utils.EmojiUtils
@@ -29,7 +31,7 @@ class EmojiEditTextView : AppCompatEditText {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-       flowHelper.startSkinFlow {
+       flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
            textHelper.updateSkin()
        }
     }

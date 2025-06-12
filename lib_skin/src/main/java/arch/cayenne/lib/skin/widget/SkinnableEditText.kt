@@ -41,7 +41,7 @@ open class SkinnableEditText : AppCompatEditText {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             mBackgroundTintHelper.updateSkin()
             mTextHelper.updateSkin()
         }

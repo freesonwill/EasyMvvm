@@ -22,7 +22,6 @@ class SkinnableButton : AppCompatButton {
     private val flowHelper = SkinnableViewFlowHelper()
 
 
-
     constructor(context: Context) : super(context) {
         initView(context)
     }
@@ -43,7 +42,7 @@ class SkinnableButton : AppCompatButton {
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
 
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             mBackgroundTintHelper.updateSkin()
             mTextHelper.updateSkin()
         }
@@ -91,8 +90,6 @@ class SkinnableButton : AppCompatButton {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
-
-
 
 
     override fun onDetachedFromWindow() {

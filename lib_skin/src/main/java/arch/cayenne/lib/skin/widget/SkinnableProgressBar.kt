@@ -31,7 +31,7 @@ class SkinnableProgressBar : ProgressBar {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             backgroundTintHelper.updateSkin()
         }
     }
