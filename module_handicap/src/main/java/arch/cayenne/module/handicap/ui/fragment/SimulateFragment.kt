@@ -1,21 +1,20 @@
 package arch.cayenne.module.handicap.ui.fragment
 
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentSimulateBinding
+import arch.cayenne.module.handicap.databinding.ItemFlipperBinding
 import arch.cayenne.module.handicap.ui.viewmodel.SimulateViewModel
 import kotlin.reflect.KClass
-import arch.cayenne.module.handicap.R
-import arch.cayenne.module.handicap.databinding.ItemFlipperBinding
 
 /**
  * 模拟投注页面
@@ -25,6 +24,8 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
 
     override val vbClass: KClass<FragmentSimulateBinding> = FragmentSimulateBinding::class
     override val vmClass: KClass<SimulateViewModel> = SimulateViewModel::class
+
+    private val args : HandicapFragmentArgs by navArgs()
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.simulate_bet.getString(), {
@@ -94,7 +95,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
                     itemBinding.layContent.visibility = View.GONE
                     mBinding.viewFlipper.showNext()
                 } else {
-                    navigate(Uri.parse("walisport://module_home/NewHomeFragment"))
+                    findNavController().popBackStack(args.homeId, false)
                 }
             }
             mBinding.viewFlipper.addView(itemBinding.root)

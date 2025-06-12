@@ -3,20 +3,20 @@ package arch.cayenne.module.handicap.ui.fragment
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.navigation.fragment.findNavController
-import arch.cayenne.lib.base.ui.adapter.PagerAdapter
+import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
-import kotlin.reflect.KClass
-import arch.cayenne.module.handicap.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlin.reflect.KClass
 
 /**
  * 盘口教程页面
@@ -27,12 +27,13 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     override val vbClass: KClass<FragmentHandicapBinding> = FragmentHandicapBinding::class
     override val vmClass: KClass<HandicapViewModel> = HandicapViewModel::class
 
+    private val args : HandicapFragmentArgs by navArgs()
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar(
                 R.string.handicap_lesson.getString(),
                 { findNavController().navigateUp() },
-                { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment()) },
+                { navigate(HandicapFragmentDirections.actionHandicapFragmentToSimulateFragment(homeId = args.homeId)) },
                 R.string.simulate_bet.getString()
             )
             val array = resources.getStringArray(R.array.handicap_tabs)
