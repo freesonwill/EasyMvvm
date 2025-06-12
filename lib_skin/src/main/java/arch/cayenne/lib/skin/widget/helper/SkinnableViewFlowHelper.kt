@@ -15,6 +15,10 @@ class SkinnableViewFlowHelper {
     private val TAG = this@SkinnableViewFlowHelper::class.java.simpleName
     private var lastSkin: String = ""
 
+    /**
+     *使用 findViewTreeLifecycleOwner，fragment 没有OnDestroyView时，就会及时监听换肤通知更新皮肤
+     * 避免使用viewPager切fragment时换肤造成的闪烁
+     * */
     fun startSkinFlow(scope: CoroutineScope?, updateSkin: (skinName: String) -> Unit) {
         if (skinFlowJob?.isActive == true) {
             return
