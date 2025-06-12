@@ -33,7 +33,7 @@ class SearchViewModel : BaseViewModel() {
     val resultBackgroundColor: SharedFlow<Int?> = _resultBackgroundColor.asSharedFlow()
 
     /** 狀態欄狀態 */
-    private val _statusBarState = MutableSharedFlow<Boolean>()
+    private val _statusBarState = MutableSharedFlow<Boolean>(replay = 1)
     val statusBarState: SharedFlow<Boolean> = _statusBarState.asSharedFlow()
 
     /** 標題欄遮罩狀態 */
