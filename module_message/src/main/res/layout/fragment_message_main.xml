@@ -1,26 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
-
         <variable
             name="model"
             type="com.walisport.module.message.ui.viewmodel.MessageMainViewModel" />
     </data>
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/title_bg">
+        android:background="@color/title_bg"
+        android:orientation="vertical">
 
-        <!-- 标题 -->
         <arch.cayenne.lib.common.ui.view.TitleBarView
             android:id="@+id/title_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/lay_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_10"
+            android:orientation="horizontal">
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_all"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_all"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/selector_message_all" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/notification_all"
+                    android:textColor="@drawable/selector_message_text"
+                    android:textSize="@dimen/sp_12" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_sys"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_sys"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/selector_message_sys" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_sys"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/notification_sys"
+                    android:textColor="@drawable/selector_message_text"
+                    android:textSize="@dimen/sp_12" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_act"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_act"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/selector_message_act" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_act"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/notification_activity"
+                    android:textColor="@drawable/selector_message_text"
+                    android:textSize="@dimen/sp_12" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_match"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_mat"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/selector_message_match" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_mat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/notification_match"
+                    android:textColor="@drawable/selector_message_text"
+                    android:textSize="@dimen/sp_12" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+            <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+                android:id="@+id/lay_msg_pay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_msg_pay"
+                    android:layout_width="@dimen/dp_42"
+                    android:layout_height="@dimen/dp_42"
+                    android:background="@drawable/selector_message_wallet" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_msg_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/notification_wallet"
+                    android:textColor="@drawable/selector_message_text"
+                    android:textSize="@dimen/sp_12" />
+            </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+        </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dp_10"
+            android:overScrollMode="never" />
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </layout>

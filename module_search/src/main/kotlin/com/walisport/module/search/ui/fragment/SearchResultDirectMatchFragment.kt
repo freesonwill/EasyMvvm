@@ -85,46 +85,10 @@ class SearchResultDirectMatchFragment :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        setEmptyView()
+        setRaceView()
+
         with(mBinding) {
-            dynamicState.setState(
-                DynamicStateLayout.States.DATA_EMPTY,
-                ContextCompat.getString(requireContext(), R.string.no_search_result)
-            )
-            recyclerView.apply {
-                layoutManager =
-                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                adapter = linearAdapter.apply {
-                    if (itemDecorationCount == 0) {
-                        addItemDecoration(object : ItemDecoration() {
-                            override fun getItemOffsets(
-                                outRect: android.graphics.Rect,
-                                view: View,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val position = parent.getChildAdapterPosition(view)
-                                if (position == RecyclerView.NO_POSITION) return
-
-                                val currentType = linearAdapter.getItemViewType(position)
-                                when (currentType) {
-                                    SearchResultRaceAdapter.VIEW_TYPE_HEADER -> {
-                                        outRect.set(0, 0, 0, 0)
-                                    }
-
-                                    else -> {
-                                        val prevType = linearAdapter.getItemViewType(position - 1)
-                                        outRect.set(
-                                            0,
-                                            if (prevType == SearchResultRaceAdapter.VIEW_TYPE_HEADER) 0 else 12.dp2px,
-                                            0, 0
-                                        )
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
-            }
             clDate.clickNoRepeat {
                 openDatePicker()
             }
@@ -221,6 +185,55 @@ class SearchResultDirectMatchFragment :
         super.onHiddenChanged(hidden)
     }
 
+    private fun setEmptyView() {
+        with(mBinding) {
+            dynamicState.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                ContextCompat.getString(requireContext(), R.string.no_search_result)
+            )
+        }
+    }
+
+    private fun setRaceView() {
+        with(mBinding) {
+            recyclerView.apply {
+                layoutManager =
+                    LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+                adapter = linearAdapter.apply {
+                    if (itemDecorationCount == 0) {
+                        addItemDecoration(object : ItemDecoration() {
+                            override fun getItemOffsets(
+                                outRect: android.graphics.Rect,
+                                view: View,
+                                parent: RecyclerView,
+                                state: RecyclerView.State
+                            ) {
+                                val position = parent.getChildAdapterPosition(view)
+                                if (position == RecyclerView.NO_POSITION) return
+
+                                val currentType = linearAdapter.getItemViewType(position)
+                                when (currentType) {
+                                    SearchResultRaceAdapter.VIEW_TYPE_HEADER -> {
+                                        outRect.set(0, 0, 0, 0)
+                                    }
+
+                                    else -> {
+                                        val prevType = linearAdapter.getItemViewType(position - 1)
+                                        outRect.set(
+                                            0,
+                                            if (prevType == SearchResultRaceAdapter.VIEW_TYPE_HEADER) 0 else 12.dp2px,
+                                            0, 0
+                                        )
+                                    }
+                                }
+                            }
+                        })
+                    }
+                }
+            }
+        }
+    }
+
     private fun openDatePicker() {
         val oldDate = mViewModel.getSelectedDate()
 
@@ -248,7 +261,7 @@ class SearchResultDirectMatchFragment :
             }
         }
 
-        val marginTop = mBinding.clBasicInfo.height + 28.dp2px + mBinding.clDate.height - 1.dp2px
+        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height
         val datePicker = SearchDatePickerFragment.newInstance(
             marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
         )

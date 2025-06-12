@@ -30,7 +30,7 @@ class SkinnableRelativeLayout:RelativeLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             backgroundTintHelper.updateSkin()
         }
     }

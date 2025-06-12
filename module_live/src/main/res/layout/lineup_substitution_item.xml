@@ -18,11 +18,10 @@
       tools:ignore="MissingConstraints">
 
     <!-- 红点和数字 -->
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/homeTopLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +32,6 @@
         android:layout_height="@dimen/dp_14"
         android:background="@drawable/circle_badge"
         android:gravity="center"
-        android:text="12"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -53,7 +51,6 @@
         android:id="@+id/homeTopName"
         android:layout_marginStart="7dp"
         android:layout_width="wrap_content"
-        android:text="homeIncidentsName"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         android:maxLines="1"
@@ -64,7 +61,6 @@
         android:id="@+id/homePositionName"
         android:layout_marginStart="7dp"
         android:layout_width="wrap_content"
-        android:text="qianfeng"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/color_929298"
         android:layout_height="wrap_content"
@@ -75,7 +71,6 @@
       android:id="@+id/homeTopBottom"
       android:gravity="center_vertical"
       android:layout_width="wrap_content"
-      android:text="79 '"
       android:drawablePadding="7dp"
       android:textSize="@dimen/sp_14"
       android:textStyle="bold"
@@ -96,7 +91,6 @@
         android:id="@+id/homeBottomName"
         android:layout_marginEnd="7dp"
         android:layout_width="wrap_content"
-        android:text="meixi"
         android:maxLines="1"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
@@ -107,7 +101,6 @@
         android:id="@+id/homeBottomPosition"
         android:layout_marginEnd="7dp"
         android:layout_width="wrap_content"
-        android:text="qianfeng"
         android:textSize="@dimen/sp_12"
         android:textColor="@color/color_929298"
         android:layout_height="wrap_content"
@@ -121,11 +114,10 @@
       tools:ignore="MissingConstraints">
 
     <!-- 红点和数字 -->
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/homeBottomLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -136,7 +128,6 @@
         android:layout_height="@dimen/dp_14"
         android:background="@drawable/circle_badge"
         android:gravity="center"
-        android:text="12"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"

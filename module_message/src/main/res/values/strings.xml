@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notification_message">通知消息</string>
+    <string name="notification_all">全部</string>
+    <string name="notification_sys">系统消息</string>
+    <string name="notification_activity">活动消息</string>
+    <string name="notification_match">赛事消息</string>
+    <string name="notification_wallet">钱包消息</string>
+    <string name="notification_confirm">确认删除</string>
+    <string name="notification_cancel">取消</string>
+    <string name="notification_detail">查看详情</string>
+    <string name="notification_delete">消息删除后将无法恢复，确定删除消息吗？</string>
 </resources>

@@ -102,6 +102,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
         super.onDestroyView()
     }
 
+
     private fun updateUI() {
         with(mBinding) {
             with(mViewModel) {

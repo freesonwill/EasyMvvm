@@ -1,10 +1,10 @@
 package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
-import android.os.Build
 import android.view.View
 import android.view.WindowManager
-import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -12,7 +12,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import arch.cayenne.lib.base.ui._interface.IStatusBar
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 
 
 /**
@@ -40,13 +40,27 @@ class StatusBarDelegate : IStatusBar {
         immersionBar = ImmersionBar.with(fragment)
     }
 
+    private fun getStatusBarHeight(view:View):Int{
+        val windowInsetsCompat = ViewCompat.getRootWindowInsets(view)
+        val topInset = windowInsetsCompat?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+        //topInset比statusBarHeight准确（ROG手机）
+        val ret = if(topInset == 0) ImmersionBar.getStatusBarHeight(view.context) else topInset
+        //"topInset:$topInset,ret:$ret".logd()
+        return ret
+    }
+
     override fun setStatusBar(config: StatusBarConfig, view: View) {
         immersionBar.statusBarDarkFont(config.statusBarDarkFont, 0.2f)
             .navigationBarDarkIcon(config.statusBarDarkFont) // true 表示使用深色图标，false 表示浅色图标
-        val statusBarHeight = ImmersionBar.getStatusBarHeight(view.context)
+        val statusBarHeight = getStatusBarHeight(view)
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
         if (viewPaddingTop == -1) {
-            viewPaddingTop = view.paddingTop
+            //DEFAULT -> DRAW_BEHIND时，paddingTop已经多了状态栏高度
+            viewPaddingTop = if(view.paddingTop != 0 && view.fitsSystemWindows && config.statusBarType == StatusBarMode.DRAW_BEHIND){
+                view.paddingTop - statusBarHeight
+            }else {
+                view.paddingTop
+            }
         }
         //默认
         when (config.statusBarType) {
@@ -56,7 +70,7 @@ class StatusBarDelegate : IStatusBar {
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                view.fitsSystemWindows = true
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
             //全屏
             StatusBarMode.FULLSCREEN -> {
@@ -64,20 +78,22 @@ class StatusBarDelegate : IStatusBar {
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
                 immersionBar.init()
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
             //顶部沉浸式
             //ImmersionBar实现状态栏和底部虚拟home键透明
             StatusBarMode.DRAW_BEHIND -> {
-                view.fitsSystemWindows = false
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .transparentStatusBar() // 设置状态栏透明
                     .transparentNavigationBar() // 设置导航栏透明
                 immersionBar.init()
-                setViewPadding(
-                    view, viewPaddingTop + statusBarHeight, navigationBarHeight
+                setViewPadding(view,
+                    viewPaddingTop + statusBarHeight,
+                    navigationBarHeight
                 )
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
         }
     }
@@ -85,8 +101,10 @@ class StatusBarDelegate : IStatusBar {
     private fun setViewPadding(v: View, statusBarHeight: Int, navigationBarHeight: Int) {
         v.post {
             v.setPadding(
-                v.paddingLeft, statusBarHeight, // paddingTop 设置为状态栏高度
-                v.paddingRight, navigationBarHeight
+                v.paddingLeft,
+                statusBarHeight, // paddingTop 设置为状态栏高度
+                v.paddingRight,
+                navigationBarHeight
             )
         }
     }

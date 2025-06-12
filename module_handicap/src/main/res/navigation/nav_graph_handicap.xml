@@ -10,17 +10,29 @@
         android:name="arch.cayenne.module.handicap.ui.fragment.HandicapFragment"
         android:label="fragment_handicap"
         tools:layout="@layout/fragment_handicap">
-
-        <deepLink app:uri="walisport://module_handicap/HandicapFragment" />
+        <argument
+            android:name="homeId"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+        <deepLink app:uri="@string/nav_module_handicap_fragment" />
 
         <action
             android:id="@+id/action_handicapFragment_to_simulateFragment"
-            app:destination="@id/simulateFragment" />
+            app:destination="@id/simulateFragment" >
+
+        </action>
     </fragment>
 
     <fragment
         android:id="@+id/simulateFragment"
         android:name="arch.cayenne.module.handicap.ui.fragment.SimulateFragment"
         android:label="fragment_live_league"
-        tools:layout="@layout/fragment_simulate"/>
+        tools:layout="@layout/fragment_simulate">
+        <argument
+            android:name="homeId"
+            android:defaultValue="0"
+            app:argType="integer"
+            app:nullable="false" />
+    </fragment>
 </navigation>

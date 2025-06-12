@@ -1,6 +1,5 @@
 package arch.cayenne.lib.skin.widget.helper
 
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.skin.SkinnableManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +15,15 @@ class SkinnableViewFlowHelper {
     private val TAG = this@SkinnableViewFlowHelper::class.java.simpleName
     private var lastSkin: String = ""
 
-    fun startSkinFlow(updateSkin: (skinName: String) -> Unit) {
-        skinFlowJob?.cancel()
-        skinFlowJob = CoroutineScope(Dispatchers.IO).launch {
+    /**
+     *使用 findViewTreeLifecycleOwner，fragment 没有OnDestroyView时，就会及时监听换肤通知更新皮肤
+     * 避免使用viewPager切fragment时换肤造成的闪烁
+     * */
+    fun startSkinFlow(scope: CoroutineScope?, updateSkin: (skinName: String) -> Unit) {
+        if (skinFlowJob?.isActive == true) {
+            return
+        }
+        skinFlowJob = scope?.launch(Dispatchers.IO) {
             sportSkinManager.skinFlow.collect {
                 if (it == lastSkin) {
                     return@collect
@@ -46,8 +51,8 @@ class SkinnableViewFlowHelper {
     }
 
     fun destroyFlow() {
-        skinFlowJob?.cancel()
-        skinFlowJob = null
+//        skinFlowJob?.cancel()
+//        skinFlowJob = null
         languageFlowJob?.cancel()
         languageFlowJob = null
     }

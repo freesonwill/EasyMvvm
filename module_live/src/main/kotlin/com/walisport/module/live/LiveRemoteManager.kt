@@ -13,6 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import okio.utf8Size
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
 
@@ -66,7 +67,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
-            LogUtils.dTag("result", "matchMainMatchresult----->${result}")
+            LogUtils.dTag("result", "matchMainMatchResult----->${result.toString()}")
             return result.data!!.match
         }
         return null
@@ -164,6 +165,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
+            LogUtils.dTag("盘口分类","盘口分类----${result.data.toString()}")
             return result.data!!.marketCategoryList
         }
         return null

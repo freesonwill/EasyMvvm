@@ -26,7 +26,6 @@
             android:layout_height="wrap_content"
             android:lines="1"
             android:singleLine="true"
-            android:text="全场让球"
             android:textColor="@color/text_color"
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"
@@ -34,6 +33,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvNameOne"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -50,7 +50,6 @@
             android:layout_marginStart="17dp"
             android:drawableStart="@drawable/bet_outs_icon_ball"
             android:drawablePadding="8dp"
-            android:text="3-2"
             android:textColor="@color/color_24ee8a"
             android:textStyle="bold"
             android:visibility="gone"

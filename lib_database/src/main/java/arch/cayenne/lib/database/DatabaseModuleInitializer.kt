@@ -21,6 +21,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().matchDao() }
         factory { get<GameDatabase>().liveVideoDao() }
         factory { get<GameDatabase>().marketTypeDao() }
+        factory { get<GameDatabase>().marketTypeMenuDao() }
         factory { get<GameDatabase>().liveMatchDao() }
         factory { get<GameDatabase>().sportDao() }
     }

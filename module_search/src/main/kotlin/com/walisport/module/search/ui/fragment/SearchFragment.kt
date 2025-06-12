@@ -15,6 +15,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -335,46 +337,21 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun updateStatusTitleBar(isDefault: Boolean = true) {
         with(mBinding) {
-            // 設置狀態欄進入沈浸模式
-            root.fitsSystemWindows = false
-            setStatusBar(StatusBarConfig.apply {
-                statusBarType = StatusBarMode.DRAW_BEHIND
-                statusBarColor = android.R.color.transparent
-            }, clRoot)
-
-            if (isDefault) {
-                with(SkinnableResourceManager) {
-                    // 設置狀態欄文字顏色
-                    setStatusBar(
-                        StatusBarConfig.apply {
-                            statusBarDarkFont =
-                                getSkinName().lowercase().startsWith("white")
-                        }, clRoot
-                    )
-                    // 設置返回鍵顏色
-                    getTitleBarBackIcon().setImageDrawable(
-                        getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-                    )
-                }
-            } else {
-                // 設置狀態欄文字顏色
+            with(SkinnableResourceManager) {
                 setStatusBar(
-                    StatusBarConfig.apply { statusBarDarkFont = false },
-                    clRoot
+                    StatusBarConfig.apply {
+                        statusBarType = StatusBarMode.DRAW_BEHIND
+                        statusBarColor = android.R.color.transparent
+                        statusBarDarkFont =
+                            if(isDefault) getSkinName().lowercase().startsWith("white")
+                            else false
+                    }, clRoot
                 )
+
                 // 設置返回鍵顏色
                 getTitleBarBackIcon().setImageDrawable(
-                    ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-                )
-            }
-
-            // 重置底部 Padding
-            clRoot.post {
-                clRoot.setPadding(
-                    clRoot.paddingLeft,
-                    clRoot.paddingTop,
-                    clRoot.paddingRight,
-                    0
+                    if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+                    else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
                 )
             }
         }
