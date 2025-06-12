@@ -7,6 +7,8 @@ import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -172,5 +174,11 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             }
             it.show(childFragmentManager)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig, mBinding.root)
     }
 }
