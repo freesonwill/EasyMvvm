@@ -13,5 +13,15 @@
         <item name="cornerSize">8dp</item> <!-- 設置圓角半徑 -->
     </style>
 
-
+    <style name="live_bet_item_text">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/dp_15</item>
+        <item name="android:textColor">@drawable/live_bet_list_selected_text</item>
+        <item name="android:textSize">@dimen/sp_14</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="layout_constrainedWidth">true</item>
+    </style>
 </resources>
