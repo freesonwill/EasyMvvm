@@ -1,50 +1,47 @@
-package arch.cayenne.module.betslip.ui.adapter.livebetslip
+package arch.cayenne.module.betslip.ui.viewholder
 
+import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
-import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
+import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
+import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipConfirmAdapterManager(
-    private val binding: AdapterLiveBetSlipConfirmBinding,
-    private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding) {
+class BetSlipConfirmViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipConfirmBinding>(binding) {
 
+    // Additional methods or properties can be added here if needed
     override fun createViewHolder() {
-       initRecyclerView(binding.recyclerSelection,betSlipType)
-        binding.ivTip.clickNoRepeat {
+        initItemView(mBinding.recyclerSelection, betSlipType)
+        mBinding.ivTip.clickNoRepeat {
             showBetTip(it)
         }
     }
 
-    override fun covertPlus(position: Int, item: BetSlipData) {
+    override fun covertPlus(item: BetSlipData) {
         if (item is BetSlipOrder) {
-            updateData(item, position)
-            submitAdapter(binding.recyclerSelection, item, position)
+            updateData(item)
+            submitOrderData(item)
         }
     }
-
 
     /**
      * 未结算 确认中 已结算 更新数据
      * */
     private fun updateData(
-        item: BetSlipOrder,
-        position: Int
+        item: BetSlipOrder
     ) {
-        binding.also {
+        mBinding.also {
             item.order.let { order ->
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
                 it.betConfirmTvBettingValue.text = order.betAmount
-                it.betConfirmTvExceptValue.text = expectMaxAmount(order.betAmount, order.odds)
+                it.betConfirmTvExceptValue.text =
+                    BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)
             }
         }
     }
-
-
 }

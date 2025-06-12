@@ -1,8 +1,10 @@
-package arch.cayenne.module.betslip.ui.adapter.livebetslip
+package arch.cayenne.module.betslip.ui.viewholder
 
 import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -13,27 +15,25 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.calculateMinSettlePrice
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.earlySettlePrice
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.expectMaxAmount
+import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipUnsettledAdapterManager(
-    private val binding: AdapterLiveBetSlipUnsettleBinding, private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding) {
+class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum):
+    BaseBetSlipViewHolder<AdapterLiveBetSlipUnsettleBinding>(binding) {
+
+    private var earlySettleSubmitListener: RecyclerItemListener<String>? = null
 
     override fun createViewHolder() {
-        initRecyclerView(binding.recyclerSelection, betSlipType)
-        binding.ivTip.clickNoRepeat {
-            showBetTip(binding.ivTip)
+        initItemView(mBinding.recyclerSelection, betSlipType)
+        mBinding.ivTip.clickNoRepeat {
+            showBetTip(mBinding.ivTip)
         }
-
     }
 
-    override fun covertPlus(position: Int, item: BetSlipData) {
+    override fun covertPlus(item: BetSlipData) {
         if (item is BetSlipOrder) {
             item.order.let {
-                updateData(it, position)
-                submitAdapter(binding.recyclerSelection, item, position)
+                updateData(it)
+                submitOrderData(item)
             }
         }
     }
@@ -43,24 +43,24 @@ class BetSlipUnsettledAdapterManager(
      * */
     @SuppressLint("SetTextI18n")
     private fun updateData(
-        order: OrderBean,
-        position: Int
+        order: OrderBean
     ) {
-        binding.also {
+        mBinding.also {
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
 
             // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
             it.betUnsettledBtSettle.isEnabled =
-                order.earlySupport && order.earlySettleTimes < order.earlySettlePrice.settleTotal && calculateMinSettlePrice(
+                order.earlySupport && order.earlySettleTimes < order.earlySettlePrice.settleTotal && BetSlipUtils.calculateMinSettlePrice(
                     order.betAmount, order.earlyBetAmount, order.earlySettlePrice.settleMin
                 )
-            it.betUnsettledBtSettle.tag = position
+            it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
             it.betUnsettledTvBettingValue.text = order.betAmount
-            it.betUnsettledTvExceptValue.text = expectMaxAmount(order.betAmount, order.odds)
+            it.betUnsettledTvExceptValue.text =
+                BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)
             it.betUnsettledBtAmount.text =
-                "$${earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+                "$${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
@@ -71,9 +71,9 @@ class BetSlipUnsettledAdapterManager(
             if (order.earlySupport) {
                 it.betUnsettledTvEarlysettleValue.text = order.earlyBetAmount
             }
-            binding.betUnsettledBtSettle.clickNoRepeat {
+            it.betUnsettledBtSettle.clickNoRepeat {
                 if (order.earlySettlePrice.settleStatus != 102) {
-                    earlySettledSubmit(position)
+                    earlySettleSubmitListener?.onItemClick("", adapterPosition)
                 }
             }
         }
@@ -84,7 +84,7 @@ class BetSlipUnsettledAdapterManager(
      *当提前结算单在提前结算中时提前结算按钮显示为提前结算中
      * */
     private fun earlySettleStatus(settleStatus: Int) {
-        binding.also {
+        mBinding.also {
             if (settleStatus == 102) {
                 it.betUnsettledBtTv.text =
                     ContextCompat.getString(it.root.context, R.string.live_bet_in_early_settle)
@@ -101,4 +101,7 @@ class BetSlipUnsettledAdapterManager(
 
     }
 
+    fun setEarlySettleSubmitListener(listener: RecyclerItemListener<String>) {
+        this.earlySettleSubmitListener = listener
+    }
 }
