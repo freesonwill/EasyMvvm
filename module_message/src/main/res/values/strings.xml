@@ -8,5 +8,6 @@
     <string name="notification_wallet">钱包消息</string>
     <string name="notification_confirm">确认删除</string>
     <string name="notification_cancel">取消</string>
+    <string name="notification_detail">查看详情</string>
     <string name="notification_delete">消息删除后将无法恢复，确定删除消息吗？</string>
 </resources>
