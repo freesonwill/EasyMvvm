@@ -15,11 +15,10 @@
       android:layout_height="wrap_content"
       tools:ignore="MissingConstraints">
     <!-- 红点和数字 -->
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -30,7 +29,6 @@
         android:layout_height="@dimen/dp_14"
         android:background="@drawable/circle_badge"
         android:gravity="center"
-        android:text="12"
         android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintRight_toRightOf="parent"
@@ -43,7 +41,6 @@
       android:layout_width="wrap_content"
       android:layout_height="@dimen/dp_14"
       android:gravity="center"
-      android:text="2"
       android:textColor="#FFFFFF"
       android:lines="1"
       android:textSize="10sp"
