@@ -1,26 +1,22 @@
-package arch.cayenne.module.betslip.ui.adapter.livebetslip.item
+package arch.cayenne.module.betslip.ui.viewholder.item
 
 import android.annotation.SuppressLint
+import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
-import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
+import com.bumptech.glide.Glide
+import galaxy.common.proto.Common
 
-
-class BetSlipInvalidItemManager(
-    private val binding: ItemLiveBetSlipInvalidBinding,
-    private val liveBetSlip: BetSlipEnum
-) : BetSlipBaseItemManager(binding, liveBetSlip) {
-
+class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
+    BaseBetSlipItemViewHolder<ItemLiveBetSlipInvalidBinding>(binding) {
     override fun createViewHolder() {
-        initMoreListener(binding.ilMore.llMore)
-        showLiveArrow(binding.ivCircleArrow)
+        initMoreListener(mBinding.ilMore.llMore)
+        showLiveArrow(mBinding.ivCircleArrow)
     }
 
     override fun covertPlus(
@@ -29,45 +25,45 @@ class BetSlipInvalidItemManager(
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        binding.also {
-            configView(
-                expandedEnum,
-                it.line,
-                it.ilMore.groupGradient,
-                it.ilMore.tvMore,
-                it.ilMore.ivArrow,
-                position,
-                count,
-                it.ilMore.llMore
-            )
-        }
         if (item is BetSlipOrderSelectionData) {
-            updateData(item.selection)
-        }
-        binding.ivCircleArrow.tag = position
-    }
-
-
-    @SuppressLint("SetTextI18n")
-    private fun updateData(
-        item: Common.OrderSelection?,
-    ) {
-        item?.let {
-            val match = item.matchBasic
-            with(binding) {
-                Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
-                betInvalidTvRace.text = match.matchName
-                betInvalidTvIntroduce.text = item.selectionName
-                betInvalidTvAodds.text = binding.root.resources.getString(
-                    R.string.live_bet_except_odds,
-                    "${item.odds}"
-                )
-//                betInvalidTvMatchStatus.isVisible = item.inPlay
-                betInvalidTvScore.text = item.marketName + "  (${item.betScore})"
-                betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
+            item.selection.let { selection ->
+                mBinding.also {
+                    configView(
+                        expandedEnum,
+                        it.line,
+                        it.ilMore.groupGradient,
+                        it.ilMore.tvMore,
+                        it.ilMore.ivArrow,
+                        position,
+                        count,
+                        it.ilMore.llMore
+                    )
+                    it.ivCircleArrow.tag = position
+                }
+                updateData(selection)
             }
         }
     }
 
 
+    @SuppressLint("SetTextI18n")
+    private fun updateData(
+        item: Common.OrderSelection
+    ) {
+        item.let {
+            val match = item.matchBasic
+            with(mBinding) {
+                Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
+                betInvalidTvRace.text = match.matchName
+                betInvalidTvIntroduce.text = item.selectionName
+                betInvalidTvAodds.text = binding.root.resources.getString(
+                    R.string.live_bet_except_odds,
+                    item.odds
+                )
+    //                betInvalidTvMatchStatus.isVisible = item.inPlay
+                betInvalidTvScore.text = item.marketName + "  (${item.betScore})"
+                betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
+            }
+        }
+    }
 }
