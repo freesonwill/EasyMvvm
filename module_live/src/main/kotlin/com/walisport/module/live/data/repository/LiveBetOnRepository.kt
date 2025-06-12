@@ -1,6 +1,7 @@
 package com.walisport.module.live.data.repository
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.dao.MarketTypeBeanDao
@@ -10,9 +11,11 @@ import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
 import arch.cayenne.module.bet.data.BetInsertBean
 import com.walisport.module.live.LiveRemoteManager
+import com.xxx.qyplayer.log.extension.logTag
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -21,28 +24,43 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeMarketTypeBean() = database.marketTypeDao().observeMarketTypeBean()
     fun observeSelection(marketIds: List<Long>) = database.liveMatchDao().observeSelectionByIds(marketIds)
-    fun queryLiveMarketType(matchId: Long,callback: (List<MarketTypeBean>) -> Unit) {
+    //盘口列表
+    fun queryLiveMarketType(matchId: Long,marketBeanCallback: (List<MarketTypeBean>) -> Unit,marketBeanMenCallback: (List<MarketMenuBean>) -> Unit) {
         scope.launch {
             val resp = remoteManager.getMarketTypeReq(scope, matchId)
             database.marketTypeDao().deleteAll()
-            val data = resp?.mapIndexed { _, marketType ->
-                MarketTypeBean(
-                    code = marketType.code,
-                    name = marketType.name,
-                    marketMenuBean = getMarketMenuBean(marketType.marketBaseList)
-                )
-            } ?: emptyList()
-            database.marketTypeDao().insert(data)
-            scope.launch(Dispatchers.Main){
-                callback(data)
+            database.marketTypeMenuDao().deleteAll()
+            val marketBean = mutableListOf<MarketTypeBean>()
+            val marketBeanMenu = mutableListOf<MarketMenuBean>()
+            resp?.forEach {
+                marketBean.add(MarketTypeBean( code = it.code, name = it.name))
+                marketBeanMenu.addAll(getMarketMenuBean(it.marketBaseList, it.code))
+            }
+            database.marketTypeDao().insert(marketBean)
+            insertWithAutoIncrement(marketBeanMenu)
+            scope.launch(Main){
+                marketBeanMenCallback(marketBeanMenu)
+                marketBeanCallback(marketBean)
             }
         }
     }
 
-    private fun getMarketMenuBean(common: List<Common.MarketBase>): List<MarketMenuBean>{
+    suspend fun insertWithAutoIncrement(data: List<MarketMenuBean>): List<Long> {
+        // 获取当前最大 orderNumber，默认为 0 如果表为空
+        val maxOrderNumber =  database.marketTypeMenuDao().getMaxOrderNumber() ?: 0
+        // 为每条记录设置递增的 orderNumber
+        val updatedData = data.mapIndexed { index, bean ->
+            bean.copy(orderNumber = maxOrderNumber + index + 1)
+        }
+        // 插入数据
+        return  database.marketTypeMenuDao().insert(updatedData)
+    }
+
+
+    private fun getMarketMenuBean(common: List<Common.MarketBase>,code:String): List<MarketMenuBean>{
         val marketBean = mutableListOf<MarketMenuBean>()
         common.forEach {
-            marketBean.add(MarketMenuBean(marketId =it.marketId, marketName = it.marketName ))
+            marketBean.add(MarketMenuBean(marketId =it.marketId, marketName = it.marketName ,code =  code))
         }
         return marketBean
     }

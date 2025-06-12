@@ -14,6 +14,7 @@ import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.LiveMatchDao
 import arch.cayenne.lib.database.dao.LiveVideoDao
 import arch.cayenne.lib.database.dao.MarketTypeBeanDao
+import arch.cayenne.lib.database.dao.MarketTypeMenuBeanDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -31,6 +32,7 @@ import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+import arch.cayenne.lib.database.entity.MarketMenuBean
 
 @Database(
     entities = [
@@ -48,6 +50,7 @@ import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
         MatchMarketCrossRef::class,
         MarketSelectCrossRef::class,
         MarketTypeBean::class,
+        MarketMenuBean::class,
         LiveMatchBean::class,
         LiveMarketBean::class,
         LiveSelectionBean::class,
@@ -87,6 +90,7 @@ abstract class GameDatabase: RoomDatabase() {
 
     abstract fun liveVideoDao(): LiveVideoDao
     abstract fun marketTypeDao(): MarketTypeBeanDao
+    abstract fun marketTypeMenuDao(): MarketTypeMenuBeanDao
     abstract fun matchDao(): MatchDao
     abstract fun liveMatchDao(): LiveMatchDao
 

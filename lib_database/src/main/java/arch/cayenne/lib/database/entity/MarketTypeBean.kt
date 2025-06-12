@@ -11,11 +11,4 @@ data class MarketTypeBean(
     @PrimaryKey
     val code: String = "", // 盘口id
     val name: String = "", // 盘口名称
-   val marketMenuBean: List<MarketMenuBean>
-)
-
-data class MarketMenuBean(
-    val marketId: Long = 0, // 盘口id
-    val marketName: String = "", // 盘口名称
-    var isSelect: Boolean = false// 是否选中
 )
