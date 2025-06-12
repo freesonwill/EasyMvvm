@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -61,7 +62,7 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(firstInit) {
-            view.fitsSystemWindows = true
+            view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             trackLoadingTime()
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)

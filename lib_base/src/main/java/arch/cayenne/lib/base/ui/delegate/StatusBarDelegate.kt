@@ -70,7 +70,7 @@ class StatusBarDelegate : IStatusBar {
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                view.fitsSystemWindows = true
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
             //全屏
             StatusBarMode.FULLSCREEN -> {
@@ -78,11 +78,11 @@ class StatusBarDelegate : IStatusBar {
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
                 immersionBar.init()
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
             //顶部沉浸式
             //ImmersionBar实现状态栏和底部虚拟home键透明
             StatusBarMode.DRAW_BEHIND -> {
-                view.fitsSystemWindows = false
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
@@ -93,6 +93,7 @@ class StatusBarDelegate : IStatusBar {
                     viewPaddingTop + statusBarHeight,
                     navigationBarHeight
                 )
+                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
         }
     }
