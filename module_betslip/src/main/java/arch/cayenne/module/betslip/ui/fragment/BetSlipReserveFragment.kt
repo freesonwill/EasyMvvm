@@ -11,6 +11,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
@@ -22,6 +23,9 @@ class BetSlipReserveFragment :
     override val vbClass: KClass<FragmentLiveBetslipReserveBinding> =
         FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
+    override val betSlipAdapter: BetSlipReserveAdapter by lazy {
+        BetSlipReserveAdapter()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -29,11 +33,12 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setReserveListener(cancelListener = object : RecyclerItemListener<BetSlipReserve> {
+        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<BetSlipReserve> {
             override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { cancelReserve(it) }
             }
-        }, modifyListener = object : RecyclerItemListener<BetSlipReserve> {
+        })
+        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<BetSlipReserve> {
             override fun onItemClick(item: BetSlipReserve?, position: Int) {
                 item?.reserve?.let { modifyReserve(it) }
             }

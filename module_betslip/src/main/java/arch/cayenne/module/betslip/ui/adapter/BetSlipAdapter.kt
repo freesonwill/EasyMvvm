@@ -15,8 +15,6 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.compare.BetSlipCompare
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.ui.viewholder.BaseBetSlipViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipConfirmViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipInvalidViewHolder
@@ -24,25 +22,10 @@ import arch.cayenne.module.betslip.ui.viewholder.BetSlipReserveViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipSettledViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipUnsettledViewHolder
 
-class BetSlipAdapter(type: BetSlipEnum) :
+open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
     BaseAdapter<BetSlipData, BaseBetSlipViewHolder<*>, ViewBinding>(BetSlipCompare()) {
-    private val betSlipType = type
-    private var earlySettleListener: RecyclerItemListener<BetSlipOrder>? = null
-    private var cancelReserveListener: RecyclerItemListener<BetSlipReserve>? = null
-    private var modifyReserveListener: RecyclerItemListener<BetSlipReserve>? = null
+
     private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
-
-    fun setEarlySettleListener(listener: RecyclerItemListener<BetSlipOrder>) {
-        this.earlySettleListener = listener
-    }
-
-    fun setReserveListener(
-        cancelListener: RecyclerItemListener<BetSlipReserve>,
-        modifyListener: RecyclerItemListener<BetSlipReserve>
-    ) {
-        this.cancelReserveListener = cancelListener
-        this.modifyReserveListener = modifyListener
-    }
 
     fun setLiveListener(liveListener: RecyclerItemListener<BetSlipSelectionData>) {
         this.liveListener = liveListener
@@ -62,27 +45,10 @@ class BetSlipAdapter(type: BetSlipEnum) :
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseBetSlipViewHolder<*> {
         val holder = when (betSlipType) {
-            BetSlipEnum.UnSettled -> BetSlipUnsettledViewHolder(binding, betSlipType).apply {
-                this.setEarlySettleSubmitListener(object : RecyclerItemListener<String> {
-                    override fun onItemClick(item: String?, position: Int) {
-                        earlySettleListener?.onItemClick(getItem(position) as BetSlipOrder, position)
-                    }
-                })
-            }
+            BetSlipEnum.UnSettled -> BetSlipUnsettledViewHolder(binding, betSlipType)
             BetSlipEnum.Confirming -> BetSlipConfirmViewHolder(binding, betSlipType)
             BetSlipEnum.Settled -> BetSlipSettledViewHolder(binding, betSlipType)
-            BetSlipEnum.Reserve -> BetSlipReserveViewHolder(binding, betSlipType).apply {
-                this.setReserveModifySubmitListener(object : RecyclerItemListener<String> {
-                    override fun onItemClick(item: String?, position: Int) {
-                        modifyReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
-                    }
-                })
-                this.setCancelReserveSubmitListener(object : RecyclerItemListener<String> {
-                    override fun onItemClick(item: String?, position: Int) {
-                        cancelReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
-                    }
-                })
-            }
+            BetSlipEnum.Reserve -> BetSlipReserveViewHolder(binding, betSlipType)
             BetSlipEnum.Invalid -> BetSlipInvalidViewHolder(binding, betSlipType)
         }
         holder.createViewHolder()

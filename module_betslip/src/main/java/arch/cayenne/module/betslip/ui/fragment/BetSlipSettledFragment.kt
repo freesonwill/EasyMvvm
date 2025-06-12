@@ -6,6 +6,7 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
@@ -17,6 +18,9 @@ class BetSlipSettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipSettledLayoutBinding> =
         FragmentLiveBetslipSettledLayoutBinding::class
     override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
+    override val betSlipAdapter: BetSlipAdapter by lazy {
+        BetSlipAdapter(getBetSlipEnum())
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -68,8 +72,6 @@ class BetSlipSettledFragment :
             }
         }
     }
-
-
 
     override fun getBetSlipEnum(): BetSlipEnum {
         return BetSlipEnum.Settled

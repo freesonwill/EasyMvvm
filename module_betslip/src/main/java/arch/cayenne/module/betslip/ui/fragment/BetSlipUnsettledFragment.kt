@@ -9,6 +9,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipUnsettledAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
@@ -22,6 +23,9 @@ class BetSlipUnsettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
     override val vmClass: KClass<UnsettledViewModel> = UnsettledViewModel::class
+    override val betSlipAdapter: BetSlipUnsettledAdapter by lazy {
+        BetSlipUnsettledAdapter()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
