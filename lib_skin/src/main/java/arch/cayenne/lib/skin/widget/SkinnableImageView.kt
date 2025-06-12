@@ -43,10 +43,11 @@ class SkinnableImageView : AppCompatImageView{
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             backgroundHelper.updateSkin()
             imageHelper.updateSkin()
         }
+
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {

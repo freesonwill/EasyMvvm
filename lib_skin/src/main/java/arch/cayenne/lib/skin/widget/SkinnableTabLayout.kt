@@ -34,7 +34,7 @@ class SkinnableTabLayout : TabLayout {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow {
+        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
             backgroundTintHelper.updateSkin()
             tabLayoutHelper.updateSkin()
         }
