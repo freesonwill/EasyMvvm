@@ -1,36 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:gravity="center"
-   >
+    android:orientation="vertical">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_icon"
         android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_180"
-        />
+        android:layout_height="@dimen/dp_180" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_message"
-        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:textColor="@color/dynamic_text"
         android:textSize="13sp" />
 
 
-
     <Button
         android:id="@+id/btn_refresh"
-        android:layout_marginTop="20dp"
         android:layout_width="@dimen/dp_160"
-        android:textSize="16sp"
-        android:visibility="gone"
+        android:layout_height="@dimen/dp_42"
+        android:layout_marginTop="20dp"
         android:background="@drawable/net_error_btn"
         android:text="@string/net_refresh"
-        android:layout_height="@dimen/dp_42"/>
+        android:textSize="16sp"
+        android:visibility="gone" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/llLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_loading"
+            android:layout_width="@dimen/dp_28"
+            android:layout_height="@dimen/dp_28"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/icon_loading_white_blue" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:text="@string/loading"
+            android:textColor="@color/main_text"
+            android:textSize="@dimen/sp_14" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
