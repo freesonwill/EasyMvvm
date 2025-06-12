@@ -13,6 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class SingleBetRepository(
     override val scope: CoroutineScope,
@@ -69,6 +70,7 @@ class SingleBetRepository(
     fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
     fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
+    suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) { betDao.getCurrentBet()?.betType }
 
     fun removeBet() {
         scope.launch {
@@ -84,30 +86,27 @@ class SingleBetRepository(
         }
     }
 
-    fun saveToReserve(odds: Int) {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                if (it.betType == BetTypeEnum.SINGLE) {
-                    betDao.insertDetail(
-                        BetDetailBean(
-                            betId = it.betId,
-                            sumOdds = odds,
-                            inputMoney = 0L
-                        )
-                    )
-                    betDao.updateBetType(it.betId, BetTypeEnum.RESERVE)
-                }
-            }
+    suspend fun saveToReserve(odds: Int) = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let {
+            betDao.insertDetail(
+                BetDetailBean(
+                    betId = it.betId,
+                    sumOdds = odds,
+                    inputMoney = 0L
+                )
+            )
+            return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
         }
+        false
     }
 
-    suspend fun getReserveOdds(): Int {
-        val bet = betDao.getCurrentBet()
-        if (bet?.betType == BetTypeEnum.RESERVE) {
-            val detail = betDao.getDetail(bet.betId).firstOrNull()
-            return detail?.sumOdds ?: 0
+    suspend fun getReserveOdds() = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let {
+            if (it.betType == BetTypeEnum.RESERVE) {
+                return@withContext betDao.getDetail(it.betId).firstOrNull()?.sumOdds
+            }
         }
-        return 0
+        null
     }
 
     fun saveInputMoney(money: Long) {
@@ -170,14 +169,11 @@ class SingleBetRepository(
         }
     }
 
-    fun removeReserve() {
-        scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                if (bet.betType == BetTypeEnum.RESERVE) {
-                    betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE)
-                }
-            }
+    suspend fun saveToSingle() = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let { bet ->
+            return@withContext betDao.updateBetType(bet.betId, BetTypeEnum.SINGLE) == 1
         }
+        false
     }
 
     fun sendReserve(money: Long) {

@@ -37,6 +37,14 @@ abstract class BetDao : BaseDao<BetBean>() {
         )
     ): BetBean?
 
+    @Query("SELECT * FROM BetBean WHERE status IN (:statuses) ORDER BY betId DESC LIMIT 1")
+    abstract fun observeLastBetOrder(
+        statuses: List<BetStatusEnum> = listOf(
+            BetStatusEnum.COMPLETE,
+            BetStatusEnum.BETTING
+        )
+    ): Flow<BetBean?>
+
     @Query("SELECT * FROM BetBean WHERE status = :status ORDER BY betId DESC LIMIT 1")
     abstract suspend fun getCurrentBet(status: BetStatusEnum = BetStatusEnum.PENDING): BetBean?
 
@@ -48,7 +56,7 @@ abstract class BetDao : BaseDao<BetBean>() {
         betId: Long,
         type: BetTypeEnum,
         status: BetStatusEnum = BetStatusEnum.PENDING
-    )
+    ): Int
 
     @Query("SELECT * FROM BetSelectionBean WHERE betId = :betId")
     abstract suspend fun getSelections(betId: Long): List<BetSelectionBean>

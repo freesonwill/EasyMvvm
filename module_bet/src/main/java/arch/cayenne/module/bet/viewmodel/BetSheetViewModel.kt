@@ -9,7 +9,7 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
         repo.register()
     }
 
-    suspend fun getBetType() = repo.getBetType()
+    suspend fun getSelectionSize() = repo.getSelectionSize()
 
     fun unregister() {
         repo.unregister()
