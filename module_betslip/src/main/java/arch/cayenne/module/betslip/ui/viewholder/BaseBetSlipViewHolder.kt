@@ -23,25 +23,21 @@ import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterMangerInterface {
 
     protected val mBinding: VB get() = binding as VB
-    private var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
-    private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
 
     protected lateinit var adapter: BetSlipSelectionAdapter
 
     fun setExpandedListener(listener: RecyclerItemListener<BetSlipExpandedEnum>?) {
-        expandedListener = listener
+        adapter.setExpandListener(listener)
     }
 
     fun setLiveListener(listener: RecyclerItemListener<BetSlipSelectionData>?) {
-        liveListener = listener
+        adapter.setLiveListener(listener)
     }
 
     protected fun initItemView(recyclerView: RecyclerView, betSlip: BetSlipEnum) {
         val manager = LinearLayoutManager(recyclerView.context)
         adapter = BetSlipSelectionAdapter(
-            betSlip,
-            expandListener = expandedListener,
-            liveListener = liveListener
+            betSlip
         )
         recyclerView.also {
             it.layoutManager = manager

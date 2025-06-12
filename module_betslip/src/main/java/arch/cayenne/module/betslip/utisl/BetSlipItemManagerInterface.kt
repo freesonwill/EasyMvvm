@@ -8,7 +8,6 @@ interface BetSlipItemManagerInterface {
     fun createViewHolder()
 
     fun covertPlus(
-        position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData

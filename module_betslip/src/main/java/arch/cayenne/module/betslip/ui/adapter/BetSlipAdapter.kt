@@ -60,11 +60,7 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
                     notifyItemChanged(position)
                 }
         })
-        holder.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
-            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-                liveListener?.onItemClick(item, position)
-            }
-        })
+        holder.setLiveListener(liveListener)
         return holder
     }
 

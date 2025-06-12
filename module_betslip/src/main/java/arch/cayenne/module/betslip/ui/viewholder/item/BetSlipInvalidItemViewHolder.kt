@@ -14,13 +14,12 @@ import galaxy.common.proto.Common
 
 class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipInvalidBinding>(binding) {
+
     override fun createViewHolder() {
         initMoreListener(mBinding.ilMore.llMore)
-        showLiveArrow(mBinding.ivCircleArrow)
     }
 
     override fun covertPlus(
-        position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
@@ -34,13 +33,11 @@ class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
                         it.ilMore.groupGradient,
                         it.ilMore.tvMore,
                         it.ilMore.ivArrow,
-                        position,
-                        count,
-                        it.ilMore.llMore
+                        count
                     )
-                    it.ivCircleArrow.tag = position
                 }
                 updateData(selection)
+                showLiveArrow(item, mBinding.ivCircleArrow)
             }
         }
     }

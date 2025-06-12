@@ -15,12 +15,12 @@ class BetSlipReserveAdapter : BetSlipAdapter(BetSlipEnum.Reserve) {
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseBetSlipViewHolder<*> {
         val holder = super.createViewHolder(binding, viewType)
         if (holder is BetSlipReserveViewHolder) {
-            holder.setCancelReserveSubmitListener(object : RecyclerItemListener<String> {
+            holder.setReserveModifySubmitListener(object : RecyclerItemListener<String> {
                 override fun onItemClick(item: String?, position: Int) {
                     modifyReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
                 }
             })
-            holder.setReserveModifySubmitListener(object : RecyclerItemListener<String> {
+            holder.setCancelReserveSubmitListener(object : RecyclerItemListener<String> {
                 override fun onItemClick(item: String?, position: Int) {
                     cancelReserveListener?.onItemClick(getItem(position) as BetSlipReserve, position)
                 }

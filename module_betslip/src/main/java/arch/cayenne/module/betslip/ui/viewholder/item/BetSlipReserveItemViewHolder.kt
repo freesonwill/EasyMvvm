@@ -16,11 +16,9 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
 
     override fun createViewHolder() {
         initMoreListener(mBinding.ilMore.llMore)
-        showLiveArrow(mBinding.ivCircleArrow)
     }
 
     override fun covertPlus(
-        position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
@@ -33,12 +31,10 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
                     it.ilMore.groupGradient,
                     it.ilMore.tvMore,
                     it.ilMore.ivArrow,
-                    position,
-                    count,
-                    it.ilMore.llMore
+                    count
                 )
                 updateReserveData(item.reserve)
-                it.ivCircleArrow.tag = position
+                showLiveArrow(item, mBinding.ivCircleArrow)
             }
         }
     }

@@ -14,11 +14,9 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
     BaseBetSlipItemViewHolder<ItemLiveBetSlipUnsettleBinding>(binding) {
     override fun createViewHolder() {
         initMoreListener(mBinding.ilMore.llMore)
-        showLiveArrow(mBinding.ivCircleArrow)
     }
 
     override fun covertPlus(
-        position: Int,
         count: Int,
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
@@ -31,13 +29,11 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                     it.ilMore.groupGradient,
                     it.ilMore.tvMore,
                     it.ilMore.ivArrow,
-                    position,
-                    count,
-                    it.ilMore.llMore
+                    count
                 )
-                it.ivCircleArrow.tag = position
             }
             updateData(item.selection)
+            showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 

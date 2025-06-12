@@ -41,13 +41,11 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
         group: ConstraintLayout,
         tvMore: TextView,
         ivMoreArrow: ImageView,
-        position: Int,
-        count: Int,
-        llMore: LinearLayout,
+        count: Int
     ) {
+        val position = adapterPosition
         line.isVisible = position != count - 1
         group.isVisible = (count - 1) == position && expandedEnum != BetSlipExpandedEnum.Hide
-        llMore.tag = position
         if (expandedEnum != BetSlipExpandedEnum.Hide) {
             tvMore.text = ContextCompat.getString(
                 tvMore.context,
@@ -60,17 +58,15 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
 
     protected fun initMoreListener(llMore: ViewGroup) {
         llMore.setOnClickListener {
-            val position = llMore.tag as Int
-            expandedListener?.onItemClick(null, position)
+            expandedListener?.onItemClick(null, adapterPosition)
         }
     }
 
-    protected fun showLiveArrow(ivArrow: ImageView) {
+    protected fun showLiveArrow(data: BetSlipSelectionData, ivArrow: ImageView) {
         val isDetail: Boolean = userManager.getValue(UserDataKey.KEY_BETSLIP_DETAIL, false)
         ivArrow.isVisible = isDetail
         ivArrow.setOnClickListener {
-            val position = it.tag as Int
-            liveListener?.onItemClick(null,position)
+            liveListener?.onItemClick(data, adapterPosition)
         }
     }
 
