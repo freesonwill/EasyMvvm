@@ -27,6 +27,6 @@ abstract class MarketTypeMenuBeanDao : BaseDao<MarketMenuBean>(){
     @Query("delete from MarketMenuBean")
     abstract suspend fun deleteAll()
 
-    @Query("SELECT MAX(orderNumber) FROM MarketMenuBean")
+    @Query("SELECT MAX(number) FROM MarketMenuBean")
     abstract suspend fun getMaxOrderNumber(): Int?
 }
