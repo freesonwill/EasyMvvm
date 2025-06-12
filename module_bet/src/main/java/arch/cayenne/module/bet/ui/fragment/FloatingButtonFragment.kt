@@ -42,9 +42,6 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
                         }
                     }
                 }
-                if (count == 1) {
-                    mViewModel.saveToSingle()
-                }
                 BetSheetFragment.newInstance().show(parentFragmentManager)
                 mBinding.root.visibility = View.GONE
             }

@@ -383,6 +383,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cl_calculator">
 
+        <ImageView
+            android:id="@+id/btn_delete"
+            android:layout_width="90dp"
+            android:layout_height="48dp"
+            android:src="@mipmap/icon_delete_combo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btn_collusion"
             android:layout_width="90dp"

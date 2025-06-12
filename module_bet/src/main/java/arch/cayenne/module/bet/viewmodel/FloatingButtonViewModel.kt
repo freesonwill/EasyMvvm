@@ -21,8 +21,4 @@ class FloatingButtonViewModel(private val repo: FloatingButtonRepository) : Base
             }
         }
     }
-
-    fun saveToSingle() {
-        repo.saveToSingleBet()
-    }
 }
