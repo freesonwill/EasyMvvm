@@ -18,11 +18,10 @@
       tools:ignore="MissingConstraints">
 
     <!-- 红点和数字 -->
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/homeTopLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -121,11 +120,10 @@
       tools:ignore="MissingConstraints">
 
     <!-- 红点和数字 -->
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/homeBottomLogo"
         android:layout_width="@dimen/dp_28"
         android:layout_height="@dimen/dp_28"
-        android:background="@drawable/lineup_head"
         android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
