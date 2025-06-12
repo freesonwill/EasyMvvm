@@ -175,7 +175,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.icon_lineuup_head)
+            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.lineup_head_default)
                 .into(ivLogo)
             stvName.text = data.name
             tvNumber.text = data.shirtNumber.toString()
@@ -191,7 +191,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.icon_lineuup_head)
+            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.lineup_head_default)
                 .into(ivLogo)
             stvName.text = data.name
             tvNumber.text = data.shirtNumber.toString()
@@ -219,7 +219,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.shirtNumber.toString()
                     Glide.with(this@LiveLineupFragment)
                         .load(allPlayerInfo.find { it.id == itData.inPlayer.id }?.logUrl)
-                        .error(R.drawable.icon_lineuup_head).into(homeTopLogo)
+                        .error(R.drawable.lineup_head_default).into(homeTopLogo)
                     homeTopBottom.text = "${itData.time}'"
                     homeBottomName.text = itData.outPlayer.name
                     homeBottomPosition.text = getPositionFromString(positionName)?.description
@@ -227,7 +227,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                         allPlayerInfo.find { it.id == itData.outPlayer.id }?.shirtNumber.toString()
                     Glide.with(this@LiveLineupFragment)
                         .load(allPlayerInfo.find { it.id == itData.outPlayer.id }?.logUrl)
-                        .error(R.drawable.icon_lineuup_head).into(homeBottomLogo)
+                        .error(R.drawable.lineup_head_default).into(homeBottomLogo)
                     homeTopNumber.setBackgroundResource(if (isHome) R.drawable.circle_badge else R.drawable.circle_badge_blue)
                     homeBottomNumber.setBackgroundResource(if (isHome) R.drawable.circle_badge else R.drawable.circle_badge_blue)
                 }
@@ -251,7 +251,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             shirtNumber.text = data.shirtNumber.toString()
             tvName.text = data.name
             Glide.with(this@LiveLineupFragment).load(data.logo)
-                .error(R.drawable.icon_lineuup_head)
+                .error(R.drawable.lineup_head_default)
                 .into(imageLogo)
             shirtNumber.setBackgroundResource(if (isTopView) R.drawable.circle_badge else R.drawable.circle_badge_blue)
         }
