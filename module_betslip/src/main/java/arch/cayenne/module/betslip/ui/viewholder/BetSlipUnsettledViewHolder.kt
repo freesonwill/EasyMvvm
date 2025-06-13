@@ -33,7 +33,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
         if (item is BetSlipOrderBean) {
             updateData(item)
             sendData(item)
-            mBinding.ilMore.tvMore.clickNoRepeat {
+            mBinding.ilMore.llMore.clickNoRepeat {
                 sendData(item)
             }
         }
