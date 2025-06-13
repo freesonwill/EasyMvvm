@@ -51,20 +51,33 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             it.betSettledTvBettingValue.text = betAmount
             settledStatus(order)
 
-            val hasPartSettled = BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
+            val hasPartSettled =
+                BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
             mBinding.betSettledTvPart.isVisible = hasPartSettled
             mBinding.betSettledTvPartValue.isVisible = hasPartSettled
             val earlyAmount = "${moneySymbol}${order.earlyBetAmount}"
             mBinding.betSettledTvPartValue.text = earlyAmount
 
-            val amount = (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
-            it.betSettledTvExceptValue.text = if (amount >= 0) "${moneySymbol}${amount.getMoney()}" else "-${moneySymbol}${amount.getMoney()}"
-            it.betSettledTvExceptValue.setTextColor(
-                ContextCompat.getColorStateList(
-                    binding.root.context,
-                    if (amount >= 0) arch.cayenne.lib.res.R.color.win_color else arch.cayenne.lib.res.R.color.lose_color
+            val amount =
+                (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
+            it.betSettledTvExceptValue.text =
+                if (amount >= 0) "${moneySymbol}${amount.getMoney()}" else "-${moneySymbol}${amount.getMoney()}"
+
+            val colorRes = if (amount > 0) {
+                arch.cayenne.lib.res.R.color.win_color
+            } else if (amount < 0) {
+                arch.cayenne.lib.res.R.color.lose_color
+            } else {
+                null
+            }
+            colorRes?.let { color ->
+                it.betSettledTvExceptValue.setTextColor(
+                    ContextCompat.getColorStateList(
+                        binding.root.context,
+                        color
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -72,8 +85,10 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         mBinding.also {
             val status = BetSlipResultOrderStatusEnum.getStatus(item.resultStatus)
             status?.let { st ->
-                it.betSettledTvResult.text =  ContextCompat.getString(it.betSettledTvResult.context,st.names)
-                it.betSettledTvResult.background = SkinnableResourceManager.getDrawable(it.betSettledTvResult.context,st.resId)
+                it.betSettledTvResult.text =
+                    ContextCompat.getString(it.betSettledTvResult.context, st.names)
+                it.betSettledTvResult.background =
+                    SkinnableResourceManager.getDrawable(it.betSettledTvResult.context, st.resId)
             }
         }
     }
