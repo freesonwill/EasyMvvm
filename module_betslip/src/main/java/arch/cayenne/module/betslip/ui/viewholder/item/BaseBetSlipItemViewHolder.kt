@@ -48,7 +48,7 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
                 if (expandedEnum == BetSlipExpandedEnum.Fold) R.string.see_more else R.string.fold_up
             )
 
-            ivMoreArrow.setImageResource(if (expandedEnum == BetSlipExpandedEnum.Fold) R.drawable.icon_cricle_arrrow_down else R.drawable.icon_cricle_arrrow_up)
+            ivMoreArrow.setImageResource(if (expandedEnum == BetSlipExpandedEnum.Fold) R.drawable.icon_circle_arrow_down else R.drawable.icon_circle_arrow_up)
         }
     }
 
