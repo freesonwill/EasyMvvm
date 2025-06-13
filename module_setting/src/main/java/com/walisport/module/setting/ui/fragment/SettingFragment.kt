@@ -21,7 +21,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
-
     private var skinType: String = ""
     private var oddsType: Int = 0
 
@@ -64,8 +63,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
+            //语言类型
             val lang = mViewModel.getLanguageType()
             mBinding.tvLanguageType.text = getLanguage(lang)
+            //赔率显示方式
+            oddsType = mViewModel.getOddsType()
+            if (oddsType == 0) {
+                mBinding.tvDisplay.text = getString(R.string.menu_europe)
+            } else {
+                mBinding.tvDisplay.text = getString(R.string.menu_hk)
+            }
+            //皮肤设置
             skinType = mViewModel.getSkinType()
             mViewModel.setSkinType(skinType)
         }
