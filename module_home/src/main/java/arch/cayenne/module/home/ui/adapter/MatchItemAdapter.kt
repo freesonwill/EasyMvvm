@@ -62,5 +62,5 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 interface OnMatchItemClickListener {
     fun onLiveEntryClick(item: MatchWithMarkets)
     fun onFavoriteClick(item: MatchWithMarkets)
-    fun onOddsCellClick(selection: SelectionBeanLite)
+    fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float)
 }
