@@ -101,22 +101,38 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
         val fabLocation = IntArray(2)
         fabView.getLocationOnScreen(fabLocation)
 
-        // 計算最短路徑
+        // 計算 fab 的中心點
         val fabCenterX = fabLocation[0] + fabView.width / 2
         val fabCenterY = fabLocation[1] + fabView.height / 2
 
+        // 計算方向向量
+        val dx = fabCenterX - startX
+        val dy = fabCenterY - startY
+        val length = kotlin.math.sqrt(dx * dx + dy * dy)
+        val unitDx = dx / length
+        val unitDy = dy / length
+
+        // 計算起點（從邊界開始）
+        val startOffset = 20f  // 從邊界開始的偏移量
+        val actualStartX = startX + unitDx * startOffset
+        val actualStartY = startY + unitDy * startOffset
+
+        // 計算終點（在碰到 fab 邊界時消失）
+        val fabRadius = fabView.width / 2f  // fab 的半徑
+        val actualEndX = fabCenterX - unitDx * fabRadius
+        val actualEndY = fabCenterY - unitDy * fabRadius
+
         // 創建直線路徑
         val path = Path()
-        path.moveTo(startX, startY)
-        path.lineTo(fabCenterX.toFloat(), fabCenterY.toFloat())
+        path.moveTo(actualStartX, actualStartY)
+        path.lineTo(actualEndX, actualEndY)
 
         // 創建動畫
         val pathMeasure = PathMeasure(path, false)
         val pathLength = pathMeasure.length
 
         // 根據距離計算動畫時間，保持速度一致
-        // 假設速度為 1000dp/s
-        val speed = 1000f
+        val speed = 2000f
         val duration = (pathLength / speed * 1000).toLong()
 
         // 創建圓點視圖
