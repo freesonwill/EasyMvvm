@@ -59,6 +59,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
             adapter = standsAdapter
             addItemDecoration(StandingsItemDecoration())
         }
+        mBinding.mainLayout.setState(DynamicStateLayout.States.LOADING, "")
     }
 
     override fun initListener() {
