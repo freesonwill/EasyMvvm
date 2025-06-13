@@ -1,7 +1,10 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -11,7 +14,6 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.OrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
-import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
 class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
     BaseBetSlipViewHolder<AdapterLiveBetSlipSettledBinding>(binding) {
@@ -41,13 +43,15 @@ class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: Be
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
             it.betSettledTvBettingValue.text = order.betAmount
-            val amount = BetSlipUtils.winOrLoseAmount(
-                order.betAmount,
-                order.earlyBetAmount,
-                order.returnAmount
-            )
             settledStatus(order)
-            it.betSettledTvExceptValue.text = "$amount"
+
+            val hasPartSettled = BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
+            mBinding.betSettledTvPart.isVisible = hasPartSettled
+            mBinding.betSettledTvPartValue.isVisible = hasPartSettled
+            mBinding.betSettledTvPartValue.text = order.earlyBetAmount
+
+            val amount = (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
+            it.betSettledTvExceptValue.text = if (amount >= 0) amount.getMoney() else "-${amount.getMoney()}"
             it.betSettledTvExceptValue.setTextColor(
                 ContextCompat.getColorStateList(
                     binding.root.context,
