@@ -88,6 +88,14 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:background="@color/notice_line"
+                app:layout_constraintBottom_toBottomOf="parent" />
         </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
