@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
+import java.util.Locale
 
 class SplashViewModel : BaseActivityViewModel() {
 
@@ -46,12 +47,14 @@ class SplashViewModel : BaseActivityViewModel() {
         }
     }
 
-    //加载皮肤方案
+    //加载皮肤和语言方案
     fun loadMyAppSkin() {
         viewModelScope.launch {
             val skinType = repository.getSkinType()
             val logicType = getLogicSkinType(skinType)
             skinManager.loadSkin(logicType)
+            val langType = repository.getLanguageType()
+            skinManager.changeLanguage(Locale(langType))
         }
     }
 

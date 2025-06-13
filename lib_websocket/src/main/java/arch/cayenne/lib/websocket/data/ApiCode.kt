@@ -47,8 +47,6 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     GET_MARKET_TYPE(500, 1007),   //500-1007: 盘口分类
 
     EARLY_SETTLE_PRICE(500, 1016),    //500-1016: 提前结算报价
-
-    GET_SYSTEM_SETTING(500,1050),    //500-1050: 获取系统设置
     UPDATE_SYSTEM_SETTING(500,1051), //500-1051: 修改系统设置
 
     CHAT_PING(0,2), //0 -2 聊天心跳
