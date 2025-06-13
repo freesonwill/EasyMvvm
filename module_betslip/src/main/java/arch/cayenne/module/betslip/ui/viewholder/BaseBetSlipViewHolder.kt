@@ -79,15 +79,16 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
 
     protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
         val enum = expandedEnum
-        binding.root.isVisible = enum == BetSlipExpandedEnum.COLLAPSED
+        binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
         if (enum != BetSlipExpandedEnum.NONE) {
             when (enum) {
                 BetSlipExpandedEnum.EXPANDED -> {
-//                    binding.tvMore.text = getString(R.string.fold_up)
-//                    binding.ivArrow.setImageDrawable(
-//                        SkinnableResourceManager.getDrawable(
-//                            binding.root.context, R.drawable.icon_circle_arrow_up
-//                        ))
+                    binding.tvMore.text = getString(R.string.fold_up)
+                    binding.ivArrow.setImageDrawable(
+                        SkinnableResourceManager.getDrawable(
+                            binding.root.context, R.drawable.icon_circle_arrow_up
+                        ))
+                    binding.ivGradient.isVisible = false
                 }
                 BetSlipExpandedEnum.COLLAPSED -> {
                     binding.tvMore.text = getString(R.string.see_more)
@@ -95,6 +96,7 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
                         SkinnableResourceManager.getDrawable(
                             binding.root.context, R.drawable.icon_circle_arrow_down
                         ))
+                    binding.ivGradient.isVisible = true
                 }
                 else -> {}
             }
