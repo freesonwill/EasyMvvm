@@ -1,23 +1,18 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
-import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
+import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
@@ -69,18 +64,7 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
     }
 
     protected fun showBetTip(attachView: View) {
-        val pop = PopupWindow(attachView.context)
-        pop.contentView =
-            ItemTipsLayoutBinding.inflate(LayoutInflater.from(attachView.context)).root
-        pop.isOutsideTouchable = true
-        pop.setBackgroundDrawable(
-            ColorDrawable(
-                ContextCompat.getColor(
-                    attachView.context,
-                    R.color.tran_0
-                )
-            )
-        )
-        pop.showAsDropDown(attachView)
+        val helper = BetTipsHelper()
+        helper.showTips(attachView)
     }
 }

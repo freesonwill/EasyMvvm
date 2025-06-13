@@ -21,7 +21,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: Be
     override fun createViewHolder() {
         initItemView(mBinding.recyclerSelection, betSlipType)
         mBinding.ivTip.clickNoRepeat {
-            showBetTip(mBinding.ivTip)
+            showBetTip(it)
         }
     }
 

@@ -164,11 +164,11 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_earlysettle" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_tip"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_betting"
