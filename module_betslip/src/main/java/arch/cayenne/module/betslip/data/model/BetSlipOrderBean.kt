@@ -1,6 +1,5 @@
 package arch.cayenne.module.betslip.data.model
 
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import galaxy.common.proto.Common
 
 data class BetSlipOrderBean (
@@ -21,8 +20,7 @@ data class BetSlipOrderBean (
     val earlyReturnAmount: String,             // 提前結算派彩金額
     val earlySettleTimes: Int,                 // 已經提前結算的次數
     val resultStatus: Int,                     // 訂單結果：0-未結算，1-贏，2-和局，3-輸，4-輸一半，5-贏一半，6-退款，7-提前結算
-    val earlySettlePrice: EarlySettlePriceBean,// 提前結算報價
-    override var expandedEnum: BetSlipExpandedEnum = BetSlipExpandedEnum.Hide
+    val earlySettlePrice: EarlySettlePriceBean // 提前結算報價
 ): BetSlipData()
 
 fun Common.Order.toOrderBean(): BetSlipOrderBean {

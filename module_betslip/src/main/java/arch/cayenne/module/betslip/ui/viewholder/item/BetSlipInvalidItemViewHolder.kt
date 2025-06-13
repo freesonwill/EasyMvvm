@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
@@ -14,30 +13,12 @@ import com.bumptech.glide.Glide
 class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipInvalidBinding>(binding) {
 
-    override fun createViewHolder() {
-        initMoreListener(mBinding.ilMore.llMore)
-    }
-
     override fun covertPlus(
-        count: Int,
-        expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
         if (item is OrderSelectionBean) {
-            item.let { selection ->
-                mBinding.also {
-                    configView(
-                        expandedEnum,
-                        it.line,
-                        it.ilMore.groupGradient,
-                        it.ilMore.tvMore,
-                        it.ilMore.ivArrow,
-                        count
-                    )
-                }
-                updateData(selection)
-                showLiveArrow(item, mBinding.ivCircleArrow)
-            }
+            updateData(item)
+            showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 

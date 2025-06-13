@@ -11,10 +11,10 @@ import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipInvalidViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
-    BaseBetSlipViewHolder<AdapterLiveBetSlipInvalidBinding>(binding) {
+class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipInvalidBinding>(binding, betSlipType) {
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
     }
 
     override fun covertPlus(item: BetSlipData) {

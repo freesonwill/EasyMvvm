@@ -15,13 +15,13 @@ import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum):
-    BaseBetSlipViewHolder<AdapterLiveBetSlipUnsettleBinding>(binding) {
+class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum):
+    BaseBetSlipViewHolder<AdapterLiveBetSlipUnsettleBinding>(binding, betSlipType) {
 
     private var earlySettleSubmitListener: RecyclerItemListener<String>? = null
 
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
         mBinding.ivTip.clickNoRepeat {
             showBetTip(it)
         }

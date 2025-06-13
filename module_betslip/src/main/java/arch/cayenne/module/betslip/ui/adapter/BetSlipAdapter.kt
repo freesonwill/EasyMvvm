@@ -58,16 +58,16 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
             BetSlipEnum.Invalid -> BetSlipInvalidViewHolder(binding, betSlipType)
         }
         holder.createViewHolder()
-        holder.setExpandedListener(object : RecyclerItemListener<BetSlipExpandedEnum> {
-                override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
-                    val holderPosition = holder.adapterPosition
-                    Log.d("abcd", " $$$ $position  $holderPosition")
-                    val status =
-                        if (getItem(holderPosition).expandedEnum == BetSlipExpandedEnum.Fold) BetSlipExpandedEnum.Expanded else BetSlipExpandedEnum.Fold
-                    currentList[holderPosition].expandedEnum = status
-                    notifyItemChanged(holderPosition)
-                }
-        })
+//        holder.setExpandedListener(object : RecyclerItemListener<BetSlipExpandedEnum> {
+//                override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
+//                    val holderPosition = holder.adapterPosition
+//                    Log.d("abcd", " $$$ $position  $holderPosition")
+//                    val status =
+//                        if (getItem(holderPosition).expandedEnum == BetSlipExpandedEnum.Fold) BetSlipExpandedEnum.Expanded else BetSlipExpandedEnum.Fold
+//                    currentList[holderPosition].expandedEnum = status
+//                    notifyItemChanged(holderPosition)
+//                }
+//        })
         holder.setLiveListener(liveListener)
         holder.setBetSlipListener(betSlipListener)
         return holder

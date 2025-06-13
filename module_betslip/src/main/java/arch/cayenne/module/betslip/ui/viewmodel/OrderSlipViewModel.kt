@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.toBetSlipOrderData
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
@@ -29,7 +28,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 matchId,
             )?.let { result ->
                 _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _orderLiveData.value = result.toBetSlipOrderData()
+                _orderLiveData.value = result
             } ?: run {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
@@ -52,9 +51,8 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 if (result.isNotEmpty()) {
                     val newList = mutableListOf<BetSlipOrderBean>()
                     val oldList = _orderLiveData.value ?: emptyList()
-                    val resultList = result.toBetSlipOrderData()
                     newList.addAll(oldList)
-                    newList.addAll(resultList)
+                    newList.addAll(result)
                     _orderLiveData.value = newList
                 }
             } ?: run {

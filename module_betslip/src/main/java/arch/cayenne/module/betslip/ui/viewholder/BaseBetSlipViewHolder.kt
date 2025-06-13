@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
@@ -14,18 +13,16 @@ import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 
-abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
+abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
     protected val mBinding: VB get() = binding as VB
 
-    protected lateinit var adapter: BetSlipSelectionAdapter
+    protected val adapter: BetSlipSelectionAdapter by lazy {
+        BetSlipSelectionAdapter(betSlipType)
+    }
     private var betSlipListener: BetSlipAdapter.BetSlipListener? = null
     protected val moneySymbol: String
         get() = betSlipListener?.getMoneySymbol() ?: ""
-
-    fun setExpandedListener(listener: RecyclerItemListener<BetSlipExpandedEnum>?) {
-        adapter.setExpandListener(listener)
-    }
 
     fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
@@ -35,11 +32,8 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
         betSlipListener = listener
     }
 
-    protected fun initItemView(recyclerView: RecyclerView, betSlip: BetSlipEnum) {
+    protected fun initItemView(recyclerView: RecyclerView) {
         val manager = LinearLayoutManager(recyclerView.context)
-        adapter = BetSlipSelectionAdapter(
-            betSlip
-        )
         recyclerView.also {
             it.layoutManager = manager
             it.itemAnimator = null
@@ -50,15 +44,13 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
     protected fun submitOrderData(
         data: BetSlipOrderBean
     ) {
-        var list = data.selectionsList
-
-        adapter.let {
-            adapter.updateBasicData(data.expandedEnum, this.adapterPosition)
-            if (list.size > 3 && data.expandedEnum == BetSlipExpandedEnum.Fold) {
-                list = list.subList(0, 3)
-            }
-            adapter.submitList(list)
-        }
+//        var list = data.selectionsList
+//        adapter.let {
+//            if (list.size > 3 && data.expandedEnum == BetSlipExpandedEnum.Fold) {
+//                list = list.subList(0, 3)
+//            }
+//            adapter.submitList(list)
+//        }
     }
 
     protected fun showBetTip(attachView: View) {

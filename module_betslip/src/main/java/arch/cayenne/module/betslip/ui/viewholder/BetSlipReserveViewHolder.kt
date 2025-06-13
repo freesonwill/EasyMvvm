@@ -11,18 +11,18 @@ import arch.cayenne.module.betslip.data.model.toReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipReserveViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
-    BaseBetSlipViewHolder<AdapterLiveBetSlipReserveBinding>(binding) {
+class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipReserveBinding>(binding, betSlipType) {
     private var cancelReserveSubmitListener: RecyclerItemListener<String>? = null
     private var reserveModifySubmitListener: RecyclerItemListener<String>? = null
 
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
         mBinding.betReserveBtCancel.clickNoRepeat {
-            cancelReserveSubmitListener?.onItemClick("", (it.tag as Int))
+            cancelReserveSubmitListener?.onItemClick("", adapterPosition)
         }
         mBinding.betReserveBtModify.clickNoRepeat {
-            reserveModifySubmitListener?.onItemClick("", (it.tag as Int))
+            reserveModifySubmitListener?.onItemClick("", adapterPosition)
         }
     }
 

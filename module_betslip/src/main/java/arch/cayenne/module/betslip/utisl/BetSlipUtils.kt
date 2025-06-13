@@ -54,14 +54,4 @@ internal object BetSlipUtils {
         return toBigDecimal(value).multiply(BigDecimal(1000))
     }
 
-    fun List<BetSlipOrderBean>.toBetSlipOrderData(): List<BetSlipOrderBean> {
-        return this.map {
-            val expandedEnum =
-                if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
-            it.expandedEnum = expandedEnum
-            it
-        }.toList()
-    }
-
-
 }

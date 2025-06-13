@@ -14,11 +14,11 @@ import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 
-class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
-    BaseBetSlipViewHolder<AdapterLiveBetSlipSettledBinding>(binding) {
+class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipSettledBinding>(binding, betSlipType) {
 
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
         mBinding.ivTip.clickNoRepeat {
             showBetTip(it)
         }

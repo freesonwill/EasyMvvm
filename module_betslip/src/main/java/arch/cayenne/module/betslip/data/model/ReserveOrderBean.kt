@@ -1,6 +1,5 @@
 package arch.cayenne.module.betslip.data.model
 
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import galaxy.common.proto.Common
 
 data class ReserveOrderBean(
@@ -8,8 +7,7 @@ data class ReserveOrderBean(
     val reserveTime: Long,          // 預約時間（毫秒時間戳）
     val betAmount: String,          // 下注金額（字串格式）
     val selection: Common.ReserveOrderSelection, // 預約選項（需要定義對應的資料類型）
-    val status: Int,                // 狀態：0-預約中, 1-成功, 2-失敗, 3-取消
-    override var expandedEnum: BetSlipExpandedEnum = BetSlipExpandedEnum.Hide
+    val status: Int                 // 狀態：0-預約中, 1-成功, 2-失敗, 3-取消
 ) : BetSlipData()
 
 fun Common.ReserveOrder.toReserveOrderBean(): ReserveOrderBean {
