@@ -24,7 +24,7 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         if (item is BetSlipOrderBean) {
             updateData(item)
             sendData(item)
-            mBinding.ilMore.tvMore.clickNoRepeat {
+            mBinding.ilMore.llMore.clickNoRepeat {
                 sendData(item)
             }
         }
@@ -32,7 +32,7 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
 
     private fun sendData(item: BetSlipOrderBean) {
         submitItemData(item.selectionsList)
-        setGradientLayout(mBinding.ilMore)
+        setGradientLayout(mBinding.ilMore, mBinding.recyclerSelection)
     }
 
     private fun updateData(

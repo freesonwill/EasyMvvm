@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_betslip_card">
 
     <arch.cayenne.lib.skin.widget.SkinnableView
@@ -19,9 +19,9 @@
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginTop="@dimen/dp_8"
         android:gravity="center"
-        android:text="@string/live_bet_reserve_expired"
         android:paddingStart="3.5dp"
         android:paddingEnd="4.5dp"
+        android:text="@string/live_bet_reserve_expired"
         android:textColor="@color/color_2c3c3e"
         android:textSize="@dimen/sp_13"
         app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_top"
@@ -40,36 +40,36 @@
         app:layout_constraintLeft_toRightOf="@id/bet_expired_tv_status"
         app:layout_constraintTop_toTopOf="@id/bet_expired_tv_status" />
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:id="@+id/recycler_selection"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_top" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/bet_expired_iv_top" />
 
     <include
         android:id="@+id/il_more"
         layout="@layout/item_betslip_more_layout"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/recycler_selection" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_expired_iv_avava"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
-        android:scaleType="fitXY"
         android:src="@mipmap/live_betslip_avava"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_selection" />
+        app:layout_constraintTop_toBottomOf="@id/il_more"
+        app:layout_goneMarginTop="6dp" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginEnd="6dp"
         android:layout_marginStart="12dp"
+        android:layout_marginEnd="6dp"
         android:background="@drawable/bet_district_line"
         app:layout_constraintBottom_toBottomOf="@id/bet_expired_iv_avava"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -118,8 +118,7 @@
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_expired_tv_status"
-        app:layout_constraintTop_toBottomOf="@id/tv_unit1"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_unit1" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_unit2_value"
@@ -180,6 +179,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/tv_unit4"
-        />
+        app:layout_constraintTop_toBottomOf="@id/tv_unit4" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

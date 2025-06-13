@@ -16,8 +16,13 @@ import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
+import androidx.constraintlayout.widget.ConstraintLayout
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
+
+    companion object {
+        private const val EXPANDED_SIZE = 3
+    }
 
     protected val mBinding: VB get() = binding as VB
 
@@ -50,22 +55,22 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     protected fun submitItemData(
         data: List<BetSlipSelectionData>,
     ) {
-        if (data.size > 3 && expandedEnum == BetSlipExpandedEnum.NONE) {
+        if (data.size >= EXPANDED_SIZE && expandedEnum == BetSlipExpandedEnum.NONE) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, 3))
+            adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
             expandedEnum = BetSlipExpandedEnum.EXPANDED
             adapter.submitList(data)
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, 3))
+            adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else {
             expandedEnum = BetSlipExpandedEnum.NONE
             adapter.submitList(data)
         }
     }
 
-    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
+    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding, anchorView: View) {
         val enum = expandedEnum
         binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
         if (enum != BetSlipExpandedEnum.NONE) {
@@ -76,6 +81,11 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
                         SkinnableResourceManager.getDrawable(
                             binding.root.context, R.drawable.icon_circle_arrow_up
                         ))
+                    binding.ivGradient.isVisible = false
+                    binding.root.layoutParams = (binding.root.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+                        topToBottom = anchorView.id
+                    }
                 }
                 BetSlipExpandedEnum.COLLAPSED -> {
                     binding.tvMore.text = getString(R.string.see_more)
@@ -83,6 +93,11 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
                         SkinnableResourceManager.getDrawable(
                             binding.root.context, R.drawable.icon_circle_arrow_down
                         ))
+                    binding.ivGradient.isVisible = true
+                    binding.root.layoutParams = (binding.root.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        bottomToBottom = anchorView.id
+                        topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    }
                 }
                 else -> {}
             }
