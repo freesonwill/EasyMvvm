@@ -54,15 +54,23 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     protected fun submitItemData(
         data: List<BetSlipSelectionData>,
     ) {
-        if (data.size > EXPANDED_SIZE && expandedEnum == BetSlipExpandedEnum.NONE) {
+        if (data.size >= EXPANDED_SIZE && expandedEnum == BetSlipExpandedEnum.NONE) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, EXPANDED_SIZE))
+            if (data.size == EXPANDED_SIZE) {
+                adapter.submitList(data)
+            } else {
+                adapter.submitList(data.subList(0, EXPANDED_SIZE))
+            }
         } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
             expandedEnum = BetSlipExpandedEnum.EXPANDED
             adapter.submitList(data)
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, EXPANDED_SIZE))
+            if (data.size == EXPANDED_SIZE) {
+                adapter.submitList(data)
+            } else {
+                adapter.submitList(data.subList(0, EXPANDED_SIZE))
+            }
         } else {
             expandedEnum = BetSlipExpandedEnum.NONE
             adapter.submitList(data)
@@ -71,15 +79,15 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
 
     protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
         val enum = expandedEnum
-        binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
+        binding.root.isVisible = enum == BetSlipExpandedEnum.COLLAPSED
         if (enum != BetSlipExpandedEnum.NONE) {
             when (enum) {
                 BetSlipExpandedEnum.EXPANDED -> {
-                    binding.tvMore.text = getString(R.string.fold_up)
-                    binding.ivArrow.setImageDrawable(
-                        SkinnableResourceManager.getDrawable(
-                            binding.root.context, R.drawable.icon_circle_arrow_up
-                        ))
+//                    binding.tvMore.text = getString(R.string.fold_up)
+//                    binding.ivArrow.setImageDrawable(
+//                        SkinnableResourceManager.getDrawable(
+//                            binding.root.context, R.drawable.icon_circle_arrow_up
+//                        ))
                 }
                 BetSlipExpandedEnum.COLLAPSED -> {
                     binding.tvMore.text = getString(R.string.see_more)
