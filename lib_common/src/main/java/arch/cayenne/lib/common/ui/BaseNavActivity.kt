@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.ui
 import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.NavigationRes
+import androidx.fragment.app.proxyFragmentFactory
 import androidx.navigation.NavController
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import androidx.navigation.fragment.findNavController
@@ -23,6 +24,11 @@ abstract class BaseNavActivity<VM: BaseViewModel> : BaseActivity<VM, ActvityBase
 
     @NavigationRes
     abstract fun navigationID(): Int
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        proxyFragmentFactory()
+        super.onCreate(savedInstanceState)
+    }
 
     @CallSuper
     override fun initView(savedInstanceState: Bundle?) {
