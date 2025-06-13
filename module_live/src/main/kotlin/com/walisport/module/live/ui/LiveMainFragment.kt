@@ -99,21 +99,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
-        // 监听 ViewPager2 滑动，确保 TabIndicator 同步
-        mBinding.vpPage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-
-            }
-
-            override fun onPageSelected(position: Int) {
-                //   mBinding.tabLayout.getTabAt(position)?.select()
-                mBinding.tabLayout.selectTab(mBinding.tabLayout.getTabAt(position)) // 手动同步 TabLayout
-            }
-        })
 
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
@@ -253,23 +238,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         )
                     }, 4.dp2px)
                     text = list[position].title
-                    if (position == 1) {
-                        setTextColor(
-                            SkinnableResourceManager.getColor(
-                                context,
-                                R.color.tab_selected_text_color
-                            )
+                    setTextColor(
+                        SkinnableResourceManager.getColor(
+                            context,
+                            if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
                         )
-                        typeface = Typeface.DEFAULT_BOLD
-                    } else {
-                        setTextColor(
-                            SkinnableResourceManager.getColor(
-                                context,
-                                R.color.video_tab_text_color
-                            )
-                        )
-                        typeface = Typeface.DEFAULT
-                    }
+                    )
+                    typeface =
+                        if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
