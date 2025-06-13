@@ -1,5 +1,7 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.animation.ObjectAnimator
+import android.animation.TimeInterpolator
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -8,6 +10,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.doOnAttach
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import arch.cayenne.lib.common.R
 
 private var lastClickTime: Long = 0L
@@ -105,4 +111,35 @@ fun View.requireActivity(): AppCompatActivity {
         context = context.baseContext
     }
     throw IllegalStateException("View $this not attached to an activity.")
+}
+
+/**
+ * 为 Fragment 的 View 安全执行 ObjectAnimator，生命周期感知，避免内存泄漏。
+ */
+fun View.startSafeObjectAnimator(
+    property: String,
+    vararg values: Float,
+    duration: Long = 300,
+    interpolator: TimeInterpolator,
+    repeatCount: Int = 0,
+    repeatMode: Int = ObjectAnimator.RESTART,
+    start:Boolean = true
+): ObjectAnimator {
+    val animator = ObjectAnimator.ofFloat(this, property, *values).apply {
+        this.duration = duration
+        this.repeatCount = repeatCount
+        this.repeatMode = repeatMode
+        this.interpolator = interpolator
+        if(start) start()
+    }
+
+    // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
+    doOnAttach {
+        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                animator.cancel()
+            }
+        })
+    }
+    return animator
 }

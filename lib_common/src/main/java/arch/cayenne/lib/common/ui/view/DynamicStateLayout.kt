@@ -9,6 +9,7 @@ import androidx.core.view.contains
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
 
 class DynamicStateLayout @JvmOverloads constructor(
@@ -100,20 +101,13 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.llLoading.visibility = VISIBLE
 
                 // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    binding.ivLoading,  // 目标 View
+                loadingAnim = binding.ivLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
-                    0f, 360f // 从 0 度旋转到 360 度
-                ).run {
-                    // 设置动画属性
-                    setDuration(1000) // 持续时间 1 秒
-                    repeatCount = ObjectAnimator.INFINITE // 无限循环
+                    0f, 360f, // 从 0 度旋转到 360 度
+                    duration = 1000L, // 持续时间 1 秒
+                    repeatCount = ObjectAnimator.INFINITE, // 无限循环
                     interpolator = LinearInterpolator() // 匀速旋转
-
-                    // 启动动画
-                    start()
-                    this
-                }
+                )
             }
         }
 
