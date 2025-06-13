@@ -4,12 +4,11 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 
 class BetSlipReserveItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipReserveBinding>(binding) {
@@ -23,7 +22,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        if (item is BetSlipReserveSelectionData) {
+        if (item is ReserveOrderSelectionBean) {
             mBinding.also {
                 configView(
                     expandedEnum,
@@ -33,14 +32,14 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
                     it.ilMore.ivArrow,
                     count
                 )
-                updateReserveData(item.reserve)
+                updateReserveData(item)
                 showLiveArrow(item, mBinding.ivCircleArrow)
             }
         }
     }
 
     private fun updateReserveData(
-        item: Common.ReserveOrderSelection
+        item: ReserveOrderSelectionBean
     ) {
         val match = item.matchBasic
         with(mBinding) {

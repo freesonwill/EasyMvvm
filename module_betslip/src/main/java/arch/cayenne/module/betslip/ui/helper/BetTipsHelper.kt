@@ -1,11 +1,9 @@
 package arch.cayenne.module.betslip.ui.helper
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupWindow
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
 
 class BetTipsHelper {
@@ -37,8 +35,6 @@ class BetTipsHelper {
 
             val arrowMarginStart = ivTopArrow.layoutParams as ViewGroup.MarginLayoutParams
             val arrowCenterX = arrowMarginStart.marginStart + (ivTopArrow.measuredWidth / 2)
-
-            Log.d("abcd", "+++ $arrowCenterX, ${ivTopArrow.measuredWidth}, ${arrowMarginStart.marginStart}")
 
             // 計算 PopupWindow 的顯示位置
             val offX = -(arrowCenterX - attachView.width / 2)

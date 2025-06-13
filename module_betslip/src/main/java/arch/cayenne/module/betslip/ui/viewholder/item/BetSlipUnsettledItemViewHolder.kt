@@ -3,12 +3,11 @@ package arch.cayenne.module.betslip.ui.viewholder.item
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 
 class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
     BaseBetSlipItemViewHolder<ItemLiveBetSlipUnsettleBinding>(binding) {
@@ -21,7 +20,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        if (item is BetSlipOrderSelectionData) {
+        if (item is OrderSelectionBean) {
             mBinding.also {
                 configView(
                     expandedEnum,
@@ -32,12 +31,12 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                     count
                 )
             }
-            updateData(item.selection)
+            updateData(item)
             showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 
-    private fun updateData(item: Common.OrderSelection) {
+    private fun updateData(item: OrderSelectionBean) {
         item.let {
             val match = item.matchBasic
             with(mBinding) {

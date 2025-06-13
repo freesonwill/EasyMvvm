@@ -9,9 +9,9 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
+import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
@@ -51,9 +51,9 @@ class BetSlipReserveFragment :
                 return settingViewModel.isBetSlipDetail
             }
             override fun onLiveButtonClick(data: BetSlipSelectionData) {
-                if (data is BetSlipReserveSelectionData) {
-                    val matchId = data.reserve.matchBasic.matchId
-                    val sportId = data.reserve.matchBasic.sportId
+                if (data is ReserveOrderSelectionBean) {
+                    val matchId = data.matchBasic.matchId
+                    val sportId = data.matchBasic.sportId
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }

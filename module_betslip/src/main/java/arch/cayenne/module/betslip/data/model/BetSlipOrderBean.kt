@@ -9,7 +9,7 @@ data class BetSlipOrderBean (
     val settleTime: Long,                      // 結算時間
     val betAmount: String,                     // 下注總金額
     val returnAmount: String,                  // 正常結算派彩金額
-    val selectionsList: List<Common.OrderSelection>,      // 選項
+    val selectionsList: List<OrderSelectionBean>,      // 選項
     val comboType: Int,                        // 串關類型：0-單關，1-串關，2-全串關
     val comboK: Int,
     val comboV: Int,
@@ -32,7 +32,7 @@ fun Common.Order.toOrderBean(): BetSlipOrderBean {
         settleTime = settleTime,
         betAmount = betAmount,
         returnAmount = returnAmount,
-        selectionsList = selectionsList,
+        selectionsList = selectionsList.map { it.toOrderSelectionBean() },
         comboType = comboType,
         comboK = comboK,
         comboV = comboV,

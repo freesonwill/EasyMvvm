@@ -4,12 +4,11 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 
 class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipConfirmBinding>(binding) {
@@ -23,8 +22,8 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
         expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        if (item is BetSlipOrderSelectionData) {
-            item.selection.let { selection ->
+        if (item is OrderSelectionBean) {
+            item.let { selection ->
                 mBinding.also {
                     configView(
                         expandedEnum,
@@ -42,7 +41,7 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
     }
 
     private fun updateData(
-        item: Common.OrderSelection
+        item: OrderSelectionBean
     ) {
         with(mBinding) {
             val match = item.matchBasic

@@ -3,11 +3,10 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
@@ -36,9 +35,9 @@ class BetSlipConfirmFragment :
                 return settingViewModel.isBetSlipDetail
             }
             override fun onLiveButtonClick(data: BetSlipSelectionData) {
-                if (data is BetSlipOrderSelectionData) {
-                    val matchId = data.selection.matchBasic.matchId
-                    val sportId = data.selection.matchBasic.sportId
+                if (data is OrderSelectionBean) {
+                    val matchId = data.matchBasic.matchId
+                    val sportId = data.matchBasic.sportId
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
