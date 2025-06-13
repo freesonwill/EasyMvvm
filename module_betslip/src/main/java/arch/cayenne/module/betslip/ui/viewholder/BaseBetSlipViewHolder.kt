@@ -19,6 +19,10 @@ import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
+    companion object {
+        private const val EXPANDED_SIZE = 3
+    }
+
     protected val mBinding: VB get() = binding as VB
 
     protected val adapter: BetSlipSelectionAdapter by lazy {
@@ -50,15 +54,15 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     protected fun submitItemData(
         data: List<BetSlipSelectionData>,
     ) {
-        if (data.size > 3 && expandedEnum == BetSlipExpandedEnum.NONE) {
+        if (data.size > EXPANDED_SIZE && expandedEnum == BetSlipExpandedEnum.NONE) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, 3))
+            adapter.submitList(data.subList(0, EXPANDED_SIZE))
         } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
             expandedEnum = BetSlipExpandedEnum.EXPANDED
             adapter.submitList(data)
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            adapter.submitList(data.subList(0, 3))
+            adapter.submitList(data.subList(0, EXPANDED_SIZE))
         } else {
             expandedEnum = BetSlipExpandedEnum.NONE
             adapter.submitList(data)
