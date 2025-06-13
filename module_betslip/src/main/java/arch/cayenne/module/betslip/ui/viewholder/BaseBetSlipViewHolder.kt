@@ -56,21 +56,12 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     ) {
         if (data.size >= EXPANDED_SIZE && expandedEnum == BetSlipExpandedEnum.NONE) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            if (data.size == EXPANDED_SIZE) {
-                adapter.submitList(data)
-            } else {
-                adapter.submitList(data.subList(0, EXPANDED_SIZE))
-            }
+            adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
             expandedEnum = BetSlipExpandedEnum.EXPANDED
             adapter.submitList(data)
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
-            expandedEnum = BetSlipExpandedEnum.COLLAPSED
-            if (data.size == EXPANDED_SIZE) {
-                adapter.submitList(data)
-            } else {
-                adapter.submitList(data.subList(0, EXPANDED_SIZE))
-            }
+            adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else {
             expandedEnum = BetSlipExpandedEnum.NONE
             adapter.submitList(data)
