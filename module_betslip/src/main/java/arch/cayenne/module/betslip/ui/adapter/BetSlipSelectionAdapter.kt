@@ -31,7 +31,7 @@ class BetSlipSelectionAdapter(
     private var parentPosition: Int = -1
 
     private var expandListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
-    private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
+    private var liveListener: BetSlipAdapter.BetSlipLiveListener? = null
 
     fun updateBasicData(flag: BetSlipExpandedEnum, parentPosition: Int) {
         this.expandEnum = flag
@@ -74,7 +74,7 @@ class BetSlipSelectionAdapter(
         return holder
     }
 
-    fun setLiveListener(listener: RecyclerItemListener<BetSlipSelectionData>?) {
+    fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         this.liveListener = listener
     }
 

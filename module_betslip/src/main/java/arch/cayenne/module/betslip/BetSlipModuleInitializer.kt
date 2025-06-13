@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import arch.cayenne.module.betslip.data.repo.BetSlipOtherSettingRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
@@ -15,6 +16,7 @@ import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.EarlySettledKeyboardViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
@@ -55,6 +57,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::OrderSlipViewModel)
         viewModelOf(::ReserveSlipViewModel)
         viewModelOf(::UnsettledViewModel)
+        viewModelOf(::BetSlipOtherSettingViewModel)
     }
 
     private val repoModules = module {
@@ -63,6 +66,7 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         factoryOf(::OrderSlipRepository)
         factoryOf(::ReserveSlipRepository)
         factoryOf(::UnsettleRepository)
+        factoryOf(::BetSlipOtherSettingRepository)
     }
 
     private val moduleList:List<Module> = listOf(managerModule, viewModules, repoModules)

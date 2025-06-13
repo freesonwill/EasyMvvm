@@ -14,6 +14,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
@@ -46,16 +47,19 @@ class BetSlipReserveFragment :
                 item?.reserve?.let { modifyReserve(it) }
             }
         })
-        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
-            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-                item?.let {
-                    if (it is BetSlipReserveSelectionData) {
-                        val matchId = it.reserve.matchBasic.matchId
-                        val sportId = it.reserve.matchBasic.sportId
-                        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
-                    }
+        betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {
+            override fun isShowLiveButton(): Boolean {
+                return settingViewModel.isBetSlipDetail
+            }
+
+            override fun onLiveButtonClick(data: BetSlipSelectionData) {
+                if (data is BetSlipReserveSelectionData) {
+                    val matchId = data.reserve.matchBasic.matchId
+                    val sportId = data.reserve.matchBasic.sportId
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
+
         })
 
         mBinding.recyclerView.also {

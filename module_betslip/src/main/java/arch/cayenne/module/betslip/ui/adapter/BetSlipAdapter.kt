@@ -12,9 +12,9 @@ import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.compare.BetSlipCompare
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.viewholder.BaseBetSlipViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipConfirmViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipInvalidViewHolder
@@ -25,9 +25,9 @@ import arch.cayenne.module.betslip.ui.viewholder.BetSlipUnsettledViewHolder
 open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
     BaseAdapter<BetSlipData, BaseBetSlipViewHolder<*>, ViewBinding>(BetSlipCompare()) {
 
-    private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
+    private var liveListener: BetSlipLiveListener? = null
 
-    fun setLiveListener(liveListener: RecyclerItemListener<BetSlipSelectionData>) {
+    fun setLiveListener(liveListener: BetSlipLiveListener) {
         this.liveListener = liveListener
     }
 
@@ -68,5 +68,10 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
     override fun convertPlus(holder: BaseBetSlipViewHolder<*>, binding: ViewBinding, position: Int) {
         val data = getItem(position)
         holder.covertPlus(data)
+    }
+
+    interface BetSlipLiveListener {
+        fun isShowLiveButton(): Boolean
+        fun onLiveButtonClick(data: BetSlipSelectionData)
     }
 }

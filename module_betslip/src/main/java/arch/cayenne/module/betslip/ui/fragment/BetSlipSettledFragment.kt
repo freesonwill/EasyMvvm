@@ -31,16 +31,19 @@ class BetSlipSettledFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
-            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-                item?.let {
-                    if (it is BetSlipOrderSelectionData) {
-                        val matchId = it.selection.matchBasic.matchId
-                        val sportId = it.selection.matchBasic.sportId
-                        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
-                    }
+        betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {
+            override fun isShowLiveButton(): Boolean {
+                return settingViewModel.isBetSlipDetail
+            }
+
+            override fun onLiveButtonClick(data: BetSlipSelectionData) {
+                if (data is BetSlipOrderSelectionData) {
+                    val matchId = data.selection.matchBasic.matchId
+                    val sportId = data.selection.matchBasic.sportId
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
+
         })
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())

@@ -11,7 +11,9 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BaseBetSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.showEmptyData
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: BaseFragment<VM, VB>() {
 
@@ -22,6 +24,8 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
             null
         }
     }
+
+    protected val settingViewModel: BetSlipOtherSettingViewModel by viewModel()
 
     protected abstract val betSlipAdapter: BetSlipAdapter
 

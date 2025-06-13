@@ -15,8 +15,8 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
 
@@ -30,7 +30,7 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
         adapter.setExpandListener(listener)
     }
 
-    fun setLiveListener(listener: RecyclerItemListener<BetSlipSelectionData>?) {
+    fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
     }
 

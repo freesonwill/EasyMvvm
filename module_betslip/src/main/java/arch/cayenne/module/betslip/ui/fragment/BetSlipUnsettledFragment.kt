@@ -2,7 +2,6 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -13,6 +12,7 @@ import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipUnsettledAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
@@ -92,17 +92,19 @@ class BetSlipUnsettledFragment :
                 }
             }
         })
-        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
-            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-                Log.d("abcd", "onItemClick: $item, position: $position")
-                item?.let {
-                    if (it is BetSlipOrderSelectionData) {
-                        val matchId = it.selection.matchBasic.matchId
-                        val sportId = it.selection.matchBasic.sportId
-                        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
-                    }
+        betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {
+            override fun isShowLiveButton(): Boolean {
+                return settingViewModel.isBetSlipDetail
+            }
+
+            override fun onLiveButtonClick(data: BetSlipSelectionData) {
+                if (data is BetSlipOrderSelectionData) {
+                    val matchId = data.selection.matchBasic.matchId
+                    val sportId = data.selection.matchBasic.sportId
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
+
         })
     }
 
