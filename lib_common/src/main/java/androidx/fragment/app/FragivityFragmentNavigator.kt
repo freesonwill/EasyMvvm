@@ -31,18 +31,20 @@ class FragivityFragmentNavigator(
         // Need to cooperate with ReportFragmentManager
         if (fragmentManager is ReportFragmentManager) {
             fragmentManager.addOnBackStackChangedListener {
-                if (mIsPendingAddToBackStackOperation) {
+                if (mIsPendingAddToBackStackOperation) { //增加加入回退栈
                     mIsPendingAddToBackStackOperation = !isBackStackEqual()
                     val size = fragmentManager.fragments.size
                     if (size > 1) {
                         // 切到后台时的生命周期
                         val fragment = fragmentManager.fragments[size - 2]
-                        // fragment onResume -> onStop
-                        fragmentManager.moveToState(Fragment.ACTIVITY_CREATED, false)
-                        fragment.mState = Fragment.STARTED
-                        fragment.mMaxState = Lifecycle.State.STARTED
+                        // fragment onPause -> onStop
+                        setMaxLifecycle(fragment, Lifecycle.State.STARTED) //onPause
+                        fragment.requireView().post {
+                            fragment.performStop() //onStop
+                            fragment.mState = Fragment.STARTED //避免触发两次onStart
+                        }
                     }
-                } else if (mIsPendingPopBackStackOperation) {
+                } else if (mIsPendingPopBackStackOperation) { //正在回退
                     mIsPendingPopBackStackOperation = !isBackStackEqual()
                     // 回到前台时的生命周期
                     val fragment = fragmentManager.primaryNavigationFragment
@@ -216,6 +218,10 @@ class FragivityFragmentNavigator(
             )
     }
 
+    /**
+     * 回退栈是否相等
+     * @return
+     */
     private fun isBackStackEqual(): Boolean {
         val fragmentBackStackCount = fragmentManager.backStackEntryCount
         if (backStack.size != fragmentBackStackCount + 1) {

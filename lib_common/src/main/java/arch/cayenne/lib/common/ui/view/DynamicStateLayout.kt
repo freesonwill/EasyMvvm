@@ -6,6 +6,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import androidx.core.view.contains
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
