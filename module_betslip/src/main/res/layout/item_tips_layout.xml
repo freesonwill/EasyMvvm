@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="271dp"
     android:layout_height="49dp"
-    android:background="@android:color/transparent"
-    >
-    <androidx.appcompat.widget.AppCompatImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/live_bet_slip_tips_background"
-        />
-    <TextView
+    android:background="@android:color/transparent">
+
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
+        android:id="@+id/iv_top_arrow"
+        android:layout_width="40dp"
+        android:layout_height="7dp"
+        android:layout_marginStart="2dp"
+        android:src="@drawable/live_bet_slip_tips_up_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/live_bet_slip_tips_background"
+        android:padding="12dp"
         android:text="@string/live_betslip_bettips"
         android:textColor="@color/main_text"
-        android:textFontWeight="500"
         android:textSize="@dimen/sp_13"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="UnusedAttribute" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_top_arrow" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

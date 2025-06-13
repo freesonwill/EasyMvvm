@@ -1,44 +1,45 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import android.graphics.drawable.ColorDrawable
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.PopupWindow
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
-import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
+import arch.cayenne.module.betslip.databinding.ItemBetslipMoreLayoutBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
-import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
+import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
+import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 
-abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterMangerInterface {
+abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
     protected val mBinding: VB get() = binding as VB
 
-    protected lateinit var adapter: BetSlipSelectionAdapter
-
-    fun setExpandedListener(listener: RecyclerItemListener<BetSlipExpandedEnum>?) {
-        adapter.setExpandListener(listener)
+    protected val adapter: BetSlipSelectionAdapter by lazy {
+        BetSlipSelectionAdapter(betSlipType)
     }
+    private var betSlipListener: BetSlipAdapter.BetSlipListener? = null
+    private var expandedEnum = BetSlipExpandedEnum.NONE
 
-    fun setLiveListener(listener: RecyclerItemListener<BetSlipSelectionData>?) {
+    protected val moneySymbol: String
+        get() = betSlipListener?.getMoneySymbol() ?: ""
+
+    fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
     }
 
-    protected fun initItemView(recyclerView: RecyclerView, betSlip: BetSlipEnum) {
+    fun setBetSlipListener(listener: BetSlipAdapter.BetSlipListener?) {
+        betSlipListener = listener
+    }
+
+    protected fun initItemView(recyclerView: RecyclerView) {
         val manager = LinearLayoutManager(recyclerView.context)
-        adapter = BetSlipSelectionAdapter(
-            betSlip
-        )
         recyclerView.also {
             it.layoutManager = manager
             it.itemAnimator = null
@@ -46,34 +47,50 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
         }
     }
 
-    protected fun submitOrderData(
-        data: BetSlipOrder
+    protected fun submitItemData(
+        data: List<BetSlipSelectionData>,
     ) {
-        var list =
-            data.order.selectionsList.map { BetSlipOrderSelectionData(selection = it) }.toList()
+        if (data.size > 3 && expandedEnum == BetSlipExpandedEnum.NONE) {
+            expandedEnum = BetSlipExpandedEnum.COLLAPSED
+            adapter.submitList(data.subList(0, 3))
+        } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
+            expandedEnum = BetSlipExpandedEnum.EXPANDED
+            adapter.submitList(data)
+        } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
+            expandedEnum = BetSlipExpandedEnum.COLLAPSED
+            adapter.submitList(data.subList(0, 3))
+        } else {
+            expandedEnum = BetSlipExpandedEnum.NONE
+            adapter.submitList(data)
+        }
+    }
 
-        adapter.let {
-            adapter.updateBasicData(data.expandedEnum, this.adapterPosition)
-            if (list.size > 3 && data.expandedEnum == BetSlipExpandedEnum.Fold) {
-                list = list.subList(0, 3)
+    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
+        val enum = expandedEnum
+        binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
+        if (enum != BetSlipExpandedEnum.NONE) {
+            when (enum) {
+                BetSlipExpandedEnum.EXPANDED -> {
+                    binding.tvMore.text = getString(R.string.fold_up)
+                    binding.ivArrow.setImageDrawable(
+                        SkinnableResourceManager.getDrawable(
+                            binding.root.context, R.drawable.icon_circle_arrow_up
+                        ))
+                }
+                BetSlipExpandedEnum.COLLAPSED -> {
+                    binding.tvMore.text = getString(R.string.see_more)
+                    binding.ivArrow.setImageDrawable(
+                        SkinnableResourceManager.getDrawable(
+                            binding.root.context, R.drawable.icon_circle_arrow_down
+                        ))
+                }
+                else -> {}
             }
-            adapter.submitList(list)
         }
     }
 
     protected fun showBetTip(attachView: View) {
-        val pop = PopupWindow(attachView.context)
-        pop.contentView =
-            ItemTipsLayoutBinding.inflate(LayoutInflater.from(attachView.context)).root
-        pop.isOutsideTouchable = true
-        pop.setBackgroundDrawable(
-            ColorDrawable(
-                ContextCompat.getColor(
-                    attachView.context,
-                    R.color.tran_0
-                )
-            )
-        )
-        pop.showAsDropDown(attachView)
+        val helper = BetTipsHelper()
+        helper.showTips(attachView)
     }
 }

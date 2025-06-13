@@ -6,33 +6,30 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipReserve
-import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
+import arch.cayenne.module.betslip.data.model.toReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipReserveViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
-    BaseBetSlipViewHolder<AdapterLiveBetSlipReserveBinding>(binding) {
+class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipReserveBinding>(binding, betSlipType) {
     private var cancelReserveSubmitListener: RecyclerItemListener<String>? = null
     private var reserveModifySubmitListener: RecyclerItemListener<String>? = null
 
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
         mBinding.betReserveBtCancel.clickNoRepeat {
-            cancelReserveSubmitListener?.onItemClick("", (it.tag as Int))
+            cancelReserveSubmitListener?.onItemClick("", adapterPosition)
         }
         mBinding.betReserveBtModify.clickNoRepeat {
-            reserveModifySubmitListener?.onItemClick("", (it.tag as Int))
+            reserveModifySubmitListener?.onItemClick("", adapterPosition)
         }
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipReserve) {
-            item.reserve.let {
-                updateData(it)
-                submitReserveData(it)
-            }
+        if (item is ReserveOrderBean) {
+            updateData(item)
+            submitReserveData(item)
         }
     }
 
@@ -54,9 +51,10 @@ class BetSlipReserveViewHolder(binding: ViewBinding, private val betSlipType: Be
             val selection = order.selection
             betReserveTvDate.text = order.reserveTime.getDetailFormatDate()
             betReserveTvOddsValue.text = selection.odds
-            betReserveTvBettingValue.text = order.betAmount
-            betReserveTvExceptValue.text =
-                BetSlipUtils.expectMaxAmount(order.betAmount, order.selection.odds)
+            val betAmount = "${moneySymbol}${order.betAmount}"
+            betReserveTvBettingValue.text = betAmount
+            val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, selection.odds)}"
+            betReserveTvExceptValue.text = exceptAmount
             betReserveBtCancel.tag = adapterPosition
             betReserveBtModify.tag = adapterPosition
         }
@@ -68,7 +66,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, private val betSlipType: Be
     private fun submitReserveData(
         reserve: ReserveOrderBean,
     ) {
-        val list = listOf(BetSlipReserveSelectionData(reserve = reserve.selection))
+        val list = listOf(reserve.selection.toReserveOrderSelectionBean())
         adapter.submitList(list)
     }
 }

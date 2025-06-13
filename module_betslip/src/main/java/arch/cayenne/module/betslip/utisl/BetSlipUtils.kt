@@ -3,8 +3,7 @@ package arch.cayenne.module.betslip.utisl
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -54,16 +53,5 @@ internal object BetSlipUtils {
     private fun multipy1000(value: String): BigDecimal {
         return toBigDecimal(value).multiply(BigDecimal(1000))
     }
-
-    fun List<OrderBean>.toBetSlipOrderData(): List<BetSlipOrder> {
-        return this.map {
-            val expandedEnum =
-                if (it.selectionsList.size <= 3) BetSlipExpandedEnum.Hide else BetSlipExpandedEnum.Fold
-            BetSlipOrder(
-                order = it, expandedEnum = expandedEnum
-            )
-        }.toList()
-    }
-
 
 }

@@ -1,46 +1,33 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 
 class BetSlipReserveItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipReserveBinding>(binding) {
 
-    override fun createViewHolder() {
-        initMoreListener(mBinding.ilMore.llMore)
+    override fun hideLastLine() {
+        mBinding.line.isVisible = false
     }
 
     override fun covertPlus(
-        count: Int,
-        expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        if (item is BetSlipReserveSelectionData) {
-            mBinding.also {
-                configView(
-                    expandedEnum,
-                    it.line,
-                    it.ilMore.groupGradient,
-                    it.ilMore.tvMore,
-                    it.ilMore.ivArrow,
-                    count
-                )
-                updateReserveData(item.reserve)
-                showLiveArrow(item, mBinding.ivCircleArrow)
-            }
+        if (item is ReserveOrderSelectionBean) {
+            updateReserveData(item)
+            showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 
     private fun updateReserveData(
-        item: Common.ReserveOrderSelection
+        item: ReserveOrderSelectionBean
     ) {
         val match = item.matchBasic
         with(mBinding) {

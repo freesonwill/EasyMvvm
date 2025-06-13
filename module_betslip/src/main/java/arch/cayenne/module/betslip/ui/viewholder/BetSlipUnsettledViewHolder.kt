@@ -1,6 +1,5 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
@@ -9,41 +8,47 @@ import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum):
-    BaseBetSlipViewHolder<AdapterLiveBetSlipUnsettleBinding>(binding) {
+class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum):
+    BaseBetSlipViewHolder<AdapterLiveBetSlipUnsettleBinding>(binding, betSlipType) {
 
     private var earlySettleSubmitListener: RecyclerItemListener<String>? = null
 
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
         mBinding.ivTip.clickNoRepeat {
-            showBetTip(mBinding.ivTip)
+            showBetTip(it)
         }
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
-            item.order.let {
-                updateData(it)
-                submitOrderData(item)
+        if (item is BetSlipOrderBean) {
+            updateData(item)
+            sendData(item)
+            mBinding.ilMore.tvMore.clickNoRepeat {
+                sendData(item)
             }
         }
+    }
+
+    private fun sendData(item: BetSlipOrderBean) {
+        submitItemData(item.selectionsList)
+        setGradientLayout(mBinding.ilMore)
     }
 
     /**
      * 未结算 确认中 已结算 更新数据
      * */
-    @SuppressLint("SetTextI18n")
     private fun updateData(
-        order: OrderBean
+        order: BetSlipOrderBean
     ) {
         mBinding.also {
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
@@ -56,16 +61,18 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: 
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
-            it.betUnsettledTvBettingValue.text = order.betAmount
-            it.betUnsettledTvExceptValue.text =
-                BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)
-            it.betUnsettledBtAmount.text =
-                "$${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            val betAmount = "${moneySymbol}${order.betAmount}"
+            it.betUnsettledTvBettingValue.text = betAmount
+            val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
+            it.betUnsettledTvExceptValue.text = exceptAmount
+            val earlyAmount = "${moneySymbol}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            it.betUnsettledBtAmount.text = earlyAmount
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
-                it.betUnsettledTvCrossborderValue.text = "$combo*${order.comboCount}"
+                val comboValue = "$combo*${order.comboCount}"
+                it.betUnsettledTvCrossborderValue.text = comboValue
             }
             it.groupEarlysettle.isVisible = order.earlySupport
             if (order.earlySupport) {

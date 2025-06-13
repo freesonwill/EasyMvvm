@@ -112,15 +112,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_start" />
 
-    <include
-        android:id="@+id/il_more"
-        layout="@layout/item_betslip_more_layout"
-        android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:visibility="gone"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bet_confirm_tv_race" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

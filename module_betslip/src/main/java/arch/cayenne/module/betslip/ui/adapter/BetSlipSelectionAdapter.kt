@@ -10,10 +10,8 @@ import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.compare.BetSlipSelectionCompare
-import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.module.betslip.ui.viewholder.item.BaseBetSlipItemViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.item.BetSlipConfirmItemViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.item.BetSlipInvalidItemViewHolder
@@ -27,23 +25,17 @@ class BetSlipSelectionAdapter(
     BetSlipSelectionCompare()
 ) {
     private val betType = betSlipType
-    private var expandEnum: BetSlipExpandedEnum = BetSlipExpandedEnum.Hide
-    private var parentPosition: Int = -1
-
-    private var expandListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
-    private var liveListener: RecyclerItemListener<BetSlipSelectionData>? = null
-
-    fun updateBasicData(flag: BetSlipExpandedEnum, parentPosition: Int) {
-        this.expandEnum = flag
-        this.parentPosition = parentPosition
-    }
+    private var liveListener: BetSlipAdapter.BetSlipLiveListener? = null
 
     override fun convertPlus(
         holder: BaseBetSlipItemViewHolder<*>,
         binding: ViewBinding,
         position: Int
     ) {
-        holder.covertPlus(itemCount, expandEnum, getItem(position))
+        holder.covertPlus(getItem(position))
+        if (position == itemCount -1) {
+            holder.hideLastLine()
+        }
     }
 
     override fun createViewBinding(
@@ -68,17 +60,11 @@ class BetSlipSelectionAdapter(
             BetSlipEnum.Reserve -> BetSlipReserveItemViewHolder(binding)
             BetSlipEnum.Invalid -> BetSlipInvalidItemViewHolder(binding)
         }
-        holder.createViewHolder()
-        holder.setExpandedListener(expandListener)
         holder.setLiveListener(liveListener)
         return holder
     }
 
-    fun setLiveListener(listener: RecyclerItemListener<BetSlipSelectionData>?) {
+    fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         this.liveListener = listener
-    }
-
-    fun setExpandListener(listener: RecyclerItemListener<BetSlipExpandedEnum>?) {
-        this.expandListener = listener
     }
 }

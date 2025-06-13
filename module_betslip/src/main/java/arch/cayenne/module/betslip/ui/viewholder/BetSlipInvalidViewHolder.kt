@@ -1,32 +1,42 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipInvalidViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
-    BaseBetSlipViewHolder<AdapterLiveBetSlipInvalidBinding>(binding) {
+class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipInvalidBinding>(binding, betSlipType) {
     override fun createViewHolder() {
-        initItemView(mBinding.recyclerSelection, betSlipType)
+        initItemView(mBinding.recyclerSelection)
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
-            updateData(item.order)
-            submitOrderData(item)
+        if (item is BetSlipOrderBean) {
+            updateData(item)
+            sendData(item)
+            mBinding.ilMore.tvMore.clickNoRepeat {
+                sendData(item)
+            }
         }
     }
 
+    private fun sendData(item: BetSlipOrderBean) {
+        submitItemData(item.selectionsList)
+        setGradientLayout(mBinding.ilMore)
+    }
+
     private fun updateData(
-        item: OrderBean
+        item: BetSlipOrderBean
     ) {
         with(mBinding) {
             betExpiredTvDate.text = item.betTime.getDetailFormatDate()
@@ -38,8 +48,10 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, private val betSlipType: Be
             tvUnit4.text = ContextCompat.getString(binding.root.context, R.string.live_bet_except_max_win)
             tvUnit1Value.text = item.betId
             tvUnit2Value.text = item.odds
-            tvUnit3Value.text = item.betAmount
-            tvUnit4Value.text = BetSlipUtils.expectMaxAmount(item.betAmount, item.odds)
+            val betAmount = "${moneySymbol}${item.betAmount}"
+            tvUnit3Value.text = betAmount
+            val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(item.betAmount, item.odds)}"
+            tvUnit4Value.text = exceptAmount
         }
     }
 }

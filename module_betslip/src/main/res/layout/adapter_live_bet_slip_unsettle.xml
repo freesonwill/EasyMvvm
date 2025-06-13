@@ -30,6 +30,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_top" />
 
+    <include
+        android:id="@+id/il_more"
+        layout="@layout/item_betslip_more_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/recycler_selection" />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_unsettled_iv_avava"
         android:layout_width="@dimen/dp_60"
@@ -164,11 +172,11 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_earlysettle" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_tip"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_betting"

@@ -4,7 +4,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.data.model.toOrderBean
 import arch.cayenne.module.betslip.data.model.toReserveOrderBean
@@ -38,7 +38,7 @@ class BetSlipRemoteManager(
         size: Int,
         sportIds: List<Int>?,
         matchId: Long?,
-    ): List<OrderBean>? {
+    ): List<BetSlipOrderBean>? {
         "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,

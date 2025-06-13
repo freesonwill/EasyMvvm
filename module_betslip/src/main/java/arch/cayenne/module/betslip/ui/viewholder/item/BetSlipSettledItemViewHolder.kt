@@ -5,43 +5,30 @@ import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import com.bumptech.glide.Glide
-import galaxy.common.proto.Common
 
 class BetSlipSettledItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipSettledBinding>(binding) {
-    override fun createViewHolder() {
-        initMoreListener(mBinding.ilMore.llMore)
+
+    override fun hideLastLine() {
+        mBinding.line.isVisible = false
     }
 
     override fun covertPlus(
-        count: Int,
-        expandedEnum: BetSlipExpandedEnum,
         item: BetSlipSelectionData
     ) {
-        if (item is BetSlipOrderSelectionData) {
-            mBinding.also {
-                configView(
-                    expandedEnum,
-                    it.line,
-                    it.ilMore.groupGradient,
-                    it.ilMore.tvMore,
-                    it.ilMore.ivArrow,
-                    count
-                )
-            }
-            updateData(item.selection)
-            settledStatus(item.selection)
+        if (item is OrderSelectionBean) {
+            updateData(item)
+            settledStatus(item)
             showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 
-    private fun updateData(item: Common.OrderSelection) {
+    private fun updateData(item: OrderSelectionBean) {
         item.let {
             val match = item.matchBasic
             with(mBinding) {
@@ -58,7 +45,7 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
         }
     }
 
-    private fun settledStatus(item: Common.OrderSelection) {
+    private fun settledStatus(item: OrderSelectionBean) {
         mBinding.also {
             when (val status = BetSlipResultOrderStatusEnum.getStatus(item.status)) {
                 BetSlipResultOrderStatusEnum.Win, BetSlipResultOrderStatusEnum.Lose -> {

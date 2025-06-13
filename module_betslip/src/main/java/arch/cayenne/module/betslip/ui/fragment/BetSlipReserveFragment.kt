@@ -9,11 +9,11 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipReserve
-import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
+import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipReserveBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipModifyOddsFragment
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
@@ -36,25 +36,31 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<BetSlipReserve> {
-            override fun onItemClick(item: BetSlipReserve?, position: Int) {
-                item?.reserve?.let { cancelReserve(it) }
+        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<ReserveOrderBean> {
+            override fun onItemClick(item: ReserveOrderBean?, position: Int) {
+                item?.let { cancelReserve(it) }
             }
         })
-        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<BetSlipReserve> {
-            override fun onItemClick(item: BetSlipReserve?, position: Int) {
-                item?.reserve?.let { modifyReserve(it) }
+        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<ReserveOrderBean> {
+            override fun onItemClick(item: ReserveOrderBean?, position: Int) {
+                item?.let { modifyReserve(it) }
             }
         })
-        betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
-            override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-                item?.let {
-                    if (it is BetSlipReserveSelectionData) {
-                        val matchId = it.reserve.matchBasic.matchId
-                        val sportId = it.reserve.matchBasic.sportId
-                        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
-                    }
+        betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {
+            override fun isShowLiveButton(): Boolean {
+                return settingViewModel.isBetSlipDetail
+            }
+            override fun onLiveButtonClick(data: BetSlipSelectionData) {
+                if (data is ReserveOrderSelectionBean) {
+                    val matchId = data.matchBasic.matchId
+                    val sportId = data.matchBasic.sportId
+                    navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
+            }
+        })
+        betSlipAdapter.setBetSlipListener(object : BetSlipAdapter.BetSlipListener {
+            override fun getMoneySymbol(): String {
+                return settingViewModel.moneySymbol
             }
         })
 
