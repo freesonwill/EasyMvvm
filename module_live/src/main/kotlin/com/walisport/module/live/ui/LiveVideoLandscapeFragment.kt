@@ -97,8 +97,8 @@ class LiveVideoLandscapeFragment :
                             it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                             it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                             it.reconnectCount = -1 // Demo重试一百次, -1不限制
-                            //默认不开启硬件加速
-                            it.isHWDecode = false
+                            //开启硬件加速
+                            it.isHWDecode = true
 
                             it.inited = true
                         }
