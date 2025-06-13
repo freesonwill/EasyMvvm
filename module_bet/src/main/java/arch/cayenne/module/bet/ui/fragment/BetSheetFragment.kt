@@ -93,9 +93,9 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
         val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
         if (size == 1) {
-            navGraph.setStartDestination(R.id.comboBetFragment)
-        } else {
             navGraph.setStartDestination(R.id.singleBetFragment)
+        } else {
+            navGraph.setStartDestination(R.id.comboBetFragment)
         }
         navController.setGraph(navGraph, Bundle())
     }

@@ -10,7 +10,9 @@ data class OrderBean (
     val returnAmount: String,                  // 正常結算派彩金額
     val selectionsList: List<Common.OrderSelection>,      // 選項
     val comboType: Int,                        // 串關類型：0-單關，1-串關，2-全串關
-    val parlayName: String,                    // 串關名稱
+    val comboK: Int,
+    val comboV: Int,
+    val comboCount: Int,
     val odds: String,                          // 賠率
     val status: Int,                           // 訂單狀態：1投注確認中，2拒單，3取消訂單，4接單成功，5已結算
     val earlySupport: Boolean,                 // 是否支持提前結算
@@ -30,7 +32,9 @@ fun Common.Order.toOrderBean(): OrderBean {
         returnAmount = returnAmount,
         selectionsList = selectionsList,
         comboType = comboType,
-        parlayName = "${comboK}串${comboV}*${comboCount}",
+        comboK = comboK,
+        comboV = comboV,
+        comboCount = comboCount,
         odds = odds,
         status = status,
         earlySupport = earlySupport,

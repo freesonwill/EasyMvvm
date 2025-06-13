@@ -43,6 +43,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     private var isSubstitutes: Boolean = false
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.main.setState(DynamicStateLayout.States.LOADING, "")
     }
 
     override fun initListener() {

@@ -1,14 +1,19 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipUnsettledAdapter
 import arch.cayenne.module.betslip.ui.dialog.BetSlipEarlySettledFragment
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
@@ -22,6 +27,9 @@ class BetSlipUnsettledFragment :
     override val vbClass: KClass<FragmentLiveBetslipUnsettledBinding> =
         FragmentLiveBetslipUnsettledBinding::class
     override val vmClass: KClass<UnsettledViewModel> = UnsettledViewModel::class
+    override val betSlipAdapter: BetSlipUnsettledAdapter by lazy {
+        BetSlipUnsettledAdapter()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initRecycler()
@@ -86,7 +94,14 @@ class BetSlipUnsettledFragment :
         })
         betSlipAdapter.setLiveListener(object : RecyclerItemListener<BetSlipSelectionData> {
             override fun onItemClick(item: BetSlipSelectionData?, position: Int) {
-
+                Log.d("abcd", "onItemClick: $item, position: $position")
+                item?.let {
+                    if (it is BetSlipOrderSelectionData) {
+                        val matchId = it.selection.matchBasic.matchId
+                        val sportId = it.selection.matchBasic.sportId
+                        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
+                    }
+                }
             }
         })
     }

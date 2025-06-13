@@ -1,34 +1,33 @@
-package arch.cayenne.module.betslip.ui.adapter.livebetslip
+package arch.cayenne.module.betslip.ui.viewholder
 
 import androidx.core.content.ContextCompat
+import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.BetSlipOrder
 import arch.cayenne.module.betslip.data.model.OrderBean
-import arch.cayenne.module.betslip.utisl.BetSlipUtils.winOrLoseAmount
+import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
+import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
-class BetSlipSettledAdapterManager(
-    private val binding: AdapterLiveBetSlipSettledBinding,
-    private val betSlipType: BetSlipEnum
-) : BetSlipBaseAdapterManager(binding) {
+class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
+    BaseBetSlipViewHolder<AdapterLiveBetSlipSettledBinding>(binding) {
 
     override fun createViewHolder() {
-        initRecyclerView(binding.recyclerSelection, betSlipType)
-        binding.ivTip.clickNoRepeat {
-            showBetTip(binding.ivTip)
+        initItemView(mBinding.recyclerSelection, betSlipType)
+        mBinding.ivTip.clickNoRepeat {
+            showBetTip(mBinding.ivTip)
         }
     }
 
-    override fun covertPlus(position: Int, item: BetSlipData) {
+    override fun covertPlus(item: BetSlipData) {
         if (item is BetSlipOrder) {
             item.order.let {
                 updateData(it)
-                submitAdapter(binding.recyclerSelection, item, position)
+                submitOrderData(item)
             }
         }
     }
@@ -37,12 +36,16 @@ class BetSlipSettledAdapterManager(
      *未结算 确认中 已结算 更新数据
      */
     private fun updateData(order: OrderBean) {
-        binding.also {
+        mBinding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
             it.betSettledTvBettingValue.text = order.betAmount
-            val amount = winOrLoseAmount(order.betAmount,order.earlyBetAmount,order.returnAmount)
+            val amount = BetSlipUtils.winOrLoseAmount(
+                order.betAmount,
+                order.earlyBetAmount,
+                order.returnAmount
+            )
             settledStatus(order)
             it.betSettledTvExceptValue.text = "$amount"
             it.betSettledTvExceptValue.setTextColor(
@@ -55,7 +58,7 @@ class BetSlipSettledAdapterManager(
     }
 
     private fun settledStatus(item: OrderBean) {
-        binding.also {
+        mBinding.also {
             val status = BetSlipResultOrderStatusEnum.getStatus(item.resultStatus)
             status?.let { st ->
                 it.betSettledTvResult.text =  ContextCompat.getString(it.betSettledTvResult.context,st.names)
@@ -63,5 +66,4 @@ class BetSlipSettledAdapterManager(
             }
         }
     }
-
 }
