@@ -57,6 +57,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     fun startObserveMatch() {
+        _state.value = Event(MatchListState.FIRST_LOADING)
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchChange().collect { ref ->
                 if (ref.isEmpty()) {
