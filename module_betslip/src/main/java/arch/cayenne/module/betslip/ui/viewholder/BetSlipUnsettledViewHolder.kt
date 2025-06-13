@@ -1,6 +1,5 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
@@ -12,8 +11,7 @@ import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
@@ -30,20 +28,17 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: 
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
-            item.order.let {
-                updateData(it)
-                submitOrderData(item)
-            }
+        if (item is BetSlipOrderBean) {
+            updateData(item)
+            submitOrderData(item)
         }
     }
 
     /**
      * 未结算 确认中 已结算 更新数据
      * */
-    @SuppressLint("SetTextI18n")
     private fun updateData(
-        order: OrderBean
+        order: BetSlipOrderBean
     ) {
         mBinding.also {
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
@@ -66,7 +61,8 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: 
             it.groupCrossborder.isVisible = flag
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
-                it.betUnsettledTvCrossborderValue.text = "$combo*${order.comboCount}"
+                val comboValue = "$combo*${order.comboCount}"
+                it.betUnsettledTvCrossborderValue.text = comboValue
             }
             it.groupEarlysettle.isVisible = order.earlySupport
             if (order.earlySupport) {

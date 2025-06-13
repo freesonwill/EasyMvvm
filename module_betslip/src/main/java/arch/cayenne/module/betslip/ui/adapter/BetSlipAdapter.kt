@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
@@ -59,10 +60,12 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
         holder.createViewHolder()
         holder.setExpandedListener(object : RecyclerItemListener<BetSlipExpandedEnum> {
                 override fun onItemClick(item: BetSlipExpandedEnum?, position: Int) {
+                    val holderPosition = holder.adapterPosition
+                    Log.d("abcd", " $$$ $position  $holderPosition")
                     val status =
-                        if (getItem(position).expandedEnum == BetSlipExpandedEnum.Fold) BetSlipExpandedEnum.Expanded else BetSlipExpandedEnum.Fold
-                    currentList[position].expandedEnum = status
-                    notifyItemChanged(position)
+                        if (getItem(holderPosition).expandedEnum == BetSlipExpandedEnum.Fold) BetSlipExpandedEnum.Expanded else BetSlipExpandedEnum.Fold
+                    currentList[holderPosition].expandedEnum = status
+                    notifyItemChanged(holderPosition)
                 }
         })
         holder.setLiveListener(liveListener)

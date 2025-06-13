@@ -7,8 +7,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
@@ -19,14 +18,14 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, private val betSlipType: Be
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
-            updateData(item.order)
+        if (item is BetSlipOrderBean) {
+            updateData(item)
             submitOrderData(item)
         }
     }
 
     private fun updateData(
-        item: OrderBean
+        item: BetSlipOrderBean
     ) {
         with(mBinding) {
             betExpiredTvDate.text = item.betTime.getDetailFormatDate()

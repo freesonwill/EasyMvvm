@@ -5,7 +5,7 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
@@ -21,7 +21,7 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, private val betSlipType: Be
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
+        if (item is BetSlipOrderBean) {
             updateData(item)
             submitOrderData(item)
         }
@@ -31,10 +31,10 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, private val betSlipType: Be
      * 未结算 确认中 已结算 更新数据
      * */
     private fun updateData(
-        item: BetSlipOrder
+        item: BetSlipOrderBean
     ) {
         mBinding.also {
-            item.order.let { order ->
+            item.let { order ->
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds

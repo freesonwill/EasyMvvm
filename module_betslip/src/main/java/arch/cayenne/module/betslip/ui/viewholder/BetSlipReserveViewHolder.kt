@@ -6,7 +6,6 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
@@ -28,11 +27,9 @@ class BetSlipReserveViewHolder(binding: ViewBinding, private val betSlipType: Be
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipReserve) {
-            item.reserve.let {
-                updateData(it)
-                submitReserveData(it)
-            }
+        if (item is ReserveOrderBean) {
+            updateData(item)
+            submitReserveData(item)
         }
     }
 

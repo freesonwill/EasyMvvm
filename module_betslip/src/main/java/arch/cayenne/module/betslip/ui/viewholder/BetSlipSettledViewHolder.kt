@@ -11,8 +11,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipResultOrderStatusEnum
 import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
-import arch.cayenne.module.betslip.data.model.OrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipSettledBinding
 
 class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: BetSlipEnum) :
@@ -26,18 +25,16 @@ class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: Be
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is BetSlipOrder) {
-            item.order.let {
-                updateData(it)
-                submitOrderData(item)
-            }
+        if (item is BetSlipOrderBean) {
+            updateData(item)
+            submitOrderData(item)
         }
     }
 
     /**
      *未结算 确认中 已结算 更新数据
      */
-    private fun updateData(order: OrderBean) {
+    private fun updateData(order: BetSlipOrderBean) {
         mBinding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
@@ -63,7 +60,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: Be
         }
     }
 
-    private fun settledStatus(item: OrderBean) {
+    private fun settledStatus(item: BetSlipOrderBean) {
         mBinding.also {
             val status = BetSlipResultOrderStatusEnum.getStatus(item.resultStatus)
             status?.let { st ->

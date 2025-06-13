@@ -9,7 +9,6 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipReserve
 import arch.cayenne.module.betslip.data.model.BetSlipReserveSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
@@ -37,14 +36,14 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<BetSlipReserve> {
-            override fun onItemClick(item: BetSlipReserve?, position: Int) {
-                item?.reserve?.let { cancelReserve(it) }
+        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<ReserveOrderBean> {
+            override fun onItemClick(item: ReserveOrderBean?, position: Int) {
+                item?.let { cancelReserve(it) }
             }
         })
-        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<BetSlipReserve> {
-            override fun onItemClick(item: BetSlipReserve?, position: Int) {
-                item?.reserve?.let { modifyReserve(it) }
+        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<ReserveOrderBean> {
+            override fun onItemClick(item: ReserveOrderBean?, position: Int) {
+                item?.let { modifyReserve(it) }
             }
         })
         betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {

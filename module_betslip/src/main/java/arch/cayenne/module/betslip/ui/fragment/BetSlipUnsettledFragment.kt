@@ -8,7 +8,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrder
+import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
@@ -83,11 +83,11 @@ class BetSlipUnsettledFragment :
             it.adapter = betSlipAdapter
             it.betSlipInit()
         }
-        betSlipAdapter.setEarlySettleListener(object : RecyclerItemListener<BetSlipOrder> {
+        betSlipAdapter.setEarlySettleListener(object : RecyclerItemListener<BetSlipOrderBean> {
             override fun onItemClick(
-                item: BetSlipOrder?, position: Int
+                item: BetSlipOrderBean?, position: Int
             ) {
-                item?.order?.let {
+                item?.let {
                     mViewModel.isSupportEarlySettled(it)
                 }
             }
