@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.SportStringExt.getAwayScore
-import arch.cayenne.lib.common.utils.ext.SportStringExt.getHomeScore
 import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
@@ -120,14 +118,20 @@ class MatchItemViewHolder(
             //客隊
             setIconWithDefault(basicInfo.awayTeamIcon, R.drawable.ic_default_team, ivAwayIcon)
             tvAwayName.text = basicInfo.awayTeam.limitTitleLength()
-            tvAwayScore.text = liveInfo.score.getAwayScore()
 
             //主隊
             setIconWithDefault(basicInfo.homeTeamIcon, R.drawable.ic_default_team, ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
-            tvHomeScore.text = liveInfo.score.getHomeScore()
             tvWatchCount.text = liveInfo.viewerCount.toString()
             ivFavorite.isSelected = data.match.collect
+
+            if (basicInfo.status == 5) {
+                tvAwayScore.text = liveInfo.homeScore.toString()
+                tvHomeScore.text = liveInfo.awayScore.toString()
+            } else {
+                tvAwayScore.text = ""
+                tvHomeScore.text = ""
+            }
 
             val selectionsGrouped = data.markets.map { it.market to it.selections }
             oddsColumnAdapter.submitList(selectionsGrouped)
@@ -163,9 +167,15 @@ class MatchItemViewHolder(
                 tvGameTime.text = liveClock(liveInfo.clock, liveInfo.clockModified)
             }
             if ("score" in changes) {
-                tvAwayScore.text = liveInfo.score.getAwayScore()
-                tvHomeScore.text = liveInfo.score.getHomeScore()
+                if (basicInfo.status == 5) {
+                    tvAwayScore.text = liveInfo.homeScore.toString()
+                    tvHomeScore.text = liveInfo.awayScore.toString()
+                } else {
+                    tvAwayScore.text = ""
+                    tvHomeScore.text = ""
+                }
             }
+
             if ("viewerCount" in changes) {
                 tvWatchCount.text = liveInfo.viewerCount.toString()
             }

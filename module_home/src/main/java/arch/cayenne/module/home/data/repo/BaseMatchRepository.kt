@@ -148,7 +148,9 @@ abstract class BaseMatchRepository(
                 liveVideo =match.liveInfo.liveVideo,
                 charRoom = match.liveInfo.charRoom,
                 viewerCount = match.liveInfo.viewerCount,
-                clockModified = match.liveInfo.clockModified + 1000
+                clockModified = match.liveInfo.clockModified + 1000,
+                homeScore = match.liveInfo.homeScore,
+                awayScore = match.liveInfo.awayScore,
             )
             matchLites.add(
                 MatchBeanLite(
