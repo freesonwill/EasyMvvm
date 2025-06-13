@@ -79,7 +79,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     mViewModel.removeMatchCollect(item)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite) {
+                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
@@ -89,6 +89,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         }
                     }
                 }
+
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
             rvCollectList.apply {
