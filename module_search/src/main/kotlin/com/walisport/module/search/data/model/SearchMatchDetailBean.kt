@@ -1,8 +1,9 @@
 package com.walisport.module.search.data.model
 
+import android.os.Parcelable
 import com.walisport.module.search.data.constants.MatchStatusEnum
 import galaxy.common.proto.Common
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 /** * 搜索结果中的比赛详细信息
  * @property matchId 比赛id
@@ -26,6 +27,7 @@ import java.io.Serializable
  * @property tournamentHot 是否热门联赛
  * @property tournamentWeight 联赛权重
  */
+@Parcelize
 data class SearchMatchDetailBean(
     val matchId: Long,                          //比赛id
     val matchName: String,                      //比赛名称
@@ -47,7 +49,7 @@ data class SearchMatchDetailBean(
     val betStop: Boolean = false,               // false: 未停止投注, true: 已停止投注
     val tournamentHot: Boolean = false,         //是否热门联赛
     val tournamentWeight: Int = 0,              //联赛权重
-): Serializable {
+): Parcelable {
     companion object {
         fun from(resp: Common.MatchBasicInfo): SearchMatchDetailBean {
             return SearchMatchDetailBean(

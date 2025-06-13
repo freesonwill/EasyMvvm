@@ -1,7 +1,8 @@
 package com.walisport.module.search.data.model
 
+import android.os.Parcelable
 import galaxy.common.proto.Common
-import java.io.Serializable
+import kotlinx.parcelize.Parcelize
 
 /** * 搜索结果中的比赛直播信息
  * @property clock 走表时间，以秒为单位
@@ -16,6 +17,7 @@ import java.io.Serializable
  * @property awayScore 客队得分
  * @property periodName 阶段名称
  */
+@Parcelize
 data class SearchMatchLiveInfoBean(
     val clock: Int,                //走表时间，以秒为单位
     val rollClock: Boolean,        //是否走表
@@ -28,7 +30,7 @@ data class SearchMatchLiveInfoBean(
     val homeScore: Int,            //主队得分
     val awayScore: Int,            //客队得分
     val periodName: String         //阶段名称
-): Serializable {
+): Parcelable {
     companion object {
         fun from(resp: Common.MatchLiveInfo): SearchMatchLiveInfoBean {
             return SearchMatchLiveInfoBean(
