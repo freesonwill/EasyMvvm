@@ -21,19 +21,20 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
-
-    private var oddsType: Int = 0                                     //赔率显示类型
-    private var langType: String = LanguageType.LANGUAGE_SIMPLE.value //语言类型
+    private var skinType: String = ""
+    private var oddsType: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), {
             findNavController().navigateUp()
         })
-        //默认或者无网情况下从记录中获取数据
-        val skinType = mViewModel.getSkinType()
+        //设置皮肤
+        skinType = mViewModel.getSkinType()
         mViewModel.setSkinType(skinType)
-        langType = mViewModel.getLanguageType()
+        //设置语言
+        val langType = mViewModel.getLanguageType()
         mBinding.tvLanguageType.text = getLanguage(langType)
+        //设置赔率显示方式
         oddsType = mViewModel.getOddsType()
         if (oddsType == 0) {
             mBinding.tvDisplay.text = getString(R.string.menu_europe)
@@ -57,44 +58,33 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
     }
 
-    override fun initData() {
-        mViewModel.getSystemSetting()
-    }
+    override fun createObserver() {}
 
-    override fun createObserver() {
-        mViewModel.systemSetting.observe(viewLifecycleOwner) {
-            it?.let {
-                //赔率类型, 0-欧盘 1-香港盘
-                oddsType = it.oddType
-                if (oddsType == 0) {
-                    mBinding.tvDisplay.text = getString(R.string.menu_europe)
-                } else {
-                    mBinding.tvDisplay.text = getString(R.string.menu_hk)
-                }
-                mViewModel.setOddsType(oddsType)
-                //语言类型 zh-CN：简体中文  en-US：英文  id-ID：印尼语  pt-PT：葡萄牙语
-                langType = it.lang
-                mBinding.tvLanguageType.text = getLanguage(langType)
-                mViewModel.setLanguageType(langType)
-                //系统通知-进球
-                val sys = it.systemGoal
-                mViewModel.setSystemGoal(sys.betMatch, sys.collectMatch, sys.allMatch)
-                //系统通知-开赛
-                val kick = it.systemKickOff
-                mViewModel.setKickGoal(kick.betMatch, kick.collectMatch, kick.allMatch)
-                //应用内通知-进球
-                val app = it.appGoal
-                mViewModel.setAppGoal(app.betMatch, app.collectMatch, app.allMatch)
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            //语言类型
+            val lang = mViewModel.getLanguageType()
+            mBinding.tvLanguageType.text = getLanguage(lang)
+            //赔率显示方式
+            oddsType = mViewModel.getOddsType()
+            if (oddsType == 0) {
+                mBinding.tvDisplay.text = getString(R.string.menu_europe)
+            } else {
+                mBinding.tvDisplay.text = getString(R.string.menu_hk)
             }
+            //皮肤设置
+            skinType = mViewModel.getSkinType()
+            mViewModel.setSkinType(skinType)
         }
     }
 
     private fun getLanguage(type: String): String {
         return when (type) {
-            LanguageType.LANGUAGE_SIMPLE.value -> getString(R.string.menu_language_simple)
+            LanguageType.LANGUAGE_ENGLISH.value -> getString(R.string.menu_language_english)
             LanguageType.LANGUAGE_PT.value -> getString(R.string.menu_language_portugal)
             LanguageType.LANGUAGE_ID.value -> getString(R.string.menu_language_indonesia)
-            else -> getString(R.string.menu_language_english)
+            else -> getString(R.string.menu_language_simple)
         }
     }
 
@@ -106,17 +96,18 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             }
             setOnItemClickListener(object : OddsDisplayDialog.OnClickListener {
                 override fun onClickEP() {
+                    oddsType = 0
                     mViewModel.setOddsType(0)
-                    mViewModel.updateOddsSetting(0)
                     mBinding.tvDisplay.text = getString(R.string.menu_europe)
-                    mBinding.tvDisplay.postDelayed({//延迟关闭弹窗防止RadioButton状态尚未改变就关闭
+                    //延迟关闭弹窗防止RadioButton状态尚未改变就关闭
+                    mBinding.tvDisplay.postDelayed({
                         dialog?.dismiss()
                     }, 300)
                 }
 
                 override fun onClickHK() {
+                    oddsType = 1
                     mViewModel.setOddsType(1)
-                    mViewModel.updateOddsSetting(1)
                     mBinding.tvDisplay.text = getString(R.string.menu_hk)
                     mBinding.tvDisplay.postDelayed({
                         dialog?.dismiss()

@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ConnectState
+import com.walisport.module.setting.data.LanguageType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
@@ -34,6 +35,11 @@ class SplashRepository(
     //获取皮肤背景
     fun getSkinType(): String {
         return userDataManager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
+    }
+
+    //获取语言类型
+    fun getLanguageType(): String {
+        return userDataManager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
     }
 
     suspend fun startSocket(): ConnectState {

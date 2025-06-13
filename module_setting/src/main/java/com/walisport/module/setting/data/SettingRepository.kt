@@ -71,21 +71,6 @@ class SettingRepository(
         manager.setKeyValue(UserDataKey.KEY_APP_ALL, all)
     }
 
-    //获取系统配置
-    suspend fun getSystemSetting(): Common.Setting? {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetSettingResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.GET_SYSTEM_SETTING,
-        ) {
-            Client.GetSettingReq.newBuilder().build()
-        }
-        if (res.error == null && res.data != null) {
-            return res.data!!.setting
-        }
-        return null
-    }
-
     //修改系统配置
     suspend fun updateSettingReq(setting: Common.Setting): Boolean? {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
