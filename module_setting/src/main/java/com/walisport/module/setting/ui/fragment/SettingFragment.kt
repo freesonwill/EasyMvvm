@@ -66,19 +66,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         if (!hidden) {
             val lang = mViewModel.getLanguageType()
             mBinding.tvLanguageType.text = getLanguage(lang)
-            val skin = mViewModel.getSkinType()
-            if(skin != skinType){
-                mViewModel.setSkinType(skin)
-            }
+            skinType = mViewModel.getSkinType()
+            mViewModel.setSkinType(skinType)
         }
     }
 
     private fun getLanguage(type: String): String {
         return when (type) {
-            LanguageType.LANGUAGE_SIMPLE.value -> getString(R.string.menu_language_simple)
+            LanguageType.LANGUAGE_ENGLISH.value -> getString(R.string.menu_language_english)
             LanguageType.LANGUAGE_PT.value -> getString(R.string.menu_language_portugal)
             LanguageType.LANGUAGE_ID.value -> getString(R.string.menu_language_indonesia)
-            else -> getString(R.string.menu_language_english)
+            else -> getString(R.string.menu_language_simple)
         }
     }
 
@@ -90,14 +88,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             }
             setOnItemClickListener(object : OddsDisplayDialog.OnClickListener {
                 override fun onClickEP() {
+                    oddsType = 0
                     mViewModel.setOddsType(0)
                     mBinding.tvDisplay.text = getString(R.string.menu_europe)
-                    mBinding.tvDisplay.postDelayed({//延迟关闭弹窗防止RadioButton状态尚未改变就关闭
+                    //延迟关闭弹窗防止RadioButton状态尚未改变就关闭
+                    mBinding.tvDisplay.postDelayed({
                         dialog?.dismiss()
                     }, 300)
                 }
 
                 override fun onClickHK() {
+                    oddsType = 1
                     mViewModel.setOddsType(1)
                     mBinding.tvDisplay.text = getString(R.string.menu_hk)
                     mBinding.tvDisplay.postDelayed({
