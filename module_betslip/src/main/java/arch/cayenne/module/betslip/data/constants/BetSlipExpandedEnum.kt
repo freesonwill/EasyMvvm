@@ -1,7 +1,7 @@
 package arch.cayenne.module.betslip.data.constants
 
- enum class BetSlipExpandedEnum {
-    HIDE,
+enum class BetSlipExpandedEnum {
+    COLLAPSED,
     EXPANDED,
     NONE
 }

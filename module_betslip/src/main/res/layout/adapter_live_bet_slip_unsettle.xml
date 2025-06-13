@@ -30,6 +30,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_top" />
 
+    <include
+        android:id="@+id/il_more"
+        layout="@layout/item_betslip_more_layout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/recycler_selection" />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_unsettled_iv_avava"
         android:layout_width="@dimen/dp_60"

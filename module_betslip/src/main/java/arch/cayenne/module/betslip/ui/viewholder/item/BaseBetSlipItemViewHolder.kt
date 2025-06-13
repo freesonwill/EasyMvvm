@@ -27,4 +27,6 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
         }
     }
 
+    abstract fun hideLastLine()
+
 }

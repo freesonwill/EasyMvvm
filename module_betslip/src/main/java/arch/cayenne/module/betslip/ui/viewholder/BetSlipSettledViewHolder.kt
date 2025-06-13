@@ -27,8 +27,16 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
     override fun covertPlus(item: BetSlipData) {
         if (item is BetSlipOrderBean) {
             updateData(item)
-            submitOrderData(item)
+            sendData(item)
+            mBinding.ilMore.tvMore.clickNoRepeat {
+                sendData(item)
+            }
         }
+    }
+
+    private fun sendData(item: BetSlipOrderBean) {
+        submitItemData(item.selectionsList)
+        setGradientLayout(mBinding.ilMore)
     }
 
     /**

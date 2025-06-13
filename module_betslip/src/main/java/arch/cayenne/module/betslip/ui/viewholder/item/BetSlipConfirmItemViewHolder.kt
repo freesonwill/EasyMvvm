@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
@@ -11,6 +12,9 @@ import com.bumptech.glide.Glide
 
 class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipConfirmBinding>(binding) {
+    override fun hideLastLine() {
+        mBinding.line.isVisible = false
+    }
 
     override fun covertPlus(
         item: BetSlipSelectionData

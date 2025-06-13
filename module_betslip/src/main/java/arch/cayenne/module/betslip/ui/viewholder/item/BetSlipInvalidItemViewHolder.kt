@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
 import android.annotation.SuppressLint
+import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.module.betslip.R
@@ -12,6 +13,10 @@ import com.bumptech.glide.Glide
 
 class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipInvalidBinding>(binding) {
+
+    override fun hideLastLine() {
+        mBinding.line.isVisible = false
+    }
 
     override fun covertPlus(
         item: BetSlipSelectionData

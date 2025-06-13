@@ -1,13 +1,17 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
 import android.view.View
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
+import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.module.betslip.databinding.ItemBetslipMoreLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
@@ -21,6 +25,8 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
         BetSlipSelectionAdapter(betSlipType)
     }
     private var betSlipListener: BetSlipAdapter.BetSlipListener? = null
+    private var expandedEnum = BetSlipExpandedEnum.NONE
+
     protected val moneySymbol: String
         get() = betSlipListener?.getMoneySymbol() ?: ""
 
@@ -41,16 +47,46 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
         }
     }
 
-    protected fun submitOrderData(
-        data: BetSlipOrderBean
+    protected fun submitItemData(
+        data: List<BetSlipSelectionData>,
     ) {
-//        var list = data.selectionsList
-//        adapter.let {
-//            if (list.size > 3 && data.expandedEnum == BetSlipExpandedEnum.Fold) {
-//                list = list.subList(0, 3)
-//            }
-//            adapter.submitList(list)
-//        }
+        if (data.size > 3 && expandedEnum == BetSlipExpandedEnum.NONE) {
+            expandedEnum = BetSlipExpandedEnum.COLLAPSED
+            adapter.submitList(data.subList(0, 3))
+        } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
+            expandedEnum = BetSlipExpandedEnum.EXPANDED
+            adapter.submitList(data)
+        } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
+            expandedEnum = BetSlipExpandedEnum.COLLAPSED
+            adapter.submitList(data.subList(0, 3))
+        } else {
+            expandedEnum = BetSlipExpandedEnum.NONE
+            adapter.submitList(data)
+        }
+    }
+
+    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
+        val enum = expandedEnum
+        binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
+        if (enum != BetSlipExpandedEnum.NONE) {
+            when (enum) {
+                BetSlipExpandedEnum.EXPANDED -> {
+                    binding.tvMore.text = getString(R.string.fold_up)
+                    binding.ivArrow.setImageDrawable(
+                        SkinnableResourceManager.getDrawable(
+                            binding.root.context, R.drawable.icon_circle_arrow_up
+                        ))
+                }
+                BetSlipExpandedEnum.COLLAPSED -> {
+                    binding.tvMore.text = getString(R.string.see_more)
+                    binding.ivArrow.setImageDrawable(
+                        SkinnableResourceManager.getDrawable(
+                            binding.root.context, R.drawable.icon_circle_arrow_down
+                        ))
+                }
+                else -> {}
+            }
+        }
     }
 
     protected fun showBetTip(attachView: View) {

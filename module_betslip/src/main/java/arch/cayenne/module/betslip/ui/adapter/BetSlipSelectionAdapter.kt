@@ -33,6 +33,9 @@ class BetSlipSelectionAdapter(
         position: Int
     ) {
         holder.covertPlus(getItem(position))
+        if (position == itemCount -1) {
+            holder.hideLastLine()
+        }
     }
 
     override fun createViewBinding(
