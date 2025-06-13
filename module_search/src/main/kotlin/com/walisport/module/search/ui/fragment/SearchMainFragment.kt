@@ -7,6 +7,8 @@ import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -163,6 +165,12 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
                 }
             }
         }
+    }
+
+
+    override fun onStart() {
+        mBinding.root.fitsSystemWindows  = false
+        super.onStart()
     }
 
     private fun setHistoryButton() {

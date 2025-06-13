@@ -66,11 +66,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
     private var canSearch: Boolean = true
 
-    override fun onStart() {
-        mViewModel.setStatusBarState(true)
-        super.onStart()
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         setTitleBar()
         setRecommend()
@@ -411,7 +406,11 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
         }
     }
-
+    override fun onStart() {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        setStatusBar(StatusBarConfig, mBinding.root)
+        super.onStart()
+    }
     private fun notifyUpdateRecordList(key: String) {
         childFragmentManager.fragments
             .filterIsInstance<SearchMainFragment>()
