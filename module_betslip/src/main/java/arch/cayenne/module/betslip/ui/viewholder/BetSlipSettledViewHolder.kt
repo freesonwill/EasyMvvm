@@ -42,16 +42,18 @@ class BetSlipSettledViewHolder(binding: ViewBinding, private val betSlipType: Be
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
-            it.betSettledTvBettingValue.text = order.betAmount
+            val betAmount = "${moneySymbol}${order.betAmount}"
+            it.betSettledTvBettingValue.text = betAmount
             settledStatus(order)
 
             val hasPartSettled = BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
             mBinding.betSettledTvPart.isVisible = hasPartSettled
             mBinding.betSettledTvPartValue.isVisible = hasPartSettled
-            mBinding.betSettledTvPartValue.text = order.earlyBetAmount
+            val earlyAmount = "${moneySymbol}${order.earlyBetAmount}"
+            mBinding.betSettledTvPartValue.text = earlyAmount
 
             val amount = (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
-            it.betSettledTvExceptValue.text = if (amount >= 0) amount.getMoney() else "-${amount.getMoney()}"
+            it.betSettledTvExceptValue.text = if (amount >= 0) "${moneySymbol}${amount.getMoney()}" else "-${moneySymbol}${amount.getMoney()}"
             it.betSettledTvExceptValue.setTextColor(
                 ContextCompat.getColorStateList(
                     binding.root.context,

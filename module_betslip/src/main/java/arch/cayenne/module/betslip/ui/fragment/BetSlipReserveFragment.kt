@@ -51,7 +51,6 @@ class BetSlipReserveFragment :
             override fun isShowLiveButton(): Boolean {
                 return settingViewModel.isBetSlipDetail
             }
-
             override fun onLiveButtonClick(data: BetSlipSelectionData) {
                 if (data is BetSlipReserveSelectionData) {
                     val matchId = data.reserve.matchBasic.matchId
@@ -59,7 +58,11 @@ class BetSlipReserveFragment :
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
-
+        })
+        betSlipAdapter.setBetSlipListener(object : BetSlipAdapter.BetSlipListener {
+            override fun getMoneySymbol(): String {
+                return settingViewModel.moneySymbol
+            }
         })
 
         mBinding.recyclerView.also {

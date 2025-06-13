@@ -4,7 +4,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 
 
-interface BetSlipItemManagerInterface {
+interface BetSlipItemViewHolderInterface {
     fun createViewHolder()
 
     fun covertPlus(

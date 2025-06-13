@@ -18,13 +18,16 @@ import arch.cayenne.module.betslip.data.model.BetSlipOrderSelectionData
 import arch.cayenne.module.betslip.databinding.ItemTipsLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
-import arch.cayenne.module.betslip.utisl.BetSlipAdapterMangerInterface
+import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 
-abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterMangerInterface {
+abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
     protected val mBinding: VB get() = binding as VB
 
     protected lateinit var adapter: BetSlipSelectionAdapter
+    private var betSlipListener: BetSlipAdapter.BetSlipListener? = null
+    protected val moneySymbol: String
+        get() = betSlipListener?.getMoneySymbol() ?: ""
 
     fun setExpandedListener(listener: RecyclerItemListener<BetSlipExpandedEnum>?) {
         adapter.setExpandListener(listener)
@@ -32,6 +35,10 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding) : Ba
 
     fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
+    }
+
+    fun setBetSlipListener(listener: BetSlipAdapter.BetSlipListener?) {
+        betSlipListener = listener
     }
 
     protected fun initItemView(recyclerView: RecyclerView, betSlip: BetSlipEnum) {

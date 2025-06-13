@@ -38,9 +38,10 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, private val betSlipType: Be
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
-                it.betConfirmTvBettingValue.text = order.betAmount
-                it.betConfirmTvExceptValue.text =
-                    BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)
+                val betAmount = "${moneySymbol}${order.betAmount}"
+                it.betConfirmTvBettingValue.text = betAmount
+                val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
+                it.betConfirmTvExceptValue.text = exceptAmount
             }
         }
     }

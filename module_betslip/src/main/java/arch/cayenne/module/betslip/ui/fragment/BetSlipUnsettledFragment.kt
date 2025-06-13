@@ -96,7 +96,6 @@ class BetSlipUnsettledFragment :
             override fun isShowLiveButton(): Boolean {
                 return settingViewModel.isBetSlipDetail
             }
-
             override fun onLiveButtonClick(data: BetSlipSelectionData) {
                 if (data is BetSlipOrderSelectionData) {
                     val matchId = data.selection.matchBasic.matchId
@@ -104,7 +103,11 @@ class BetSlipUnsettledFragment :
                     navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
                 }
             }
-
+        })
+        betSlipAdapter.setBetSlipListener(object : BetSlipAdapter.BetSlipListener {
+            override fun getMoneySymbol(): String {
+                return settingViewModel.moneySymbol
+            }
         })
     }
 

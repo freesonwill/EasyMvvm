@@ -56,11 +56,12 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, private val betSlipType: 
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
-            it.betUnsettledTvBettingValue.text = order.betAmount
-            it.betUnsettledTvExceptValue.text =
-                BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)
-            it.betUnsettledBtAmount.text =
-                "$${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            val betAmount = "${moneySymbol}${order.betAmount}"
+            it.betUnsettledTvBettingValue.text = betAmount
+            val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
+            it.betUnsettledTvExceptValue.text = exceptAmount
+            val earlyAmount = "${moneySymbol}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            it.betUnsettledBtAmount.text = earlyAmount
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
             if (flag) {

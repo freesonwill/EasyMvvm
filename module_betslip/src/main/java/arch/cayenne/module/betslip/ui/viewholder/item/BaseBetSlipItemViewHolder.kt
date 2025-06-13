@@ -14,10 +14,10 @@ import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
 import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.utisl.BetSlipItemManagerInterface
+import arch.cayenne.module.betslip.utisl.BetSlipItemViewHolderInterface
 
 abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding): BaseViewHolder(binding),
-    BetSlipItemManagerInterface {
+    BetSlipItemViewHolderInterface {
     protected val mBinding: VB get() = binding as VB
 
     private var expandedListener: RecyclerItemListener<BetSlipExpandedEnum>? = null
