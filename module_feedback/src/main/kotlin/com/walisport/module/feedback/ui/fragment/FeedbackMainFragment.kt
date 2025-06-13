@@ -41,19 +41,32 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                 val inputLength = s?.length ?: 0
                 mBinding.tvEditTextLength.text =
                     if (inputLength == 0) "" else "$inputLength/${mViewModel.maxInputLength}"
+
+                mViewModel.setTextInputted(inputLength > 0)
             }
         })
 
+        // 将 CheckBox 放入列表
+        val checkBoxes = listOf(
+            mBinding.checkbox1,
+            mBinding.checkbox2,
+            mBinding.checkbox3,
+            mBinding.checkbox4,
+            mBinding.checkbox5,
+            mBinding.checkbox6
+        )
+
+        // 设置监听器
+        checkBoxes.forEach { checkBox ->
+            checkBox.setOnCheckedChangeListener { _, _ ->
+                mViewModel.setCheckBoxSelected(checkBoxes.any { it.isChecked })
+            }
+        }
+
         mBinding.buttonSubmit.clickNoRepeat {
-            if (!mBinding.checkbox1.isChecked &&
-                !mBinding.checkbox2.isChecked &&
-                !mBinding.checkbox3.isChecked &&
-                !mBinding.checkbox4.isChecked &&
-                !mBinding.checkbox5.isChecked &&
-                !mBinding.checkbox6.isChecked
-            ) {
+            if (mViewModel.checkBoxSelected.value != true) {
                 showToast(getString(R.string.select_feedback_type))
-            } else if (mBinding.editFeedback.length() == 0) {
+            } else if (mViewModel.textInputted.value != true) {
                 showToast(getString(R.string.enter_feedback_description))
             } else {
                 showToast(getString(R.string.no_interface))
@@ -63,7 +76,11 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
     }
 
     override fun createObserver() {
-
+        with(mViewModel) {
+            btnEnabled.observe(viewLifecycleOwner) {
+                mBinding.buttonSubmit.isEnabled = it
+            }
+        }
     }
 
 
