@@ -35,7 +35,7 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
 
     private fun sendData(item: BetSlipOrderBean) {
         submitItemData(item.selectionsList)
-        setGradientLayout(mBinding.ilMore)
+        setGradientLayout(mBinding.ilMore, mBinding.recyclerSelection)
     }
 
     /**

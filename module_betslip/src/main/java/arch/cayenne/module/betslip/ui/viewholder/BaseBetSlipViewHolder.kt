@@ -16,6 +16,7 @@ import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
+import androidx.constraintlayout.widget.ConstraintLayout
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
@@ -61,6 +62,7 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
             expandedEnum = BetSlipExpandedEnum.EXPANDED
             adapter.submitList(data)
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
+            expandedEnum = BetSlipExpandedEnum.COLLAPSED
             adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else {
             expandedEnum = BetSlipExpandedEnum.NONE
@@ -68,7 +70,7 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
         }
     }
 
-    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding) {
+    protected fun setGradientLayout(binding: ItemBetslipMoreLayoutBinding, anchorView: View) {
         val enum = expandedEnum
         binding.root.isVisible = enum != BetSlipExpandedEnum.NONE
         if (enum != BetSlipExpandedEnum.NONE) {
@@ -80,6 +82,10 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
                             binding.root.context, R.drawable.icon_circle_arrow_up
                         ))
                     binding.ivGradient.isVisible = false
+                    binding.root.layoutParams = (binding.root.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        bottomToBottom = ConstraintLayout.LayoutParams.UNSET
+                        topToBottom = anchorView.id
+                    }
                 }
                 BetSlipExpandedEnum.COLLAPSED -> {
                     binding.tvMore.text = getString(R.string.see_more)
@@ -88,6 +94,10 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
                             binding.root.context, R.drawable.icon_circle_arrow_down
                         ))
                     binding.ivGradient.isVisible = true
+                    binding.root.layoutParams = (binding.root.layoutParams as ConstraintLayout.LayoutParams).apply {
+                        bottomToBottom = anchorView.id
+                        topToBottom = ConstraintLayout.LayoutParams.UNSET
+                    }
                 }
                 else -> {}
             }
