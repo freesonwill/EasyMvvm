@@ -201,7 +201,8 @@ class TournamentListFragment :
             if (result == null) {
                 mViewModel.tournaments.value?.let { setTournamentList(it) }
             } else {
-                val displayList = result.map { TournamentListItem.TournamentItem(it) }
+                //TODO 整個searchDisplayList都要和tournaments一起處理發送，adapter只會被一個live data觸發
+                val displayList = result.map { TournamentListItem.TournamentItem(it.third, it.first, it.second) }
                 adapter.submitList(displayList)
             }
         }
@@ -244,19 +245,19 @@ class TournamentListFragment :
         if (hotList.isNotEmpty()) {
             displayList.add(TournamentListItem.Header('*'))
             letterPositionMap['*'] = displayList.size - 1
-            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it) })
+            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it, null, null) })
         }
 
         groupedMap.toSortedMap().forEach { (letter, list) ->
             letterPositionMap[letter] = displayList.size
             displayList.add(TournamentListItem.Header(letter))
-            displayList.addAll(list.map { TournamentListItem.TournamentItem(it) })
+            displayList.addAll(list.map { TournamentListItem.TournamentItem(it, null, null) })
         }
 
         if (otherList.isNotEmpty()) {
             letterPositionMap['#'] = displayList.size
             displayList.add(TournamentListItem.Header('#'))
-            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it) })
+            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
         }
         setSearchHint(displayList)
         displayList.add(TournamentListItem.FooterView)

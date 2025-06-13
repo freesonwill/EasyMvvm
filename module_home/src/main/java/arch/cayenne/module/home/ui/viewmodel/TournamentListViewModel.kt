@@ -29,16 +29,18 @@ class TournamentListViewModel : BaseViewModel() {
 
     private var _lastSelectedLetter: Char? = null
 
-    val searchDisplayList = MutableLiveData<List<BaseTournamentData>?>()
+    //TODO 把searchDisplayList整合進tournaments內，統一由tournaments發送給fragment
+    val searchDisplayList = MutableLiveData<List<Triple<Int, Int, BaseTournamentData>>?>()
 
 
     fun searchTournament(query: String) {
         val all = tournaments.value ?: return
         val result = all.filter {
-            it.name.contains(query, ignoreCase = true) || it.simpleName.contains(
-                query,
-                ignoreCase = true
-            )
+            it.name.contains(query, ignoreCase = true)
+        }.map {
+            val start = it.name.indexOf(query)
+            val end = start + query.length
+            Triple(start, end, it)
         }
         searchDisplayList.value = result
     }
