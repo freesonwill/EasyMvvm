@@ -445,7 +445,7 @@ class LiveVideoLandscapeFragment :
         val currentMarginTop = 0
         val targetMarginTop = (currentHeight - targetHeight) / 2
         val currentMarginStart = 0
-        
+
         mBinding.root.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
