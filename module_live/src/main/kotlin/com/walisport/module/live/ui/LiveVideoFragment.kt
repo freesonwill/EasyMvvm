@@ -388,7 +388,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun onPause() {
         super.onPause()
-        videoView.onPause()
+        if (videoView.parent == mBinding.videoViewContainer) {
+            videoView.onPause()
+        }
     }
 
     override fun onResume() {

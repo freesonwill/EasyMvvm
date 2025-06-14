@@ -518,7 +518,9 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
-        videoView.onPause()
+        if (videoView.parent == mBinding.videoViewContainer) {
+            videoView.onPause()
+        }
     }
 
     override fun onDestroyView() {
