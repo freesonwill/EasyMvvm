@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.content.ContextWrapper
@@ -149,6 +150,38 @@ fun View.startSafeObjectAnimator(
     vararg values: Float
 ): ObjectAnimator {
     val animator = ObjectAnimator.ofFloat(this, property, *values)
+    // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
+    doOnAttach {
+        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                animator.cancel()
+            }
+        })
+    }
+    return animator
+}
+
+/**
+ * 安全启动AnimatorSet
+ *
+ * @param animators
+ * @param duration
+ * @param interpolator
+ * @param start
+ * @return
+ */
+fun View.startSafeAnimateSet(
+    config: AnimatorSet.() -> Unit,
+    duration: Long = -1,
+    interpolator: TimeInterpolator? = null,
+    start:Boolean = true,
+): AnimatorSet {
+    val animator = AnimatorSet().apply {
+        this.config()
+        this.duration = duration
+        this.interpolator = interpolator
+        if(start) start()
+    }
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
     doOnAttach {
         findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {

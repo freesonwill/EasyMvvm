@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
@@ -21,6 +20,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
@@ -293,7 +293,7 @@ class LiveVideoLandscapeFragment :
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
@@ -313,7 +313,6 @@ class LiveVideoLandscapeFragment :
                 ),
 
                 )
-            setDuration(ANIMATION_DURATION)
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                 }
@@ -328,8 +327,7 @@ class LiveVideoLandscapeFragment :
                 override fun onAnimationRepeat(animation: Animator) {
                 }
             })
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -339,7 +337,7 @@ class LiveVideoLandscapeFragment :
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
@@ -352,10 +350,7 @@ class LiveVideoLandscapeFragment :
                 ),
                 mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
             )
-            setDuration(ANIMATION_DURATION)
-
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -388,7 +383,7 @@ class LiveVideoLandscapeFragment :
             (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
@@ -427,14 +422,12 @@ class LiveVideoLandscapeFragment :
 
                     }
                 })
-            setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -452,8 +445,8 @@ class LiveVideoLandscapeFragment :
         val currentMarginTop = 0
         val targetMarginTop = (currentHeight - targetHeight) / 2
         val currentMarginStart = 0
-
-        with(AnimatorSet()) {
+        
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
@@ -492,14 +485,12 @@ class LiveVideoLandscapeFragment :
 
                     }
                 })
-            setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
                 onEndAction()
             }
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
 
     }
 
