@@ -25,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
@@ -413,12 +414,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         with(AnimatorSet()) {
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(0f, operateAreaHeight)
                 ),
-                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+                mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f)
             )
             duration = ANIMATION_DURATION
 
@@ -435,13 +435,11 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         with(AnimatorSet()) {
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(operateAreaHeight, 0f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "alpha",
                     *floatArrayOf(0.5f, 1f)
                 ),
@@ -497,8 +495,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    mBinding.ivVideoLoading,  // 目标 View
+                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
                     0f, 360f // 从 0 度旋转到 360 度
                 ).run {

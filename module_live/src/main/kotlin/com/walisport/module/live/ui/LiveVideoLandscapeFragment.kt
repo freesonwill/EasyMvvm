@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
@@ -20,9 +19,9 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
@@ -296,23 +295,19 @@ class LiveVideoLandscapeFragment :
 
         with(AnimatorSet()) {
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(-operateAreaHeight, 0f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "alpha",
                     *floatArrayOf(0.5f, 1f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(operateAreaHeight, 0f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "alpha",
                     *floatArrayOf(0.5f, 1f)
                 ),
@@ -346,18 +341,16 @@ class LiveVideoLandscapeFragment :
 
         with(AnimatorSet()) {
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
                     0f, -operateAreaHeight
                 ),
-                ObjectAnimator.ofFloat(mBinding.topArea, "alpha", 1f, 0.5f),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.topArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(0f, operateAreaHeight)
                 ),
-                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+                mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
             )
             setDuration(ANIMATION_DURATION)
 
@@ -764,8 +757,7 @@ class LiveVideoLandscapeFragment :
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    mBinding.ivVideoLoading,  // 目标 View
+                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
                     0f, 360f // 从 0 度旋转到 360 度
                 ).run {

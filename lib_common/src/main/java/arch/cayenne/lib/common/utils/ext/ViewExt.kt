@@ -143,3 +143,19 @@ fun View.startSafeObjectAnimator(
     }
     return animator
 }
+
+fun View.startSafeObjectAnimator(
+    property: String,
+    vararg values: Float
+): ObjectAnimator {
+    val animator = ObjectAnimator.ofFloat(this, property, *values)
+    // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
+    doOnAttach {
+        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                animator.cancel()
+            }
+        })
+    }
+    return animator
+}
