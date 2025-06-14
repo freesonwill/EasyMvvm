@@ -1,7 +1,7 @@
 package com.walisport.module.live.data.model
 
 /**
- * 比赛统计数据
+ * 比赛阵容数据
  */
 
 data class MatchLineupDetail @JvmOverloads constructor(
