@@ -277,7 +277,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onPause() {
         super.onPause()
         mViewModel.matchId.value?.let {
-            mViewModel.registerMatchInfoNotify(it)
+            mViewModel.unregisterMatchInfoNotify(it)
         }
     }
 
@@ -285,7 +285,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onResume() {
         super.onResume()
         mViewModel.matchId.value?.let {
-            mViewModel.unregisterMatchInfoNotify(it)
+            mViewModel.registerMatchInfoNotify(it)
         }
     }
 
