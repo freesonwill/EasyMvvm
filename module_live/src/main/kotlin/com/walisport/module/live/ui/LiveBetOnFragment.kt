@@ -42,6 +42,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var selectionComboId :Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
+        mBinding.clDynamics.setState(States.LOADING, "")
     }
 
     override fun initData() {
