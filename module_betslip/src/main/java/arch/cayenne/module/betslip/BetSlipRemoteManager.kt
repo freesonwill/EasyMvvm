@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
@@ -189,4 +190,6 @@ class BetSlipRemoteManager(
         }
         return emptyList()
     }
+
+    fun registerEarlySettleNotify() = socketManager.observeProtoMessage<Client.EarlySettleNotify>(ApiCode.EARLY_SETTLE_NOTIFY)
 }

@@ -23,6 +23,32 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     var selectOrder: BetSlipOrderBean? = null
         private set
 
+    init {
+        viewModelScope.launch {
+            repo.observerEarlySettleNotify.collect {
+                updateEarlySettleData(it)
+            }
+        }
+    }
+
+    private fun updateEarlySettleData(newData: BetSlipOrderBean) {
+        val currentList = orderLiveData.value ?: return
+
+        val updatedList = currentList.mapNotNull { item ->
+            if (item.betId == newData.betId) {
+                // 如果金額相同，表示已提前結算完，移除項目
+                if (newData.betAmount == newData.earlyBetAmount) {
+                    null
+                } else {
+                    newData
+                }
+            } else {
+                item
+            }
+        }
+        setOrderData(updatedList)
+    }
+
     /**
      * 部分提前结算
      * */
@@ -51,7 +77,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     }
 
     private fun setDataToEarlySettling(betId: String) {
-        val currentList = _orderLiveData.value ?: return
+        val currentList = orderLiveData.value ?: return
 
         val updatedList = currentList.map { item ->
             if (item.betId == betId) {
@@ -64,7 +90,6 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
                 item
             }
         }
-
-        _orderLiveData.value = updatedList
+        setOrderData(updatedList)
     }
 }

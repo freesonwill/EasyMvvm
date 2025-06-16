@@ -13,12 +13,12 @@ import kotlinx.coroutines.launch
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
 
     //普通注单
-    protected val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()
+    private val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
     override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
-            repo.getOrderReq(
+            val resp = repo.getOrderReq(
                 status.value,
                 startTime,
                 endTime,
@@ -26,12 +26,8 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 SIZE,
                 sportIds,
                 matchId,
-            )?.let { result ->
-                _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _orderLiveData.value = result
-            } ?: run {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
-            }
+            )
+            setOrderData(resp)
         }
     }
 
@@ -67,5 +63,20 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
 
     override fun canLoadMore(): Boolean {
         return !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % SIZE != 0))
+    }
+
+    protected fun setOrderData(data: List<BetSlipOrderBean>?) {
+        data?.let {
+            if (it.isEmpty()) {
+                _state.value = Event(DynamicStateLayout.States.DATA_EMPTY)
+                _orderLiveData.value = emptyList()
+            } else {
+                _state.value = Event(DynamicStateLayout.States.NULL)
+                _orderLiveData.value = it
+            }
+        } ?: run {
+            _orderLiveData.value = emptyList()
+            _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+        }
     }
 }
