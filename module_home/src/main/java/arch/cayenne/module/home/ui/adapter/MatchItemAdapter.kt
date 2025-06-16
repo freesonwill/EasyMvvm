@@ -19,10 +19,12 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
     ) {
         val item = getItem(position)
         holder.init(item)
-
-        binding.clLeftInfoEntry.setOnClickListener {
+        binding.root.setOnClickListener {
             onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
         }
+//        binding.clLeftInfoEntry.setOnClickListener {
+//            onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
+//        }
         binding.ivFavorite.setOnClickListener {
             onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
         }
