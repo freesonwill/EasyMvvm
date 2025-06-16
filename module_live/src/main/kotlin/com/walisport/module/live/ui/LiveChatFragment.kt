@@ -39,6 +39,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     override fun initView(savedInstanceState: Bundle?) {
         initFragment()
         initTab()
+        updateChatUi()
     }
 
     private fun initTab() {
@@ -228,7 +229,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
         val code = mainViewModel.mainMatch.value?.basicInfo?.status
         val status = MatchStatus.entries.find { status -> status.code == code }
-//        val chatRoomIsOpen = mainViewModel.observeMainMatch.value?.liveInfo?.charRoom ?: false
         mBinding.also {
             when (status) {
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {

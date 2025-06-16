@@ -45,15 +45,14 @@ class LiveEmojiAdapter() :
                 is ItemEmojiLayoutBinding -> {
                     val nBinding = binding as ItemEmojiLayoutBinding
                     nBinding.iv.tag = position
-                    Glide.with(binding.root.context).load(resId).override(30,30).into(nBinding.iv)
+                    nBinding.iv.setImageResource(resId)
                 }
 
                 is ItemBidEmojiLayoutBinding -> {
                     val nBinding = binding as ItemBidEmojiLayoutBinding
                     nBinding.iv.tag = position
-                    Glide.with(binding.root.context).load(resId).override(77,21).into(nBinding.iv)
+                    nBinding.iv.setImageResource(resId)
                 }
-
 
                 else -> {}
             }
