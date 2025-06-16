@@ -29,9 +29,9 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
      * */
     fun cancelReserve(order: ReserveOrderBean) {
         viewModelScope.launch {
-            val result = repo.reserveCancel(order.id)?.apply {
+            val result = repo.reserveCancel(order.reserveId)?.apply {
                 if (this.success) {
-                    updateData(BetSlipEnum.Reserve, order.id)
+                    updateData(BetSlipEnum.Reserve, order.reserveId)
                 }
             }
             _cancelReserveLiveData.value = Event(result?.success ?: false)
@@ -43,9 +43,9 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
      * */
     fun modifyReserve(order: ReserveOrderBean, odds: String) {
         viewModelScope.launch {
-            val result = repo.reserveUpdate(order.id, order.betAmount, odds)?.apply {
+            val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)?.apply {
                 if (this.success) {
-                    updateData(BetSlipEnum.Reserve, order.id)
+                    updateData(BetSlipEnum.Reserve, order.reserveId)
                 }
             }
             _modifyOddsLiveData.value = Event(result?.success ?: false)

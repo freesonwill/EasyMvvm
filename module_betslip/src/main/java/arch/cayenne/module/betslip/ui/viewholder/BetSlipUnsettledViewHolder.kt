@@ -59,7 +59,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                     order.betAmount, order.earlyBetAmount, order.earlySettlePrice.settleMin
                 )
             it.betUnsettledBtSettle.tag = adapterPosition
-            it.betUnsettledTvBetcodeValue.text = order.id
+            it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
             val betAmount = "${moneySymbol}${order.betAmount}"
             it.betUnsettledTvBettingValue.text = betAmount

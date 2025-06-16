@@ -46,7 +46,7 @@ class BetSlipInvalidViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             tvUnit2.text = ContextCompat.getString(binding.root.context, R.string.live_bet_odds)
             tvUnit3.text = ContextCompat.getString(binding.root.context, R.string.live_bet_on)
             tvUnit4.text = ContextCompat.getString(binding.root.context, R.string.live_bet_except_max_win)
-            tvUnit1Value.text = item.id
+            tvUnit1Value.text = item.betId
             tvUnit2Value.text = item.odds
             val betAmount = "${moneySymbol}${item.betAmount}"
             tvUnit3Value.text = betAmount
