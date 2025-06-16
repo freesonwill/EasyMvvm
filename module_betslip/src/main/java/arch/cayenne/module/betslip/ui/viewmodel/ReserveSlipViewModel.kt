@@ -24,16 +24,23 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     private val _modifyOddsLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
+    init {
+        viewModelScope.launch {
+            repo.observeReserveBean().collect { reserveList ->
+                _reserveLiveData.value = reserveList
+                if (reserveList.isNotEmpty()) {
+                    _state.value = Event(DynamicStateLayout.States.NULL)
+                }
+            }
+        }
+    }
+
     /**
      * 取消预约
      * */
     fun cancelReserve(order: BetSlipReserveBean) {
         viewModelScope.launch {
-            val result = repo.reserveCancel(order.reserveId)?.apply {
-                if (this.success) {
-                    updateData(BetSlipEnum.Reserve, order.reserveId)
-                }
-            }
+            val result = repo.reserveCancel(order.reserveId)
             _cancelReserveLiveData.value = Event(result?.success ?: false)
         }
     }
@@ -41,31 +48,27 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     /**
      * 修改预约
      * */
-    fun modifyReserve(order: BetSlipReserveBean, odds: String) {
+    fun modifyReserve(order: BetSlipReserveBean, newOdds: String) {
         viewModelScope.launch {
-            val result = repo.reserveUpdate(order.reserveId, order.betAmount, odds)?.apply {
-                if (this.success) {
-                    updateData(BetSlipEnum.Reserve, order.reserveId)
-                }
-            }
+            val result = repo.reserveUpdate(order.reserveId, order.betAmount, newOdds)
             _modifyOddsLiveData.value = Event(result?.success ?: false)
         }
     }
 
     override fun refreshData(status: BetSlipEnum) {
         viewModelScope.launch {
-            repo.getReserveOrder(
+            val resp = repo.getReserveOrder(
                 startTime,
                 endTime,
                 sportIds,
                 matchId,
                 null,
                 SIZE
-            )?.let { result ->
-                _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _reserveLiveData.value = result
-            } ?: run {
+            )
+            if (resp == null) {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            } else if (resp.isEmpty()) {
+                _state.value = Event(DynamicStateLayout.States.DATA_EMPTY)
             }
         }
     }
@@ -73,23 +76,15 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     override fun loadMoreData(status: BetSlipEnum) {
         val list = _reserveLiveData.value
         viewModelScope.launch {
-            repo.getReserveOrder(
+            val resp = repo.loadMoreReserveOrder(
                 startTime,
                 endTime,
                 sportIds,
                 matchId,
                 list?.lastOrNull()?.reserveTime,
                 SIZE
-            )?.let { result ->
-                _state.value = Event(DynamicStateLayout.States.NULL)
-                if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipReserveBean>()
-                    val oldList = _reserveLiveData.value ?: emptyList()
-                    newList.addAll(oldList)
-                    newList.addAll(result)
-                    _reserveLiveData.value = newList
-                }
-            } ?: run {
+            )
+            if (resp == null) {
                 _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
         }

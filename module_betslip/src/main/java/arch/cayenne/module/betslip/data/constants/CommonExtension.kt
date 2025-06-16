@@ -52,7 +52,6 @@ object CommonExtension {
 
     fun Common.EarlySettlePrice.toEarlySettlePriceBean(): EarlySettlePriceBean {
         return EarlySettlePriceBean(
-            betId = betId,
             price = price,
             settleTotal = settleTotal,
             settleMin = settleMin,
@@ -66,7 +65,7 @@ object CommonExtension {
             reserveTime = reserveTime,
             betAmount = betAmount,
             selection = selection.toReserveOrderSelectionBean(),
-            status = status
+            betStatus = status
         )
     }
 

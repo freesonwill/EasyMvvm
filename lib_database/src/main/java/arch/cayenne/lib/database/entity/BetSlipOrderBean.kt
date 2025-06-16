@@ -1,9 +1,15 @@
 package arch.cayenne.lib.database.entity
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 interface BetSlipData
 interface BetSlipSelectionData
 
+@Entity(tableName = "BetSlipOrderBean")
 data class BetSlipOrderBean (
+    @PrimaryKey
     val betId: String,                         // 下注id
     val betTime: Long,                         // 下注時間
     val settleTime: Long,                      // 結算時間
@@ -21,6 +27,7 @@ data class BetSlipOrderBean (
     val earlyReturnAmount: String,             // 提前結算派彩金額
     val earlySettleTimes: Int,                 // 已經提前結算的次數
     val resultStatus: Int,                     // 訂單結果：0-未結算，1-贏，2-和局，3-輸，4-輸一半，5-贏一半，6-退款，7-提前結算
+    @Embedded
     val earlySettlePrice: EarlySettlePriceBean // 提前結算報價
 ): BetSlipData
 
@@ -32,6 +39,7 @@ data class OrderSelectionBean(
     val marketId: Long,             // 盘口id
     val specifier: String,          // 盘口说明符
     val betScore: String,           // 下注时比分
+    @Embedded
     val matchBasic: MatchBasicInfoBean, // 比赛基本信息
     val status: Int,                // 选项状态 0-未结算 1-赢 2-平 3-输 4-赢半 5-输半 6-取消
     val endScore: String,           // 结束时比分
@@ -39,7 +47,6 @@ data class OrderSelectionBean(
 ): BetSlipSelectionData
 
 data class EarlySettlePriceBean(
-    val betId: String,          // 訂單 ID
     val price: String,          // 提前結算 1 元的報價（如 0.92）
     val settleTotal: Int,       // 最大有效提前結算次數
     val settleMin: String,      // 單次最小結算本金
