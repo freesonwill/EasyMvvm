@@ -359,7 +359,8 @@ class SearchResultDirectMatchFragment :
 
     private fun updateResultBackground(color: Int? = null) {
         sharedViewModel.setResultBackgroundColor(color)
-        mViewModel.setTempBackgroundColor(color)
+        if (color != null)
+            mViewModel.setTempBackgroundColor(color)
         setStatusBarState(color == null)
     }
 
