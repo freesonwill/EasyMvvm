@@ -1,3 +1,4 @@
+@Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -6,7 +7,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 
 android {
-    namespace = "arch.cayenne.module.home"
+    namespace = "arch.cayenne.module.account"
     compileSdk = 34
 
     defaultConfig {
@@ -32,7 +33,6 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-
 }
 
 dependencies {
@@ -40,9 +40,6 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(project(":lib_res"))
     implementation(project(":lib_websocket"))
-    implementation(project(":module_bet"))
-    implementation(project(":module_betslip"))
-    implementation(project(":module_account"))
     implementation(libs.icu4j)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -21,4 +21,7 @@ enum class UserDataKey(val key: String) {
     KEY_APP_BET("App_Goal_Bet"),
     KEY_APP_FAV("App_Goal_Fav"),
     KEY_APP_ALL("App_Goal_All"),
+    KEY_PERSONAL_INFO_NICKNAME("PersonalInfo_NickName"),
+    KEY_PERSONAL_INFO_RES_ID("PersonalInfo_ResId"),
+    KEY_PERSONAL_INFO_POSITION("PersonalInfo_Position"),
 }
