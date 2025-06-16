@@ -254,7 +254,6 @@ class TournamentListFragment :
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
         }
         setSearchHint(displayList)
-//        displayList.add(TournamentListItem.FooterView)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
