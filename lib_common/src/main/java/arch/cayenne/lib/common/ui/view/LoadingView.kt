@@ -37,4 +37,9 @@ class LoadingView : LinearLayout {
         }
         super.onVisibilityChanged(changedView, visibility)
     }
+
+    override fun onDetachedFromWindow() {
+        progressDrawable.stop()
+        super.onDetachedFromWindow()
+    }
 }
