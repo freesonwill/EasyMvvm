@@ -107,6 +107,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_18"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
             android:gravity="center_horizontal"
             android:text="@string/tip_dialog_notice"
             android:textColor="@color/notice_title"
