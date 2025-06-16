@@ -167,9 +167,12 @@ class SearchResultDirectMatchFragment :
             }
 
             viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+                override fun onStart(owner: LifecycleOwner) {
+                    updateResultBackground(mViewModel.tempBackgroundColor)
+                }
+
                 override fun onStop(owner: LifecycleOwner) {
                     updateResultBackground(null)
-                    super.onStop(owner)
                 }
             })
         }
@@ -360,6 +363,7 @@ class SearchResultDirectMatchFragment :
 
     private fun updateResultBackground(color: Int? = null) {
         sharedViewModel.setResultBackgroundColor(color)
+        mViewModel.setTempBackgroundColor(color)
         setStatusBarState(color == null)
     }
 
