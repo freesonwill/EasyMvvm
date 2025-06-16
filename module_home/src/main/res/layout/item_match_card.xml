@@ -275,8 +275,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_odds_grid"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="9dp"
+        android:layout_marginBottom="@dimen/dp_10"
         android:paddingEnd="@dimen/dp_14"
         android:clipChildren="false"
         android:clipToPadding="false"
@@ -285,6 +286,7 @@
         app:layout_constraintEnd_toEndOf="@+id/layout_odds_title"
         app:layout_constraintStart_toEndOf="@id/guideline_vertical"
         app:layout_constraintTop_toBottomOf="@id/layout_odds_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:spanCount="3" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView

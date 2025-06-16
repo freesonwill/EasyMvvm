@@ -3,10 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/ll_odds_cell"
     android:layout_width="match_parent"
-    android:layout_height="43dp"
-    android:background="@drawable/selector_match_odds_cell"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@drawable/selector_match_odds_cell">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:layout_width="match_parent"
