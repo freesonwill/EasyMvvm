@@ -36,7 +36,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
             betReserveTvIntroduce.text = item.selectionName
             betReserveTvAodds.text = itemView.context.getString(R.string.live_bet_except_odds, item.odds)
 //            betReserveTvStatus.isVisible = item.inPlay
-            val score = item.marketName + "  (${ match.liveInfo.score})"
+            val score = item.marketName + "  (${item.liveInfo.score})"
             betReserveTvScore.text = score
             betReserveTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
         }

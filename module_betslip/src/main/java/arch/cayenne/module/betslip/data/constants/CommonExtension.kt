@@ -1,5 +1,7 @@
 package arch.cayenne.module.betslip.data.constants
 
+import arch.cayenne.lib.database.entity.MatchBasicInfoBean
+import arch.cayenne.lib.database.entity.MatchLiveInfoBean
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.model.EarlySettlePriceBean
 import arch.cayenne.module.betslip.data.model.OrderSelectionBean
@@ -7,7 +9,7 @@ import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
 import galaxy.common.proto.Common
 
-object DataExtension {
+object CommonExtension {
 
     fun Common.Order.toOrderBean(): BetSlipOrderBean {
         return BetSlipOrderBean(
@@ -41,7 +43,7 @@ object DataExtension {
             marketId = marketId,
             specifier = specifier,
             betScore = betScore,
-            matchBasic = matchBasic,
+            matchBasic = matchBasic.toMatchBasicInfoBean(),
             status = status,
             endScore = endScore,
             inPlay = inPlay
@@ -63,7 +65,7 @@ object DataExtension {
             reserveId = reserveId,
             reserveTime = reserveTime,
             betAmount = betAmount,
-            selection = selection,
+            selection = selection.toReserveOrderSelectionBean(),
             status = status
         )
     }
@@ -76,7 +78,47 @@ object DataExtension {
             marketName = marketName,
             marketId = marketId,
             specifier = specifier,
-            matchBasic = matchBasic
+            matchBasic = matchBasic.toMatchBasicInfoBean(),
+            liveInfo = matchBasic.liveInfo.toMatchLiveInfoBean()
+        )
+    }
+
+    fun Common.MatchBasicInfo.toMatchBasicInfoBean(): MatchBasicInfoBean {
+        return MatchBasicInfoBean(
+            matchId = matchId,
+            matchName = matchName,
+            homeTeam = homeTeam,
+            homeTeamId = homeTeamId,
+            homeTeamIcon = homeTeamIcon,
+            awayTeam = awayTeam,
+            awayTeamId = awayTeamId,
+            awayTeamIcon = awayTeamIcon,
+            startTime = startTime,
+            status = status,
+            tournamentId = tournamentId,
+            tournamentName = tournamentName,
+            tournamentShortName = tournamentShortName,
+            tournamentIcon = tournamentIcon,
+            sportId = sportId,
+            sportName = sportName,
+            betStop = betStop,
+            tournamentHot = tournamentHot,
+            tournamentWeight = tournamentWeight
+        )
+    }
+
+    fun Common.MatchLiveInfo.toMatchLiveInfoBean(): MatchLiveInfoBean {
+        return MatchLiveInfoBean(
+            clock = clock,
+            rollClock = rollClock,
+            period = periodName,
+            score = score,
+            liveVideo = liveVideo,
+            charRoom = chatRoom,
+            viewerCount = viewerCount,
+            clockModified = clockModified,
+            homeScore = homeScore,
+            awayScore = awayScore
         )
     }
 }

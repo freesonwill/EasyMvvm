@@ -1,7 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.module.betslip.BetSlipRemoteManager
-import arch.cayenne.module.betslip.data.constants.DataExtension.toOrderBean
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common

@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.data.model
 
+import arch.cayenne.lib.database.entity.MatchBasicInfoBean
 import galaxy.common.proto.Common
 
 data class OrderSelectionBean(
@@ -10,7 +11,7 @@ data class OrderSelectionBean(
     val marketId: Long,             // 盘口id
     val specifier: String,          // 盘口说明符
     val betScore: String,           // 下注时比分
-    val matchBasic: Common.MatchBasicInfo, // 比赛基本信息
+    val matchBasic: MatchBasicInfoBean, // 比赛基本信息
     val status: Int,                // 选项状态 0-未结算 1-赢 2-平 3-输 4-赢半 5-输半 6-取消
     val endScore: String,           // 结束时比分
     val inPlay: Boolean             // 是否滚球

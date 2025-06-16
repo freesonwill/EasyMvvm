@@ -5,7 +5,6 @@ import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.constants.DataExtension.toReserveOrderSelectionBean
 import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
@@ -66,7 +65,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
     private fun submitReserveData(
         reserve: ReserveOrderBean,
     ) {
-        val list = listOf(reserve.selection.toReserveOrderSelectionBean())
+        val list = listOf(reserve.selection)
         adapter.submitList(list)
     }
 }
