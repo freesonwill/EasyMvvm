@@ -2,6 +2,7 @@ package com.walisport.module.live.utils
 
 import android.content.Context
 import android.text.Spannable
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
@@ -10,9 +11,10 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 object EmojiUtils {
-
+     const val NORMAL_EMOJI_REGEX = "/id=(\\d+)/"
+     const val BID_EMOJI_REGEX = "/bid=(\\d+)/"
     fun replaceEmoji(context: Context, text: Spannable) {
-        val emojiPattern: Pattern = Pattern.compile("/id=(\\d+)/")
+        val emojiPattern: Pattern = Pattern.compile(NORMAL_EMOJI_REGEX)
         val emojiMatcher: Matcher = emojiPattern.matcher(text)
         while (emojiMatcher.find()) {
             val foundText = emojiMatcher.group()
@@ -36,7 +38,7 @@ object EmojiUtils {
     }
 
     private fun bidReplaceEmoji(context: Context, text: Spannable) {
-        val bidPattern: Pattern = Pattern.compile("/bid=(\\d+)/")
+        val bidPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
         val bitMatcher: Matcher = bidPattern.matcher(text)
 
         while (bitMatcher.find()) {
@@ -59,4 +61,5 @@ object EmojiUtils {
             }
         }
     }
+
 }
