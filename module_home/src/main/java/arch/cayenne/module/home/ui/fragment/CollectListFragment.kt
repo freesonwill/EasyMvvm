@@ -196,6 +196,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         refreshLayout.finishLoadMore()
                         loadingView.visibility = View.GONE
                     }
+                    else -> {}
                 }
             }
         }

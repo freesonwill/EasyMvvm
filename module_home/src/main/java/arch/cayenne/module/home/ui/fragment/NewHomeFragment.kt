@@ -594,6 +594,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             with(mBinding) {
                 when(state) {
                     HomeState.PLAY_TYPE_CLICK -> {
+                        mViewModel.setIsHomeLoading(true)
                         resetHomeView()
                         mViewModel.getCurrentSportStatistical()
                         groupHomeMain.visibility = View.VISIBLE

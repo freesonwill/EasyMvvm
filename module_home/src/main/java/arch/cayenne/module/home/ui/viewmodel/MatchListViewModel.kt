@@ -24,6 +24,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
+    private var _homeOrPullLoadingState = false
     override val repository: MatchListRepository by inject()
 
     fun setSportId(id: Int) {
@@ -118,5 +119,19 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     override fun clearCurrentMatch() {
         repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
+    }
+
+    fun setHomeOrPullLoadingState(isLoading: Boolean = false) {
+        _homeOrPullLoadingState = isLoading
+    }
+
+    fun showLoading() {
+        if (!_homeOrPullLoadingState) {
+            _state.value = Event(MatchListState.SHOW_LOADING)
+        }
+    }
+
+    fun hideLoading() {
+        _state.value = Event(MatchListState.HIDE_LOADING)
     }
 }
