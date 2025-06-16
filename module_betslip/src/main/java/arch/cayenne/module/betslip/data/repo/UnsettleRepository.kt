@@ -1,8 +1,8 @@
 package arch.cayenne.module.betslip.data.repo
 
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope

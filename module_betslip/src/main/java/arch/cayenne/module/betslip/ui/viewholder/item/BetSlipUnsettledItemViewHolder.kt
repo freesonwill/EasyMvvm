@@ -3,8 +3,8 @@ package arch.cayenne.module.betslip.ui.viewholder.item
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
-import arch.cayenne.module.betslip.data.model.OrderSelectionBean
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
+import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide

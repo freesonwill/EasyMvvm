@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch

@@ -1,15 +1,11 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.module.betslip.R
+import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 

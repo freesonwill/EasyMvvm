@@ -1,7 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.withContext
 

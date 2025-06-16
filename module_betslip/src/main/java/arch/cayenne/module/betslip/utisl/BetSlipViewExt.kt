@@ -6,9 +6,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
+import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.model.BetSlipData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 
 object BetSlipViewExt {

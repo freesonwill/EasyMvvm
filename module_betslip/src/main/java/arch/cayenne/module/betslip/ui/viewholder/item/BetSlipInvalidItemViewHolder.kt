@@ -4,9 +4,9 @@ import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
+import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.R
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
-import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.utisl.BetSlipDateUtil
 import com.bumptech.glide.Glide

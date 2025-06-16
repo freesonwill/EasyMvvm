@@ -1,5 +1,7 @@
-package arch.cayenne.module.betslip.data.model
+package arch.cayenne.lib.database.entity
 
+interface BetSlipData
+interface BetSlipSelectionData
 
 data class BetSlipOrderBean (
     val betId: String,                         // 下注id
@@ -21,3 +23,26 @@ data class BetSlipOrderBean (
     val resultStatus: Int,                     // 訂單結果：0-未結算，1-贏，2-和局，3-輸，4-輸一半，5-贏一半，6-退款，7-提前結算
     val earlySettlePrice: EarlySettlePriceBean // 提前結算報價
 ): BetSlipData
+
+data class OrderSelectionBean(
+    val selectionId: Long,          // 投注项id
+    val selectionName: String,      // 选项名称
+    val odds: String,               // 下注赔率
+    val marketName: String,         // 盘口名称
+    val marketId: Long,             // 盘口id
+    val specifier: String,          // 盘口说明符
+    val betScore: String,           // 下注时比分
+    val matchBasic: MatchBasicInfoBean, // 比赛基本信息
+    val status: Int,                // 选项状态 0-未结算 1-赢 2-平 3-输 4-赢半 5-输半 6-取消
+    val endScore: String,           // 结束时比分
+    val inPlay: Boolean             // 是否滚球
+): BetSlipSelectionData
+
+data class EarlySettlePriceBean(
+    val betId: String,          // 訂單 ID
+    val price: String,          // 提前結算 1 元的報價（如 0.92）
+    val settleTotal: Int,       // 最大有效提前結算次數
+    val settleMin: String,      // 單次最小結算本金
+    val settleStatus: Int       // 狀態：1-投注確認中, 2-拒單, ..., 102-提前結算進行中
+)
+

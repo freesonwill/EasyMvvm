@@ -2,8 +2,8 @@ package arch.cayenne.module.betslip.ui.adapter
 
 import android.view.ViewGroup
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.ui.viewholder.BaseBetSlipViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.BetSlipUnsettledViewHolder
 

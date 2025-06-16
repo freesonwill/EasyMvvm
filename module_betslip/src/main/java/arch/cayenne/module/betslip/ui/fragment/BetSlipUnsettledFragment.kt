@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
+import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
-import arch.cayenne.module.betslip.data.model.OrderSelectionBean
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipUnsettledAdapter

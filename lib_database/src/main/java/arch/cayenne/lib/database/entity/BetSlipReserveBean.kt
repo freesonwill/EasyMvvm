@@ -1,7 +1,12 @@
-package arch.cayenne.module.betslip.data.model
+package arch.cayenne.lib.database.entity
 
-import arch.cayenne.lib.database.entity.MatchBasicInfoBean
-import arch.cayenne.lib.database.entity.MatchLiveInfoBean
+data class BetSlipReserveBean(
+    val reserveId: String,          // 下注 ID
+    val reserveTime: Long,          // 預約時間（毫秒時間戳）
+    val betAmount: String,          // 下注金額（字串格式）
+    val selection: ReserveOrderSelectionBean, // 預約選項（需要定義對應的資料類型）
+    val status: Int                 // 狀態：0-預約中, 1-成功, 2-失敗, 3-取消
+) : BetSlipData
 
 data class ReserveOrderSelectionBean(
     val selectionId: Long,          // 投注项 id

@@ -4,7 +4,7 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipItemViewHolderInterface
 

@@ -1,12 +1,12 @@
 package arch.cayenne.module.betslip.data.constants
 
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.database.entity.EarlySettlePriceBean
 import arch.cayenne.lib.database.entity.MatchBasicInfoBean
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
-import arch.cayenne.module.betslip.data.model.EarlySettlePriceBean
-import arch.cayenne.module.betslip.data.model.OrderSelectionBean
-import arch.cayenne.module.betslip.data.model.ReserveOrderBean
-import arch.cayenne.module.betslip.data.model.ReserveOrderSelectionBean
+import arch.cayenne.lib.database.entity.OrderSelectionBean
+import arch.cayenne.lib.database.entity.ReserveOrderSelectionBean
 import galaxy.common.proto.Common
 
 object CommonExtension {
@@ -60,8 +60,8 @@ object CommonExtension {
         )
     }
 
-    fun Common.ReserveOrder.toReserveOrderBean(): ReserveOrderBean {
-        return ReserveOrderBean(
+    fun Common.ReserveOrder.toReserveOrderBean(): BetSlipReserveBean {
+        return BetSlipReserveBean(
             reserveId = reserveId,
             reserveTime = reserveTime,
             betAmount = betAmount,
