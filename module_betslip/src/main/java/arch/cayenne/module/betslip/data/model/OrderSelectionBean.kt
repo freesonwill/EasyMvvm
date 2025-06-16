@@ -15,19 +15,3 @@ data class OrderSelectionBean(
     val endScore: String,           // 结束时比分
     val inPlay: Boolean             // 是否滚球
 ): BetSlipSelectionData()
-
-fun Common.OrderSelection.toOrderSelectionBean(): OrderSelectionBean {
-    return OrderSelectionBean(
-        selectionId = selectionId,
-        selectionName = selectionName,
-        odds = odds,
-        marketName = marketName,
-        marketId = marketId,
-        specifier = specifier,
-        betScore = betScore,
-        matchBasic = matchBasic,
-        status = status,
-        endScore = endScore,
-        inPlay = inPlay
-    )
-}

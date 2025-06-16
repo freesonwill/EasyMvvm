@@ -22,26 +22,3 @@ data class BetSlipOrderBean (
     val resultStatus: Int,                     // 訂單結果：0-未結算，1-贏，2-和局，3-輸，4-輸一半，5-贏一半，6-退款，7-提前結算
     val earlySettlePrice: EarlySettlePriceBean // 提前結算報價
 ): BetSlipData()
-
-fun Common.Order.toOrderBean(): BetSlipOrderBean {
-    return BetSlipOrderBean(
-        betId = betId,
-        betTime = betTime,
-        settleTime = settleTime,
-        betAmount = betAmount,
-        returnAmount = returnAmount,
-        selectionsList = selectionsList.map { it.toOrderSelectionBean() },
-        comboType = comboType,
-        comboK = comboK,
-        comboV = comboV,
-        comboCount = comboCount,
-        odds = odds,
-        status = status,
-        earlySupport = earlySupport,
-        earlyBetAmount = earlyBetAmount,
-        earlyReturnAmount = earlyReturnAmount,
-        earlySettleTimes = earlyCount,
-        resultStatus = resultStatus,
-        earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean()
-    )
-}

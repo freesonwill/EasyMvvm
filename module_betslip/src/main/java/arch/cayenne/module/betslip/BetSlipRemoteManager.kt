@@ -5,10 +5,10 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.betslip.data.constants.DataExtension.toOrderBean
+import arch.cayenne.module.betslip.data.constants.DataExtension.toReserveOrderBean
 import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.model.ReserveOrderBean
-import arch.cayenne.module.betslip.data.model.toOrderBean
-import arch.cayenne.module.betslip.data.model.toReserveOrderBean
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq

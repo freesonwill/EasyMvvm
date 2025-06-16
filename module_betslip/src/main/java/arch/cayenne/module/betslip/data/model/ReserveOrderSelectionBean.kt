@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.data.model
 
+import arch.cayenne.lib.database.entity.MatchBasicInfoBean
 import galaxy.common.proto.Common
 
 data class ReserveOrderSelectionBean(
@@ -11,15 +12,3 @@ data class ReserveOrderSelectionBean(
     val specifier: String,          // 盘口说明符
     val matchBasic: Common.MatchBasicInfo  // 比赛基本信息
 ): BetSlipSelectionData()
-
-fun Common.ReserveOrderSelection.toReserveOrderSelectionBean(): ReserveOrderSelectionBean {
-    return ReserveOrderSelectionBean(
-        selectionId = selectionId,
-        selectionName = selectionName,
-        odds = odds,
-        marketName = marketName,
-        marketId = marketId,
-        specifier = specifier,
-        matchBasic = matchBasic
-    )
-}
