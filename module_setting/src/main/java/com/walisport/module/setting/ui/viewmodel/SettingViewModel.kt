@@ -84,6 +84,66 @@ class SettingViewModel : BaseViewModel() {
         repository.setAppGoal(bet, fav, all);
     }
 
+    //获取系统通知-进球选项是全部还是部分
+    fun getSystemAllOrPart(): Boolean {
+        val bet = repository.getSystemBet()
+        val fav = repository.getSystemFav()
+        val all = repository.getSystemAll()
+        return bet && fav && all
+    }
+
+    //获取系统通知-开赛选项是全部还是部分
+    fun getKickAllOrPart(): Boolean {
+        val bet = repository.getKickBet()
+        val fav = repository.getKickFav()
+        val all = repository.getKickAll()
+        return bet && fav && all
+    }
+
+    //获取应用内通知-进球选项是全部还是部分
+    fun getAppAllOrPart(): Boolean {
+        val bet = repository.getAppBet()
+        val fav = repository.getAppFav()
+        val all = repository.getAppAll()
+        return bet && fav && all
+    }
+
+    fun getSystemBet(): Boolean {
+        return repository.getSystemBet()
+    }
+
+    fun getSystemFav(): Boolean {
+        return repository.getSystemFav()
+    }
+
+    fun getSystemAll(): Boolean {
+        return repository.getSystemAll()
+    }
+
+    fun getKickBet(): Boolean {
+        return repository.getKickBet()
+    }
+
+    fun getKickFav(): Boolean {
+        return repository.getKickFav()
+    }
+
+    fun getKickAll(): Boolean {
+        return repository.getKickAll()
+    }
+
+    fun getAppBet(): Boolean {
+        return repository.getAppBet()
+    }
+
+    fun getAppFav(): Boolean {
+        return repository.getAppFav()
+    }
+
+    fun getAppAll(): Boolean {
+        return repository.getAppAll()
+    }
+
     //调用接口设置赔率方式
     fun updateOddsSetting(type: Int) {
         viewModelScope.launch {

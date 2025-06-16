@@ -15,8 +15,19 @@ class MatchNoticeDialog : BaseBottomSheetFragment<EmptyViewModel, DialogMatchNot
         get() = EmptyViewModel::class
     private var clicklistener: OnClickListener? = null
 
-    override fun initView(savedInstanceState: Bundle?) {
+    val betValue: String = "betValue"
+    val favValue: String = "favValue"
+    val allValue: String = "allValue"
 
+    override fun initView(savedInstanceState: Bundle?) {
+        arguments?.let {
+            val betToggle = it.getBoolean(betValue)
+            val favToggle = it.getBoolean(favValue)
+            val allToggle = it.getBoolean(allValue)
+            mBinding.toggleBet.isChecked = betToggle
+            mBinding.toggleFav.isChecked = favToggle
+            mBinding.toggleAll.isChecked = allToggle
+        }
     }
 
     override fun initListener() {
@@ -44,6 +55,4 @@ class MatchNoticeDialog : BaseBottomSheetFragment<EmptyViewModel, DialogMatchNot
         fun onClickAll(isChecked: Boolean)
         fun onClickClose()
     }
-
-
 }
