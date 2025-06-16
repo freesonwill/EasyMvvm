@@ -7,6 +7,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
@@ -37,18 +38,17 @@ class SearchResultBaseFragment :
 
     override fun initData() {
         super.initData()
-        findNavController().previousBackStackEntry
-            ?.savedStateHandle
-            ?.get<String>("searchKey")
-            ?.let { key ->
-                if (key.isNotEmpty()) {
+        findNavController().also { nav ->
+            nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
+                observeResultOnce<String>(
+                    key = SearchFragment.SEARCH_KEY,
+                    fromId = fromId,
+                    navController = nav
+                ) { key ->
                     mViewModel.getSearchResult(key)
-
-                    findNavController().previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.remove<String>("searchKey")
                 }
             }
+        }
     }
 
     override fun initListener() = Unit
