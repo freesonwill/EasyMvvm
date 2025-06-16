@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
@@ -48,9 +49,19 @@ class UnsettleRepository(
                 remoteManager.registerEarlySettleNotify().collect { res ->
                     if (res.error == null && res.data != null) {
                         val newData = res.data!!.order.toOrderBean(BetSlipEnum.UnSettled.value)
-                        betSlipOrderDao.insert(newData)
+                        updateEarlySettleData(newData)
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateEarlySettleData(newData: BetSlipOrderBean) {
+        scope.launch {
+            if (newData.betAmount == newData.earlyBetAmount) {
+                betSlipOrderDao.updateBetSlipType(newData.betId, BetSlipEnum.Settled.value)
+            } else {
+                betSlipOrderDao.insert(newData)
             }
         }
     }
