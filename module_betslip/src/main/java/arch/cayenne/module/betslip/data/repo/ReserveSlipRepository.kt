@@ -5,6 +5,7 @@ import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ReserveSlipRepository(
@@ -36,6 +37,7 @@ class ReserveSlipRepository(
                     betSlipReserveDao.deleteAll()
                 } else {
                     betSlipReserveDao.insert(this)
+                    betSlipReserveDao.deleteMissing(this.map { it.reserveId })
                 }
             }
         }
@@ -85,6 +87,12 @@ class ReserveSlipRepository(
             if (this?.success == true) {
                 betSlipReserveDao.updateOdds(reserveId, newOdds)
             }
+        }
+    }
+
+    fun deleteAll() {
+        scope.launch {
+            betSlipReserveDao.deleteAll()
         }
     }
 

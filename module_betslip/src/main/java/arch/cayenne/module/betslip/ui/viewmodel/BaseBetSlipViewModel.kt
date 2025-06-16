@@ -41,4 +41,5 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
     abstract fun loadMoreData(status: BetSlipEnum)
     abstract fun updateData(status: BetSlipEnum, betId: String)
     abstract fun canLoadMore(): Boolean
+    abstract fun deleteAll()
 }

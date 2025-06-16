@@ -97,4 +97,8 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     override fun canLoadMore(): Boolean {
         return !(_reserveLiveData.value.isNullOrEmpty() || (_reserveLiveData.value!!.size % SIZE != 0))
     }
+
+    override fun deleteAll() {
+        repo.deleteAll()
+    }
 }

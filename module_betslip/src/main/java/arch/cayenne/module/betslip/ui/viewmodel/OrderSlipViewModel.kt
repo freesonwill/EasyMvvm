@@ -65,6 +65,10 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
         return !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % SIZE != 0))
     }
 
+    override fun deleteAll() {
+
+    }
+
     protected fun setOrderData(data: List<BetSlipOrderBean>?) {
         data?.let {
             if (it.isEmpty()) {
