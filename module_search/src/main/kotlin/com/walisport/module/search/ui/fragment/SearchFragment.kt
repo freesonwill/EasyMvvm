@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -81,51 +82,49 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     override fun createObserver() {
         with(mViewModel) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch {
-                        searchRecommendList.collect { list ->
-                            recommendAdapter.submitList(list)
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    searchRecommendList.collect { list ->
+                        recommendAdapter.submitList(list)
+                    }
+                }
+                launch {
+                    navigationEvent.collect { event ->
+                        doNavigate(event)
+                    }
+                }
+                launch {
+                    searchKeyWord.collect { key ->
+                        if (key.isNotEmpty()) {
+                            updateSearchText(key)
+                            setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
                         }
                     }
-                    launch {
-                        navigationEvent.collect { event ->
-                            doNavigate(event)
-                        }
+                }
+                launch {
+                    resultBackgroundColor.collect { color ->
+                        setResultBackground(
+                            color != null,
+                            color ?: R.color.search_result_default_gradient_start
+                        )
                     }
-                    launch {
-                        searchKeyWord.collect { key ->
-                            if (key.isNotEmpty()) {
-                                updateSearchText(key)
-                                setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
-                            }
-                        }
+                }
+                launch {
+                    statusBarState.collect { isDefault ->
+                        updateStatusTitleBar(isDefault)
                     }
-                    launch {
-                        resultBackgroundColor.collect { color ->
-                            setResultBackground(
-                                color != null,
-                                color ?: R.color.search_result_default_gradient_start
-                            )
-                        }
-                    }
-                    launch {
-                        statusBarState.collect { isDefault ->
-                            updateStatusTitleBar(isDefault)
-                        }
-                    }
-                    launch {
-                        titleBarMaskEvent.collect { event ->
-                            with(mBinding.maskTitleBar) {
-                                if (event.first) {
-                                    visibility = View.VISIBLE
-                                    setOnClickListener {
-                                        event.second?.invoke()
-                                    }
-                                } else {
-                                    visibility = View.GONE
-                                    setOnClickListener(null)
+                }
+                launch {
+                    titleBarMaskEvent.collect { event ->
+                        with(mBinding.maskTitleBar) {
+                            if (event.first) {
+                                visibility = View.VISIBLE
+                                setOnClickListener {
+                                    event.second?.invoke()
                                 }
+                            } else {
+                                visibility = View.GONE
+                                setOnClickListener(null)
                             }
                         }
                     }
