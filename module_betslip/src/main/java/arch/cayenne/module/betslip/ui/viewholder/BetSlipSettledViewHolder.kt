@@ -45,7 +45,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
     private fun updateData(order: BetSlipOrderBean) {
         mBinding.also {
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
-            it.betSettledTvBetcodeValue.text = order.betId
+            it.betSettledTvBetcodeValue.text = order.id
             it.betSettledTvOddsValue.text = order.odds
             val betAmount = "${moneySymbol}${order.betAmount}"
             it.betSettledTvBettingValue.text = betAmount

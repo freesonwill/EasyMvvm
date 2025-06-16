@@ -13,7 +13,7 @@ object CommonExtension {
 
     fun Common.Order.toOrderBean(): BetSlipOrderBean {
         return BetSlipOrderBean(
-            betId = betId,
+            id = betId,
             betTime = betTime,
             settleTime = settleTime,
             betAmount = betAmount,
@@ -62,7 +62,7 @@ object CommonExtension {
 
     fun Common.ReserveOrder.toReserveOrderBean(): ReserveOrderBean {
         return ReserveOrderBean(
-            reserveId = reserveId,
+            id = reserveId,
             reserveTime = reserveTime,
             betAmount = betAmount,
             selection = selection.toReserveOrderSelectionBean(),

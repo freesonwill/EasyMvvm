@@ -47,7 +47,7 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         mBinding.also {
             item.let { order ->
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
-                it.betConfirmTvBetcodeValue.text = order.betId
+                it.betConfirmTvBetcodeValue.text = order.id
                 it.betConfirmTvOddsValue.text = order.odds
                 val betAmount = "${moneySymbol}${order.betAmount}"
                 it.betConfirmTvBettingValue.text = betAmount

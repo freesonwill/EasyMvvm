@@ -35,7 +35,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
         val currentList = orderLiveData.value ?: return
 
         val updatedList = currentList.mapNotNull { item ->
-            if (item.betId == newData.betId) {
+            if (item.id == newData.id) {
                 // 如果金額相同，表示已提前結算完，移除項目
                 if (newData.betAmount == newData.earlyBetAmount) {
                     null
@@ -69,7 +69,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     fun isSupportEarlySettled(order: BetSlipOrderBean) {
         selectOrder = order
         viewModelScope.launch {
-            val result = repo.earlySettledPrice(order.betId)
+            val result = repo.earlySettledPrice(order.id)
             if (!result.isNullOrEmpty()) {
                 _isSupportEarlySettleLiveData.value = result.first()
             }
@@ -80,7 +80,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
         val currentList = orderLiveData.value ?: return
 
         val updatedList = currentList.map { item ->
-            if (item.betId == betId) {
+            if (item.id == betId) {
                 item.copy(
                     earlySettlePrice = item.earlySettlePrice.copy(
                         settleStatus = 102

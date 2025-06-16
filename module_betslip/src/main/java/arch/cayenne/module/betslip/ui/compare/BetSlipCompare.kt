@@ -7,15 +7,7 @@ import arch.cayenne.module.betslip.data.model.ReserveOrderBean
 
 class BetSlipCompare : DiffUtil.ItemCallback<BetSlipData>() {
     override fun areItemsTheSame(oldItem: BetSlipData, newItem: BetSlipData): Boolean {
-        return when {
-            oldItem is BetSlipOrderBean && newItem is BetSlipOrderBean ->
-                oldItem.betId == newItem.betId
-
-            oldItem is ReserveOrderBean && newItem is ReserveOrderBean ->
-                oldItem.reserveId == newItem.reserveId
-
-            else -> false
-        }
+        return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(oldItem: BetSlipData, newItem: BetSlipData): Boolean {
