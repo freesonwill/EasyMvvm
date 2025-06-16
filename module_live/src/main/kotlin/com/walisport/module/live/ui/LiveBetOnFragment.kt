@@ -18,6 +18,7 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
@@ -29,6 +30,7 @@ import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 //投注
@@ -36,6 +38,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override val vbClass: KClass<FragmentLiveBetOnBinding> = FragmentLiveBetOnBinding::class
     override val vmClass: KClass<LiveBetOnViewModel> = LiveBetOnViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+    private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
@@ -57,14 +60,16 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
-                override fun itemListCallback(marketI: Long, selectionId: Long) {
+                override fun itemListCallback(marketI: Long, selectionId: Long,x: Float,y: Float) {
                     launch {
                         val status = mainViewModel.matchId.value?.let { mViewModel.setSelection(it, selectionId) }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {
                             showToast(getString(R.string.disabled_to_combo))
-                        }
+                        }else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
+                        fabViewModel.setClickAnimation(x, y)
+                    }
                     }
                 }
             })

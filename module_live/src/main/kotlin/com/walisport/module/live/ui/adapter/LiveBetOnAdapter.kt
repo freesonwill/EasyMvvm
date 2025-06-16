@@ -80,8 +80,8 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     listIt.oddsStatus,
                     isNotify,
                     isisCombo,
-                ) { it ->
-                    callback.itemListCallback(it, listIt.selectionId)
+                ) {it,x,y ->
+                    callback.itemListCallback(it, listIt.selectionId,x,y)
                 }
             }
         }
@@ -135,7 +135,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
 }
 
 interface LivBetListCallback {
-    fun itemListCallback(marketI: Long, selectionId: Long)
+    fun itemListCallback(marketI: Long, selectionId: Long,x: Float,y:Float)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {

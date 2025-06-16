@@ -51,7 +51,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         oddStatus: Int,
         isNotify: Boolean,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         this.isNotify = isNotify
         if (num == 0) {
@@ -85,7 +85,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.DEFAULT_ARRANGE.value) {
             0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
@@ -103,7 +103,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
         binding.llcTowArrange.isVisible = false
@@ -118,7 +118,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.TOW_ARRANGE.value) {
             0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
@@ -136,7 +136,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         when (num % StatesArrange.THREE_ARRANGE.value) {
             0 -> binding.llcOneArrange.addView(createViewOne(name, odds, marketId, active, oddStatus, isCombo, callback))
@@ -154,7 +154,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ) {
         name.split("-").takeIf { it.size == 2 }?.let { parts ->
             val left = parts[0].toIntOrNull() ?: return
@@ -181,7 +181,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutOneBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
         setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclOne, sclOneLock)
         root
@@ -194,7 +194,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutTowBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
         setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclTow, sclTowLock)
         root
@@ -207,7 +207,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit
+        callback: (Long, Float, Float) -> Unit
     ): View = LiveBetContentItemLayoutThreeBinding.inflate(LayoutInflater.from(context), binding.root, false).run {
         setupView(this, name, odds, marketId, active, oddStatus, isCombo, callback, sclThree, sclThreeLock)
         root
@@ -221,7 +221,7 @@ class LiveBetListLayout @JvmOverloads constructor(
         active: Boolean,
         oddStatus: Int,
         isCombo: Boolean,
-        callback: (Long) -> Unit,
+        callback: (Long, Float, Float) -> Unit,
         selectableView: View,
         lockView: View
     ) {
@@ -232,21 +232,24 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclOne.isSelected = isCombo
-                    sclOne.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclOne) }
+                    sclOne.clickNoRepeatSingle {
+                        handleClick(marketId, isCombo, callback, sclOne) }
                 }
                 is LiveBetContentItemLayoutTowBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclTow.isSelected = isCombo
-                    sclTow.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclTow) }
+                    sclTow.clickNoRepeatSingle {
+                        handleClick(marketId, isCombo, callback, sclTow) }
                 }
                 is LiveBetContentItemLayoutThreeBinding -> {
                     if (active) isOddsStatus(oddStatus, imgTop, imgDown)
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclThree.isSelected = isCombo
-                    sclThree.clickNoRepeatSingle { handleClick(marketId, isCombo, callback, sclThree) }
+                    sclThree.clickNoRepeatSingle {
+                        handleClick(marketId, isCombo, callback, sclThree) }
                 }
                 else ->{}
             }
@@ -255,8 +258,15 @@ class LiveBetListLayout @JvmOverloads constructor(
         }
     }
 
-    private fun handleClick(marketId: Long, isCombo: Boolean, callback: (Long) -> Unit, view: View) {
-        callback(marketId)
+
+
+
+    private fun handleClick(marketId: Long, isCombo: Boolean, callback: (Long, Float, Float) -> Unit, view: View) {
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val x = location[0] + view.width / 2
+        val y = location[1] + view.height / 2
+        callback(marketId,x.toFloat(),y.toFloat())
         if (!isCombo) {
             view.isSelected = true
             delayExample { view.isSelected = false }
