@@ -10,7 +10,7 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_back"
-        style="@style/CustomToolbarImgStyle"
+        style="@style/CustomToolbarCancelStyle"
         android:gravity="center"
         android:text="@string/cancel"
         android:textColor="@color/title_cancel"
