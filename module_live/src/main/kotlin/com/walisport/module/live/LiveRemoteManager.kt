@@ -50,6 +50,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
+            LogUtils.d("lineup","lineup_result${result.data!!.matchLineupDetail.awayOrBuilderList}")
             return result.data!!.matchLineupDetail
         }
         return null

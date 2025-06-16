@@ -21,10 +21,10 @@ class OddsColumnViewHolder(
         val forceLocked = market.defaultSelectionCount == 0 || selections.isEmpty()
         if (forceLocked) {
             oddsCells.forEachIndexed { index, cell ->
-                when {
-                    market.marketId == 1L -> cell.deActivate()
-                    index < 2 -> cell.deActivate()
-                    else -> cell.hideView()
+                if (index <= market.defaultSelectionCount - 1) {
+                    cell.deActivate()
+                } else {
+                    cell.hideView()
                 }
             }
         } else {

@@ -30,6 +30,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
+import java.lang.reflect.Method
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KClass
@@ -214,3 +215,15 @@ fun <T : ViewBinding> Fragment.getViewBind(
     )
     return inflaterMethod.invoke(null, layoutInflater, root, attachedToParent) as T
 }
+
+val <T> Class<T>.inflateMethod: Method?
+    get() =
+        try {
+            getMethod("inflate", LayoutInflater::class.java)
+        } catch (e: NoSuchMethodException) {
+            e.printStackTrace()
+            null
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+            null
+        }

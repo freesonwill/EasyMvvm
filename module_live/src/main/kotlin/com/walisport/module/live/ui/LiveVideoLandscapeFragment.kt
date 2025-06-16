@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.pm.ActivityInfo
@@ -10,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.GONE
 import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
@@ -20,9 +18,10 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
@@ -97,8 +96,8 @@ class LiveVideoLandscapeFragment :
                             it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                             it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                             it.reconnectCount = -1 // Demo重试一百次, -1不限制
-                            //默认不开启硬件加速
-                            it.isHWDecode = false
+                            //开启硬件加速
+                            it.isHWDecode = true
 
                             it.inited = true
                         }
@@ -294,31 +293,26 @@ class LiveVideoLandscapeFragment :
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(-operateAreaHeight, 0f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "alpha",
                     *floatArrayOf(0.5f, 1f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(operateAreaHeight, 0f)
                 ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "alpha",
                     *floatArrayOf(0.5f, 1f)
                 ),
 
                 )
-            setDuration(ANIMATION_DURATION)
             addListener(object : Animator.AnimatorListener {
                 override fun onAnimationStart(animation: Animator) {
                 }
@@ -333,8 +327,7 @@ class LiveVideoLandscapeFragment :
                 override fun onAnimationRepeat(animation: Animator) {
                 }
             })
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -344,25 +337,20 @@ class LiveVideoLandscapeFragment :
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_landscape_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.topArea,
+                mBinding.topArea.startSafeObjectAnimator(
                     "translationY",
                     0f, -operateAreaHeight
                 ),
-                ObjectAnimator.ofFloat(mBinding.topArea, "alpha", 1f, 0.5f),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
+                mBinding.topArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
+                mBinding.bottomArea.startSafeObjectAnimator(
                     "translationY",
                     *floatArrayOf(0f, operateAreaHeight)
                 ),
-                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
+                mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
             )
-            setDuration(ANIMATION_DURATION)
-
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -395,7 +383,7 @@ class LiveVideoLandscapeFragment :
             (mBinding.videoArea.layoutParams as ConstraintLayout.LayoutParams).marginStart
         val targetMarginStart = 0
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
@@ -434,14 +422,12 @@ class LiveVideoLandscapeFragment :
 
                     }
                 })
-            setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -460,7 +446,7 @@ class LiveVideoLandscapeFragment :
         val targetMarginTop = (currentHeight - targetHeight) / 2
         val currentMarginStart = 0
 
-        with(AnimatorSet()) {
+        mBinding.root.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(currentHeight, targetHeight).apply {
                     addUpdateListener {
@@ -499,14 +485,12 @@ class LiveVideoLandscapeFragment :
 
                     }
                 })
-            setDuration(ANIMATION_DURATION)
             doOnEnd {
                 mBinding.videoViewContainer.background =
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
                 onEndAction()
             }
-            start()
-        }
+        }, duration = ANIMATION_DURATION, start = true)
 
     }
 
@@ -534,7 +518,9 @@ class LiveVideoLandscapeFragment :
         //恢复竖屏，宽高也要回到竖屏时到宽高
         AutoSizeConfig.getInstance().setDesignWidthInDp(PORTRAIT_WIDTH)
         AutoSizeConfig.getInstance().setDesignHeightInDp(PORTRAIT_HEIGHT)
-        videoView.onPause()
+        if (videoView.parent == mBinding.videoViewContainer) {
+            videoView.onPause()
+        }
     }
 
     override fun onDestroyView() {
@@ -764,8 +750,7 @@ class LiveVideoLandscapeFragment :
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    mBinding.ivVideoLoading,  // 目标 View
+                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
                     0f, 360f // 从 0 度旋转到 360 度
                 ).run {

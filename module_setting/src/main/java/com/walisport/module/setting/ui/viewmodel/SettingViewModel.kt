@@ -6,14 +6,13 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.SkinnableManager
-import com.walisport.module.setting.data.NotifyMatchType
-import com.walisport.module.setting.data.SettingBean
 import com.walisport.module.setting.data.SettingRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
+import java.util.Locale
 
 @KoinViewModel
 class SettingViewModel : BaseViewModel() {
@@ -21,8 +20,11 @@ class SettingViewModel : BaseViewModel() {
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
 
-    private val _systemSetting = MutableLiveData<SettingBean?>()
-    val systemSetting: LiveData<SettingBean?> get() = _systemSetting
+    private val _language = MutableLiveData<String>()
+    val language: LiveData<String> = _language
+
+    private val _skinType = MutableLiveData<String>()
+    val skinType: LiveData<String> = _skinType
 
     //设置赔率方式
     fun setOddsType(type: Int) {
@@ -36,7 +38,11 @@ class SettingViewModel : BaseViewModel() {
 
     //设置语言类型
     fun setLanguageType(type: String) {
-        repository.setLanguageType(type)
+        viewModelScope.launch {
+            repository.setLanguageType(type)
+            skinManager.changeLanguage(Locale(type))
+            _language.value = type
+        }
     }
 
     //获取语言类型
@@ -46,15 +52,21 @@ class SettingViewModel : BaseViewModel() {
 
     //获取皮肤背景
     fun getSkinType(): String {
-        val skinType = repository.getSkinType()
-        return getLogicSkinType(skinType)
+        return repository.getSkinType()
     }
 
-    //设置皮肤背景
+    //设置皮肤背景，只换肤不写入记录，写入记录得调用setSkinRecord
     fun setSkinType(type: String) {
         viewModelScope.launch {
-            skinManager.loadSkin(type)
+            val logicSkin = getLogicSkinType(type)
+            skinManager.loadSkin(logicSkin)
+            _skinType.value = type
         }
+    }
+
+    //点击确认按钮后才会写入数据，否则只是换肤显示
+    fun setSkinRecord(type: String) {
+        repository.setSkinType(type)
     }
 
     //设置系统通知-进球
@@ -72,34 +84,64 @@ class SettingViewModel : BaseViewModel() {
         repository.setAppGoal(bet, fav, all);
     }
 
-    //获取系统配置
-    fun getSystemSetting() {
-        viewModelScope.launch {
-            val resp = repository.getSystemSetting()
-            val data = resp?.let {
-                SettingBean(
-                    oddType = it.oddType,
-                    systemGoal = NotifyMatchType(
-                        it.systemGoal.betMatch,
-                        it.systemGoal.collectMatch,
-                        it.systemGoal.allMatch
-                    ),
-                    systemKickOff = NotifyMatchType(
-                        it.systemKickOff.betMatch,
-                        it.systemKickOff.collectMatch,
-                        it.systemKickOff.allMatch
-                    ),
-                    appGoal = NotifyMatchType(
-                        it.appGoal.betMatch,
-                        it.appGoal.collectMatch,
-                        it.appGoal.allMatch
-                    ),
-                    background = it.background,
-                    lang = it.lang
-                )
-            }
-            _systemSetting.value = data
-        }
+    //获取系统通知-进球选项是全部还是部分
+    fun getSystemAllOrPart(): Boolean {
+        val bet = repository.getSystemBet()
+        val fav = repository.getSystemFav()
+        val all = repository.getSystemAll()
+        return bet && fav && all
+    }
+
+    //获取系统通知-开赛选项是全部还是部分
+    fun getKickAllOrPart(): Boolean {
+        val bet = repository.getKickBet()
+        val fav = repository.getKickFav()
+        val all = repository.getKickAll()
+        return bet && fav && all
+    }
+
+    //获取应用内通知-进球选项是全部还是部分
+    fun getAppAllOrPart(): Boolean {
+        val bet = repository.getAppBet()
+        val fav = repository.getAppFav()
+        val all = repository.getAppAll()
+        return bet && fav && all
+    }
+
+    fun getSystemBet(): Boolean {
+        return repository.getSystemBet()
+    }
+
+    fun getSystemFav(): Boolean {
+        return repository.getSystemFav()
+    }
+
+    fun getSystemAll(): Boolean {
+        return repository.getSystemAll()
+    }
+
+    fun getKickBet(): Boolean {
+        return repository.getKickBet()
+    }
+
+    fun getKickFav(): Boolean {
+        return repository.getKickFav()
+    }
+
+    fun getKickAll(): Boolean {
+        return repository.getKickAll()
+    }
+
+    fun getAppBet(): Boolean {
+        return repository.getAppBet()
+    }
+
+    fun getAppFav(): Boolean {
+        return repository.getAppFav()
+    }
+
+    fun getAppAll(): Boolean {
+        return repository.getAppAll()
     }
 
     //调用接口设置赔率方式

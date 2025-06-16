@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="notification_message">Notification Message</string>
+    <string name="notification_all">All Message</string>
+    <string name="notification_sys">System Message</string>
+    <string name="notification_activity">Activity Message</string>
+    <string name="notification_match">Match Message</string>
+    <string name="notification_wallet">Wallet Message</string>
+    <string name="notification_confirm">Confirm Delete</string>
+    <string name="notification_cancel">Cancel</string>
+    <string name="notification_detail">check the details</string>
+    <string name="notification_delete">Messages cannot be restored after being deleted. Are you sure you want to delete the message?</string>
 </resources>

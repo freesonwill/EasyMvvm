@@ -5,11 +5,11 @@
     android:layout_height="wrap_content"
     android:background="@drawable/shape_betslip_card">
 
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
+    <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/bet_unsettled_iv_top"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_37"
-        android:src="@mipmap/betslip_card_top"
+        android:background="@drawable/bg_card_top"
         app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -30,16 +30,23 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_top" />
 
+    <include
+        android:id="@+id/il_more"
+        layout="@layout/item_betslip_more_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/recycler_selection" />
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/bet_unsettled_iv_avava"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_6"
-        android:scaleType="fitXY"
+        app:layout_goneMarginTop="6dp"
         android:src="@mipmap/live_betslip_avava"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recycler_selection" />
+        app:layout_constraintTop_toBottomOf="@id/il_more" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:layout_width="0dp"
@@ -164,11 +171,11 @@
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_tv_date"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_earlysettle" />
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_tip"
-        android:layout_width="@dimen/dp_18"
-        android:layout_height="@dimen/dp_18"
-        android:layout_marginStart="@dimen/dp_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_tv_betting"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_betting"

@@ -13,7 +13,6 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.view.BasePopup
-import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.databinding.PopupCalendarViewBinding
@@ -27,9 +26,13 @@ import arch.cayenne.lib.http.HttpClient
 import arch.cayenne.lib.http._interface.IApi
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentHomeBinding
+import arch.cayenne.module.home.test.viewmodel.HomeViewModel
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView.OnCalendarSelectListener
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.getKoin
 import retrofit2.Response
 import retrofit2.http.Body
@@ -42,12 +45,13 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.concurrent.thread
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as Rc
 
-class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
+class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
     override val vbClass: KClass<FragmentHomeBinding> = FragmentHomeBinding::class
-    override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+    override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
 
@@ -381,7 +385,23 @@ class HomeFragment : BaseFragment<EmptyViewModel, FragmentHomeBinding>() {
     }
 
     override fun createObserver() {
-
+        mViewModel.number.observe(this) { number ->
+            "==>HomeFragment observe Number==>: $number".logd(TAG)
+        }
     }
 
+    override fun initData() {
+        super.initData()
+        thread {
+            runBlocking {
+                // 模拟数据加载
+                for (i in 1..100) {
+                    withContext(Dispatchers.Main){
+                        mViewModel.number.value = mViewModel.number.value!! + 1
+                    }
+                    delay(500)
+                }
+            }
+        }
+    }
 }

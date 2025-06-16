@@ -23,7 +23,11 @@ class OddsCellViewHolder(
 
             llOddsCell.setOnClickListener {
                 if (isActive) {
-                    onMatchItemClickListener?.onOddsCellClick(item)
+                    val location = IntArray(2)
+                    it.getLocationOnScreen(location)
+                    val x = location[0] + it.width / 2
+                    val y = location[1] + it.height / 2
+                    onMatchItemClickListener?.onOddsCellClick(item, x.toFloat(), y.toFloat())
                 }
             }
         }

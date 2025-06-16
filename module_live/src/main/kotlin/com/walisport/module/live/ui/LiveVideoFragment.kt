@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.database.ContentObserver
@@ -25,6 +24,8 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
@@ -114,7 +115,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         attachVideoView()
     }
 
-    private fun acquireVideoView(){
+    private fun acquireVideoView() {
         videoView = PlayerViewCache.acquirePlayerView {
             LivePlayerView(requireActivity()).apply {
                 init(PlayerMode.FLUENCY)
@@ -127,8 +128,8 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                         it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                         it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                         it.reconnectCount = -1 // Demo重试一百次, -1不限制
-                        //默认不开启硬件加速
-                        it.isHWDecode = false
+                        //开启硬件加速
+                        it.isHWDecode = true
 
                         it.inited = true
                     }
@@ -260,7 +261,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
 
             //监听横屏播放fragment销毁事件
-            landscapeVideoFragmentDestroyedEvent().observe(viewLifecycleOwner){
+            landscapeVideoFragmentDestroyedEvent().observe(viewLifecycleOwner) {
                 attachVideoView()
                 videoView.onResume()
             }
@@ -367,7 +368,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                 it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
             }
 
-            playerState.observe(viewLifecycleOwner){
+            playerState.observe(viewLifecycleOwner) {
                 onPlayerStateReceived(it)
             }
 
@@ -387,7 +388,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun onPause() {
         super.onPause()
-        videoView.onPause()
+        if (videoView.parent == mBinding.videoViewContainer) {
+            videoView.onPause()
+        }
     }
 
     override fun onResume() {
@@ -411,19 +414,20 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
-            playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
-                    "translationY",
-                    *floatArrayOf(0f, operateAreaHeight)
-                ),
-                ObjectAnimator.ofFloat(mBinding.bottomArea, "alpha", 1f, 0.5f),
-            )
-            duration = ANIMATION_DURATION
-
-            start()
-        }
+        mBinding.root.startSafeAnimateSet(
+            {
+                playTogether(
+                    mBinding.bottomArea.startSafeObjectAnimator(
+                        "translationY",
+                        *floatArrayOf(0f, operateAreaHeight)
+                    ),
+                    mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f)
+                )
+            },
+            duration = ANIMATION_DURATION,
+            interpolator = LinearInterpolator(),
+            start = true
+        )
     }
 
     /**
@@ -433,38 +437,36 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
         val operateAreaHeight =
             resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
 
-        with(AnimatorSet()) {
-            playTogether(
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
-                    "translationY",
-                    *floatArrayOf(operateAreaHeight, 0f)
-                ),
-                ObjectAnimator.ofFloat(
-                    mBinding.bottomArea,
-                    "alpha",
-                    *floatArrayOf(0.5f, 1f)
-                ),
+        mBinding.root.startSafeAnimateSet(
+            {
+                playTogether(
+                    mBinding.bottomArea.startSafeObjectAnimator(
+                        "translationY",
+                        *floatArrayOf(operateAreaHeight, 0f)
+                    ),
+                    mBinding.bottomArea.startSafeObjectAnimator(
+                        "alpha",
+                        *floatArrayOf(0.5f, 1f)
+                    ),
 
-                )
-            addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator) {
-                }
+                    )
+                addListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                    }
 
-                override fun onAnimationEnd(animation: Animator) {
-                    scheduleHideButtons()
-                }
+                    override fun onAnimationEnd(animation: Animator) {
+                        scheduleHideButtons()
+                    }
 
-                override fun onAnimationCancel(animation: Animator) {
-                }
+                    override fun onAnimationCancel(animation: Animator) {
+                    }
 
-                override fun onAnimationRepeat(animation: Animator) {
-                }
-            })
-            duration = ANIMATION_DURATION
+                    override fun onAnimationRepeat(animation: Animator) {
+                    }
+                })
+            }, duration = ANIMATION_DURATION, start = true
 
-            start()
-        }
+        )
     }
 
     /**
@@ -497,8 +499,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             PlayerState.CACHING, PlayerState.CONNECTING -> {
                 // 创建旋转动画
-                loadingAnim = ObjectAnimator.ofFloat(
-                    mBinding.ivVideoLoading,  // 目标 View
+                loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
                     0f, 360f // 从 0 度旋转到 360 度
                 ).run {
@@ -541,7 +542,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     /**
      * 数据源为空
      */
-    private fun onDataSourceEmpty(){
+    private fun onDataSourceEmpty() {
         mBinding.ctLoading.visibility = GONE
         mBinding.ctError.visibility = VISIBLE
         mBinding.tvErrorTips.text = getString(R.string.no_live_stream)

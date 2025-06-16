@@ -22,6 +22,7 @@ import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
+import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.MatchListState
@@ -32,6 +33,7 @@ import arch.cayenne.module.home.ui.view.decoration.MatchCardItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.MatchListViewModel
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class MatchListPagerFragment :
@@ -43,12 +45,14 @@ class MatchListPagerFragment :
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
+    private val fabViewModel: FloatingButtonControlViewModel by activityViewModel()
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.apply {
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
+                mViewModel.setHomeOrPullLoadingState(true)
                 mViewModel.reload()
             }
             refreshLayout.setOnLoadMoreListener {
@@ -64,13 +68,15 @@ class MatchListPagerFragment :
                     mViewModel.addMatchCollect(item, !item.match.collect)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite) {
+                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {
                             showToast(getString(R.string.disabled_to_combo))
+                        } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
+                            fabViewModel.setClickAnimation(x, y)
                         }
                     }
                 }
@@ -125,12 +131,12 @@ class MatchListPagerFragment :
             }
         }
     }
-
     override fun initListener() {
     }
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
+        if (!preEmpty) mViewModel.hideLoading()
         matchAdapter.submitList(matchList)
         if (preEmpty && matchList.isNotEmpty()) {
             mBinding.rvHomeGameList.doOnPreDraw {
@@ -148,6 +154,10 @@ class MatchListPagerFragment :
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
 
+        homeViewModel.isHomeLoading.observe(viewLifecycleOwner) {
+            mViewModel.setHomeOrPullLoadingState(it)
+        }
+
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
             with(mBinding) {
                 when(state) {
@@ -156,16 +166,21 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.LOADING_MATCH)
                     }
                     MatchListState.REFRESHING -> {
+                        mViewModel.showLoading()
                         clDynamics.visibility = View.GONE
+                        mViewModel.setHomeOrPullLoadingState(false)
                     }
                     MatchListState.IDLE -> {
+                        mViewModel.hideLoading()
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
-                        mBinding.refreshLayout.finishRefresh()
+                        mViewModel.hideLoading()
+                        refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
@@ -173,12 +188,21 @@ class MatchListPagerFragment :
                             R.string.lineup_empty.getString()
                         )
                         homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
                     }
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
+                    }
+
+                    MatchListState.SHOW_LOADING -> {
+                        lvMatchLoading.visibility = View.VISIBLE
+                    }
+
+                    MatchListState.HIDE_LOADING -> {
+                        lvMatchLoading.visibility = View.GONE
                     }
                 }
             }

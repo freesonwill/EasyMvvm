@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.delegate
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 
 
@@ -61,7 +63,9 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if(firstInit) {
-            view.fitsSystemWindows = true
+            //根Fragment或者Activity需要fitsSystemWindows设置为true
+            view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
+                    || uiOwner is Activity
             trackLoadingTime()
             viewModel.initViewModel()
             uiOwner.initView(savedInstanceState)

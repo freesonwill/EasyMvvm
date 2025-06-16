@@ -4,6 +4,7 @@ import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
+import com.walisport.module.message.ui.viewmodel.TodayMatchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -21,6 +22,7 @@ class MessageModuleInitializer : DefaultInitializer<String> {
 
     private val viewModules = module {
         viewModelOf(::MessageMainViewModel)
+        viewModelOf(::TodayMatchViewModel)
     }
 
     private val repoModules = module {

@@ -1,6 +1,7 @@
 package com.walisport.module.search.data.model
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /** * 搜索结果的基础数据模型
  * @property id 唯一标识符
@@ -8,9 +9,10 @@ import java.io.Serializable
  * @property icon 图标URL
  * @property color 颜色代码
  */
+@Parcelize
 open class SearchResultBaseBean(
     open val id: Int,
     open val name: String,
     open val icon: String?,
     open val color: String?
-): Serializable
+): Parcelable

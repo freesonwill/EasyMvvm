@@ -15,4 +15,6 @@ object  StatusBarConfig  {
     var statusBarColor: Int = android.R.color.black
     //状态栏模式
     var statusBarType: StatusBarMode = StatusBarMode.DRAW_BEHIND
+    //是否避开状态栏（root.paddingTop = statusBarHeight）
+    val fitsSystemWindows:Boolean get() = statusBarType == StatusBarMode.DEFAULT
 }

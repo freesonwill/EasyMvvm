@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="msg_type_white_blue">#666666</color>
+    <color name="msg_line_white_blue">#F3F3F4</color>
+    <color name="msg_title_white_blue">#222222</color>
+    <color name="msg_back_white_blue">#FFFFFF</color>
+</resources>

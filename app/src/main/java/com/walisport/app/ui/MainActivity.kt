@@ -1,11 +1,10 @@
 package com.walisport.app.ui
 
-
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import com.walisport.app.R
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
@@ -13,6 +12,7 @@ import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
+import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
@@ -31,10 +31,6 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
     }
 
-    override fun initData() {
-        super.initData()
-    }
-
     override fun createObserver() {
         super.createObserver()
         mViewModel.betResultListener.observe(this) {
@@ -44,10 +40,13 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {
-                fabFragment?.view?.visibility = android.view.View.VISIBLE
+                fabFragment?.view?.visibility = View.VISIBLE
             } else {
-                fabFragment?.view?.visibility = android.view.View.GONE
+                fabFragment?.view?.visibility = View.GONE
             }
+        }
+        fabControlViewModel.onClickAnimationListener.observe(this) { (x, y) ->
+            (fabFragment as? FloatingButtonFragment)?.showDotAnimation(x, y)
         }
     }
 

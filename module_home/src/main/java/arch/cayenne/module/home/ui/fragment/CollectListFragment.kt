@@ -79,7 +79,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                     mViewModel.removeMatchCollect(item)
                 }
 
-                override fun onOddsCellClick(selection: SelectionBeanLite) {
+                override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
@@ -89,6 +89,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         }
                     }
                 }
+
             })
             val decoration = MatchCardItemDecoration(12.dp2px)
             rvCollectList.apply {
@@ -158,17 +159,20 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 when (state) {
                     MatchListState.FIRST_LOADING -> {
                         clDynamics.visibility = View.GONE
+                        loadingView.visibility = View.VISIBLE
 //                        homeViewModel.changeState(HomeState.LOADING_MATCH)
                     }
 
                     MatchListState.REFRESHING -> {
                         clDynamics.visibility = View.GONE
+                        loadingView.visibility = View.GONE
                     }
 
                     MatchListState.IDLE -> {
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
+                        loadingView.visibility = View.GONE
 //                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
 
@@ -180,15 +184,19 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
+                        loadingView.visibility = View.GONE
 //                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
 
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
+                        loadingView.visibility = View.GONE
                     }
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
+                        loadingView.visibility = View.GONE
                     }
+                    else -> {}
                 }
             }
         }

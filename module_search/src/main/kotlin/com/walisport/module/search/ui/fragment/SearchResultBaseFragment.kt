@@ -32,12 +32,7 @@ class SearchResultBaseFragment :
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
 
     override fun initView(savedInstanceState: Bundle?) {
-        with(mBinding) {
-            dynamicState.setState(
-                DynamicStateLayout.States.DATA_EMPTY,
-                ContextCompat.getString(requireContext(), R.string.no_search_result)
-            )
-        }
+        setEmptyView()
     }
 
     override fun initData() {
@@ -70,6 +65,15 @@ class SearchResultBaseFragment :
                     }
                 }
             }
+        }
+    }
+
+    private fun setEmptyView() {
+        with(mBinding) {
+            dynamicState.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                ContextCompat.getString(requireContext(), R.string.no_search_result)
+            )
         }
     }
 

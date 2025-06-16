@@ -1,14 +1,21 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -31,6 +38,9 @@ import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
+import com.walisport.module.live.utils.TextViewExt.clearBottomDrawable
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 /**
  * 直播详情页
@@ -89,20 +99,44 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
         }
-       // app:tabSelectedTextColor="@color/tab_selected_text_color"
-       // app:tabTextColor="@color/video_tab_text_color"
+
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.let {
+                    mBinding.vpPage.setCurrentItem(it.position, false) // 禁用平滑滚动
+                }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
-                    textView.setTextColor(SkinnableResourceManager.getColor(textView.context,R.color.tab_selected_text_color))
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            R.color.tab_selected_text_color
+                        )
+                    )
                     textView.typeface = Typeface.DEFAULT_BOLD
+                    textView.setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.live_tab_indicator
+                        )
+                    }, 4.dp2px)
                 }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
-                    textView.setTextColor(SkinnableResourceManager.getColor(textView.context,R.color.video_tab_text_color))
+                    textView.setTextColor(
+                        SkinnableResourceManager.getColor(
+                            textView.context,
+                            R.color.video_tab_text_color
+                        )
+                    )
                     textView.typeface = Typeface.DEFAULT
+                    textView.setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.live_tab_indicatort_tan
+                        )
+                    }, 3.dp2px)
                 }
             }
 
@@ -157,7 +191,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun initData() {
         super.initData()
-        launch(Lifecycle.State.RESUMED){
+        launch(Lifecycle.State.RESUMED) {
             mViewModel.startChatServer()
         }
     }
@@ -179,6 +213,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun loadFragment() {
+        var tabSelectPosition = 1
         with(mBinding) {
             mBinding.tabLayout.removeAllTabs()
             val list =
@@ -192,18 +227,26 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             vpPage.offscreenPageLimit = list.size
-            TabLayoutMediator(tabLayout, vpPage) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                   text = list[position].title
-                    if (position==1){
-                       setTextColor(SkinnableResourceManager.getColor(context,R.color.tab_selected_text_color))
-                       typeface = Typeface.DEFAULT_BOLD
-                    }else{
-                       setTextColor(SkinnableResourceManager.getColor(context,R.color.video_tab_text_color))
-                       typeface = Typeface.DEFAULT
-                    }
+                    setBottomDrawable(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
+                        )
+                    }, 4.dp2px)
+                    text = list[position].title
+                    setTextColor(
+                        SkinnableResourceManager.getColor(
+                            context,
+                            if (position == tabSelectPosition) R.color.tab_selected_text_color else R.color.video_tab_text_color
+                        )
+                    )
+                    typeface =
+                        if (position == tabSelectPosition) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
@@ -220,9 +263,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         fragment?.refreshBetSlip(mViewModel.matchId.value ?: -1, mViewModel.sportId.value ?: -1)
     }
 
-    private fun isSoftKeyBoardVisible():Boolean{
+    private fun isSoftKeyBoardVisible(): Boolean {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
-        val index = adapter!!.pages.indexOfFirst{ it.title == R.string.live_chat.getString() }
+        val index = adapter!!.pages.indexOfFirst { it.title == R.string.live_chat.getString() }
         val tag = "f${adapter.getItemId(index)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as LiveChatFragment }
         val flag = fragment?.isSoftKeyboardVisible() ?: false
@@ -230,12 +273,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
 
-
     //离开界面取消订阅
     override fun onPause() {
         super.onPause()
         mViewModel.matchId.value?.let {
-            mViewModel.registerMatchInfoNotify(it)
+            mViewModel.unregisterMatchInfoNotify(it)
         }
     }
 
@@ -243,7 +285,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override fun onResume() {
         super.onResume()
         mViewModel.matchId.value?.let {
-            mViewModel.unregisterMatchInfoNotify(it)
+            mViewModel.registerMatchInfoNotify(it)
         }
     }
 
@@ -258,4 +300,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         super.onDestroyView()
     }
+
 }

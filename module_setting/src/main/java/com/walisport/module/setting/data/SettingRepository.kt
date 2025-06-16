@@ -57,11 +57,35 @@ class SettingRepository(
         manager.setKeyValue(UserDataKey.KEY_SYSTEM_ALL, all)
     }
 
+    fun getSystemBet(): Boolean {
+        return manager.getValue(UserDataKey.KEY_SYSTEM_BET, false)
+    }
+
+    fun getSystemFav(): Boolean {
+        return manager.getValue(UserDataKey.KEY_SYSTEM_FAV, false)
+    }
+
+    fun getSystemAll(): Boolean {
+        return manager.getValue(UserDataKey.KEY_SYSTEM_ALL, false)
+    }
+
     //设置系统通知-开赛
     fun setKickGoal(bet: Boolean, fav: Boolean, all: Boolean) {
         manager.setKeyValue(UserDataKey.KEY_KICK_BET, bet)
         manager.setKeyValue(UserDataKey.KEY_KICK_FAV, fav)
         manager.setKeyValue(UserDataKey.KEY_KICK_ALL, all)
+    }
+
+    fun getKickBet(): Boolean {
+        return manager.getValue(UserDataKey.KEY_KICK_BET, false)
+    }
+
+    fun getKickFav(): Boolean {
+        return manager.getValue(UserDataKey.KEY_KICK_FAV, false)
+    }
+
+    fun getKickAll(): Boolean {
+        return manager.getValue(UserDataKey.KEY_KICK_ALL, false)
     }
 
     //设置应用内通知-进球
@@ -71,19 +95,16 @@ class SettingRepository(
         manager.setKeyValue(UserDataKey.KEY_APP_ALL, all)
     }
 
-    //获取系统配置
-    suspend fun getSystemSetting(): Common.Setting? {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.GetSettingResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.GET_SYSTEM_SETTING,
-        ) {
-            Client.GetSettingReq.newBuilder().build()
-        }
-        if (res.error == null && res.data != null) {
-            return res.data!!.setting
-        }
-        return null
+    fun getAppBet(): Boolean {
+        return manager.getValue(UserDataKey.KEY_APP_BET, false)
+    }
+
+    fun getAppFav(): Boolean {
+        return manager.getValue(UserDataKey.KEY_APP_FAV, false)
+    }
+
+    fun getAppAll(): Boolean {
+        return manager.getValue(UserDataKey.KEY_APP_ALL, false)
     }
 
     //修改系统配置

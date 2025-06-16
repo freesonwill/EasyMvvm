@@ -1,8 +1,8 @@
 package com.walisport.module.setting.data
 
 enum class LanguageType(val value: String) {
-    LANGUAGE_SIMPLE("zh-CN"),   //简体中文
-    LANGUAGE_ENGLISH("en-US"),  //英文
-    LANGUAGE_ID("id-ID"),       //印尼
-    LANGUAGE_PT("pt-PT"),       //葡萄牙语
+    LANGUAGE_SIMPLE("zh"),   //简体中文
+    LANGUAGE_ENGLISH("en"),  //英文
+    LANGUAGE_ID("in"),       //印尼
+    LANGUAGE_PT("pt"),       //葡萄牙语
 }

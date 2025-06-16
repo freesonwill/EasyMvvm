@@ -11,19 +11,19 @@ import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import com.walisport.module.setting.ui.viewmodel.BackgroundViewModel
 import com.walisport.module.setting.databinding.FragmentBackgroundBinding
 import com.walisport.module.setting.databinding.TitleBarBackgroundBinding
+import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
 
 /**
  * 背景设置
  */
 
-class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundBinding>() {
+class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBinding>() {
 
     override val vbClass: KClass<FragmentBackgroundBinding> = FragmentBackgroundBinding::class
-    override val vmClass: KClass<BackgroundViewModel> = BackgroundViewModel::class
+    override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
     private var skinType: String = ""
     private var skinOld: String = ""
     private var defaultImmColor: Int = 0
@@ -31,24 +31,23 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
 
     override fun initView(savedInstanceState: Bundle?) {
         defaultImmColor = getStatusBarColor()
-        skinType = mViewModel.getSkinData()
+        skinType = mViewModel.getSkinType()
         skinOld = skinType
         changeSkinType(skinType)
-        val binding = TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
+        val binding =
+            TitleBarBackgroundBinding.inflate(LayoutInflater.from(context), mBinding.root, false)
         mBinding.titleBar.loadDynamicsTitleBar(binding.root, null)
         binding.apply {
             barRoot.layoutParams.width = resources.displayMetrics.widthPixels - 20.dp2px
-            //点击返回，如果存在变动就恢复变动前的皮肤
+            //点击返回，使用变动前的皮肤
             tvBack.clickNoRepeat {
-                if (skinOld != skinType) {
-                    mViewModel.setSkinData(skinOld)
-                }
+                mViewModel.setSkinRecord(skinOld)
                 findNavController().navigateUp()
             }
-            //点击确认，如果存在变动就使用变动后的皮肤
+            //点击确认，使用变动后的皮肤
             tvTitleRight.clickNoRepeat {
                 defaultImmColor = immColor
-                mViewModel.setSkinData(skinType)
+                mViewModel.setSkinRecord(skinType)
                 findNavController().navigateUp()
             }
         }
@@ -129,7 +128,7 @@ class BackgroundFragment : BaseFragment<BackgroundViewModel, FragmentBackgroundB
     override fun onDestroy() {
         super.onDestroy()
         StatusBarConfig.statusBarColor = defaultImmColor
-        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinData())
+        StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
         setStatusBar(StatusBarConfig, mBinding.root)
     }

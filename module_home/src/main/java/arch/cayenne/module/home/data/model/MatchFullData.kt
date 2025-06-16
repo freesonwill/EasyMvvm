@@ -67,7 +67,9 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                     liveVideo = match.basicInfo.liveInfo.liveVideo,
                     charRoom = match.basicInfo.liveInfo.chatRoom,
                     viewerCount = match.basicInfo.liveInfo.viewerCount,
-                    clockModified = match.basicInfo.liveInfo.clockModified
+                    clockModified = match.basicInfo.liveInfo.clockModified,
+                    homeScore = match.basicInfo.liveInfo.homeScore,
+                    awayScore = match.basicInfo.liveInfo.awayScore,
                 )
             )
         )
@@ -148,7 +150,9 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     liveVideo = matchNotify.basicUpdate.liveInfo.liveVideo,
                     charRoom = matchNotify.basicUpdate.liveInfo.chatRoom,
                     viewerCount = matchNotify.basicUpdate.liveInfo.viewerCount,
-                    clockModified = matchNotify.basicUpdate.liveInfo.clockModified
+                    clockModified = matchNotify.basicUpdate.liveInfo.clockModified,
+                    homeScore = matchNotify.basicUpdate.liveInfo.homeScore,
+                    awayScore = matchNotify.basicUpdate.liveInfo.awayScore,
                 )
             } else { null }
             matchLites.add(
@@ -234,7 +238,9 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
                 liveVideo = this.basicUpdate.liveInfo.liveVideo,
                 charRoom = this.basicUpdate.liveInfo.chatRoom,
                 viewerCount = this.basicUpdate.liveInfo.viewerCount,
-                clockModified = this.basicUpdate.liveInfo.clockModified
+                clockModified = this.basicUpdate.liveInfo.clockModified,
+                homeScore = this.basicUpdate.liveInfo.homeScore,
+                awayScore = this.basicUpdate.liveInfo.awayScore,
             )
         )
     )
@@ -354,7 +360,9 @@ fun List<Common.Match>.toMatchWithMarket(): List<MatchWithMarkets> {
                         liveVideo = originMatch.basicInfo.liveInfo.liveVideo,
                         charRoom = originMatch.basicInfo.liveInfo.chatRoom,
                         viewerCount = originMatch.basicInfo.liveInfo.viewerCount,
-                        clockModified = originMatch.basicInfo.liveInfo.clockModified
+                        clockModified = originMatch.basicInfo.liveInfo.clockModified,
+                        homeScore = originMatch.basicInfo.liveInfo.homeScore,
+                        awayScore = originMatch.basicInfo.liveInfo.awayScore,
                     )
                 ),
                 markets = markets

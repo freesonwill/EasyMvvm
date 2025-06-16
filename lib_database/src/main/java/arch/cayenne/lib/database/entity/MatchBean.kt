@@ -104,6 +104,8 @@ data class MatchLiveInfoBean(
     val charRoom: Boolean,//是否开启了聊天室
     val viewerCount: Int,//观看数量
     val clockModified: Long,//走表修改时间
+    val homeScore: Int,
+    val awayScore: Int,
 )
 
 data class MarketDetailBean(
