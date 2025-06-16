@@ -83,7 +83,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
@@ -646,4 +645,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         return tabBinding.root
     }
 
+    override fun onBackPressed(): Boolean {
+        //如果抽屉打开，截获此次返回事件，关闭抽屉
+        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

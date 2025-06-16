@@ -25,6 +25,7 @@ import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.utils.ext.FragmentExt.handleBackPressed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
@@ -77,6 +78,7 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
         uiBind.onCreateView(inflater,container,savedInstanceState)
+        handleBackPressed(::onBackPressed)
         return mBinding.root
     }
 
@@ -152,6 +154,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
      */
     private fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
+    }
+
+    /**
+     * 返回事件处理
+     *
+     * @return true-拦截事件，false-不拦截事件
+     */
+    open fun onBackPressed():Boolean {
+        return false
     }
 }
 
