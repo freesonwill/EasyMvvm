@@ -1,3 +1,3 @@
 package arch.cayenne.module.betslip.data.model
 
-sealed class BetSlipData()
+interface BetSlipData

@@ -12,4 +12,4 @@ data class ReserveOrderSelectionBean(
     val specifier: String,          // 盘口说明符
     val matchBasic: MatchBasicInfoBean,  // 比赛基本信息
     val liveInfo: MatchLiveInfoBean  // 比赛实时信息
-): BetSlipSelectionData()
+): BetSlipSelectionData
