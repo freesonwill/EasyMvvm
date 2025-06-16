@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.utils.ext
 
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 
 /**
@@ -17,8 +18,11 @@ object NavResultExt {
      * @param key
      * @param value
      * @param destinationId  navigation.xml中定义的fragmentID。默认为上一个fragment
+     * @param navController 导航控制器，默认为当前Fragment的findNavController()
+     *
      *
      * @see observeResult
+     *
      * @example
      *  【】FragmentA --> FragmentB
      *  // FragmentB
@@ -41,8 +45,10 @@ object NavResultExt {
      *    val d = it //d为"data"
      * }
      */
-    fun <T> Fragment.sendResult(key: String, value: T, destinationId: Int? = null) {
-        val navController = findNavController()
+    fun <T> Fragment.sendResult(key: String, value: T,
+                                destinationId: Int? = null,
+                                navController:NavController = findNavController()
+    ) {
         val handle = if (destinationId == null) {
             navController.previousBackStackEntry?.savedStateHandle
         } else {
@@ -57,16 +63,17 @@ object NavResultExt {
      * @see sendResult
      * @param key
      * @param fromId navigation.xml中定义的fragmentID。默认为当前fragment
+     * @param navController 导航控制器，默认为当前Fragment的findNavController()
      * @param onResult
      */
     inline fun <reified T> Fragment.observeResultOnce(
         key: String,
         fromId: Int? = null,
+        navController: NavController = findNavController(),
         noinline onResult: (T) -> Unit
     ) {
         //移除，避免重复注册
         removeObserver<T>(key, onResult, fromId)
-        val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
         } else {
@@ -90,16 +97,17 @@ object NavResultExt {
      * @see sendResult
      * @param key
      * @param fromId navigation.xml中定义的fragmentID。默认为当前fragment
+     * @param navController 导航控制器，默认为当前Fragment的findNavController()
      * @param onResult
      */
     inline fun <reified T> Fragment.observeResult(
         key: String,
         fromId: Int? = null,
+        navController: NavController = findNavController(),
         noinline onResult: (T) -> Unit
     ) {
         //移除，避免重复注册
         removeObserver<T>(key, onResult, fromId)
-        val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
         } else {
@@ -116,13 +124,14 @@ object NavResultExt {
      * @param key
      * @param onResult
      * @param fromId
+     * @param navController 导航控制器，默认为当前Fragment的findNavController()
      */
     inline fun <reified T> Fragment.removeObserver(
         key: String,
         noinline onResult: (T) -> Unit,
-        fromId: Int? = null
+        fromId: Int? = null,
+        navController: NavController = findNavController()
     ) {
-        val navController = findNavController()
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
         } else {
@@ -136,9 +145,12 @@ object NavResultExt {
      * @param T
      * @param key
      * @param fromId
+     * @param navController 导航控制器，默认为当前Fragment的findNavController()
      */
-    fun <T> Fragment.removeObservers(key: String, fromId: Int? = null) {
-        val navController = findNavController()
+    fun <T> Fragment.removeObservers(key: String,
+                                     fromId: Int? = null,
+                                     navController: NavController = findNavController()
+    ) {
         val handle = if (fromId == null) {
             navController.currentBackStackEntry?.savedStateHandle
         } else {
