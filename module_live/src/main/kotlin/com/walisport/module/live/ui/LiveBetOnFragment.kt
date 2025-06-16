@@ -2,6 +2,7 @@ package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -129,9 +130,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
                 if (it != null) {
                     if (it.basicInfo.betStop) {
+                        mBinding.ivMenu.visibility = View.GONE
                         mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
                         return@observe
                     } else {
+                        mBinding.ivMenu.visibility = View.VISIBLE
                         mBinding.clDynamics.setVisibilityGone()
                     }
                 }
@@ -139,9 +142,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
             mViewModel.marketType.observe(viewLifecycleOwner) { list ->
                 if (list!!.isEmpty()) {
+                    mBinding.ivMenu.visibility = View.GONE
                     mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
                     return@observe
                 } else {
+                    mBinding.ivMenu.visibility = View.VISIBLE
                     mBinding.clDynamics.setVisibilityGone()
                 }
                 if (tabList.isEmpty()) {
