@@ -48,6 +48,11 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val directMatchId: Int?
         get() = _directMatchId
 
+    /** 暫存背景顏色 */
+    private var _tempBackgroundColor: Int? = null
+    val tempBackgroundColor: Int?
+        get() = _tempBackgroundColor
+
     /** 重置搜尋結果 */
     private fun resetResult() {
         _directData.value = null
@@ -130,4 +135,9 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
 
     /** 取得選擇的日期 */
     fun getSelectedDate(): Date? = selectedDateFlow.value
+
+    /** 設定暫存背景顏色 */
+    fun setTempBackgroundColor(color: Int?) {
+        _tempBackgroundColor = color
+    }
 }
