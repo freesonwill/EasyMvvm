@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
@@ -16,9 +16,26 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     private val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
-    override fun refreshData(status: BetSlipEnum) {
+    private var type: BetSlipEnum? = null
+
+    init {
         viewModelScope.launch {
-            val resp = repo.getOrderReq(
+            repo.observeOrderBeanFlow.collect {
+                _orderLiveData.value = it
+                if (it.isNotEmpty()) {
+                    setState(DynamicStateLayout.States.NULL)
+                }
+            }
+        }
+    }
+
+    override fun refreshData(status: BetSlipEnum) {
+        if (type == null) {
+            type = status
+            repo.registerObserveOrderBean(status.value)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val resp = repo.getOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -27,14 +44,18 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 sportIds,
                 matchId,
             )
-            setOrderData(resp)
+            if (resp == null) {
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
+            } else if (resp.isEmpty()) {
+                setState(DynamicStateLayout.States.DATA_EMPTY)
+            }
         }
     }
 
     override fun loadMoreData(status: BetSlipEnum) {
         val list = _orderLiveData.value
         viewModelScope.launch {
-            repo.getOrderReq(
+            val resp = repo.loadMoreOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -42,23 +63,11 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 SIZE,
                 sportIds,
                 matchId,
-            )?.let { result ->
-                _state.value = Event(DynamicStateLayout.States.NULL)
-                if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipOrderBean>()
-                    val oldList = _orderLiveData.value ?: emptyList()
-                    newList.addAll(oldList)
-                    newList.addAll(result)
-                    _orderLiveData.value = newList
-                }
-            } ?: run {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            )
+            if (resp == null) {
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
         }
-    }
-
-    override fun updateData(status: BetSlipEnum, betId: String) {
-
     }
 
     override fun canLoadMore(): Boolean {
@@ -66,21 +75,9 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     }
 
     override fun deleteAll() {
-
-    }
-
-    protected fun setOrderData(data: List<BetSlipOrderBean>?) {
-        data?.let {
-            if (it.isEmpty()) {
-                _state.value = Event(DynamicStateLayout.States.DATA_EMPTY)
-                _orderLiveData.value = emptyList()
-            } else {
-                _state.value = Event(DynamicStateLayout.States.NULL)
-                _orderLiveData.value = it
-            }
-        } ?: run {
-            _orderLiveData.value = emptyList()
-            _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+        type?.let {
+            repo.deleteAll(it.value)
+            type = null
         }
     }
 }

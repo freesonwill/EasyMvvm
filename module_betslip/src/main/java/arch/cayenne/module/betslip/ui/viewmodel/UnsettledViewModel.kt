@@ -23,42 +23,12 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
     var selectOrder: BetSlipOrderBean? = null
         private set
 
-    init {
-        viewModelScope.launch {
-            repo.observerEarlySettleNotify.collect {
-                updateEarlySettleData(it)
-            }
-        }
-    }
-
-    private fun updateEarlySettleData(newData: BetSlipOrderBean) {
-        val currentList = orderLiveData.value ?: return
-
-        val updatedList = currentList.mapNotNull { item ->
-            if (item.betId == newData.betId) {
-                // 如果金額相同，表示已提前結算完，移除項目
-                if (newData.betAmount == newData.earlyBetAmount) {
-                    null
-                } else {
-                    newData
-                }
-            } else {
-                item
-            }
-        }
-        setOrderData(updatedList)
-    }
-
     /**
      * 部分提前结算
      * */
     fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
         viewModelScope.launch {
-            val result = repo.earlySettle(betId, money, expectPrice, false)?.apply {
-                if (this.success) {
-                    setDataToEarlySettling(betId)
-                }
-            }
+            val result = repo.earlySettle(betId, money, expectPrice, false)
             _earlySettledResultLiveData.value = Event(result?.success ?: false)
         }
     }
@@ -74,22 +44,5 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
                 _isSupportEarlySettleLiveData.value = result.first()
             }
         }
-    }
-
-    private fun setDataToEarlySettling(betId: String) {
-        val currentList = orderLiveData.value ?: return
-
-        val updatedList = currentList.map { item ->
-            if (item.betId == betId) {
-                item.copy(
-                    earlySettlePrice = item.earlySettlePrice.copy(
-                        settleStatus = 102
-                    )
-                )
-            } else {
-                item
-            }
-        }
-        setOrderData(updatedList)
     }
 }

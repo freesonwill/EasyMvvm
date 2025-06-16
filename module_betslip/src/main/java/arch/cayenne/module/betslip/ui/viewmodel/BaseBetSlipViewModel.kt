@@ -2,10 +2,12 @@ package arch.cayenne.module.betslip.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import kotlinx.coroutines.launch
 
 
 abstract class BaseBetSlipViewModel : BaseViewModel() {
@@ -22,7 +24,7 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
     protected val startTime: Long? get() = times.first
     protected val endTime: Long? get() = times.second
 
-    protected val _state = MutableLiveData<Event<DynamicStateLayout.States>>()
+    private val _state = MutableLiveData<Event<DynamicStateLayout.States>>()
     val state: LiveData<Event<DynamicStateLayout.States>> = _state
 
     fun setIds(matchId: Long, sportId: Int) {
@@ -37,9 +39,14 @@ abstract class BaseBetSlipViewModel : BaseViewModel() {
         this.times = Pair(startTime, endTime)
     }
 
+    protected fun setState(state: DynamicStateLayout.States) {
+        viewModelScope.launch {
+            _state.value = Event(state)
+        }
+    }
+
     abstract fun refreshData(status: BetSlipEnum)
     abstract fun loadMoreData(status: BetSlipEnum)
-    abstract fun updateData(status: BetSlipEnum, betId: String)
     abstract fun canLoadMore(): Boolean
     abstract fun deleteAll()
 }

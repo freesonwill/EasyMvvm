@@ -60,7 +60,7 @@ class ReserveSlipRepository(
                 cursorBetTime,
                 size
             ).apply {
-                if (this.isNullOrEmpty()) {
+                if (this == null) {
                     betSlipReserveDao.deleteAll()
                 } else {
                     betSlipReserveDao.insert(this)

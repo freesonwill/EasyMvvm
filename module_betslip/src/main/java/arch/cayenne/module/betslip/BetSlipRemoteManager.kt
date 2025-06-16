@@ -32,7 +32,7 @@ class BetSlipRemoteManager(
     private val TAG = this.javaClass.simpleName
 
     suspend fun getOrderReq(
-        status: Int,
+        type: Int,
         startTime: Long?,
         endTime: Long?,
         cursorBetTime: Long?,
@@ -40,14 +40,14 @@ class BetSlipRemoteManager(
         sportIds: List<Int>?,
         matchId: Long?,
     ): List<BetSlipOrderBean>? {
-        "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
+        "getOrderReq params status $type startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_ORDER
         ) {
             Client.GetOrderReq.newBuilder().apply {
-                this.status = status
+                this.status = type
                 this.size = size
                 startTime?.let { this.startTime = it }
                 endTime?.let { this.endTime = it }
@@ -59,7 +59,7 @@ class BetSlipRemoteManager(
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
-            return result.data!!.orderList.map { it.toOrderBean() }
+            return result.data!!.orderList.map { it.toOrderBean(type) }
         }
         return null
     }

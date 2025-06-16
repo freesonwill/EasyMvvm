@@ -29,7 +29,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             repo.observeReserveBean().collect { reserveList ->
                 _reserveLiveData.value = reserveList
                 if (reserveList.isNotEmpty()) {
-                    _state.value = Event(DynamicStateLayout.States.NULL)
+                    setState(DynamicStateLayout.States.NULL)
                 }
             }
         }
@@ -66,9 +66,9 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 SIZE
             )
             if (resp == null) {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
             } else if (resp.isEmpty()) {
-                _state.value = Event(DynamicStateLayout.States.DATA_EMPTY)
+                setState(DynamicStateLayout.States.DATA_EMPTY)
             }
         }
     }
@@ -85,13 +85,9 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 SIZE
             )
             if (resp == null) {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
         }
-    }
-
-    override fun updateData(status: BetSlipEnum, betId: String) {
-
     }
 
     override fun canLoadMore(): Boolean {
