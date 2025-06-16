@@ -9,7 +9,7 @@
     <color name="home_list_separator_white_blue">#F6F6F6</color>
     <color name="secondary_text_white_blue">#666666</color>
     <color name="secondary_title_white_blue">@color/home_main_text_white_blue</color>
-    <color name="bg_card_gradient_start_white_blue">#00161823</color>
+    <color name="bg_card_gradient_start_white_blue">#00fefffe</color>
     <color name="bg_sport_list_gradient_start_white_blue">#00F3F3F4</color>
     <color name="tab_indicator_color_white_blue">@color/brand_color</color>
     <color name="bg_sport_selected_white_blue">@color/brand_color</color>
@@ -25,6 +25,7 @@
     <color name="odds_highlight_overlay_white_blue">#e8e8e8</color>
     <color name="bg_match_item_roll">#3324ee8a</color>
     <color name="match_item_roll">#15b264</color>
+    <color name="linear_gradient_white_blue">#fefffe</color>
     <!--抽屜顏色-->
     <color name="drawer_bg_white_blue">#EEEEEE</color>
     <color name="drawer_notification_title_white_blue">#222222</color>
