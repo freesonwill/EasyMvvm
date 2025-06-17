@@ -192,4 +192,5 @@ class BetSlipRemoteManager(
     }
 
     fun registerEarlySettleNotify() = socketManager.observeProtoMessage<Client.EarlySettleNotify>(ApiCode.EARLY_SETTLE_NOTIFY)
+    fun registerOrderStatus() = socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY)
 }

@@ -26,9 +26,11 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
 
     init {
         viewModelScope.launch {
-            repo.observeReserveBean().collect { reserveList ->
-                _reserveLiveData.value = reserveList
-                if (reserveList.isNotEmpty()) {
+            repo.observeReserveBean().collect { data ->
+                _reserveLiveData.value = data
+                if (data.isEmpty()) {
+                    setState(DynamicStateLayout.States.DATA_EMPTY)
+                } else {
                     setState(DynamicStateLayout.States.NULL)
                 }
             }
@@ -67,8 +69,6 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
             )
             if (resp == null) {
                 setState(DynamicStateLayout.States.NETWORK_ANOMALY)
-            } else if (resp.isEmpty()) {
-                setState(DynamicStateLayout.States.DATA_EMPTY)
             }
         }
     }

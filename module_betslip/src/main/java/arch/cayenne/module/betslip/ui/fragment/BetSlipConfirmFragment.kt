@@ -9,18 +9,18 @@ import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
-import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
+import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
 import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 
 //注单确认‰‰
 class BetSlipConfirmFragment :
-    BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
+    BaseBetSlipFragment<ConfirmingSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
 
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
-    override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
+    override val vmClass: KClass<ConfirmingSlipViewModel> = ConfirmingSlipViewModel::class
     override val betSlipAdapter: BetSlipAdapter by lazy {
         BetSlipAdapter(getBetSlipEnum())
     }

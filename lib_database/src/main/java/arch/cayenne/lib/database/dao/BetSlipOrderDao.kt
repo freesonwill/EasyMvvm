@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class BetSlipOrderDao : BaseDao<BetSlipOrderBean>() {
 
+    @Query("SELECT * FROM BetSlipOrderBean WHERE betId = :betId LIMIT 1")
+    abstract suspend fun getOrderBeanById(betId: String): BetSlipOrderBean?
+
     @Query("SELECT * FROM BetSlipOrderBean WHERE betSlipType = :type ORDER BY betTime DESC")
     abstract fun observeOrderBean(type: Int): Flow<List<BetSlipOrderBean>>
 

@@ -22,7 +22,7 @@ data class BetSlipOrderBean (
     val comboCount: Int,
     val odds: String,                          // 賠率
     val status: Int,                           // 訂單狀態：1投注確認中，2拒單，3取消訂單，4接單成功，5已結算
-    val earlySupport: Boolean,                 // 是否支持提前結算
+    var earlySupport: Boolean,                 // 是否支持提前結算
     val earlyBetAmount: String,                // 提前結算總本金
     val earlyReturnAmount: String,             // 提前結算派彩金額
     val earlySettleTimes: Int,                 // 已經提前結算的次數

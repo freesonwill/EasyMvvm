@@ -21,11 +21,17 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     init {
         viewModelScope.launch {
             repo.observeOrderBeanFlow.collect {
-                _orderLiveData.value = it
-                if (it.isNotEmpty()) {
-                    setState(DynamicStateLayout.States.NULL)
-                }
+                setData(it)
             }
+        }
+    }
+
+    protected open fun setData(data: List<BetSlipOrderBean>) {
+        _orderLiveData.value = data
+        if (data.isEmpty()) {
+            setState(DynamicStateLayout.States.DATA_EMPTY)
+        } else {
+            setState(DynamicStateLayout.States.NULL)
         }
     }
 
@@ -46,8 +52,6 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
             )
             if (resp == null) {
                 setState(DynamicStateLayout.States.NETWORK_ANOMALY)
-            } else if (resp.isEmpty()) {
-                setState(DynamicStateLayout.States.DATA_EMPTY)
             }
         }
     }
