@@ -14,11 +14,19 @@ class TimePickerFragment private constructor() :
     BaseBottomSheetFragment<TimePickerViewModel, FragmentTimePickerBinding>() {
 
     companion object {
-        fun newInstance(time: Long? = null): TimePickerFragment {
+        private const val KEY_ORIGINAL_TIME = "key_original_time"
+        private const val KEY_ORIGINAL_TYPE = "key_original_type"
+        fun newInstance(time: Long? = null, originalTime: Long? = null, originalType: BetSlipDateFilterEnum? = null): TimePickerFragment {
             return TimePickerFragment().apply {
-                if (time != null) {
-                    arguments = Bundle().apply {
-                        putLong(Config.VALUE_SELECTED_DATE, time)
+                arguments = Bundle().apply {
+                    time?.let {
+                        putLong(Config.VALUE_SELECTED_DATE, it)
+                    }
+                    originalTime?.let {
+                        putLong(KEY_ORIGINAL_TIME, it)
+                    }
+                    originalType?.let {
+                        putString(KEY_ORIGINAL_TYPE, it.name)
                     }
                 }
             }
@@ -32,10 +40,10 @@ class TimePickerFragment private constructor() :
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        val time = arguments?.getLong(Config.VALUE_SELECTED_DATE)
-        if (time != null) {
-            calendar.timeInMillis = time
-        }
+        val time = arguments?.takeIf { it.containsKey(Config.VALUE_SELECTED_DATE) }
+            ?.getLong(Config.VALUE_SELECTED_DATE)
+            ?: System.currentTimeMillis()
+        calendar.timeInMillis = time
 
         initYearPicker()
         initMonthPicker()
@@ -44,6 +52,12 @@ class TimePickerFragment private constructor() :
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
+            val originalTime = arguments?.getLong(KEY_ORIGINAL_TIME)
+            val originalType = arguments?.getString(KEY_ORIGINAL_TYPE)?.let { 
+                BetSlipDateFilterEnum.valueOf(it) 
+            } ?: BetSlipDateFilterEnum.CUSTOM
+            DatePickerFragment.newInstance(originalType, originalTime)
+                .show(parentFragmentManager)
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {

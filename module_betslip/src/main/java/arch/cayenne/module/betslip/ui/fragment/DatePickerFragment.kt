@@ -38,7 +38,14 @@ class DatePickerFragment private constructor() :
         DatePickerAdapter(object :
             DatePickerAdapter.OnDateClickListener {
             override fun onCustomClick() {
-                TimePickerFragment.newInstance(mViewModel.customTime).show(parentFragmentManager)
+                val originalType = requireArguments().getString(KEY_DATE)?.let { 
+                    BetSlipDateFilterEnum.valueOf(it) 
+                } ?: BetSlipDateFilterEnum.CUSTOM
+                TimePickerFragment.newInstance(
+                    mViewModel.customTime,
+                    requireArguments().getLong(Config.VALUE_SELECTED_MILLISECOND),
+                    originalType
+                ).show(parentFragmentManager)
                 dismiss()
             }
 
@@ -70,6 +77,7 @@ class DatePickerFragment private constructor() :
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {
