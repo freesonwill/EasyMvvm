@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<arch.cayenne.lib.common.ui.view.DynamicStateLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clDynamics"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_bg"
     android:fitsSystemWindows="true"
+    android:background="@color/app_bg"
+    android:orientation="vertical">
+<arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+    android:id="@+id/liveMain"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -43,3 +49,4 @@
         android:paddingStart="0dp"
         android:paddingEnd="0dp" />
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+</arch.cayenne.lib.common.ui.view.DynamicStateLayout>
