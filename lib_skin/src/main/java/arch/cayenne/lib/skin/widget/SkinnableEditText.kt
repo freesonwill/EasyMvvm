@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -17,10 +18,6 @@ open class SkinnableEditText : AppCompatEditText {
     private lateinit var mTextHelper:SkinnableTextHelper
     private lateinit var mBackgroundTintHelper:SkinnableBackGroundHelper
     private val flowHelper = SkinnableViewFlowHelper()
-
-
-    val textColorResId: Int
-        get() = mTextHelper.textColorResId
 
     constructor(context: Context) : super(context) {
         initView(context)
@@ -46,7 +43,7 @@ open class SkinnableEditText : AppCompatEditText {
             mTextHelper.updateSkin()
         }
         flowHelper.startLanguageFlow {
-            mTextHelper.updateLanguage(it.language)
+            mTextHelper.updateLanguage(it)
         }
     }
 
@@ -90,6 +87,11 @@ open class SkinnableEditText : AppCompatEditText {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
+
+    fun setTextHitRes(@StringRes stringRes:Int){
+        mTextHelper.updateHint(stringRes)
+    }
+
 
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()

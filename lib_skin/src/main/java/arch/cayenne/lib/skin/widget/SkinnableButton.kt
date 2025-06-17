@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -48,7 +49,7 @@ class SkinnableButton : AppCompatButton {
         }
 
         flowHelper.startLanguageFlow {
-            mTextHelper.updateLanguage(it.language)
+            mTextHelper.updateLanguage(it)
         }
     }
 
@@ -91,6 +92,9 @@ class SkinnableButton : AppCompatButton {
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
+    fun setTextRes(@StringRes stringRes:Int){
+        mTextHelper.updateText(stringRes)
+    }
 
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()

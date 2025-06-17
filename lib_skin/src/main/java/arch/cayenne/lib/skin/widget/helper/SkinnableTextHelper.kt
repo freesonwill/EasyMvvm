@@ -3,22 +3,31 @@ package arch.cayenne.lib.skin.widget.helper
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
+import org.koin.java.KoinJavaComponent.inject
+import java.util.Locale
 
-open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
+open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView),LanguageHelper {
 
-    var textColorResId = INVALID_ID
+    private var textColorResId = INVALID_ID
     private var mTextColorHintResId = INVALID_ID
     private var mDrawableBottomResId = INVALID_ID
     private var mDrawableLeftResId = INVALID_ID
     private var mDrawableRightResId = INVALID_ID
     private var mDrawableTopResId = INVALID_ID
     private var mTextResId = INVALID_ID
+    private var mHintResId = INVALID_ID
+
+    private val languageManager: LanguageManager by inject(LanguageManager::class.java)
     override val mView: TextView
         get() = super.mView as TextView
+
 
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val context = mView.context
@@ -49,6 +58,9 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
         }
         if (a.hasValue(R.styleable.SportTextHelper_android_text)) {
             mTextResId = a.getResourceId(R.styleable.SportTextHelper_android_text, INVALID_ID)
+        }
+        if(a.hasValue(R.styleable.SportTextHelper_android_hint)){
+            mHintResId = a.getResourceId(R.styleable.SportTextHelper_android_hint, INVALID_ID)
         }
         a.recycle()
 
@@ -195,9 +207,33 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
         applyTextColorHintResource()
     }
 
-    override fun updateLanguage(languageCode:String) {
+    /**
+     * 动态配置多语言 Text
+     * */
+    fun updateText(@StringRes stringRes:Int){
+        if(checkResourceIdValid(stringRes)){
+            mTextResId = stringRes
+            mView.text = resourcesManager.getTextResourceText(mView.context,stringRes,languageManager.getLanguage())
+        }
+    }
+
+    /**
+     * 动态配置多语言 hint
+     * */
+    fun updateHint(@StringRes stringRes: Int){
+        if(checkResourceIdValid(stringRes)){
+            mHintResId = stringRes
+            mView.hint = resourcesManager.getTextResourceText(mView.context,stringRes,languageManager.getLanguage())
+        }
+    }
+
+
+    override fun updateLanguage(locale:Locale) {
         if(checkResourceIdValid(mTextResId)){
-            mView.text = resourcesManager.getTextResourceText(mView.context,mTextResId,languageCode)
+            mView.text = resourcesManager.getTextResourceText(mView.context,mTextResId,locale)
+        }
+        if(checkResourceIdValid(mHintResId)){
+            mView.hint = resourcesManager.getTextResourceText(mView.context,mHintResId,locale)
         }
     }
 }

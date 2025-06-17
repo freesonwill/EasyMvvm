@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -39,7 +40,7 @@ class SkinnableTextView : AppCompatTextView {
             textHelper.updateSkin()
         }
         flowHelper.startLanguageFlow {
-            textHelper.updateLanguage(it.language)
+            textHelper.updateLanguage(it)
         }
 
     }
@@ -82,6 +83,10 @@ class SkinnableTextView : AppCompatTextView {
     ) {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         textHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
+    }
+
+    fun setTextRes(@StringRes stringRes:Int){
+       textHelper.updateText(stringRes)
     }
 
     override fun onDetachedFromWindow() {

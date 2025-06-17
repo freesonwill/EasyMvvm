@@ -12,39 +12,44 @@ import java.util.Locale
 /**
  * 获取对应资源文件
  * */
- object SkinnableResourceManager {
+object SkinnableResourceManager {
     private var resourceLoader: SkinnableResourceLoader = SkinnableBuildInResourceLoader("")
+    private var currentLanguage: Locale? = null
 
     fun initResource(resourceLoader: SkinnableResourceLoader) {
         SkinnableResourceManager.resourceLoader = resourceLoader
-        if(resourceLoader is SkinnableBuildInResourceLoader){
+        if (resourceLoader is SkinnableBuildInResourceLoader) {
             resourceLoader.getSkinName()
         }
     }
-    fun setSecondaryName(secondaryName:String){
+
+    fun setSecondaryName(secondaryName: String) {
         resourceLoader.setSecondarySkin(secondaryName)
     }
 
-    fun restoreSecondaryName(){
+    fun restoreSecondaryName() {
         resourceLoader.setSecondarySkin("")
     }
 
-    fun getTextResourceText(
+   internal fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
-        languageCode: String = "en"
+        locale: Locale?
     ): String {
-        val configuration = Configuration(context.resources.configuration)
-        val locale = configuration.locale
-        if (locale.language != languageCode) {
-            val metrics = context.resources.displayMetrics
-            val configuration = Configuration(context.resources.configuration)
-            configuration.setLocale(Locale(languageCode))
-            val localizeContext = context.createConfigurationContext(configuration)
-            context.resources.updateConfiguration(configuration, metrics)
-            return localizeContext.resources.getString(resId)
+        if (locale != currentLanguage) {
+            return updateLocal(context, locale).resources.getString(resId)
         }
         return context.resources.getString(resId)
+    }
+
+    private fun updateLocal(context: Context, locale: Locale?): Context {
+        val metrics = context.resources.displayMetrics
+        val configuration = Configuration(context.resources.configuration)
+        configuration.setLocale(locale)
+        val localizeContext = context.createConfigurationContext(configuration)
+        context.resources.updateConfiguration(configuration, metrics)
+        currentLanguage = locale
+        return localizeContext
     }
 
     fun getColor(context: Context, @ColorRes resId: Int): Int =
@@ -60,4 +65,8 @@ import java.util.Locale
         resourceLoader.getTargetResourceId(context, resId)
 
     fun getSkinName() = resourceLoader.getSkinName()
+
+    fun getString(context: Context,@StringRes resId:Int):String{
+        return getTextResourceText(context,resId, currentLanguage)
+    }
 }

@@ -12,9 +12,7 @@ import java.util.Locale
 class SkinnableManager {
     private val resourcesManager = SkinnableResourceManager
     private val _skinFlow = MutableStateFlow("")
-    private val _languageFlow = MutableStateFlow<Locale?>(null)
     val skinFlow: Flow<String> = _skinFlow
-    val languageFlow: Flow<Locale?> = _languageFlow
 
     /**
      * 加载后缀名皮肤
@@ -58,13 +56,6 @@ class SkinnableManager {
         _skinFlow.emit("")
     }
 
-
-    /**
-     *切换语言
-     * */
-    suspend fun changeLanguage(local: Locale) {
-        _languageFlow.emit(local)
-    }
 
     /**
      * 获取皮肤名称

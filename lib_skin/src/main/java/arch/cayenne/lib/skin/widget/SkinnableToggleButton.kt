@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatToggleButton
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -43,7 +44,7 @@ class SkinnableToggleButton : AppCompatToggleButton {
             mTextHelper.updateSkin()
         }
         flowHelper.startLanguageFlow {
-            mTextHelper.updateLanguage(it.language)
+            mTextHelper.updateLanguage(it)
         }
     }
 
@@ -85,6 +86,11 @@ class SkinnableToggleButton : AppCompatToggleButton {
         super.setCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
+
+    fun setTextRes(@StringRes stringRes:Int){
+        mTextHelper.updateText(stringRes)
+    }
+
 
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()

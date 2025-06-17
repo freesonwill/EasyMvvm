@@ -3,8 +3,10 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.ResourceExt
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
 import com.walisport.module.setting.data.LanguageType
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
@@ -21,7 +23,7 @@ class LanguageFragment : BaseFragment<SettingViewModel, FragmentLanguageBinding>
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set.getString(), {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set, {
             findNavController().navigateUp()
         })
         val languageType = mViewModel.getLanguageType()

@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
 import galaxy.common.proto.Common
@@ -19,6 +20,7 @@ class SettingViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
+    private val languageManager:LanguageManager by inject { parametersOf(viewModelScope)  }
 
     private val _language = MutableLiveData<String>()
     val language: LiveData<String> = _language
@@ -40,7 +42,7 @@ class SettingViewModel : BaseViewModel() {
     fun setLanguageType(type: String) {
         viewModelScope.launch {
             repository.setLanguageType(type)
-            skinManager.changeLanguage(Locale(type))
+            languageManager.changeLanguage(Locale(type))
             _language.value = type
         }
     }

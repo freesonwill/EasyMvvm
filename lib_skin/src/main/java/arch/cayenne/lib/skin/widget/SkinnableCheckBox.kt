@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.content.Context
 import android.content.res.ColorStateList
 import android.util.AttributeSet
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatCheckBox
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -39,7 +40,7 @@ class SkinnableCheckBox : AppCompatCheckBox {
             textHelper.updateSkin()
         }
         flowHelper.startLanguageFlow {
-            textHelper.updateLanguage(it.language)
+            textHelper.updateLanguage(it)
         }
     }
 
@@ -51,6 +52,10 @@ class SkinnableCheckBox : AppCompatCheckBox {
 
     override fun setTextColor(colors: ColorStateList?) {
         super.setTextColor(colors)
+    }
+
+    fun setTextRes(@StringRes stringRes:Int){
+        textHelper.updateText(stringRes)
     }
 
     override fun onDetachedFromWindow() {

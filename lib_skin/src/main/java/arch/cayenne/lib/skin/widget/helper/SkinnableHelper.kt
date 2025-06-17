@@ -14,6 +14,8 @@ abstract class SkinnableHelper (protected open val mView:View) {
     protected var lastSkin:String = ""
     protected var lastLanguage:Locale? = null
 
+
+
     /**
      * 加载资源布局
      */
@@ -23,11 +25,6 @@ abstract class SkinnableHelper (protected open val mView:View) {
      * 刷新UI
      */
     abstract fun updateSkin(msgType: SkinMsgType = SkinMsgType.FLOW)
-
-    /**
-     * 刷新language
-     * */
-    abstract fun updateLanguage(languageCode:String)
 
     open fun setSrcId(srcId: Int) {
         mSrcId = srcId

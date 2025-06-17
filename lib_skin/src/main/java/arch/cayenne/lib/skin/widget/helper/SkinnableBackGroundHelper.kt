@@ -4,6 +4,7 @@ import android.util.AttributeSet
 import android.view.View
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
+import java.util.Locale
 
 class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
     private var backgroundTintId:Int = INVALID_ID
@@ -45,9 +46,5 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
             val backgroundTint = resourcesManager.getColorStateList(mView.context,backgroundTintId)
             mView.backgroundTintList = backgroundTint
         }
-    }
-
-    override fun updateLanguage(languageCode:String) {
-
     }
 }

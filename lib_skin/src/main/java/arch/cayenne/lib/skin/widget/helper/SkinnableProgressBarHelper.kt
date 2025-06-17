@@ -4,6 +4,7 @@ import android.util.AttributeSet
 import android.widget.ProgressBar
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
+import java.util.Locale
 
 class SkinnableProgressBarHelper(private val view: ProgressBar) : SkinnableHelper(view) {
 
@@ -38,9 +39,5 @@ class SkinnableProgressBarHelper(private val view: ProgressBar) : SkinnableHelpe
         if (drawable != null) {
             view.progressDrawable = drawable
         }
-    }
-
-    override fun updateLanguage(languageCode: String) {
-        TODO("Not yet implemented")
     }
 }
