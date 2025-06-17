@@ -14,7 +14,7 @@ enum class SportType(val id: Int, @StringRes val titleResId: Int, val iconResAct
 //    ICE_HOCKEY(7, R.string.sport_ice_hockey, R.drawable.ic_ice_hockey_active, R.drawable.ic_ice_hockey_inactive),
 //    ESPORTS(8, R.string.sport_esports, R.drawable.ic_esports_active, R.drawable.ic_esports_inactive),
     GOLF(9, R.string.title_golf, R.drawable.ic_golf_active, R.drawable.ic_golf_inactive),
-    RUGBY(12, R.string.title_football, R.drawable.ic_football_active, R.drawable.ic_football_inactive),
+    RUGBY(12, R.string.title_rugby, R.drawable.ic_rugby_active, R.drawable.ic_rugby_inactive),
     SNOOKER(19, R.string.title_snooker,R.drawable.ic_snooker_active, R.drawable.ic_snooker_inactive),
     PING_PONG(20, R.string.title_pingpong,  R.drawable.ic_pingpong_active, R.drawable.ic_pingpong_inactive),
     VOLLEYBALL(23, R.string.title_volleyball, R.drawable.ic_volleyball_active, R.drawable.ic_volleyball_inactive),
