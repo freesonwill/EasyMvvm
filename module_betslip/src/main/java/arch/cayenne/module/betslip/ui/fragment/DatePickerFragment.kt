@@ -38,15 +38,8 @@ class DatePickerFragment private constructor() :
         DatePickerAdapter(object :
             DatePickerAdapter.OnDateClickListener {
             override fun onCustomClick() {
-                childFragmentManager.setFragmentResultListener(
-                    Config.KEY_RESULT,
-                    viewLifecycleOwner
-                ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(Config.KEY_RESULT)
-                    val time = bundle.getLong(Config.VALUE_SELECTED_DATE)
-                    mViewModel.customTime = time
-                }
-                TimePickerFragment.newInstance(mViewModel.customTime).show(childFragmentManager)
+                TimePickerFragment.newInstance(mViewModel.customTime).show(parentFragmentManager)
+                dismiss()
             }
 
             override fun onDateClick(position: Int) {
@@ -87,13 +80,9 @@ class DatePickerFragment private constructor() :
                     putLong(Config.VALUE_SELECTED_MILLISECOND, mViewModel.customTime ?: 0L)
                 }
             }
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
             dismiss()
         }
-    }
-
-    override fun dismiss() {
-        parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
-        super.dismiss()
     }
 
     override fun initData() {

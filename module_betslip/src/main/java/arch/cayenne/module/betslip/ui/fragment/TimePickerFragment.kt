@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.module.betslip.R
+import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
 import arch.cayenne.module.betslip.databinding.FragmentTimePickerBinding
 import arch.cayenne.module.betslip.ui.viewmodel.TimePickerViewModel
@@ -52,7 +53,8 @@ class TimePickerFragment private constructor() :
             calendar.set(Calendar.MILLISECOND, 999)
             val time = calendar.timeInMillis
             parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle().apply {
-                putLong(Config.VALUE_SELECTED_DATE, time)
+                putString(Config.VALUE_SELECTED_DATE, BetSlipDateFilterEnum.CUSTOM.name)
+                putLong(Config.VALUE_SELECTED_MILLISECOND, time)
             })
             dismiss()
         }
