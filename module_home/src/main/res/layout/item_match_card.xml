@@ -80,14 +80,14 @@
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
     <!-- 賠率標題 -->
-    <GridLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/layout_odds_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="43dp"
         android:layout_marginBottom="8dp"
-        android:paddingEnd="@dimen/dp_14"
-        android:columnCount="3"
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/dp_12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_vertical"
         app:layout_constraintTop_toTopOf="parent" />

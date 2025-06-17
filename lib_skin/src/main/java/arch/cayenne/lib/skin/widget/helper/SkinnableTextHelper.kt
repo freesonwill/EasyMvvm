@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
@@ -198,6 +199,13 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView) {
     override fun updateLanguage(languageCode:String) {
         if(checkResourceIdValid(mTextResId)){
             mView.text = resourcesManager.getTextResourceText(mView.context,mTextResId,languageCode)
+        }
+    }
+
+    fun setTextColor(@ColorRes color:Int){
+        if(checkResourceIdValid(color)){
+            textColorResId = color
+            applyTextColorResource()
         }
     }
 }
