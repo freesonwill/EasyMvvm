@@ -30,9 +30,9 @@
     <string name="league_seriea">意甲</string>
     <string name="bet_title">注单</string>
     <string name="favorite_title">收藏</string>
-    <string name="match_title_win">全场独赢</string>
-    <string name="match_title_handicap">全场让球</string>
-    <string name="match_title_over_under">全场大小</string>
+    <string name="match_title_win">独赢</string>
+    <string name="match_title_handicap">让球</string>
+    <string name="match_title_over_under">大小</string>
     <string name="drawer_recharge">充值</string>
     <string name="drawer_bet_slip">注单</string>
     <string name="drawer_common_function">常用功能</string>
