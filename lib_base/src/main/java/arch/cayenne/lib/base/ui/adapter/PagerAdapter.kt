@@ -10,15 +10,17 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import arch.cayenne.lib.base.data.model.PagerBean
 
 class PagerAdapter(
-    fragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     val pages: List<PagerBean>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-    private val fragmentCache = mutableMapOf<Int, Fragment>()
+    private val fragmentTag = mutableMapOf<Int, String>() // position to tag of fragment simple name
     override fun getItemCount(): Int = pages.size
 
     override fun createFragment(position: Int): Fragment {
-        fragmentCache[position]?.let { return it }
+        getCachedFragment(position)?.let {
+            return it
+        }
         val fragment = pages[position].page.invoke().apply {
             arguments = arguments?.let {
                 it.putInt("pageIndex", position)
@@ -27,9 +29,11 @@ class PagerAdapter(
                 putInt("pageIndex", position)
             }
         }
-        fragmentCache[position] = fragment
+        val tag = fragment.javaClass.simpleName
+        fragmentTag[position] = tag
         return fragment
     }
+
 
 
     override fun onBindViewHolder(
@@ -52,5 +56,9 @@ class PagerAdapter(
             }
         }
     }
-    fun getCachedFragment(position: Int): Fragment? = fragmentCache[position]
+
+    fun getCachedFragment(position: Int): Fragment? {
+        val tag = fragmentTag[position] ?: return null
+        return fragmentManager.fragments.find { it.javaClass.simpleName == tag }
+    }
 }
