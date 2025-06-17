@@ -31,19 +31,21 @@ object SkinnableResourceManager {
         resourceLoader.setSecondarySkin("")
     }
 
-   internal fun getTextResourceText(
+    internal fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
         locale: Locale?
     ): String {
-        val locale = context.resources.configuration.locale
-        if (locale.language != languageCode) {
-            val configuration = Configuration(context.resources.configuration)
-            configuration.setLocale(Locale(languageCode))
-            val localizeContext = context.createConfigurationContext(configuration)
-            return localizeContext.resources.getString(resId)
+        if (currentLanguage != locale && locale != null) {
+            return updateLocal(context, locale).resources.getString(resId)
         }
         return context.resources.getString(resId)
+    }
+
+    private fun updateLocal(context: Context, locale: Locale): Context {
+        val configuration = Configuration(context.resources.configuration)
+        configuration.setLocale(locale)
+        return context.createConfigurationContext(configuration)
     }
 
     fun getColor(context: Context, @ColorRes resId: Int): Int =
@@ -60,7 +62,7 @@ object SkinnableResourceManager {
 
     fun getSkinName() = resourceLoader.getSkinName()
 
-    fun getString(context: Context,@StringRes resId:Int):String{
-        return getTextResourceText(context,resId, currentLanguage)
+    fun getString(context: Context, @StringRes resId: Int): String {
+        return getTextResourceText(context, resId, currentLanguage)
     }
 }
