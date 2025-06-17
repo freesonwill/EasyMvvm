@@ -2,9 +2,12 @@ package com.walisport.module.message.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.database.entity.MessageBean
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.data.NotificationBean
+import kotlinx.coroutines.launch
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -15,6 +18,28 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     private val _notificationSelect = MutableLiveData<List<NotificationBean>>()
     val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
+
+    init {
+        viewModelScope.launch {
+            repo.observeMessageBean().collect { data ->
+                val temp = data.mapIndexed { _, item ->
+                    NotificationBean(
+                        id = item.id,
+                        type = item.type,
+                        state = "",
+                        bar = "",
+                        title = item.title,
+                        time = "",
+                        content = item.content,
+                        channel = "",
+                        money = "",
+                        url = ""
+                    )
+                }
+                _notificationBean.value = temp
+            }
+        }
+    }
 
     fun getMessageData() {
         val tmp = NotificationBean(
@@ -66,7 +91,10 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
             "支付成功"
         )
         val list = listOf(tmp, tmp1, tmp2, tmp3)
-        _notificationBean.value = list
+        viewModelScope.launch {
+            repo.insertMessage(list)
+        }
+        //_notificationBean.value = list
     }
 
     fun deleteMessage(iid: Long) {
