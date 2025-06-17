@@ -35,6 +35,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
+    private val selectedDate by lazy {
+        if (requireArguments().containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS)) {
+            requireArguments().getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
+        } else {
+            null
+        }
+    }
+
 
     companion object {
         const val DATE_PICKER_RESULT_KEY = "DATE_PICKER_RESULT_KEY"
@@ -79,18 +87,9 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             calendarView.apply {
-                val selectedDate =
-                    if (requireArguments().containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS)) {
-                        requireArguments().getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
-                    } else {
-                        null
-                    }
-
-                if(selectedDate == null) {
-                    clearSingleSelect()
-                } else {
+                selectedDate?.let {
                     Calendar.getInstance().apply {
-                        timeInMillis = selectedDate
+                        timeInMillis = it
                     }.run {
                         scrollToCalendar(
                             get(Calendar.YEAR),
@@ -98,7 +97,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                             get(Calendar.DAY_OF_MONTH)
                         )
                     }
-                }
+                } ?: clearSingleSelect()
+
                 setAllMode()
                 setOnMonthChangeListener { year, month ->
                     setCalendarTitle(year, month)
@@ -136,11 +136,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             tvReset.clickNoRepeat {
                 calendarView.clearSingleSelect()
                 sendResult(null)
+                collapseView()
             }
             tvConfirm.clickNoRepeat {
                 sendResult()
+                collapseView()
             }
             maskView.clickNoRepeat {
+                sendResult(selectedDate)
                 collapseView()
             }
         }
@@ -283,6 +286,5 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 resultBundle.putLong(DATE_PICKER_RESULT_TIME_IN_MILLIS, this)
             }
         }
-        collapseView()
     }
 }
