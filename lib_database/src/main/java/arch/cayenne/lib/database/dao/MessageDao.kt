@@ -28,7 +28,7 @@ abstract class MessageDao : BaseDao<MessageBean>() {
 
     //读取所有消息
     @Query("SELECT * FROM MessageBean")
-    abstract fun queryAllMessage(id: Long): List<MessageBean>
+    abstract fun queryAllMessage(): List<MessageBean>
 
     //插入消息列表
     @Insert(onConflict = OnConflictStrategy.REPLACE)
