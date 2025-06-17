@@ -14,5 +14,5 @@
     <include app:graph="@navigation/nav_graph_feedback" />
     <include app:graph="@navigation/nav_graph_message" />
     <include app:graph="@navigation/nav_graph_topup" />
-
+    <include app:graph="@navigation/nav_graph_account" />
 </navigation>

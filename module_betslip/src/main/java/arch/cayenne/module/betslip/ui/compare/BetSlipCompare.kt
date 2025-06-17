@@ -1,9 +1,9 @@
 package arch.cayenne.module.betslip.ui.compare
 
 import androidx.recyclerview.widget.DiffUtil
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
-import arch.cayenne.module.betslip.data.model.ReserveOrderBean
+import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 
 class BetSlipCompare : DiffUtil.ItemCallback<BetSlipData>() {
     override fun areItemsTheSame(oldItem: BetSlipData, newItem: BetSlipData): Boolean {
@@ -11,7 +11,7 @@ class BetSlipCompare : DiffUtil.ItemCallback<BetSlipData>() {
             oldItem is BetSlipOrderBean && newItem is BetSlipOrderBean ->
                 oldItem.betId == newItem.betId
 
-            oldItem is ReserveOrderBean && newItem is ReserveOrderBean ->
+            oldItem is BetSlipReserveBean && newItem is BetSlipReserveBean ->
                 oldItem.reserveId == newItem.reserveId
 
             else -> false

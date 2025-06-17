@@ -71,7 +71,10 @@ internal class ToastHelper private constructor() {
         toastJob?.cancel().let { toastJob = null }
         view?.let {
             val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            wm.removeView(it).let { view = null }
+            if(it.isAttachedToWindow){
+                wm.removeView(it)
+            }
+            view = null
         }
     }
 

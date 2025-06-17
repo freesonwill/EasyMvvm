@@ -16,6 +16,14 @@
         <item name="layout_constraintBottom_toBottomOf">parent</item>
     </style>
 
+    <style name="CustomToolbarCancelStyle">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="layout_constraintLeft_toLeftOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
     <style name="CustomToolbarTvStyle">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>

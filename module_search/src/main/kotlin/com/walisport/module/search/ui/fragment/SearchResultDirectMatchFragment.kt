@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,13 +27,12 @@ import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultDirectMatchBinding
 import com.walisport.module.search.ui.adapter.SearchResultRaceAdapter
-import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_END
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_END
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
+import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -363,7 +359,8 @@ class SearchResultDirectMatchFragment :
 
     private fun updateResultBackground(color: Int? = null) {
         sharedViewModel.setResultBackgroundColor(color)
-        mViewModel.setTempBackgroundColor(color)
+        if (color != null)
+            mViewModel.setTempBackgroundColor(color)
         setStatusBarState(color == null)
     }
 

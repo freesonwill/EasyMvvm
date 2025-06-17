@@ -36,20 +36,14 @@ object SkinnableResourceManager {
         @StringRes resId: Int,
         locale: Locale?
     ): String {
-        if (locale != currentLanguage) {
-            return updateLocal(context, locale).resources.getString(resId)
+        val locale = context.resources.configuration.locale
+        if (locale.language != languageCode) {
+            val configuration = Configuration(context.resources.configuration)
+            configuration.setLocale(Locale(languageCode))
+            val localizeContext = context.createConfigurationContext(configuration)
+            return localizeContext.resources.getString(resId)
         }
         return context.resources.getString(resId)
-    }
-
-    private fun updateLocal(context: Context, locale: Locale?): Context {
-        val metrics = context.resources.displayMetrics
-        val configuration = Configuration(context.resources.configuration)
-        configuration.setLocale(locale)
-        val localizeContext = context.createConfigurationContext(configuration)
-        context.resources.updateConfiguration(configuration, metrics)
-        currentLanguage = locale
-        return localizeContext
     }
 
     fun getColor(context: Context, @ColorRes resId: Int): Int =

@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.setting.data.SettingRepository
-import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -86,30 +85,6 @@ class SettingViewModel : BaseViewModel() {
         repository.setAppGoal(bet, fav, all);
     }
 
-    //获取系统通知-进球选项是全部还是部分
-    fun getSystemAllOrPart(): Boolean {
-        val bet = repository.getSystemBet()
-        val fav = repository.getSystemFav()
-        val all = repository.getSystemAll()
-        return bet && fav && all
-    }
-
-    //获取系统通知-开赛选项是全部还是部分
-    fun getKickAllOrPart(): Boolean {
-        val bet = repository.getKickBet()
-        val fav = repository.getKickFav()
-        val all = repository.getKickAll()
-        return bet && fav && all
-    }
-
-    //获取应用内通知-进球选项是全部还是部分
-    fun getAppAllOrPart(): Boolean {
-        val bet = repository.getAppBet()
-        val fav = repository.getAppFav()
-        val all = repository.getAppAll()
-        return bet && fav && all
-    }
-
     fun getSystemBet(): Boolean {
         return repository.getSystemBet()
     }
@@ -144,16 +119,6 @@ class SettingViewModel : BaseViewModel() {
 
     fun getAppAll(): Boolean {
         return repository.getAppAll()
-    }
-
-    //调用接口设置赔率方式
-    fun updateOddsSetting(type: Int) {
-        viewModelScope.launch {
-            val req = Common.Setting.newBuilder().apply {
-                oddType = type
-            }.build()
-            repository.updateSettingReq(req)
-        }
     }
 
     //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种

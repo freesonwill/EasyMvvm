@@ -29,21 +29,22 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_notice_set.getString(),
             { findNavController().navigateUp() })
-        if (mViewModel.getSystemAllOrPart()) {
-            mBinding.tvNoticeSysGoal.text = getString(R.string.menu_all)
-        } else {
-            mBinding.tvNoticeSysGoal.text = getString(R.string.menu_part)
-        }
-        if (mViewModel.getKickAllOrPart()) {
-            mBinding.tvNoticeSysStart.text = getString(R.string.menu_all)
-        } else {
-            mBinding.tvNoticeSysStart.text = getString(R.string.menu_part)
-        }
-        if (mViewModel.getAppAllOrPart()) {
-            mBinding.tvNoticeGoalApp.text = getString(R.string.menu_all)
-        } else {
-            mBinding.tvNoticeGoalApp.text = getString(R.string.menu_part)
-        }
+        initToggle()
+    }
+
+    private fun initToggle() {
+        val bet1 = mViewModel.getSystemBet()
+        val fav1 = mViewModel.getSystemFav()
+        val all1 = mViewModel.getSystemAll()
+        mBinding.tvNoticeSysGoal.text = getStateString(bet1, fav1, all1)
+        val bet2 = mViewModel.getKickBet()
+        val fav2 = mViewModel.getKickFav()
+        val all2 = mViewModel.getKickAll()
+        mBinding.tvNoticeSysStart.text = getStateString(bet2, fav2, all2)
+        val bet3 = mViewModel.getAppBet()
+        val fav3 = mViewModel.getAppFav()
+        val all3 = mViewModel.getAppAll()
+        mBinding.tvNoticeGoalApp.text = getStateString(bet3, fav3, all3)
     }
 
     override fun initListener() {
@@ -75,29 +76,15 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
         when (type) {
             TYPE_SYS_GOAL -> {
                 mViewModel.setSystemGoal(bet, fav, all)
-                if (bet && fav && all) {
-                    mBinding.tvNoticeSysGoal.text = getString(R.string.menu_all)
-                } else {
-                    mBinding.tvNoticeSysGoal.text = getString(R.string.menu_part)
-                }
+                mBinding.tvNoticeSysGoal.text = getStateString(bet, fav, all)
             }
-
             TYPE_SYS_MATCH -> {
                 mViewModel.setKickGoal(bet, fav, all)
-                if (bet && fav && all) {
-                    mBinding.tvNoticeSysStart.text = getString(R.string.menu_all)
-                } else {
-                    mBinding.tvNoticeSysStart.text = getString(R.string.menu_part)
-                }
+                mBinding.tvNoticeSysStart.text = getStateString(bet, fav, all)
             }
-
             TYPE_APP_GOAL -> {
                 mViewModel.setAppGoal(bet, fav, all)
-                if (bet && fav && all) {
-                    mBinding.tvNoticeGoalApp.text = getString(R.string.menu_all)
-                } else {
-                    mBinding.tvNoticeGoalApp.text = getString(R.string.menu_part)
-                }
+                mBinding.tvNoticeGoalApp.text = getStateString(bet, fav, all)
             }
         }
     }
@@ -136,5 +123,15 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
                 }
             })
         }.show(fragmentManager)
+    }
+
+    private fun getStateString(bet: Boolean, fav: Boolean, all: Boolean): String {
+        if (bet && fav && all) {
+            return getString(R.string.menu_all)
+        }
+        if (!bet && !fav && !all) {
+            return getString(R.string.menu_close)
+        }
+        return getString(R.string.menu_part)
     }
 }

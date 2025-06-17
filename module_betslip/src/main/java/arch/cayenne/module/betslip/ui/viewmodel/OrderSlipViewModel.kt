@@ -4,21 +4,44 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
-import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
 
     //普通注单
-    protected val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()
+    private val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
-    override fun refreshData(status: BetSlipEnum) {
+    private var type: BetSlipEnum? = null
+
+    init {
         viewModelScope.launch {
-            repo.getOrderReq(
+            repo.observeOrderBeanFlow.collect {
+                setData(it)
+            }
+        }
+    }
+
+    protected open fun setData(data: List<BetSlipOrderBean>) {
+        _orderLiveData.value = data
+        if (data.isEmpty()) {
+            setState(DynamicStateLayout.States.DATA_EMPTY)
+        } else {
+            setState(DynamicStateLayout.States.NULL)
+        }
+    }
+
+    override fun refreshData(status: BetSlipEnum) {
+        if (type == null) {
+            type = status
+            repo.registerObserveOrderBean(status.value)
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val resp = repo.getOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -26,11 +49,9 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 SIZE,
                 sportIds,
                 matchId,
-            )?.let { result ->
-                _state.value = Event(if(result.isEmpty()) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NULL)
-                _orderLiveData.value = result
-            } ?: run {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            )
+            if (resp == null) {
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
         }
     }
@@ -38,7 +59,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     override fun loadMoreData(status: BetSlipEnum) {
         val list = _orderLiveData.value
         viewModelScope.launch {
-            repo.getOrderReq(
+            val resp = repo.loadMoreOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -46,26 +67,21 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 SIZE,
                 sportIds,
                 matchId,
-            )?.let { result ->
-                _state.value = Event(DynamicStateLayout.States.NULL)
-                if (result.isNotEmpty()) {
-                    val newList = mutableListOf<BetSlipOrderBean>()
-                    val oldList = _orderLiveData.value ?: emptyList()
-                    newList.addAll(oldList)
-                    newList.addAll(result)
-                    _orderLiveData.value = newList
-                }
-            } ?: run {
-                _state.value = Event(DynamicStateLayout.States.NETWORK_ANOMALY)
+            )
+            if (resp == null) {
+                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
             }
         }
     }
 
-    override fun updateData(status: BetSlipEnum, betId: String) {
-
-    }
-
     override fun canLoadMore(): Boolean {
         return !(_orderLiveData.value.isNullOrEmpty() || (_orderLiveData.value!!.size % SIZE != 0))
+    }
+
+    override fun deleteAll() {
+        type?.let {
+            repo.deleteAll(it.value)
+            type = null
+        }
     }
 }

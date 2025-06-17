@@ -1,13 +1,14 @@
 package arch.cayenne.module.betslip
 
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
-import arch.cayenne.module.betslip.data.model.ReserveOrderBean
-import arch.cayenne.module.betslip.data.model.toOrderBean
-import arch.cayenne.module.betslip.data.model.toReserveOrderBean
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import com.google.gson.Gson
 import galaxy.client.proto.Client
 import galaxy.client.proto.Client.EarlySettlePriceReq
@@ -31,7 +32,7 @@ class BetSlipRemoteManager(
     private val TAG = this.javaClass.simpleName
 
     suspend fun getOrderReq(
-        status: Int,
+        type: Int,
         startTime: Long?,
         endTime: Long?,
         cursorBetTime: Long?,
@@ -39,14 +40,14 @@ class BetSlipRemoteManager(
         sportIds: List<Int>?,
         matchId: Long?,
     ): List<BetSlipOrderBean>? {
-        "getOrderReq params status $status startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
+        "getOrderReq params status $type startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.GET_ORDER
         ) {
             Client.GetOrderReq.newBuilder().apply {
-                this.status = status
+                this.status = type
                 this.size = size
                 startTime?.let { this.startTime = it }
                 endTime?.let { this.endTime = it }
@@ -58,7 +59,7 @@ class BetSlipRemoteManager(
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
         if (result.error == null && result.data != null) {
-            return result.data!!.orderList.map { it.toOrderBean() }
+            return result.data!!.orderList.map { it.toOrderBean(type) }
         }
         return null
     }
@@ -70,7 +71,7 @@ class BetSlipRemoteManager(
         matchId: Long?,
         cursorBetTime: Long?,
         size: Int
-    ): List<ReserveOrderBean>? {
+    ): List<BetSlipReserveBean>? {
         "getReserveOrder params startTime $startTime endTime $endTime sportId $sportId matchId $matchId cursorBetTime $cursorBetTime size $size".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
@@ -189,4 +190,7 @@ class BetSlipRemoteManager(
         }
         return emptyList()
     }
+
+    fun registerEarlySettleNotify() = socketManager.observeProtoMessage<Client.EarlySettleNotify>(ApiCode.EARLY_SETTLE_NOTIFY)
+    fun registerOrderStatus() = socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY)
 }

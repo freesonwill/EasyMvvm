@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ll_odds_column"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <!-- 單格 odds cell（重複三次）-->
     <include
         android:id="@+id/item_odds_cell1"
-        layout="@layout/item_odds_cell" />
-
-    <View
+        layout="@layout/item_odds_cell"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2" />
+        android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/item_odds_cell2"
+        app:layout_constraintVertical_chainStyle="spread"/>
 
     <include
         android:id="@+id/item_odds_cell2"
-        layout="@layout/item_odds_cell" />
-
-    <View
+        layout="@layout/item_odds_cell"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_2" />
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@+id/item_odds_cell1"
+        app:layout_constraintBottom_toTopOf="@+id/item_odds_cell3"/>
 
     <include
         android:id="@+id/item_odds_cell3"
-        layout="@layout/item_odds_cell" />
+        layout="@layout/item_odds_cell"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@+id/item_odds_cell2"
+        app:layout_constraintBottom_toBottomOf="parent"  />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
