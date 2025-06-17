@@ -74,5 +74,10 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
                  emptyState.showEmptyData(false, recyclerView)
              }
          }
-     }
+    }
+
+    override fun onDestroy() {
+        mViewModel.deleteAll()
+        super.onDestroy()
+    }
 }

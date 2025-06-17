@@ -2,8 +2,6 @@ package arch.cayenne.module.betslip.utisl
 
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import java.math.BigDecimal
 import java.math.RoundingMode
 

@@ -49,6 +49,8 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     EARLY_SETTLE_PRICE(500, 1016),    //500-1016: 提前结算报价
     UPDATE_SYSTEM_SETTING(500,1051), //500-1051: 修改系统设置
 
+    EARLY_SETTLE_NOTIFY(600, 1012), //600-1012: 提前结算推送(被動)
+
     CHAT_PING(0,2), //0 -2 聊天心跳
     CHAT_LOGIN(90,1101), //7-7 聊天登陆
     CHAT_ENTER_ROOM(500,1001),//进入聊天室

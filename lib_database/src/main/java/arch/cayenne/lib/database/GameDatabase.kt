@@ -10,6 +10,8 @@ import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.TournamentBean
 import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.BetSlipOrderDao
+import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.LiveMatchDao
 import arch.cayenne.lib.database.dao.LiveVideoDao
@@ -19,6 +21,8 @@ import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
 import arch.cayenne.lib.database.entity.MarketSelectCrossRef
@@ -54,12 +58,14 @@ import arch.cayenne.lib.database.entity.MarketMenuBean
         LiveMatchBean::class,
         LiveMarketBean::class,
         LiveSelectionBean::class,
-        LiveSelectionBeanRecord::class
+        LiveSelectionBeanRecord::class,
+        BetSlipOrderBean::class,
+        BetSlipReserveBean::class
     ],
     version = 1,
     exportSchema = false
 )
-@TypeConverters(VideoSourceBeanConverter::class,MarketTypeBeanConverter::class)
+@TypeConverters(VideoSourceBeanConverter::class, MarketTypeBeanConverter::class, BetSlipTypeConverter::class)
 abstract class GameDatabase: RoomDatabase() {
 
     companion object {
@@ -95,4 +101,6 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun liveMatchDao(): LiveMatchDao
 
     abstract fun infoDao(): InfoDao
+    abstract fun betSlipOrderDao(): BetSlipOrderDao
+    abstract fun betSlipReserveDao(): BetSlipReserveDao
 }

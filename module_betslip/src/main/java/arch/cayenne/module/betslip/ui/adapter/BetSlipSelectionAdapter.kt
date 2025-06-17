@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipConfirmBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipInvalidBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipSettledBinding
 import arch.cayenne.module.betslip.databinding.ItemLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.ui.compare.BetSlipSelectionCompare
 import arch.cayenne.module.betslip.ui.viewholder.item.BaseBetSlipItemViewHolder
 import arch.cayenne.module.betslip.ui.viewholder.item.BetSlipConfirmItemViewHolder

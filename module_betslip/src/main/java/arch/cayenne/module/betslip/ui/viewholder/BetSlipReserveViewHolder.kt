@@ -4,10 +4,9 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
+import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.ReserveOrderBean
-import arch.cayenne.module.betslip.data.model.toReserveOrderSelectionBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
@@ -27,7 +26,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
     }
 
     override fun covertPlus(item: BetSlipData) {
-        if (item is ReserveOrderBean) {
+        if (item is BetSlipReserveBean) {
             updateData(item)
             submitReserveData(item)
         }
@@ -45,7 +44,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
      * 预约单数据更新
      * */
     private fun updateData(
-        order: ReserveOrderBean
+        order: BetSlipReserveBean
     ) {
         with(mBinding) {
             val selection = order.selection
@@ -64,9 +63,9 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
      * 预约单列表展示
      * */
     private fun submitReserveData(
-        reserve: ReserveOrderBean,
+        reserve: BetSlipReserveBean,
     ) {
-        val list = listOf(reserve.selection.toReserveOrderSelectionBean())
+        val list = listOf(reserve.selection)
         adapter.submitList(list)
     }
 }

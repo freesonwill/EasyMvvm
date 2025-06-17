@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.ui.viewmodel.Event
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
@@ -28,11 +28,7 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
      * */
     fun earlyPartSettled(betId: String, money: String, expectPrice: String) {
         viewModelScope.launch {
-            val result = repo.earlySettle(betId, money, expectPrice, false)?.apply {
-                if (this.success) {
-                    setDataToEarlySettling(betId)
-                }
-            }
+            val result = repo.earlySettle(betId, money, expectPrice, false)
             _earlySettledResultLiveData.value = Event(result?.success ?: false)
         }
     }
@@ -48,23 +44,5 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
                 _isSupportEarlySettleLiveData.value = result.first()
             }
         }
-    }
-
-    private fun setDataToEarlySettling(betId: String) {
-        val currentList = _orderLiveData.value ?: return
-
-        val updatedList = currentList.map { item ->
-            if (item.betId == betId) {
-                item.copy(
-                    earlySettlePrice = item.earlySettlePrice.copy(
-                        settleStatus = 102
-                    )
-                )
-            } else {
-                item
-            }
-        }
-
-        _orderLiveData.value = updatedList
     }
 }

@@ -8,12 +8,10 @@ import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.database.entity.BetSlipData
+import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
-import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipData
-import arch.cayenne.module.betslip.data.model.BetSlipOrderBean
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 

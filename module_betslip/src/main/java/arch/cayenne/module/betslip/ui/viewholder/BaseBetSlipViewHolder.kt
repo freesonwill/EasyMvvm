@@ -10,13 +10,13 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.constants.BetSlipExpandedEnum
-import arch.cayenne.module.betslip.data.model.BetSlipSelectionData
 import arch.cayenne.module.betslip.databinding.ItemBetslipMoreLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipSelectionAdapter
 import arch.cayenne.module.betslip.ui.helper.BetTipsHelper
 import arch.cayenne.module.betslip.utisl.BetSlipAdapterViewHolderInterface
 import androidx.constraintlayout.widget.ConstraintLayout
+import arch.cayenne.lib.database.entity.BetSlipSelectionData
 
 abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betSlipType: BetSlipEnum) : BaseViewHolder(binding), BetSlipAdapterViewHolderInterface {
 
