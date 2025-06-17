@@ -10,11 +10,11 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class MessageDao : BaseDao<MessageBean>() {
 
-    //查询所有消息,按时间降序排列
+    //监听所有消息,按时间降序排列
     @Query("SELECT * FROM MessageBean ORDER BY time DESC")
     abstract fun observeMessageBean(): Flow<List<MessageBean>>
 
-    //查询监听最新的两条消息,按时间降序排列
+    //监听最新的两条消息,按时间降序排列
     @Query("SELECT * FROM MessageBean ORDER BY time DESC limit 2")
     abstract fun observeLatestMessage(): Flow<List<MessageBean>>
 
