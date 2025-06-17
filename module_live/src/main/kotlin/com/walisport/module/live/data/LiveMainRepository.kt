@@ -3,6 +3,7 @@ package com.walisport.module.live.data
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.client.proto.Sloth
@@ -10,6 +11,7 @@ import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LiveMainRepository(
@@ -19,7 +21,7 @@ class LiveMainRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
-
+    fun observeConnectStateFlow():Flow<ConnectState> =remoteManager.getConnectStateFlow()
     // 500-1003: 获取比赛详情
     suspend fun getMatchRes(matchId: Long, callback: (LiveMatchBean) -> Unit) {
         clearMatchCache()
@@ -99,6 +101,10 @@ class LiveMainRepository(
 
     suspend fun observeMatchStaticsNotify(): Flow<Sloth.MatchLiveData> {
         return remoteManager.observeMatchStaticsNotify()
+    }
+
+     fun reconnect() {
+         remoteManager.connectToServer()
     }
 }
 
