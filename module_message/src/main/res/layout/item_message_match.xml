@@ -45,6 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_46"
+                android:text="@string/notice_mat"
                 android:textColor="@color/msg_type"
                 android:textSize="@dimen/sp_13"
                 android:gravity="start"

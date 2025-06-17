@@ -62,10 +62,19 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             titleBar.loadGeneralTitleBar(R.string.notification_message.getString(), {
                 findNavController().navigateUp()
             })
+            refreshLayout.setOnRefreshListener {
+                mViewModel.getMessageList()
+            }
+            refreshLayout.setOnLoadMoreListener {
+                mViewModel.getMoreMessageList()
+            }
             recyclerMessage.apply {
                 itemAnimator = null
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
+                for (i in 0 until itemDecorationCount) {
+                    removeItemDecorationAt(i)
+                }
                 addItemDecoration(MessageDecoration())
             }
             msgAdapter.setOnItemClickListener(object : MessageAdapter.OnClickListener {
@@ -74,37 +83,42 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 }
 
                 override fun onDetail(id: Long) {
-
+                    mViewModel.setMessageRead(id)
                 }
             })
-            layMsgAll.setOnClickListener {
-                selectMessageType(MSG_ALL)
-            }
-            layMsgSys.setOnClickListener {
-                selectMessageType(MSG_SYS)
-            }
-            layMsgAct.setOnClickListener {
-                selectMessageType(MSG_ACT)
-            }
-            layMsgMatch.setOnClickListener {
-                selectMessageType(MSG_MAT)
-            }
-            layMsgPay.setOnClickListener {
-                selectMessageType(MSG_PAY)
-            }
-            selectMessageType(MSG_ALL)
         }
     }
 
-    override fun initListener() {}
+    override fun initListener() {
+        mBinding.layMsgAll.setOnClickListener {
+            selectMessageType(MSG_ALL)
+        }
+        mBinding.layMsgSys.setOnClickListener {
+            selectMessageType(MSG_SYS)
+        }
+        mBinding.layMsgAct.setOnClickListener {
+            selectMessageType(MSG_ACT)
+        }
+        mBinding.layMsgMatch.setOnClickListener {
+            selectMessageType(MSG_MAT)
+        }
+        mBinding.layMsgPay.setOnClickListener {
+            selectMessageType(MSG_PAY)
+        }
+        selectMessageType(MSG_ALL)
+    }
 
     override fun createObserver() {
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
             it?.let {
                 msgAdapter.submitList(it)
             }
         }
         mViewModel.notificationSelect.observe(viewLifecycleOwner) {
+            mBinding.refreshLayout.finishRefresh()
+            mBinding.refreshLayout.finishLoadMore()
             it?.let {
                 msgAdapter.submitList(it)
             }
@@ -113,7 +127,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override fun initData() {
         super.initData()
-        mViewModel.getMessageData()
+        mViewModel.getMessageList()
     }
 
     private fun selectMessageType(type: Int) {
@@ -159,7 +173,6 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 mBinding.tvMsgMat.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
         }
-
     }
 
     private fun showConfirmDialog(id: Long) {

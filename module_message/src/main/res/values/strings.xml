@@ -10,4 +10,9 @@
     <string name="notification_cancel">取消</string>
     <string name="notification_detail">查看详情</string>
     <string name="notification_delete">消息删除后将无法恢复，确定删除消息吗？</string>
+
+    <string name="notice_sys">系统通知</string>
+    <string name="notice_act">活动通知</string>
+    <string name="notice_mat">赛事通知</string>
+    <string name="notice_pay">钱包通知</string>
 </resources>

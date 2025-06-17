@@ -10,4 +10,9 @@
     <string name="notification_cancel">Cancel</string>
     <string name="notification_detail">check the details</string>
     <string name="notification_delete">Messages cannot be restored after being deleted. Are you sure you want to delete the message?</string>
+
+    <string name="notice_sys">System Notice</string>
+    <string name="notice_act">Activity Notice</string>
+    <string name="notice_mat">Match Notice</string>
+    <string name="notice_pay">Wallet Notice</string>
 </resources>

@@ -43,6 +43,18 @@ message PingBackReq {
     string data = 1; // 纯文本数据
 }
 
+//7-101: 首开数据
+message FirstLoadMatchReq {
+    string lang = 1;      // client端语言，可不传，默认 zh-CN
+    int32 odd_type = 2;   //赔率类型, 0-欧盘 1-香港盘
+}
+
+message FirstLoadMatchResp {
+    repeated galaxy.common.proto.PlayTypeStatistical statistical = 1;
+    repeated galaxy.common.proto.Tournament tournament = 2;
+    repeated galaxy.common.proto.Match match = 3;
+}
+
 // 500-1000: 获取赛事统计
 message StatisticalReq {
 }
@@ -536,9 +548,11 @@ message AberrantNotify {
 }
 
 //600-1011: app内通知
-message NoticeNotify {
-    string title = 1;
-    string content = 2;
+message AppNoticeNotify {
+    int32 type = 1;     //1-进球通知
+    int32 sport_id = 2;    //球类
+    string title = 3;
+    string content = 4;
 }
 
 //600-1012:  提前结算推送
