@@ -26,6 +26,10 @@ abstract class MessageDao : BaseDao<MessageBean>() {
     @Query("DELETE FROM MessageBean WHERE id = :id")
     abstract suspend fun deleteMessageById(id: Long)
 
+    //读取所有消息
+    @Query("SELECT * FROM MessageBean")
+    abstract fun queryAllMessage(id: Long): List<MessageBean>
+
     //插入消息列表
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertMessage(message: List<MessageBean>)
