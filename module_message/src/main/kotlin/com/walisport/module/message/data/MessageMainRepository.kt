@@ -35,24 +35,29 @@ class MessageMainRepository(
     suspend fun getMessageList(id: Long): List<NotificationBean> {
         val resp = remoteManager.getUserMessageListReq(scope, id)
         val list = ArrayList<NotificationBean>()
-       /* resp?.msgRecordList?.mapIndexed { _, item ->
+        resp?.msgRecordList?.mapIndexed { _, item ->
             val temp = NotificationBean(
                 id = item.id,                 //消息ID
                 type = item.type,             //消息类型 1系统通知 2活动通知
                 state = item.status,          //状态 0未读 1已读
                 title = item.title,           //标题
                 content = item.content,       //内容
-                createTime = item.create_time //创建时间
+                createTime = item.createTime  //创建时间
             )
             list.add(temp)
         }
-        insertMessage(list)*/
+        insertMessage(list)
         return list
     }
 
     //修改消息状态，删除或将消息设为已读 status = 0未读 1已读 2删除
     suspend fun updateMessageStatus(id: Long, status: Int) {
         remoteManager.updateMessageStatus(scope, id, status)
+        if (status == 1) {
+            msgDao.updateMessageStatus(status, id)
+        } else {
+            msgDao.deleteMessageById(id)
+        }
     }
 }
 

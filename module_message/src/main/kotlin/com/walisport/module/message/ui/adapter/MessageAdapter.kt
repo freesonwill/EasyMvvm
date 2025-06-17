@@ -37,6 +37,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                     clicklistener?.onDelete(item.id)
                 }
             }
+
             is ItemMessageActivityBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
@@ -48,6 +49,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                     clicklistener?.onDetail(item.id)
                 }
             }
+
             is ItemMessageMatchBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
@@ -60,6 +62,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 }
                 //Glide.with(binding.root).load(item.url).into(binding.ivMsgImage)
             }
+
             is ItemMessageWalletBinding -> {
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
