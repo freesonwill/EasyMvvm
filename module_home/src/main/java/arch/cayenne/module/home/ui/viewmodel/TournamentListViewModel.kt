@@ -35,13 +35,15 @@ class TournamentListViewModel : BaseViewModel() {
 
     fun searchTournament(query: String) {
         val all = tournaments.value ?: return
-        val result = all.filter {
-            it.name.contains(query, ignoreCase = true)
-        }.map {
-            val start = it.name.indexOf(query)
-            val end = start + query.length
-            Triple(start, end, it)
+        //防止特殊字元, 忽略大小寫區分
+        val regex = Regex(Regex.escape(query), RegexOption.IGNORE_CASE)
+        val result = all.mapNotNull { tournament ->
+            val match = regex.find(tournament.name)
+            match?.let {
+                Triple(it.range.first, it.range.last + 1, tournament)
+            }
         }
+
         searchDisplayList.value = result
     }
 
@@ -50,7 +52,6 @@ class TournamentListViewModel : BaseViewModel() {
     }
 
 
-    fun getLastSelectedLetter(): Char? = _lastSelectedLetter
     fun setLastSelectedLetter(letter: Char?) {
         _lastSelectedLetter = letter
     }
