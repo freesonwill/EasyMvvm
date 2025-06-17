@@ -464,8 +464,9 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     override fun onAnimationRepeat(animation: Animator) {
                     }
                 })
-            }, duration = ANIMATION_DURATION, start = true
-
+            }, 
+            duration = ANIMATION_DURATION, 
+            start = true
         )
     }
 
