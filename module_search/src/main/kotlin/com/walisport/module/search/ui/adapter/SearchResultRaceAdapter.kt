@@ -3,30 +3,19 @@ package com.walisport.module.search.ui.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.view.updateLayoutParams
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.MatchStatusEnum
-import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
-import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.model.SearchMatchBean
-import com.walisport.module.search.data.model.SearchResultBaseBean
-import com.walisport.module.search.data.model.SearchResultPlayerBean
-import com.walisport.module.search.databinding.ItemSearchResultGridHeaderBinding
-import com.walisport.module.search.databinding.ItemSearchResultGridItemBinding
-import com.walisport.module.search.databinding.ItemSearchResultGridMoreBinding
 import com.walisport.module.search.databinding.ItemSearchResultRaceBinding
 import com.walisport.module.search.databinding.ItemSearchResultRaceHeaderBinding
-import com.walisport.module.search.ui.compare.SearchResultGridCompare
 import com.walisport.module.search.ui.compare.SearchResultRaceCompare
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -138,6 +127,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                             }
                         }
                         btnFavorite.apply {
+                            isEnabled = !basicInfo.betStop
                             isSelected = collect
                             clickNoRepeat {
                                 onFavoriteClick?.invoke(itemData)
