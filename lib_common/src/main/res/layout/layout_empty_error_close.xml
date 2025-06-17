@@ -41,7 +41,7 @@
             android:layout_width="@dimen/dp_28"
             android:layout_height="@dimen/dp_28"
             android:layout_gravity="center_horizontal"
-            android:src="@drawable/icon_loading_white_blue" />
+            android:src="@drawable/icon_loading" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="wrap_content"
