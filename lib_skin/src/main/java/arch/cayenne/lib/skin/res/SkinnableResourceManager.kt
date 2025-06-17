@@ -34,14 +34,11 @@ import java.util.Locale
         @StringRes resId: Int,
         languageCode: String = "en"
     ): String {
-        val configuration = Configuration(context.resources.configuration)
-        val locale = configuration.locale
+        val locale = context.resources.configuration.locale
         if (locale.language != languageCode) {
-            val metrics = context.resources.displayMetrics
             val configuration = Configuration(context.resources.configuration)
             configuration.setLocale(Locale(languageCode))
             val localizeContext = context.createConfigurationContext(configuration)
-            context.resources.updateConfiguration(configuration, metrics)
             return localizeContext.resources.getString(resId)
         }
         return context.resources.getString(resId)

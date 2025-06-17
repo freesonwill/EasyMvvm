@@ -3,6 +3,8 @@ package com.walisport.module.live
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
@@ -201,4 +203,11 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 }
             }
     }
+    //手动重新连接
+    fun connectToServer() {
+            socketManager.reconnect()
+    }
+
+    //监听连接状态变化
+    fun getConnectStateFlow():Flow<ConnectState> = socketManager.getConnectStateFlow()
 }

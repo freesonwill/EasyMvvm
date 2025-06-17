@@ -3,9 +3,11 @@ package com.walisport.module.search.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -55,7 +57,7 @@ class SearchResultBaseFragment :
 
     override fun createObserver() {
         with(mViewModel) {
-            lifecycleScope.launch {
+            launch(Lifecycle.State.STARTED) {
                 uiState.collect {
                     when (it) {
                         is ResultList -> goToListResult(it.data)

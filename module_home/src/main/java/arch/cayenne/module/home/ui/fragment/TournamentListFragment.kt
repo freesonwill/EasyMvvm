@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.enableBottomBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -130,6 +131,7 @@ class TournamentListFragment :
             )
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
+            rvTournamentList.enableBottomBounce()
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     // 點字母時忽略以下頂部item判斷, 避免排序最底的字母分類, 因為底部空間不足無法吸頂時, 無法被選中
@@ -147,14 +149,6 @@ class TournamentListFragment :
                     }
                     if (newIndex != null) {
                         mViewModel.setActiveHeaderIndex(newIndex)
-                    }
-                    // 偵測是否最後一個 header 正在吸頂
-                    val lastHeaderIndex =
-                        adapter.currentList.indexOfLast { it is TournamentListItem.Header }
-                    if (adapter.isLastHeaderSticking(lastHeaderIndex, layoutManager)) {
-                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_NEVER
-                    } else {
-                        recyclerView.overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
                     }
                 }
 
@@ -260,7 +254,6 @@ class TournamentListFragment :
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
         }
         setSearchHint(displayList)
-        displayList.add(TournamentListItem.FooterView)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()

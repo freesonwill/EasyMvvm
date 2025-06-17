@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -108,57 +110,59 @@ class SearchResultDirectMatchFragment :
 
     override fun createObserver() {
         with(mViewModel) {
-            lifecycleScope.launch {
-                directData.collect { data ->
-                    data?.let { updateDirectInfo(it) }
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    directData.collect { data ->
+                        data?.let { updateDirectInfo(it) }
+                    }
                 }
-            }
 
-            lifecycleScope.launch {
-                combineResult.collect { combineResult ->
-                    when {
-                        combineResult == null -> switchUI(RaceViewState.Loading)
-                        combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
-                        else -> {
-                            linearAdapter.submitList(combineResult) {
-                                switchUI(RaceViewState.Success)
-                                mBinding.recyclerView.smoothScrollToPosition(0)
+                launch {
+                    combineResult.collect { combineResult ->
+                        when {
+                            combineResult == null -> switchUI(RaceViewState.Loading)
+                            combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
+                            else -> {
+                                linearAdapter.submitList(combineResult) {
+                                    switchUI(RaceViewState.Success)
+                                    mBinding.recyclerView.smoothScrollToPosition(0)
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            lifecycleScope.launch {
-                selectedDateFlow.collect { date ->
-                    mBinding.tvDate.apply {
-                        text =
-                            if (date == null) getString(R.string.search_date_hint)
-                            else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
-                        setTextColor(
+                launch {
+                    selectedDateFlow.collect { date ->
+                        mBinding.tvDate.apply {
+                            text =
+                                if (date == null) getString(R.string.search_date_hint)
+                                else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
+                            setTextColor(
+                                if (date == null)
+                                    SkinnableResourceManager.getColor(
+                                        requireContext(),
+                                        R.color.search_result_date
+                                    )
+                                else
+                                    SkinnableResourceManager.getColor(
+                                        requireContext(),
+                                        R.color.search_result_date_selected
+                                    )
+                            )
+                        }
+                        mBinding.ivDateArrow.imageTintList =
                             if (date == null)
-                                SkinnableResourceManager.getColor(
+                                SkinnableResourceManager.getColorStateList(
                                     requireContext(),
                                     R.color.search_result_date
                                 )
                             else
-                                SkinnableResourceManager.getColor(
+                                SkinnableResourceManager.getColorStateList(
                                     requireContext(),
                                     R.color.search_result_date_selected
                                 )
-                        )
                     }
-                    mBinding.ivDateArrow.imageTintList =
-                        if (date == null)
-                            SkinnableResourceManager.getColorStateList(
-                                requireContext(),
-                                R.color.search_result_date
-                            )
-                        else
-                            SkinnableResourceManager.getColorStateList(
-                                requireContext(),
-                                R.color.search_result_date_selected
-                            )
                 }
             }
 

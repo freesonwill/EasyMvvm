@@ -245,17 +245,28 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_home_league_more"
+        <arch.cayenne.lib.skin.widget.SkinnableView
+            android:id="@+id/v_league_more_mask"
             android:layout_width="65dp"
             android:layout_height="@dimen/dp_48"
             android:background="@drawable/gradient_league_tab_more"
-            android:paddingStart="@dimen/dp_20"
             android:paddingTop="@dimen/dp_10"
             android:paddingBottom="@dimen/dp_14"
-            android:src="@drawable/ic_league_tabs_expand"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_home_league_more"
+            android:layout_width="35dp"
+            android:layout_height="@dimen/dp_48"
+            android:paddingStart="@dimen/dp_1"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_14"
+            android:paddingEnd="@dimen/dp_10"
+            android:src="@drawable/ic_league_tabs_expand"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
+            app:layout_constraintTop_toTopOf="@+id/v_league_more_mask" />
 
         <FrameLayout
             android:id="@+id/ll_tournaments_dropdown"
