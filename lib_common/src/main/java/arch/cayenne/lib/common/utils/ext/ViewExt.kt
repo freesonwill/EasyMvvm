@@ -8,13 +8,17 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.children
 import androidx.core.view.doOnAttach
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.R
 
 private var lastClickTime: Long = 0L
@@ -191,4 +195,73 @@ fun View.startSafeAnimateSet(
         })
     }
     return animator
+}
+
+/**
+ * 仿iOS滑動列表底部回彈效果
+ *
+ * @param maxOverscroll 最大拉伸距離（預設為 200f）
+ */
+fun RecyclerView.enableBottomBounce(
+    maxOverscroll: Float = 200f
+) {
+    var lastY = 0f
+    var isDragging = false
+    var isEligible = false // 是否進入底部拉伸狀態
+
+    setOnTouchListener { _, event ->
+        when (event.actionMasked) {
+            MotionEvent.ACTION_DOWN -> {
+                lastY = event.rawY
+                isDragging = false
+                isEligible = false
+                children.forEach { it.translationY = 0f }
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                val currentY = event.rawY
+                val dy = currentY - lastY
+
+                val canScrollDown = canScrollVertically(1)
+
+                if (!canScrollDown && dy < 0) {
+                    if (!isEligible) {
+                        lastY = currentY
+                        isEligible = true
+                        return@setOnTouchListener true
+                    }
+
+                    isDragging = true
+                    lastY = currentY
+
+                    val offset = dy / 2f
+                    children.forEach { child ->
+                        val newTranslation = child.translationY + offset
+                        child.translationY = newTranslation.coerceIn(-maxOverscroll, 0f)
+                    }
+                    return@setOnTouchListener true
+                } else {
+                    lastY = currentY
+                }
+            }
+
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (isDragging) {
+                    children.forEach { child ->
+                        child.animate()
+                            .translationY(0f)
+                            .setInterpolator(DecelerateInterpolator())
+                            .setDuration(250)
+                            .start()
+                    }
+                    isDragging = false
+                    isEligible = false
+                    return@setOnTouchListener true
+                } else {
+                    performClick()
+                }
+            }
+        }
+        false
+    }
 }
