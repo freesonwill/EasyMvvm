@@ -40,12 +40,7 @@ class MatchItemViewHolder(
             defaultTitleList.forEach { title ->
                 val titleView = SkinnableTextView(root.context).apply {
                     text = getString(title)
-                    setTextColor(
-                        SkinnableResourceManager.getColor(
-                            root.context,
-                            R.color.home_secondary_text
-                        )
-                    )
+                    setTextColorRes(R.color.home_secondary_text)
                     textSize = 13f
                     setPadding(0, 0, 2.dp2px, 0)
                     maxLines = 1
