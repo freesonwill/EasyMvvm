@@ -2,9 +2,12 @@ package com.walisport.module.message
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import arch.cayenne.lib.database.GameDatabase
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
 import com.walisport.module.message.ui.viewmodel.TodayMatchViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -26,8 +29,10 @@ class MessageModuleInitializer : DefaultInitializer<String> {
     }
 
     private val repoModules = module {
-        factoryOf(::MessageMainRepository)
-
+        factory {
+            CoroutineScope(Dispatchers.IO)
+        }
+        factory { MessageMainRepository(get(), get<GameDatabase>().msgDao()) }
     }
 
     private val managerModule = module {
