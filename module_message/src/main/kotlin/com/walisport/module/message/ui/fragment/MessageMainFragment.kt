@@ -72,6 +72,9 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 itemAnimator = null
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
+                for (i in 0 until itemDecorationCount) {
+                    removeItemDecorationAt(i)
+                }
                 addItemDecoration(MessageDecoration())
             }
             msgAdapter.setOnItemClickListener(object : MessageAdapter.OnClickListener {
