@@ -272,6 +272,7 @@ class SearchResultDirectMatchFragment :
                     .takeIf { bundle.containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS) }
                     ?.let { Date(it) }
             mViewModel.setSelectedDate(newDate)
+            mBinding.clDate.isSelected = newDate != null
 
             if (oldDate != newDate) {
                 mViewModel.directMatchType?.let { type ->
@@ -285,7 +286,7 @@ class SearchResultDirectMatchFragment :
             }
         }
 
-        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height
+        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px
         val datePicker = SearchDatePickerFragment.newInstance(
             marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
         )

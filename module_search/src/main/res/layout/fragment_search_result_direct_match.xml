@@ -87,7 +87,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/view_list_bg"
+        android:id="@+id/cl_list_bg"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/shape_search_result_direct_list_bg"
@@ -102,9 +102,9 @@
             android:id="@+id/cl_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
             android:background="@drawable/shape_search_result_direct_item_bg"
-            app:layout_constraintTop_toTopOf="@id/view_list_bg"
+            android:backgroundTint="@color/btn_search_result_date_picker_bg_white_blue"
+            app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="8dp">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
