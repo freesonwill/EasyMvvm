@@ -128,7 +128,7 @@ fun View.startSafeObjectAnimator(
     interpolator: TimeInterpolator,
     repeatCount: Int = 0,
     repeatMode: Int = ObjectAnimator.RESTART,
-    start:Boolean = true
+    start:Boolean
 ): ObjectAnimator {
     val animator = ObjectAnimator.ofFloat(this, property, *values).apply {
         this.duration = duration
@@ -176,14 +176,14 @@ fun View.startSafeObjectAnimator(
  */
 fun View.startSafeAnimateSet(
     config: AnimatorSet.() -> Unit,
-    duration: Long = -1,
+    duration: Long? = null,
     interpolator: TimeInterpolator? = null,
-    start:Boolean = true,
+    start:Boolean,
 ): AnimatorSet {
     val animator = AnimatorSet().apply {
         this.config()
-        this.duration = duration
-        this.interpolator = interpolator
+        if(duration != null) this.duration = duration
+        if(interpolator != null) this.interpolator = interpolator
         if(start) start()
     }
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
