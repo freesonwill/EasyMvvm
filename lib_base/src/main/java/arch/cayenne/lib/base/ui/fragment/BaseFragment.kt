@@ -8,9 +8,9 @@ import android.view.ViewGroup
 import android.view.WindowInsets
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
-import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
@@ -112,11 +112,15 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
         super.onDestroyView()
         uiBind.onDestroyView()
     }
-
     @CallSuper
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroy()
+    }
+    @CallSuper
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        uiBind.onHiddenChanged(hidden)
     }
 
     override fun setStatusBar(config: StatusBarConfig,view: View) {
@@ -178,6 +182,7 @@ fun Fragment.launch(
     state: Lifecycle.State? = null,
     context: CoroutineContext = EmptyCoroutineContext,
     start: CoroutineStart = CoroutineStart.DEFAULT,
+    lifecycleScope:LifecycleCoroutineScope = viewLifecycleOwner.lifecycleScope,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
