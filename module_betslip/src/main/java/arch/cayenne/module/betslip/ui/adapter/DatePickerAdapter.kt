@@ -33,7 +33,7 @@ class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<
                 listener.onDateClick(position)
             }
         }
-
+        binding.ivCancel.isVisible = position == itemCount - 1 && bean.isSelected
     }
 
     override fun createViewBinding(
