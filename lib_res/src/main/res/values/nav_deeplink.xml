@@ -8,5 +8,5 @@
     <string name="nav_module_feedback_fragment">walisport://module_feedback/feedbackFragment</string>
     <string name="nav_module_live_fragment">walisport://module_live/liveFragment?matchId={matchId}&amp;sportId={sportId}</string>
     <string name="nav_module_league_fragment">walisport://module_live/leagueFragment</string>
-
+    <string name="nav_module_personal_info_fragment">walisport://module_account/personalInfoFragment</string>
 </resources>

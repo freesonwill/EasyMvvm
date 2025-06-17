@@ -16,6 +16,9 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayerPosition
+import com.walisport.module.live.data.model.MatchLineupDetail
+import com.walisport.module.live.data.model.Player
+import com.walisport.module.live.data.model.PlayerIncident
 import com.walisport.module.live.databinding.FragmentLiveLineupBinding
 import com.walisport.module.live.databinding.LineupHeadBinding
 import com.walisport.module.live.databinding.LineupRepairItemAwayBinding
@@ -58,7 +61,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
                 it?.let {
                     mBinding.main.setVisibilityGone()
-                    if (it.awayOrBuilderList.isEmpty()) {
+                    if (it.away.isEmpty()) {
                         mBinding.llContent.visibility = View.INVISIBLE
                         mBinding.main.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -92,7 +95,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     // repeated Player home = 6;        // 主队阵型球员列表
     //  repeated Player away = 7;        // 客队阵型球员列表
     @SuppressLint("MissingInflatedId", "CutPasteId")
-    private fun upData(data: Sloth.MatchLineupDetail) {
+    private fun upData(data: MatchLineupDetail) {
         initPlayer(data)
         Glide.with(this).load(data.homeLogo).into(mBinding.ivNationalFlagTop)
         Glide.with(this).load(data.awayLogo).into(mBinding.ivNationalFlagBottom)
@@ -104,7 +107,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         Glide.with(this).load(data.awayLogo).into(mBinding.awaySubstituteLogo)
         removeAllViews()
         LogUtils.dTag(TAG, "MatchLineupDetail----->${data}")
-        data.homeOrBuilderList.forEach { i ->
+        data.home.forEach { i ->
             //是否是首发
             if (i.first == 1) {
                 val x = mViewModel.lineupArrangementXY(
@@ -128,13 +131,13 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 view.layoutParams = params
                 mBinding.sclLineupItemTop.addView(view)
                 //主队换人
-                incidents(i.incidentsList, i.position, true)
+                incidents(i.incidents, i.position, true)
             } else {
                 isSubstitutes = true
                 substituteHome(i)
             }
         }
-        data.awayOrBuilderList.forEach { i ->
+        data.away.forEach { i ->
             //是否是首发
             if (i.first == 1) {
                 val x = mViewModel.lineupArrangementXY(
@@ -158,7 +161,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 view.layoutParams = params
                 mBinding.sclLineupItemBottom.addView(view)
                 //客队换人
-                incidents(i.incidentsList, i.position, false)
+                incidents(i.incidents, i.position, false)
             } else {
                 isSubstitutes = true
                 substituteAway(i)
@@ -169,7 +172,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     }
 
     //通过first判断球员是不是替补
-    private fun substituteHome(data: Sloth.PlayerOrBuilder) {
+    private fun substituteHome(data: Player) {
         val binding = LineupRepairItemHomeBinding.inflate(
             LayoutInflater.from(context),
             mBinding.llcHomeSubstitute,
@@ -185,7 +188,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         mBinding.llcHomeSubstitute.addView(binding.root)
     }
 
-    private fun substituteAway(data: Sloth.PlayerOrBuilder) {
+    private fun substituteAway(data: Player) {
         val binding = LineupRepairItemAwayBinding.inflate(
             LayoutInflater.from(context),
             mBinding.llcAwaySubstitute,
@@ -203,7 +206,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
 
     // string position = 9;       // 球员位置，F-前锋、M-中场、D-后卫、G-守门员
     @SuppressLint("SetTextI18n")
-    private fun incidents(list: List<Sloth.PlayerIncident>, positionName: String, isHome: Boolean) {
+    private fun incidents(list: List<PlayerIncident>, positionName: String, isHome: Boolean) {
         list.forEach { itData ->
             isIncidents = true
             LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
@@ -242,7 +245,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         }
     }
 
-    private fun orBuilderList(isTopView: Boolean, data: Sloth.PlayerOrBuilder): View {
+    private fun orBuilderList(isTopView: Boolean, data: Player): View {
         val binding = LineupHeadBinding.inflate(
             LayoutInflater.from(context),
             if (isTopView) mBinding.sclLineupItemTop else mBinding.sclLineupItemBottom,
@@ -259,8 +262,8 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         return binding.root
     }
 
-    private fun initPlayer(data: Sloth.MatchLineupDetail) {
-        data.homeOrBuilderList.forEach { i ->
+    private fun initPlayer(data:MatchLineupDetail) {
+        data.home.forEach { i ->
             allPlayerInfo.add(
                 LineupPlayerInfo(
                     id = i.id,
@@ -269,7 +272,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                 )
             )
         }
-        data.awayOrBuilderList.forEach { i ->
+        data.away.forEach { i ->
             allPlayerInfo.add(
                 LineupPlayerInfo(
                     id = i.id,

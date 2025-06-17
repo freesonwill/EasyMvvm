@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
@@ -29,6 +30,8 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -65,6 +68,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
     private var canSearch: Boolean = true
+
+    companion object {
+        const val SEARCH_KEY = "searchKey"
+    }
 
     override fun onStart() {
         mViewModel.setStatusBarState(true)
@@ -364,7 +371,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     private fun doNavigate(event: SearchNavigationEvent) {
-        val navController = mBinding.fragmentContainer.findNavController()
+        val navController = findChildNavController(mBinding.fragmentContainer.id)
         val currentId = navController.currentDestination?.id ?: return
 
         when (event) {
@@ -374,10 +381,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     R.id.searchResultListFragment to R.id.action_searchResultListFragment_to_searchResultBaseFragment,
                     R.id.searchResultDirectMatchFragment to R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment
                 )[currentId]?.let { actionId ->
-                    navController.currentBackStackEntry
-                        ?.savedStateHandle
-                        ?.set("searchKey", event.searchKey)
-
+                    sendResult(
+                        key = SEARCH_KEY,
+                        value = event.searchKey,
+                        destinationId = currentId,
+                        navController = navController
+                    )
                     navController.navigate(actionId)
                 }
             }

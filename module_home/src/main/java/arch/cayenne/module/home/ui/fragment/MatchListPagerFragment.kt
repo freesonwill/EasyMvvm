@@ -52,6 +52,7 @@ class MatchListPagerFragment :
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
+                mViewModel.setHomeOrPullLoadingState(true)
                 mViewModel.reload()
             }
             refreshLayout.setOnLoadMoreListener {
@@ -130,12 +131,12 @@ class MatchListPagerFragment :
             }
         }
     }
-
     override fun initListener() {
     }
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
+        if (!preEmpty) mViewModel.hideLoading()
         matchAdapter.submitList(matchList)
         if (preEmpty && matchList.isNotEmpty()) {
             mBinding.rvHomeGameList.doOnPreDraw {
@@ -153,6 +154,10 @@ class MatchListPagerFragment :
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
 
+        homeViewModel.isHomeLoading.observe(viewLifecycleOwner) {
+            mViewModel.setHomeOrPullLoadingState(it)
+        }
+
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
             with(mBinding) {
                 when(state) {
@@ -161,16 +166,21 @@ class MatchListPagerFragment :
                         homeViewModel.changeState(HomeState.LOADING_MATCH)
                     }
                     MatchListState.REFRESHING -> {
+                        mViewModel.showLoading()
                         clDynamics.visibility = View.GONE
+                        mViewModel.setHomeOrPullLoadingState(false)
                     }
                     MatchListState.IDLE -> {
+                        mViewModel.hideLoading()
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
-                        mBinding.refreshLayout.finishRefresh()
+                        mViewModel.hideLoading()
+                        refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
@@ -178,12 +188,21 @@ class MatchListPagerFragment :
                             R.string.lineup_empty.getString()
                         )
                         homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
                     }
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
+                    }
+
+                    MatchListState.SHOW_LOADING -> {
+                        lvMatchLoading.visibility = View.VISIBLE
+                    }
+
+                    MatchListState.HIDE_LOADING -> {
+                        lvMatchLoading.visibility = View.GONE
                     }
                 }
             }

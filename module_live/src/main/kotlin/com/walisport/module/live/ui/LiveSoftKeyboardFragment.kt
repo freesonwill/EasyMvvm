@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
@@ -8,12 +9,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.ImageView
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -26,6 +25,7 @@ import com.walisport.module.live.ui.adapter.SoftAdapter
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
+import com.walisport.module.live.utils.EmojiEditFilter
 import com.walisport.module.live.utils.SoftKeyboardStateHelper
 import kotlin.reflect.KClass
 
@@ -51,6 +51,8 @@ class LiveSoftKeyboardFragment :
         }
     }
 
+
+
     override fun initView(savedInstanceState: Bundle?) {
         mKeyboardHelper = SoftKeyboardStateHelper((context as Activity).window.decorView)
         mKeyboardHelper?.addSoftKeyboardStateListener(this)
@@ -63,6 +65,7 @@ class LiveSoftKeyboardFragment :
         this.softKeyListener = listener
     }
 
+    @SuppressLint("SetTextI18n")
     override fun initListener() {
         mBinding.emojiDel.setOnClickListener {
             val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
@@ -99,6 +102,7 @@ class LiveSoftKeyboardFragment :
             }
             return@setOnEditorActionListener false
         }
+        mBinding.liveChatEtInput.filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
     }
 
     override fun onPause() {
@@ -204,7 +208,6 @@ class LiveSoftKeyboardFragment :
             liveChatIvEmoji.isVisible = true
             liveChatTvSize.isVisible = true
             liveChatIvKeyboard.isVisible = false
-            liveChatTvSize.isVisible = false
             keyboardTb.isVisible = false
             emojiDel.isVisible = false
             keyboardEmojiRecycler.isVisible = false

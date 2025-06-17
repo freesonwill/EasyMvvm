@@ -53,4 +53,11 @@
     <string name="tournament_section_title">选联赛</string>
     <string name="tournament_section_title_hot">热门</string>
     <string name="balance_format">%s%s</string>
+    <string name="personal_info_title">个人信息</string>
+    <string name="personal_info_save">保存</string>
+    <string name="personal_info_hint">填写昵称（8字以内）</string>
+    <string name="head_multi_update">（头像可多次修改）</string>
+    <string name="select_head">选择头像</string>
+    <string name="set_nick_name_title">设置用户昵称</string>
+    <string name="nick_name_modify_once">（昵称仅可修改一次）</string>
 </resources>

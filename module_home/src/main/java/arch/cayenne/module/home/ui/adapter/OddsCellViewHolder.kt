@@ -132,7 +132,7 @@ class OddsCellViewHolder(
 
     fun hideView() {
         currentState = OddsCellState.DEACTIVATED
-        mBinding.root.visibility = View.GONE
+        mBinding.root.visibility = View.INVISIBLE
     }
 
     fun isDeactivated(): Boolean {
