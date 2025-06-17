@@ -20,6 +20,11 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     private var cursorId: Long = 0L
 
+    companion object {
+        const val STATUS_READ = 1
+        const val STATUS_DEL = 2
+    }
+
     init {
         viewModelScope.launch {
             repo.observeMessageBean().collect { data ->
@@ -40,39 +45,31 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     //删除指定消息
     fun deleteMessage(id: Long) {
-        viewModelScope.launch {
-            repo.updateMessageStatus(id, 2)
-        }
+        repo.updateMessageStatus(id, STATUS_DEL)
     }
 
     //将消息设为已读
     fun setMessageRead(id: Long) {
-        viewModelScope.launch {
-            repo.updateMessageStatus(id, 1)
-        }
+        repo.updateMessageStatus(id, STATUS_READ)
     }
 
     //获取系统消息列表
     fun getMessageList() {
         cursorId = 0L
-        viewModelScope.launch {
-            val result = repo.getMessageList(cursorId)
-            result.let {
-                if (result.isNotEmpty()) {
-                    cursorId = result.last().id
-                }
+        val result = repo.getMessageList(cursorId)
+        result.let {
+            if (result.isNotEmpty()) {
+                cursorId = result.last().id
             }
         }
     }
 
     //加载更多系统消息列表
     fun getMoreMessageList() {
-        viewModelScope.launch {
-            val result = repo.getMessageList(cursorId)
-            result.let {
-                if (result.isNotEmpty()) {
-                    cursorId = result.last().id
-                }
+        val result = repo.getMessageList(cursorId)
+        result.let {
+            if (result.isNotEmpty()) {
+                cursorId = result.last().id
             }
         }
     }

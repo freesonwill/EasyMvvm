@@ -18,7 +18,7 @@ class MessageRemoteManager(private val socketManager: WebSocketManager) {
         ) {
             Client.GetSystemMsgReq.newBuilder().apply {
                 this.id = id.toInt() //消息ID 最后一条
-                this.size = 3        //每页展示的数量
+                this.size = 10        //每页展示的数量
                 this.type = 0        //消息类型 0.全部 1.系统通知  2.活动通知
             }.build()
         }
