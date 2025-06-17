@@ -3,15 +3,19 @@ package androidx.fragment.app
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.animation.AnimationUtils
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentTransaction.OP_ADD
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.FragmentExt.plusAssign
 import arch.cayenne.lib.common.utils.ext.FragmentExt.replaceAll
+import kotlinx.coroutines.delay
 
 @Navigator.Name("fragment")
 class FragivityFragmentNavigator(
@@ -164,7 +168,15 @@ class FragivityFragmentNavigator(
         }
 
         if (isAdded && prevFragment != null) {
-            ft.hide(prevFragment)
+            execAfterAnim(fragment,enterAnim) {
+                if(it) {
+                    ft.hide(prevFragment)
+                }else {
+                    fragmentManager.beginTransaction()
+                        .hide(prevFragment)
+                        .commit()
+                }
+            }
         }
 
         if (navigatorExtras is FragmentNavigator.Extras) {
@@ -218,6 +230,24 @@ class FragivityFragmentNavigator(
             )
     }
 
+    private fun execAfterAnim(nextFragment:Fragment,
+                              enterAnim:Int,
+                              action:(isImmediate:Boolean)->Unit
+    ){
+        if (enterAnim != -1) {
+            nextFragment.launch(Lifecycle.State.RESUMED, lifecycleScope = nextFragment.lifecycleScope) {
+                val anim = AnimationUtils.loadAnimation(nextFragment.requireContext(), enterAnim)
+                val duration = anim.duration
+                //"execAfterAnim==>$nextFragment,duration:$duration".logd(TAG)
+                delay(duration)
+                action(false)
+                //"execAfterAnim==>$nextFragment".logd(TAG)
+            }
+        } else {
+            action(true)
+        }
+    }
+
     /**
      * 回退栈是否相等
      * @return
@@ -254,10 +284,17 @@ class FragivityFragmentNavigator(
         }
 
         if (fragmentManager.backStackEntryCount > 0) {
-            fragmentManager.popBackStack(
-                generateBackStackName(backStack.size, backStack.last()),
-                FragmentManager.POP_BACK_STACK_INCLUSIVE
-            )
+            //注意tag是generateBackStackName(index, backStack[index])，backStackName是generateBackStackName(index+1, backStack[index])
+            if(backStack.size > 1){
+                val tag = generateBackStackName(backStack.size - 2,
+                    backStack[backStack.size - 2])
+                val prevFragment = fragmentManager.findFragmentByTag(tag)!!
+                fragmentManager.beginTransaction()
+                    .show(prevFragment)
+                    .commit()
+            }
+            val backStackName = generateBackStackName(backStack.size, backStack.last())
+            fragmentManager.popBackStack(backStackName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             mIsPendingPopBackStackOperation = true
         }
         backStack.removeLast()
