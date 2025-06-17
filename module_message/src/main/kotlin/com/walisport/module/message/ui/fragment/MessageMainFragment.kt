@@ -80,6 +80,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 }
 
                 override fun onDetail(id: Long) {
+                    mViewModel.setMessageRead(id)
                 }
             })
         }

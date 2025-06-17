@@ -27,4 +27,27 @@ class MessageRemoteManager(private val socketManager: WebSocketManager) {
         }
         return null
     }
+
+    //修改消息状态，删除或将消息设为已读
+    suspend fun updateMessageStatus(
+        scope: CoroutineScope,
+        id: Long,
+        status: Int
+    ): Client.SystemMsgStatusUpdateResp? {
+        val result =
+            socketManager.sendAndWaitProtoMessageResponse<Client.SystemMsgStatusUpdateResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.UPDATE_MESSAGE
+            ) {
+                Client.SystemMsgStatusReq.newBuilder().apply {
+                    this.id = id.toInt()  //消息ID
+                    this.status = status  //0未读 1已读 2删除
+                }.build()
+            }
+        if (result.error == null && result.data != null) {
+            return result.data!!
+        }
+        return null
+    }
 }

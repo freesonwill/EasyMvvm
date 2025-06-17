@@ -64,6 +64,7 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     CHAT_MSG_NOTIFY(500, 2001),//用户消息推送
 
     USER_SYS_MESSAGE(500, 1106),// 500-1106: 获取用户消息列表
+    UPDATE_MESSAGE(500, 1107),  //500-1107： 修改消息状态 已读或删除
 
     SEARCH(500, 1030), // 500-1030: 搜索
     SEARCH_HOT_WORD(500, 1031), // 500-1031: 热门搜索词
