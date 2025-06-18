@@ -52,12 +52,8 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
             VIEW_TYPE_HEADER -> {
                 val headerBinding = binding as ItemSearchResultGridHeaderBinding
                 val item = getItem(position) as SearchResultListItemType.Header
-                headerBinding.tvTitle.text =
-                    SkinnableResourceManager.getTextResourceText(
-                        holder.itemView.context,
-                        item.resId,
-                        locale.language
-                    )
+                headerBinding.tvTitle.setTextRes(item.resId)
+
             }
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultGridItemBinding

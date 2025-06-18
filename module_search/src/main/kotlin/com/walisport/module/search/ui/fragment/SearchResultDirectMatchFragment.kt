@@ -53,10 +53,10 @@ class SearchResultDirectMatchFragment :
 
     private val dateHintStr: String
         get() =
-            SkinnableResourceManager.getTextResourceText(
+            SkinnableResourceManager.getString(
                 requireContext(),
                 R.string.search_date_hint,
-                sharedViewModel.getCurrentLanguage().language
+                sharedViewModel.getCurrentLanguage()
             )
 
     private val linearAdapter by lazy {
@@ -209,10 +209,10 @@ class SearchResultDirectMatchFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                SkinnableResourceManager.getTextResourceText(
+                SkinnableResourceManager.getString(
                     requireContext(),
                     R.string.no_search_result,
-                    sharedViewModel.getCurrentLanguage().language
+                    sharedViewModel.getCurrentLanguage()
                 )
             )
         }

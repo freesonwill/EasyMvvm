@@ -81,10 +81,10 @@ class SearchResultListFragment :
     private fun updateTabTitles() {
         val locale = sharedViewModel.getCurrentLanguage()
         val titles = listOf(
-            SkinnableResourceManager.getTextResourceText(requireContext(), R.string.tab_all, locale.language),
-            SkinnableResourceManager.getTextResourceText(requireContext(), R.string.tab_tournament, locale.language),
-            SkinnableResourceManager.getTextResourceText(requireContext(), R.string.tab_team, locale.language),
-            SkinnableResourceManager.getTextResourceText(requireContext(), R.string.tab_player, locale.language)
+            SkinnableResourceManager.getString(requireContext(), R.string.tab_all, locale),
+            SkinnableResourceManager.getString(requireContext(), R.string.tab_tournament, locale),
+            SkinnableResourceManager.getString(requireContext(), R.string.tab_team, locale),
+            SkinnableResourceManager.getString(requireContext(), R.string.tab_player, locale)
         )
 
         with(mBinding.tlSearch) {

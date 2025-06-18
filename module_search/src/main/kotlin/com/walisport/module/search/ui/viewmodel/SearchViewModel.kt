@@ -2,6 +2,7 @@ package com.walisport.module.search.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.repo.SearchRepository
@@ -18,7 +19,7 @@ import java.util.Locale
 class SearchViewModel : BaseViewModel() {
 
     private val repository: SearchRepository by inject { parametersOf(viewModelScope) }
-    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
+    private val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
 
     /** 當前語系 */
     private val _currentLanguage = MutableSharedFlow<Locale>(replay = 1)
@@ -54,7 +55,7 @@ class SearchViewModel : BaseViewModel() {
 
         // 監聽語系變化
         viewModelScope.launch {
-            skinManager.languageFlow.collect {
+            languageManager.languageFlow.collect {
                 setCurrentLanguage(it ?: Locale.getDefault())
             }
         }

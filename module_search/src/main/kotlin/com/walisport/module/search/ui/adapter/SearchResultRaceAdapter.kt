@@ -51,10 +51,10 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                 headerBinding.tvTitle.text =
                     run {
                         SimpleDateFormat(
-                            SkinnableResourceManager.getTextResourceText(
+                            SkinnableResourceManager.getString(
                                 holder.itemView.context,
                                 R.string.search_result_race_date_format_display,
-                                locale.language
+                                locale
                             ),
                             locale
                         )

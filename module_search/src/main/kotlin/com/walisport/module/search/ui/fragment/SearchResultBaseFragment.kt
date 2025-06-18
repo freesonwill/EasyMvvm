@@ -81,10 +81,10 @@ class SearchResultBaseFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                SkinnableResourceManager.getTextResourceText(
+                SkinnableResourceManager.getString(
                     requireContext(),
                     R.string.no_search_result,
-                    sharedViewModel.getCurrentLanguage().language
+                    sharedViewModel.getCurrentLanguage()
                 )
             )
         }

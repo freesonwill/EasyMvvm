@@ -31,7 +31,7 @@ object SkinnableResourceManager {
         resourceLoader.setSecondarySkin("")
     }
 
-    fun getTextResourceText(
+    internal fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
     ): String {
@@ -50,5 +50,19 @@ object SkinnableResourceManager {
     fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int =
         resourceLoader.getTargetResourceId(context, resId)
 
+    /**
+     * 由于android资源缓存加载不会自动更新已存在的资源
+     * 需要使用的时候自己去设置local
+     * */
+    fun getString(
+        context: Context,
+        @StringRes resId: Int, locale: Locale?
+    ): String {
+        val configuration = context.resources.configuration
+        configuration.setLocale(locale)
+        return context.applicationContext.createConfigurationContext(configuration).getString(resId)
+    }
+
     fun getSkinName() = resourceLoader.getSkinName()
+
 }
