@@ -2,9 +2,11 @@ package com.walisport.module.message.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.message.data.MessageMainRepository
 import com.walisport.module.message.data.NotificationBean
+import kotlinx.coroutines.launch
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -16,63 +18,59 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     private val _notificationSelect = MutableLiveData<List<NotificationBean>>()
     val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
 
-    fun getMessageData() {
-        val tmp = NotificationBean(
-            1,
-            1,
-            "维护公告",
-            "系统维护通知",
-            "昨天 21:21",
-            "系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时",
-            "",
-            "",
-            "",
-            ""
-        )
-        val tmp1 = NotificationBean(
-            2,
-            2,
-            "活动通知",
-            "系统维护通知",
-            "昨天 21:21",
-            "系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时",
-            "",
-            "",
-            "",
-            ""
-        )
-        val tmp2 = NotificationBean(
-            3,
-            3,
-            "热门赛事",
-            "国足对战日本，赢面大吗？",
-            "昨天 21:21",
-            "系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时",
-            "https://static.fastbs55.com/data/6f201842163f7eaa60e15623957cdeaf.png",
-            "",
-            "",
-            ""
-        )
-        val tmp3 = NotificationBean(
-            4,
-            4,
-            "充值",
-            "",
-            "2024-8-11 15:23",
-            "系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时，系统维护12小时",
-            "",
-            "¥5000.00",
-            "EEPay",
-            "支付成功"
-        )
-        val list = listOf(tmp, tmp1, tmp2, tmp3)
-        _notificationBean.value = list
+    private var cursorId: Long = 0L
+
+    companion object {
+        const val STATUS_READ = 1
+        const val STATUS_DEL = 2
     }
 
-    fun deleteMessage(iid: Long) {
-        val list = _notificationBean.value?.toMutableList()
-        list?.let {
-            _notificationBean.value = list.filterNot { it.id == iid }
+    init {
+        viewModelScope.launch {
+            repo.observeMessageBean().collect { data ->
+                val temp = data.mapIndexed { _, item ->
+                    NotificationBean(
+                        id = item.id,
+                        type = item.type,
+                        state = item.status,
+                        title = item.title,
+                        content = item.content,
+                        createTime = item.time
+                    )
+                }
+                _notificationBean.value = temp
+            }
+        }
+    }
+
+    //删除指定消息
+    fun deleteMessage(id: Long) {
+        repo.updateMessageStatus(id, STATUS_DEL)
+    }
+
+    //将消息设为已读
+    fun setMessageRead(id: Long) {
+        repo.updateMessageStatus(id, STATUS_READ)
+    }
+
+    //获取系统消息列表
+    fun getMessageList() {
+        cursorId = 0L
+        val result = repo.getMessageList(cursorId)
+        result.let {
+            if (result.isNotEmpty()) {
+                cursorId = result.last().id
+            }
+        }
+    }
+
+    //加载更多系统消息列表
+    fun getMoreMessageList() {
+        val result = repo.getMessageList(cursorId)
+        result.let {
+            if (result.isNotEmpty()) {
+                cursorId = result.last().id
+            }
         }
     }
 

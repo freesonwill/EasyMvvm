@@ -23,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.firstOrNull
@@ -67,7 +68,7 @@ class LiveMainViewModel(
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
-
+    fun observeConnectStateFlow():Flow<ConnectState> =repo.observeConnectStateFlow()
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
     val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
@@ -198,6 +199,12 @@ class LiveMainViewModel(
         return MatchLiveData(0, teams, stats, trend)
     }
 
+
+    fun reconnect(){
+        repo.reconnect()
+    }
+
+
     /**
      * 开启聊天服务
      * */
@@ -227,4 +234,5 @@ class LiveMainViewModel(
             }
         }
     }
+
 }

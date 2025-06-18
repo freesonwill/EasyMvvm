@@ -1,12 +1,12 @@
 package arch.cayenne.lib.common.utils.helper
 
 import android.animation.Animator
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.widget.ImageView
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 
 class ViewPagerAnimHelper {
 
@@ -37,16 +37,12 @@ class ViewPagerAnimHelper {
         // 等待下一個 frame 畫面更新完再做動畫
         viewPager.post {
             viewPager.translationX = if (isPrev) width.toFloat() else -width.toFloat()
-
-            val vpAnim = ObjectAnimator.ofFloat(viewPager, "translationX", 0f)
-            val fakeAnim = ObjectAnimator.ofFloat(
-                fakeViewPager,
-                "translationX",
+            val vpAnim = viewPager.startSafeObjectAnimator("translationX",
+                0f)
+            val fakeAnim = fakeViewPager.startSafeObjectAnimator("translationX",
                 0f,
-                if (isPrev) -width.toFloat() else width.toFloat()
-            )
-
-            AnimatorSet().apply {
+                if (isPrev) -width.toFloat() else width.toFloat())
+            viewPager.startSafeAnimateSet({
                 duration = 300L
                 playTogether(vpAnim, fakeAnim)
                 addListener(object : android.animation.AnimatorListenerAdapter() {
@@ -60,9 +56,8 @@ class ViewPagerAnimHelper {
                         fakeViewPager.setImageDrawable(null)
                         isAnimating = false
                     }
-                })
-                start()
-            }
+                }) },
+                start = true)
         }
     }
 }

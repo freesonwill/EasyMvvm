@@ -15,12 +15,10 @@ class LeagueViewModel : BaseViewModel() {
     private val repo: LiveLeagueRepository by inject { parametersOf(viewModelScope) }
     private val _leagueData = MutableLiveData<LeagueMatchBean?>()
     val leagueData: LiveData<LeagueMatchBean?> get() = _leagueData
-    private var page: Int = 1
     private var cursorMatchId: Long = 0L
     private var cursorMatchStartTime: Long = 0L
 
     fun getMatchLeagueData(leagueId: Int) {
-        page = 1
         cursorMatchId = 0L
         cursorMatchStartTime = 0L
         viewModelScope.launch {
@@ -36,7 +34,6 @@ class LeagueViewModel : BaseViewModel() {
     }
 
     fun getMoreMatchLeagueData(leagueId: Int) {
-        page++
         viewModelScope.launch {
             val result = repo.getMatchLeagueData(leagueId, cursorMatchId, cursorMatchStartTime)
             result?.let {

@@ -109,7 +109,8 @@ class DynamicStateLayout @JvmOverloads constructor(
                     0f, 360f, // 从 0 度旋转到 360 度
                     duration = 1000L, // 持续时间 1 秒
                     repeatCount = ObjectAnimator.INFINITE, // 无限循环
-                    interpolator = LinearInterpolator() // 匀速旋转
+                    interpolator = LinearInterpolator(), // 匀速旋转
+                    start = true
                 )
             }
         }

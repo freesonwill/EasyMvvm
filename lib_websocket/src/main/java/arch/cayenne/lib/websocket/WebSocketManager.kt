@@ -102,7 +102,7 @@ class WebSocketManager(
         socket.disConnect()
     }
 
-    private fun reconnect() {
+     fun reconnect() {
         socket.reconnect()
     }
 

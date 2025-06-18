@@ -69,7 +69,9 @@ class DatePickerViewModel : BaseViewModel() {
         customTime = null
         _dateTitleListener.value?.let {
             val newList = it.mapIndexed { index, datePickerBean ->
-                if (index == it.lastIndex) {
+                if (index == 0) {
+                    datePickerBean.copy(isSelected = true)
+                } else if (index == it.lastIndex) {
                     datePickerBean.copy(title = getFormatDate(), isSelected = false)
                 } else {
                     datePickerBean.copy(isSelected = false)

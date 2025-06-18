@@ -88,9 +88,9 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
 
     private fun applyTextSizeResource() {
         if (textSizeSp > 0f) {
-            if (Build.VERSION.SDK_INT >= 29) {
-                mView.textSize = textSizeSp
-            } else {
+//            if (Build.VERSION.SDK_INT >= 29) {
+//                mView.textSize = textSizeSp
+//            } else {
                 applyToEditTextViews {
                     it.textSize = textSizeSp
                 }
@@ -110,7 +110,7 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-            }
+//            }
         }
     }
 

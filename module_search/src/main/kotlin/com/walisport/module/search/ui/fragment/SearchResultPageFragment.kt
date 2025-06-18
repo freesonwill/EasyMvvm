@@ -4,12 +4,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -89,9 +90,17 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     override fun createObserver() {
         with(mViewModel) {
-            lifecycleScope.launch {
-                groupData.collect {
-                    updateUI()
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    groupData.collect {
+                        updateUI()
+                    }
+                }
+
+                launch {
+                    sharedViewModel.currentLanguage.collect {
+                        gridAdapter.updateLanguage(it)
+                    }
                 }
             }
         }

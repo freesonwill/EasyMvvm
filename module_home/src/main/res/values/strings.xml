@@ -19,8 +19,15 @@
     <string name="title_soccer">足球</string>
     <string name="title_volleyball">排球</string>
     <string name="title_basketball">篮球</string>
-    <string name="title_football">橄榄球</string>
+    <string name="title_rugby">橄榄球</string>
     <string name="title_baseball">棒球</string>
+    <string name="title_tennis">网球</string>
+    <string name="title_handball">手球</string>
+    <string name="title_pingpong">乒乓球</string>
+    <string name="title_golf">高尔夫</string>
+    <string name="title_hockey">曲棍球</string>
+    <string name="title_snooker">斯诺克</string>
+    <string name="title_badminton">羽毛球</string>
 
     <!--League name-->
     <string name="league_all">全部</string>
@@ -30,9 +37,9 @@
     <string name="league_seriea">意甲</string>
     <string name="bet_title">注单</string>
     <string name="favorite_title">收藏</string>
-    <string name="match_title_win">全场独赢</string>
-    <string name="match_title_handicap">全场让球</string>
-    <string name="match_title_over_under">全场大小</string>
+    <string name="match_title_win">独赢</string>
+    <string name="match_title_handicap">让球</string>
+    <string name="match_title_over_under">大小</string>
     <string name="drawer_recharge">充值</string>
     <string name="drawer_bet_slip">注单</string>
     <string name="drawer_common_function">常用功能</string>

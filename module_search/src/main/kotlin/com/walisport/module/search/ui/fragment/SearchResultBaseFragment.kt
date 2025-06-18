@@ -2,13 +2,14 @@ package com.walisport.module.search.ui.fragment
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultUiState
@@ -55,13 +56,21 @@ class SearchResultBaseFragment :
 
     override fun createObserver() {
         with(mViewModel) {
-            lifecycleScope.launch {
-                uiState.collect {
-                    when (it) {
-                        is ResultList -> goToListResult(it.data)
-                        is DirectMatch -> goToDirectMatch(it.data)
-                        is Loading -> switchUi(it)
-                        is Empty -> switchUi(it)
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    uiState.collect {
+                        when (it) {
+                            is ResultList -> goToListResult(it.data)
+                            is DirectMatch -> goToDirectMatch(it.data)
+                            is Loading -> switchUi(it)
+                            is Empty -> switchUi(it)
+                        }
+                    }
+                }
+
+                launch {
+                    sharedViewModel.currentLanguage.collect {
+                        setEmptyView()
                     }
                 }
             }
@@ -72,7 +81,11 @@ class SearchResultBaseFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                ContextCompat.getString(requireContext(), R.string.no_search_result)
+                SkinnableResourceManager.getTextResourceText(
+                    requireContext(),
+                    R.string.no_search_result,
+                    sharedViewModel.getCurrentLanguage().language
+                )
             )
         }
     }

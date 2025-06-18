@@ -15,12 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,9 +23,9 @@ import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
@@ -57,6 +52,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         get() = FragmentSearchBinding::class
     override val vmClass: KClass<SearchViewModel>
         get() = SearchViewModel::class
+
+    private val titleBarHintStr: String
+        get() =
+            SkinnableResourceManager.getTextResourceText(
+                requireContext(),
+                R.string.please_input_content,
+                mViewModel.getCurrentLanguage().language
+            )
 
     private val recommendAdapter by lazy {
         RecommendAdapter { word ->
@@ -88,51 +91,54 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     override fun createObserver() {
         with(mViewModel) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    launch {
-                        searchRecommendList.collect { list ->
-                            recommendAdapter.submitList(list)
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    currentLanguage.collect {
+                        setTitleBar()
+                    }
+                }
+                launch {
+                    searchRecommendList.collect { list ->
+                        recommendAdapter.submitList(list)
+                    }
+                }
+                launch {
+                    navigationEvent.collect { event ->
+                        doNavigate(event)
+                    }
+                }
+                launch {
+                    searchKeyWord.collect { key ->
+                        if (key.isNotEmpty()) {
+                            updateSearchText(key)
+                            setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
                         }
                     }
-                    launch {
-                        navigationEvent.collect { event ->
-                            doNavigate(event)
-                        }
+                }
+                launch {
+                    resultBackgroundColor.collect { color ->
+                        setResultBackground(
+                            color != null,
+                            color ?: R.color.search_result_default_gradient_start
+                        )
                     }
-                    launch {
-                        searchKeyWord.collect { key ->
-                            if (key.isNotEmpty()) {
-                                updateSearchText(key)
-                                setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
-                            }
-                        }
+                }
+                launch {
+                    statusBarState.collect { isDefault ->
+                        updateStatusTitleBar(isDefault)
                     }
-                    launch {
-                        resultBackgroundColor.collect { color ->
-                            setResultBackground(
-                                color != null,
-                                color ?: R.color.search_result_default_gradient_start
-                            )
-                        }
-                    }
-                    launch {
-                        statusBarState.collect { isDefault ->
-                            updateStatusTitleBar(isDefault)
-                        }
-                    }
-                    launch {
-                        titleBarMaskEvent.collect { event ->
-                            with(mBinding.maskTitleBar) {
-                                if (event.first) {
-                                    visibility = View.VISIBLE
-                                    setOnClickListener {
-                                        event.second?.invoke()
-                                    }
-                                } else {
-                                    visibility = View.GONE
-                                    setOnClickListener(null)
+                }
+                launch {
+                    titleBarMaskEvent.collect { event ->
+                        with(mBinding.maskTitleBar) {
+                            if (event.first) {
+                                visibility = View.VISIBLE
+                                setOnClickListener {
+                                    event.second?.invoke()
                                 }
+                            } else {
+                                visibility = View.GONE
+                                setOnClickListener(null)
                             }
                         }
                     }
@@ -146,7 +152,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             with(mViewModel) {
                 //设置标题
                 titleBar.loadSearchTitleBar(
-                    hint = getString(R.string.please_input_content),
+                    hint = titleBarHintStr,
                     afterTextChanged = { text, binding ->
                         val count = text?.length ?: 0
                         val color =
@@ -174,7 +180,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     },
                     onSearch = { content, _ ->
                         if (TextUtils.isEmpty(content)) {
-                            showToast(getString(R.string.please_input_content))
+                            showToast(titleBarHintStr)
                             return@loadSearchTitleBar
                         }
                         resetSearchRecommend()

@@ -104,6 +104,9 @@ class UIBindDelegate<UIOwner, VM, VB>(
         if(logEnabled) "onDestroy==>$uiOwner".logd(TAG)
     }
 
+    fun onHiddenChanged(hidden: Boolean) {
+        if(logEnabled) "onHiddenChanged==>$uiOwner,hidden:$hidden".logd(TAG)
+    }
     /**
      * 销毁
      */

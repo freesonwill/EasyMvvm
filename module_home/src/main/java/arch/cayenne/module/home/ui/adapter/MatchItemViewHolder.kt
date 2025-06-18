@@ -2,12 +2,12 @@ package arch.cayenne.module.home.ui.adapter
 
 import android.annotation.SuppressLint
 import android.graphics.Rect
+import android.text.TextUtils
+import android.view.Gravity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.GridLayout
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import android.widget.LinearLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
@@ -17,6 +17,8 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
 import com.bumptech.glide.Glide
@@ -35,27 +37,18 @@ class MatchItemViewHolder(
             R.string.match_title_over_under
         )
         with(mBinding) {
-            layoutOddsTitle.columnCount = defaultTitleList.size
-            defaultTitleList.forEachIndexed { index, title ->
-                val titleView = TextView(binding.root.context).apply {
+            defaultTitleList.forEach { title ->
+                val titleView = SkinnableTextView(root.context).apply {
                     text = getString(title)
-                    setTextColor(
-                        ContextCompat.getColorStateList(
-                            context,
-                            arch.cayenne.lib.common.R.color.secondary_title
-                        )
-                    )
+                    setTextColorRes(R.color.home_secondary_text)
                     textSize = 13f
-                    setPadding(5, 4, 5, 4)
+                    setPadding(0, 0, 2.dp2px, 0)
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                    gravity = Gravity.CENTER
+                    layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
                 }
-                val lp = GridLayout.LayoutParams().apply {
-                    width = 0
-                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    columnSpec = GridLayout.spec(index, 1f)
-                    setMargins(3.dp2px, 0, 0, 0)
-                }
-
-                layoutOddsTitle.addView(titleView, lp)
+                layoutOddsTitle.addView(titleView)
             }
 
             rvOddsGrid.itemAnimator = null

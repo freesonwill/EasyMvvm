@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import arch.cayenne.lib.skin.LanguageManager
@@ -233,6 +234,13 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
         }
         if(checkResourceIdValid(mHintResId)){
             mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,mHintResId)
+        }
+    }
+
+    fun setTextColor(@ColorRes color:Int){
+        if(checkResourceIdValid(color)){
+            textColorResId = color
+            applyTextColorResource()
         }
     }
 }

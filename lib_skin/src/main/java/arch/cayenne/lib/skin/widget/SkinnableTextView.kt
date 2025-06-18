@@ -2,6 +2,7 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
@@ -73,6 +74,13 @@ class SkinnableTextView : AppCompatTextView {
     ) {
         super.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
         textHelper.onSetCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom)
+    }
+
+    /**
+     * 动态代码创建时，获取TexColor ResId
+     * */
+     fun setTextColorRes(@ColorRes color: Int) {
+         textHelper.setTextColor(color)
     }
 
     override fun setCompoundDrawablesWithIntrinsicBounds(

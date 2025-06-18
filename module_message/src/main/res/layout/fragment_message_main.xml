@@ -150,11 +150,17 @@
             </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_message"
+        <arch.cayenne.lib.common.ui.view.PullRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_10"
-            android:overScrollMode="never" />
+            android:layout_marginTop="@dimen/dp_10">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never" />
+        </arch.cayenne.lib.common.ui.view.PullRefreshLayout>
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </layout>

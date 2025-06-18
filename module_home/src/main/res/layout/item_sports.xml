@@ -1,12 +1,12 @@
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="@dimen/dp_66"
+    android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:gravity="center"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/dp_6"
-    android:paddingVertical="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_8">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/tv_sport_icon"
@@ -18,7 +18,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_sport_title"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_17"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:textColor="@color/selector_sport_tab_text_color"
         android:textSize="12sp"
