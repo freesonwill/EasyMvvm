@@ -8,6 +8,7 @@ import android.widget.EditText
 import android.widget.NumberPicker
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
+import java.util.Locale
 
 open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mView) {
 
@@ -55,9 +56,6 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
         disableEditTextInteraction()
     }
 
-    override fun updateLanguage(languageCode: String) {
-        // NumberPicker 本身沒文字資源，一般不需處理
-    }
 
     private fun applyTextColorResource() {
         if (checkResourceIdValid(textColorResId)) {

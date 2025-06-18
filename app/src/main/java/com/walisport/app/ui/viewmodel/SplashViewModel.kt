@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
+import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.app.data.repo.SplashRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +19,8 @@ class SplashViewModel : BaseActivityViewModel() {
     val homeTimeSeconds: MutableLiveData<Int> = MutableLiveData()
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
+    private val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
+
     val jumpToMainOrLogin = MediatorLiveData<Boolean>().apply {
         addSource(homeTimeSeconds) {
             if (it == 0) {
@@ -54,7 +57,7 @@ class SplashViewModel : BaseActivityViewModel() {
             val logicType = getLogicSkinType(skinType)
             skinManager.loadSkin(logicType)
             val langType = repository.getLanguageType()
-            skinManager.changeLanguage(Locale(langType))
+            languageManager.changeLanguage(Locale(langType))
         }
     }
 

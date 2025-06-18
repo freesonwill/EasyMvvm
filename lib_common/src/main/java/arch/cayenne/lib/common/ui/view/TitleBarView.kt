@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.annotation.StringRes
 import androidx.appcompat.widget.Toolbar
 import arch.cayenne.lib.common.databinding.TitleBarDefaultBinding
 import arch.cayenne.lib.common.databinding.TitleBarDynamicsBinding
@@ -47,6 +48,34 @@ class TitleBarView @JvmOverloads constructor(
             }
         }
     }
+
+    /**
+     * 通用标题 并且适配多语言
+     * @param title 标题名称
+     * @param onBack 返回
+     */
+    fun loadGeneralTitleBar(
+        @StringRes stringRes: Int,
+        onBack: () -> Unit = defaultOnBack,
+        onRight: (() -> Unit)? = null,
+        rightName: String? = null
+    ) {
+        val binding = TitleBarDefaultBinding.inflate(LayoutInflater.from(context), this, true)
+        binding.apply {
+            tvTitleName.setTextRes(stringRes)
+            ivBack.clickNoRepeat {
+                onBack()
+            }
+            if (onRight != null) {
+                tvTitleRight.visibility = VISIBLE
+                tvTitleRight.text = rightName ?: ""
+                tvTitleRight.clickNoRepeat {
+                    onRight()
+                }
+            }
+        }
+    }
+
 
     /**
      * 搜索标题

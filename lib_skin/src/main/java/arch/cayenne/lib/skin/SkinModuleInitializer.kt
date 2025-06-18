@@ -15,6 +15,7 @@ class SkinModuleInitializer : DefaultInitializer<String> {
 
     private val socketModules = module {
         single<SkinnableManager> { SkinnableManager() }
+        single<LanguageManager> { LanguageManager()  }
     }
     private val moduleList: List<Module> = listOf(socketModules)
 

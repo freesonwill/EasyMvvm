@@ -55,10 +55,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private val titleBarHintStr: String
         get() =
-            SkinnableResourceManager.getTextResourceText(
+            SkinnableResourceManager.getString(
                 requireContext(),
                 R.string.please_input_content,
-                mViewModel.getCurrentLanguage().language
+                mViewModel.getCurrentLanguage()
             )
 
     private val recommendAdapter by lazy {

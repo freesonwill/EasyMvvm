@@ -1,5 +1,6 @@
 package arch.cayenne.lib.skin.widget.helper
 
+import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -12,6 +13,7 @@ class SkinnableViewFlowHelper {
     private var skinFlowJob: Job? = null
     private var languageFlowJob: Job? = null
     private val sportSkinManager: SkinnableManager by inject(SkinnableManager::class.java)
+    private val languageManager:LanguageManager by inject(LanguageManager::class.java)
     private val TAG = this@SkinnableViewFlowHelper::class.java.simpleName
     private var lastSkin: String = ""
 
@@ -40,7 +42,7 @@ class SkinnableViewFlowHelper {
     fun startLanguageFlow(updateLanguage: (local: Locale) -> Unit) {
         languageFlowJob?.cancel()
         languageFlowJob = CoroutineScope(Dispatchers.IO).launch {
-            sportSkinManager.languageFlow.collect {
+            languageManager.languageFlow.collect {
                 it?.let {
                     launch(Dispatchers.Main) {
                         updateLanguage(it)

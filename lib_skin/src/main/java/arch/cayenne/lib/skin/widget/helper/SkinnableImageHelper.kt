@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.widget.ImageView
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
+import java.util.Locale
 
 class SkinnableImageHelper(view: ImageView) : SkinnableHelper(view) {
     private var mSrcCompatResId = INVALID_ID
@@ -49,7 +50,5 @@ class SkinnableImageHelper(view: ImageView) : SkinnableHelper(view) {
         return _radius
     }
 
-    override fun updateLanguage(languageCode: String) {
-    }
 
 }

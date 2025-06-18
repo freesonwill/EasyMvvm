@@ -175,10 +175,10 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
         mBinding.tvCalendarTitle.text =
             String.format(
-                SkinnableResourceManager.getTextResourceText(
+                SkinnableResourceManager.getString(
                     requireContext(),
                     R.string.search_result_race_calendar_title,
-                    locale.language
+                    locale
                 ),
                 monthStr,
                 "$year"

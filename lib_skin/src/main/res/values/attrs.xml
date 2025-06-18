@@ -23,6 +23,7 @@
         <attr name="android:drawableEnd"/>
         <attr name="android:textAppearance"/>
         <attr name="android:text"/>
+        <attr name="android:hint"/>
     </declare-styleable>
 
 

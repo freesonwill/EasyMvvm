@@ -9,10 +9,8 @@ import java.util.Locale
 
 abstract class SkinnableHelper (protected open val mView:View) {
     val resourcesManager = SkinnableResourceManager
-
     protected var mSrcId: Int = INVALID_ID
     protected var lastSkin:String = ""
-    protected var lastLanguage:Locale? = null
 
     /**
      * 加载资源布局
@@ -23,11 +21,6 @@ abstract class SkinnableHelper (protected open val mView:View) {
      * 刷新UI
      */
     abstract fun updateSkin(msgType: SkinMsgType = SkinMsgType.FLOW)
-
-    /**
-     * 刷新language
-     * */
-    abstract fun updateLanguage(languageCode:String)
 
     open fun setSrcId(srcId: Int) {
         mSrcId = srcId
@@ -43,9 +36,6 @@ abstract class SkinnableHelper (protected open val mView:View) {
         return flag
     }
 
-    open fun checkLanguage(value:Locale?,msgType: SkinMsgType):Boolean{
-        return msgType == SkinMsgType.FLOW && value == lastLanguage
-    }
 
     companion object {
         const val INVALID_ID = 0

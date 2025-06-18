@@ -7,40 +7,34 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import java.util.Locale
 
 /**
  * 获取对应资源文件
  * */
- object SkinnableResourceManager {
+object SkinnableResourceManager {
     private var resourceLoader: SkinnableResourceLoader = SkinnableBuildInResourceLoader("")
 
     fun initResource(resourceLoader: SkinnableResourceLoader) {
         SkinnableResourceManager.resourceLoader = resourceLoader
-        if(resourceLoader is SkinnableBuildInResourceLoader){
+        if (resourceLoader is SkinnableBuildInResourceLoader) {
             resourceLoader.getSkinName()
         }
     }
-    fun setSecondaryName(secondaryName:String){
+
+    fun setSecondaryName(secondaryName: String) {
         resourceLoader.setSecondarySkin(secondaryName)
     }
 
-    fun restoreSecondaryName(){
+    fun restoreSecondaryName() {
         resourceLoader.setSecondarySkin("")
     }
 
-    fun getTextResourceText(
+    internal fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
-        languageCode: String = "en"
     ): String {
-        val locale = context.resources.configuration.locale
-        if (locale.language != languageCode) {
-            val configuration = Configuration(context.resources.configuration)
-            configuration.setLocale(Locale(languageCode))
-            val localizeContext = context.createConfigurationContext(configuration)
-            return localizeContext.resources.getString(resId)
-        }
         return context.resources.getString(resId)
     }
 
@@ -56,5 +50,19 @@ import java.util.Locale
     fun getTargetResourceId(context: Context, @AnyRes resId: Int): Int =
         resourceLoader.getTargetResourceId(context, resId)
 
+    /**
+     * 由于android资源缓存加载不会自动更新已存在的资源
+     * 需要使用的时候自己去设置local
+     * */
+    fun getString(
+        context: Context,
+        @StringRes resId: Int, locale: Locale?
+    ): String {
+        val configuration = context.resources.configuration
+        configuration.setLocale(locale)
+        return context.applicationContext.createConfigurationContext(configuration).getString(resId)
+    }
+
     fun getSkinName() = resourceLoader.getSkinName()
+
 }

@@ -7,6 +7,7 @@ import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.Tab
+import java.util.Locale
 
 class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
     private var indicatorColor: Int = INVALID_ID
@@ -63,6 +64,4 @@ class SkinnableTabLayoutHelper(mView: TabLayout) : SkinnableHelper(mView) {
         }
     }
 
-    override fun updateLanguage(languageCode: String) {
-    }
 }
