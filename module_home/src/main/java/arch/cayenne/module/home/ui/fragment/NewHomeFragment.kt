@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -162,12 +164,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
                 //呼叫日曆popup元件
-                //TODO 傳入目前被選tab的日期
                 var tabSelectedDate = "0"
                 val index = tlDateList.selectedTabPosition
-                if (index > 0) {
-                    val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index - 1)
+                if (index >= 0) {
+                    val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index)
                     tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
+                } else {
+                    tabSelectedDate = "0"
                 }
                 showHomeCalendar(tabSelectedDate)
             }
@@ -292,6 +295,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         // 使用 Builder 創建 Popup
         setCalendarPopup()
+        updateCalendarSkin()
         with(customPopup?.binding) {
             // 獲取當前日期
             var selectedDate = if (tabSelectedDate == "0") {
@@ -619,8 +623,81 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
             }
         }
+        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
+            mBinding.apply {
+                updateCalendarSkin()
+            }
+        }
     }
-
+    private fun updateCalendarSkin() {
+        if (customPopup == null) return
+        customPopup?.binding?.apply {
+            val rootContext = mBinding.root.context
+            //update calendarView skin root
+            clCalendarPopupRoot.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_background))
+            //update weekview color
+            val backgroundColor = SkinnableResourceManager.getColor(
+                mBinding.root.context,
+                R.color.home_calendar_background
+            )
+            val textColor = SkinnableResourceManager.getColor(
+                mBinding.root.context,
+                arch.cayenne.lib.common.R.color.secondary_text
+            )
+            calendarView.setWeeColor(backgroundColor,textColor)
+            //update current month title text color
+            tvCurrentMonth.setTextColor(
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.secondary_text
+                )
+            )
+            //update previous and next month button drawable
+            ivLeftClick.setImageResource(
+                SkinnableResourceManager.getTargetResourceId(
+                    rootContext,
+                    R.drawable.ic_calendar_arrow_left
+                )
+            )
+            ivRightClick.setImageResource(
+                SkinnableResourceManager.getTargetResourceId(
+                    rootContext,
+                    R.drawable.ic_calendar_arrow_right
+                )
+            )
+            //update calendarView textColor
+            calendarView.setTextColor(
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.main_text
+                ),
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.main_text
+                ),
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.explanation_text
+                ),
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.main_text
+                ),
+                SkinnableResourceManager.getColor(
+                    rootContext,
+                    arch.cayenne.lib.common.R.color.main_text
+                )
+            )
+            calendarView.setSelectedColor(resources.getColor(R.color.home_calendar_selected_theme_color,null),
+                resources.getColor(arch.cayenne.lib.common.R.color.white, null),
+                resources.getColor(arch.cayenne.lib.common.R.color.white, null))
+            //update calendarView button
+            calendarBtnCancel.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_cancel))
+            calendarBtnCancel.setTextColor(SkinnableResourceManager.getColor(rootContext,
+                arch.cayenne.lib.common.R.color.title_bar))
+            calendarBtnOk.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_ok))
+        }
+    }
     private fun createTournamentTabView(
         tournament: TournamentDataModel
     ): View {
