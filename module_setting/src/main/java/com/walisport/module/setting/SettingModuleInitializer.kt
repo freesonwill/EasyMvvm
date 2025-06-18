@@ -21,7 +21,7 @@ class SettingModuleInitializer : DefaultInitializer<String> {
         includes(defaultModule)
     }
     private val repoModules = module {
-        factory { (scope: CoroutineScope) -> SettingRepository(scope,get()) }
+        factory { (scope: CoroutineScope) -> SettingRepository(scope) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }
