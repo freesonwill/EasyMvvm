@@ -130,6 +130,7 @@ message Order {
     int64 bet_time = 2;       //下注时间
     int64 settle_time = 3;    //结算时间
     string bet_amount = 4;     //下注总金额
+    string currency = 19; //币种
     string return_amount = 5; //正常结算派奖金额
     repeated OrderSelection selections = 6; //选项
     int32 combo_type = 7;           //串关类型，0-单关  1-串关  2-全串关(4串11)
@@ -166,6 +167,7 @@ message ReserveOrder {
     string reserve_id = 1;        //下注id
     int64 reserve_time = 2;       //预约时间
     string bet_amount = 3;     //下注金额
+    string currency = 6; //币种
     ReserveOrderSelection selection = 4; //选项
     int32 status = 5;        //状态 0 - 预约中  1 - 预约成功  2 - 预约失败 3 - 取消
 }

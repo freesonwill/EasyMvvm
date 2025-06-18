@@ -16,7 +16,6 @@ import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
-import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -67,27 +66,30 @@ class CommonRepository(
         }
 
         if (loginResp.data != null && loginResp.data!!.success) {
-            val balance = getBalance()
-            infoDao.insert(InfoBean(uid, balance.balanceStringToLong(), loginResp.data!!.success))
+            val balanceResp = getBalance()
+            infoDao.insert(
+                InfoBean(
+                    uid,
+                    balanceResp.balance.balanceStringToLong(),
+                    balanceResp.currency,
+                    loginResp.data!!.success
+                )
+            )
         }
 
         return loginResp
     }
 
     //登入成功後主動取得餘額
-    private suspend fun getBalance(): String {
-        val balanceResp = socketManager.sendAndWaitProtoMessageResponse<Client.BalanceResp>(
+    private suspend fun getBalance(): Client.BalanceResp {
+        val resp = socketManager.sendAndWaitProtoMessageResponse<Client.BalanceResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.BALANCE
-        ){
+        ) {
             Client.BalanceReq.newBuilder().build()
         }
-        return if (balanceResp.data != null) {
-            balanceResp.data!!.balance
-        } else {
-            ""
-        }
+        return resp.data!!
     }
 
     //觀察從API來的餘額變化並塞進資料庫
@@ -96,7 +98,14 @@ class CommonRepository(
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {
-                infoDao.update(InfoBean(this.uid, it.data!!.balance.balanceStringToLong(), this.login))
+                infoDao.update(
+                    InfoBean(
+                        this.uid,
+                        it.data!!.balance.balanceStringToLong(),
+                        this.currency,//账号余额通知中没有币种字段
+                        this.login
+                    )
+                )
             }
         }
     }
