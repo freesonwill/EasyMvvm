@@ -3,7 +3,6 @@ package arch.cayenne.lib.skin.widget.helper
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.View
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -13,7 +12,7 @@ import arch.cayenne.lib.skin.data.SkinMsgType
 import org.koin.java.KoinJavaComponent.inject
 import java.util.Locale
 
-open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView),LanguageHelper {
+open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
 
     private var textColorResId = INVALID_ID
     private var mTextColorHintResId = INVALID_ID
@@ -213,7 +212,7 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView),Languag
     fun updateText(@StringRes stringRes:Int){
         if(checkResourceIdValid(stringRes)){
             mTextResId = stringRes
-            mView.text = resourcesManager.getTextResourceText(mView.context,stringRes,languageManager.getLanguage())
+            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes)
         }
     }
 
@@ -223,17 +222,17 @@ open class SkinnableTextHelper(mView: TextView) : SkinnableHelper(mView),Languag
     fun updateHint(@StringRes stringRes: Int){
         if(checkResourceIdValid(stringRes)){
             mHintResId = stringRes
-            mView.hint = resourcesManager.getTextResourceText(mView.context,stringRes,languageManager.getLanguage())
+            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes)
         }
     }
 
-
     override fun updateLanguage(locale:Locale) {
+        refreshContext(locale)
         if(checkResourceIdValid(mTextResId)){
-            mView.text = resourcesManager.getTextResourceText(mView.context,mTextResId,locale)
+            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,mTextResId)
         }
         if(checkResourceIdValid(mHintResId)){
-            mView.hint = resourcesManager.getTextResourceText(mView.context,mHintResId,locale)
+            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,mHintResId)
         }
     }
 }

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import androidx.annotation.AnyRes
 import androidx.annotation.ColorRes
 import androidx.annotation.StringRes
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import java.util.Locale
 
 /**
@@ -14,7 +15,6 @@ import java.util.Locale
  * */
 object SkinnableResourceManager {
     private var resourceLoader: SkinnableResourceLoader = SkinnableBuildInResourceLoader("")
-    private var currentLanguage: Locale? = null
 
     fun initResource(resourceLoader: SkinnableResourceLoader) {
         SkinnableResourceManager.resourceLoader = resourceLoader
@@ -31,21 +31,11 @@ object SkinnableResourceManager {
         resourceLoader.setSecondarySkin("")
     }
 
-    internal fun getTextResourceText(
+    fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
-        locale: Locale?
     ): String {
-        if (currentLanguage != locale && locale != null) {
-            return updateLocal(context, locale).resources.getString(resId)
-        }
         return context.resources.getString(resId)
-    }
-
-    private fun updateLocal(context: Context, locale: Locale): Context {
-        val configuration = Configuration(context.resources.configuration)
-        configuration.setLocale(locale)
-        return context.createConfigurationContext(configuration)
     }
 
     fun getColor(context: Context, @ColorRes resId: Int): Int =
@@ -61,8 +51,4 @@ object SkinnableResourceManager {
         resourceLoader.getTargetResourceId(context, resId)
 
     fun getSkinName() = resourceLoader.getSkinName()
-
-    fun getString(context: Context, @StringRes resId: Int): String {
-        return getTextResourceText(context, resId, currentLanguage)
-    }
 }
