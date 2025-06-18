@@ -24,7 +24,7 @@ abstract class LanguageHelper(mView: View) : SkinnableHelper(mView) {
         lastLanguage = locale
         val configuration = mView.context.resources.configuration
         configuration.setLocale(locale)
-        stringContext = mView.context.createConfigurationContext(configuration)
+        stringContext = mView.context.applicationContext.createConfigurationContext(configuration)
     }
 
     /**
