@@ -37,7 +37,7 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
                 betSettledTvIntroduce.text = item.selectionName
                 val odds = "@${item.odds}"
                 betSettledTvAodds.text = odds
-    //                betSettledTvStatus.isVisible = it.inPlay
+                betSettledTvStatus.isVisible = it.inPlay
                 val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betSettledTvScore.text = score
                 betSettledTvScore1.text = whenScoreIsNull(item.endScore)

@@ -80,9 +80,11 @@
         android:layout_marginEnd="@dimen/dp_12"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_reserve_tv_status"
         app:layout_constraintLeft_toRightOf="@id/bet_reserve_tv_status"
-        app:layout_constraintTop_toTopOf="@id/bet_reserve_tv_status" />
+        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_introduce"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_goneMarginStart="0dp"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_reserve_tv_start"
@@ -91,8 +93,8 @@
         android:layout_marginTop="@dimen/dp_12"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_status"
-        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_status" />
+        app:layout_constraintLeft_toLeftOf="@id/bet_reserve_iv_ball"
+        app:layout_constraintTop_toBottomOf="@id/bet_reserve_tv_score" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"

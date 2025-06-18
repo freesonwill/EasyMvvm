@@ -115,9 +115,11 @@
         android:text="@string/live_bet_full_handicap"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintBottom_toBottomOf="@id/bet_settled_tv_status"
         app:layout_constraintLeft_toRightOf="@id/bet_settled_tv_status"
-        app:layout_constraintTop_toTopOf="@id/bet_settled_tv_status" />
+        app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_introduce"
+        android:layout_marginTop="@dimen/dp_12"
+        app:layout_goneMarginStart="0dp"
+        />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_score1"
@@ -128,8 +130,8 @@
         android:textColor="@color/brand_color"
         android:textFontWeight="600"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintLeft_toLeftOf="@id/bet_settled_tv_status"
-        app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_status"
+        app:layout_constraintLeft_toLeftOf="@id/bet_settled_iv_ball"
+        app:layout_constraintTop_toBottomOf="@id/bet_settled_tv_score"
         tools:targetApi="p" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView

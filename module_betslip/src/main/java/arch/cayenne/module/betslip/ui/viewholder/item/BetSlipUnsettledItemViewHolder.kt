@@ -34,7 +34,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                 betUnsettledTvIntroduce.text = item.selectionName
                 val odds = "@${item.odds}"
                 betUnsettledTvAodds.text = odds
-    //                betUnsettledTvStatus.isVisible = item.inPlay
+                betUnsettledTvStatus.isVisible = item.inPlay
                 val score = item.marketName + "  (${item.betScore})"
                 betUnsettledTvScore.text = score
                 betUnsettledTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)

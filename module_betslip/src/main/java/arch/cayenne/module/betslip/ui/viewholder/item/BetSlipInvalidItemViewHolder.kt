@@ -42,7 +42,7 @@ class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
                     R.string.live_bet_except_odds,
                     item.odds
                 )
-    //                betInvalidTvMatchStatus.isVisible = item.inPlay
+                betInvalidTvMatchStatus.isVisible = item.inPlay
                 betInvalidTvScore.text = item.marketName + "  (${item.betScore})"
                 betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
             }
