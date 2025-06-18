@@ -11,6 +11,20 @@
     android:paddingEnd="12dp"
     android:paddingBottom="10dp">
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_score_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="tv_score_home_team,tv_score_away_team" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_arrow_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="iv_arrow_team_away,iv_arrow_team_home" />
+
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
         android:layout_width="wrap_content"
@@ -80,7 +94,7 @@
         android:textColor="@color/search_result_race_team_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_home_team"
-        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_home"
+        app:layout_constraintEnd_toStartOf="@id/barrier_arrow_start"
         app:layout_constraintStart_toStartOf="@id/barrier_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team"
         tools:text="2" />
@@ -133,7 +147,7 @@
         android:textColor="@color/search_result_race_team_name"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
-        app:layout_constraintEnd_toStartOf="@id/iv_arrow_team_away"
+        app:layout_constraintEnd_toStartOf="@id/barrier_arrow_start"
         app:layout_constraintStart_toStartOf="@id/barrier_score_start"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         tools:text="299" />
@@ -149,13 +163,6 @@
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         app:srcCompat="@drawable/ic_search_result_current_team"
         tools:visibility="visible" />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_score_start"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:barrierDirection="start"
-        app:constraint_referenced_ids="tv_score_home_team,tv_score_away_team" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageButton
         android:id="@+id/btn_favorite"
