@@ -1,5 +1,6 @@
 package com.walisport.module.search.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintSet
@@ -14,7 +15,6 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
-import com.walisport.module.search.data.model.SearchResultBaseBean
 import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
@@ -22,6 +22,7 @@ import com.walisport.module.search.databinding.ItemSearchResultGridHeaderBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridItemBinding
 import com.walisport.module.search.databinding.ItemSearchResultGridMoreBinding
 import com.walisport.module.search.ui.compare.SearchResultGridCompare
+import java.util.Locale
 
 class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseViewHolder, ViewBinding>(
     SearchResultGridCompare()
@@ -34,6 +35,8 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
 
     var onItemClick: ((id: String, type: SearchTypeEnum) -> Unit)? = null
     var onMoreClick: ((SearchResultTypeEnum) -> Unit)? = null
+
+    private var locale: Locale = Locale.getDefault()
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -49,7 +52,12 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
             VIEW_TYPE_HEADER -> {
                 val headerBinding = binding as ItemSearchResultGridHeaderBinding
                 val item = getItem(position) as SearchResultListItemType.Header
-                headerBinding.tvTitle.text = holder.itemView.context.getString(item.resId)
+                headerBinding.tvTitle.text =
+                    SkinnableResourceManager.getTextResourceText(
+                        holder.itemView.context,
+                        item.resId,
+                        locale.language
+                    )
             }
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultGridItemBinding
@@ -127,5 +135,15 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {
         return BaseViewHolder(binding)
+    }
+
+    /**
+     * 更新语言设置
+     * @param locale 新的语言环境
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateLanguage(locale: Locale) {
+        this.locale = locale
+        notifyDataSetChanged()
     }
 }

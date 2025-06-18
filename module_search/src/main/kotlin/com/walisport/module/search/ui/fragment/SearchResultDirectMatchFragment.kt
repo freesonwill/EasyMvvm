@@ -51,6 +51,14 @@ class SearchResultDirectMatchFragment :
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private val args: SearchResultDirectMatchFragmentArgs by navArgs()
 
+    private val dateHintStr: String
+        get() =
+            SkinnableResourceManager.getTextResourceText(
+                requireContext(),
+                R.string.search_date_hint,
+                sharedViewModel.getCurrentLanguage().language
+            )
+
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
             onBetClick = { match ->
@@ -90,7 +98,7 @@ class SearchResultDirectMatchFragment :
             clDate.clickNoRepeat {
                 openDatePicker()
             }
-            tvDate.text = getString(R.string.search_date_hint)
+            tvDate.text = dateHintStr
         }
     }
 
@@ -111,6 +119,15 @@ class SearchResultDirectMatchFragment :
     override fun createObserver() {
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
+                // 語系
+                launch(Lifecycle.State.STARTED) {
+                    sharedViewModel.currentLanguage.collect {
+                        setEmptyView()
+                        linearAdapter.updateLanguage(it)
+                    }
+                }
+
+                // 搜尋結果
                 launch {
                     directData.collect { data ->
                         data?.let { updateDirectInfo(it) }
@@ -136,7 +153,7 @@ class SearchResultDirectMatchFragment :
                     selectedDateFlow.collect { date ->
                         mBinding.tvDate.apply {
                             text =
-                                if (date == null) getString(R.string.search_date_hint)
+                                if (date == null) dateHintStr
                                 else SimpleDateFormat("MM-dd", Locale.getDefault()).format(date)
                             setTextColor(
                                 if (date == null)
@@ -192,7 +209,11 @@ class SearchResultDirectMatchFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                ContextCompat.getString(requireContext(), R.string.no_search_result)
+                SkinnableResourceManager.getTextResourceText(
+                    requireContext(),
+                    R.string.no_search_result,
+                    sharedViewModel.getCurrentLanguage().language
+                )
             )
         }
     }
