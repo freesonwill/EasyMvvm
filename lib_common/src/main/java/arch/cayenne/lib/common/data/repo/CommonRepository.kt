@@ -16,6 +16,8 @@ import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
+import galaxy.common.proto.Common
+import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -55,9 +57,12 @@ class CommonRepository(
             Client.LoginReq.newBuilder().apply {
                 this.uid = uid.toLong()
                 this.token = token
-                this.lang = "zh-CN"
                 this.platform = 5
-                this.oddType = 0
+                this.setting = Setting.newBuilder().apply {
+                    this.lang = "zh-CN"
+                    this.oddType = 0
+                }.build()
+
             }.build()
         }
 
