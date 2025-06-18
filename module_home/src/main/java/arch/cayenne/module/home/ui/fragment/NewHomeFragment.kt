@@ -572,7 +572,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             mBinding.tvWalletBalance.text =
-                getString(R.string.balance_format, CurrencySymbols.CNY, it.getFormalMoney())
+                getString(R.string.balance_format, CurrencySymbols.CNY.symbol, it.getFormalMoney())
         }
 
         mViewModel.navigationToChampion.observeEvent(viewLifecycleOwner, this) { data ->

@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.Dispatchers
@@ -46,10 +47,10 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
-    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
+    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY.symbol)
     val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
     val moneySymbol: String
-        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
+        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY.symbol
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1

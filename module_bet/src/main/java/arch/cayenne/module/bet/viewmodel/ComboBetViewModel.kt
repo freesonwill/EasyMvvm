@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
@@ -32,10 +33,10 @@ class ComboBetViewModel(
             } ?: balance
         } ?: 0
 
-    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
+    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY.symbol)
     val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
     val moneySymbol: String
-        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
+        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY.symbol
 
     init {
         viewModelScope.launch {

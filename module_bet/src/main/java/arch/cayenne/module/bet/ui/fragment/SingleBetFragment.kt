@@ -144,7 +144,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             setBetData(it)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
-            val money = getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY, it)
+            val money = getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY.symbol, it)
             mBinding.tvBetMoney.text = money
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
