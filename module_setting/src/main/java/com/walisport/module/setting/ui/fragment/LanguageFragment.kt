@@ -44,17 +44,15 @@ class LanguageFragment : BaseFragment<SettingViewModel, FragmentLanguageBinding>
     }
 
     private fun changeLanguageType(type: String) {
-        if ("" == type)
-            return
         mBinding.radioSimple.isSelected = false
         mBinding.radioEnglish.isSelected = false
         mBinding.radioIndonesian.isSelected = false
         mBinding.radioPortuguese.isSelected = false
         when (type) {
-            LanguageType.LANGUAGE_SIMPLE.value -> mBinding.radioSimple.isSelected = true
             LanguageType.LANGUAGE_ENGLISH.value -> mBinding.radioEnglish.isSelected = true
             LanguageType.LANGUAGE_ID.value -> mBinding.radioIndonesian.isSelected = true
             LanguageType.LANGUAGE_PT.value -> mBinding.radioPortuguese.isSelected = true
+            else -> mBinding.radioSimple.isSelected = true
         }
     }
 

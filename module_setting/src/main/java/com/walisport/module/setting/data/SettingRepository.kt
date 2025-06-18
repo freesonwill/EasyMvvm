@@ -4,18 +4,11 @@ import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
-import arch.cayenne.lib.websocket.WebSocketManager
-import arch.cayenne.lib.websocket.data.ApiCode
-import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import galaxy.client.proto.Client
-import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import org.koin.java.KoinJavaComponent.inject
 
 class SettingRepository(
-    override val scope: CoroutineScope,
-    private val socketManager: WebSocketManager,
+    override val scope: CoroutineScope
 ) : BaseRepository() {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
@@ -105,22 +98,5 @@ class SettingRepository(
 
     fun getAppAll(): Boolean {
         return manager.getValue(UserDataKey.KEY_APP_ALL, false)
-    }
-
-    //修改系统配置
-    suspend fun updateSettingReq(setting: Common.Setting): Boolean? {
-        val res = socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
-            scope = scope,
-            dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.UPDATE_SYSTEM_SETTING,
-        ) {
-            Client.UpdateSettingReq.newBuilder().apply {
-                this.setting = setting
-            }.build()
-        }
-        if (res.error == null && res.data != null) {
-            return res.data!!.success
-        }
-        return null
     }
 }
