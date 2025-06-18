@@ -30,4 +30,8 @@
     <color name="home_card_odds_background">#232530</color>
     <color name="brand_color_index_unselect">#4D24EE8A</color>
     <color name="linear_gradient">#161823</color>
+    <color name="calendar_ok_button">#24EE8A</color>
+    <color name="calendar_cancel_button">#30303E</color>
+    <color name="home_calendar_background">#232530</color>
+    <color name="home_calendar_selected_theme_color">#00D271</color>
 </resources>

@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
+import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
@@ -24,6 +25,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
@@ -34,7 +36,7 @@ class HomeViewModel : BaseViewModel() {
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-
+    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private var currentPlayType: PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
     val currentBalanceChange by lazy { MutableLiveData<Long>() }
@@ -67,6 +69,8 @@ class HomeViewModel : BaseViewModel() {
 
     private val _isHomeLoading = MutableLiveData(false)
     val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
+    private val _selectedSkinType = MutableLiveData<Event<String>>()
+    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
     fun setIsHomeLoading(isLoading: Boolean) {
         _isHomeLoading.value = isLoading
     }
@@ -119,11 +123,20 @@ class HomeViewModel : BaseViewModel() {
 
     override fun initViewModel() {
         super.initViewModel()
+        "HomeViewModel initViewModel".logd(this::class.java.simpleName)
         //觀察餘額變化
         viewModelScope.launch(Dispatchers.IO) {
             balanceRepository.observeBalance().collect {
                 withContext(Dispatchers.Main) {
                     currentBalanceChange.value = it
+                }
+            }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            //觀察換肤type
+            skinManager.skinFlow.collect {
+                withContext(Dispatchers.Main) {
+                    _selectedSkinType.value = Event(it)
                 }
             }
         }

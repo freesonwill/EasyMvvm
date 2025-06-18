@@ -34,4 +34,7 @@
     <color name="drawer_common_function_text_white_blue">#666666</color>
     <color name="drawer_bottom_function_text_white_blue">#666666</color>
     <color name="brand_color_index_unselect_white_blue">#4D00D271</color>
+    <color name="calendar_ok_button_white_blue">#24EE8A</color>
+    <color name="calendar_cancel_button_white_blue">#E9FDF3</color>
+    <color name="home_calendar_background_white_blue">#F3F3F4</color>
 </resources>
