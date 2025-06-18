@@ -10,18 +10,19 @@ import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import androidx.core.view.marginStart
-import androidx.core.view.marginTop
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchDatePickerBinding
 import com.walisport.module.search.ui.viewmodel.SearchDatePickerViewModel
+import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
@@ -30,6 +31,9 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     override val vmClass: KClass<SearchDatePickerViewModel>
         get() = SearchDatePickerViewModel::class
 
+    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
+
+    // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
 
     companion object {
@@ -142,20 +146,37 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         }
     }
 
-    override fun createObserver() = Unit
+    override fun createObserver() {
+        launch(Lifecycle.State.STARTED) {
+            sharedViewModel.currentLanguage.collect {
+                // 更新日曆標題
+                setCalendarTitle(
+                    mBinding.calendarView.curYear,
+                    mBinding.calendarView.curMonth
+                )
+            }
+        }
+    }
 
     private fun setCalendarTitle(year: Int, month: Int) {
+        val locale = sharedViewModel.getCurrentLanguage()
         val monthStr =
-            SimpleDateFormat("MMMM", Locale.getDefault())
+            SimpleDateFormat("MMMM", locale)
                 .format(
-                    Calendar.getInstance(Locale.getDefault()).apply {
+                    Calendar.getInstance(locale).apply {
                         set(Calendar.YEAR, year)
                         set(Calendar.MONTH, month - 1)
                     }.time
                 )
+
+
         mBinding.tvCalendarTitle.text =
-            requireContext().getString(
-                R.string.search_result_race_calendar_title,
+            String.format(
+                SkinnableResourceManager.getTextResourceText(
+                    requireContext(),
+                    R.string.search_result_race_calendar_title,
+                    locale.language
+                ),
                 monthStr,
                 "$year"
             )

@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -92,8 +91,16 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     override fun createObserver() {
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
-                groupData.collect {
-                    updateUI()
+                launch {
+                    groupData.collect {
+                        updateUI()
+                    }
+                }
+
+                launch {
+                    sharedViewModel.currentLanguage.collect {
+                        gridAdapter.updateLanguage(it)
+                    }
                 }
             }
         }

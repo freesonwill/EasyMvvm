@@ -1,9 +1,9 @@
 package com.walisport.module.search.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -32,6 +32,8 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
     var onBetClick: ((SearchMatchBean) -> Unit)? = null
     var onFavoriteClick: ((SearchMatchBean) -> Unit)? = null
 
+    private var locale: Locale = Locale.getDefault()
+
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
             is SearchResultRaceItemType.Header -> VIEW_TYPE_HEADER
@@ -49,14 +51,15 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                 headerBinding.tvTitle.text =
                     run {
                         SimpleDateFormat(
-                            ContextCompat.getString(
+                            SkinnableResourceManager.getTextResourceText(
                                 holder.itemView.context,
-                                R.string.search_result_race_date_format_display
+                                R.string.search_result_race_date_format_display,
+                                locale.language
                             ),
-                            Locale.getDefault()
+                            locale
                         )
                     }.run {
-                        SimpleDateFormat("yyyy/M/d", Locale.getDefault()).parse(item.title)
+                        SimpleDateFormat("yyyy/M/d", locale).parse(item.title)
                             ?.let { format(it) } ?: item.title
                     }
             }
@@ -73,7 +76,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                                     holder.itemView.context.getString(R.string.search_result_race_playing)
 
                                 else -> {
-                                    SimpleDateFormat("HH:mm", Locale.getDefault())
+                                    SimpleDateFormat("HH:mm", locale)
                                         .format(Date(basicInfo.startTime))
                                 }
                             }
@@ -168,6 +171,21 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
         return BaseViewHolder(binding)
     }
 
+    /**
+     * 更新语言设置
+     * @param locale 新的语言环境
+     */
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateLanguage(locale: Locale) {
+        this.locale = locale
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 更新比赛的收藏状态
+     * @param matchId 比赛ID
+     * @param collectStatus 收藏状态，true表示已收藏，false表示未收藏
+     */
     fun updateFavoriteStatus(matchId: Long, collectStatus: Boolean) {
         val index = currentList.indexOfFirst {
             (it as? SearchResultRaceItemType.Item)?.data?.matchId == matchId
