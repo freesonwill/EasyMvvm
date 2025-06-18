@@ -14,5 +14,5 @@
         android:layout_marginTop="@dimen/dp_12"
         android:textSize="14sp"
         android:textColor="@color/main_text"
-        android:text="讀取中"/>
+        android:text="@string/loading_view_text"/>
 </merge>

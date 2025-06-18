@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="refreshing">Atualizando…</string>
+    <string name="pull_refresh">Puxe para atualizar…</string>
+    <string name="net_refresh">Atualizar</string>
+    <string name="search_title">Pesquisar</string>
+    <string name="loading">Carregando…</string>
+    <string name="on_loading">Carregando</string>
+    <string name="pull_load">Puxe para cima para carregar mais…</string>
+    <string name="error_net">Erro de rede, verifique as configurações de rede</string>
+    <string name="toast_over_remaining">Saldo insuficiente</string>
+    <string name="toast_over_max">Limite de aposta excedido</string>
+    <string name="loading_view_text">Carregando</string>
+</resources>
