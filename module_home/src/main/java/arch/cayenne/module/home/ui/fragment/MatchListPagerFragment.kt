@@ -137,7 +137,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-        if (!preEmpty) mViewModel.hideLoading()
+
         matchAdapter.submitList(matchList)
         if (preEmpty && matchList.isNotEmpty()) {
             mBinding.rvHomeGameList.doOnPreDraw {
