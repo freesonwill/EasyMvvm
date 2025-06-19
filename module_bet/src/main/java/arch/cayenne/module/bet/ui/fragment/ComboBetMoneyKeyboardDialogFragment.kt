@@ -137,8 +137,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 showToast(msg)
             }
         }
-        mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
-            mBinding.tvMoney.text = it
+        mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
+            mBinding.tvMoney.text = CurrencySymbols.getSymbol(it.currency)
         }
     }
 

@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
@@ -15,8 +16,9 @@ import kotlinx.coroutines.withContext
 class UnsettleRepository(
     scope: CoroutineScope,
     betSlipOrderDao: BetSlipOrderDao,
+    infoDao: InfoDao,
     remoteManager: BetSlipRemoteManager
-): OrderSlipRepository(scope, betSlipOrderDao, remoteManager) {
+) : OrderSlipRepository(scope, betSlipOrderDao, infoDao, remoteManager) {
 
     private var notifyScope: Job? = null
 

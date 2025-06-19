@@ -2,6 +2,7 @@ package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import galaxy.client.proto.Client
@@ -12,6 +13,7 @@ import kotlinx.coroutines.withContext
 class ReserveSlipRepository(
     scope: CoroutineScope,
     private val betSlipReserveDao: BetSlipReserveDao,
+    private val infoDao: InfoDao,
     remoteManager: BetSlipRemoteManager
 ) : BaseBetSlipRepository(scope, remoteManager) {
 
@@ -38,6 +40,8 @@ class ReserveSlipRepository(
             if (data.isEmpty()) {
                 betSlipReserveDao.deleteAll()
             } else {
+                val currency = infoDao.getCurrency()
+                data.forEach { it.currency = currency }
                 betSlipReserveDao.insert(data)
                 betSlipReserveDao.deleteMissing(data.map { it.reserveId })
             }
@@ -66,6 +70,8 @@ class ReserveSlipRepository(
         )
         return@withContext if (result.error == null && result.data != null) {
             val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            val currency = infoDao.getCurrency()
+            data.forEach { it.currency = currency }
             betSlipReserveDao.insert(data)
             ApiResponseState.Succeeded(data)
         } else {

@@ -6,9 +6,15 @@ package arch.cayenne.lib.common.data.constants
  * @description: 货币符号
  */
 object CurrencySymbols {
-    const val CNY = "¥"
-    const val USD = "$"
-    const val JPY = "¥"
-    const val EUR = "€"
-    const val GBP = "£"
+
+    fun getSymbol(currency: String): String {
+        return when (currency) {
+            "CNY" -> "¥"
+            "USD" -> "$"
+            "JPY" -> "¥"
+            "EUR" -> "€"
+            "GBP" -> "£"
+            else -> ""
+        }
+    }
 }

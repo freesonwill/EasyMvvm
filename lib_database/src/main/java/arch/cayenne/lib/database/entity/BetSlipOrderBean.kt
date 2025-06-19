@@ -1,5 +1,6 @@
 package arch.cayenne.lib.database.entity
 
+import android.icu.util.Currency
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -29,7 +30,8 @@ data class BetSlipOrderBean (
     val resultStatus: Int,                     // 訂單結果：0-未結算，1-贏，2-和局，3-輸，4-輸一半，5-贏一半，6-退款，7-提前結算
     @Embedded
     val earlySettlePrice: EarlySettlePriceBean, // 提前結算報價
-    var betSlipType: Int
+    var betSlipType: Int,
+    var currency: String//币种
 ): BetSlipData
 
 data class OrderSelectionBean(
