@@ -24,15 +24,11 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
     BaseAdapter<BetSlipData, BaseBetSlipViewHolder<*>, ViewBinding>(BetSlipCompare()) {
 
     private var liveListener: BetSlipLiveListener? = null
-    private var betSlipListener: BetSlipListener? = null
 
     fun setLiveListener(liveListener: BetSlipLiveListener) {
         this.liveListener = liveListener
     }
 
-    fun setBetSlipListener(betSlipListener: BetSlipListener) {
-        this.betSlipListener = betSlipListener
-    }
 
     override fun createViewBinding(
         inflater: LayoutInflater, parent: ViewGroup, viewType: Int
@@ -66,7 +62,6 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
 //                }
 //        })
         holder.setLiveListener(liveListener)
-        holder.setBetSlipListener(betSlipListener)
         return holder
     }
 
@@ -81,7 +76,4 @@ open class BetSlipAdapter(private val betSlipType: BetSlipEnum) :
         fun onLiveButtonClick(data: BetSlipSelectionData)
     }
 
-    interface BetSlipListener {
-        fun getMoneySymbol(): String
-    }
 }

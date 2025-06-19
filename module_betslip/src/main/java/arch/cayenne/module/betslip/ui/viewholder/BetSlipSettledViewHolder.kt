@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewholder
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -47,7 +48,7 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
             it.betSettledTvDate.text = order.betTime.getDetailFormatDate()
             it.betSettledTvBetcodeValue.text = order.betId
             it.betSettledTvOddsValue.text = order.odds
-            val betAmount = "${moneySymbol}${order.betAmount}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount}"
             it.betSettledTvBettingValue.text = betAmount
             settledStatus(order)
 
@@ -55,13 +56,13 @@ class BetSlipSettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
                 BetSlipResultOrderStatusEnum.getStatus(order.resultStatus) == BetSlipResultOrderStatusEnum.EarlySettle
             mBinding.betSettledTvPart.isVisible = hasPartSettled
             mBinding.betSettledTvPartValue.isVisible = hasPartSettled
-            val earlyAmount = "${moneySymbol}${order.earlyBetAmount}"
+            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.earlyBetAmount}"
             mBinding.betSettledTvPartValue.text = earlyAmount
 
             val amount =
                 (if (hasPartSettled) order.earlyReturnAmount else order.returnAmount).toMoney()
             it.betSettledTvExceptValue.text =
-                if (amount >= 0) "${moneySymbol}${amount.getMoney()}" else "-${moneySymbol}${amount.getMoney()}"
+                if (amount >= 0) "${CurrencySymbols.getSymbol(order.currency)}${amount.getMoney()}" else "-${CurrencySymbols.getSymbol(order.currency)}${amount.getMoney()}"
 
             val colorRes = if (amount > 0) {
                 arch.cayenne.lib.res.R.color.win_color

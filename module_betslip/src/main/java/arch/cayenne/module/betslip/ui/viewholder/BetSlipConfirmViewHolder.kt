@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
@@ -45,9 +46,9 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
-                val betAmount = "${moneySymbol}${order.betAmount}"
+                val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount}"
                 it.betConfirmTvBettingValue.text = betAmount
-                val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
+                val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
                 it.betConfirmTvExceptValue.text = exceptAmount
             }
         }
