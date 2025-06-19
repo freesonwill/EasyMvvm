@@ -67,10 +67,4 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
         }
     }
 
-    private fun whenScoreIsNull(score: String): String {
-        if (score.isEmpty()) {
-            return "0-0"
-        }
-        return score
-    }
 }

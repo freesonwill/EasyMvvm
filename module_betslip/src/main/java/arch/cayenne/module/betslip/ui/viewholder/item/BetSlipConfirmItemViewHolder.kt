@@ -36,7 +36,7 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
             betConfirmTvAodds.text =
                 binding.root.resources.getString(R.string.live_bet_except_odds, item.odds)
             betConfirmTvStatus.isVisible = item.inPlay
-            val score = item.marketName + "  (${item.betScore})"
+            val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
             betConfirmTvScore.text = score
             betConfirmTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
         }

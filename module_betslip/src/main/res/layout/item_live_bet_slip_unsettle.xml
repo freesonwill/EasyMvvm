@@ -17,14 +17,20 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_unsettled_tv_race"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:ellipsize="middle"
+        android:maxLines="1"
         android:text="中国 vs 巴西"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_iv_ball"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_iv_ball"
+        app:layout_constraintRight_toLeftOf="@id/iv_circle_arrow"
+        app:layout_goneMarginEnd="@dimen/dp_16"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_ball" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -40,13 +46,17 @@
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_unsettled_tv_introduce"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginEnd="@dimen/dp_6"
+        android:ellipsize="middle"
+        android:maxLines="1"
         android:text="中国 +0.5"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
+        app:layout_constraintRight_toLeftOf="@id/bet_unsettled_tv_aodds"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_ball" />
 
 
@@ -81,15 +91,14 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginStart="@dimen/dp_6"
+        android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
         android:text="@string/live_bet_full_handicap"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_tv_status"
         app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_introduce"
-        android:layout_marginTop="@dimen/dp_12"
-        app:layout_goneMarginStart="0dp"
-        />
+        app:layout_goneMarginStart="0dp" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_unsettled_tv_start"
@@ -106,8 +115,8 @@
         android:id="@+id/line"
         android:layout_width="0dp"
         android:layout_height="2dp"
-        android:layout_marginTop="@dimen/dp_14"
         android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="@dimen/dp_14"
         android:background="@drawable/bet_district_line"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
