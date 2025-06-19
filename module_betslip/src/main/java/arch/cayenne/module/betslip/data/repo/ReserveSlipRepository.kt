@@ -1,9 +1,10 @@
 package arch.cayenne.module.betslip.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.lib.database.dao.InfoDao
-import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -25,25 +26,29 @@ class ReserveSlipRepository(
         matchId: Long,
         cursorBetTime: Long?,
         size: Int,
-    ): List<BetSlipReserveBean>? {
-        return withContext(scope.coroutineContext) {
-            remoteManager.getReserveOrder(
-                startTime,
-                endTime,
-                if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-                if (matchId == -1L) null else matchId,
-                cursorBetTime,
-                size
-            ).apply {
-                if (this.isNullOrEmpty()) {
-                    betSlipReserveDao.deleteAll()
-                } else {
-                    val currency = infoDao.getCurrency()
-                    this.forEach { it.currency = currency }
-                    betSlipReserveDao.insert(this)
-                    betSlipReserveDao.deleteMissing(this.map { it.reserveId })
-                }
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getReserveOrder(
+            startTime,
+            endTime,
+            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
+            if (matchId == -1L) null else matchId,
+            cursorBetTime,
+            size
+        )
+        return@withContext if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            if (data.isEmpty()) {
+                betSlipReserveDao.deleteAll()
+            } else {
+                val currency = infoDao.getCurrency()
+                data.forEach { it.currency = currency }
+                betSlipReserveDao.insert(data)
+                betSlipReserveDao.deleteMissing(data.map { it.reserveId })
             }
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipReserveDao.deleteAll()
+            ApiResponseState.Failed(result.error)
         }
     }
 
@@ -54,24 +59,24 @@ class ReserveSlipRepository(
         matchId: Long,
         cursorBetTime: Long?,
         size: Int,
-    ): List<BetSlipReserveBean>? {
-        return withContext(scope.coroutineContext) {
-            remoteManager.getReserveOrder(
-                startTime,
-                endTime,
-                if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-                if (matchId == -1L) null else matchId,
-                cursorBetTime,
-                size
-            ).apply {
-                if (this == null) {
-                    betSlipReserveDao.deleteAll()
-                } else {
-                    val currency = infoDao.getCurrency()
-                    this.forEach { it.currency = currency }
-                    betSlipReserveDao.insert(this)
-                }
-            }
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getReserveOrder(
+            startTime,
+            endTime,
+            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
+            if (matchId == -1L) null else matchId,
+            cursorBetTime,
+            size
+        )
+        return@withContext if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            val currency = infoDao.getCurrency()
+            data.forEach { it.currency = currency }
+            betSlipReserveDao.insert(data)
+            ApiResponseState.Succeeded(data)
+        } else {
+            betSlipReserveDao.deleteAll()
+            ApiResponseState.Failed(result.error)
         }
     }
 
