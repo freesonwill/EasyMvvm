@@ -17,7 +17,7 @@ sealed class ApiResponseState {
 /***
  * API請求失敗的狀態, 由外部實作失敗狀態
  */
-sealed interface ApiFailedState {
+interface ApiFailedState {
     val code: Int
     val message: String
 }
