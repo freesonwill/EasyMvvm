@@ -52,7 +52,7 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
             if (autoUpdateState) {
                 _apiStateListener.value = DataState.Loading
             }
-            handle?.invoke(ApiResponseState.Processing)
+            handle?.invoke(ApiResponseState.Processing())
             val response = jobs.await()
             if (autoUpdateState) {
                 if (response is ApiResponseState.Failed) {
