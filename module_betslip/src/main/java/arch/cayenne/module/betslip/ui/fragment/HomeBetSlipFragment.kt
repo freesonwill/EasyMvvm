@@ -120,24 +120,26 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
                 tab.customView = textView
             }.attach()
         }
+        mBinding.root.post {
+            mBinding.tabLayout.clearOnTabSelectedListeners()
+            mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
+                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab?.position ?: 0,
+                        viewPager = mBinding.viewPager,
+                        fakeViewPager = mBinding.ivFaker
+                    )
+                }
 
-        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
-                viewPagerAnimHelper.doDirectViewPagerAnim(
-                    targetPosition = tab?.position ?: 0,
-                    viewPager = mBinding.viewPager,
-                    fakeViewPager = mBinding.ivFaker
-                )
-            }
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
+                }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-                (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
-            }
-
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-        })
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
+        }
         mBinding.tabLayout.removeAllTips()
     }
 

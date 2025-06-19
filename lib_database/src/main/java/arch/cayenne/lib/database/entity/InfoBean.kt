@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class InfoBean(
     @PrimaryKey val uid: Int,
     val balance: Long,
+    val currency: String,
     var login: Boolean
 )
