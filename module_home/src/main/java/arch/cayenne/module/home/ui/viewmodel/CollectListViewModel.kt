@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.CollectListRepository
@@ -23,7 +24,7 @@ import plugin.koin.KoinViewModel
 class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     override val repository : CollectListRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     override fun initViewModel() {
         super.initViewModel()

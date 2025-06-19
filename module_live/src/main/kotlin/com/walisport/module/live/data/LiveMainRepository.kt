@@ -2,6 +2,7 @@ package com.walisport.module.live.data
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteManager
@@ -19,7 +20,7 @@ class LiveMainRepository(
 ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeBalance(): Flow<Long> = database.infoDao().observeBalance()
+    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance()
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
     fun observeConnectStateFlow():Flow<ConnectState> =remoteManager.getConnectStateFlow()
     // 500-1003: 获取比赛详情
