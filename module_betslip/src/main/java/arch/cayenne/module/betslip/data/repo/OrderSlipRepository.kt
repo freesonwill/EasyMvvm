@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -45,16 +46,18 @@ open class OrderSlipRepository(
             if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
             if (matchId == -1L) null else matchId
         )
-        if (result.isNullOrEmpty()) {
+        return@withContext if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toOrderBean(type) }
+            if (data.isEmpty()) {
+                betSlipOrderDao.deleteByType(type)
+            } else {
+                betSlipOrderDao.insert(data)
+                betSlipOrderDao.deleteMissing(type, data.map { it.betId })
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
             betSlipOrderDao.deleteByType(type)
-        } else {
-            betSlipOrderDao.insert(result)
-            betSlipOrderDao.deleteMissing(type, result.map { it.betId })
-        }
-        return@withContext if (result == null) {
-            ApiResponseState.Failed()
-        } else {
-            ApiResponseState.Succeeded(result)
+            ApiResponseState.Failed(result.error)
         }
     }
 
@@ -76,12 +79,13 @@ open class OrderSlipRepository(
             if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
             if (matchId == -1L) null else matchId
         )
-        return@withContext if (result == null) {
-            betSlipOrderDao.deleteByType(type)
-            ApiResponseState.Failed()
+        if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toOrderBean(type) }
+            betSlipOrderDao.insert(data)
+            ApiResponseState.Succeeded(data)
         } else {
-            betSlipOrderDao.insert(result)
-            ApiResponseState.Succeeded(result)
+            betSlipOrderDao.deleteByType(type)
+            ApiResponseState.Failed(result.error)
         }
     }
 

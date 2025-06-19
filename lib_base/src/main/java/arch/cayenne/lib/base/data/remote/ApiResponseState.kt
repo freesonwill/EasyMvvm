@@ -11,13 +11,13 @@ sealed class ApiResponseState {
     // api 請求成功
     data class Succeeded<T>(val data: T) : ApiResponseState()
     // api 請求失敗，返回錯誤信息
-    data class Failed(val error: ApiFailedState? = null) : ApiResponseState()
+    data class Failed(val error: ApiFailedState?) : ApiResponseState()
 }
 
 /***
  * API請求失敗的狀態, 由外部實作失敗狀態
  */
 interface ApiFailedState {
-    val code: Int
-    val message: String
+    val code: Int?
+    val msg: String
 }

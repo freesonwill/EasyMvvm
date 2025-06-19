@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.data.repo
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
 import arch.cayenne.module.betslip.BetSlipRemoteManager
+import arch.cayenne.module.betslip.data.constants.CommonExtension.toReserveOrderBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -32,16 +33,18 @@ class ReserveSlipRepository(
             cursorBetTime,
             size
         )
-        if (result.isNullOrEmpty()) {
+        return@withContext if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            if (data.isEmpty()) {
+                betSlipReserveDao.deleteAll()
+            } else {
+                betSlipReserveDao.insert(data)
+                betSlipReserveDao.deleteMissing(data.map { it.reserveId })
+            }
+            ApiResponseState.Succeeded(data)
+        } else {
             betSlipReserveDao.deleteAll()
-        } else {
-            betSlipReserveDao.insert(result)
-            betSlipReserveDao.deleteMissing(result.map { it.reserveId })
-        }
-        if (result == null) {
-            ApiResponseState.Failed()
-        } else {
-            ApiResponseState.Succeeded(result)
+            ApiResponseState.Failed(result.error)
         }
     }
 
@@ -61,12 +64,13 @@ class ReserveSlipRepository(
             cursorBetTime,
             size
         )
-        return@withContext if (result == null) {
-            betSlipReserveDao.deleteAll()
-            ApiResponseState.Failed()
+        return@withContext if (result.error == null && result.data != null) {
+            val data = result.data!!.orderList.map { it.toReserveOrderBean() }
+            betSlipReserveDao.insert(data)
+            ApiResponseState.Succeeded(data)
         } else {
-            betSlipReserveDao.insert(result)
-            ApiResponseState.Succeeded(result)
+            betSlipReserveDao.deleteAll()
+            ApiResponseState.Failed(result.error)
         }
     }
 
