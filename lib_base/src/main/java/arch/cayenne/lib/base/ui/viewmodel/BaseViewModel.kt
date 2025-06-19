@@ -59,11 +59,18 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
                 if (response is ApiResponseState.Failed) {
                     _apiStateListener.value = DataState.NetworkUnavailable
                 } else if (response is ApiResponseState.Succeeded<*>) {
-                    val data = response.data
-                    if (data is List<*> && data.isEmpty()) {
-                        _apiStateListener.value = DataState.DataEmpty
+                    val isEmpty = when (val data = response.data) {
+                        null -> true
+                        is Collection<*> -> data.isEmpty()
+                        is Array<*> -> data.isEmpty()
+                        is Map<*, *> -> data.isEmpty()
+                        else -> false
+                    }
+
+                    _apiStateListener.value = if (isEmpty) {
+                        DataState.DataEmpty
                     } else {
-                        _apiStateListener.value = DataState.LoadSuccess
+                        DataState.LoadSuccess
                     }
                 }
             }

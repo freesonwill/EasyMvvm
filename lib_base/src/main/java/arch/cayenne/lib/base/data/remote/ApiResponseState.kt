@@ -9,7 +9,7 @@ sealed class ApiResponseState {
     // api 請求中
     data class Processing(val process: Int = 0, val total: Int = 100) : ApiResponseState()
     // api 請求成功
-    data class Succeeded<T>(val data: T) : ApiResponseState()
+    data class Succeeded<T>(val data: T?) : ApiResponseState()
     // api 請求失敗，返回錯誤信息
     data class Failed(val error: ApiFailedState?) : ApiResponseState()
 }
