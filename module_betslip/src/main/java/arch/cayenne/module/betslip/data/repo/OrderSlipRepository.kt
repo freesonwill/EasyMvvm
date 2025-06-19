@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.BetSlipRemoteManager
@@ -34,23 +35,26 @@ open class OrderSlipRepository(
         size: Int,
         sportIds: List<Int>,
         matchId: Long,
-    ): List<BetSlipOrderBean>? {
-        return withContext(scope.coroutineContext) {
-            remoteManager.getOrderReq(
-                type,
-                startTime,
-                endTime,
-                cursorBetTime,
-                size,
-                if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-                if (matchId == -1L) null else matchId)
-        }.apply {
-            if (this.isNullOrEmpty()) {
-                betSlipOrderDao.deleteByType(type)
-            } else {
-                betSlipOrderDao.insert(this)
-                betSlipOrderDao.deleteMissing(type, this.map { it.betId })
-            }
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
+            if (matchId == -1L) null else matchId
+        )
+        if (result.isNullOrEmpty()) {
+            betSlipOrderDao.deleteByType(type)
+        } else {
+            betSlipOrderDao.insert(result)
+            betSlipOrderDao.deleteMissing(type, result.map { it.betId })
+        }
+        return@withContext if (result == null) {
+            ApiResponseState.Failed()
+        } else {
+            ApiResponseState.Succeeded(result)
         }
     }
 
@@ -62,22 +66,22 @@ open class OrderSlipRepository(
         size: Int,
         sportIds: List<Int>,
         matchId: Long,
-    ): List<BetSlipOrderBean>? {
-        return withContext(scope.coroutineContext) {
-            remoteManager.getOrderReq(
-                type,
-                startTime,
-                endTime,
-                cursorBetTime,
-                size,
-                if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
-                if (matchId == -1L) null else matchId)
-        }.apply {
-            if (this == null) {
-                betSlipOrderDao.deleteByType(type)
-            } else {
-                betSlipOrderDao.insert(this)
-            }
+    ): ApiResponseState = withContext(scope.coroutineContext) {
+        val result = remoteManager.getOrderReq(
+            type,
+            startTime,
+            endTime,
+            cursorBetTime,
+            size,
+            if (sportIds.size == 1 && sportIds.first() == -1) null else sportIds,
+            if (matchId == -1L) null else matchId
+        )
+        return@withContext if (result == null) {
+            betSlipOrderDao.deleteByType(type)
+            ApiResponseState.Failed()
+        } else {
+            betSlipOrderDao.insert(result)
+            ApiResponseState.Succeeded(result)
         }
     }
 

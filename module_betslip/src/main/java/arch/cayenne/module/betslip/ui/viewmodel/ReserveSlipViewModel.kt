@@ -3,14 +3,15 @@ package arch.cayenne.module.betslip.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import kotlinx.coroutines.launch
 
-class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlipViewModel() {
+class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSlipViewModel() {
 
     //预约注单
     private val _reserveLiveData = MutableLiveData<List<BetSlipReserveBean>>()
@@ -28,11 +29,6 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
         viewModelScope.launch {
             repo.observeReserveBean().collect { data ->
                 _reserveLiveData.value = data
-                if (data.isEmpty()) {
-                    setState(DynamicStateLayout.States.DATA_EMPTY)
-                } else {
-                    setState(DynamicStateLayout.States.NULL)
-                }
             }
         }
     }
@@ -58,8 +54,8 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
     }
 
     override fun refreshData(status: BetSlipEnum) {
-        viewModelScope.launch {
-            val resp = repo.getReserveOrder(
+        callApi({
+            repo.getReserveOrder(
                 startTime,
                 endTime,
                 sportIds,
@@ -67,16 +63,13 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 null,
                 SIZE
             )
-            if (resp == null) {
-                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
-            }
-        }
+        })
     }
 
     override fun loadMoreData(status: BetSlipEnum) {
         val list = _reserveLiveData.value
-        viewModelScope.launch {
-            val resp = repo.loadMoreReserveOrder(
+        callApi({
+            repo.loadMoreReserveOrder(
                 startTime,
                 endTime,
                 sportIds,
@@ -84,10 +77,11 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository): BaseBetSlip
                 list?.lastOrNull()?.reserveTime,
                 SIZE
             )
-            if (resp == null) {
-                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
+        }, {
+            if (it is ApiResponseState.Failed) {
+                setState(DataState.NetworkUnavailable)
             }
-        }
+        }, autoUpdateState = false)
     }
 
     override fun canLoadMore(): Boolean {
