@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.viewmodel
 
+import android.icu.text.IDNA.Info
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -23,20 +24,19 @@ class ComboBetViewModel(
     private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
-    private val _onBalanceListener = MutableLiveData<Long>()
-    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData<InfoBean>()
+    val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
 
     val remainingBalance: Long
-        get() = onBalanceListener.value?.let { balance ->
+        get() = onBalanceListener.value?.let { infoBean ->
             onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
-                balance - betAmount
-            } ?: balance
+                infoBean.balance - betAmount
+            } ?: infoBean.balance
         } ?: 0
 
-    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY.symbol)
-    val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
+
     val moneySymbol: String
-        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY.symbol
+        get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     init {
         viewModelScope.launch {

@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.database.entity.AddSelectionStatus
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
@@ -24,7 +25,7 @@ class ChampionViewModel : BaseViewModel() {
     private val balanceRepository: BalanceRepository by inject()
 
     private var matchId: Long = 0
-    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
     val matchWithMarketsChange by lazy { MutableLiveData<MatchWithMarkets?>() }
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> = _isLoading

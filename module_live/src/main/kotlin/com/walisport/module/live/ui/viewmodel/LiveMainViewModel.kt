@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
@@ -67,7 +68,7 @@ class LiveMainViewModel(
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
-    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
     fun observeConnectStateFlow():Flow<ConnectState> =repo.observeConnectStateFlow()
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)

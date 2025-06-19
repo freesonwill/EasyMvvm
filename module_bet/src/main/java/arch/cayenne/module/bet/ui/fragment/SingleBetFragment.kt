@@ -144,7 +144,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             setBetData(it)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
-            val money = getString(R.string.btn_bet_win_money).format(CurrencySymbols.CNY.symbol, it)
+            val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
             mBinding.tvBetMoney.text = money
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
@@ -157,12 +157,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             }
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${it.getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
             mBinding.tvBalance.text = money
+            mBinding.tvMoney.text = mViewModel.moneySymbol
         }
-        mViewModel.moneySymbolListener.observe(viewLifecycleOwner) {
-            mBinding.tvMoney.text = it
-        }
+
         mViewModel.onReserveOddsListener.observe(viewLifecycleOwner) { odds ->
             if (odds == null) {
                 mBinding.tvBetHint.text = getString(R.string.btn_bet_hint)
