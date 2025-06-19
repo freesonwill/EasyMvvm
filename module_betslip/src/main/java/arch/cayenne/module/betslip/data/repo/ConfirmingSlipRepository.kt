@@ -1,6 +1,7 @@
 package arch.cayenne.module.betslip.data.repo
 
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.module.betslip.BetSlipRemoteManager
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import kotlinx.coroutines.CoroutineScope
@@ -10,8 +11,9 @@ import kotlinx.coroutines.launch
 class ConfirmingSlipRepository(
     scope: CoroutineScope,
     betSlipOrderDao: BetSlipOrderDao,
+    infoDao: InfoDao,
     remoteManager: BetSlipRemoteManager
-): OrderSlipRepository(scope, betSlipOrderDao, remoteManager) {
+) : OrderSlipRepository(scope, betSlipOrderDao, infoDao, remoteManager) {
 
     private var orderStatusJob: Job? = null
 

@@ -19,7 +19,7 @@ class SportsListAdapter(
     private var selectedPosition = 0
     override fun convertPlus(holder: BaseViewHolder, binding: ItemSportsBinding, position: Int) {
         val sport = getItem(position)
-        val sportType = SportType.fromId(sport.id)!!
+        val sportType = SportType.fromId(sport.id) ?: SportType.Init
         val context = holder.itemView.context
         binding.apply {
             tvSportTitle.text = context.getString(sportType.titleResId)

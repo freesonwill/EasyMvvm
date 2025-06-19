@@ -42,11 +42,7 @@ class BetSlipConfirmFragment :
                 }
             }
         })
-        betSlipAdapter.setBetSlipListener(object : BetSlipAdapter.BetSlipListener {
-            override fun getMoneySymbol(): String {
-                return settingViewModel.moneySymbol
-            }
-        })
+
         mBinding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(requireContext())
             it.adapter = betSlipAdapter

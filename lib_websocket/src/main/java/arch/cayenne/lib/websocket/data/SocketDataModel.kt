@@ -1,5 +1,6 @@
 package arch.cayenne.lib.websocket.data
 
+import arch.cayenne.lib.base.data.remote.ApiFailedState
 import com.google.protobuf.GeneratedMessageLite
 
 interface IRequest
@@ -7,8 +8,8 @@ interface IRequest
 interface IResponse
 
 //Socket有收到message後處理出錯
-interface SocketResponseError {
-    val msg: String
+interface SocketResponseError: ApiFailedState {
+    override val msg: String
 }
 
 abstract class ISocketData {
@@ -50,28 +51,34 @@ data class SocketResponseData<T: GeneratedMessageLite<*,*>>(
 
 //在解密過程錯誤
 data class InvalidDataResponseError(
-    override val msg: String = "Invalid socket data type!"
+    override val msg: String = "Invalid socket data type!",
+    override val code: Int? = null
 ): IResponse, SocketResponseError
 
 //解析的proto的類型錯誤，檢查是否給錯proto type
 data class InvalidProtoTypeResponseError(
-    override val msg: String = "Invalid proto type or missing proto mapping!"
-) : SocketResponseError
+    override val msg: String = "Invalid proto type or missing proto mapping!",
+    override val code: Int? = null
+) : SocketResponseError, ApiFailedState
 
 //等待API回來時超出預期時間
 data class ResponseTimeOutError(
-    override val msg: String = "response time out!!"
-) : SocketResponseError
+    override val msg: String = "response time out!!",
+    override val code: Int? = null
+) : SocketResponseError, ApiFailedState
 
 //沒有token
 data class LoginTokenFailedError(
-    override val msg: String = "no token or uid data!!"
-) : SocketResponseError
+    override val msg: String = "no token or uid data!!",
+    override val code: Int? = null
+) : SocketResponseError, ApiFailedState
 
 data class InvalidNetworkError(
-    override val msg: String = "Network is not available, please check your connection!"
-) : IResponse, SocketResponseError
+    override val msg: String = "Network is not available, please check your connection!",
+    override val code: Int? = null
+) : IResponse, SocketResponseError, ApiFailedState
 
 data class InvalidEncryptDataError(
-    override val msg: String = "Invalid encrypted data, decryption failed!"
-) : IResponse, SocketResponseError
+    override val msg: String = "Invalid encrypted data, decryption failed!",
+    override val code: Int? = null
+) : IResponse, SocketResponseError, ApiFailedState

@@ -31,7 +31,8 @@ object CommonExtension {
             earlySettleTimes = earlyCount,
             resultStatus = resultStatus,
             earlySettlePrice = earlySettlePrice.toEarlySettlePriceBean(),
-            betSlipType = betSlipType
+            betSlipType = betSlipType,
+            currency = ""
         )
     }
 
@@ -66,7 +67,8 @@ object CommonExtension {
             reserveTime = reserveTime,
             betAmount = betAmount,
             selection = selection.toReserveOrderSelectionBean(),
-            betStatus = status
+            betStatus = status,
+            currency = ""
         )
     }
 

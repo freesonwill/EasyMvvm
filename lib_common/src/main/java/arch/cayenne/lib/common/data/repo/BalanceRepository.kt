@@ -13,4 +13,8 @@ class BalanceRepository(
     suspend fun getBalance(): Long {
         return infoDao.getBalance()
     }
+
+    suspend fun getCurrency(): String {
+        return infoDao.getCurrency()
+    }
 }
