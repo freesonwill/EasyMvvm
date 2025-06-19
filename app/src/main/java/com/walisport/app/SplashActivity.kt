@@ -61,33 +61,33 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     //qatest1
     //55468822
-    //token=NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV
+    //token=NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U
 
     //qatest2
     //55468823
-    //token=NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM
+    //token=NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0
 
     //qatest3
     //55468824
-    //token=NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda
+    //token=NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0
 
     //qatest4
     //55468825
-    //token=NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls
+    //token=NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy
 
     //qatest5
     //55468826
-    //token=NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX
+    //token=NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP
 
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV"),
-            Pair(55468823, "NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM"),
-            Pair(55468824, "NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda"),
-            Pair(55468825, "NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls"),
-            Pair(55468826, "NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX")
+            Pair(55468822, "NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0"),
+            Pair(55468824, "NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0"),
+            Pair(55468825, "NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy"),
+            Pair(55468826, "NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")
