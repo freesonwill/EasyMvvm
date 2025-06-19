@@ -27,6 +27,19 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
 
     open fun initViewModel() {}
 
+    /***
+     * 請求網路api
+     * @param api 透過repo請求網路api，repo api須返回ApiResponseState
+     * @param handle 處理ApiResponseState的回調函數
+     * @param autoUpdateState 是否自動更新狀態，默認為true
+     * @sample callApi({ repo.loadMore()
+     * }, handle = { response ->
+     *     if (it is ApiResponseState.Failed) {
+     *         setState(DataState.NetworkUnavailable)
+     *     }
+     * }, autoUpdateState = false)
+     * 例如加載更多不需處理空數據，僅須處理網路異常
+     */
     protected fun callApi(api: suspend () -> ApiResponseState, handle: ((ApiResponseState) -> Unit)? = null, autoUpdateState: Boolean = true) {
         if (autoUpdateState) {
             _apiStateListener.value = DataState.None
