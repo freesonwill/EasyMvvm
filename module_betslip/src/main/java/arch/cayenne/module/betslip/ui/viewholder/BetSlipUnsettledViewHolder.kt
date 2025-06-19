@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewholder
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -59,11 +60,11 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
-            val betAmount = "${moneySymbol}${order.betAmount}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount}"
             it.betUnsettledTvBettingValue.text = betAmount
-            val exceptAmount = "${moneySymbol}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
+            val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
-            val earlyAmount = "${moneySymbol}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
+            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
             it.betUnsettledBtAmount.text = earlyAmount
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
