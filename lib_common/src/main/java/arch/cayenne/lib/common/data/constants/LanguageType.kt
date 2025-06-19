@@ -1,4 +1,4 @@
-package com.walisport.module.setting.data
+package arch.cayenne.lib.common.data.constants
 
 enum class LanguageType(val value: String) {
     LANGUAGE_SIMPLE("zh"),   //简体中文

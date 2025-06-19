@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.ext.SportStringExt.balanceStringToLong
@@ -16,6 +17,7 @@ import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import galaxy.client.proto.Client
+import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -57,11 +59,7 @@ class CommonRepository(
                 this.uid = uid.toLong()
                 this.token = token
                 this.platform = 5
-                this.setting = Setting.newBuilder().apply {
-                    this.lang = "zh-CN"
-                    this.oddType = 0
-                }.build()
-
+                this.setting = getSystemSetting()
             }.build()
         }
 
@@ -76,7 +74,6 @@ class CommonRepository(
                 )
             )
         }
-
         return loginResp
     }
 
@@ -112,30 +109,128 @@ class CommonRepository(
 
     //觀察從API來的餘額變化並塞進資料庫
     suspend fun observeBettingOrderStatus() {
-        socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY).collect {
-            if (it.data == null || it.data!!.orderStatusList.isEmpty())
-                return@collect
-            val resultList = mutableListOf<BetResultLiteBean>()
-            it.data!!.orderStatusList.forEach { resp ->
-                betDao.updateDetailResult(resp.orderId, BetResultStatusEnum.getStatusByCode(resp.status))
-                betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
-                    val selection = betDao.getSelections(detail.betId)
-                    val matchName = selection.map { s -> s.matchName }
-                    val resultLiteBean = BetResultLiteBean(
-                        matchName,
-                        detail.combo,
-                        BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+        socketManager.observeProtoMessage<Client.OrderStatusNotify>(ApiCode.ORDER_STATUS_NOTIFY)
+            .collect {
+                if (it.data == null || it.data!!.orderStatusList.isEmpty())
+                    return@collect
+                val resultList = mutableListOf<BetResultLiteBean>()
+                it.data!!.orderStatusList.forEach { resp ->
+                    betDao.updateDetailResult(
+                        resp.orderId,
+                        BetResultStatusEnum.getStatusByCode(resp.status)
                     )
-                    resultList.add(resultLiteBean)
+                    betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
+                        val selection = betDao.getSelections(detail.betId)
+                        val matchName = selection.map { s -> s.matchName }
+                        val resultLiteBean = BetResultLiteBean(
+                            matchName,
+                            detail.combo,
+                            BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                        )
+                        resultList.add(resultLiteBean)
+                    }
+                    betResultFlow.emit(resultList)
                 }
-                betResultFlow.emit(resultList)
             }
-        }
     }
-
-
 
     fun reset() {
         socketManager.reset()
+    }
+
+    //读取用户系统配置信息
+    private fun getSystemSetting(): Setting {
+        val language = getLanguageType()
+        val oddsType = getOddsType()
+        val sysGoal = getNotifyMatchType(MATCH_GOAL)
+        val sysKick = getNotifyMatchType(MATCH_KICK)
+        val app = getNotifyMatchType(MATCH_APP)
+        return Setting.newBuilder().apply {
+            lang = language          //语言类型
+            oddType = oddsType       //赔率显示类型
+            systemGoal = sysGoal     //系统通知-进球
+            systemKickOff = sysKick  //系统通知-开球
+            appGoal = app            //app内通知-开球
+        }.build()
+    }
+
+    private fun getNotifyMatchType(type: Int): Common.NotifyMatchType {
+        return Common.NotifyMatchType.newBuilder().apply {
+            when (type) {
+                MATCH_GOAL -> {
+                    betMatch = getSystemBet()
+                    collectMatch = getSystemFav()
+                    allMatch = getSystemAll()
+                }
+
+                MATCH_KICK -> {
+                    betMatch = getKickBet()
+                    collectMatch = getKickFav()
+                    allMatch = getKickAll()
+                }
+
+                else -> {
+                    betMatch = getAppBet()
+                    collectMatch = getAppFav()
+                    allMatch = getAppAll()
+                }
+            }
+        }.build()
+    }
+
+    private fun getLanguageType(): String {
+        val lang = userDataManager.getValue(UserDataKey.KEY_LANGUAGE, "")
+        return when (lang) {
+            LanguageType.LANGUAGE_ENGLISH.value -> "en-US"
+            LanguageType.LANGUAGE_ID.value -> "id-ID"
+            LanguageType.LANGUAGE_PT.value -> "pt-PT"
+            else -> "zh-CN"
+        }
+    }
+
+    private fun getOddsType(): Int {
+        return userDataManager.getValue(UserDataKey.KEY_ODDS, 0)
+    }
+
+    private fun getSystemBet(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_SYSTEM_BET, false)
+    }
+
+    private fun getSystemFav(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_SYSTEM_FAV, false)
+    }
+
+    private fun getSystemAll(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_SYSTEM_ALL, false)
+    }
+
+    private fun getKickBet(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_KICK_BET, false)
+    }
+
+    private fun getKickFav(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_KICK_FAV, false)
+    }
+
+    private fun getKickAll(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_KICK_ALL, false)
+    }
+
+    private fun getAppBet(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_APP_BET, false)
+    }
+
+    private fun getAppFav(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_APP_FAV, false)
+    }
+
+    private fun getAppAll(): Boolean {
+        return userDataManager.getValue(UserDataKey.KEY_APP_ALL, false)
+    }
+
+    companion object {
+        const val MATCH_GOAL = 1
+        const val MATCH_KICK = 2
+        const val MATCH_APP = 3
     }
 }
