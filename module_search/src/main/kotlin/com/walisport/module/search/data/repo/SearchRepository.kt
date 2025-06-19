@@ -53,34 +53,47 @@ class SearchRepository(
      * @param key 要添加的关键字
      */
     fun addOneRecord(key: String) {
-        val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
+        // 获取当前用户ID
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
-        if (record.isEmpty()) {//为空直接添加
-            val temp = RecordBean(uid, key)
-            val list = listOf(temp)
-            val json = Gson().toJson(list)
-            userDataManager.setKeyValue(UserDataKey.KEY_RECORD, json)
-        } else {//记录不为空有2种情况：1有数据但无本账户数据 2有数据且存在本账户的数据
-            val list = getRecordList(record)
-            var isExist = false
-            for (item in list) {
-                val iid = item.uid
-                if (iid == uid) {
-                    val keyword = item.record
-                    isExist = true
-                    if (!keyword.contains(key)) {//不包含关键字才添加
-                        item.record = item.record + ";" + key
+        // 获取搜索记录
+        val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
+        // list形式的搜索记录
+        val list =
+            if (record.isNotBlank()) getRecordList(record).toMutableList()
+            else mutableListOf()
+
+        run {
+            if (record.isEmpty()) {
+                // 为空直接添加
+                list.add(RecordBean(uid, key))
+                true
+            } else {
+                // 记录不为空有2种情况：
+                // 1. 有数据但无本账户数据
+                // 2. 有数据且存在本账户的数据
+
+                list.find { it.uid == uid } ?.let {
+                    // 账户存在
+                    if(!it.record.split(";").contains(key)) {
+                        // 账户存在且记录中不存在该关键字
+                        it.record += ";$key"
+                        true
+                    } else {
+                        // 账户存在且记录中已存在该关键字
+                        false
                     }
+                } ?: run {
+                    // 账户不存在，直接新增
+                    list.add(RecordBean(uid, key))
+                    true
                 }
             }
-            if (isExist) {//有本账户数据则直接更新
-                val json = Gson().toJson(list)
-                userDataManager.setKeyValue(UserDataKey.KEY_RECORD, json)
-            } else {//无本账户数据则添加
-                val history: MutableList<RecordBean> = ArrayList()
-                val tmp = RecordBean(uid, key)
-                history.addAll(list)
-                history.add(tmp)
+        }.let { modified ->
+            if (modified) {
+                userDataManager.setKeyValue(
+                    UserDataKey.KEY_RECORD,
+                    Gson().toJson(list)
+                )
             }
         }
     }

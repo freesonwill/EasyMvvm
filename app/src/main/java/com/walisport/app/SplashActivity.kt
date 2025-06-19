@@ -21,15 +21,15 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     //zhangsan
     //55468809
-    // token=NTU0Njg4MDlfMTc0NzEyOTYzODM2Nzp1NzhzbW1ybHBiQlJqcUhJ
+    // token=NTU0Njg4MDlfMTc1MDMyNDQ5Nzk4NDo3ZGlxQUhkUmtEa1VBcVBu
 
     //wangzai
     //55468810
-    // token=NTU0Njg4MTBfMTc0NzEyOTY4NDEyMTpwMHVDUHhoRnpzRnNkbXdx
+    // token=NTU0Njg4MTBfMTc1MDIzOTUzOTU0ODp4R3UzYUM1elJ0WDd4NXE0
 
     //xiaoyang
     //55468807
-    // token=NTU0Njg4MDdfMTc0NzEyOTQyODg1NDpGRmp2SUhhN2hsWThtMXZS
+    // token=NTU0Njg4MDdfMTc1MDMyNDYyNTE1NDptNVBVWmtJN0ZqbkdFWTZo
 
     //wenxi
     //55468811
@@ -37,57 +37,57 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     //aquan
     //55468812
-    // token=NTU0Njg4MTJfMTc0NzEyOTc1ODE1ODpqd1BDVURxcTRkQWhzeWFy
+    // token=NTU0Njg4MTJfMTc1MDMyNDgxNzU4MzozUzF4VkV4ZlA3ZFF1QUNl
 
     //kc
     //uid=55468808
-    //token=NTU0Njg4MDhfMTc0NzEyOTc4ODA4MTpQYUNMcXFFbVVWVFBKak9M
+    //token=NTU0Njg4MDhfMTc1MDMyNDg1MzIwNjpkdWs0ejY3Q2hZQWdZRUR3
 
     //link
     //55468813
-    // token=NTU0Njg4MTNfMTc0NzEyOTgyODE0OTp5blR0RXhvcFJTdEFrbURq
+    // token=NTU0Njg4MTNfMTc1MDMyNDkzNDA5NjpJR3hCVDV4M1lXVHJ1Z3ZF
 
     //jeremy
     //55468814
-    // token=NTU0Njg4MTRfMTc0NzEyOTg2NDMyNjpFb004VEc1Y3FzeFlmWU12
+    // token=NTU0Njg4MTRfMTc1MDMyNDk2NzcxODozMU1ISnlqcWlta1E1OTZF
 
     //joseph
     //55468815
-    // token=NTU0Njg4MTVfMTc0NzEyOTg5MDc2NDoxQ3BMUGQzRkl4RG5qTUVT
+    // token=NTU0Njg4MTVfMTc1MDMyNDk5NjQ2NTpldFI0RVBaWFhKRjN1cktj
 
     //ricky
     //55468816
-    // token=NTU0Njg4MTZfMTc0NzEyOTkzNTk1MTp0dm5oQ3lwcXhNeTR5Ykdu
+    // token=NTU0Njg4MTZfMTc1MDMyNTAyMzI1ODpwSHFHUHBvZzhmM3R4UWNu
 
     //qatest1
     //55468822
-    //token=NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV
+    //token=NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U
 
     //qatest2
     //55468823
-    //token=NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM
+    //token=NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0
 
     //qatest3
     //55468824
-    //token=NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda
+    //token=NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0
 
     //qatest4
     //55468825
-    //token=NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls
+    //token=NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy
 
     //qatest5
     //55468826
-    //token=NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX
+    //token=NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP
 
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc0ODU5NjMyOTk4MDoyM2NxdG9idmxIdUlrNUdV"),
-            Pair(55468823, "NTU0Njg4MjNfMTc0ODU5NjM3MDE5MjpvbU9OSjNZSUMzRnJzeHdM"),
-            Pair(55468824, "NTU0Njg4MjRfMTc0ODU5NjQxNTIyNjp3STNyZFdxMUtod0gwVTda"),
-            Pair(55468825, "NTU0Njg4MjVfMTc0ODU5NjQ3NTk0NjplME9rQm1KYzZxb3d3WXls"),
-            Pair(55468826, "NTU0Njg4MjZfMTc0ODU5NjUxNTE1MDo3R1FEdWdPNjFjMmNmQzZX")
+            Pair(55468822, "NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0"),
+            Pair(55468824, "NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0"),
+            Pair(55468825, "NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy"),
+            Pair(55468826, "NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")

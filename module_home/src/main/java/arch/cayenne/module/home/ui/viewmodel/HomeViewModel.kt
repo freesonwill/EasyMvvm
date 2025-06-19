@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
@@ -39,7 +40,7 @@ class HomeViewModel : BaseViewModel() {
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private var currentPlayType: PlayType = PlayType.TODAY
     private var currentSportId: Int = 0
-    val currentBalanceChange by lazy { MutableLiveData<Long>() }
+    val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
 

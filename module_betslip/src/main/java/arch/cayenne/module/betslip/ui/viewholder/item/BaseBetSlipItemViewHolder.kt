@@ -29,4 +29,11 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
 
     abstract fun hideLastLine()
 
+    protected fun whenScoreIsNull(score: String): String {
+        if (score.isEmpty()) {
+            return "0-0"
+        }
+        return score
+    }
+
 }

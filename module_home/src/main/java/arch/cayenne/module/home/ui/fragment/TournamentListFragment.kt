@@ -63,7 +63,6 @@ class TournamentListFragment :
                 mViewModel.getTournaments()
             }
         }
-
     }
 
 
@@ -173,34 +172,27 @@ class TournamentListFragment :
     }
 
     override fun createObserver() {
-        mViewModel.tournaments.observe(viewLifecycleOwner) { list ->
-            if (!list.isNullOrEmpty()) {
-                setTournamentList(list)
+        mViewModel.displayList.observe(viewLifecycleOwner) { displayList ->
+            if (mViewModel.isSearchMode) {
+                adapter.submitList(displayList)
             } else {
-                mBinding.clDynamics.visibility = View.VISIBLE
-                mBinding.clDynamics.setState(
-                    DynamicStateLayout.States.DATA_EMPTY,
-                    R.string.lineup_empty.getString()
-                )
+                if (!displayList.isNullOrEmpty()) {
+                    setTournamentList(mViewModel.getTournamentListOrEmpty())
+                } else {
+                    mBinding.clDynamics.visibility = View.VISIBLE
+                    mBinding.clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                }
+                homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
             }
-            homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
         }
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->
             updateAZIndexHighlight()
             mBinding.rvTournamentList.invalidateItemDecorations()
         }
-
-        mViewModel.searchDisplayList.observe(viewLifecycleOwner) { result ->
-            if (result == null) {
-                mViewModel.tournaments.value?.let { setTournamentList(it) }
-            } else {
-                //TODO 整個searchDisplayList都要和tournaments一起處理發送，adapter只會被一個live data觸發
-                val displayList = result.map { TournamentListItem.TournamentItem(it.third, it.first, it.second) }
-                adapter.submitList(displayList)
-            }
-        }
-
     }
 
     private fun setSearchHint(list: List<TournamentListItem>) {

@@ -125,6 +125,7 @@ message BalanceReq {
 
 message BalanceResp {
     string balance = 1; //余额
+    string currency = 2; //币种
 }
 
 // 500-1006: 查询联赛比赛

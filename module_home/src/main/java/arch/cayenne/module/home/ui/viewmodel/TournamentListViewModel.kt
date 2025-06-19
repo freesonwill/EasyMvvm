@@ -1,9 +1,11 @@
 package arch.cayenne.module.home.ui.viewmodel
 
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
+import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.repo.TournamentListRepository
 import arch.cayenne.module.home.ui.fragment.TournamentListType
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +22,7 @@ class TournamentListViewModel : BaseViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
 
-    val tournaments by lazy { MutableLiveData<List<BaseTournamentData>>() }
+    private val _tournamentList = MutableLiveData<List<BaseTournamentData>>()
 
     private val _activeHeaderIndex = MutableLiveData<Int?>()
     val activeHeaderIndex: MutableLiveData<Int?> get() = _activeHeaderIndex
@@ -29,28 +31,57 @@ class TournamentListViewModel : BaseViewModel() {
 
     private var _lastSelectedLetter: Char? = null
 
-    //TODO 把searchDisplayList整合進tournaments內，統一由tournaments發送給fragment
-    val searchDisplayList = MutableLiveData<List<Triple<Int, Int, BaseTournamentData>>?>()
+    //輸入查詢字串
+    private val searchQuery = MutableLiveData<String?>()
+    val isSearchMode: Boolean
+        get() = !searchQuery.value.isNullOrBlank()
 
+    //統一觀察來源，搜尋結果或完整列表
+    private val _displayList = MediatorLiveData<List<TournamentListItem>>()
+    val displayList: MediatorLiveData<List<TournamentListItem>> get() = _displayList
+
+
+    init {
+        displayList.addSource(searchQuery) { updateDisplayList(it) }
+    }
 
     fun searchTournament(query: String) {
-        val all = tournaments.value ?: return
-        val result = all.filter {
-            it.name.contains(query, ignoreCase = true)
-        }.map {
-            val start = it.name.indexOf(query)
-            val end = start + query.length
-            Triple(start, end, it)
-        }
-        searchDisplayList.value = result
+        searchQuery.value = query
     }
 
     fun clearSearch() {
-        searchDisplayList.value = null
+        searchQuery.value = null
     }
 
+    private fun updateDisplayList(searchString: String?) {
+        val query = searchString?.trim().orEmpty()
+        if (query.isBlank()) {
+            _displayList.value =
+                _tournamentList.value?.map { TournamentListItem.TournamentItem(it, null, null) }
+                    ?: emptyList()
+            return
+        }
 
-    fun getLastSelectedLetter(): Char? = _lastSelectedLetter
+        val filtered = _tournamentList.value.orEmpty().filter {
+            it.name.contains(query, ignoreCase = true)
+        }.mapNotNull { tournament ->
+            val start = tournament.name.indexOf(query, ignoreCase = true)
+            if (start >= 0) {
+                val end = start + query.length
+                TournamentListItem.TournamentItem(
+                    tournament,
+                    start,
+                    end
+                )
+            } else null
+        }
+        _displayList.value = filtered
+    }
+
+    fun getTournamentListOrEmpty(): List<BaseTournamentData> {
+        return _tournamentList.value.orEmpty()
+    }
+
     fun setLastSelectedLetter(letter: Char?) {
         _lastSelectedLetter = letter
     }
@@ -103,11 +134,9 @@ class TournamentListViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val list = repo.getAllTournaments(type, sportId)
             withContext(Dispatchers.Main) {
-                tournaments.value = list
+                _tournamentList.value = list
+                updateDisplayList(null)
             }
         }
-
     }
-
-
 }
