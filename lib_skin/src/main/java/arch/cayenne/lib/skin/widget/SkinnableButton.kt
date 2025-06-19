@@ -3,6 +3,7 @@ package arch.cayenne.lib.skin.widget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatButton
@@ -94,6 +95,13 @@ class SkinnableButton : AppCompatButton {
 
     fun setTextRes(@StringRes stringRes:Int){
         mTextHelper.updateText(stringRes)
+    }
+
+    /**
+     * 动态代码创建时，获取TexColor ResId
+     * */
+    fun setTextColorRes(@ColorRes color: Int) {
+        mTextHelper.setTextColor(color)
     }
 
     override fun onDetachedFromWindow() {

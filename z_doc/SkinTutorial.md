@@ -62,10 +62,16 @@ override fun onAttachedToWindow() {
 - （1）调用SportSkinManager中的changeLanguage方法
 
 ```
-private val sportSkinManager:SkinnableManager by inject(SkinnableManager::class.java)
-sportSkinManager.changeLanguage(Locale.SIMPLIFIED_CHINESE)
+private val languageManager:LanguageManager by inject(LanguageManager::class.java)
+languageManager.changeLanguage(Locale.SIMPLIFIED_CHINESE)
 ```
-注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
+- （2）动态创建的TextView设置多语言
+
+```
+SkinnableTextView setTextRes
+SkinnableEditText setTextHitRes
+SkinnableButton setTextRes
+```
 
 ## 5. 使用_suffixes.gradle.kts 对res-suffix下drawable mipmap 文件 colors里的name自动添加后缀
 
@@ -82,4 +88,8 @@ apply(from = rootProject.file("gradle/_suffixes.gradle.kts"))
 ``` 
 ./gradlew checkDuplicateColorNames   
 ```
+
+注:  - Tablayout的 tabBackground属性设置了以后会在换肤后造成阴影，SportTablayout使用sportTabBackground替换tabBackgroun
+- 动态创建Skinnable TextView Button EditText 时，设置textColor setTextColorRes
+
 
