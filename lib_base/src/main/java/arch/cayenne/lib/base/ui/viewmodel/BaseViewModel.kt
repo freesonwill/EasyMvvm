@@ -45,6 +45,7 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
             _apiStateListener.value = DataState.None
         }
         handle?.invoke(ApiResponseState.Start)
+        handle?.invoke(ApiResponseState.Processing(0, 100))
         val jobs = viewModelScope.async {
             api()
         }
@@ -52,8 +53,8 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
             if (autoUpdateState) {
                 _apiStateListener.value = DataState.Loading
             }
-            handle?.invoke(ApiResponseState.Processing())
             val response = jobs.await()
+            handle?.invoke(ApiResponseState.Processing(100, 100))
             if (autoUpdateState) {
                 if (response is ApiResponseState.Failed) {
                     _apiStateListener.value = DataState.NetworkUnavailable
