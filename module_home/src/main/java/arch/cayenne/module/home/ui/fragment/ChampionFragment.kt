@@ -91,7 +91,7 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
     override fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             tittleBarBinding.tvMoney.text =
-                getString(R.string.balance_format, CurrencySymbols.CNY, it.getFormalMoney())
+                getString(R.string.balance_format, CurrencySymbols.getSymbol(it.currency), it.balance.getFormalMoney())
         }
         mViewModel.matchWithMarketsChange.observe(viewLifecycleOwner) { matchWithMarkets ->
             with(mBinding) {

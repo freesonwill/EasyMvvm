@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
+import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +38,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onComboMultiBetBeanListener = MutableLiveData<ComboMultiBetBean>()
     val onComboMultiBetBeanListener: LiveData<ComboMultiBetBean> get() = _onComboMultiBetBeanListener
 
-    private val _onBalanceListener = MutableLiveData<Long>()
-    val onBalanceListener: LiveData<Long> get() = _onBalanceListener
+    private val _onBalanceListener = MutableLiveData<InfoBean>()
+    val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
 
     private val _betTypeListener = MutableLiveData<BetTypeEnum?>()
     val betTypeListener: LiveData<BetTypeEnum?> get() = _betTypeListener
@@ -46,10 +47,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
-    private val _moneySymbolListener = MutableLiveData(CurrencySymbols.CNY)
-    val moneySymbolListener: LiveData<String> get() = _moneySymbolListener
     val moneySymbol: String
-        get() = _moneySymbolListener.value ?: CurrencySymbols.CNY
+        get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
     private val _onBetWinMoney = MediatorLiveData<String>().apply {
         var odds = 1
@@ -123,7 +122,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             launch {
                 balanceRepo.observeBalance().collect {
                     _onBalanceListener.value = it
-                    setRemainingNumber(it)
+                    setRemainingNumber(it.balance)
                 }
             }
             launch {

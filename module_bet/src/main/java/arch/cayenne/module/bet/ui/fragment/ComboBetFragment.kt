@@ -149,7 +149,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             setSumBetMoney(it)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
-            val money = "${mViewModel.moneySymbol} ${it.getFormalMoney()}"
+            val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
             mBinding.tvBalance.text = money
         }
     }
