@@ -22,7 +22,7 @@ class TournamentListViewModel : BaseViewModel() {
 
     private val _isLoading = MutableLiveData<Boolean>()
 
-    val tournamentList by lazy { MutableLiveData<List<BaseTournamentData>>() }
+    private val _tournamentList = MutableLiveData<List<BaseTournamentData>>()
 
     private val _activeHeaderIndex = MutableLiveData<Int?>()
     val activeHeaderIndex: MutableLiveData<Int?> get() = _activeHeaderIndex
@@ -37,10 +37,12 @@ class TournamentListViewModel : BaseViewModel() {
         get() = !searchQuery.value.isNullOrBlank()
 
     //統一觀察來源，搜尋結果或完整列表
-    val displayList = MediatorLiveData<List<TournamentListItem>>()
+    private val _displayList = MediatorLiveData<List<TournamentListItem>>()
+    val displayList: MediatorLiveData<List<TournamentListItem>> get() = _displayList
+
 
     init {
-        displayList.addSource(searchQuery) { updateDisplayList() }
+        displayList.addSource(searchQuery) { updateDisplayList(it) }
     }
 
     fun searchTournament(query: String) {
@@ -51,16 +53,16 @@ class TournamentListViewModel : BaseViewModel() {
         searchQuery.value = null
     }
 
-    private fun updateDisplayList() {
-        val query = searchQuery.value?.trim().orEmpty()
+    private fun updateDisplayList(searchString: String?) {
+        val query = searchString?.trim().orEmpty()
         if (query.isBlank()) {
-            displayList.value =
-                tournamentList.value?.map { TournamentListItem.TournamentItem(it, null, null) }
+            _displayList.value =
+                _tournamentList.value?.map { TournamentListItem.TournamentItem(it, null, null) }
                     ?: emptyList()
             return
         }
 
-        val filtered = tournamentList.value.orEmpty().filter {
+        val filtered = _tournamentList.value.orEmpty().filter {
             it.name.contains(query, ignoreCase = true)
         }.mapNotNull { tournament ->
             val start = tournament.name.indexOf(query, ignoreCase = true)
@@ -73,7 +75,11 @@ class TournamentListViewModel : BaseViewModel() {
                 )
             } else null
         }
-        displayList.value = filtered
+        _displayList.value = filtered
+    }
+
+    fun getTournamentListOrEmpty(): List<BaseTournamentData> {
+        return _tournamentList.value.orEmpty()
     }
 
     fun setLastSelectedLetter(letter: Char?) {
@@ -123,13 +129,13 @@ class TournamentListViewModel : BaseViewModel() {
         this.sportId = sportId
     }
 
-    fun getTournaments(onResult: (Boolean, List<BaseTournamentData>) -> Unit) {
+    fun getTournaments() {
         _isLoading.value = true
         viewModelScope.launch(Dispatchers.IO) {
             val list = repo.getAllTournaments(type, sportId)
             withContext(Dispatchers.Main) {
-                tournamentList.value = list
-                onResult(list.isNotEmpty(), list)
+                _tournamentList.value = list
+                updateDisplayList(null)
             }
         }
     }

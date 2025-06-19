@@ -60,21 +60,9 @@ class TournamentListFragment :
             type?.apply {
                 mViewModel.setType(this)
                 mBinding.ivHomeLeagueCollapse.isVisible = this == TournamentListType.MORE
-                mViewModel.getTournaments { success, list ->
-                    if (success) {
-                        setTournamentList(list)
-                    } else {
-                        mBinding.clDynamics.visibility = View.VISIBLE
-                        mBinding.clDynamics.setState(
-                            DynamicStateLayout.States.DATA_EMPTY,
-                            R.string.lineup_empty.getString()
-                        )
-                    }
-                    homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
-                }
+                mViewModel.getTournaments()
             }
         }
-
     }
 
 
@@ -188,7 +176,16 @@ class TournamentListFragment :
             if (mViewModel.isSearchMode) {
                 adapter.submitList(displayList)
             } else {
-                mViewModel.tournamentList.value?.let { setTournamentList(it) }
+                if (!displayList.isNullOrEmpty()) {
+                    setTournamentList(mViewModel.getTournamentListOrEmpty())
+                } else {
+                    mBinding.clDynamics.visibility = View.VISIBLE
+                    mBinding.clDynamics.setState(
+                        DynamicStateLayout.States.DATA_EMPTY,
+                        R.string.lineup_empty.getString()
+                    )
+                }
+                homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
             }
         }
 
