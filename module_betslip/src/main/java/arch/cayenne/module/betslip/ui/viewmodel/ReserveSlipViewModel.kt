@@ -25,9 +25,15 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     private val _modifyOddsLiveData: MutableLiveData<Event<Boolean>> = MutableLiveData()
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
+    private var lastCount = 0
+
     init {
         viewModelScope.launch {
             repo.observeReserveBean().collect { data ->
+                if (lastCount != 0 && data.isEmpty()) {
+                    setState(DataState.DataEmpty)
+                }
+                lastCount = data.size
                 _reserveLiveData.value = data
             }
         }

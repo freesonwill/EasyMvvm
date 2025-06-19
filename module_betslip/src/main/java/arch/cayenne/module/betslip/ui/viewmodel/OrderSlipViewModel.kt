@@ -17,16 +17,21 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
     private var type: BetSlipEnum? = null
+    private var lastCount = 0
 
     init {
         viewModelScope.launch {
             repo.observeOrderBeanFlow.collect {
+                if (lastCount != 0 && it.isEmpty()) {
+                    setState(DataState.DataEmpty)
+                }
                 setData(it)
             }
         }
     }
 
     protected open fun setData(data: List<BetSlipOrderBean>) {
+        lastCount = data.size
         _orderLiveData.value = data
     }
 
