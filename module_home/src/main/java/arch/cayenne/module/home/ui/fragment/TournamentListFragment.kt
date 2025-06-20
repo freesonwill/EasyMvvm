@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -71,11 +72,7 @@ class TournamentListFragment :
             llRoot.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     if (ceSearch.hasFocus()) {
-                        // 清除focus, 隱藏鍵盤
-                        ceSearch.clearFocus()
-                        val imm =
-                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.hideSoftInputFromWindow(mBinding.ceSearch.windowToken, 0)
+                        ceSearch.hideKeyboardAndClearFocus(requireContext())
                     }
 
                     v.performClick()
@@ -84,11 +81,14 @@ class TournamentListFragment :
             }
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
-            ceSearch.setOnFocusChangeListener { _, hasFocus ->
-                if (!hasFocus) {
-                    // 離開搜尋框 → 回到列表頂端
-                    rvTournamentList.smoothScrollToPosition(0)
-                    llIndexContainer.visibility = View.VISIBLE
+            ceSearch.setOnEditorActionListener { _, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                    (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+                ) {
+                    ceSearch.hideKeyboardAndClearFocus(requireContext())
+                    true // 表示已處理此事件
+                } else {
+                    false
                 }
             }
 
@@ -96,9 +96,11 @@ class TournamentListFragment :
                 override fun afterTextChanged(s: Editable?) {
                     val keyword = s?.toString()?.trim().orEmpty()
                     if (keyword.isNotEmpty()) {
+                        mBinding.llIndexContainer.visibility = View.GONE
                         mViewModel.searchTournament(keyword)
                     } else {
                         mViewModel.clearSearch()
+                        rvTournamentList.smoothScrollToPosition(0)
                         mBinding.llIndexContainer.visibility = View.VISIBLE
                     }
                 }
@@ -300,6 +302,13 @@ class TournamentListFragment :
 
         mBinding.rvTournamentList.addItemDecoration(decoration)
     }
+
+    private fun View.hideKeyboardAndClearFocus(context: Context) {
+        clearFocus()
+        val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(windowToken, 0)
+    }
+
 
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
