@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -109,10 +110,19 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
 
                 //全部删除按钮
                 txtDeleteAll.clickNoRepeat {
-                    historyAdapter?.deleteAllData()
-                    deleteAllData()
-                    getRecordByUID()
-                    setHistoryButton()
+                    CommonDialog.newInstance(
+                        title = "",
+                        message = R.string.search_dialog_delete_all_history.toTranslatedStr(),
+                        okText = R.string.search_dialog_confirm.toTranslatedStr(),
+                        cancelText = R.string.search_dialog_cancel.toTranslatedStr()
+                    ).apply {
+                        setOnOkClickListener {
+                            historyAdapter?.deleteAllData()
+                            deleteAllData()
+                            getRecordByUID()
+                            setHistoryButton()
+                        }
+                    }.show(parentFragmentManager)
                 }
             }
         }
@@ -178,6 +188,14 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
                 llShowCompleted.visibility = View.GONE
             }
         }
+    }
+
+    private fun Int.toTranslatedStr(): String {
+        return SkinnableResourceManager.getString(
+            requireContext(),
+            this,
+            sharedViewModel.getCurrentLanguage()
+        )
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {

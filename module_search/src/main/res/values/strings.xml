@@ -17,7 +17,9 @@
     <string name="search_result_btn_bet_finish">已结束</string>
     <string name="search_result_race_date_format_display">MM月dd日 EEEE</string>
     <string name="search_result_race_calendar_title">%1$s %2$s</string>
-    <string name="search_calendar_reset">重置</string>
-    <string name="search_calendar_confirm">确认</string>
+    <string name="search_dialog_reset">重置</string>
+    <string name="search_dialog_confirm">确认</string>
     <string name="search_result_race_playing">进行中</string>
+    <string name="search_dialog_delete_all_history">确定清空历史纪录吗？</string>
+    <string name="search_dialog_cancel">取消</string>
 </resources>
