@@ -1,6 +1,7 @@
 package androidx.fragment.app
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.animation.AnimationUtils
@@ -12,6 +13,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavOptions
 import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
+import arch.cayenne.lib.base.ui._interface.OnNewIntentListener
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.FragmentExt.plusAssign
 import arch.cayenne.lib.common.utils.ext.FragmentExt.replaceAll
@@ -125,9 +127,23 @@ class FragivityFragmentNavigator(
 
         val destId = destination.id
         val initialNavigation = backStack.isEmpty() || isPushTo
-
-        val fragment = createFragment(destination, args)
-        ft.add(containerId, fragment, generateBackStackName(backStack.size, destId))
+        val existingFragment = backStack.indexOf(destId).let { index ->
+            if(index != -1) {
+                val tag = generateBackStackName(index, destId)
+                val existingFragment = fragmentManager.findFragmentByTag(tag)
+                return@let existingFragment// 提前返回外部函数
+            }
+            return@let null
+        }
+        val fragment = existingFragment ?: createFragment(destination, args)
+        if(existingFragment == null) {
+            ft.add(containerId, fragment, generateBackStackName(backStack.size, destId))
+        } else {
+            if(fragment is OnNewIntentListener){
+                fragment.arguments = args
+                fragment.onNewIntent(Intent().apply { if(args != null) putExtras(args)})
+            }
+        }
 
         val prevFragment = if (isPushTo) {
             fragmentManager.fragments.forEach { ft.remove(it) }
@@ -162,9 +178,13 @@ class FragivityFragmentNavigator(
             }
             isAdded = false
         } else {
-            ft.addToBackStack(generateBackStackName(backStack.size + 1, destId))
-            mIsPendingAddToBackStackOperation = true
-            isAdded = true
+            if(existingFragment == null) {
+                ft.addToBackStack(generateBackStackName(backStack.size + 1, destId))
+                mIsPendingAddToBackStackOperation = true
+                isAdded = true
+            }else {
+                isAdded = false
+            }
         }
 
         if (isAdded && prevFragment != null) {

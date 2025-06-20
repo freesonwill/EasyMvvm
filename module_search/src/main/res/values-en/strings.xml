@@ -10,14 +10,18 @@
     <string name="tab_team">Team</string>
     <string name="tab_player">Player</string>
     <string name="search_date_hint">Filter Match Date</string>
-    <string name="search_result_sub_title_tournament">%1$s / No.%2$d / %3$d Wins %4$d Losses</string>
+    <string name="search_result_sub_title_team">%1$s / No.%2$d / %3$d Wins %4$d Losses</string>
     <string name="search_result_sub_title_player">%1$s / %2$s / No.%3$d / %4$s</string>
     <string name="search_result_more">More</string>
     <string name="search_result_btn_bet">Bet</string>
     <string name="search_result_btn_bet_finish">Finished</string>
     <string name="search_result_race_date_format_display">MMM dd, EEEE</string>
     <string name="search_result_race_calendar_title">%1$s %2$s</string>
-    <string name="search_calendar_reset">Reset</string>
-    <string name="search_calendar_confirm">Confirm</string>
+    <string name="search_dialog_delete_all_history">Are you sure you want to clear the history?</string>
+    <string name="search_dialog_cancel">Cancel</string>
+    <string name="search_dialog_reset">Reset</string>
+    <string name="search_dialog_confirm">Confirm</string>
     <string name="search_result_race_playing">In Progress</string>
+    <string name="search_result_no_data">No data available</string>
+    <string name="search_result_sub_title_tournament">%1$s Season</string>
 </resources>

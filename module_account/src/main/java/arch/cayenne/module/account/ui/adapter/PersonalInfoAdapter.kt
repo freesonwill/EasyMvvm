@@ -18,6 +18,7 @@ class PersonalInfoAdapter: BaseAdapter<PersonalInfoData, PersonalInfoItemViewHol
     PersonalInfoCompare()
 ) {
     private var selectedPosition : Int = -1
+    private var onItemClickListener: ((PersonalInfoData) -> Unit)? = null
     override fun convertPlus(holder: PersonalInfoItemViewHolder, binding: ItemPersonalInfoBinding, position: Int) {
         // 2. 在 onBindViewHolder 中更新 UI
         if (position == selectedPosition) {
@@ -40,6 +41,7 @@ class PersonalInfoAdapter: BaseAdapter<PersonalInfoData, PersonalInfoItemViewHol
             }
             // 通知新的項目更新 UI (變為選中狀態)
             notifyItemChanged(selectedPosition)
+            onItemClickListener?.invoke(data)
         }
     }
 
@@ -70,10 +72,10 @@ class PersonalInfoAdapter: BaseAdapter<PersonalInfoData, PersonalInfoItemViewHol
         }
         val oldPosition = selectedPosition
         selectedPosition = position
-        if (selectedPosition != -1) {
-            notifyItemChanged(oldPosition) // 通知舊的項目更新 UI (取消選中狀態)
-        }
+        notifyItemChanged(oldPosition) // 通知舊的項目更新 UI (取消選中狀態)
         notifyItemChanged(selectedPosition) // 通知新的項目更新 UI (變為選中狀態)
-
+    }
+    fun setOnItemClickListener(listener: (PersonalInfoData) -> Unit) {
+        onItemClickListener = listener
     }
 }

@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -115,6 +116,10 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
         uiBind.onDestroy()
     }
 
+    @CallSuper
+    override fun onNewIntent(intent: Intent) {
+        uiBind.onNewIntent(intent)
+    }
 
     override fun createObserver() {
     }

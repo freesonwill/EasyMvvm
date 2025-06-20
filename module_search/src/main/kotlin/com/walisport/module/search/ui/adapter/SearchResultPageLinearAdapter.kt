@@ -21,7 +21,7 @@ import com.walisport.module.search.ui.fragment.SearchResultPageFragment
 class SearchResultPageLinearAdapter(private val type: String): BaseAdapter<SearchResultBaseBean, BaseViewHolder, ViewBinding>(
     SearchResultLinearCompare()
 ) {
-    var onItemClick: ((id: String, type: SearchTypeEnum) -> Unit)? = null
+    var onItemClick: ((id: String, keyword: String, type: SearchTypeEnum) -> Unit)? = null
 
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         with(binding as ItemSearchResultLinearBinding) {
@@ -40,6 +40,7 @@ class SearchResultPageLinearAdapter(private val type: String): BaseAdapter<Searc
                 root.setOnClickListener {
                     onItemClick?.invoke(
                         id.toString(),
+                        name,
                         when (this) {
                             is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
                             is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID

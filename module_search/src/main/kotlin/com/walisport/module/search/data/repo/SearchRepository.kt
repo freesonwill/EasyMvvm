@@ -57,44 +57,29 @@ class SearchRepository(
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         // 获取搜索记录
         val record = userDataManager.getValue(UserDataKey.KEY_RECORD, "")
-        // list形式的搜索记录
-        val list =
-            if (record.isNotBlank()) getRecordList(record).toMutableList()
-            else mutableListOf()
 
         run {
-            if (record.isEmpty()) {
-                // 为空直接添加
-                list.add(RecordBean(uid, key))
-                true
-            } else {
-                // 记录不为空有2种情况：
-                // 1. 有数据但无本账户数据
-                // 2. 有数据且存在本账户的数据
+            if (record.isNotBlank()) getRecordList(record).toMutableList()
+            else mutableListOf()
+        }.apply {
+            find { it.uid == uid }?.let { userRecord ->
+                // 有用戶紀錄，
+                // 無論有沒有該關鍵字都重新寫入一次，
+                // 讓最新的關鍵字可以排在最前面
+                userRecord.record = (
+                        userRecord.record
+                            .split(";")
+                            .filter { it != key } + key
+                        ).joinToString(";")
+            } ?: run {
+                // 無用戶相關紀錄直接新增
+                add(RecordBean(uid, key))
+            }
 
-                list.find { it.uid == uid } ?.let {
-                    // 账户存在
-                    if(!it.record.split(";").contains(key)) {
-                        // 账户存在且记录中不存在该关键字
-                        it.record += ";$key"
-                        true
-                    } else {
-                        // 账户存在且记录中已存在该关键字
-                        false
-                    }
-                } ?: run {
-                    // 账户不存在，直接新增
-                    list.add(RecordBean(uid, key))
-                    true
-                }
-            }
-        }.let { modified ->
-            if (modified) {
-                userDataManager.setKeyValue(
-                    UserDataKey.KEY_RECORD,
-                    Gson().toJson(list)
-                )
-            }
+            userDataManager.setKeyValue(
+                UserDataKey.KEY_RECORD,
+                Gson().toJson(this)
+            )
         }
     }
 

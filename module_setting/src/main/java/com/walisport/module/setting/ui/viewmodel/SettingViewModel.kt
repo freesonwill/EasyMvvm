@@ -1,13 +1,19 @@
 package com.walisport.module.setting.ui.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.SkinType
+import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.walisport.module.setting.R
 import com.walisport.module.setting.data.SettingRepository
+import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -19,7 +25,7 @@ class SettingViewModel : BaseViewModel() {
 
     private val repository: SettingRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
-    private val languageManager:LanguageManager by inject { parametersOf(viewModelScope)  }
+    private val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
 
     private val _language = MutableLiveData<String>()
     val language: LiveData<String> = _language
@@ -42,6 +48,8 @@ class SettingViewModel : BaseViewModel() {
         viewModelScope.launch {
             repository.setLanguageType(type)
             languageManager.changeLanguage(Locale(type))
+            val setting = getSystemSetting()
+            repository.updateSettingReq(setting)
             _language.value = type
         }
     }
@@ -119,6 +127,63 @@ class SettingViewModel : BaseViewModel() {
 
     fun getAppAll(): Boolean {
         return repository.getAppAll()
+    }
+
+    fun getSkinnableLanguage(context: Context): String {
+        val lang = repository.getLanguageType()
+        return when (lang) {
+            LanguageType.LANGUAGE_ENGLISH.value -> SkinnableResourceManager.getString(
+                context,
+                R.string.menu_language_english,
+                languageManager.getLanguage()
+            )
+
+            LanguageType.LANGUAGE_PT.value -> SkinnableResourceManager.getString(
+                context,
+                R.string.menu_language_portugal,
+                languageManager.getLanguage()
+            )
+
+            LanguageType.LANGUAGE_ID.value -> SkinnableResourceManager.getString(
+                context,
+                R.string.menu_language_indonesia,
+                languageManager.getLanguage()
+            )
+
+            else -> SkinnableResourceManager.getString(
+                context,
+                R.string.menu_language_simple,
+                languageManager.getLanguage()
+            )
+        }
+    }
+
+    fun getSkinnableOddsType(context: Context, oddsType: Int): String {
+        return if (oddsType == 0) {
+            SkinnableResourceManager.getString(
+                context,
+                R.string.menu_europe,
+                languageManager.getLanguage()
+            )
+        } else {
+            SkinnableResourceManager.getString(
+                context,
+                R.string.menu_hk,
+                languageManager.getLanguage()
+            )
+        }
+    }
+
+    private fun getSystemSetting(): Setting {
+        val language = getLanguageType()
+        return Setting.newBuilder().apply {
+            lang = when (language) {
+                LanguageType.LANGUAGE_ENGLISH.value -> "en-US"
+                LanguageType.LANGUAGE_ID.value -> "id-ID"
+                LanguageType.LANGUAGE_PT.value -> "pt-PT"
+                else -> "zh-CN"
+            }
+        }.build()
     }
 
     //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种

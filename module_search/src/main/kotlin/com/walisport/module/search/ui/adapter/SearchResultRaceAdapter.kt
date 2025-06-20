@@ -1,9 +1,11 @@
 package com.walisport.module.search.ui.adapter
 
 import android.annotation.SuppressLint
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.TextViewCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -168,7 +170,19 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
     }
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {
-        return BaseViewHolder(binding)
+        val holder = BaseViewHolder(binding)
+        if (viewType == VIEW_TYPE_ITEM) {
+            (binding as? ItemSearchResultRaceBinding)?.apply {
+                TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    btnBet,
+                    10,
+                    14,
+                    1,
+                    TypedValue.COMPLEX_UNIT_SP
+                )
+            }
+        }
+        return holder
     }
 
     /**

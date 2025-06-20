@@ -1,7 +1,15 @@
 package com.walisport.module.search.ui.fragment
 
 import android.animation.ValueAnimator
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.Shader
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +41,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
 
+    private val defaultAnimDuration = 300L
+
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
     private val selectedDate by lazy {
@@ -42,7 +52,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             null
         }
     }
-
 
     companion object {
         const val DATE_PICKER_RESULT_KEY = "DATE_PICKER_RESULT_KEY"
@@ -121,6 +130,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 )
                 setCalendarTitle(curYear, curMonth)
             }
+            maskView.background = createMaskGradient()
+            setMaskViewAlpha(true)
             expandView()
         }
     }
@@ -134,17 +145,20 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 calendarView.scrollToNext(true)
             }
             tvReset.clickNoRepeat {
+                mViewModel.setMaskClickable(false)
                 calendarView.clearSingleSelect()
                 sendResult(null)
+                setMaskViewAlpha(false)
                 collapseView()
             }
             tvConfirm.clickNoRepeat {
+                mViewModel.setMaskClickable(false)
                 sendResult()
+                setMaskViewAlpha(false)
                 collapseView()
             }
             maskView.clickNoRepeat {
-                sendResult(selectedDate)
-                collapseView()
+                close()
             }
         }
     }
@@ -157,6 +171,46 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     mBinding.calendarView.curYear,
                     mBinding.calendarView.curMonth
                 )
+            }
+        }
+    }
+
+    private fun createMaskGradient(): Drawable {
+        val defaultColor = 0x80000000
+        val defaultStartAt = 0.3f
+        val defaultStopAt = 0.8f
+        return object : Drawable() {
+            private val paint = Paint()
+            private lateinit var shader: LinearGradient
+
+            override fun onBoundsChange(bounds: Rect) {
+                super.onBoundsChange(bounds)
+                shader = LinearGradient(
+                    0f, bounds.bottom.toFloat(),
+                    0f, bounds.top.toFloat(),
+                    intArrayOf(defaultColor.toInt(), defaultColor.toInt(), Color.TRANSPARENT),
+                    floatArrayOf(0f, defaultStartAt, defaultStopAt),
+                    Shader.TileMode.CLAMP
+                )
+                paint.shader = shader
+            }
+
+            override fun draw(canvas: Canvas) {
+                canvas.drawRect(bounds, paint)
+            }
+
+            override fun setAlpha(alpha: Int) {
+                paint.alpha = alpha
+            }
+
+            @Deprecated(
+                message = "Deprecated in Java",
+                replaceWith = ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat")
+            )
+            override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+            override fun setColorFilter(colorFilter: ColorFilter?) {
+                paint.colorFilter = colorFilter
             }
         }
     }
@@ -205,6 +259,17 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         }.timeInMillis
     }
 
+    private fun setMaskViewAlpha(visible: Boolean) {
+        with(mBinding.maskView) {
+            post {
+                animate()
+                    .alpha(if (visible) 1f else 0f)
+                    .setDuration(defaultAnimDuration)
+                    .start()
+            }
+        }
+    }
+
     private fun expandView() {
         with(mBinding.clCalendar) {
             post {
@@ -215,7 +280,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                                 height = it.animatedValue as Int
                             }
                     }
-                    duration = 300
+                    duration = defaultAnimDuration
                     interpolator = DecelerateInterpolator()
                     doOnStart {
                         layoutParams =
@@ -239,7 +304,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                             height = it.animatedValue as Int
                         }
                 }
-                duration = 300
+                duration = defaultAnimDuration
                 interpolator = DecelerateInterpolator()
                 doOnEnd {
                     visibility = View.INVISIBLE
@@ -253,7 +318,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     }
 
     fun close() {
-        collapseView()
+        if(mViewModel.isMaskClickable) {
+            sendResult(selectedDate)
+            setMaskViewAlpha(false)
+            collapseView()
+        }
     }
 
     fun show(manager: FragmentManager, containerId: Int) {
