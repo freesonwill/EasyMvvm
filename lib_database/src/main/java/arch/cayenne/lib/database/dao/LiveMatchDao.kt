@@ -111,6 +111,21 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         clockModified: Long
     )
 
+    //收到notify更新数据
+    @Query(
+        "UPDATE LiveMatchBean " +
+                "SET basic_status = :status, " +
+                "basic_betStop = :betStop, " +
+                "basic_startTime = :startTime " +
+                "WHERE matchId = :matchId"
+    )
+    abstract fun updateNotifyMatchInfo(
+        matchId: Long,
+        status: Int,
+        betStop: Boolean,
+        startTime: Long,
+    )
+
 
     @Transaction
     open suspend fun insertFullMatch(
