@@ -1,20 +1,22 @@
 package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
-import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.SportType
 import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class HomeRepository(
     override val scope: CoroutineScope,
@@ -25,15 +27,10 @@ class HomeRepository(
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
 
+    fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
+
     @Transaction
-    suspend fun getSportStatistical(): List<SportDataModel>? {
-        //clear sport table
-        clearSportCache()
-        //先從DB拿取
-//        val queryResult = sportDao.querySportsMatchCount(playType)
-//        if (queryResult.isNotEmpty()) {
-//            return queryResult
-//        }
+    suspend fun getSportStatistical(): ApiResponseState = withContext(scope.coroutineContext) {
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.StatisticalResp>(
             scope = scope,
@@ -42,16 +39,14 @@ class HomeRepository(
         ) {
             Client.StatisticalReq.newBuilder().build()
         }
-        return if (res.error == null && res.data != null) {
-            return saveSports(res.data!!)
+        return@withContext if (res.error == null && res.data != null) {
+            saveSports(res.data!!)
         } else {
-            null
+            ApiResponseState.Failed(error = res.error)
         }
-
     }
-    private fun saveSports(data: Client.StatisticalResp): List<SportDataModel> {
-        val sportMap = hashMapOf<Int, SportBean>()
-//        val categoryList = arrayListOf<PlayTypeSportCrossRef>()
+    private suspend fun saveSports(data: Client.StatisticalResp): ApiResponseState.Succeeded<*> {
+        val dataList = mutableListOf<SportBean>()
         data.statisticalList.forEach { play ->
             play.sportStatisticalList.forEachIndexed { index, sport ->
                 val bean = SportBean(
@@ -61,23 +56,12 @@ class HomeRepository(
                     sportOrder = index,
                     type = ShowType.HOME
                 )
-                sportMap[bean.sportId] = bean
-//                val category = PlayTypeSportCrossRef(
-//                    sportId = sport.sportId,
-//                    playType = play.playType,
-//                    matchCount = sport.matchCount,
-//                    sportOrder = index
-//                )
-//                categoryList.add(category)
+                dataList.add(bean)
             }
         }
-        sportDao.insert(sportMap.map{ it.value }.toList())
-//        sportDao.insertSportCrossRef(categoryList)
-        return sportDao.querySportsMatchCount()
-    }
-
-    private fun clearSportCache() {
-        sportDao.clearSports()
+        sportDao.insert(dataList)
+        sportDao.deleteMissing(dataList.map { it.sportId })
+        return ApiResponseState.Succeeded(dataList)
     }
 
     @Transaction

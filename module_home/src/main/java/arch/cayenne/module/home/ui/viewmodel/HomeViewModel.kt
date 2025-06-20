@@ -17,7 +17,6 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +69,18 @@ class HomeViewModel : BaseViewModel() {
     val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+
+    init {
+        viewModelScope.launch {
+            repository.observeSportsMatchCount().collect {
+                sportsStatistical.value = Event(it)
+                if (it.isNotEmpty()) {
+                    setCurrentSport(it.first().id)
+                }
+            }
+        }
+    }
+
     fun setIsHomeLoading(isLoading: Boolean) {
         _isHomeLoading.value = isLoading
     }
@@ -158,26 +169,12 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getCurrentPlayType() = currentPlayType
+
     fun getCurrentSportStatistical() {
         setState(HomeState.Sport.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getSportStatistical()?.filter {
-                SportType.fromId(it.id) != null  //去除目前沒有在code預設內的運動
-            }
-            withContext(Dispatchers.Main) {
-                if (list == null) {
-                    //TODO 拿取sport錯誤
-                    "Get Sport List failed!!".loge(this@HomeViewModel::class.java.simpleName)
-                    setState(DataState.NetworkUnavailable)
-                } else if (list.isEmpty()) {
-                    setState(DataState.DataEmpty)
-                } else {
-                    sportsStatistical.value = Event(list)
-                    setCurrentSport(list.first().id)
-                }
-            }
-        }
-
+        callApi({
+            repository.getSportStatistical()
+        })
     }
 
     //切換當前的二級選項(各項運動)
