@@ -28,6 +28,8 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
                 findNavController().navigateUp()
             })
         }
+        //默认会选中一个
+        mViewModel.setCheckBoxSelected(true)
     }
 
 
