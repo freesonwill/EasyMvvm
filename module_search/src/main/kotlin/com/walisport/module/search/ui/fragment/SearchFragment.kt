@@ -280,7 +280,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
                 when (backStackId) {
                     R.id.searchResultBaseFragment -> {
-                        navController.popBackStack(R.id.searchMainFragment, false)
+                        navController.popBackStack(R.id.searchResultBaseFragment, true)
                     }
                     else -> {
                         if (!navController.popBackStack()) {
@@ -401,14 +401,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     val action =
                         SearchResultBaseFragmentDirections
                             .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
-                                event.data, event.keyword, null, SearchTypeEnum.UNKNOWN
+                                event.data, event.keyword, event.id, event.type ?: SearchTypeEnum.UNKNOWN
                             )
                     navController.navigate(action)
                 } else if (currentId == R.id.searchResultListFragment) {
                     val action =
                         SearchResultListFragmentDirections
                             .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
-                                null, event.keyword, event.id, event.type ?: SearchTypeEnum.UNKNOWN
+                                event.data, event.keyword, event.id, event.type ?: SearchTypeEnum.UNKNOWN
                             )
                     navController.navigate(action)
                 }
