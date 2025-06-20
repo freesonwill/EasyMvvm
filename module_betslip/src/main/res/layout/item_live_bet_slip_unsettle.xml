@@ -31,7 +31,8 @@
         app:layout_constraintLeft_toRightOf="@id/bet_unsettled_iv_ball"
         app:layout_constraintRight_toLeftOf="@id/iv_circle_arrow"
         app:layout_goneMarginEnd="@dimen/dp_16"
-        app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_ball" />
+        app:layout_constraintTop_toTopOf="@id/bet_unsettled_iv_ball"
+        tools:ignore="HardcodedText" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_circle_arrow"
@@ -57,7 +58,8 @@
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
         app:layout_constraintRight_toLeftOf="@id/bet_unsettled_tv_aodds"
-        app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_ball" />
+        app:layout_constraintTop_toBottomOf="@id/bet_unsettled_iv_ball"
+        tools:ignore="HardcodedText" />
 
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -70,7 +72,8 @@
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_introduce" />
+        app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_introduce"
+        tools:ignore="HardcodedText" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_unsettled_tv_status"
@@ -109,7 +112,8 @@
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_unsettled_iv_ball"
-        app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_score" />
+        app:layout_constraintTop_toBottomOf="@id/bet_unsettled_tv_score"
+        tools:ignore="HardcodedText" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
         android:id="@+id/line"
