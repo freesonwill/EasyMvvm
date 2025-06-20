@@ -9,6 +9,7 @@ import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,9 +24,14 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelections(selections: List<LiveSelectionBean>)
+
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertSelectionsRecord(selections: List<LiveSelectionBeanRecord>)
+
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertSelectionEdit(selections: List<SelectionsEdit>)
 
     @Transaction
     @Query("SELECT * FROM LiveMatchBean WHERE matchId = :matchId")
@@ -41,7 +47,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("SELECT * FROM LiveMatchBean WHERE matchId IN (:matchIds)")
     abstract suspend fun getMatchByIds(matchIds: List<Long>): List<LiveMatchBean>
 
-
     @Transaction
     @Query("SELECT * FROM LiveSelectionBean WHERE marketId = :marketId")
     abstract suspend fun getSelectionById(marketId: Long): LiveSelectionBean
@@ -53,6 +58,10 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Transaction
     @Query("SELECT * FROM LiveSelectionBean WHERE marketId =:marketId")
     abstract suspend fun getSelectionsByIds(marketId: Long): List<LiveSelectionBean>
+
+    @Transaction
+    @Query("SELECT * FROM SelectionsEdit")
+    abstract suspend fun getSelectionsEdit(): List<SelectionsEdit>
 
     @Transaction
     @Query("SELECT * FROM LiveSelectionBeanRecord")
@@ -70,14 +79,17 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("DELETE FROM LiveSelectionBeanRecord")
     abstract fun deleteSelectionBeanRecord()
 
+    @Query("DELETE FROM SelectionsEdit")
+    abstract fun deleteSelectionsEdit()
+
+
     @Transaction
     @Query("DELETE FROM LiveSelectionBean WHERE selectionId IN (:selectionsIds)")
-    abstract fun deleteSelectionBeanById( selectionsIds: List<Long>)
+    abstract fun deleteSelectionBeanById(selectionsIds: List<Long>)
 
     @Transaction
     @Query("DELETE FROM LiveSelectionBeanRecord WHERE selectionId IN (:selectionsIds)")
     abstract fun deleteSelectionBeanRecordById(selectionsIds: List<Long>)
-
 
 
     //收到notify更新数据
@@ -117,7 +129,7 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         matches: List<LiveMatchBean>,
         markets: List<LiveMarketBean>,
         selections: List<LiveSelectionBean>,
-        selectionsRecord :List<LiveSelectionBeanRecord>,
+        selectionsRecord: List<LiveSelectionBeanRecord>,
     ) {
         insertMatch(matches)
         insertMarkets(markets)
@@ -127,20 +139,35 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
 
     @Transaction
     open suspend fun updateLiveSelectionBean(
-        selections: List<LiveSelectionBean>,
+        selectionsEdit: List<LiveSelectionBean>,
         selectionsRecord: List<LiveSelectionBeanRecord>,
+        selectionsAdd: List<LiveSelectionBean>,
         selectionsDeleteIds: List<Long>,
+        marketsAdd: List<LiveMarketBean>,
+        selectionsEditIds: List<SelectionsEdit>,
     ) {
-            if (selections.isNotEmpty()) {
-                insertSelections(selections)
-            }
-            if (selectionsRecord.isNotEmpty()) {
-                insertSelectionsRecord(selectionsRecord)
-            }
-            if (selectionsDeleteIds.isNotEmpty()){
-                deleteSelectionBeanById(selectionsDeleteIds)
-                deleteSelectionBeanRecordById(selectionsDeleteIds)
-            }
+        if (selectionsEditIds.isNotEmpty()) {
+            insertSelectionEdit(selectionsEditIds)
+        }
+        if (selectionsEdit.isNotEmpty()) {
+            insertSelections(selectionsEdit)
+        }
+        if (selectionsAdd.isNotEmpty()) {
+            insertSelections(selectionsAdd)
+        }
+        if (marketsAdd.isNotEmpty()) {
+            insertMarkets(marketsAdd)
+        }
+        if (selectionsRecord.isNotEmpty()) {
+            insertSelectionsRecord(selectionsRecord)
+        }
+        if (selectionsEditIds.isNotEmpty()) {
+            insertSelectionEdit(selectionsEditIds)
+        }
+        if (selectionsDeleteIds.isNotEmpty()) {
+            deleteSelectionBeanById(selectionsDeleteIds)
+            deleteSelectionBeanRecordById(selectionsDeleteIds)
+        }
     }
 
     @Transaction
@@ -149,5 +176,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         deleteMarketBean()
         deleteSelectionBean()
         deleteSelectionBeanRecord()
+        deleteSelectionsEdit()
     }
 }

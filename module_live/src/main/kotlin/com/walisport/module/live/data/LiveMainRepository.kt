@@ -4,6 +4,7 @@ import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client.MatchBasicUpdate
@@ -12,6 +13,7 @@ import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
@@ -57,7 +59,7 @@ class LiveMainRepository(
 
     suspend fun updateFullMatchInfo(
         marketInfo: MatchBasicUpdate, marketUpdate: List<Market>, matchId: Long
-    ) {
+    ){
         database.liveMatchDao().updateNotifyMatchInfo(
             matchId = matchId,
             status = marketInfo.status,
@@ -76,14 +78,23 @@ class LiveMainRepository(
         val selections =
             marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
         database.liveMatchDao().updateLiveSelectionBean(
-            selections.selections,
+            selections.selectionsEdit,
             selections.selectionsRecord,
-            selections.selectionsDelete
+            selections.selectionsAdd,
+            selections.selectionsDelete,
+            selections.marketsAdd,
+            selections.selectionsEditId
         )
     }
 
     fun unregisterMatchInfoNotify(matchId: Long) {
         remoteManager.unregisterMatchInfoNotify(scope, matchId)
+    }
+
+    fun getSelectionsEdit(callback: (List<SelectionsEdit>) -> Unit) {
+        scope.launch(Dispatchers.IO) {
+            callback(database.liveMatchDao().getSelectionsEdit())
+        }
     }
 
     fun clearAllMatch() {

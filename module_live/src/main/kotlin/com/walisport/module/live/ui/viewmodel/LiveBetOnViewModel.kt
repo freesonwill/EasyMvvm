@@ -14,8 +14,12 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import arch.cayenne.module.bet.repo.BetRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.core.parameter.parametersOf
 
 class LiveBetOnViewModel : BaseViewModel() {
@@ -23,7 +27,7 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
 
 
-    private val _observeSelection = MutableSharedFlow<List<LiveSelectionBean>?>(replay = 1)
+    private val _observeSelection = MutableSharedFlow<List<LiveSelectionBean>?>()
     val observeSelection: Flow<List<LiveSelectionBean>?> = _observeSelection
 
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
@@ -35,8 +39,7 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
 
-    private val _getLiveSelectionBean =
-        MutableSharedFlow<Map<Long, List<LiveSelectionBean>>>(replay = 1)
+    private val _getLiveSelectionBean = MutableSharedFlow<Map<Long, List<LiveSelectionBean>>>()
     val getLiveSelectionBean: Flow<Map<Long, List<LiveSelectionBean>>> = _getLiveSelectionBean
 
     //监听盘口筛选变化

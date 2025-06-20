@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMarketDetailBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import com.walisport.module.live.data.LiveOddsStatusEnum
 import com.walisport.module.live.data.constants.LiveMatchBetStatus
 import com.xxx.qyplayer.log.extension.logTag
@@ -16,7 +17,7 @@ import kotlin.math.min
 
 data class LiveMatchSelectionFullData(
     val selectionsEdit: List<LiveSelectionBean>,//修改投注区
-    val selectionsEditId : List<Long>,//记录变化的注区ID,用于显示上升,下降
+    val selectionsEditId: List<SelectionsEdit>,//记录变化的注区ID,用于显示上升,下降
     val selectionsRecord: List<LiveSelectionBeanRecord>,//投注区记录
     val selectionsDelete: List<Long>,//删除的注区
     val marketsDelete: List<Long>,//删除的盘口
@@ -27,7 +28,7 @@ data class LiveMatchSelectionFullData(
 fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveMatchSelectionFullData {
     val data: List<Market> = this
     val selectionsEdit = mutableListOf<LiveSelectionBean>()//修改投注区
-    val selectionsEditId = mutableListOf<Long>()//记录变化的注区ID,用于显示上升,下降
+    val selectionsEditId = mutableListOf<SelectionsEdit>()//记录变化的注区ID,用于显示上升,下降
     val selectionsRecord = mutableListOf<LiveSelectionBeanRecord>()//投注区记录
     val selectionsDelete = mutableListOf<Long>()//删除的注区
     val marketsDelete = mutableListOf<Long>()//删除的盘口
@@ -43,6 +44,7 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                         status = market.status
                     )
                 )
+
             } else if (LiveMatchBetStatus.DELETE.code == market.status) {
                 marketsDelete.add(market.marketId)
             }
@@ -60,10 +62,10 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                             status = LiveOddsStatusEnum.SAME.status
                         } else if (data.odds.toDouble() < selection.odds.toDouble()) {
                             status = LiveOddsStatusEnum.UP.status
-                            selectionsEditId.add(selection.selectionId)
+                            selectionsEditId.add(SelectionsEdit(selection.selectionId))
                         } else if (data.odds.toDouble() > selection.odds.toDouble()) {
                             status = LiveOddsStatusEnum.DOWN.status
-                            selectionsEditId.add(selection.selectionId)
+                            selectionsEditId.add(SelectionsEdit(selection.selectionId))
                         } else {
                             LiveOddsStatusEnum.SAME.status
                         }
@@ -118,6 +120,13 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                                 oddsStatus = LiveOddsStatusEnum.SAME.status
                             )
                         )
+                        selectionsRecord.add(
+                            LiveSelectionBeanRecord(
+                                marketId = market.marketId,
+                                odds = selection.odds,
+                                selectionId = selection.selectionId
+                            )
+                        )
                     }
 
                     else -> {// 默认
@@ -132,12 +141,12 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
         }
     }
     return LiveMatchSelectionFullData(
-         selectionsEdit,
-     selectionsEditId ,
-     selectionsRecord,
-     selectionsDelete,
-     marketsDelete,
-     selectionsAdd,
-     marketsAdd,
+        selectionsEdit,
+        selectionsEditId,
+        selectionsRecord,
+        selectionsDelete,
+        marketsDelete,
+        selectionsAdd,
+        marketsAdd,
     )
 }
