@@ -117,6 +117,7 @@ class MatchListPagerFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
         if (hidden) {
             //暫時移除訂閱
             mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
@@ -163,7 +164,7 @@ class MatchListPagerFragment :
                 when(state) {
                     MatchListState.FIRST_LOADING -> {
                         clDynamics.visibility = View.GONE
-                        homeViewModel.changeState(HomeState.LOADING_MATCH)
+                        homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     MatchListState.REFRESHING -> {
                         mViewModel.showLoading()
@@ -175,7 +176,7 @@ class MatchListPagerFragment :
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
-                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
@@ -187,7 +188,7 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
-                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {

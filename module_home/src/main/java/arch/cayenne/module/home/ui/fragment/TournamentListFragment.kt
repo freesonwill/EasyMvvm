@@ -185,7 +185,7 @@ class TournamentListFragment :
                         R.string.lineup_empty.getString()
                     )
                 }
-                homeViewModel.changeState(HomeState.LOADING_TOURNAMENT_LIST_SUCCESS)
+                homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
             }
         }
 
