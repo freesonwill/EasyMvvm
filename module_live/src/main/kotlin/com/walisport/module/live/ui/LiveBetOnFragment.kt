@@ -43,7 +43,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var isNotify = false
-    private var selectionComboId :Long? = null
+    private var selectionComboId: Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
         mBinding.clDynamics.setState(States.LOADING, "")
@@ -55,21 +55,30 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     fun initAdapter() {
         mBinding.rvBetList.apply {
-            itemAnimator = null
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
             liveBetOnAdapter = LiveBetOnAdapter(object : LivBetListCallback {
-                override fun itemListCallback(marketI: Long, selectionId: Long,x: Float,y: Float) {
+                override fun itemListCallback(
+                    marketI: Long,
+                    selectionId: Long,
+                    x: Float,
+                    y: Float
+                ) {
                     launch {
-                        val status = mainViewModel.matchId.value?.let { mViewModel.setSelection(it, selectionId) }
+                        val status = mainViewModel.matchId.value?.let {
+                            mViewModel.setSelection(
+                                it,
+                                selectionId
+                            )
+                        }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {
                             showToast(getString(R.string.disabled_to_combo))
-                        }else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
-                        fabViewModel.setClickAnimation(x, y)
-                    }
+                        } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
+                            fabViewModel.setClickAnimation(x, y)
+                        }
                     }
                 }
             })
@@ -84,7 +93,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mViewModel.getLiveSelectionBean(marketIds)
         launch {
             mViewModel.getLiveSelectionBean.collect {
-               launch(Main) {
+                launch(Main) {
                     mBinding.clDynamics.setVisibilityGone()
                     mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                     liveBetOnAdapter.setHomeAway(
@@ -124,36 +133,47 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
-            mainViewModel.matchId.observe(viewLifecycleOwner){
-                tabList.clear()
-                tabPosition = mutableListOf(0, 0)
-                selectionComboId = null
-                mBinding.tabLayout.removeAllTabs()
-                mViewModel.observerSelectionComboByMatchId(it)
-            }
-            mainViewModel.mainMatch.observe(viewLifecycleOwner) {
-                // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
-                if (it != null) {
-                    if (it.basicInfo.betStop) {
-                        mBinding.ivMenu.visibility = View.GONE
-                        mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
-                        return@observe
-                    } else {
-                        mBinding.ivMenu.visibility = View.VISIBLE
-                        mBinding.clDynamics.setVisibilityGone()
-                    }
-                }
-                mViewModel.getMarketType(it.matchId)
-            }
-            mViewModel.marketType.observe(viewLifecycleOwner) { list ->
-                if (list!!.isEmpty()) {
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
+            mBinding.clDynamics.setState(States.LOADING, "")
+            mBinding.LLCBetOn.visibility = View.GONE
+            mBinding.ivMenu.visibility = View.GONE
+            mViewModel.observerSelectionComboByMatchId(it)
+        }
+
+        //推送盘口关闭和开启发生变化
+        mainViewModel.observeMainMatch.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it.basicInfo.betStop) {
+                    mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.ivMenu.visibility = View.GONE
-                    mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
-                    return@observe
-                } else {
-                    mBinding.ivMenu.visibility = View.VISIBLE
-                    mBinding.clDynamics.setVisibilityGone()
+                    mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
                 }
+            }
+        }
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+            liveBetOnAdapter.submitList(emptyList())
+            tabList.clear()
+            tabPosition = mutableListOf(0, 0)
+            selectionComboId = null
+            mBinding.tabLayout.removeAllTabs()
+            // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
+            if (it != null) {
+                if (it.basicInfo.betStop) {
+                    mBinding.ivMenu.visibility = View.GONE
+                    mBinding.LLCBetOn.visibility = View.GONE
+                    mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+                } else {
+                    mViewModel.getMarketType(it.matchId)
+                }
+            }
+        }
+        mViewModel.marketType.observe(viewLifecycleOwner) { list ->
+            if (list!!.isEmpty()) {
+                mBinding.ivMenu.visibility = View.GONE
+                mBinding.LLCBetOn.visibility = View.GONE
+                mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
+                return@observe
+            } else {
                 if (tabList.isEmpty()) {
                     tabList.apply {
                         clear()
@@ -168,7 +188,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 } else {
                     mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
                 }
+                mBinding.ivMenu.visibility = View.VISIBLE
+                mBinding.LLCBetOn.visibility = View.VISIBLE
+                mBinding.clDynamics.setVisibilityGone()
             }
+        }
             //根据盘口分类code获取盘口列表
             mViewModel.getMarketList.observe(viewLifecycleOwner) {
                 var marketIds: MutableList<Long> = mutableListOf()
@@ -222,7 +246,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.tabLayout.addTab(newTab)
         }
         mBinding.tabLayout.getTabAt(0)?.select()
-        mBinding.tabLayout.reflexMargin(8.dp2px,8.dp2px,4.dp2px)
+        mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 4.dp2px)
     }
 
     override fun onDestroyView() {
