@@ -78,6 +78,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 )
 
                 withContext(Dispatchers.Main) {
+                    _state.value = Event(MatchListState.IDLE)
                     matchListChange.value = list
                 }
             }
