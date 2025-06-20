@@ -89,6 +89,8 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
                     },
                     onSearch = { content ->
                         content?.let {
+                            sharedViewModel.addOneRecord(content)
+                            notifyUpdateRecordList(content)
                             updateSearchKey(content)
                             clearSearchRecommend()
                             navigateTo(SearchNavigationEvent.ToSearchResultBase(content))
