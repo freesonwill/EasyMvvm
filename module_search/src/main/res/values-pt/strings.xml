@@ -18,7 +18,9 @@
     <string name="search_result_btn_bet_finish">Finalizado</string>
     <string name="search_result_race_date_format_display">dd \'de\' MMM EEEE</string>
     <string name="search_result_race_calendar_title">%1$s de %2$s</string>
-    <string name="search_calendar_reset">Redefinir</string>
-    <string name="search_calendar_confirm">Confirmar</string>
+    <string name="search_dialog_delete_all_history">Tem certeza de que deseja limpar o histórico?</string>
+    <string name="search_dialog_cancel">Cancelar</string>
+    <string name="search_dialog_reset">Redefinir</string>
+    <string name="search_dialog_confirm">Confirmar</string>
     <string name="search_result_race_playing">Em Andamento</string>
 </resources>
