@@ -5,6 +5,7 @@ import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.betslip.data.constants.CommonExtension.toOrderBean
@@ -39,7 +40,7 @@ class BetSlipRemoteManager(
         size: Int,
         sportIds: List<Int>?,
         matchId: Long?,
-    ): List<BetSlipOrderBean>? {
+    ): SocketResponseData<Client.GetOrderResp> {
         "getOrderReq params status $type startTime $startTime endTime $endTime cursorBetTime $cursorBetTime size $size sportIds $sportIds matchId $matchId".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetOrderResp>(
             scope = scope,
@@ -58,10 +59,7 @@ class BetSlipRemoteManager(
             }.build()
         }
         "getOrderReq result ${Gson().toJson(result)}".logd(TAG)
-        if (result.error == null && result.data != null) {
-            return result.data!!.orderList.map { it.toOrderBean(type) }
-        }
-        return null
+        return result
     }
 
     suspend fun getReserveOrder(
@@ -71,7 +69,7 @@ class BetSlipRemoteManager(
         matchId: Long?,
         cursorBetTime: Long?,
         size: Int
-    ): List<BetSlipReserveBean>? {
+    ): SocketResponseData<Client.GetReserveOrderResp> {
         "getReserveOrder params startTime $startTime endTime $endTime sportId $sportId matchId $matchId cursorBetTime $cursorBetTime size $size".logd(TAG)
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetReserveOrderResp>(
             scope = scope,
@@ -88,10 +86,7 @@ class BetSlipRemoteManager(
             }.build()
         }
         "getReserveOrder  result ${result.data?.orderList?.size}".logd(TAG)
-        if (result.error == null && result.data != null) {
-            return result.data!!.orderList.map { it.toReserveOrderBean() }
-        }
-        return null
+        return result
     }
 
     suspend fun earlySettleReq(

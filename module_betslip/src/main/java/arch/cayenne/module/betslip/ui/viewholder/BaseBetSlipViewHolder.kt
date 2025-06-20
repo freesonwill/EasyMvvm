@@ -29,19 +29,13 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
     protected val adapter: BetSlipSelectionAdapter by lazy {
         BetSlipSelectionAdapter(betSlipType)
     }
-    private var betSlipListener: BetSlipAdapter.BetSlipListener? = null
     private var expandedEnum = BetSlipExpandedEnum.NONE
 
-    protected val moneySymbol: String
-        get() = betSlipListener?.getMoneySymbol() ?: ""
 
     fun setLiveListener(listener: BetSlipAdapter.BetSlipLiveListener?) {
         adapter.setLiveListener(listener)
     }
-
-    fun setBetSlipListener(listener: BetSlipAdapter.BetSlipListener?) {
-        betSlipListener = listener
-    }
+    
 
     protected fun initItemView(recyclerView: RecyclerView) {
         val manager = LinearLayoutManager(recyclerView.context)

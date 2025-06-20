@@ -3,11 +3,11 @@ package arch.cayenne.module.betslip.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
@@ -17,22 +17,22 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
     private var type: BetSlipEnum? = null
+    private var lastCount = 0
 
     init {
         viewModelScope.launch {
             repo.observeOrderBeanFlow.collect {
+                if (lastCount != 0 && it.isEmpty()) {
+                    setState(DataState.DataEmpty)
+                }
                 setData(it)
             }
         }
     }
 
     protected open fun setData(data: List<BetSlipOrderBean>) {
+        lastCount = data.size
         _orderLiveData.value = data
-        if (data.isEmpty()) {
-            setState(DynamicStateLayout.States.DATA_EMPTY)
-        } else {
-            setState(DynamicStateLayout.States.NULL)
-        }
     }
 
     override fun refreshData(status: BetSlipEnum) {
@@ -40,8 +40,8 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
             type = status
             repo.registerObserveOrderBean(status.value)
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            val resp = repo.getOrder(
+        callApi({
+            repo.getOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -50,16 +50,13 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 sportIds,
                 matchId,
             )
-            if (resp == null) {
-                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
-            }
-        }
+        })
     }
 
     override fun loadMoreData(status: BetSlipEnum) {
         val list = _orderLiveData.value
-        viewModelScope.launch {
-            val resp = repo.loadMoreOrder(
+        callApi({
+            repo.loadMoreOrder(
                 status.value,
                 startTime,
                 endTime,
@@ -68,10 +65,11 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
                 sportIds,
                 matchId,
             )
-            if (resp == null) {
-                setState(DynamicStateLayout.States.NETWORK_ANOMALY)
+        }, {
+            if (it is ApiResponseState.Failed) {
+                setState(DataState.NetworkUnavailable)
             }
-        }
+        }, autoUpdateState = false)
     }
 
     override fun canLoadMore(): Boolean {

@@ -66,12 +66,12 @@ class CommonRepository(
         }
 
         if (loginResp.data != null && loginResp.data!!.success) {
-            val balanceResp = getBalance()
+            val balanceBean = getBalance()
             infoDao.insert(
                 InfoBean(
                     uid,
-                    balanceResp.balance.balanceStringToLong(),
-                    balanceResp.currency,
+                    balanceBean.balance,
+                    balanceBean.currency,
                     loginResp.data!!.success
                 )
             )
@@ -81,7 +81,7 @@ class CommonRepository(
     }
 
     //登入成功後主動取得餘額
-    private suspend fun getBalance(): Client.BalanceResp {
+    private suspend fun getBalance(): BalanceBean {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.BalanceResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -89,7 +89,13 @@ class CommonRepository(
         ) {
             Client.BalanceReq.newBuilder().build()
         }
-        return resp.data!!
+
+
+        return if (resp.error == null && resp.data != null) {
+            BalanceBean(resp.data!!.balance.balanceStringToLong(), resp.data!!.currency)
+        } else {
+            BalanceBean(0, "")
+        }
     }
 
     //觀察從API來的餘額變化並塞進資料庫
@@ -138,4 +144,6 @@ class CommonRepository(
     fun reset() {
         socketManager.reset()
     }
+
+    data class BalanceBean(val balance: Long, val currency: String)
 }
