@@ -39,8 +39,8 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         skinType = mViewModel.getSkinType()
         mViewModel.setSkinType(skinType)
         //设置语言
-        //val langType = mViewModel.getLanguageType()
-        //mBinding.tvLanguageType.text = mViewModel.getChangeLanguage(context)
+        val lang = mViewModel.getLanguageType()
+        mBinding.tvLanguageType.text = getLanguage(lang)
         //设置赔率显示方式
         oddsType = mViewModel.getOddsType()
         if (oddsType == 0) {
@@ -69,13 +69,10 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-        "===$hidden".loge("测试")
         if (!hidden) {
             //语言类型
             val lang = mViewModel.getLanguageType()
-            //val yu = getLanguage(lang)
-            //"====$yu".loge("测试")
-            //mBinding.tvLanguageType.text = yu
+            mBinding.tvLanguageType.text =  getLanguage(lang)
             //赔率显示方式
             oddsType = mViewModel.getOddsType()
             if (oddsType == 0) {
@@ -88,6 +85,16 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             mViewModel.setSkinType(skinType)
         }
     }
+
+    private fun getLanguage(type: String): String {
+        return when (type) {
+            LanguageType.LANGUAGE_ENGLISH.value -> getString(R.string.menu_language_english)
+            LanguageType.LANGUAGE_PT.value -> getString(R.string.menu_language_portugal)
+            LanguageType.LANGUAGE_ID.value -> getString(R.string.menu_language_indonesia)
+            else -> getString(R.string.menu_language_simple)
+        }
+    }
+
 
     private fun showOddsDisplayDialog() {
         val fragmentManager = requireActivity().supportFragmentManager
