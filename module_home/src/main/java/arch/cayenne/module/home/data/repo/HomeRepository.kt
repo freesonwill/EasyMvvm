@@ -28,6 +28,7 @@ class HomeRepository(
     private val matchDao = database.matchDao()
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
+    fun observeTenTournaments(playType: Int, sportId: Int) = tournamentDao.observeTournamentWithLimit(playType = playType, sportId = sportId, limit = 10)
 
     @Transaction
     suspend fun getSportStatistical(): ApiResponseState = withContext(scope.coroutineContext) {
@@ -65,14 +66,8 @@ class HomeRepository(
     }
 
     @Transaction
-    suspend fun getTenTournaments(playType: Int, sportId: Int): List<TournamentDataModel>? {
-        clearTournamentCache()
+    suspend fun getTenTournaments(playType: Int, sportId: Int): ApiResponseState = withContext(scope.coroutineContext) {
         clearMatchCache()
-        //先從DB拿取
-//        val queryResult = tournamentDao.queryTournamentWithLimit(playType, sportId, 10)
-//        if (queryResult.isNotEmpty()) {
-//            return queryResult
-//        }
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListTournamentResp>(
             scope = scope,
@@ -85,20 +80,19 @@ class HomeRepository(
                 this.size = 0
             }.build()
         }
-        return if (res.error == null && res.data != null) {
+        return@withContext if (res.error == null && res.data != null) {
             saveTournaments(playType, sportId, res.data!!)
         } else {
-            null
+            ApiResponseState.Failed(res.error)
         }
     }
 
-    private fun saveTournaments(
+    private suspend fun saveTournaments(
         playType: Int,
         sportId: Int,
         data: Client.ListTournamentResp
-    ): List<TournamentDataModel> {
-        val tournamentList = arrayListOf<TournamentBean>()
-//        val sportTournamentCrossRefList = arrayListOf<SportTournamentCrossRef>()
+    ): ApiResponseState.Succeeded<*> {
+        val tournamentList = mutableListOf<TournamentBean>()
         data.tournamentList.forEach { tournament ->
             tournamentList.add(
                 TournamentBean(
@@ -112,19 +106,10 @@ class HomeRepository(
                     weight = tournament.weight,
                 )
             )
-//            sportTournamentCrossRefList.add(
-//                SportTournamentCrossRef(
-//                    tournamentId = tournament.id,
-//                    sportId = sportId,
-//                    playType = playType,
-//                    hot = tournament.hot,
-//                    weight = tournament.weight
-//                )
-//            )
         }
         tournamentDao.insert(tournamentList)
-//        tournamentDao.insertTournamentRef(sportTournamentCrossRefList)
-        return tournamentDao.queryTournamentWithLimit(10)
+        tournamentDao.deleteMissing(tournamentList.map { it.id })
+        return ApiResponseState.Succeeded(tournamentList)
     }
 
 
@@ -135,9 +120,6 @@ class HomeRepository(
         return tournamentDao.getTournamentById(tournamentId)
     }
 
-    private fun clearTournamentCache() {
-        tournamentDao.clearTournaments()
-    }
     private fun clearMatchCache() {
         matchDao.clearAllMatch()
     }

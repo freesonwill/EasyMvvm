@@ -3,7 +3,7 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
@@ -69,6 +69,7 @@ class HomeViewModel : BaseViewModel() {
     val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+    private var tournamentJob: Job? = null
 
     init {
         viewModelScope.launch {
@@ -187,27 +188,22 @@ class HomeViewModel : BaseViewModel() {
 
     fun getCurrentTournament() {
         setState(HomeState.Tournament.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getTenTournaments(currentPlayType.id, currentSportId)
-            "getCurrentTournament list: $list".logd()
-            withContext(Dispatchers.Main) {
-                if (list == null) {
-                    //TODO 拿取聯賽錯誤
-                    "Get Tournament List failed!!".loge(this::class.java.simpleName)
-                    setState(DataState.NetworkUnavailable)
-                } else if (list.isEmpty()) {
-                    setState(DataState.DataEmpty)
-                } else {
-                    tournaments.value = Event(
-                        ArrayList<TournamentDataModel>().apply {
-                            add(TournamentDataModel.createAllItem(currentSportId))
-                            addAll(list)
-                        }
-                    )
-                    setState(HomeState.Tournament.LoadSuccess)
-                }
+        tournamentJob?.cancel()
+        tournamentJob = viewModelScope.launch {
+            repository.observeTenTournaments(currentPlayType.id, currentSportId).collect {
+                val data = mutableListOf<TournamentDataModel>()
+                data.add(TournamentDataModel.createAllItem(currentSportId))
+                data.addAll(it)
+                tournaments.value = Event(data)
             }
         }
+        callApi({
+            repository.getTenTournaments(currentPlayType.id, currentSportId)
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                setState(HomeState.Tournament.LoadSuccess)
+            }
+        })
     }
 
     fun setSelectedDate(date: Long) {
