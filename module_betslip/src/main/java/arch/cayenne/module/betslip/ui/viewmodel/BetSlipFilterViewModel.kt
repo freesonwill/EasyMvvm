@@ -43,7 +43,6 @@ class BetSlipFilterViewModel: BaseViewModel() {
      * */
     fun checkUpdate(){
         val filter = onFilterChangeListener.value
-        "checkUpdate ${filter?.matchId} $matchId".logd("betslip")
         if(filter?.matchId != matchId){
             updateFilter()
         }

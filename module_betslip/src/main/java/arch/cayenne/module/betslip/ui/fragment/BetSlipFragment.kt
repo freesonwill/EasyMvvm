@@ -68,7 +68,6 @@ class BetSlipFragment :
             )
             viewPager.adapter = null
             viewPager.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            viewPager.offscreenPageLimit = list.size
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
