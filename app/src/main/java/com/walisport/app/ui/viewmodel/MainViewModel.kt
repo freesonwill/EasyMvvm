@@ -13,10 +13,12 @@ import org.koin.core.component.inject
  * @description:
  */
 class MainViewModel : BaseActivityViewModel() {
+
     private val repository: MainRepository by inject { parametersOf(viewModelScope) }
 
     init {
         repository.loadSportList()
+        repository.observeSystemNotify()
     }
 
     //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种

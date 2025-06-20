@@ -63,6 +63,9 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     CHAT_CHECK_BETAMOUNT(500, 1015),//校验投注额
     CHAT_MSG_NOTIFY(500, 2001),//用户消息推送
 
+    SYSTEM_NOTIFY(600, 1013),//600-1013: 消息通知
+    APP_NOTIFY(600, 1011),   //600-1011: APP内通知
+
     USER_SYS_MESSAGE(500, 1106),// 500-1106: 获取用户消息列表
     UPDATE_MESSAGE(500, 1107),  //500-1107： 修改消息状态 已读或删除
 

@@ -36,10 +36,10 @@ class MessageMainRepository(
     }
 
     //获取用户消息列表
-    fun getMessageList(id: Long): List<NotificationBean> {
+    fun getMessageList(id: Long, type: Int): List<NotificationBean> {
         val list = ArrayList<NotificationBean>()
         scope.launch {
-            val resp = remoteManager.getUserMessageListReq(scope, id)
+            val resp = remoteManager.getUserMessageListReq(scope, id, type)
             resp?.msgRecordList?.mapIndexed { _, item ->
                 val temp = NotificationBean(
                     id = item.id,                 //消息ID

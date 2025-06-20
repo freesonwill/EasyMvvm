@@ -19,6 +19,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
 
     private var cursorId: Long = 0L
+    private var cursorType: Int = 0
 
     companion object {
         const val STATUS_READ = 1
@@ -38,7 +39,11 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
                         createTime = item.time
                     )
                 }
-                _notificationBean.value = temp
+                if (cursorType == 0) {
+                    _notificationBean.value = temp
+                } else {
+                    _notificationBean.value = temp.filter { it.type == cursorType }
+                }
             }
         }
     }
@@ -56,7 +61,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     //获取系统消息列表
     fun getMessageList() {
         cursorId = 0L
-        val result = repo.getMessageList(cursorId)
+        val result = repo.getMessageList(cursorId, cursorType)
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
@@ -66,7 +71,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     //加载更多系统消息列表
     fun getMoreMessageList() {
-        val result = repo.getMessageList(cursorId)
+        val result = repo.getMessageList(cursorId, cursorType)
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
@@ -75,6 +80,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     }
 
     fun selectMessage(type: Int) {
+        cursorType = type
         val list = _notificationBean.value?.toMutableList()
         list?.let {
             if (type == 0) {
