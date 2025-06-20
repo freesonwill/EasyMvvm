@@ -70,7 +70,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
                         val px = triangleLocation.first() + mBinding.triangle.width / 2
                         layoutParams.x = positionX - px
-                        layoutParams.y = positionY - (mBinding.triangle.height * 1.8).toInt()
+                        layoutParams.y = positionY - mBinding.triangle.height
 
                         it.attributes = layoutParams
                         
