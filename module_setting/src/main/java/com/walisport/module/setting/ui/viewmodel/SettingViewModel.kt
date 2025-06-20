@@ -129,7 +129,7 @@ class SettingViewModel : BaseViewModel() {
         return repository.getAppAll()
     }
 
-    fun getChangeLanguage(context: Context): String {
+    fun getSkinnableLanguage(context: Context): String {
         val lang = repository.getLanguageType()
         return when (lang) {
             LanguageType.LANGUAGE_ENGLISH.value -> SkinnableResourceManager.getString(
@@ -137,19 +137,38 @@ class SettingViewModel : BaseViewModel() {
                 R.string.menu_language_english,
                 languageManager.getLanguage()
             )
+
             LanguageType.LANGUAGE_PT.value -> SkinnableResourceManager.getString(
                 context,
                 R.string.menu_language_portugal,
                 languageManager.getLanguage()
             )
+
             LanguageType.LANGUAGE_ID.value -> SkinnableResourceManager.getString(
                 context,
                 R.string.menu_language_indonesia,
                 languageManager.getLanguage()
             )
+
             else -> SkinnableResourceManager.getString(
                 context,
                 R.string.menu_language_simple,
+                languageManager.getLanguage()
+            )
+        }
+    }
+
+    fun getSkinnableOddsType(context: Context, oddsType: Int): String {
+        return if (oddsType == 0) {
+            SkinnableResourceManager.getString(
+                context,
+                R.string.menu_europe,
+                languageManager.getLanguage()
+            )
+        } else {
+            SkinnableResourceManager.getString(
+                context,
+                R.string.menu_hk,
                 languageManager.getLanguage()
             )
         }

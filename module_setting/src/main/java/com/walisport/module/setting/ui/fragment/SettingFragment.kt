@@ -1,22 +1,15 @@
 package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
-import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.LanguageManager
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
 import com.walisport.module.setting.ui.dialog.OddsDisplayDialog
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import kotlin.reflect.KClass
 
 /**
@@ -39,15 +32,11 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         skinType = mViewModel.getSkinType()
         mViewModel.setSkinType(skinType)
         //设置语言
-        val lang = mViewModel.getLanguageType()
-        mBinding.tvLanguageType.text = getLanguage(lang)
+        val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
+        mBinding.tvLanguageType.text = lang
         //设置赔率显示方式
         oddsType = mViewModel.getOddsType()
-        if (oddsType == 0) {
-            mBinding.tvDisplay.text = getString(R.string.menu_europe)
-        } else {
-            mBinding.tvDisplay.text = getString(R.string.menu_hk)
-        }
+        mBinding.tvDisplay.text = mViewModel.getSkinnableOddsType(mBinding.root.context, oddsType)
     }
 
     override fun initListener() {
@@ -71,30 +60,17 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         super.onHiddenChanged(hidden)
         if (!hidden) {
             //语言类型
-            val lang = mViewModel.getLanguageType()
-            mBinding.tvLanguageType.text =  getLanguage(lang)
+            val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
+            mBinding.tvLanguageType.text = lang
             //赔率显示方式
             oddsType = mViewModel.getOddsType()
-            if (oddsType == 0) {
-                mBinding.tvDisplay.text = getString(R.string.menu_europe)
-            } else {
-                mBinding.tvDisplay.text = getString(R.string.menu_hk)
-            }
+            mBinding.tvDisplay.text =
+                mViewModel.getSkinnableOddsType(mBinding.root.context, oddsType)
             //皮肤设置
             skinType = mViewModel.getSkinType()
             mViewModel.setSkinType(skinType)
         }
     }
-
-    private fun getLanguage(type: String): String {
-        return when (type) {
-            LanguageType.LANGUAGE_ENGLISH.value -> getString(R.string.menu_language_english)
-            LanguageType.LANGUAGE_PT.value -> getString(R.string.menu_language_portugal)
-            LanguageType.LANGUAGE_ID.value -> getString(R.string.menu_language_indonesia)
-            else -> getString(R.string.menu_language_simple)
-        }
-    }
-
 
     private fun showOddsDisplayDialog() {
         val fragmentManager = requireActivity().supportFragmentManager
