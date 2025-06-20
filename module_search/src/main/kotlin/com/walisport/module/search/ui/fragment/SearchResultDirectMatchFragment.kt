@@ -109,6 +109,9 @@ class SearchResultDirectMatchFragment :
                 mViewModel.getSearchResult(id, type)
             }
         }
+        args.keyword?.let { keyword ->
+            mViewModel.setCurrentTitle(keyword)
+        }
     }
 
     override fun initListener() = Unit
@@ -127,7 +130,13 @@ class SearchResultDirectMatchFragment :
                 // 搜尋結果
                 launch {
                     directData.collect { data ->
-                        data?.let { updateDirectInfo(it) }
+                        data?.let { updateDirectInfo(it) } ?: run {
+                            with(mBinding) {
+                                tvTitle.text = currentTitle
+                                tvSubTitle.text = noDataStr
+                            }
+                            updateBackgroundColor()
+                        }
                     }
                 }
 
@@ -320,7 +329,14 @@ class SearchResultDirectMatchFragment :
             when (data) {
                 is SearchResultTournamentBean -> {
                     tvTitle.text = data.name
-                    tvSubTitle.text = data.season.takeIf { it.isNotEmpty() } ?: noDataStr
+                    tvSubTitle.text =
+                        data.season.takeIf { it.isNotEmpty() }
+                            ?.let {
+                                String.format(
+                                    R.string.search_result_sub_title_tournament.toTranslatedStr(),
+                                    data.season
+                                )
+                            } ?: noDataStr
                 }
 
                 is SearchResultTeamBean -> {
@@ -333,7 +349,7 @@ class SearchResultDirectMatchFragment :
                             data.lose.toString()
                         ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
                             String.format(
-                                R.string.search_result_sub_title_tournament.toTranslatedStr(),
+                                R.string.search_result_sub_title_team.toTranslatedStr(),
                                 data.tournamentShortName,
                                 data.rank,
                                 data.win,
@@ -376,14 +392,18 @@ class SearchResultDirectMatchFragment :
             ivPlayer.visibility = if (isPlayer) View.VISIBLE else View.GONE
             ivIcon.visibility = if (!isPlayer) View.VISIBLE else View.GONE
 
-            updateResultBackground(
-                if (data.color?.isNotEmpty() == true) Color.parseColor(data.color)
-                else ContextCompat.getColor(
-                    requireContext(),
-                    R.color.search_result_default_gradient_start
-                )
-            )
+            updateBackgroundColor(data.color)
         }
+    }
+
+    private fun updateBackgroundColor(color: String? = null) {
+        updateResultBackground(
+            if (color?.isNotEmpty() == true) Color.parseColor(color)
+            else ContextCompat.getColor(
+                requireContext(),
+                R.color.search_result_default_gradient_start
+            )
+        )
     }
 
     private fun Int.toTranslatedStr(): String {

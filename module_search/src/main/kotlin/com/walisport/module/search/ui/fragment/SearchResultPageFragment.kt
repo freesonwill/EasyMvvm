@@ -41,7 +41,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private val onItemClick = { id: String, keyword: String, type: SearchTypeEnum ->
         addSearchKeyWord(keyword)
-        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(id = id, type = type))
+        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(keyword = keyword, id = id, type = type))
     }
 
     private val gridAdapter by lazy {

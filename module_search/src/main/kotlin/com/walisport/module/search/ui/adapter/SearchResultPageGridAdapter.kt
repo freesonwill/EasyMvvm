@@ -33,7 +33,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
         const val VIEW_TYPE_MORE = 2
     }
 
-    var onItemClick: ((id: String, keyWord: String, type: SearchTypeEnum) -> Unit)? = null
+    var onItemClick: ((id: String, keyword: String, type: SearchTypeEnum) -> Unit)? = null
     var onMoreClick: ((SearchResultTypeEnum) -> Unit)? = null
 
     private var locale: Locale = Locale.getDefault()

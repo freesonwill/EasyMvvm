@@ -77,6 +77,11 @@
             app:argType="com.walisport.module.search.data.model.SearchResultBean" />
 
         <argument
+            android:name="keyword"
+            app:nullable="true"
+            app:argType="string"/>
+
+        <argument
             android:name="id"
             app:nullable="true"
             app:argType="string"/>
