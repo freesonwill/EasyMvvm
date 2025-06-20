@@ -52,12 +52,9 @@ class SearchResultDirectMatchFragment :
     private val args: SearchResultDirectMatchFragmentArgs by navArgs()
 
     private val dateHintStr: String
-        get() =
-            SkinnableResourceManager.getString(
-                requireContext(),
-                R.string.search_date_hint,
-                sharedViewModel.getCurrentLanguage()
-            )
+        get() = R.string.search_date_hint.toTranslatedStr()
+    private val noDataStr: String
+        get() = R.string.search_result_no_data.toTranslatedStr()
 
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
@@ -209,11 +206,7 @@ class SearchResultDirectMatchFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                SkinnableResourceManager.getString(
-                    requireContext(),
-                    R.string.no_search_result,
-                    sharedViewModel.getCurrentLanguage()
-                )
+                R.string.no_search_result.toTranslatedStr()
             )
         }
     }
@@ -327,31 +320,45 @@ class SearchResultDirectMatchFragment :
             when (data) {
                 is SearchResultTournamentBean -> {
                     tvTitle.text = data.name
-                    tvSubTitle.text = data.season
+                    tvSubTitle.text = data.season.takeIf { it.isNotEmpty() } ?: noDataStr
                 }
 
                 is SearchResultTeamBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
-                        requireContext().getString(
-                            R.string.search_result_sub_title_tournament,
+                        listOf(
                             data.tournamentShortName,
-                            data.rank,
-                            data.win,
-                            data.lose
-                        )
+                            data.rank.toString(),
+                            data.win.toString(),
+                            data.lose.toString()
+                        ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
+                            String.format(
+                                R.string.search_result_sub_title_tournament.toTranslatedStr(),
+                                data.tournamentShortName,
+                                data.rank,
+                                data.win,
+                                data.lose
+                            )
+                        } ?: noDataStr
                 }
 
                 is SearchResultPlayerBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
-                        requireContext().getString(
-                            R.string.search_result_sub_title_player,
+                        listOf(
                             data.name,
                             data.teamName,
-                            data.number,
-                            data.position
-                        )
+                            data.number.toString(),
+                            data.position.name
+                        ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
+                            String.format(
+                                R.string.search_result_sub_title_player.toTranslatedStr(),
+                                data.name,
+                                data.teamName,
+                                data.number,
+                                data.position.name
+                            )
+                        } ?: noDataStr
                 }
             }
 
@@ -377,6 +384,14 @@ class SearchResultDirectMatchFragment :
                 )
             )
         }
+    }
+
+    private fun Int.toTranslatedStr(): String {
+        return SkinnableResourceManager.getString(
+            requireContext(),
+            this,
+            sharedViewModel.getCurrentLanguage()
+        )
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {

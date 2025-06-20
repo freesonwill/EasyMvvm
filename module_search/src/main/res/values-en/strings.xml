@@ -22,4 +22,5 @@
     <string name="search_dialog_reset">Reset</string>
     <string name="search_dialog_confirm">Confirm</string>
     <string name="search_result_race_playing">In Progress</string>
+    <string name="search_result_no_data">No data available</string>
 </resources>

@@ -23,4 +23,5 @@
     <string name="search_dialog_reset">Redefinir</string>
     <string name="search_dialog_confirm">Confirmar</string>
     <string name="search_result_race_playing">Em Andamento</string>
+    <string name="search_result_no_data">Nenhum dado disponível</string>
 </resources>
