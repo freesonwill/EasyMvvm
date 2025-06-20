@@ -401,14 +401,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     val action =
                         SearchResultBaseFragmentDirections
                             .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
-                                event.data, null, SearchTypeEnum.UNKNOWN
+                                event.data, event.keyword, null, SearchTypeEnum.UNKNOWN
                             )
                     navController.navigate(action)
                 } else if (currentId == R.id.searchResultListFragment) {
                     val action =
                         SearchResultListFragmentDirections
                             .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
-                                null, event.id, event.type ?: SearchTypeEnum.UNKNOWN
+                                null, event.keyword, event.id, event.type ?: SearchTypeEnum.UNKNOWN
                             )
                     navController.navigate(action)
                 }

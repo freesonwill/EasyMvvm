@@ -21,7 +21,7 @@ import com.walisport.module.search.ui.fragment.SearchResultPageFragment
 class SearchResultPageLinearAdapter(private val type: String): BaseAdapter<SearchResultBaseBean, BaseViewHolder, ViewBinding>(
     SearchResultLinearCompare()
 ) {
-    var onItemClick: ((id: String, keyWord: String, type: SearchTypeEnum) -> Unit)? = null
+    var onItemClick: ((id: String, keyword: String, type: SearchTypeEnum) -> Unit)? = null
 
     override fun convertPlus(holder: BaseViewHolder, binding: ViewBinding, position: Int) {
         with(binding as ItemSearchResultLinearBinding) {

@@ -10,7 +10,7 @@
     <string name="tab_team">球队</string>
     <string name="tab_player">球员</string>
     <string name="search_date_hint">筛选比赛日期</string>
-    <string name="search_result_sub_title_tournament">%1$s/第%2$d名/%3$d胜%4$d负</string>
+    <string name="search_result_sub_title_team">%1$s/第%2$d名/%3$d胜%4$d负</string>
     <string name="search_result_sub_title_player">%1$s/%2$s/%3$d号/%4$s</string>
     <string name="search_result_more">更多</string>
     <string name="search_result_btn_bet">投注</string>
@@ -20,6 +20,8 @@
     <string name="search_dialog_reset">重置</string>
     <string name="search_dialog_confirm">确认</string>
     <string name="search_result_race_playing">进行中</string>
+    <string name="search_result_no_data">暂无数据</string>
     <string name="search_dialog_delete_all_history">确定清空历史纪录吗？</string>
     <string name="search_dialog_cancel">取消</string>
+    <string name="search_result_sub_title_tournament">%1$s 赛季</string>
 </resources>

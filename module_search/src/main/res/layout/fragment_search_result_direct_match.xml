@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toStartOf="@id/barrier_icon_player"
             app:layout_constraintStart_toStartOf="@id/tv_title"
             app:layout_constraintTop_toBottomOf="@id/tv_title"
-            tools:text="2024-2025 赛季" />
+            tools:text="@string/search_result_no_data" />
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/space_under_title"
