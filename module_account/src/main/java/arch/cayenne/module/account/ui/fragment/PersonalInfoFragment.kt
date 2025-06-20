@@ -11,6 +11,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.popBackStack
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
 import arch.cayenne.module.account.databinding.TitleBarPersonalInfoBinding
@@ -49,23 +51,29 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                     state: RecyclerView.State
                 ) {
                     val position = parent.getChildAdapterPosition(view)
-                    if (position == androidx.recyclerview.widget.RecyclerView.NO_POSITION) return
-
+                    if (position == RecyclerView.NO_POSITION) return
+                    outRect.left = spacingTop
                     val row = position / spanCount
                     outRect.top = if (row == 0) { spacingTop } else { 0 }
-                    outRect.right =  spacingOutSide
                     outRect.bottom = if (row == 0) {spacingBottom} else { spacingTop }
                 }
             })
             rvPersonalHeadGrid.adapter = personalInfoAdapter
             personalInfoAdapter.submitList(mViewModel.getPersonalInfoData())
             personalInfoAdapter.setSelectedPosition(mViewModel.getDefaultPosition())
+            personalInfoAdapter.setOnItemClickListener { _ ->
+                if (ceNickName.text?.isNotEmpty() == true && (ceNickName.text?.length ?: 0) <= 8) {
+                    btnSave.isEnabled = true
+                }
+            }
             val defaultNickName = mViewModel.getDefaultNickName()
-            if (defaultNickName.isNullOrEmpty()) {
+            if (defaultNickName.isEmpty()) {
                 ceNickName.isEnabled = true
+                btnSave.isEnabled = false
             } else {
                 ceNickName.isEnabled = false
                 ceNickName.setText(defaultNickName)
+                btnSave.isEnabled = mViewModel.getDefaultPosition() != -1
             }
         }
     }
@@ -74,11 +82,10 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         with (mBinding) {
             btnSave.clickNoRepeat {
                 with (mBinding) {
-                    if (ceNickName.error != null) {
+                    if ((ceNickName.text?.length ?: 0) > 8) {
                         return@clickNoRepeat
                     }
                     if (ceNickName.text.isNullOrEmpty()) {
-                        ceNickName.error = "暱稱不能為空"
                         return@clickNoRepeat
                     } else {
 
@@ -106,12 +113,20 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // No action needed
                     if (s.isNullOrEmpty()) {
-                        ceNickName.error = "暱稱不能為空"
+                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_modify_once)
+                        tvNickNameModifyOnce.setTextColor(SkinnableResourceManager.getColor( requireContext(),arch.cayenne.lib.common.R.color.secondary_text))
+                        tvNickNameLength.text = ""
+                        btnSave.isEnabled = false
                     } else if (s.length > 8) {
-                        ceNickName.error = "暱稱不能超過8個字"
-//                        ceNickName.text?.delete(8, s.length) // 限制輸入長度
+                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_cannot_exceed_8_char)
+                        tvNickNameModifyOnce.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.red_team,null))
+                        tvNickNameLength.text = resources.getString(R.string.nick_name_char_num, s.length)
+                        btnSave.isEnabled = false
                     } else {
-                        ceNickName.error = null // 清除錯誤提示
+                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_modify_once)
+                        tvNickNameModifyOnce.setTextColor(SkinnableResourceManager.getColor( requireContext(),arch.cayenne.lib.common.R.color.secondary_text))
+                        tvNickNameLength.text = resources.getString(R.string.nick_name_char_num, s.length)
+                        btnSave.isEnabled = personalInfoAdapter.getSelectedPosition() != -1
                     }
                 }
 
