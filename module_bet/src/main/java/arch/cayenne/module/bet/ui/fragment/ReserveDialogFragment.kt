@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -62,12 +63,28 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val layoutParams = it.attributes
                 layoutParams.gravity = Gravity.TOP or Gravity.START
 
-                val triangleLocation = IntArray(2)
-                mBinding.triangle.getLocationInWindow(triangleLocation)
+                val pop = mBinding.root
+                pop.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                val popWidth = pop.measuredWidth
 
-                val px = triangleLocation.first() + mBinding.triangle.width / 2
+                val triangle = mBinding.triangle
+                triangle.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+
+                val triangleWidth = triangle.measuredWidth
+                val triangleHeight = triangle.measuredHeight
+
+                val endMargin = (mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
+
+                val px = popWidth - (endMargin + triangleWidth / 2)
+
                 layoutParams.x = positionX - px
-                layoutParams.y = positionY - mBinding.triangle.height
+                layoutParams.y = positionY - triangleHeight
 
                 it.attributes = layoutParams
 
