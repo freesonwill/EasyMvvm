@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
@@ -25,7 +24,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     private var oddsType: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.titleBar.loadGeneralTitleBar(R.string.setting.getString(), {
+        mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
             findNavController().navigateUp()
         })
         //设置皮肤
