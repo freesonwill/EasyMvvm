@@ -33,7 +33,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
         const val VIEW_TYPE_MORE = 2
     }
 
-    var onItemClick: ((id: String, type: SearchTypeEnum) -> Unit)? = null
+    var onItemClick: ((id: String, keyWord: String, type: SearchTypeEnum) -> Unit)? = null
     var onMoreClick: ((SearchResultTypeEnum) -> Unit)? = null
 
     private var locale: Locale = Locale.getDefault()
@@ -94,6 +94,7 @@ class SearchResultPageGridAdapter: BaseAdapter<SearchResultListItemType, BaseVie
                         root.setOnClickListener {
                             onItemClick?.invoke(
                                 id.toString(),
+                                name,
                                 when (itemData) {
                                     is SearchResultPlayerBean -> SearchTypeEnum.PLAYER_ID
                                     is SearchResultTeamBean -> SearchTypeEnum.TEAM_ID
