@@ -3,6 +3,8 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
@@ -16,8 +18,8 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -58,9 +60,6 @@ class HomeViewModel : BaseViewModel() {
     private val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
     val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
 
-    private val _state = MutableLiveData<Event<HomeState>>()
-    val state: LiveData<Event<HomeState>> = _state
-
     private var _recently31MatchScheduleCount = MutableLiveData<Event<List<Common.DailyMatchCount>>>()
     val recently31MatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> = _recently31MatchScheduleCount
 
@@ -72,6 +71,19 @@ class HomeViewModel : BaseViewModel() {
     val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
+    private var tournamentJob: Job? = null
+
+    init {
+        viewModelScope.launch {
+            repository.observeSportsMatchCount().collect {
+                sportsStatistical.value = Event(it)
+                if (it.isNotEmpty()) {
+                    setCurrentSport(it.first().id)
+                }
+            }
+        }
+    }
+
     fun setIsHomeLoading(isLoading: Boolean) {
         _isHomeLoading.value = isLoading
     }
@@ -151,7 +163,7 @@ class HomeViewModel : BaseViewModel() {
     //切換當前的一級選項(今日、早盤、冠軍)
     fun setCurrentPlayType(playType: PlayType) {
         currentPlayType = playType
-        _state.value = Event(HomeState.PLAY_TYPE_CLICK)
+        setState(HomeState.PlayTypeClick)
     }
 
     fun resetLiveData() {
@@ -160,59 +172,41 @@ class HomeViewModel : BaseViewModel() {
     }
 
     fun getCurrentPlayType() = currentPlayType
-    fun getCurrentSportStatistical() {
-        _state.value = Event(HomeState.LOADING_SPORT)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getSportStatistical()?.filter {
-                SportType.fromId(it.id) != null  //去除目前沒有在code預設內的運動
-            }
-            withContext(Dispatchers.Main) {
-                if (list == null) {
-                    //TODO 拿取sport錯誤
-                    "Get Sport List failed!!".loge(this@HomeViewModel::class.java.simpleName)
-                    _state.value = Event(HomeState.FAILED)
-                } else if (list.isEmpty()) {
-                    _state.value = Event(HomeState.NO_DATA)
-                } else {
-                    sportsStatistical.value = Event(list)
-                    setCurrentSport(list.first().id)
-                }
-            }
-        }
 
+    fun getCurrentSportStatistical() {
+        setState(HomeState.Sport.Loading)
+        callApi({
+            repository.getSportStatistical()
+        })
     }
 
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
         currentSportId = sportId
-        _state.value = Event(HomeState.SPORT_LOAD_SUCCESS)
+        setState(HomeState.Sport.LoadSuccess)
     }
 
     fun getCurrentSportId() = currentSportId
 
     fun getCurrentTournament() {
-        _state.value = Event(HomeState.LOADING_TOURNAMENT)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getTenTournaments(currentPlayType.id, currentSportId)
-            "getCurrentTournament list: $list".logd()
-            withContext(Dispatchers.Main) {
-                if (list == null) {
-                    //TODO 拿取聯賽錯誤
-                    "Get Tournament List failed!!".loge(this::class.java.simpleName)
-                    _state.value = Event(HomeState.FAILED)
-                } else if (list.isEmpty()) {
-                    _state.value = Event(HomeState.NO_DATA)
-                } else {
-                    tournaments.value = Event(
-                        ArrayList<TournamentDataModel>().apply {
-                            add(TournamentDataModel.createAllItem(currentSportId))
-                            addAll(list)
-                        }
-                    )
-                    _state.value = Event(HomeState.LOAD_TOURNAMENT_SUCCESS)
-                }
+        setState(HomeState.Tournament.Loading)
+        tournamentJob?.cancel()
+        // TODO 之後需移到init做監聽
+        tournamentJob = viewModelScope.launch {
+            repository.observeTenTournaments(currentPlayType.id, currentSportId).collect {
+                val data = mutableListOf<TournamentDataModel>()
+                data.add(TournamentDataModel.createAllItem(currentSportId))
+                data.addAll(it)
+                tournaments.value = Event(data)
             }
         }
+        callApi({
+            repository.getTenTournaments(currentPlayType.id, currentSportId)
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                setState(HomeState.Tournament.LoadSuccess)
+            }
+        })
     }
 
     fun setSelectedDate(date: Long) {
@@ -223,29 +217,31 @@ class HomeViewModel : BaseViewModel() {
     //
     fun isLoadingMatch(b: Boolean) {
         if (b) {
-            _state.value = Event(HomeState.LOADING_MATCH)
+            setState(HomeState.Match.Loading)
         } else {
-            _state.value = Event(HomeState.LOADING_MATCH_SUCCESS)
+            setState(HomeState.Match.LoadSuccess)
         }
     }
 
     //提供子fragment透過shared HomeViewModel來告知HomeFragment該fragment的狀態
     fun changeState(state: HomeState) {
-        _state.value = Event(state)
+        setState(state)
     }
     
     //获取近31日比赛日程count
     fun getRecently31MatchScheduleCount(tournamentId: Int = TOURNAMENT_ALL_ID) {
-        _state.value = Event(HomeState.LOADING_RECENTLY_31_SCHEDULE)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id,tournamentId)
-            withContext(Dispatchers.Main) {
-                if (list.isNotEmpty()) {
-                    _recently31MatchScheduleCount.value = Event(list)
-                    _state.value = Event(HomeState.LOADING_RECENTLY_31_SCHEDULE_SUCCESS)
+        setState(HomeState.Schedule.Loading)
+        callApi({
+            repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id, tournamentId)
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                val data: List<Common.DailyMatchCount>? = it.dataAs()
+                if (!data.isNullOrEmpty()) {
+                    _recently31MatchScheduleCount.value = Event(data)
+                    setState(HomeState.Schedule.LoadSuccess)
                 }
             }
-        }
+        }, autoUpdateState = false)
     }
 
     private fun startTimer() {
