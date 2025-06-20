@@ -125,6 +125,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
+        if (mViewModel.getCurrentPlayType() != PlayType.EARLY) resetDateTabsToAll()
         mViewModel.resetLiveData()
     }
 
@@ -155,9 +156,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tvTabAll.isSelected = true
             mViewModel.setSelectedDate(0L)
             tvTabAll.clickNoRepeat {
-                it.isSelected = true
-                clearDateTabSelection()
-                mViewModel.setSelectedDate(0L)
+                resetDateTabsToAll()
             }
 
             // 其他日期 Tab 設定
@@ -200,16 +199,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun clearDateTabSelection() {
         val tabLayout = mBinding.layoutContainer.tlDateList
+        tabLayout.setScrollPosition(0, 0f, true)
         val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return
-
         for (i in 0 until tabStrip.childCount) {
             tabStrip.getChildAt(i)?.isSelected = false
             tabLayout.getTabAt(i)?.customView?.isSelected = false
         }
-
         tabLayout.selectTab(null)
     }
 
+    private fun resetDateTabsToAll() {
+        mBinding.layoutContainer.tvTabAll.isSelected = true
+        clearDateTabSelection()
+        mViewModel.setSelectedDate(0L)
+    }
 
     /***
      * @param expanded : Boolean 展開、收起
@@ -378,11 +381,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (dateIndex != -1) {
                 tlDateList.getTabAt(dateIndex)?.select()
             } else {
-                tvTabAll.isSelected = true
-                clearDateTabSelection()
-                tlDateList.selectTab(null)
+                resetDateTabsToAll()
                 addDateTabListener()
-                mViewModel.setSelectedDate(0L)
             }
         }
     }
