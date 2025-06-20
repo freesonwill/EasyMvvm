@@ -21,7 +21,6 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableBottomBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -83,6 +82,7 @@ class TournamentListFragment :
                 }
                 false
             }
+            ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
             ceSearch.setOnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
@@ -195,19 +195,6 @@ class TournamentListFragment :
         }
     }
 
-    private fun setSearchHint(list: List<TournamentListItem>) {
-        val firstItemName = list.firstOrNull {
-            it is TournamentListItem.TournamentItem
-        }?.let {
-            (it as TournamentListItem.TournamentItem).tournament.name
-        }?.takeIf { it.isNotBlank() }
-
-        firstItemName?.let {
-            mBinding.ceSearch.hint = it
-        }
-    }
-
-
     private fun setTournamentList(tournaments: List<BaseTournamentData>) {
         val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
         val hotList = mutableListOf<BaseTournamentData>()
@@ -245,7 +232,6 @@ class TournamentListFragment :
             displayList.add(TournamentListItem.Header('#'))
             displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
         }
-        setSearchHint(displayList)
         adapter.submitList(displayList)
         mViewModel.setLetterPositionMap(letterPositionMap)
         setupAZIndex()
@@ -309,13 +295,6 @@ class TournamentListFragment :
                     binding.ivHeaderHot.visibility = View.GONE
                     binding.tvHeaderName.text = item.letter.toString()
                 }
-
-                binding.root.setBackgroundColor(
-                    SkinnableResourceManager.getColor(
-                        view.context,
-                        R.color.home_card_odds_background
-                    )
-                )
             }
         )
 
