@@ -123,7 +123,7 @@ class HomeRepository(
     private fun clearMatchCache() {
         matchDao.clearAllMatch()
     }
-    suspend fun getRecently31MatchScheduleCount(sportId: Int, playType: Int,tournamentId:Int, timeZone: Int = 8): List<Common.DailyMatchCount> {
+    suspend fun getRecently31MatchScheduleCount(sportId: Int, playType: Int,tournamentId:Int, timeZone: Int = 8): ApiResponseState = withContext(scope.coroutineContext) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.Recently31MatchScheduleCountResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -136,10 +136,10 @@ class HomeRepository(
                 this.timeZone = timeZone
             }.build()
         }
-        return  if (res.error == null && res.data != null) {
-            res.data!!.dailyCountList
+        return@withContext if (res.error == null && res.data != null) {
+            ApiResponseState.Succeeded(res.data!!.dailyCountList)
         } else {
-            emptyList()
+            ApiResponseState.Failed(res.error)
         }
     }
 }

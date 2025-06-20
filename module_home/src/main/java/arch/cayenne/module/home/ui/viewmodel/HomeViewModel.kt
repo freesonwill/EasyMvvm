@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
@@ -18,6 +19,7 @@ import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.repo.HomeRepository
+import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -229,15 +231,17 @@ class HomeViewModel : BaseViewModel() {
     //获取近31日比赛日程count
     fun getRecently31MatchScheduleCount(tournamentId: Int = TOURNAMENT_ALL_ID) {
         setState(HomeState.Schedule.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id,tournamentId)
-            withContext(Dispatchers.Main) {
-                if (list.isNotEmpty()) {
-                    _recently31MatchScheduleCount.value = Event(list)
+        callApi({
+            repository.getRecently31MatchScheduleCount(currentSportId, currentPlayType.id, tournamentId)
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                val data: List<Common.DailyMatchCount>? = it.dataAs()
+                if (!data.isNullOrEmpty()) {
+                    _recently31MatchScheduleCount.value = Event(data)
                     setState(HomeState.Schedule.LoadSuccess)
                 }
             }
-        }
+        }, autoUpdateState = false)
     }
 
     private fun startTimer() {
