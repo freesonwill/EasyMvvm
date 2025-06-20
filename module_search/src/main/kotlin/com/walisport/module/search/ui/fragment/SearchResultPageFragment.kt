@@ -39,8 +39,9 @@ class SearchResultPageFragment(val data: SearchResultBean) :
         get() = SearchResultPageViewModel::class
 
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
-    private val onItemClick = { id: String, type: SearchTypeEnum ->
-        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(id = id, type = type))
+    private val onItemClick = { id: String, keyword: String, type: SearchTypeEnum ->
+        addSearchKeyWord(keyword)
+        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(keyword = keyword, id = id, type = type))
     }
 
     private val gridAdapter by lazy {
@@ -195,6 +196,13 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     private fun getType(): String {
         return arguments?.getString("type") ?: TYPE_ALL
+    }
+
+    private fun addSearchKeyWord(keyWord: String) {
+        with(sharedViewModel) {
+            addOneRecord(keyWord)
+            setSearchKeyWord(keyWord)
+        }
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {

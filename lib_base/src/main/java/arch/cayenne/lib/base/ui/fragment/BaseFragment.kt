@@ -1,6 +1,6 @@
 package arch.cayenne.lib.base.ui.fragment
 
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -121,6 +121,11 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         uiBind.onHiddenChanged(hidden)
+    }
+
+    @CallSuper
+    override fun onNewIntent(intent: Intent){
+        uiBind.onNewIntent(intent)
     }
 
     override fun setStatusBar(config: StatusBarConfig,view: View) {

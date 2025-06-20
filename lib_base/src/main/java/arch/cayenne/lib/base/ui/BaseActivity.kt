@@ -1,6 +1,7 @@
 package arch.cayenne.lib.base.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -102,6 +103,12 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         super.onDestroy()
         uiBind.onDestroyView()
         uiBind.onDestroy()
+    }
+
+    @CallSuper
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        uiBind.onNewIntent(intent)
     }
 
     override fun setStatusBar(config: StatusBarConfig, view: View) {

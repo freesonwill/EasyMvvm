@@ -52,12 +52,9 @@ class SearchResultDirectMatchFragment :
     private val args: SearchResultDirectMatchFragmentArgs by navArgs()
 
     private val dateHintStr: String
-        get() =
-            SkinnableResourceManager.getString(
-                requireContext(),
-                R.string.search_date_hint,
-                sharedViewModel.getCurrentLanguage()
-            )
+        get() = R.string.search_date_hint.toTranslatedStr()
+    private val noDataStr: String
+        get() = R.string.search_result_no_data.toTranslatedStr()
 
     private val linearAdapter by lazy {
         SearchResultRaceAdapter().apply {
@@ -112,6 +109,9 @@ class SearchResultDirectMatchFragment :
                 mViewModel.getSearchResult(id, type)
             }
         }
+        args.keyword?.let { keyword ->
+            mViewModel.setCurrentTitle(keyword)
+        }
     }
 
     override fun initListener() = Unit
@@ -130,7 +130,13 @@ class SearchResultDirectMatchFragment :
                 // 搜尋結果
                 launch {
                     directData.collect { data ->
-                        data?.let { updateDirectInfo(it) }
+                        data?.let { updateDirectInfo(it) } ?: run {
+                            with(mBinding) {
+                                tvTitle.text = currentTitle
+                                tvSubTitle.text = noDataStr
+                            }
+                            updateBackgroundColor()
+                        }
                     }
                 }
 
@@ -209,11 +215,7 @@ class SearchResultDirectMatchFragment :
         with(mBinding) {
             dynamicState.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
-                SkinnableResourceManager.getString(
-                    requireContext(),
-                    R.string.no_search_result,
-                    sharedViewModel.getCurrentLanguage()
-                )
+                R.string.no_search_result.toTranslatedStr()
             )
         }
     }
@@ -327,31 +329,52 @@ class SearchResultDirectMatchFragment :
             when (data) {
                 is SearchResultTournamentBean -> {
                     tvTitle.text = data.name
-                    tvSubTitle.text = data.season
+                    tvSubTitle.text =
+                        data.season.takeIf { it.isNotEmpty() }
+                            ?.let {
+                                String.format(
+                                    R.string.search_result_sub_title_tournament.toTranslatedStr(),
+                                    data.season
+                                )
+                            } ?: noDataStr
                 }
 
                 is SearchResultTeamBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
-                        requireContext().getString(
-                            R.string.search_result_sub_title_tournament,
+                        listOf(
                             data.tournamentShortName,
-                            data.rank,
-                            data.win,
-                            data.lose
-                        )
+                            data.rank.toString(),
+                            data.win.toString(),
+                            data.lose.toString()
+                        ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
+                            String.format(
+                                R.string.search_result_sub_title_team.toTranslatedStr(),
+                                data.tournamentShortName,
+                                data.rank,
+                                data.win,
+                                data.lose
+                            )
+                        } ?: noDataStr
                 }
 
                 is SearchResultPlayerBean -> {
                     tvTitle.text = data.name
                     tvSubTitle.text =
-                        requireContext().getString(
-                            R.string.search_result_sub_title_player,
+                        listOf(
                             data.name,
                             data.teamName,
-                            data.number,
-                            data.position
-                        )
+                            data.number.toString(),
+                            data.position.name
+                        ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
+                            String.format(
+                                R.string.search_result_sub_title_player.toTranslatedStr(),
+                                data.name,
+                                data.teamName,
+                                data.number,
+                                data.position.name
+                            )
+                        } ?: noDataStr
                 }
             }
 
@@ -369,14 +392,26 @@ class SearchResultDirectMatchFragment :
             ivPlayer.visibility = if (isPlayer) View.VISIBLE else View.GONE
             ivIcon.visibility = if (!isPlayer) View.VISIBLE else View.GONE
 
-            updateResultBackground(
-                if (data.color?.isNotEmpty() == true) Color.parseColor(data.color)
-                else ContextCompat.getColor(
-                    requireContext(),
-                    R.color.search_result_default_gradient_start
-                )
-            )
+            updateBackgroundColor(data.color)
         }
+    }
+
+    private fun updateBackgroundColor(color: String? = null) {
+        updateResultBackground(
+            if (color?.isNotEmpty() == true) Color.parseColor(color)
+            else ContextCompat.getColor(
+                requireContext(),
+                R.color.search_result_default_gradient_start
+            )
+        )
+    }
+
+    private fun Int.toTranslatedStr(): String {
+        return SkinnableResourceManager.getString(
+            requireContext(),
+            this,
+            sharedViewModel.getCurrentLanguage()
+        )
     }
 
     private fun navigateTo(event: SearchNavigationEvent) {

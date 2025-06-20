@@ -53,6 +53,11 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val tempBackgroundColor: Int?
         get() = _tempBackgroundColor
 
+    /** 當前頁面標題 */
+    private var _currentTitle: String? = null
+    val currentTitle: String?
+        get() = _currentTitle
+
     /** 重置搜尋結果 */
     private fun resetResult() {
         _directData.value = null
@@ -139,5 +144,10 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     /** 設定暫存背景顏色 */
     fun setTempBackgroundColor(color: Int?) {
         _tempBackgroundColor = color
+    }
+
+    /** 設定當前頁面標題 */
+    fun setCurrentTitle(title: String?) {
+        _currentTitle = title
     }
 }

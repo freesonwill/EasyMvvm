@@ -7,7 +7,7 @@ import android.os.Bundle
  * @date: 2025/3/14 11:52
  * @description:
  */
-interface IView {
+interface IView : OnNewIntentListener {
     /**
      * 初始化view
      */

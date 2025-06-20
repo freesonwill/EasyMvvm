@@ -12,7 +12,6 @@ import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class LiveMainRepository(
@@ -50,28 +49,45 @@ class LiveMainRepository(
     suspend fun observeMatchInfoNotify() {
         remoteManager.observeMatchInfoNotify().collect {
             scope.launch(Dispatchers.IO) {
-                updateFullMatchInfo(it.basicUpdate, it.marketUpdateList, it.matchId)
+                updateFullMatchInfo(
+                    if (it.hasBasicUpdate()) {
+                        it.basicUpdate
+                    } else {
+                        null
+                    }, it.marketUpdateList, it.matchId
+                )
             }
         }
     }
 
-    suspend fun updateFullMatchInfo(
-        marketInfo: MatchBasicUpdate, marketUpdate: List<Market>, matchId: Long
+    private suspend fun updateFullMatchInfo(
+        marketInfo: MatchBasicUpdate?, marketUpdate: List<Market>, matchId: Long
     ) {
-        database.liveMatchDao().updateNotifyMatchInfo(
-            matchId = matchId,
-            status = marketInfo.status,
-            betStop = marketInfo.betStop,
-            startTime = marketInfo.startTime,
-            clock = marketInfo.liveInfo.clock,
-            rollClock = marketInfo.liveInfo.rollClock,
-            period = marketInfo.liveInfo.period,
-            score = marketInfo.liveInfo.score,
-            liveVideo = marketInfo.liveInfo.liveVideo,
-            charRoom = marketInfo.liveInfo.chatRoom,
-            viewerCount = marketInfo.liveInfo.viewerCount,
-            clockModified = marketInfo.liveInfo.clockModified,
-        )
+        marketInfo?.let {
+            if (marketInfo.hasLiveInfo()) {
+                database.liveMatchDao().updateNotifyMatchInfo(
+                    matchId = matchId,
+                    status = marketInfo.status,
+                    betStop = marketInfo.betStop,
+                    startTime = marketInfo.startTime,
+                    clock = marketInfo.liveInfo.clock,
+                    rollClock = marketInfo.liveInfo.rollClock,
+                    period = marketInfo.liveInfo.period,
+                    score = marketInfo.liveInfo.score,
+                    liveVideo = marketInfo.liveInfo.liveVideo,
+                    charRoom = marketInfo.liveInfo.chatRoom,
+                    viewerCount = marketInfo.liveInfo.viewerCount,
+                    clockModified = marketInfo.liveInfo.clockModified,
+                )
+            } else {
+                database.liveMatchDao().updateNotifyMatchInfo(
+                    matchId = matchId,
+                    status = marketInfo.status,
+                    betStop = marketInfo.betStop,
+                    startTime = marketInfo.startTime,
+                )
+            }
+        }
 
         val selections =
             marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
