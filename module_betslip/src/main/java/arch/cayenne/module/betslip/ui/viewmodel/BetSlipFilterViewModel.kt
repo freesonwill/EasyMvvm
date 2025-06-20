@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.module.betslip.data.model.BetSlipFilterBean
 
 class BetSlipFilterViewModel: BaseViewModel() {
@@ -28,7 +29,6 @@ class BetSlipFilterViewModel: BaseViewModel() {
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
         this.sportId = listOf(sportId)
-        updateFilter()
     }
 
     fun setIds(matchId: Long, sportIds: List<Int>) {
@@ -37,6 +37,16 @@ class BetSlipFilterViewModel: BaseViewModel() {
         updateFilter()
     }
 
+    /**
+     * 在Fragment OnResume时，更新matchId，
+     * 检查matchId 和 sportId,不做重复查询
+     * */
+    fun checkUpdate(){
+        val filter = onFilterChangeListener.value
+        if(filter?.matchId != matchId){
+            updateFilter()
+        }
+    }
 
     private fun updateFilter() {
         _onFilterChangeListener.value = BetSlipFilterBean(
