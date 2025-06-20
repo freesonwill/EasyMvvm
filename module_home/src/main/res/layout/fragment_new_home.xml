@@ -262,7 +262,7 @@
             android:layout_height="@dimen/dp_48"
             android:paddingStart="@dimen/dp_1"
             android:paddingTop="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_14"
+            android:paddingBottom="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:src="@drawable/ic_league_tabs_expand"
             app:layout_constraintEnd_toEndOf="parent"
