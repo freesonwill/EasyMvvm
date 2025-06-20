@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
@@ -25,6 +26,7 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateData(
         item: OrderSelectionBean
     ) {
@@ -36,8 +38,7 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
             betConfirmTvAodds.text =
                 binding.root.resources.getString(R.string.live_bet_except_odds, item.odds)
             betConfirmTvStatus.isVisible = item.inPlay
-            val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
-            betConfirmTvScore.text = score
+            betConfirmTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
             betConfirmTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
         }
     }

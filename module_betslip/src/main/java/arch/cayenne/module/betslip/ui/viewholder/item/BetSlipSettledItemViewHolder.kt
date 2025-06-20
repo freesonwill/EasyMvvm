@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import android.annotation.SuppressLint
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
@@ -28,6 +29,7 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateData(item: OrderSelectionBean) {
         item.let {
             val match = item.matchBasic
@@ -35,11 +37,9 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
                 Glide.with(betSettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betSettledIvBall)
                 betSettledTvRace.text = match.matchName
                 betSettledTvIntroduce.text = item.selectionName
-                val odds = "@${item.odds}"
-                betSettledTvAodds.text = odds
+                betSettledTvAodds.text = "@${item.odds}"
                 betSettledTvStatus.isVisible = it.inPlay
-                val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
-                betSettledTvScore.text = score
+                betSettledTvScore.text =  item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betSettledTvScore1.text = whenScoreIsNull(item.endScore)
             }
         }

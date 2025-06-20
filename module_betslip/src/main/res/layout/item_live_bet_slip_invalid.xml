@@ -96,7 +96,6 @@
         android:layout_marginStart="@dimen/dp_6"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginEnd="@dimen/dp_12"
-        android:text="@string/live_bet_full_handicap"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toRightOf="@id/bet_invalid_tv_match_status"
