@@ -1,6 +1,7 @@
 package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -106,6 +107,10 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun onHiddenChanged(hidden: Boolean) {
         if(logEnabled) "onHiddenChanged==>$uiOwner,hidden:$hidden".logd(TAG)
+    }
+
+    fun onNewIntent(intent: Intent) {
+        if(logEnabled) "onNewIntent==>$uiOwner,intent:$intent".logd(TAG)
     }
     /**
      * 销毁
