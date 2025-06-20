@@ -3,12 +3,9 @@ package com.walisport.module.setting.ui.fragment
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.utils.ext.ResourceExt
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
-import com.walisport.module.setting.data.LanguageType
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
