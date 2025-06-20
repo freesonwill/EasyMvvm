@@ -22,6 +22,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     private var cursorType: Int = 0
 
     companion object {
+        const val TYPE_DEFAULT = 0
         const val STATUS_READ = 1
         const val STATUS_DEL = 2
     }
@@ -39,7 +40,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
                         createTime = item.time
                     )
                 }
-                if (cursorType == 0) {
+                if (cursorType == TYPE_DEFAULT) {
                     _notificationBean.value = temp
                 } else {
                     _notificationBean.value = temp.filter { it.type == cursorType }
