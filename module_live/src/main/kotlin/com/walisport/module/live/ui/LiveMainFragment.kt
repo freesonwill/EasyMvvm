@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -10,14 +11,12 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -49,7 +48,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
-    private val args: LiveMainFragmentArgs by navArgs()
+    private lateinit var args:LiveMainFragmentArgs
 
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
@@ -57,6 +56,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
+        args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         mViewModel.setMatchId(args.matchId)
         mViewModel.setSportId(args.sportId)
@@ -312,6 +312,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val newArgs:LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
+        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${this.args.equal(newArgs)}".logd(TAG)
+        if(this.args.equal(newArgs)) return
+        this.args = newArgs
+        updateMatchId(newArgs.matchId)
+    }
+
     override fun onStop() {
         super.onStop()
         mViewModel.disConnectChatServer()
@@ -322,5 +331,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             deleteDataAndSubscriptions(it)
         }
         super.onDestroyView()
+    }
+
+    private fun LiveMainFragmentArgs.equal(other: Any?): Boolean {
+        if(other !is LiveMainFragmentArgs) return false
+        return this.sportId == other.sportId && this.matchId == other.matchId
     }
 }
