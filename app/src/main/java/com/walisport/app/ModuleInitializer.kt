@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.websocket.SocketModuleInitializer
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.SplashRepository
@@ -91,7 +92,7 @@ class ModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::SplashViewModel)
     }
     private val repoModules = module {
-        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get()) }
+        factory { (scope: CoroutineScope) -> MainRepository(scope, get(), get(), get(), get()) }
         factory { (scope: CoroutineScope) -> SplashRepository(scope, get(), get()) }
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
