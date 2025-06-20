@@ -189,6 +189,7 @@ class HomeViewModel : BaseViewModel() {
     fun getCurrentTournament() {
         setState(HomeState.Tournament.Loading)
         tournamentJob?.cancel()
+        // TODO 之後需移到init做監聽
         tournamentJob = viewModelScope.launch {
             repository.observeTenTournaments(currentPlayType.id, currentSportId).collect {
                 val data = mutableListOf<TournamentDataModel>()
