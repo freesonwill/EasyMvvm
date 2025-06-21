@@ -171,11 +171,13 @@ class CommonRepository(
                     collectMatch = getSystemFav()
                     allMatch = getSystemAll()
                 }
+
                 MATCH_KICK -> {
                     betMatch = getKickBet()
                     collectMatch = getKickFav()
                     allMatch = getKickAll()
                 }
+
                 else -> {
                     betMatch = getAppBet()
                     collectMatch = getAppFav()
@@ -242,4 +244,7 @@ class CommonRepository(
     }
 
     data class BalanceBean(val balance: Long, val currency: String)
+
+    fun observeAppNotifyChange() =
+        socketManager.observeProtoMessage<Client.AppNoticeNotify>(ApiCode.APP_NOTIFY)
 }
