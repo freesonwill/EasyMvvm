@@ -93,7 +93,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mViewModel.getLiveSelectionBean(marketIds)
         launch {
             mViewModel.getLiveSelectionBean.collect {
-                launch(Main) {
                     mBinding.clDynamics.setVisibilityGone()
                     mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                     liveBetOnAdapter.setHomeAway(
@@ -102,11 +101,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         baseInfo?.awayTeam.toString(),
                         baseInfo?.awayTeamIcon.toString(), it, isNotify
                     )
-
                     liveBetOnAdapter.submitList(list)
                     liveBetOnAdapter.setSelectionComboId(selectionComboId)
                     liveBetOnAdapter.notifyDataSetChanged()
-                }
             }
         }
     }
