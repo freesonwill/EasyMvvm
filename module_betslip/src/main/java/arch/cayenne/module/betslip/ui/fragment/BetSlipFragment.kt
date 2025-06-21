@@ -18,7 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 /**
- * 注单
+ * 直播间注单
  * */
 class BetSlipFragment :
     BaseFragment<BetSlipPageViewModel, FragmentLiveBetSlipLayoutBinding>() {
@@ -28,28 +28,23 @@ class BetSlipFragment :
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
 
-//    companion object {
-//        val matchKey = "match_id"
-//        val sportKey = "sport_id"
-//    }
-
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
         mViewModel.setBetSlipDetail()
     }
 
-    override fun initData() {
-        super.initData()
-//        val matchId = arguments?.getLong(matchKey,-1) ?: -1
-//        val sportId = arguments?.getInt(sportKey,-1) ?: -1
-//        betSlipFilterViewModel.setIds(matchId, sportId)
-    }
     /**
      * 监听直播间的matchId 和sportId变化，及时刷新注单数据
      * */
-    fun refreshBetSlip(matchId:Long,sportId:Int){
-        betSlipFilterViewModel.setIds(matchId,sportId)
+    fun refreshBetSlip(matchId: Long, sportId: Int) {
+        betSlipFilterViewModel.setIds(matchId, sportId)
     }
+
+    override fun onResume() {
+        super.onResume()
+        betSlipFilterViewModel.checkUpdate()
+    }
+
 
     private fun initMenu() {
         with(mBinding) {

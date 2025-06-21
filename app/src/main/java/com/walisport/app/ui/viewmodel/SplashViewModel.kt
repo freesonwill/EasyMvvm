@@ -2,6 +2,7 @@ package com.walisport.app.ui.viewmodel
 
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.SkinnableManager
@@ -9,19 +10,25 @@ import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.app.data.repo.SplashRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import java.util.Locale
 
 class SplashViewModel : BaseActivityViewModel() {
-
     val homeTimeSeconds: MutableLiveData<Int> = MutableLiveData()
+    val ignore: MutableLiveData<Boolean> = MutableLiveData() //设置为true，表示忽略倒计时
     private val repository: SplashRepository by inject { parametersOf(viewModelScope) }
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
 
     val jumpToMainOrLogin = MediatorLiveData<Boolean>().apply {
+        addSource(ignore){
+            value = it
+        }
         addSource(homeTimeSeconds) {
             if (it == 0) {
                 value = loginIsSuccess.value ?: false
@@ -31,6 +38,11 @@ class SplashViewModel : BaseActivityViewModel() {
             value = it
         }
     }
+    .asFlow()
+    .distinctUntilChanged() //去重，避免重复触发事件
+    .shareIn(scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 0)
 
     init {
         viewModelScope.launch {
