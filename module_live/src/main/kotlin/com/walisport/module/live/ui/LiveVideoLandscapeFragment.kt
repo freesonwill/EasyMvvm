@@ -29,8 +29,9 @@ import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ZOOM_ANIMATION_DURATION
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
@@ -327,7 +328,7 @@ class LiveVideoLandscapeFragment :
                 override fun onAnimationRepeat(animation: Animator) {
                 }
             })
-        }, duration = ANIMATION_DURATION, start = true)
+        }, duration = BUTTONS_ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -350,7 +351,7 @@ class LiveVideoLandscapeFragment :
                 ),
                 mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f),
             )
-        }, duration = ANIMATION_DURATION, start = true)
+        }, duration = BUTTONS_ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -427,7 +428,7 @@ class LiveVideoLandscapeFragment :
                     getDrawable(requireContext(), arch.cayenne.lib.common.R.color.black)
                 onEndAction()
             }
-        }, duration = ANIMATION_DURATION, start = true)
+        }, duration = ZOOM_ANIMATION_DURATION, start = true)
     }
 
     /**
@@ -490,7 +491,7 @@ class LiveVideoLandscapeFragment :
                     getDrawable(requireContext(), R.drawable.bg_shape_video_view_reduced)
                 onEndAction()
             }
-        }, duration = ANIMATION_DURATION, start = true)
+        }, duration = ZOOM_ANIMATION_DURATION, start = true)
 
     }
 
@@ -565,7 +566,7 @@ class LiveVideoLandscapeFragment :
                 lp.marginStart = it.animatedValue as Int
                 mBinding.fragmentShare.layoutParams = lp
             }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
@@ -586,7 +587,7 @@ class LiveVideoLandscapeFragment :
 
             }
             doOnEnd { onEndAction() }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
@@ -623,7 +624,7 @@ class LiveVideoLandscapeFragment :
                 mBinding.fragmentChooseSource.layoutParams = lp
 
             }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
@@ -644,7 +645,7 @@ class LiveVideoLandscapeFragment :
 
             }
             doOnEnd { onEndAction() }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
@@ -678,7 +679,7 @@ class LiveVideoLandscapeFragment :
                 mBinding.fragmentStatistics.layoutParams = lp
 
             }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
@@ -699,7 +700,7 @@ class LiveVideoLandscapeFragment :
 
             }
             doOnEnd { onEndAction() }
-            setDuration(ANIMATION_DURATION)
+            setDuration(ZOOM_ANIMATION_DURATION)
             start()
         }
     }
