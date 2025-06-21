@@ -53,7 +53,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         animator.start()
     }
 
-    private fun showExitAnimation(view: View) {
+    private fun showExitAnimation() {
         val animator = ObjectAnimator.ofFloat(view, "translationY", 0f, -126.dp2px.toFloat())
         animator.duration = 300
         animator.start()
@@ -62,7 +62,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.rootLayout.setOnClickListener {
-            showExitAnimation(mBinding.rootLayout)
+            showExitAnimation()
         }
     }
 
