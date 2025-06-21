@@ -39,6 +39,8 @@ import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.websocket.data.ConnectState
+import com.cn.game.sdk2.ui.helper.AnimHelper
+import kotlinx.coroutines.Job
 
 /**
  * 直播详情页
@@ -49,7 +51,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args:LiveMainFragmentArgs
-
+    private var switchTabAnimJob: Job? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -102,7 +104,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.setCurrentItem(it.position, false) // 禁用平滑滚动
+                    switchTabAnimJob?.cancel()
+                    switchTabAnimJob = AnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab.position,
+                        viewPager = mBinding.vpPage,
+                        fakeViewPager = mBinding.fragmentFakeViewPager
+                    )
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -249,7 +256,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            vpPage.offscreenPageLimit = list.size
+           // vpPage.offscreenPageLimit = list.size
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
@@ -337,4 +344,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         if(other !is LiveMainFragmentArgs) return false
         return this.sportId == other.sportId && this.matchId == other.matchId
     }
+
 }

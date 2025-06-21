@@ -14,26 +14,17 @@ class PagerAdapter(
     lifecycle: Lifecycle,
     val pages: List<PagerBean>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-    private val fragmentTag = mutableMapOf<Int, String>() // position to tag of fragment simple name
+
     override fun getItemCount(): Int = pages.size
 
-    override fun createFragment(position: Int): Fragment {
-        getCachedFragment(position)?.let {
-            return it
+    override fun createFragment(position: Int): Fragment = pages[position].page.invoke().apply {
+        arguments = arguments?.let {
+            it.putInt("pageIndex", position)
+            arguments
+        } ?: Bundle().apply {
+            putInt("pageIndex", position)
         }
-        val fragment = pages[position].page.invoke().apply {
-            arguments = arguments?.let {
-                it.putInt("pageIndex", position)
-                it
-            } ?: Bundle().apply {
-                putInt("pageIndex", position)
-            }
-        }
-        val tag = fragment.javaClass.simpleName
-        fragmentTag[position] = tag
-        return fragment
     }
-
 
 
     override fun onBindViewHolder(
@@ -55,10 +46,5 @@ class PagerAdapter(
                 clipChildren(child)
             }
         }
-    }
-
-    fun getCachedFragment(position: Int): Fragment? {
-        val tag = fragmentTag[position] ?: return null
-        return fragmentManager.fragments.find { it.javaClass.simpleName == tag }
     }
 }
