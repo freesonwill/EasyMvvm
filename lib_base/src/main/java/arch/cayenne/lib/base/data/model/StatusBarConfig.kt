@@ -1,5 +1,6 @@
 package arch.cayenne.lib.base.data.model
 
+import androidx.annotation.IdRes
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 
 
@@ -15,6 +16,8 @@ object  StatusBarConfig  {
     var statusBarColor: Int = android.R.color.black
     //状态栏模式
     var statusBarType: StatusBarMode = StatusBarMode.DRAW_BEHIND
+    //不需要padding的viewId列表
+    @IdRes var noPaddingViewIds:List<Int> = emptyList()
     //是否避开状态栏（root.paddingTop = statusBarHeight）
     val fitsSystemWindows:Boolean get() = statusBarType == StatusBarMode.DEFAULT
 }

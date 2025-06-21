@@ -33,7 +33,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="@dimen/dp_148"
         android:layout_height="@dimen/dp_24"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_50"
         android:scaleType="centerCrop"
         android:src="@drawable/splash_banner"
         app:layout_constraintBottom_toBottomOf="parent"

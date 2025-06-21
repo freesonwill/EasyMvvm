@@ -2,9 +2,12 @@ package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -12,7 +15,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import arch.cayenne.lib.base.ui._interface.IStatusBar
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 
 
 /**
@@ -23,6 +26,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 class StatusBarDelegate : IStatusBar {
     private var viewPaddingTop: Int = -1
     private var immersionBar: ImmersionBar
+    private val TAG = "StatusBarDelegate"
 
     constructor(activity: Activity) {
         immersionBar = ImmersionBar.with(activity)
@@ -89,10 +93,24 @@ class StatusBarDelegate : IStatusBar {
                     .transparentStatusBar() // 设置状态栏透明
                     .transparentNavigationBar() // 设置导航栏透明
                 immersionBar.init()
-                setViewPadding(view,
-                    viewPaddingTop + statusBarHeight,
-                    navigationBarHeight
-                )
+                if(StatusBarConfig.noPaddingViewIds.isEmpty()) {
+                    setViewPadding(view,
+                        viewPaddingTop + statusBarHeight,
+                        navigationBarHeight
+                    )
+                }else {
+                    val noPaddingViewIds = StatusBarConfig.noPaddingViewIds
+                    (view as ViewGroup).children.forEach { v ->
+                        if (noPaddingViewIds.contains(v.id)) return@forEach
+                        val lp = v.layoutParams as? MarginLayoutParams
+                        if (lp != null) {
+                            lp.topMargin += statusBarHeight
+                        } else {
+                            "view.layoutParams is not MarginLayoutParams".loge(TAG)
+                        }
+                    }
+                }
+                StatusBarConfig.noPaddingViewIds = emptyList()
                 view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
             }
         }
