@@ -172,7 +172,7 @@ class MatchListPagerFragment :
                         mViewModel.setHomeOrPullLoadingState(false)
                     }
                     MatchListState.IDLE -> {
-                        mViewModel.hideLoading()
+                        lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
@@ -180,7 +180,7 @@ class MatchListPagerFragment :
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
-                        mViewModel.hideLoading()
+                        lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
@@ -200,10 +200,6 @@ class MatchListPagerFragment :
 
                     MatchListState.SHOW_LOADING -> {
                         lvMatchLoading.visibility = View.VISIBLE
-                    }
-
-                    MatchListState.HIDE_LOADING -> {
-                        lvMatchLoading.visibility = View.GONE
                     }
                 }
             }

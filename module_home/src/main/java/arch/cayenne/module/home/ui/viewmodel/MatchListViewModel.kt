@@ -131,8 +131,4 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             _state.value = Event(MatchListState.SHOW_LOADING)
         }
     }
-
-    fun hideLoading() {
-        _state.value = Event(MatchListState.HIDE_LOADING)
-    }
 }
