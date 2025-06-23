@@ -56,7 +56,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         val temp = result.data?.let {
                             AppNotifyBean(it.type, it.sportId, it.title, it.content)
                         }
-                        _appNotifyListener.value = temp
+                        _appNotifyListener.postValue(temp)
                     }
                 }
             }
