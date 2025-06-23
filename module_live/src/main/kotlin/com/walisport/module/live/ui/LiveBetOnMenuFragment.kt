@@ -72,17 +72,17 @@ class LiveBetOnMenuFragment :
                             mBinding.llc,
                             false
                         )
-                        if (bean.isSelect) {
-                            selectCode = items.code
-                            selectId = bean.marketId
-                        }
+//                        if (bean.isSelect) {
+//                            selectCode = items.code
+//                            selectId = bean.marketId
+//                        }
                         textBinding.apply {
                             tvContent.text = bean.marketName
-                            betOnViewModel.observeMarketMenu.value?.let {
-                                if (indexItems == (it[0] - 1) && index == it[1]) {
-                                    tvContent.isSelected = true
-                                }
-                            }
+//                            betOnViewModel.observeMarketMenu.value?.let {
+//                                if (indexItems == (it[0] - 1) && index == it[1]) {
+//                                    tvContent.isSelected = true
+//                                }
+//                            }
                             tvContent.clickNoRepeat {
                                 betOnViewModel.setMarketMenuPosition((indexItems + 1), index)
                                 animateDismiss()
