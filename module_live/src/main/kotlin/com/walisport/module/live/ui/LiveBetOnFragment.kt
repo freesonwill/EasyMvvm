@@ -43,6 +43,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var isNotify = false
+
     private var selectionComboId :Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()

@@ -38,9 +38,10 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
-import com.cn.game.sdk2.ui.helper.AnimHelper
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 /**
  * 直播详情页
@@ -51,11 +52,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args:LiveMainFragmentArgs
-    private var switchTabAnimJob: Job? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-
+    private var switchTabAnimJob: Job? = null
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -105,11 +108,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     switchTabAnimJob?.cancel()
-                    switchTabAnimJob = AnimHelper.doDirectViewPagerAnim(
+                    switchTabAnimJob = viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab.position,
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager
                     )
+                    mBinding.vpPage.setCurrentItem(it.position,false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -256,7 +260,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-           // vpPage.offscreenPageLimit = list.size
+            launch{
+                delay(500)
+                vpPage.offscreenPageLimit = list.size
+            }
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
