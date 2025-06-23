@@ -191,6 +191,9 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 else -> {}
             }
         }
+        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
+            mBinding.clBet.isEnabled = it
+        }
     }
 
     private fun setBetData(data: BetSelectionBean) {
