@@ -38,7 +38,11 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 /**
  * 直播详情页
@@ -49,11 +53,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args:LiveMainFragmentArgs
-
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-
+    private var switchTabAnimJob: Job? = null
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -102,7 +108,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.setCurrentItem(it.position, false) // 禁用平滑滚动
+                    switchTabAnimJob?.cancel()
+                    switchTabAnimJob = viewPagerAnimHelper.doViewPagerAnim(
+                        targetPosition = tab.position,
+                        viewPager = mBinding.vpPage,
+                        fakeViewPager = mBinding.fragmentFakeViewPager
+                    )
+                    mBinding.vpPage.setCurrentItem(it.position,false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -251,7 +263,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            vpPage.offscreenPageLimit = list.size
+            launch(Lifecycle.State.RESUMED){
+                delay(500)
+                vpPage.offscreenPageLimit = list.size
+            }
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
@@ -329,6 +344,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
+        switchTabAnimJob=null
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
@@ -339,4 +355,5 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         if(other !is LiveMainFragmentArgs) return false
         return this.sportId == other.sportId && this.matchId == other.matchId
     }
+
 }
