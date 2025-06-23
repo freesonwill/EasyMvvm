@@ -40,12 +40,12 @@ class SecondFragment : BaseFragment<EmptyViewModel, FragmentTestSecondBinding>()
     }
 
     override fun onStop() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStop()
     }
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
         super.onStart()
     }
