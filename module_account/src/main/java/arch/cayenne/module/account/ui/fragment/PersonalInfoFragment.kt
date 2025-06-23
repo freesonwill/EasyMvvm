@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.popBackStack
@@ -59,6 +60,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                 }
             })
             rvPersonalHeadGrid.adapter = personalInfoAdapter
+            (rvPersonalHeadGrid?.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             personalInfoAdapter.submitList(mViewModel.getPersonalInfoData())
             personalInfoAdapter.setSelectedPosition(mViewModel.getDefaultPosition())
             personalInfoAdapter.setOnItemClickListener { _ ->
