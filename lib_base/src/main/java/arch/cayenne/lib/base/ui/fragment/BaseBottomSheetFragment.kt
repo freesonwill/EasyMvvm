@@ -61,7 +61,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     }
 
     override fun getTheme(): Int {
-        return R.style.ArchBottomSheetDialogTheme
+        return R.style.BottomSheetDialogTheme
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
