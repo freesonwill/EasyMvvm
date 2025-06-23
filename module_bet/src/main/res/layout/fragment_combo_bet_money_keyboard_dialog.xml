@@ -46,7 +46,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="6dp"
                 android:background="@null"
-                android:hint="@string/et_money_hint"
                 android:textColor="@color/main_text"
                 android:textColorHint="@color/secondary_text"
                 android:textSize="16sp"
