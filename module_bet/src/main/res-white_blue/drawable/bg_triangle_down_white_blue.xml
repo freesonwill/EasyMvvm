@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item>
-        <rotate
-            android:fromDegrees="-45"
-            android:pivotX="-35%"
-            android:pivotY="15%">
-            <shape android:shape="rectangle">
-                <solid android:color="@color/keyboard_3_white_blue" />
-                <corners android:radius="6dp" />
-            </shape>
-        </rotate>
-    </item>
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp"
+    android:height="10dp"
+    android:viewportWidth="32"
+    android:viewportHeight="10">
+    <group
+        android:scaleY="-1"
+        android:translateY="10">
+        <path
+            android:pathData="M13.370,1.497C14.964,0 17.703,0 19.297,1.497C21.617,3.792 24.693,6.943 26.234,8.123C28.527,10 32,10 32,10H0C0,10 3.995,9.986 6.191,8.126C7.489,6.927 10.857,3.789 13.370,1.497Z"
+            android:fillColor="@color/keyboard_3_white_blue"
+            android:fillType="evenOdd" />
+    </group>
+</vector>
