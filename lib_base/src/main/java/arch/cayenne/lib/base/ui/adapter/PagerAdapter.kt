@@ -10,31 +10,28 @@ import androidx.viewpager2.adapter.FragmentViewHolder
 import arch.cayenne.lib.base.data.model.PagerBean
 
 class PagerAdapter(
-   val fragmentManager: FragmentManager,
+    private val fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     val pages: List<PagerBean>
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
-    private val fragmentCache = mutableMapOf<Int, Fragment>()
-    private val fragmentTags = mutableMapOf<Int, String>()
+    private val fragmentTag = mutableMapOf<Int, String>() // position to tag of fragment simple name
     override fun getItemCount(): Int = pages.size
 
     override fun createFragment(position: Int): Fragment {
-        // 先检查缓存
-        fragmentCache[position]?.let { return it }
-        // 检查FragmentManager是否已有实例
-        val tag = "f$position"
-        fragmentTags[position] = tag
-        fragmentManager.findFragmentByTag(tag)?.let {
-            fragmentCache.put(position, it)
+        getCachedFragment(position)?.let {
             return it
         }
-        // 创建新实例
-        return pages[position].page.invoke().apply {
-            arguments = Bundle().apply {
+        val fragment = pages[position].page.invoke().apply {
+            arguments = arguments?.let {
+                it.putInt("pageIndex", position)
+                it
+            } ?: Bundle().apply {
                 putInt("pageIndex", position)
             }
-            fragmentCache.put(position, this)
         }
+        val tag = fragment.javaClass.simpleName
+        fragmentTag[position] = tag
+        return fragment
     }
 
 
@@ -59,5 +56,9 @@ class PagerAdapter(
             }
         }
     }
-    fun getCachedFragment(position: Int): Fragment? = fragmentCache[position]
+
+    fun getCachedFragment(position: Int): Fragment? {
+        val tag = fragmentTag[position] ?: return null
+        return fragmentManager.fragments.find { it.javaClass.simpleName == tag }
+    }
 }
