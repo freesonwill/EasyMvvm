@@ -47,6 +47,18 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private val _onReserveOddsListener = MutableLiveData<Int?>()
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
+    private val _onCanBetListener = MediatorLiveData(false).apply {
+        addSource(_onBetSheetListener) {
+            val money = editValue.toMoney()
+            value = it.isActive && money >= mixMoney
+        }
+        addSource(onEditNumber) {
+            val money = it.toMoney()
+            value = _onBetSheetListener.value?.isActive == true && money >= mixMoney
+        }
+    }
+    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
+
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 

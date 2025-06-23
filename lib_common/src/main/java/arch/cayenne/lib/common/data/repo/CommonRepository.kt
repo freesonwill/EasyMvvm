@@ -23,6 +23,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 class CommonRepository(
     override val scope: CoroutineScope,
@@ -122,20 +123,25 @@ class CommonRepository(
                 if (it.data == null || it.data!!.orderStatusList.isEmpty())
                     return@collect
                 val resultList = mutableListOf<BetResultLiteBean>()
-                it.data!!.orderStatusList.forEach { resp ->
-                    betDao.updateDetailResult(
-                        resp.orderId,
-                        BetResultStatusEnum.getStatusByCode(resp.status)
-                    )
-                    betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
-                        val selection = betDao.getSelections(detail.betId)
-                        val matchName = selection.map { s -> s.matchName }
-                        val resultLiteBean = BetResultLiteBean(
-                            matchName,
-                            detail.combo,
-                            BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
-                        )
-                        resultList.add(resultLiteBean)
+                scope.launch {
+                    it.data!!.orderStatusList.forEach { resp ->
+                        launch {
+                            betDao.updateDetailResult(
+                                resp.orderId,
+                                BetResultStatusEnum.getStatusByCode(resp.status)
+                            )
+                        }.join()
+
+                        betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
+                            val selection = betDao.getSelections(detail.betId)
+                            val matchName = selection.map { s -> s.matchName }
+                            val resultLiteBean = BetResultLiteBean(
+                                matchName,
+                                detail.combo,
+                                BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                            )
+                            resultList.add(resultLiteBean)
+                        }
                     }
                     betResultFlow.emit(resultList)
                 }

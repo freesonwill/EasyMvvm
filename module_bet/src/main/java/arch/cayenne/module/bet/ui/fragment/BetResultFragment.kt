@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
@@ -115,6 +116,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         } else {
             mBinding.tvTitle.text = getString(R.string.title_result_success_bet)
         }
+        mBinding.btnContinueBet.isEnabled = true
+        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -125,6 +128,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         } else {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_bet)
         }
+        mBinding.btnContinueBet.isEnabled = true
+        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
     }
 
     private fun setAmount(data: List<BetDetailBean>) {

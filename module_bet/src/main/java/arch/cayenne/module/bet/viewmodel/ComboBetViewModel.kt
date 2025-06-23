@@ -1,7 +1,7 @@
 package arch.cayenne.module.bet.viewmodel
 
-import android.icu.text.IDNA.Info
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -26,6 +26,24 @@ class ComboBetViewModel(
 
     private val _onBalanceListener = MutableLiveData<InfoBean>()
     val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
+
+    private val _onCanBetListener = MediatorLiveData(false).apply {
+        addSource(_onBetListListener) { betList ->
+            val comboData = _onComboMultiBetBeanListener.value ?: return@addSource
+            if ((betList.size > 1) && comboData.isNotEmpty()) {
+                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && comboData.any { it.inputMoney > 0L }
+                value = canBet
+            }
+        }
+        addSource(_onComboMultiBetBeanListener) {
+            val betList = _onBetListListener.value ?: return@addSource
+            if ((betList.size > 1) && it.isNotEmpty()) {
+                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && it.any { it.inputMoney > 0L }
+                value = canBet
+            }
+        }
+    }
+    val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
     val remainingBalance: Long
         get() = onBalanceListener.value?.let { infoBean ->

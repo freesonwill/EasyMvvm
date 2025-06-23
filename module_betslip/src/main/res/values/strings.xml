@@ -47,14 +47,14 @@
     <string name="lose_half">输一半</string>
     <string name="win_half">赢一半</string>
     <string name="not_support_early_settle">该订单暂不支持提前结算</string>
-    <string name="network_abnormal">网络一场，请稍后重试</string>
+    <string name="network_abnormal">网络异常，请稍后重试</string>
     <string name="early_settle_success">提前结算成功</string>
     <string name="early_settle_faile">提前结算失败</string>
     <string name="keyboard_max">最高</string>
     <string name="keyboard_clear">清空</string>
     <string name="keyboard_double">双倍</string>
     <string name="btn_cancel">取消</string>
-    <string name="lineup_empty">暂无数据,请换个试一试~</string>
+    <string name="lineup_empty">暂无数据，请换个试一试~</string>
     <string name="title_betslip">注单</string>
 
     <string name="cancel_reserve_success">取消预约成功</string>
@@ -82,6 +82,6 @@
     <string name="btn_confirm">确定</string>
     <string name="refund_amount_include_principal">返还金额包含本金</string>
     <string name="live_bet_in_early_settle">提前结算中</string>
-    <string name="hint_less_amount_early_settle">小於最小投注额</string>
+    <string name="hint_less_amount_early_settle">小于最小投注额</string>
     <string name="title_combo_bet_odds">%d串%d</string>
 </resources>

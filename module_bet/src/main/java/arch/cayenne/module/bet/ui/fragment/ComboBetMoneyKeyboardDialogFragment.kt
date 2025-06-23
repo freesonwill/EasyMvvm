@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -66,6 +67,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.root.visibility = View.INVISIBLE
 
         ViewUtils.hideKeyboard(requireContext(), mBinding.etMoney)
         mBinding.etMoney.requestFocus()
@@ -130,7 +132,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            mBinding.etMoney.hint =
+                getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
@@ -143,11 +146,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun initKeyboard() {
-        val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
-        if (currentMoney != -1L) {
-            mViewModel.setNumber(currentMoney)
-        }
-
         val minNumber = requireArguments().getLong(MIN_NUMBER, -1L)
         val maxNumber = requireArguments().getLong(MAX_NUMBER, -1L)
         if (minNumber != -1L && maxNumber != -1L) {
@@ -158,32 +156,46 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         if (remainingMoney != -1L) {
             mViewModel.setRemainingNumber(remainingMoney)
         }
+
+        val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
+        if (currentMoney != -1L) {
+            mViewModel.setNumber(currentMoney)
+        }
     }
 
     private fun setDialogPosition() {
-        dialog?.window?.apply {
-            setDimAmount(0.65f)
+        dialog?.window?.let {
+            it.setDimAmount(0.6f)
             // 將 margin 設為 16dp
             val marginInPx = 16.dp2px
 
             // 螢幕寬度 - 左右 margin
             val screenWidth = Resources.getSystem().displayMetrics.widthPixels
-            setLayout(screenWidth - marginInPx * 2, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            val maxWidth = screenWidth - marginInPx * 2
+            it.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             val positionX = requireArguments().getInt(POSITION_X, -1)
             val positionY = requireArguments().getInt(POSITION_Y, -1)
 
             if (positionX != -1 && positionY != -1) {
+
+                val layoutParams = it.attributes
+                layoutParams.gravity = Gravity.TOP
+                mBinding.root.measure(
+                    View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                layoutParams.y = positionY - mBinding.root.measuredHeight
+                it.attributes = layoutParams
+
                 mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        val layoutParams = attributes
-                        layoutParams.gravity = Gravity.TOP
-                        layoutParams.y = positionY - mBinding.root.height - mBinding.triangle.height / 4
-                        attributes = layoutParams
-
                         setTrianglePosition(positionX)
+                        mBinding.root.post {
+                            mBinding.root.visibility = View.VISIBLE
+                        }
                     }
                 })
             }
