@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
+import androidx.constraintlayout.widget.ConstraintLayout
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -59,33 +60,53 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             val positionY = requireArguments().getInt(POSITION_Y, -1)
 
             if (positionX != -1 && positionY != -1) {
-                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        val layoutParams = it.attributes
-                        layoutParams.gravity = Gravity.TOP or Gravity.START
+                val layoutParams = it.attributes
+                layoutParams.gravity = Gravity.TOP or Gravity.START
 
-                        val triangleLocation = IntArray(2)
-                        mBinding.triangle.getLocationInWindow(triangleLocation)
+                val pop = mBinding.root
+                pop.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
+                val popWidth = pop.measuredWidth
 
-                        val px = triangleLocation.first() + mBinding.triangle.width / 2
-                        layoutParams.x = positionX - px
-                        layoutParams.y = positionY - (mBinding.triangle.height * 1.8).toInt()
+                val triangle = mBinding.triangle
+                triangle.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+                )
 
-                        it.attributes = layoutParams
-                        
-                        // 設置初始位置在螢幕右側
-                        mBinding.root.translationX = resources.displayMetrics.widthPixels.toFloat()
-                        mBinding.root.visibility = View.VISIBLE
-                        
-                        // 執行滑入動畫
-                        mBinding.root.animate()
-                            .translationX(0f)
-                            .setDuration(300)
-                            .setInterpolator(android.view.animation.DecelerateInterpolator())
-                            .start()
-                    }
-                })
+                val triangleWidth = triangle.measuredWidth
+                val triangleHeight = triangle.measuredHeight
+
+                val endMargin = (mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
+
+                val px = popWidth - (endMargin + triangleWidth / 2)
+
+                layoutParams.x = positionX - px
+                layoutParams.y = positionY - triangleHeight
+
+                it.attributes = layoutParams
+
+                // 設置初始位置在螢幕右側
+                mBinding.root.translationX = resources.displayMetrics.widthPixels.toFloat()
+
+                mBinding.root.post {
+                    mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                        override fun onGlobalLayout() {
+                            mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                            // 執行滑入動畫
+                            mBinding.root.animate()
+                                .translationX(0f)
+                                .setDuration(300)
+                                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                                .withStartAction {
+                                    mBinding.root.visibility = View.VISIBLE
+                                }
+                                .start()
+                        }
+                    })
+                }
             }
         }
     }
