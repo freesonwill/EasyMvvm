@@ -25,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
@@ -60,7 +61,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
-
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -497,6 +500,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab?.position ?: 0,
+                        viewPager = mBinding.layoutContainer.vpGameList,
+                        fakeViewPager = mBinding.layoutContainer.ivFaker
+                    )
                     tab?.customView?.isSelected = true
                     val selectedIndex = tab?.position ?: 0
                     vpGameList.currentItem = selectedIndex
