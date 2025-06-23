@@ -33,9 +33,8 @@ class BetSlipSelectionAdapter(
         position: Int
     ) {
         holder.covertPlus(getItem(position))
-        if (position == itemCount -1) {
-            holder.hideLastLine()
-        }
+        //底部线条在注单子item展开和收缩时，动态更新底部线条
+        holder.hideLastLine(position == itemCount - 1)
     }
 
     override fun createViewBinding(

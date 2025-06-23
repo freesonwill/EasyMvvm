@@ -14,8 +14,8 @@ import com.bumptech.glide.Glide
 class BetSlipReserveItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipReserveBinding>(binding) {
 
-    override fun hideLastLine() {
-        mBinding.line.isVisible = false
+    override fun hideLastLine(isLast:Boolean) {
+        mBinding.line.isVisible = !isLast
     }
 
     override fun covertPlus(
