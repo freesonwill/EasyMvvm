@@ -535,7 +535,7 @@ class LiveVideoLandscapeFragment :
 
     override fun onDestroy() {
         super.onDestroy()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 

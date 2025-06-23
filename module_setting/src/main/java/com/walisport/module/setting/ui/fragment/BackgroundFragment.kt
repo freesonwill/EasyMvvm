@@ -54,7 +54,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     }
 
     override fun onStart() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
         super.onStart()
     }
@@ -95,7 +95,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     private fun setImmColor(type: String) {
         immColor = immersionBarColorExt(type)
         StatusBarConfig.statusBarColor = immColor
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
         setStatusBar(StatusBarConfig, mBinding.root)
     }
@@ -129,7 +129,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         super.onDestroy()
         StatusBarConfig.statusBarColor = defaultImmColor
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 }

@@ -102,7 +102,7 @@ class LiveBetOnMenuFragment :
     }
 
     override fun onResume() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
 
         super.onResume()
