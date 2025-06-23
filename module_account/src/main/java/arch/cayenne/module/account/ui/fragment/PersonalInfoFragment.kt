@@ -12,7 +12,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.popBackStack
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.account.R
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.account.databinding.FragmentPersonalInfoBinding
@@ -115,18 +114,9 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                     // No action needed
                     if (s.isNullOrEmpty()) {
-                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_modify_once)
-                        tvNickNameModifyOnce.setTextColor(SkinnableResourceManager.getColor( requireContext(),arch.cayenne.lib.common.R.color.secondary_text))
                         tvNickNameLength.text = ""
                         btnSave.isEnabled = false
-                    } else if (s.length > 8) {
-                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_cannot_exceed_8_char)
-                        tvNickNameModifyOnce.setTextColor(resources.getColor(arch.cayenne.lib.common.R.color.red_team,null))
-                        tvNickNameLength.text = resources.getString(R.string.nick_name_char_num, s.length)
-                        btnSave.isEnabled = false
                     } else {
-                        tvNickNameModifyOnce.text = resources.getString(R.string.nick_name_modify_once)
-                        tvNickNameModifyOnce.setTextColor(SkinnableResourceManager.getColor( requireContext(),arch.cayenne.lib.common.R.color.secondary_text))
                         tvNickNameLength.text = resources.getString(R.string.nick_name_char_num, s.length)
                         btnSave.isEnabled = personalInfoAdapter.getSelectedPosition() != -1
                     }
