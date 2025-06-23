@@ -64,11 +64,16 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     fun loadNextPage() {
+        "KC_ 取得比賽資料 loadNextPage".logi()
         if (isPageEnd) {
+            "KC_ 取得比賽資料 isPageEnd".logi()
             _state.value = Event(MatchListState.NO_MORE_DATA)
             return
         }
-        if (_state.value?.peekContent() != MatchListState.IDLE) return
+        if (_state.value?.peekContent() != MatchListState.IDLE) {
+            "KC_ 取得比賽資料 ${_state.value?.peekContent()}".logi()
+            return
+        }
         page++
         _state.value = Event(MatchListState.LOADING_NEXT)
         getMatchListData()
