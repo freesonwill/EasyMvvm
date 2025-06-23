@@ -102,6 +102,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
+        StatusBarConfig.statusBarDarkFont = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
             autoPadding = true,
             noPaddingViewIds = listOf(mBinding.splashBg.id)

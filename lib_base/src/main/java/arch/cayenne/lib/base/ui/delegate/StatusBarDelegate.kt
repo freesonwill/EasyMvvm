@@ -107,7 +107,7 @@ class StatusBarDelegate : IStatusBar {
                             if (lp != null) {
                                 lp.topMargin += statusBarHeight
                             } else {
-                                "view.layoutParams is not MarginLayoutParams".loge(TAG)
+                                "${view}.layoutParams is not MarginLayoutParams".loge(TAG)
                             }
                         }
                     }
