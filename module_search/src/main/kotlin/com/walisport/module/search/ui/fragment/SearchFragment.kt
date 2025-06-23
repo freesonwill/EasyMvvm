@@ -353,7 +353,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             with(SkinnableResourceManager) {
                 setStatusBar(
                     StatusBarConfig.apply {
-                        statusBarType = StatusBarMode.DRAW_BEHIND
+                        statusBarType = StatusBarMode.DRAW_BEHIND()
                         statusBarColor = android.R.color.transparent
                         statusBarDarkFont =
                             if(isDefault) getSkinName().lowercase().startsWith("white")

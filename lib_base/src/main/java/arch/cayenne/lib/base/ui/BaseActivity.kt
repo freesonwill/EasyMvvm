@@ -73,7 +73,7 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
         uiBind.onCreateView(layoutInflater,null,savedInstanceState)
         setContentView(mBinding.root)
         uiBind.onViewCreated(mBinding.root,savedInstanceState)
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(configStatusBar(),mBinding.root)
     }
 

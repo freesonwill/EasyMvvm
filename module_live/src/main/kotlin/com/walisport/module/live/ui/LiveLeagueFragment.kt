@@ -55,7 +55,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
 
     override fun onStart() {
         super.onStart()
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
     }
 

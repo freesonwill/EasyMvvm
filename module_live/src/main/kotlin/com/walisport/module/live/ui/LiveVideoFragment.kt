@@ -33,7 +33,7 @@ import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
-import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ANIMATION_DURATION
+import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
@@ -424,7 +424,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f)
                 )
             },
-            duration = ANIMATION_DURATION,
+            duration = BUTTONS_ANIMATION_DURATION,
             interpolator = LinearInterpolator(),
             start = true
         )
@@ -465,7 +465,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     }
                 })
             }, 
-            duration = ANIMATION_DURATION, 
+            duration = BUTTONS_ANIMATION_DURATION,
             start = true
         )
     }

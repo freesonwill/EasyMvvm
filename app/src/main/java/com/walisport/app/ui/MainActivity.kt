@@ -14,6 +14,7 @@ import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
+import com.walisport.module.message.ui.fragment.AppNotifyFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
@@ -23,10 +24,14 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     override val vmClass: KClass<MainViewModel> = MainViewModel::class
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
     private var fabFragment: Fragment? = null
+    private var notifyFragment: Fragment? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         fabFragment = FloatingButtonFragment.newInstance().apply {
+            show(this@MainActivity)
+        }
+        notifyFragment = AppNotifyFragment.newInstance().apply {
             show(this@MainActivity)
         }
     }
@@ -37,6 +42,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             val toast = BetResultToastView(this@MainActivity)
             toast.setResult(it)
             showToast(toast, 3_000L)
+        }
+        mViewModel.appNotifyListener.observe(this) {
+            notifyFragment?.view?.visibility = View.VISIBLE
+            (notifyFragment as AppNotifyFragment).setNotifyMsg(it)
+            (notifyFragment as AppNotifyFragment).showEnterAnimation()
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {

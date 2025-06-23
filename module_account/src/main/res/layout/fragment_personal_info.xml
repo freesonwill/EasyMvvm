@@ -110,6 +110,7 @@
             android:textColor="@color/main_text"
             android:textColorHint="@color/secondary_text"
             android:layout_weight="1"
+            android:maxLength="8"
             tools:ignore="MissingConstraints" />
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_nick_name_length"

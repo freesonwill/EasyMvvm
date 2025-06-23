@@ -23,13 +23,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_alignParentBottom="true"
-            android:background="@color/notice_line"
-            app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
