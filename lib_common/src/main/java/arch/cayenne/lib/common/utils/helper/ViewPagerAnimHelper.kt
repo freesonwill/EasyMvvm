@@ -125,26 +125,33 @@ class ViewPagerAnimHelper {
                     ObjectAnimator.ofFloat(it.first, "translationX", it.second, it.third)
                 }
 
-            // 執行動畫
-            AnimatorSet().apply {
-                this.duration = 100L
+
+            viewPager.startSafeAnimateSet({
+                duration = 100L
                 playTogether(animationList)
-                addListener(
-                    onStart = {
+                addListener(object : android.animation.AnimatorListenerAdapter() {
+                    override fun onAnimationStart(animation: Animator) {
                         fakeViewPager.translationX = 0f
                         viewPager.translationX =
                             if(isPrev) width * -1f
                             else width * 1f
-                    },
-                    onEnd = {
+                        super.onAnimationStart(animation)
+                    }
+                    override fun onAnimationEnd(animation: Animator) {
+                        // 動畫結束後顯示 ViewPager
                         fakeViewPager.apply {
                             isVisible = false
                             setImageResource(android.R.color.transparent)
                         }
                     }
-                )
-                start()
-            }
+
+                    override fun onAnimationCancel(animation: Animator) {
+                        viewPager.alpha = 1f
+                        fakeViewPager.isVisible = false
+                        fakeViewPager.setImageDrawable(null)
+                    }
+                })
+            }, start = true)
         }
     }
 
