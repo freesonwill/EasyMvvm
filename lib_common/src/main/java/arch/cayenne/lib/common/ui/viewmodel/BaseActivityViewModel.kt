@@ -37,32 +37,34 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
-            commonRepository.getConnectStateFlow().collect { connectState ->
-                when (connectState) {
-                    is ConnectState.ConnectSuccess -> {
-                        "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                        login()
-                    }
-                    else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
-                        "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+            launch {
+                commonRepository.getConnectStateFlow().collect { connectState ->
+                    when (connectState) {
+                        is ConnectState.ConnectSuccess -> {
+                            "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                            login()
+                        }
+                        else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
+                            "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                        }
                     }
                 }
             }
-            commonRepository.observeAppNotifyChange().collect { result ->
-                if (result.error == null && result.data != null) {
-                    val temp = result.data?.let {
-                        AppNotifyBean(it.type, it.sportId, it.title, it.content)
+            launch {
+                commonRepository.observeAppNotifyChange().collect { result ->
+                    if (result.error == null && result.data != null) {
+                        val temp = result.data?.let {
+                            AppNotifyBean(it.type, it.sportId, it.title, it.content)
+                        }
+                        _appNotifyListener.value = temp
                     }
-                    _appNotifyListener.value = temp
                 }
             }
-            launch(Dispatchers.IO) {
+            launch {
                 commonRepository.getBetResultFlow().collect {
                     _betResultListener.postValue(it)
                 }
             }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
             launch {
                 commonRepository.observeBalanceChange()
             }
