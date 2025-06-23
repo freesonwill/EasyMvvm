@@ -130,7 +130,8 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             mBinding.etMoney.setSelection(length)
         }
         mViewModel.onNumberLimit.observe(viewLifecycleOwner) {
-            mBinding.etMoney.hint = getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
+            mBinding.etMoney.hint =
+                getString(R.string.et_money_hint).format(it.first.getMoney(), it.second.getMoney())
         }
         mViewModel.onOverNumberListener.observe(viewLifecycleOwner) {
             it.msg?.let { msg ->
@@ -143,11 +144,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun initKeyboard() {
-        val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
-        if (currentMoney != -1L) {
-            mViewModel.setNumber(currentMoney)
-        }
-
         val minNumber = requireArguments().getLong(MIN_NUMBER, -1L)
         val maxNumber = requireArguments().getLong(MAX_NUMBER, -1L)
         if (minNumber != -1L && maxNumber != -1L) {
@@ -157,6 +153,11 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         val remainingMoney = requireArguments().getLong(REMAINING_MONEY_NUMBER, -1L)
         if (remainingMoney != -1L) {
             mViewModel.setRemainingNumber(remainingMoney)
+        }
+
+        val currentMoney = requireArguments().getLong(CURRENT_MONEY_NUMBER, -1L)
+        if (currentMoney != -1L) {
+            mViewModel.setNumber(currentMoney)
         }
     }
 
