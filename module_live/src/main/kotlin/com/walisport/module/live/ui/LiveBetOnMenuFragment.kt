@@ -3,6 +3,8 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,6 +23,7 @@ import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.BaseSideSheetDialogFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -30,24 +33,17 @@ import kotlin.math.sqrt
 import kotlinx.coroutines.delay
 
 class LiveBetOnMenuFragment :
-    BaseSideSheetDialogFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
+    BaseFragment<LiveBetOnMenuViewModel, FragmentLiveBetOnMenuBinding>() {
     override val vbClass: KClass<FragmentLiveBetOnMenuBinding> = FragmentLiveBetOnMenuBinding::class
     override val vmClass: KClass<LiveBetOnMenuViewModel> = LiveBetOnMenuViewModel::class
     private val betOnViewModel: LiveBetOnViewModel by sharedViewModel<LiveBetOnViewModel, LiveBetOnFragment>()
-    private var startX = 0f
-    private var startY = 0f
-    private var translationX = 0f
-    private var animTime = 500L
-    private var isSwipingDialog = false
-    private var isHorizontalSwipe = false
-    private val touchSlop by lazy { ViewConfiguration.get(mBinding.main.context).scaledTouchSlop }
-    private val angleTolerance = 80 // 角度容忍范围
-    private val swipeThreshold = 0.3f // 滑动距离阈值，占宽度的比例
-    //选择中颜色的ID
-    private var selectCode: String = ""
-    private var selectId: Long = 0
+    companion object {
+        const val TAG = "LiveBetOnMenuFragment"
+    }
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        setStatusBar(StatusBarConfig,mBinding.root)
         mViewModel.getMarketType()
         mViewModel.marketType.observe(viewLifecycleOwner) { it ->
             if (it == null) return@observe
@@ -72,20 +68,19 @@ class LiveBetOnMenuFragment :
                             mBinding.llc,
                             false
                         )
-                        if (bean.isSelect) {
-                            selectCode = items.code
-                            selectId = bean.marketId
-                        }
+//                        if (bean.isSelect) {
+//                            selectCode = items.code
+//                            selectId = bean.marketId
+//                        }
                         textBinding.apply {
                             tvContent.text = bean.marketName
-                            betOnViewModel.observeMarketMenu.value?.let {
-                                if (indexItems == (it[0] - 1) && index == it[1]) {
-                                    tvContent.isSelected = true
-                                }
-                            }
+//                            betOnViewModel.observeMarketMenu.value?.let {
+//                                if (indexItems == (it[0] - 1) && index == it[1]) {
+//                                    tvContent.isSelected = true
+//                                }
+//                            }
                             tvContent.clickNoRepeat {
                                 betOnViewModel.setMarketMenuPosition((indexItems + 1), index)
-                                animateDismiss()
                             }
                         }
                         binding.flexboxLayout.addView(textBinding.root)
@@ -101,117 +96,9 @@ class LiveBetOnMenuFragment :
     override fun initListener() {
     }
 
-    override fun onResume() {
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig,mBinding.root)
+    override fun createObserver() {
 
-        super.onResume()
     }
 
-    override fun onStart() {
-        super.onStart()
-        // 设置 Dialog 的宽度和高度
-        if (dialog != null && dialog!!.window != null) {
-            launch{
-                delay((animTime))
-                dialog!!.window?.setBackgroundDrawableResource(android.R.color.transparent)
-                dialog!!.window?.attributes?.dimAmount = 0.6f
-                dialog!!.window?.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-            }
-            // 获取屏幕高度
-            val screenWidth = resources.displayMetrics.widthPixels
-            // 设置宽度为屏幕的 89%（可调整）
-            val dialogWidth = (screenWidth * 0.89) // 自定义宽度
-            // 设置宽度为屏幕宽度
-            dialog!!.window!!.setLayout(dialogWidth.toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
-        }
-        // 设置靠右显示
-        dialog!!.window!!.setGravity(Gravity.END)
-        // 设置手势监听
-        setupSwipeGesture()
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setupSwipeGesture() {
-        mBinding.llc.setOnTouchListener { _, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    startX = event.rawX
-                    startY = event.rawY
-                    translationX = mBinding.root.translationX
-                    isSwipingDialog = false
-                    isHorizontalSwipe = false
-                    // 阻止父容器拦截触摸事件
-                    mBinding.main.requestDisallowInterceptTouchEvent(true)
-                    true
-                }
-
-                MotionEvent.ACTION_MOVE -> {
-                    val deltaX = event.rawX - startX
-                    val deltaY = event.rawY - startY
-                    val distance = sqrt(deltaX * deltaX + deltaY * deltaY)
-
-                    if (!isSwipingDialog && distance > touchSlop) {
-                        isSwipingDialog = true
-                        val angle = Math.toDegrees(atan2(deltaY.toDouble(), deltaX.toDouble()))
-                        isHorizontalSwipe = abs(angle) < angleTolerance || abs(angle - 180) < angleTolerance
-                        // 如果是垂直滑动，允许父容器处理
-                        if (!isHorizontalSwipe) {
-                            mBinding.main.requestDisallowInterceptTouchEvent(false)
-                        }
-                    }
-
-                    if (isSwipingDialog && isHorizontalSwipe) {
-                        if (deltaX >= 0) {
-                            mBinding.root.translationX = translationX + deltaX
-                        }
-                        true
-                    } else {
-                        false
-                    }
-                }
-
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    if (isSwipingDialog && isHorizontalSwipe) {
-                        val swipeDistance = mBinding.root.translationX
-                        if (swipeDistance > mBinding.root.width * swipeThreshold) {
-                            animateDismiss()
-                        } else {
-                            animateReset()
-                        }
-                    }
-                    isSwipingDialog = false
-                    isHorizontalSwipe = false
-                    // 恢复父容器的触摸拦截
-                    mBinding.main.requestDisallowInterceptTouchEvent(false)
-                    true
-                }
-
-                else -> false
-            }
-        }
-    }
-
-    private fun animateDismiss() {
-        mBinding.root.animate()
-            .translationX(mBinding.root.width * 0.8f)
-            .setDuration(200)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    dismiss()
-                }
-            })
-            .start()
-    }
-
-    private fun animateReset() {
-        mBinding.root.animate()
-            .translationX(0f)
-            .setDuration(animTime)
-            .setInterpolator(AccelerateDecelerateInterpolator())
-            .setListener(null)
-            .start()
-    }
 
 }
