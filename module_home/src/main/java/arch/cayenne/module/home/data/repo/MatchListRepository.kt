@@ -7,14 +7,11 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.toRoomData
-import arch.cayenne.module.home.utils.DateUtils
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import java.util.Locale
 
 class MatchListRepository(
     override val scope: CoroutineScope,
@@ -24,9 +21,23 @@ class MatchListRepository(
 ) : BaseMatchRepository(scope, socketManager, betDao, matchDao) {
     /**
      * 根據不同的條件，從api或是db(優先)取得賽事資料，如果從api來的話，拿到後會先存進資料庫內
-     * @param rid 主要用來資料回來時可以辨認用，因為有可能兩三個聯賽分頁同時拿取資料
+     * @param playType : 一級導航欄
+     * @param sportId : 二級導航欄
+     * @param tournamentId : 聯賽id
+     * @param page : 頁數
+     * @param date : 0 -> All、其餘時間為該日期的start time
+     * @param startTime : 時間區間起始，如果非早盤類型為0，早盤的"ALL"為隔日早上00:00:00
+     * @param endTime : 時間區間結束，如果非早盤類型為0，早盤的"ALL"為隔日開始起算30日
      * */
-    suspend fun getAllMatch(playType: Int, sportId: Int, tournamentId: Int, page: Int, startTime: Long) : Boolean {
+    suspend fun getAllMatch(
+        playType: Int,
+        sportId: Int,
+        tournamentId: Int,
+        page: Int,
+        date: Long,
+        startTime: Long,
+        endTime: Long
+    ) : Boolean {
 //        val req = Client.ListMatchReq.newBuilder().apply {
 //            this.sportId = sportId
 //            this.playType = playType
@@ -40,7 +51,7 @@ class MatchListRepository(
 //        }.build()
 //        socketManager.send(req.asRemoteRequest(ApiCode.LIST_MATCH))
         //-----------------------------------------
-        val last = matchDao.queryLastMatch(playType, tournamentId, startTime)
+        val last = matchDao.queryLastMatch(playType, tournamentId, date)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -51,13 +62,8 @@ class MatchListRepository(
                 this.playType = playType
                 this.tournamentId = tournamentId
                 this.size = DEFAULT_MATCH_SIZE
-                if (startTime != 0L){
-                    this.startTime = startTime
-                    this.endTime = startTime + ONE_DAY_TIME_STAMP
-                }else if (playType == PlayType.EARLY.id) {
-                    this.startTime = DateUtils.getFutureDays(1, Locale.getDefault())[0].third
-                    this.endTime = this.startTime + THIRTY_DAY_TIME_STAMP
-                }
+                this.startTime = startTime
+                this.endTime = endTime
                 if (last != null) {
                     this.cursorMatchId = last.matchId
                     this.cursorMatchStartTime = last.basicInfo.startTime
@@ -77,7 +83,7 @@ class MatchListRepository(
                     playType = playType,
                     tournamentId = tournamentId,
                     page = page,
-                    startTime = startTime,
+                    date = date,
                     matchId = match.matchId,
                     order = page * 100 + index
                 )
@@ -95,8 +101,8 @@ class MatchListRepository(
         return false
     }
 
-    fun clearCurrentMatch(playType: Int, tournamentId: Int, startTime: Long) {
-        matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, startTime)
+    fun clearCurrentMatch(playType: Int, tournamentId: Int, date: Long) {
+        matchDao.deleteCurrentTournamentMatchRef(playType, tournamentId, date)
     }
 
     fun observeMatchChange(playType: Int, tournamentId: Int) : Flow<List<TournamentMatchRef>> {

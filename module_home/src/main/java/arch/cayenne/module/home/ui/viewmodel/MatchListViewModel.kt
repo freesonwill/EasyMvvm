@@ -7,7 +7,9 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.MatchListRepository
+import arch.cayenne.module.home.utils.DateUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import plugin.koin.KoinViewModel
+import java.util.Locale
 
 @KoinViewModel
 class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
@@ -65,7 +68,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             ) { selectedDate, refs ->
                 selectedDate to refs
             }.collect { (selectedDate, refs) ->
-                val currentDateRefs = refs.filter { it.startTime == selectedDate }
+                val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
                     getMatchListData()
                     return@collect
@@ -89,8 +92,28 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     override fun getMatchListData() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                "取得比賽資料  PlayType = $_playType sportId = $_sportId tornamentId = $_tournamentId page = $page startTime = ${_selectedDate.value}".logi(this::class.java.name)
-                isPageEnd = !repository.getAllMatch(_playType, _sportId, _tournamentId, page, _selectedDate.value)
+
+                val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
+                    if (_playType == PlayType.EARLY.id) {
+                        DateUtils.getFutureDays(1, Locale.getDefault())[0].third.let {
+                            Pair(it, it + BaseMatchRepository.THIRTY_DAY_TIME_STAMP)
+                        }
+                    } else {
+                        Pair(0L, 0L)
+                    }
+                } else {
+                    Pair(_selectedDate.value, _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP)
+                }
+                "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(this::class.java.name)
+                isPageEnd = !repository.getAllMatch(
+                    playType = _playType,
+                    sportId = _sportId,
+                    tournamentId = _tournamentId,
+                    page = page,
+                    date = _selectedDate.value,
+                    startTime = startTime,
+                    endTime = endTime,
+                )
                 withContext(Dispatchers.Main) {
                     if (isPageEnd && page == 1) {
                         //沒有資料
