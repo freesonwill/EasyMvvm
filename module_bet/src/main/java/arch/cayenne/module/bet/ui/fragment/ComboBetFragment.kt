@@ -1,7 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
