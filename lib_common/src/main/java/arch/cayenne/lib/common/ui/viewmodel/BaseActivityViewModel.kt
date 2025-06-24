@@ -7,10 +7,10 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.AppNotifyBean
-import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.database.entity.BetResultLiteBean
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,9 +26,12 @@ abstract class BaseActivityViewModel : BaseViewModel() {
 
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
     val loginIsSuccess = MutableLiveData<Boolean>()
-    val connectingError = MutableLiveData<SocketResponseError>()
+    val loginError = MutableLiveData<SocketResponseError>()
     private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
     val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
+
+    private val _connectFailed = MutableLiveData<ConnectState>()
+    val connectFailed : LiveData<ConnectState> = _connectFailed
 
     //APP通知消息
     private val _appNotifyListener = MutableLiveData<AppNotifyBean?>()
@@ -43,9 +46,14 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
                         login()
                     }
-                    else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
+                    is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                         "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                        withContext(Dispatchers.Main) {
+                            _connectFailed.value = connectState
+                        }
+
                     }
+                    else -> Unit
                 }
             }
             commonRepository.observeAppNotifyChange().collect { result ->
@@ -82,9 +90,8 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         "Login  Is Success? = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
                         loginIsSuccess.value = result.data?.success == true
                     }
-
                     else -> {   //其餘錯誤
-                        connectingError.value = result.error!!
+                        loginError.value = result.error!!
                     }
                 }
             }

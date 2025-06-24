@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.common.ui.BaseNavActivity
+import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
@@ -25,6 +26,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
     private var fabFragment: Fragment? = null
     private var notifyFragment: Fragment? = null
+    private var connectFailedFragment : ConnectFailedFragment? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -32,6 +34,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             show(this@MainActivity)
         }
         notifyFragment = AppNotifyFragment.newInstance().apply {
+            show(this@MainActivity)
+        }
+        connectFailedFragment = ConnectFailedFragment.newInstance().apply {
             show(this@MainActivity)
         }
     }
@@ -57,6 +62,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         fabControlViewModel.onClickAnimationListener.observe(this) { (x, y) ->
             (fabFragment as? FloatingButtonFragment)?.showDotAnimation(x, y)
+        }
+        mViewModel.connectFailed.observe(this) {
+            connectFailedFragment?.show(this@MainActivity)
         }
     }
 

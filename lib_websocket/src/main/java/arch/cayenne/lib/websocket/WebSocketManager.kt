@@ -83,13 +83,13 @@ class WebSocketManager(
             getConnectStateFlow().collect { state ->
                 when(state) {
                     is ConnectState.ConnectSuccess -> {
-                        stopReconnect()
+//                        stopReconnect()
                         startHeartbeat()
                     }
                     is ConnectState.ConnectClosed -> Unit
                     else -> {
                         stopHeartbeat()
-                        startReconnect()
+//                        startReconnect()
                     }
                 }
             }

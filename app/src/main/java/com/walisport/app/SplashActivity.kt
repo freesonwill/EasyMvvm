@@ -7,15 +7,15 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import com.walisport.app.ui.viewmodel.SplashViewModel
-import com.walisport.app.databinding.ActivitySplashBinding
-import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
+import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.ui.MainActivity
+import com.walisport.app.ui.viewmodel.SplashViewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -148,7 +148,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             }
         }
 
-        mViewModel.connectingError.observe(this) {
+        mViewModel.loginError.observe(this) {
             when(it) {
                 is LoginTokenFailedError -> {   //準備登入時沒有取得token或是uid
                     //TODO 跳到登入頁
