@@ -32,50 +32,62 @@ class TournamentListViewModel : BaseViewModel() {
     private var _lastSelectedLetter: Char? = null
 
     //輸入查詢字串
-    private val searchQuery = MutableLiveData<String?>()
-    val isSearchMode: Boolean
-        get() = !searchQuery.value.isNullOrBlank()
+    private val _searchQuery = MutableLiveData<String?>()
 
+    private val _isSearchMode = MutableLiveData(false)
+    val isSearchMode: Boolean
+        get() = _isSearchMode.value == true
+    var isSearchTriggered = false
     //統一觀察來源，搜尋結果或完整列表
     private val _displayList = MediatorLiveData<List<TournamentListItem>>()
     val displayList: MediatorLiveData<List<TournamentListItem>> get() = _displayList
 
 
     init {
-        displayList.addSource(searchQuery) { updateDisplayList(it) }
+        displayList.addSource(_searchQuery) { updateDisplayList(it) }
     }
 
+    fun setSearchMode(enabled: Boolean) {
+        _isSearchMode.value = enabled
+        if (!enabled) {
+            _searchQuery.value = null
+        } else {
+            _displayList.value = emptyList()
+        }
+    }
     fun searchTournament(query: String) {
-        searchQuery.value = query
+        _searchQuery.value = query
     }
 
     fun clearSearch() {
-        searchQuery.value = null
+        _searchQuery.value = null
     }
 
     private fun updateDisplayList(searchString: String?) {
         val query = searchString?.trim().orEmpty()
-        if (query.isBlank()) {
-            _displayList.value =
-                _tournamentList.value?.map { TournamentListItem.TournamentItem(it, null, null) }
-                    ?: emptyList()
-            return
-        }
+        _displayList.value = when {
+            query.isBlank() && !isSearchMode -> {
+                _tournamentList.value?.map {
+                    TournamentListItem.TournamentItem(it, null, null)
+                }.orEmpty()
+            }
 
-        val filtered = _tournamentList.value.orEmpty().filter {
-            it.name.contains(query, ignoreCase = true)
-        }.mapNotNull { tournament ->
-            val start = tournament.name.indexOf(query, ignoreCase = true)
-            if (start >= 0) {
-                val end = start + query.length
-                TournamentListItem.TournamentItem(
-                    tournament,
-                    start,
-                    end
-                )
-            } else null
+            query.isBlank() && isSearchMode -> {
+                emptyList()
+            }
+
+            else -> {
+                _tournamentList.value.orEmpty().filter {
+                    it.name.contains(query, ignoreCase = true)
+                }.mapNotNull { tournament ->
+                    val start = tournament.name.indexOf(query, ignoreCase = true)
+                    if (start >= 0) {
+                        val end = start + query.length
+                        TournamentListItem.TournamentItem(tournament, start, end)
+                    } else null
+                }
+            }
         }
-        _displayList.value = filtered
     }
 
     fun getTournamentListOrEmpty(): List<BaseTournamentData> {
