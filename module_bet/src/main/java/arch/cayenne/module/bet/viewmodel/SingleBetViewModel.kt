@@ -99,6 +99,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     private var originData: BetSelectionBean? = null
 
     init {
+        setNumberLimit(0L, 0L)
         viewModelScope.launch {
             launch {
                 betRepo.observeSelectionBean().collect {
@@ -107,9 +108,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             }
             launch {
                 betRepo.observeComboBean().collect {
-                    if (_onComboMultiBetBeanListener.value == null) {
-                        _onComboMultiBetBeanListener.value = it
-                    }
+                    _onComboMultiBetBeanListener.value = it
                     setNumberLimit(it.minAmount, it.maxAmount)
                     val oriData = onEditNumber.value
                     if (oriData.isNullOrEmpty()) {
@@ -195,11 +194,15 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
 
     private fun setBetSheet(bet: BetSelectionBean) {
         originData = bet.copy()
-        val number = onNumberLimit.value
-        val min = number?.first ?: 0L
-        val max = number?.second ?: 0L
+        if (_onComboMultiBetBeanListener.value == null) {
+            _onBetSheetListener.value = bet
+        } else {
+            val number = onNumberLimit.value
+            val min = number?.first ?: 0L
+            val max = number?.second ?: 0L
 
-        bet.isActive = max != 0L && min != 0L && bet.isActive
-        _onBetSheetListener.value = bet
+            bet.isActive = max != 0L && min != 0L && bet.isActive
+            _onBetSheetListener.value = bet
+        }
     }
 }
