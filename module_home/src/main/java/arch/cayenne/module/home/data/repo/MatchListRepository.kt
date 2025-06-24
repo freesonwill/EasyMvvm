@@ -7,11 +7,14 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.model.toRoomData
+import arch.cayenne.module.home.utils.DateUtils
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import java.util.Locale
 
 class MatchListRepository(
     override val scope: CoroutineScope,
@@ -51,6 +54,9 @@ class MatchListRepository(
                 if (startTime != 0L){
                     this.startTime = startTime
                     this.endTime = startTime + ONE_DAY_TIME_STAMP
+                }else if (playType == PlayType.EARLY.id) {
+                    this.startTime = DateUtils.getFutureDays(1, Locale.getDefault())[0].third
+                    this.endTime = this.startTime + THIRTY_DAY_TIME_STAMP
                 }
                 if (last != null) {
                     this.cursorMatchId = last.matchId
