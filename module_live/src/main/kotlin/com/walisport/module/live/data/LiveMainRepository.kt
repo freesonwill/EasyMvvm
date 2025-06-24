@@ -24,7 +24,8 @@ class LiveMainRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance()
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
-    fun observeConnectStateFlow():Flow<ConnectState> =remoteManager.getConnectStateFlow()
+    fun observeConnectStateFlow(): Flow<ConnectState> = remoteManager.getConnectStateFlow()
+
     // 500-1003: 获取比赛详情
     suspend fun getMatchRes(matchId: Long, callback: (LiveMatchBean) -> Unit) {
         clearMatchCache()
@@ -64,23 +65,33 @@ class LiveMainRepository(
     }
 
     suspend fun updateFullMatchInfo(
-        marketInfo: MatchBasicUpdate, marketUpdate: List<Market>, matchId: Long
-    ){
-        database.liveMatchDao().updateNotifyMatchInfo(
-            matchId = matchId,
-            status = marketInfo.status,
-            betStop = marketInfo.betStop,
-            startTime = marketInfo.startTime,
-            clock = marketInfo.liveInfo.clock,
-            rollClock = marketInfo.liveInfo.rollClock,
-            period = marketInfo.liveInfo.period,
-            score = marketInfo.liveInfo.score,
-            liveVideo = marketInfo.liveInfo.liveVideo,
-            charRoom = marketInfo.liveInfo.chatRoom,
-            viewerCount = marketInfo.liveInfo.viewerCount,
-            clockModified = marketInfo.liveInfo.clockModified,
-        )
-
+        marketInfo: MatchBasicUpdate?, marketUpdate: List<Market>, matchId: Long
+    ) {
+        marketInfo?.let {
+            if (marketInfo.hasLiveInfo()) {
+                database.liveMatchDao().updateNotifyMatchInfo(
+                    matchId = matchId,
+                    status = marketInfo.status,
+                    betStop = marketInfo.betStop,
+                    startTime = marketInfo.startTime,
+                    clock = marketInfo.liveInfo.clock,
+                    rollClock = marketInfo.liveInfo.rollClock,
+                    period = marketInfo.liveInfo.period,
+                    score = marketInfo.liveInfo.score,
+                    liveVideo = marketInfo.liveInfo.liveVideo,
+                    charRoom = marketInfo.liveInfo.chatRoom,
+                    viewerCount = marketInfo.liveInfo.viewerCount,
+                    clockModified = marketInfo.liveInfo.clockModified,
+                )
+            } else {
+                database.liveMatchDao().updateNotifyMatchInfo(
+                    matchId = matchId,
+                    status = marketInfo.status,
+                    betStop = marketInfo.betStop,
+                    startTime = marketInfo.startTime,
+                )
+            }
+        }
         val selections =
             marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
         database.liveMatchDao().updateLiveSelectionBean(
@@ -121,8 +132,8 @@ class LiveMainRepository(
         return remoteManager.observeMatchStaticsNotify()
     }
 
-     fun reconnect() {
-         remoteManager.connectToServer()
+    fun reconnect() {
+        remoteManager.connectToServer()
     }
 }
 
