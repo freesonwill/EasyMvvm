@@ -17,6 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ComboBetRepository(
     override val scope: CoroutineScope,
@@ -32,11 +33,17 @@ class ComboBetRepository(
     init {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
-                betDao.observeSelections(bet.betId).collect {
-                    selectionFlow.emit(it)
-                    if (it.isNotEmpty()) {
+                launch {
+                    betDao.observeSelections(bet.betId).collect {
+                        selectionFlow.emit(it)
+                    }
+                }
+                // TODO 之後可能改為盤口變動就須獲取限額
+                launch {
+                    val selection = betDao.getSelections(bet.betId)
+                    if (selection.isNotEmpty()) {
                         val detail = betDao.getDetail(bet.betId)
-                        setComboMulti(it, detail)
+                        setComboMulti(selection, detail)
                     }
                 }
             }
@@ -46,7 +53,7 @@ class ComboBetRepository(
     private suspend fun setComboMulti(
         data: List<BetSelectionBean>,
         detailList: List<BetDetailBean>? = null
-    ) {
+    ) = withContext(scope.coroutineContext) {
         remoteManager.getComboRisk(data)?.let { riskList ->
             val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
                 val detail = detailList?.find { it.combo == bean.combo }
