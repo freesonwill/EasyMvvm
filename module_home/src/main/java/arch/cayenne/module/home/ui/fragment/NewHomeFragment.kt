@@ -128,7 +128,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
-        if (mViewModel.getCurrentPlayType() != PlayType.EARLY) resetDateTabsToAll()
+        resetDateTabs()
         mViewModel.resetLiveData()
     }
 
@@ -156,10 +156,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             updateDateTabs(tlDateList, dateTabs)
             addDateTabListener()
 
-            tvTabAll.isSelected = true
-            mViewModel.setSelectedDate(0L)
             tvTabAll.clickNoRepeat {
-                resetDateTabsToAll()
+                resetDateTabs()
             }
 
             // 其他日期 Tab 設定
@@ -211,10 +209,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         tabLayout.selectTab(null)
     }
 
-    private fun resetDateTabsToAll() {
+    private fun resetDateTabs() {
         mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
-        mViewModel.setSelectedDate(0L)
+        mViewModel.resetSelectedDate()
     }
 
     /***
@@ -384,7 +382,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (dateIndex != -1) {
                 tlDateList.getTabAt(dateIndex)?.select()
             } else {
-                resetDateTabsToAll()
+                resetDateTabs()
                 addDateTabListener()
             }
         }
