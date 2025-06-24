@@ -112,7 +112,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeAll()
+            CommonDialog.newInstance(
+                title = "",
+                message = getString(R.string.title_dialog_remove),
+                okText = getString(R.string.btn_confirm),
+                cancelText = getString(R.string.btn_cancel)
+            ).apply {
+                setOnOkClickListener {
+                    mViewModel.removeAll()
+                }
+            }.show(childFragmentManager)
         }
         mBinding.llMultiBetCollapse.setOnClickListener {
             comboMultiBetAdapter.toggleExpand()
