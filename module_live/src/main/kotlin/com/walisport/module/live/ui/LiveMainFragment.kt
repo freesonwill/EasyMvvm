@@ -1,23 +1,23 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.PagerBean
-import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -39,7 +39,12 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
+import com.walisport.module.live.data.BetOnMenuStatus
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 
 /**
  * 直播详情页
@@ -49,21 +54,45 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
-    private val args: LiveMainFragmentArgs by navArgs()
-
+    private lateinit var args:LiveMainFragmentArgs
+    private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-
+    private var switchTabAnimJob: Job? = null
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
+        args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
         mViewModel.setMatchId(args.matchId)
         mViewModel.setSportId(args.sportId)
         setVideoView()
         loadFragment()
     }
-
+    //init DrawerLayout Content
+    private fun drawerContent() {
+        //蒙層顏色依照版型作變化
+        mBinding.drawerLayout.setScrimColor(
+            SkinnableResourceManager.getColor(
+                requireContext(),
+                R.color.drawer_scrim_color
+            )
+        )
+        if (drawerContentFragment == null) {
+            drawerContentFragment = LiveBetOnMenuFragment()
+        }
+        childFragmentManager.beginTransaction()
+            .replace(
+                mBinding.fragmentDrawerContent.id,
+                drawerContentFragment!!,
+                LiveBetOnMenuFragment.TAG
+            )
+            .commitNow()
+        mBinding.drawerLayout.openDrawer(GravityCompat.END)
+    }
     override fun initListener() {
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
@@ -102,7 +131,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.setCurrentItem(it.position, false) // 禁用平滑滚动
+                    switchTabAnimJob?.cancel()
+                    switchTabAnimJob = viewPagerAnimHelper.doViewPagerAnim(
+                        targetPosition = tab.position,
+                        viewPager = mBinding.vpPage,
+                        fakeViewPager = mBinding.fragmentFakeViewPager
+                    )
+                    mBinding.vpPage.setCurrentItem(it.position,false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -147,6 +182,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
+        mViewModel.liveBetOnMenu.observe(viewLifecycleOwner){
+            when(it) {
+                BetOnMenuStatus.OPEN -> {
+                    drawerContent()
+                }
+                BetOnMenuStatus.CLOSE -> {
+                    mBinding.drawerLayout.closeDrawer(GravityCompat.END)
+                }
+            }
+        }
         //根据matchId变动进行数据刷新
         mViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.clearAllMatch()
@@ -201,6 +246,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
+        mBinding.tabLayout.getTabAt(1)?.select()
+        mBinding.vpPage.setCurrentItem(1, false)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -249,7 +296,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            vpPage.offscreenPageLimit = list.size
+            launch(Lifecycle.State.RESUMED){
+                delay(500)
+                vpPage.offscreenPageLimit = list.size
+            }
             TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
@@ -312,15 +362,38 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        val newArgs:LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
+        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${this.args.equal(newArgs)}".logd(TAG)
+        if(this.args.equal(newArgs)) return
+        this.args = newArgs
+        updateMatchId(newArgs.matchId)
+    }
+
     override fun onStop() {
         super.onStop()
         mViewModel.disConnectChatServer()
     }
 
     override fun onDestroyView() {
+        switchTabAnimJob=null
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
         super.onDestroyView()
+    }
+
+    private fun LiveMainFragmentArgs.equal(other: Any?): Boolean {
+        if(other !is LiveMainFragmentArgs) return false
+        return this.sportId == other.sportId && this.matchId == other.matchId
+    }
+    override fun onBackPressed(): Boolean {
+        //如果抽屉打开，截获此次返回事件，关闭抽屉
+        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.END)
+            return true
+        }
+        return super.onBackPressed()
     }
 }

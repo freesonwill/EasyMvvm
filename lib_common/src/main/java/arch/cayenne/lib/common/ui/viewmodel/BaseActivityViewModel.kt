@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.data.constants.AppNotifyBean
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository
@@ -22,33 +23,49 @@ import org.koin.core.parameter.parametersOf
  * */
 abstract class BaseActivityViewModel : BaseViewModel() {
     private val commonRepository: CommonRepository by inject { parametersOf(viewModelScope) }
+
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
     val loginIsSuccess = MutableLiveData<Boolean>()
     val connectingError = MutableLiveData<SocketResponseError>()
     private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
     val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
 
+    //APP通知消息
+    private val _appNotifyListener = MutableLiveData<AppNotifyBean?>()
+    val appNotifyListener: LiveData<AppNotifyBean?> get() = _appNotifyListener
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
-            commonRepository.getConnectStateFlow().collect { connectState ->
-                when(connectState) {
-                    is ConnectState.ConnectSuccess -> {
-                        "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                        login()
-                    }
-                    else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
-                        "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+            launch {
+                commonRepository.getConnectStateFlow().collect { connectState ->
+                    when (connectState) {
+                        is ConnectState.ConnectSuccess -> {
+                            "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                            login()
+                        }
+
+                        else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
+                            "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                        }
                     }
                 }
             }
-            launch(Dispatchers.IO) {
+            launch {
+                commonRepository.observeAppNotifyChange().collect { result ->
+                    if (result.error == null && result.data != null) {
+                        val temp = result.data?.let {
+                            AppNotifyBean(it.type, it.sportId, it.matchId, it.title, it.content)
+                        }
+                        _appNotifyListener.postValue(temp)
+                    }
+                }
+            }
+            launch {
                 commonRepository.getBetResultFlow().collect {
                     _betResultListener.postValue(it)
                 }
             }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
             launch {
                 commonRepository.observeBalanceChange()
             }
@@ -63,11 +80,12 @@ abstract class BaseActivityViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             val result = commonRepository.sendLogin()
             withContext(Dispatchers.Main) {
-                when(result.error) {
+                when (result.error) {
                     null -> {
                         "Login  Is Success? = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
                         loginIsSuccess.value = result.data?.success == true
                     }
+
                     else -> {   //其餘錯誤
                         connectingError.value = result.error!!
                     }
@@ -75,6 +93,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             }
         }
     }
+
     override fun reset() {
         commonRepository.reset()
     }

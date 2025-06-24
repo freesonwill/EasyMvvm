@@ -59,7 +59,6 @@
     <string name="live_bet_reserve_odds">BookingOdds</string>
     <string name="live_bet_reserve_bet">BookingReservation</string>
     <string name="live_bet_except_max_win">ExpectedMaximumWin</string>
-    <string name="live_bet_full_handicap">FullTimeHandicap</string>
     <string name="live_bet_cancel_reserve">CancelAppointment</string>
     <string name="live_bet_modify_odds">ModifyOdds</string>
     <string name="live_bet_odds">Odds</string>

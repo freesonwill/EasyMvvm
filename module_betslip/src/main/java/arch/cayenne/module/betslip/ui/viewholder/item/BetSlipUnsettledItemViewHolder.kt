@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
@@ -12,8 +13,8 @@ import com.bumptech.glide.Glide
 class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
     BaseBetSlipItemViewHolder<ItemLiveBetSlipUnsettleBinding>(binding) {
 
-    override fun hideLastLine() {
-        mBinding.line.isVisible = false
+    override fun hideLastLine(isLast:Boolean) {
+        mBinding.line.isVisible = !isLast
     }
 
     override fun covertPlus(
@@ -25,6 +26,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateData(item: OrderSelectionBean) {
         item.let {
             val match = item.matchBasic
@@ -32,8 +34,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                 Glide.with(betUnsettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betUnsettledIvBall)
                 betUnsettledTvRace.text = match.matchName
                 betUnsettledTvIntroduce.text = item.selectionName
-                val odds = "@${item.odds}"
-                betUnsettledTvAodds.text = odds
+                betUnsettledTvAodds.text = "@${item.odds}"
                 betUnsettledTvStatus.isVisible = item.inPlay
                 val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betUnsettledTvScore.text = score

@@ -2,13 +2,22 @@ package com.walisport.module.setting.data
 
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import galaxy.client.proto.Client
+import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SettingRepository(
-    override val scope: CoroutineScope
+    override val scope: CoroutineScope,
+    private val socketManager: WebSocketManager,
 ) : BaseRepository() {
 
     private val manager: UserDataManager by inject(UserDataManager::class.java)
@@ -98,5 +107,19 @@ class SettingRepository(
 
     fun getAppAll(): Boolean {
         return manager.getValue(UserDataKey.KEY_APP_ALL, false)
+    }
+
+    fun updateSettingReq(setting: Common.Setting) {
+        scope.launch(Dispatchers.IO) {
+            socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
+                scope = scope,
+                dispatcher = Dispatchers.IO,
+                apiCode = ApiCode.UPDATE_SYSTEM_SETTING,
+            ) {
+                Client.UpdateSettingReq.newBuilder().apply {
+                    this.setting = setting
+                }.build()
+            }
+        }
     }
 }

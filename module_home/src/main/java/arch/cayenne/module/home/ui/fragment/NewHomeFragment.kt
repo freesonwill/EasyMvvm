@@ -11,12 +11,11 @@ import androidx.core.view.GravityCompat
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -26,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
@@ -61,7 +61,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
-
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -87,7 +89,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun onStart() {
         mBinding.root.fitsSystemWindows = false
-        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.clMain)
         super.onStart()
     }
@@ -126,6 +128,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
+        resetDateTabs()
         mViewModel.resetLiveData()
     }
 
@@ -153,12 +156,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             updateDateTabs(tlDateList, dateTabs)
             addDateTabListener()
 
-            tvTabAll.isSelected = true
-            mViewModel.setSelectedDate(0L)
             tvTabAll.clickNoRepeat {
-                it.isSelected = true
-                clearDateTabSelection()
-                mViewModel.setSelectedDate(0L)
+                resetDateTabs()
             }
 
             // 其他日期 Tab 設定
@@ -201,16 +200,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun clearDateTabSelection() {
         val tabLayout = mBinding.layoutContainer.tlDateList
+        tabLayout.setScrollPosition(0, 0f, true)
         val tabStrip = tabLayout.getChildAt(0) as? LinearLayout ?: return
-
         for (i in 0 until tabStrip.childCount) {
             tabStrip.getChildAt(i)?.isSelected = false
             tabLayout.getTabAt(i)?.customView?.isSelected = false
         }
-
         tabLayout.selectTab(null)
     }
 
+    private fun resetDateTabs() {
+        mBinding.layoutContainer.tvTabAll.isSelected = true
+        clearDateTabSelection()
+        mViewModel.resetSelectedDate()
+    }
 
     /***
      * @param expanded : Boolean 展開、收起
@@ -379,11 +382,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (dateIndex != -1) {
                 tlDateList.getTabAt(dateIndex)?.select()
             } else {
-                tvTabAll.isSelected = true
-                clearDateTabSelection()
-                tlDateList.selectTab(null)
+                resetDateTabs()
                 addDateTabListener()
-                mViewModel.setSelectedDate(0L)
             }
         }
     }
@@ -498,6 +498,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab?.position ?: 0,
+                        viewPager = mBinding.layoutContainer.vpGameList,
+                        fakeViewPager = mBinding.layoutContainer.ivFaker
+                    )
                     tab?.customView?.isSelected = true
                     val selectedIndex = tab?.position ?: 0
                     vpGameList.currentItem = selectedIndex
@@ -599,10 +604,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 setSchemeDate(this!!.calendarView,list)
             }
         }
-        mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
                 when(state) {
-                    HomeState.PLAY_TYPE_CLICK -> {
+                    HomeState.PlayTypeClick -> {
                         mViewModel.setIsHomeLoading(true)
                         resetHomeView()
                         mViewModel.getCurrentSportStatistical()
@@ -610,19 +615,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         loadingView.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
-                    HomeState.SPORT_LOAD_SUCCESS -> {
+                    HomeState.Sport.LoadSuccess -> {
                         if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
                             toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
                         } else {
                             mViewModel.getCurrentTournament()
                         }
                     }
-                    HomeState.FAILED, HomeState.NO_DATA -> {
+                    DataState.NetworkUnavailable, DataState.DataEmpty -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
                         loadingView.visibility = View.GONE
                     }
-                    HomeState.LOADING_MATCH_SUCCESS, HomeState.LOADING_TOURNAMENT_LIST_SUCCESS -> {
+                    HomeState.Match.LoadSuccess, HomeState.Tournament.LoadListSuccess -> {
                         loadingView.visibility = View.GONE
                     }
                     else -> Unit

@@ -85,7 +85,7 @@ class LiveBetOnViewModel : BaseViewModel() {
             marketIds.add(it.marketId)
         }
         //监听盘口数据变化
-        //  LogUtils.e("observeSelection${marketIds}")
+        //  LogUtils.d("observeSelection${marketIds}")
         observeSelection(marketIds)
 
     }
@@ -115,7 +115,7 @@ class LiveBetOnViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSelection(marketIds).collect {
                 _observeSelection.tryEmit(it)
-                //   LogUtils.e("比赛详情--------observeSelection${it}")
+                //   LogUtils.d("比赛详情--------observeSelection${it}")
             }
         }
     }
@@ -126,7 +126,7 @@ class LiveBetOnViewModel : BaseViewModel() {
             marketIds.forEach {
                 map[it] = repository.queryLiveSelectionBean(it)
             }
-          //  LogUtils.e("getLiveSelectionBean-----map---${map}")
+          //  LogUtils.d("getLiveSelectionBean-----map---${map}")
             _getLiveSelectionBean.tryEmit(map)
         }
     }

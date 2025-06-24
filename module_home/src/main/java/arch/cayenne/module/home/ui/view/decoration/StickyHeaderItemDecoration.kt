@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.view.decoration
 import android.graphics.Canvas
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class StickyHeaderItemDecoration(
     private val isHeader: (position: Int) -> Boolean,
@@ -25,7 +26,7 @@ class StickyHeaderItemDecoration(
         val heightSpec =
             View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
         headerView.measure(widthSpec, heightSpec)
-        headerView.layout(0, 0, headerView.measuredWidth, headerView.measuredHeight)
+        headerView.layout(0, 2.dp2px, headerView.measuredWidth, headerView.measuredHeight)
 
         // 計算是否被下一個 header 推上來
         val contactPoint = headerView.bottom

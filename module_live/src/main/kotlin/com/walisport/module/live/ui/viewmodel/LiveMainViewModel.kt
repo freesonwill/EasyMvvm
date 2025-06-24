@@ -12,6 +12,7 @@ import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.data.LiveMainRepository
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
@@ -67,6 +68,13 @@ class LiveMainViewModel(
     private val _statisticData = MutableLiveData<MatchLiveData>()
     val statisticData: LiveData<MatchLiveData> = _statisticData
 
+    private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
+    val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
+
+
+
+
+
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
@@ -88,6 +96,10 @@ class LiveMainViewModel(
                 }
             }
         }
+    }
+
+    fun setLiveBetOnMen(status: BetOnMenuStatus) {
+        _liveBetOnMenu.value = status
     }
 
     fun setMatchId(matchId: Long) {

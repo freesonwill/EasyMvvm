@@ -2,9 +2,12 @@ package arch.cayenne.lib.base.ui.delegate
 
 import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.children
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -12,7 +15,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.gyf.immersionbar.BarHide
 import com.gyf.immersionbar.ImmersionBar
 import arch.cayenne.lib.base.ui._interface.IStatusBar
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 
 
 /**
@@ -23,6 +26,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 class StatusBarDelegate : IStatusBar {
     private var viewPaddingTop: Int = -1
     private var immersionBar: ImmersionBar
+    private val TAG = "StatusBarDelegate"
 
     constructor(activity: Activity) {
         immersionBar = ImmersionBar.with(activity)
@@ -33,10 +37,10 @@ class StatusBarDelegate : IStatusBar {
     }
 
     constructor(fragment: DialogFragment) {
-        fragment.dialog?.window?.let { window ->
-            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        }
+//        fragment.dialog?.window?.let { window ->
+//            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+//        }
         immersionBar = ImmersionBar.with(fragment)
     }
 
@@ -56,21 +60,21 @@ class StatusBarDelegate : IStatusBar {
         //如果动态改变rootViewPaddingTop的高度,需动态调用StatusBarConfig.rootViewPaddingTop设置高度
         if (viewPaddingTop == -1) {
             //DEFAULT -> DRAW_BEHIND时，paddingTop已经多了状态栏高度
-            viewPaddingTop = if(view.paddingTop != 0 && view.fitsSystemWindows && config.statusBarType == StatusBarMode.DRAW_BEHIND){
+            viewPaddingTop = if(view.paddingTop != 0 && view.fitsSystemWindows && config.statusBarType is StatusBarMode.DRAW_BEHIND){
                 view.paddingTop - statusBarHeight
             }else {
                 view.paddingTop
             }
         }
         //默认
-        when (config.statusBarType) {
+        when (val statusBarMode = config.statusBarType) {
             StatusBarMode.DEFAULT -> {
                 immersionBar.statusBarColor(config.statusBarColor)//设置状态栏颜色
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.init()
-                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
+                view.fitsSystemWindows = true
             }
             //全屏
             StatusBarMode.FULLSCREEN -> {
@@ -78,23 +82,39 @@ class StatusBarDelegate : IStatusBar {
                     .navigationBarColor(config.statusBarColor) // 设置虚拟导航栏颜色
                 immersionBar.hideBar(BarHide.FLAG_HIDE_BAR) //状态栏隐藏
                 immersionBar.init()
-                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
+                view.fitsSystemWindows = false
             }
             //顶部沉浸式
             //ImmersionBar实现状态栏和底部虚拟home键透明
-            StatusBarMode.DRAW_BEHIND -> {
+            is StatusBarMode.DRAW_BEHIND -> {
                 val navigationBarHeight = ImmersionBar.getNavigationBarHeight(view.context)
                 immersionBar.hideBar(BarHide.FLAG_SHOW_BAR) //状态栏显示
                     .fullScreen(false) //退出全屏模式
                     .transparentStatusBar() // 设置状态栏透明
                     .transparentNavigationBar() // 设置导航栏透明
                 immersionBar.init()
-                setViewPadding(view,
-                    viewPaddingTop + statusBarHeight,
-                    navigationBarHeight
-                )
-                view.fitsSystemWindows = StatusBarConfig.fitsSystemWindows
+                if(statusBarMode.autoPadding) {
+                    val noPaddingViewIds = statusBarMode.noPaddingViewIds
+                    if(noPaddingViewIds.isEmpty()) {
+                        setViewPadding(view,
+                            viewPaddingTop + statusBarHeight,
+                            navigationBarHeight
+                        )
+                    }else {
+                        (view as ViewGroup).children.forEach { v ->
+                            if (noPaddingViewIds.contains(v.id)) return@forEach
+                            val lp = v.layoutParams as? MarginLayoutParams
+                            if (lp != null) {
+                                lp.topMargin += statusBarHeight
+                            } else {
+                                "${view}.layoutParams is not MarginLayoutParams".loge(TAG)
+                            }
+                        }
+                    }
+                }
+                view.fitsSystemWindows = false
             }
+
         }
     }
 

@@ -24,6 +24,7 @@ class DatabaseModuleInitializer: DefaultInitializer<String> {
         factory { get<GameDatabase>().marketTypeMenuDao() }
         factory { get<GameDatabase>().liveMatchDao() }
         factory { get<GameDatabase>().sportDao() }
+        factory { get<GameDatabase>().msgDao() }
         factory { get<GameDatabase>().betSlipReserveDao() }
         factory { get<GameDatabase>().betSlipOrderDao() }
     }

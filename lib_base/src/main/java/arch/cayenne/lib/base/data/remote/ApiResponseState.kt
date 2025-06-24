@@ -10,6 +10,10 @@ sealed class ApiResponseState {
     data class Processing(val process: Int = 0, val total: Int = 100) : ApiResponseState()
     // api 請求成功
     data class Succeeded<T>(val data: T?) : ApiResponseState()
+
+    inline fun <reified T> Succeeded<*>.dataAs(): T? {
+        return if (data is T) data else null
+    }
     // api 請求失敗，返回錯誤信息
     data class Failed(val error: ApiFailedState?) : ApiResponseState()
 }

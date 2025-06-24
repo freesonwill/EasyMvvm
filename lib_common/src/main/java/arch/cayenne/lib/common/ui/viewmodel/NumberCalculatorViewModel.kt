@@ -93,11 +93,21 @@ open class NumberCalculatorViewModel : BaseViewModel() {
 
     protected fun setEditNumber(value: Long) {
         _onEditNumber.value = if (value > maxMoney) {
-            setOverNumberListener(NumberOverEnum.OVER_MAX)
-            maxMoney.getMoneyForScale(decimalNumber)
+            if (maxMoney > remainingNumber) {
+                setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                remainingNumber.getMoneyForScale(decimalNumber)
+            } else {
+                setOverNumberListener(NumberOverEnum.OVER_MAX)
+                maxMoney.getMoneyForScale(decimalNumber)
+            }
         } else if (value > remainingNumber) {
-            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-            remainingNumber.getMoneyForScale(decimalNumber)
+            if (remainingNumber < maxMoney) {
+                setOverNumberListener(NumberOverEnum.OVER_REMAINING)
+                remainingNumber.getMoneyForScale(decimalNumber)
+            } else {
+                setOverNumberListener(NumberOverEnum.OVER_MAX)
+                maxMoney.getMoneyForScale(decimalNumber)
+            }
         } else if (value == 0L) {
             getZero()
         } else {

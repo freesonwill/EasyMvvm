@@ -46,9 +46,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
-            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.startTime = :startTime " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.date = :date " +
             "WHERE ref.matchId = bean.matchId ORDER BY ref.`order` DESC limit 1")
-    abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, startTime: Long) : MatchBean?
+    abstract suspend fun queryLastMatch(playType: Int, tournamentId: Int, date: Long) : MatchBean?
 
     @Query("SELECT *" +
             "FROM TournamentMatchRef " +
@@ -59,22 +59,23 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
-            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.date = :date " +
             "WHERE ref.matchId = bean.matchId ORDER BY ref.`order`")
-    abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : List<MatchBean>
+    abstract suspend fun queryAllMatch(playType: Int, tournamentId: Int, page: Int, date: Long) : List<MatchBean>
 
     @Transaction
     @Query("delete " +
             "FROM TournamentMatchRef " +
-            "WHERE playType = :playType AND tournamentId = :tournamentId AND startTime = :startTime")
-    abstract fun deleteCurrentTournamentMatchRef(playType: Int, tournamentId: Int, startTime: Long)
+            "WHERE playType = :playType AND tournamentId = :tournamentId AND date = :date"
+    )
+    abstract fun deleteCurrentTournamentMatchRef(playType: Int, tournamentId: Int, date: Long)
 
     @Transaction
     @Query("SELECT * " +
             "FROM MatchBean bean " +
-            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.startTime = :startTime " +
+            "INNER JOIN TournamentMatchRef ref ON ref.playType = :playType AND ref.tournamentId = :tournamentId AND ref.page = :page AND ref.date = :date " +
             "WHERE ref.matchId = bean.matchId")
-    abstract fun observeAllMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long) : Flow<List<MatchBean>>
+    abstract fun observeAllMatch(playType: Int, tournamentId: Int, page: Int, date: Long) : Flow<List<MatchBean>>
 
     @Transaction
     @Query("SELECT * FROM MatchBean WHERE matchId = :matchId")
@@ -278,8 +279,8 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
 
     @Transaction
-    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, startTime: Long): List<MatchWithMarkets> {
-        return queryAllMatch(playType, tournamentId, page, startTime).map { matchBean ->
+    open suspend fun getFullMatch(playType: Int, tournamentId: Int, page: Int, date: Long): List<MatchWithMarkets> {
+        return queryAllMatch(playType, tournamentId, page, date).map { matchBean ->
             val markets = getMarkets(matchBean.matchId).map { marketBean ->
                 val selections = specialHandling(
                     marketBean.marketId,

@@ -4,12 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import com.walisport.app.ui.viewmodel.SplashViewModel
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
+import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
@@ -100,7 +102,11 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
     override fun configStatusBar(): StatusBarConfig {
-        StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
+        StatusBarConfig.statusBarDarkFont = false
+        StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
+            autoPadding = true,
+            noPaddingViewIds = listOf(mBinding.splashBg.id)
+        )
         return StatusBarConfig
     }
 
@@ -123,7 +129,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override fun initListener() {
         mBinding.apply {
             splashCounterDown.setOnClickListener {
-                jumpToMainActivity()
+                mViewModel.ignore.value =  true
             }
         }
     }
@@ -132,12 +138,13 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
             mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
         }
-
-        mViewModel.jumpToMainOrLogin.observe(this) {
-            if (!it) {
-                //TODO 跳到登入頁
-            } else {
-                jumpToMainActivity()
+        launch(Lifecycle.State.RESUMED) {
+            mViewModel.jumpToMainOrLogin.collect {
+                if (!it) {
+                    //TODO 跳到登入頁
+                } else {
+                    jumpToMainActivity()
+                }
             }
         }
 

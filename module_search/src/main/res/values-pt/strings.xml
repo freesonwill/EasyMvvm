@@ -11,14 +11,18 @@
     <string name="tab_team">Equipe</string>
     <string name="tab_player">Jogador</string>
     <string name="search_date_hint">Filtrar data da partida</string>
-    <string name="search_result_sub_title_tournament">%1$s / %2$dº Lugar / %3$dV %4$dD</string>
+    <string name="search_result_sub_title_team">%1$s / %2$dº Lugar / %3$dV %4$dD</string>
     <string name="search_result_sub_title_player">%1$s / %2$s / Nº %3$d / %4$s</string>
     <string name="search_result_more">Mais</string>
     <string name="search_result_btn_bet">Apostar</string>
     <string name="search_result_btn_bet_finish">Finalizado</string>
     <string name="search_result_race_date_format_display">dd \'de\' MMM EEEE</string>
     <string name="search_result_race_calendar_title">%1$s de %2$s</string>
-    <string name="search_calendar_reset">Redefinir</string>
-    <string name="search_calendar_confirm">Confirmar</string>
+    <string name="search_dialog_delete_all_history">Tem certeza de que deseja limpar o histórico?</string>
+    <string name="search_dialog_cancel">Cancelar</string>
+    <string name="search_dialog_reset">Redefinir</string>
+    <string name="search_dialog_confirm">Confirmar</string>
     <string name="search_result_race_playing">Em Andamento</string>
+    <string name="search_result_no_data">Nenhum dado disponível</string>
+    <string name="search_result_sub_title_tournament">Temporada %1$s</string>
 </resources>

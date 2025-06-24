@@ -21,6 +21,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
@@ -53,7 +54,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     fun initAdapter() {
         mBinding.rvBetList.apply {
-            itemAnimator = null
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
@@ -104,6 +104,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         baseInfo?.awayTeamIcon.toString(), it, true,
                         selectionEdit
                     )
+
                     liveBetOnAdapter.submitList(list)
                     liveBetOnAdapter.setSelectionComboId(selectionComboId)
                     liveBetOnAdapter.notifyDataSetChanged()
@@ -128,76 +129,92 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         })
 
         mBinding.ivMenu.clickNoRepeat {
-            navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
+            mainViewModel.setLiveBetOnMen(BetOnMenuStatus.OPEN)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
         mainViewModel.matchId.observe(viewLifecycleOwner) {
+            mBinding.clDynamics.setState(States.LOADING, "")
+            mBinding.LLCBetOn.visibility = View.GONE
+            mBinding.ivMenu.visibility = View.GONE
+            mViewModel.observerSelectionComboByMatchId(it)
+        }
+
+        //推送盘口关闭和开启发生变化
+        mainViewModel.observeMainMatch.observe(viewLifecycleOwner) {
+            if (it != null) {
+                if (it.basicInfo.betStop) {
+                    mBinding.LLCBetOn.visibility = View.GONE
+                    mBinding.ivMenu.visibility = View.GONE
+                    mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
+                }
+            }
+        }
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
+            liveBetOnAdapter.submitList(emptyList())
             tabList.clear()
             tabPosition = mutableListOf(0, 0)
             selectionComboId = null
             mBinding.tabLayout.removeAllTabs()
-            mViewModel.observerSelectionComboByMatchId(it)
-        }
-        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             // bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
             if (it != null) {
                 if (it.basicInfo.betStop) {
                     mBinding.ivMenu.visibility = View.GONE
+                    mBinding.LLCBetOn.visibility = View.GONE
                     mBinding.clDynamics.setState(States.CLOSE, R.string.bet_stop.getString())
-                    return@observe
                 } else {
-                    mBinding.ivMenu.visibility = View.VISIBLE
-                    mBinding.clDynamics.setVisibilityGone()
+                    mViewModel.getMarketType(it.matchId)
                 }
             }
-            mViewModel.getMarketType(it.matchId)
         }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             if (list!!.isEmpty()) {
                 mBinding.ivMenu.visibility = View.GONE
+                mBinding.LLCBetOn.visibility = View.GONE
                 mBinding.clDynamics.setState(States.DATA_EMPTY, R.string.lineup_empty.getString())
                 return@observe
             } else {
+                if (tabList.isEmpty()) {
+                    tabList.apply {
+                        clear()
+                        add(R.string.live_bet_tab_all.getString())
+                    }
+                    list.forEach {
+                        tabList.add(it.name)
+                    }
+                    lifecycleScope.launch {
+                        addNewTab()
+                    }
+                } else {
+                    mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
+                }
                 mBinding.ivMenu.visibility = View.VISIBLE
+                mBinding.LLCBetOn.visibility = View.VISIBLE
                 mBinding.clDynamics.setVisibilityGone()
             }
-            if (tabList.isEmpty()) {
-                tabList.apply {
-                    clear()
-                    add(R.string.live_bet_tab_all.getString())
-                }
-                list.forEach {
-                    tabList.add(it.name)
-                }
-                lifecycleScope.launch {
-                    addNewTab()
-                }
-            } else {
-                mBinding.tabLayout.getTabAt(tabPosition[0])?.select()
-            }
         }
-        //根据盘口分类code获取盘口列表
-        mViewModel.getMarketList.observe(viewLifecycleOwner) {
-            var marketIds: MutableList<Long> = mutableListOf()
-            it?.forEach {
-                marketIds.add(it.marketId)
+            //根据盘口分类code获取盘口列表
+            mViewModel.getMarketList.observe(viewLifecycleOwner) {
+                var marketIds: MutableList<Long> = mutableListOf()
+                it?.forEach {
+                    marketIds.add(it.marketId)
+                }
+               // LogUtils.e("showData${marketIds}")
+                showData(it, marketIds)
             }
-            // LogUtils.e("showData${marketIds}")
-            showData(it, marketIds)
-        }
 
         //侧边栏筛选
         mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
+            mainViewModel.setLiveBetOnMen(BetOnMenuStatus.CLOSE)
             mBinding.tabLayout.getTabAt(it[0])?.select()
             tabPosition = it
             mBinding.rvBetList.post {
                 launch {
                     delay(200)
-                    val layoutManager = mBinding.rvBetList.layoutManager as LinearLayoutManager
-                    layoutManager.scrollToPositionWithOffset(tabPosition[1], 0)
+                    val layoutManager =  mBinding.rvBetList.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPositionWithOffset( tabPosition[1],0)
                 }
             }
         }

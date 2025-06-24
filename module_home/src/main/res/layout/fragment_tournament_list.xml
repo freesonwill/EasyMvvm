@@ -58,7 +58,7 @@
         android:layout_height="@dimen/dp_48"
         android:paddingStart="@dimen/dp_20"
         android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_14"
+        android:paddingBottom="@dimen/dp_10"
         android:src="@drawable/ic_league_tabs_collapse"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

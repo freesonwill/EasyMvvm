@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.viewholder.item
 
+import android.annotation.SuppressLint
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.SportEnum
@@ -13,8 +14,8 @@ import com.bumptech.glide.Glide
 class BetSlipReserveItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipReserveBinding>(binding) {
 
-    override fun hideLastLine() {
-        mBinding.line.isVisible = false
+    override fun hideLastLine(isLast:Boolean) {
+        mBinding.line.isVisible = !isLast
     }
 
     override fun covertPlus(
@@ -26,6 +27,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun updateReserveData(
         item: ReserveOrderSelectionBean
     ) {
@@ -35,8 +37,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
             betReserveTvRace.text = match.matchName
             betReserveTvIntroduce.text = item.selectionName
             betReserveTvAodds.text = itemView.context.getString(R.string.live_bet_except_odds, item.odds)
-            val score = item.marketName + "  (${whenScoreIsNull(item.liveInfo.score)})"
-            betReserveTvScore.text = score
+            betReserveTvScore.text = item.marketName + "  (${whenScoreIsNull(item.liveInfo.score)})"
             betReserveTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
         }
     }

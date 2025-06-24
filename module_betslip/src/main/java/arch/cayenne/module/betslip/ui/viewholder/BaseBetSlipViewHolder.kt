@@ -54,7 +54,9 @@ abstract class BaseBetSlipViewHolder<VB: ViewBinding>(binding: ViewBinding, betS
             adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))
         } else if (expandedEnum == BetSlipExpandedEnum.COLLAPSED) {
             expandedEnum = BetSlipExpandedEnum.EXPANDED
-            adapter.submitList(data)
+            adapter.submitList(data){
+                adapter.notifyItemChanged(1) //初始时最后一个item 底部线隐藏，扩展后需要重新更新底部线条
+            }
         } else if (expandedEnum == BetSlipExpandedEnum.EXPANDED) {
             expandedEnum = BetSlipExpandedEnum.COLLAPSED
             adapter.submitList(data.subList(0, EXPANDED_SIZE - 1))

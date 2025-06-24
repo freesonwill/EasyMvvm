@@ -52,7 +52,13 @@ class LiveMainRepository(
     suspend fun observeMatchInfoNotify() {
         remoteManager.observeMatchInfoNotify().collect {
             scope.launch(Dispatchers.IO) {
-                updateFullMatchInfo(it.basicUpdate, it.marketUpdateList, it.matchId)
+                updateFullMatchInfo(
+                    if (it.hasBasicUpdate()) {
+                        it.basicUpdate
+                    } else {
+                        null
+                    }, it.marketUpdateList, it.matchId
+                )
             }
         }
     }

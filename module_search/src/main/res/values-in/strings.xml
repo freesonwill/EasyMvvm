@@ -11,14 +11,18 @@
     <string name="tab_team">Tim</string>
     <string name="tab_player">Pemain</string>
     <string name="search_date_hint">Filter tanggal pertandingan</string>
-    <string name="search_result_sub_title_tournament">%1$s / Peringkat %2$d / %3$dMenang %4$dKalah</string>
+    <string name="search_result_sub_title_team">%1$s / Peringkat %2$d / %3$dMenang %4$dKalah</string>
     <string name="search_result_sub_title_player">%1$s / %2$s / No.%3$d / %4$s</string>
     <string name="search_result_more">Lainnya</string>
     <string name="search_result_btn_bet">Pasang Taruhan</string>
     <string name="search_result_btn_bet_finish">Selesai</string>
     <string name="search_result_race_date_format_display">dd MMM EEEE</string>
     <string name="search_result_race_calendar_title">%1$s %2$s</string>
-    <string name="search_calendar_reset">Atur Ulang</string>
-    <string name="search_calendar_confirm">Konfirmasi</string>
+    <string name="search_dialog_delete_all_history">Apakah Anda yakin ingin menghapus riwayat?</string>
+    <string name="search_dialog_cancel">Batal</string>
+    <string name="search_dialog_reset">Atur Ulang</string>
+    <string name="search_dialog_confirm">Konfirmasi</string>
     <string name="search_result_race_playing">Sedang Berlangsung</string>
+    <string name="search_result_no_data">Tidak ada data</string>
+    <string name="search_result_sub_title_tournament">Musim %1$s</string>
 </resources>

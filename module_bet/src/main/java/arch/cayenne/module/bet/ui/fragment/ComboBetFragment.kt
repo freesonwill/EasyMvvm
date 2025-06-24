@@ -1,6 +1,7 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -134,7 +135,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         scrollToDown()
                     }
                 }
-                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
             }
         }
         var hasLockBetSheetView = false
@@ -151,6 +151,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
             mBinding.tvBalance.text = money
+        }
+        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
+            mBinding.clBet.isEnabled = it
         }
     }
 

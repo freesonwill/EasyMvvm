@@ -1,9 +1,11 @@
 <resources>
-    <string name="personal_info_title">个人信息</string>
-    <string name="personal_info_save">保存</string>
-    <string name="personal_info_hint">填写昵称（8字以内）</string>
-    <string name="head_multi_update">（头像可多次修改）</string>
-    <string name="select_head">选择头像</string>
-    <string name="set_nick_name_title">设置用户昵称</string>
-    <string name="nick_name_modify_once">（昵称仅可修改一次）</string>
+    <string name="personal_info_title" translatable="false">个人信息</string>
+    <string name="personal_info_save" translatable="false">保存</string>
+    <string name="personal_info_hint" translatable="false">填写昵称（8字以内）</string>
+    <string name="head_multi_update" translatable="false">（头像可多次修改）</string>
+    <string name="select_head" translatable="false">选择头像</string>
+    <string name="set_nick_name_title" translatable="false">设置用户昵称</string>
+    <string name="nick_name_modify_once" translatable="false">（昵称仅可修改一次）</string>
+    <string name="nick_name_char_num" translatable="false">%d/8</string>
+    <string name="nick_name_cannot_exceed_8_char" translatable="false">最多可输入8个字符</string>
 </resources>

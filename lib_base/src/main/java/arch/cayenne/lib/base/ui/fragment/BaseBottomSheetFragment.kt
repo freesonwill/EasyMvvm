@@ -3,6 +3,7 @@ package arch.cayenne.lib.base.ui.fragment
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -60,7 +61,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     }
 
     override fun getTheme(): Int {
-        return R.style.ArchBottomSheetDialogTheme
+        return R.style.BottomSheetDialogTheme
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -145,6 +146,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     override fun onDestroy() {
         super.onDestroy()
         uiBind.onDestroy()
+    }
+
+    @CallSuper
+    override fun onNewIntent(intent: Intent) {
+        uiBind.onNewIntent(intent)
     }
 
     @SuppressLint("ClickableViewAccessibility")

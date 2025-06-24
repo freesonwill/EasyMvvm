@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import com.walisport.app.data.repo.MainRepository
-import galaxy.common.proto.Common
 import org.koin.core.parameter.parametersOf
 import org.koin.core.component.inject
 
@@ -14,11 +13,12 @@ import org.koin.core.component.inject
  * @description:
  */
 class MainViewModel : BaseActivityViewModel() {
+
     private val repository: MainRepository by inject { parametersOf(viewModelScope) }
 
     init {
-        repository.updateSettingReq()
         repository.loadSportList()
+        repository.observeSystemNotify()
     }
 
     //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种

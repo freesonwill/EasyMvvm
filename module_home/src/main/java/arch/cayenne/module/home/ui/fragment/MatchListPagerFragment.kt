@@ -117,6 +117,7 @@ class MatchListPagerFragment :
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
         if (hidden) {
             //暫時移除訂閱
             mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
@@ -136,7 +137,7 @@ class MatchListPagerFragment :
 
     private val matchListObserver = Observer <List<MatchWithMarkets>> { matchList ->
         val preEmpty = matchAdapter.currentList.isEmpty()
-        if (!preEmpty) mViewModel.hideLoading()
+
         matchAdapter.submitList(matchList)
         if (preEmpty && matchList.isNotEmpty()) {
             mBinding.rvHomeGameList.doOnPreDraw {
@@ -163,7 +164,7 @@ class MatchListPagerFragment :
                 when(state) {
                     MatchListState.FIRST_LOADING -> {
                         clDynamics.visibility = View.GONE
-                        homeViewModel.changeState(HomeState.LOADING_MATCH)
+                        homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     MatchListState.REFRESHING -> {
                         mViewModel.showLoading()
@@ -171,15 +172,15 @@ class MatchListPagerFragment :
                         mViewModel.setHomeOrPullLoadingState(false)
                     }
                     MatchListState.IDLE -> {
-                        mViewModel.hideLoading()
+                        lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
-                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
-                        mViewModel.hideLoading()
+                        lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.VISIBLE
@@ -187,7 +188,7 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
-                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
+                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {
@@ -199,10 +200,6 @@ class MatchListPagerFragment :
 
                     MatchListState.SHOW_LOADING -> {
                         lvMatchLoading.visibility = View.VISIBLE
-                    }
-
-                    MatchListState.HIDE_LOADING -> {
-                        lvMatchLoading.visibility = View.GONE
                     }
                 }
             }

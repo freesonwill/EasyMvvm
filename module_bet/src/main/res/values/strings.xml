@@ -39,5 +39,5 @@
     <string name="title_result_win_combo_bet">最高可赢</string>
     <string name="btn_result_continue_bet">续投</string>
 
-    <string name="hint_less_min_amount">小於最小投注额</string>
+    <string name="hint_less_min_amount">小于最小投注额</string>
 </resources>
