@@ -8,6 +8,7 @@ import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.WeekBar;
 
 import arch.cayenne.module.home.R;
+import arch.cayenne.module.home.databinding.HomeCalendarWeekBarBinding;
 
 /**
  * @author: ricky.chang
@@ -20,7 +21,7 @@ public class HomeCalendarWeekBar extends WeekBar {
 
     public HomeCalendarWeekBar(Context context) {
         super(context);
-        LayoutInflater.from(context).inflate(R.layout.home_calendar_week_bar, this, true);
+        HomeCalendarWeekBarBinding.inflate(LayoutInflater.from(context), this);
     }
 
     @Override
