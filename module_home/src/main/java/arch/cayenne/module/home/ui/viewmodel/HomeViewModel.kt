@@ -165,11 +165,6 @@ class HomeViewModel : BaseViewModel() {
         setState(HomeState.PlayTypeClick)
     }
 
-    fun resetLiveData() {
-        sportsStatistical.value = Event(arrayListOf())
-        tournaments.value = Event(arrayListOf())
-    }
-
     fun getCurrentPlayType() = currentPlayType
 
     fun getCurrentSportStatistical() {
