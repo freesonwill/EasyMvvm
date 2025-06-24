@@ -1,6 +1,7 @@
 package arch.cayenne.lib.common.data.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -92,6 +93,7 @@ class CommonRepository(
 
 
         return if (resp.error == null && resp.data != null) {
+            "getBanlance ${resp.data!!.balance}".logd("balance")
             BalanceBean(resp.data!!.balance.balanceStringToLong(), resp.data!!.currency)
         } else {
             BalanceBean(0, "")
@@ -104,6 +106,7 @@ class CommonRepository(
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {
+                "udapte ${it.data!!.balance}".logd("balance")
                 infoDao.update(
                     InfoBean(
                         this.uid,
