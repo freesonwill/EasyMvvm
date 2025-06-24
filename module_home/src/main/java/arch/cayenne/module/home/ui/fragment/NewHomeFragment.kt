@@ -129,7 +129,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llOtherDate.visibility = View.GONE
         }
         resetDateTabs()
-        mViewModel.resetLiveData()
     }
 
     //init 二級導航欄位
