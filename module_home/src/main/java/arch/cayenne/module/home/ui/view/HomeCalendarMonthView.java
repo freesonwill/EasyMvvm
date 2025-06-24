@@ -49,22 +49,28 @@ public class HomeCalendarMonthView extends MonthView {
     protected void onDrawText(Canvas canvas, Calendar calendar, int x, int y, boolean hasScheme, boolean isSelected) {
         float baselineY = mTextBaseLine + y;
         int cx = x + mItemWidth / 2;
+        boolean isInRange = isInRange(calendar);
         if (isSelected) {
             canvas.drawText(String.valueOf(calendar.getDay()),
                     cx,
                     baselineY,
                     mSelectTextPaint);
-        } else if (hasScheme) {
+        } else if (isInRange && hasScheme) {
             canvas.drawText(String.valueOf(calendar.getDay()),
                     cx,
                     baselineY,
                     calendar.isCurrentDay() ? mCurDayTextPaint :
                             calendar.isCurrentMonth() ? mSchemeTextPaint : mOtherMonthTextPaint);
 
+        } else if (isInRange) {
+            canvas.drawText(String.valueOf(calendar.getDay()),
+                    cx,
+                    baselineY,
+                    calendar.isCurrentDay() ? mCurDayTextPaint :
+                            calendar.isCurrentMonth() ? mCurDayTextPaint : mOtherMonthTextPaint);
         } else {
             canvas.drawText(String.valueOf(calendar.getDay()), cx, baselineY,
-                    calendar.isCurrentDay() ? mCurDayTextPaint :
-                            calendar.isCurrentMonth() ? mCurMonthTextPaint : mOtherMonthTextPaint);
+                   mOtherMonthTextPaint);
         }
     }
 }

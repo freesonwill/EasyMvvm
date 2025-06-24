@@ -348,12 +348,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //設定標記紅色日期及可選取日期範圍
     private fun setSchemeDate(calendarView: CalendarView,list:List<Common.DailyMatchCount>) {
         val map: MutableMap<String, Calendar> = HashMap()
+//        val noMatchMap : MutableMap<String, Calendar> = HashMap()
         for (date in list) {
             //API回傳資料，有比賽的日期才需要標記紅字
+            val dateArray = date.day.split("-")
             if (date.count > 0) {
-                val dateArray = date.day.split("-")
-                map[getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt()).toString()] =
-                    getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+                val schemeCalendar =  getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+                map[schemeCalendar.toString()] = schemeCalendar
             }
         }
         //可選取日期區間為未來第31天
@@ -683,7 +684,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 ),
                 SkinnableResourceManager.getColor(
                     rootContext,
-                    arch.cayenne.lib.common.R.color.main_text
+                    arch.cayenne.lib.common.R.color.explanation_text
                 ),
                 SkinnableResourceManager.getColor(
                     rootContext,
