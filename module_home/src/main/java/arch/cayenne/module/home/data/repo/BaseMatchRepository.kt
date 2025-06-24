@@ -32,6 +32,7 @@ abstract class BaseMatchRepository(
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
+        const val THIRTY_DAY_TIME_STAMP = 86399000L * 29
         const val DEFAULT_MATCH_SIZE = 10
     }
 
