@@ -120,6 +120,9 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             match.basicInfo.startTime.getFormatDate()
         }.toSortedMap().flatMap { (day, matchList) ->
             listOf(SearchResultRaceItemType.Header(day)) + matchList.map { SearchResultRaceItemType.Item(it) }
+        }.let {
+            if (it.isNotEmpty()) it + SearchResultRaceItemType.NoMore
+            else it
         }
     }
 

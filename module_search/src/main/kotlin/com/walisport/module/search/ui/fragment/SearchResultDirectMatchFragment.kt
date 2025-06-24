@@ -243,7 +243,7 @@ class SearchResultDirectMatchFragment :
                                         outRect.set(0, 0, 0, 0)
                                     }
 
-                                    else -> {
+                                    SearchResultRaceAdapter.VIEW_TYPE_ITEM -> {
                                         val prevType = linearAdapter.getItemViewType(position - 1)
                                         outRect.set(
                                             0,
@@ -251,6 +251,8 @@ class SearchResultDirectMatchFragment :
                                             0, 0
                                         )
                                     }
+
+                                    else -> Unit
                                 }
                             }
                         })
