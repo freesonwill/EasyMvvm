@@ -73,6 +73,7 @@ class DatePickerFragment private constructor() :
         mBinding.rvDate.layoutManager = layoutManager
         mBinding.rvDate.adapter = datePickerAdapter
         (mBinding.rvDate.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        mBinding.rvDate.itemAnimator = null
     }
 
     override fun initListener() {
