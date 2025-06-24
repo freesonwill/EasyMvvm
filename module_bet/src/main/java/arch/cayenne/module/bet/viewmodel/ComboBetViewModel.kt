@@ -28,22 +28,33 @@ class ComboBetViewModel(
     val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
 
     private val _onCanBetListener = MediatorLiveData(false).apply {
-        addSource(_onBetListListener) { betList ->
-            val comboData = _onComboMultiBetBeanListener.value ?: return@addSource
-            if ((betList.size > 1) && comboData.isNotEmpty()) {
-                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && comboData.any { it.inputMoney > 0L }
-                value = canBet
+        val updateCanBet = {
+            val betList = _onBetListListener.value
+            val comboData = _onComboMultiBetBeanListener.value
+
+            value = if (betList != null && comboData != null) {
+                betList.size > 1 &&
+                        betList.all { it.isActive && it.isParlay } &&
+                        comboData.any { it.inputMoney > 0L }
+            } else {
+                false
             }
         }
-        addSource(_onComboMultiBetBeanListener) {
-            val betList = _onBetListListener.value ?: return@addSource
-            if ((betList.size > 1) && it.isNotEmpty()) {
-                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && it.any { it.inputMoney > 0L }
-                value = canBet
-            }
-        }
+
+        addSource(_onBetListListener) { updateCanBet() }
+        addSource(_onComboMultiBetBeanListener) { updateCanBet() }
     }
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
+
+    private val _onLoadDataFinishListener = MediatorLiveData(false).apply {
+        val checkBothLoaded = {
+            value = _onBetListListener.value != null && _onComboMultiBetBeanListener.value != null
+        }
+
+        addSource(_onBetListListener) { checkBothLoaded() }
+        addSource(_onComboMultiBetBeanListener) { checkBothLoaded() }
+    }
+    val onLoadDataFinishListener: LiveData<Boolean> get() = _onLoadDataFinishListener
 
     val remainingBalance: Long
         get() = onBalanceListener.value?.let { infoBean ->

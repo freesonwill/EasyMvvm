@@ -1,6 +1,8 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -95,6 +97,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
         setSumBetMoney(emptyList())
+        initMaxHeight()
+    }
+
+    private fun initMaxHeight() {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+        mBinding.root.maxHeight = maxFragmentHeight
+        mBinding.root.minHeight = screenHeight / 2
     }
 
     override fun initListener() {
@@ -131,14 +141,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 betSelectionAdapter.submitList(it)
             }
         }
-        var hasLockBetSheetView = false
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
-            comboMultiBetAdapter.submitList(it) {
-                if (!hasLockBetSheetView) {
-                    hasLockBetSheetView = true
-                    setBetSheetView()
-                }
-            }
+            comboMultiBetAdapter.submitList(it)
             setSumBetMoney(it)
         }
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
@@ -148,6 +152,31 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
         }
+        mViewModel.onLoadDataFinishListener.observe(viewLifecycleOwner) {
+            if (it) {
+                setBetSheetView()
+                adjustLayoutHeight()
+                mViewModel.onLoadDataFinishListener.removeObservers(viewLifecycleOwner)
+            }
+        }
+    }
+
+    private fun adjustLayoutHeight() {
+        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                if (betSelectionAdapter.itemCount == 2) {
+                    val layoutParams = mBinding.rvBet.layoutParams
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    mBinding.rvBet.layoutParams = layoutParams
+                } else {
+                    val screenHeight = resources.displayMetrics.heightPixels
+                    val maxFragmentHeight = (screenHeight * 0.75).toInt()
+                    mBinding.root.minHeight = maxFragmentHeight
+                }
+            }
+        })
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
