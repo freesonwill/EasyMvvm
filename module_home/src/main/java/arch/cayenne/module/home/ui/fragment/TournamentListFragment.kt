@@ -21,7 +21,6 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableBottomBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
@@ -31,8 +30,6 @@ import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
-import com.ibm.icu.text.Transliterator
-import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
 class TournamentListFragment :
@@ -46,8 +43,6 @@ class TournamentListFragment :
     private lateinit var adapter: TournamentSectionAdapter
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
-
-    private val transliterator: Transliterator by inject()
 
     override fun initData() {
         arguments?.apply {
@@ -65,10 +60,9 @@ class TournamentListFragment :
         }
     }
 
-
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            clSearchNoData.setState(
+            clDynamics.setState(
                 DynamicStateLayout.States.DATA_EMPTY,
                 R.string.lineup_empty.getString()
             )
@@ -107,7 +101,6 @@ class TournamentListFragment :
             with(ceSearch) {
                 fun hasInput(): Boolean = text?.toString()?.trim()?.isNotEmpty() == true
                 setOnFocusChangeListener { _, hasFocus ->
-                    mViewModel.isSearchTriggered = false
                     if (hasFocus && !hasInput()) {
                         // 進入搜尋模式顯示空列表
                         mViewModel.setSearchMode(true)
@@ -121,7 +114,6 @@ class TournamentListFragment :
                         (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
                     ) {
                         hideKeyboardAndClearFocus(requireContext())
-                        mViewModel.isSearchTriggered = true
                         val keyword = text?.toString()?.trim().orEmpty()
                         if (hasInput()) {
                             mViewModel.searchTournament(keyword)
@@ -159,7 +151,6 @@ class TournamentListFragment :
                     }
                 })
             }
-
 
             ivHomeLeagueCollapse.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
@@ -201,29 +192,24 @@ class TournamentListFragment :
 
     override fun createObserver() {
         mViewModel.displayList.observe(viewLifecycleOwner) { displayList ->
-            if (mViewModel.isSearchMode) {
-                adapter.submitList(displayList) {
-                    if (mViewModel.isSearchTriggered) {
-                        mViewModel.isSearchTriggered = false
-                        if (displayList.isNullOrEmpty()) {
-                            showSearchNoData()
-                        } else {
-                            hideSearchNoData()
-                            mBinding.rvTournamentList.smoothScrollToPosition(0)
-                        }
+            adapter.submitList(displayList) {
+                if (mViewModel.isSearchMode) {
+                    // 只有搜尋模式且有搜尋過關鍵字無數據時才顯示 no data
+                    val keyword = mViewModel.searchQuery?.trim().orEmpty()
+                    if (keyword.isNotEmpty() && displayList.isNullOrEmpty()) {
+                        showSearchNoData()
+                    } else {
+                        hideSearchNoData()
                     }
-                }
-            } else {
-                if (!displayList.isNullOrEmpty()) {
-                    setTournamentList(mViewModel.getTournamentListOrEmpty())
                 } else {
-                    mBinding.clDynamics.visibility = View.VISIBLE
-                    mBinding.clDynamics.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
-                        R.string.lineup_empty.getString()
-                    )
+                    if (!displayList.isNullOrEmpty()) {
+                        setupAZIndex()
+                    } else {
+                        mBinding.groupTop.visibility = View.GONE
+                        mBinding.clDynamics.visibility = View.VISIBLE
+                    }
+                    homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
                 }
-                homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
             }
         }
 
@@ -231,48 +217,6 @@ class TournamentListFragment :
             updateAZIndexHighlight()
             mBinding.rvTournamentList.invalidateItemDecorations()
         }
-    }
-
-    private fun setTournamentList(tournaments: List<BaseTournamentData>) {
-        val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
-        val hotList = mutableListOf<BaseTournamentData>()
-        val otherList = mutableListOf<BaseTournamentData>()
-        val displayList = mutableListOf<TournamentListItem>()
-        val letterPositionMap = mutableMapOf<Char, Int>()
-
-        tournaments.forEach { tournament ->
-            val pinyin = transliterator.transliterate(tournament.name).trim()
-            val firstChar = pinyin.firstOrNull()?.uppercaseChar()
-            when {
-                tournament.hot -> hotList.add(tournament)
-                firstChar != null && firstChar in 'A'..'Z' -> {
-                    groupedMap.getOrPut(firstChar) { mutableListOf() }.add(tournament)
-                }
-
-                else -> otherList.add(tournament)
-            }
-        }
-
-        if (hotList.isNotEmpty()) {
-            displayList.add(TournamentListItem.Header('*'))
-            letterPositionMap['*'] = displayList.size - 1
-            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-
-        groupedMap.toSortedMap().forEach { (letter, list) ->
-            letterPositionMap[letter] = displayList.size
-            displayList.add(TournamentListItem.Header(letter))
-            displayList.addAll(list.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-
-        if (otherList.isNotEmpty()) {
-            letterPositionMap['#'] = displayList.size
-            displayList.add(TournamentListItem.Header('#'))
-            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-        adapter.submitList(displayList)
-        mViewModel.setLetterPositionMap(letterPositionMap)
-        setupAZIndex()
     }
 
     private fun setupAZIndex() {
@@ -346,11 +290,11 @@ class TournamentListFragment :
     }
 
     private fun showSearchNoData() {
-        mBinding.clSearchNoData.visibility = View.VISIBLE
+        mBinding.clDynamics.visibility = View.VISIBLE
     }
 
     private fun hideSearchNoData() {
-        mBinding.clSearchNoData.visibility = View.GONE
+        mBinding.clDynamics.visibility = View.GONE
     }
 
     private fun restoreList() {

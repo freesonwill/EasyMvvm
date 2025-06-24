@@ -63,6 +63,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/group_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_home_league_collapse,ll_search_bar,tv_tournament_section_title" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_tournament_list"
         android:layout_width="match_parent"
@@ -95,15 +101,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.common.ui.view.DynamicStateLayout
-        android:id="@+id/cl_search_no_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ll_search_bar" />
+
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
