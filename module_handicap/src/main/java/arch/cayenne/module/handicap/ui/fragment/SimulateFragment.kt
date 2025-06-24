@@ -8,6 +8,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.handicap.R
@@ -95,6 +96,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
                     itemBinding.layContent.visibility = View.GONE
                     mBinding.viewFlipper.showNext()
                 } else {
+                    sendResult("Drawer", "Close", args.homeId)
                     findNavController().popBackStack(args.homeId, false)
                 }
             }
