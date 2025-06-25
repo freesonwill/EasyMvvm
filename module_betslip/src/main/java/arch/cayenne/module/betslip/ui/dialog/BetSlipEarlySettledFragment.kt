@@ -186,7 +186,7 @@ class BetSlipEarlySettledFragment private constructor() :
 
         ObjectAnimator.ofFloat(mBinding.clCalculator, "translationY", *animationArray)
             .also {
-                it.duration = 250
+                it.duration = 200
                 it.addListener(onStart = {
                     if (isShow) {
                         onStart?.invoke()
