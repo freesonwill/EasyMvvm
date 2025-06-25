@@ -51,7 +51,6 @@
         <item>Invalidation</item>
     </string-array>
 
-    <string name="standings_empty">Standings Data is Empty</string>
     <string name="outs_empty">Match Data is Empty</string>
     <string name="live_bet_reserve_expired">ReservationExpired</string>
     <string name="live_bet_grounder">RollingBall</string>
