@@ -290,10 +290,14 @@ class SearchResultDirectMatchFragment :
             }
         }
 
-        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px
-        val datePicker = SearchDatePickerFragment.newInstance(
-            marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
-        )
+        val datePicker =
+            SearchDatePickerFragment.Builder().apply {
+                setMarginTop(mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px)
+                setMarginStart(8.dp2px)
+                setMarginEnd(8.dp2px)
+                setSchemeDates(mViewModel.racedDateMap)
+                mViewModel.getSelectedDate()?.time?.let { setSelectedDate(it) }
+            }.build()
 
         datePicker.show(childFragmentManager, mBinding.clRoot.id)
         setTitleBarMask(true) {

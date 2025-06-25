@@ -13,9 +13,7 @@ import android.graphics.Rect
 import android.graphics.Shader
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
@@ -48,52 +46,23 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     private val defaultAnimDuration = 300L
 
+    private var marginTop: Int = 0
+    private var marginStart: Int = 0
+    private var marginEnd: Int = 0
+    private var selectedDate: Long? = null
+    private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
-    private val selectedDate by lazy {
-        if (requireArguments().containsKey(DATE_PICKER_RESULT_TIME_IN_MILLIS)) {
-            requireArguments().getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
-        } else {
-            null
-        }
-    }
 
-    companion object {
-        const val DATE_PICKER_RESULT_KEY = "DATE_PICKER_RESULT_KEY"
-        const val DATE_PICKER_RESULT_START = "DATE_PICKER_RESULT_START"
-        const val DATE_PICKER_RESULT_END = "DATE_PICKER_RESULT_END"
-        const val DATE_PICKER_RESULT_TIME_IN_MILLIS = "DATE_PICKER_RESULT_TIME_IN_MILLIS"
-        private const val MARGIN_TOP = "MARGIN_TOP"
-        private const val MARGIN_START = "MARGIN_START"
-        private const val MARGIN_END = "MARGIN_END"
-        fun newInstance(marginTop: Int = 0, marginStart: Int = 0, marginEnd: Int  = 0, selectedDate: Long? = null): SearchDatePickerFragment {
-            return SearchDatePickerFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(MARGIN_TOP, marginTop)
-                    putInt(MARGIN_START, marginStart)
-                    putInt(MARGIN_END, marginEnd)
-                    selectedDate?.let {
-                        putLong(DATE_PICKER_RESULT_TIME_IN_MILLIS, it)
-                    }
-                }
-            }
-        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return super.onCreateView(inflater, container, savedInstanceState).apply {
-            with(mBinding.clCalendar) {
-                visibility = View.INVISIBLE
-                layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
-                    topMargin = requireArguments().getInt(MARGIN_TOP, 0)
-                    leftMargin = requireArguments().getInt(MARGIN_START, 0)
-                    rightMargin = requireArguments().getInt(MARGIN_END, 0)
-                }
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        with(mBinding.clCalendar) {
+            visibility = View.INVISIBLE
+            layoutParams = (layoutParams as ConstraintLayout.LayoutParams).apply {
+                topMargin = this@SearchDatePickerFragment.marginTop
+                leftMargin = this@SearchDatePickerFragment.marginStart
+                rightMargin = this@SearchDatePickerFragment.marginEnd
             }
         }
     }
@@ -101,39 +70,58 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             calendarView.apply {
-                selectedDate?.let {
-                    Calendar.getInstance().apply {
-                        timeInMillis = it
-                    }.run {
-                        scrollToCalendar(
-                            get(Calendar.YEAR),
-                            get(Calendar.MONTH) + 1,
-                            get(Calendar.DAY_OF_MONTH)
-                        )
-                    }
-                } ?: clearSingleSelect()
-
-                setAllMode()
-                setOnMonthChangeListener { year, month ->
-                    setCalendarTitle(year, month)
-                }
+                setSelectSingleMode()
                 updateWeekBarLocale()
                 setWeeColor(
                     Color.TRANSPARENT,
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_week_text_color)
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_week_text_color
+                    )
                 )
                 setTextColor(
-                    Color.parseColor("#ff0000"),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_current_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_other_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_current_month_text_color),
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_other_month_text_color)
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_red
+                    ),
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_current_month_text_color
+                    ),
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_other_month_text_color
+                    ),
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_current_month_text_color
+                    ),
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_other_month_text_color
+                    )
                 )
                 setSelectedColor(
-                    SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_selected_theme_color),
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_selected_theme_color
+                    ),
                     Color.WHITE,
                     Color.TRANSPARENT
                 )
+                setSchemeColor(
+                    Color.TRANSPARENT,
+                    SkinnableResourceManager.getColor(
+                        requireContext(),
+                        R.color.search_calendar_red
+                    ),
+                    Color.TRANSPARENT
+                )
+                setOnMonthChangeListener { year, month ->
+                    setCalendarTitle(year, month)
+                }
+                scrollToSelectedDate()
+                addSchemeDate(schemeDates)
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = createMaskGradient()
@@ -289,6 +277,22 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         }.timeInMillis
     }
 
+    private fun scrollToSelectedDate() {
+        with(mBinding.calendarView) {
+            selectedDate?.let {
+                Calendar.getInstance().apply {
+                    timeInMillis = it
+                }.run {
+                    scrollToCalendar(
+                        get(Calendar.YEAR),
+                        get(Calendar.MONTH) + 1,
+                        get(Calendar.DAY_OF_MONTH)
+                    )
+                }
+            } ?: clearSingleSelect()
+        }
+    }
+
     private fun setMaskViewAlpha(visible: Boolean) {
         with(mBinding.maskView) {
             post {
@@ -383,6 +387,51 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 resultBundle.putLong(DATE_PICKER_RESULT_START, toDateStartTime())
                 resultBundle.putLong(DATE_PICKER_RESULT_END, toDateEndTime())
                 resultBundle.putLong(DATE_PICKER_RESULT_TIME_IN_MILLIS, this)
+            }
+        }
+    }
+
+    companion object {
+        const val DATE_PICKER_RESULT_KEY = "DATE_PICKER_RESULT_KEY"
+        const val DATE_PICKER_RESULT_START = "DATE_PICKER_RESULT_START"
+        const val DATE_PICKER_RESULT_END = "DATE_PICKER_RESULT_END"
+        const val DATE_PICKER_RESULT_TIME_IN_MILLIS = "DATE_PICKER_RESULT_TIME_IN_MILLIS"
+    }
+
+    class Builder {
+        private var marginTop: Int = 0
+        private var marginStart: Int = 0
+        private var marginEnd: Int = 0
+        private var selectedDate: Long? = null
+        private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+
+        fun setMarginTop(value: Int) {
+            marginTop = value
+        }
+
+        fun setMarginStart(value: Int) {
+            marginStart = value
+        }
+
+        fun setMarginEnd(value: Int) {
+            marginEnd = value
+        }
+
+        fun setSelectedDate(date: Long)  {
+            selectedDate = date
+        }
+
+        fun setSchemeDates(dates: Map<String, com.haibin.calendarview.Calendar>) {
+            schemeDates = dates
+        }
+
+        fun build(): SearchDatePickerFragment {
+            return SearchDatePickerFragment().apply {
+                this.marginTop = this@Builder.marginTop
+                this.marginStart = this@Builder.marginStart
+                this.marginEnd = this@Builder.marginEnd
+                this.selectedDate = this@Builder.selectedDate
+                this.schemeDates = this@Builder.schemeDates
             }
         }
     }
