@@ -100,7 +100,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
-        mBinding.rvMultiBet.isNestedScrollingEnabled = true
+        mBinding.rvMultiBet.isNestedScrollingEnabled = false
         (mBinding.rvMultiBet.layoutManager as? LinearLayoutManager)?.let {
             it.reverseLayout = true
             it.stackFromEnd = true
@@ -227,9 +227,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun setMultiLayoutHeight(isExpanded: Boolean) {
         val adapter = mBinding.rvMultiBet.adapter ?: return
-        if (adapter.itemCount == 1) { // 只有一個項目時不調整高度
-            return
-        }
         if (isExpanded) {
             val screenHeight = resources.displayMetrics.heightPixels
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
@@ -239,8 +236,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val maxHeight = maxFragmentHeight - totalMargin
 
             mBinding.rvMultiBet.post {
-
-
                 var totalHeight = 0
                 val visibleCount = adapter.itemCount.coerceAtMost(10) // 最多量測前10個，避免過慢
 

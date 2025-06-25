@@ -18,6 +18,7 @@ class ComboMultiBetAdapter(
     var isExpanded = false
         set(value) {
             field = value
+            if (currentList.size == 1) return
             notifyDataSetChanged()
             onToggleClickListener.invoke(value)
         }
