@@ -16,6 +16,10 @@ class BetRepository(
     private val betDao: BetDao
 ) : BaseRepository() {
 
+    companion object {
+        private const val MAX_LIMIT_SIZE = 10
+    }
+
     val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
@@ -45,6 +49,10 @@ class BetRepository(
                 // 非讓分盤則無法加入組合單
                 if (!insertBean.isParlay && selections.isNotEmpty()) {
                     return@withContext AddSelectionStatus.DISABLE_COMBO
+                }
+
+                if (selections.size >= MAX_LIMIT_SIZE) {
+                    return@withContext AddSelectionStatus.MAX_LIMIT
                 }
 
                 val newBean = insertBean.toBetSelectionBean(betId)

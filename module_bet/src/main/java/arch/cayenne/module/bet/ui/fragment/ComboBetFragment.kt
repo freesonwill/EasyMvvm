@@ -112,7 +112,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeAll()
+            CommonDialog.newInstance(
+                title = "",
+                message = getString(R.string.title_dialog_remove),
+                okText = getString(R.string.btn_confirm),
+                cancelText = getString(R.string.btn_cancel)
+            ).apply {
+                setOnOkClickListener {
+                    mViewModel.removeAll()
+                }
+            }.show(childFragmentManager)
         }
         mBinding.llMultiBetCollapse.setOnClickListener {
             comboMultiBetAdapter.toggleExpand()
@@ -138,7 +147,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
-                betSelectionAdapter.submitList(it)
+                val forceUpdateLayoutHeight = it.size == 2 && betSelectionAdapter.itemCount > 2
+                betSelectionAdapter.submitList(it) {
+                    if (forceUpdateLayoutHeight) {
+                        mBinding.rvBet.post {
+                            adjustLayoutHeight(false)
+                        }
+                    }
+                }
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
@@ -154,29 +170,29 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onLoadDataFinishListener.observe(viewLifecycleOwner) {
             if (it) {
-                setBetSheetView()
-                adjustLayoutHeight()
                 mViewModel.onLoadDataFinishListener.removeObservers(viewLifecycleOwner)
+                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        setBetSheetView()
+                        adjustLayoutHeight(betSelectionAdapter.itemCount > 2)
+                    }
+                })
             }
         }
     }
 
-    private fun adjustLayoutHeight() {
-        mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                if (betSelectionAdapter.itemCount == 2) {
-                    val layoutParams = mBinding.rvBet.layoutParams
-                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    mBinding.rvBet.layoutParams = layoutParams
-                } else {
-                    val screenHeight = resources.displayMetrics.heightPixels
-                    val maxFragmentHeight = (screenHeight * 0.75).toInt()
-                    mBinding.root.minHeight = maxFragmentHeight
-                }
-            }
-        })
+    private fun adjustLayoutHeight(full: Boolean) {
+        if (full)  {
+            val screenHeight = resources.displayMetrics.heightPixels
+            val maxFragmentHeight = (screenHeight * 0.75).toInt()
+            mBinding.root.minHeight = maxFragmentHeight
+        } else {
+            val layoutParams = mBinding.rvBet.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            mBinding.root.minHeight = 0
+            mBinding.rvBet.layoutParams = layoutParams
+        }
     }
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
