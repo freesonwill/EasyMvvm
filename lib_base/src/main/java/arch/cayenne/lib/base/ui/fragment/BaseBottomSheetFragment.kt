@@ -16,21 +16,23 @@ import android.widget.FrameLayout
 import androidx.annotation.CallSuper
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.R
+import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import arch.cayenne.lib.base.R
-import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
-import arch.cayenne.lib.base.ui._interface.IView
 import org.koin.androidx.viewmodel.ext.android.viewModelForClass
 import kotlin.reflect.KClass
 
-abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : BottomSheetDialogFragment(), IView {
+abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
+    BottomSheetDialogFragment(), IView {
 
     private var mScrollY: Int? = null
     private lateinit var backgroundView: View
     private lateinit var sheetContainer: View
     private var isDismissing = false
+
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
@@ -44,6 +46,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
             keepViewOnNavigation = keepViewOnNavigation
         )
     }
+
     protected open fun createVB(container: ViewGroup?): VB {
         return getViewBind(vbClass, container, false)
     }
@@ -51,8 +54,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
+
     //navigation跳转时是否保留view（true:保留；false：销毁）
-    open val keepViewOnNavigation:Boolean = false
+    open val keepViewOnNavigation: Boolean = false
     //#endregion VB,VM
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,6 +83,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
             backgroundView = root.getChildAt(0) // 通常是背景 View（透明灰）
             sheetContainer = root.findViewById(com.google.android.material.R.id.design_bottom_sheet) // sheet 本體
 
+            backgroundView.visibility = View.INVISIBLE
+            sheetContainer.visibility = View.INVISIBLE
+
             backgroundView.setOnClickListener {
                 if (isCancelable) {
                     dismiss()
@@ -87,6 +94,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
 
             // 彈出動畫
             playEnterAnimations()
+
         }
 
         return dialog
@@ -96,6 +104,18 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
         // bottom sheet 上滑動畫
         val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_up)
 
+        sheetAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                backgroundView.visibility = View.VISIBLE
+                sheetContainer.visibility = View.VISIBLE
+                mBinding.root.visibility = View.VISIBLE
+            }
+
+            override fun onAnimationEnd(animation: Animation?) {
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
         backgroundView.startAnimation(sheetAnim)
         sheetContainer.startAnimation(sheetAnim)
     }
@@ -106,36 +126,43 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel,VB : ViewBinding> : Bo
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        uiBind.onCreateView(inflater,container,savedInstanceState)
+        uiBind.onCreateView(inflater, container, savedInstanceState)
         setKeyboardEvent()
-        return mBinding.root
+        return mBinding.root.apply {
+            this.visibility = View.INVISIBLE
+        }
     }
 
     @CallSuper
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        uiBind.onViewCreated(view,savedInstanceState)
+        uiBind.onViewCreated(view, savedInstanceState)
     }
+
     @CallSuper
     override fun onStart() {
         super.onStart()
         uiBind.onStart()
     }
+
     @CallSuper
     override fun onResume() {
         super.onResume()
         uiBind.onResume()
     }
+
     @CallSuper
     override fun onPause() {
         super.onPause()
         uiBind.onPause()
     }
+
     @CallSuper
     override fun onStop() {
         super.onStop()
         uiBind.onStop()
     }
+
     @CallSuper
     override fun onDestroyView() {
         super.onDestroyView()

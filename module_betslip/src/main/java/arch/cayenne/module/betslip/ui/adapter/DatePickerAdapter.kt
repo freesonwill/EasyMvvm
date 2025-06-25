@@ -2,38 +2,18 @@ package arch.cayenne.module.betslip.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
-import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.module.betslip.data.model.DateFilterBean
 import arch.cayenne.module.betslip.databinding.ItemDateBinding
 import arch.cayenne.module.betslip.ui.compare.DatePickerCompare
+import arch.cayenne.module.betslip.ui.viewholder.DatePickerViewHolder
 
-class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<DateFilterBean, BaseViewHolder, ItemDateBinding>(
+class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<DateFilterBean, DatePickerViewHolder, ItemDateBinding>(
     DatePickerCompare()
 ) {
-    override fun convertPlus(holder: BaseViewHolder, binding: ItemDateBinding, position: Int) {
-       val bean = getItem(position)
-        binding.tvTitle.text = bean.title
-        if (bean.isSelected) {
-            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.common.R.color.brand_color))
-        } else {
-            binding.tvTitle.setTextColor(ContextCompat.getColor(holder.itemView.context, arch.cayenne.lib.common.R.color.secondary_text))
-        }
-        binding.ivCancel.isVisible = bean.isSelected
-        binding.clTitle.isEnabled = bean.isSelected
-        binding.ivCancel.setOnClickListener {
-            listener.onCancelClick()
-        }
-        binding.root.setOnClickListener {
-            if (position == itemCount - 1) {
-                listener.onCustomClick()
-            } else {
-                listener.onDateClick(position)
-            }
-        }
-        binding.ivCancel.isVisible = position == itemCount - 1 && bean.isSelected
+    override fun convertPlus(holder: DatePickerViewHolder, binding: ItemDateBinding, position: Int) {
+        val bean = getItem(position)
+        holder.init(bean, listener, itemCount)
     }
 
     override fun createViewBinding(
@@ -44,8 +24,8 @@ class DatePickerAdapter(private val listener: OnDateClickListener): BaseAdapter<
         return ItemDateBinding.inflate(inflater, parent, false)
     }
 
-    override fun createViewHolder(binding: ItemDateBinding, viewType: Int): BaseViewHolder {
-        return BaseViewHolder(binding)
+    override fun createViewHolder(binding: ItemDateBinding, viewType: Int): DatePickerViewHolder {
+        return DatePickerViewHolder(binding)
     }
 
     interface OnDateClickListener {

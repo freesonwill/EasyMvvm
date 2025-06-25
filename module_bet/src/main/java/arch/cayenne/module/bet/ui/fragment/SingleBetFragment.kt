@@ -180,11 +180,13 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             when (type) {
                 BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
                     mBinding.btnCollusion.visibility = View.VISIBLE
+                    mBinding.btnDelete.visibility = View.INVISIBLE
                     mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_page_close))
                 }
 
                 BetTypeEnum.COMBO -> {
                     mBinding.btnCollusion.visibility = View.INVISIBLE
+                    mBinding.btnDelete.visibility = View.VISIBLE
                     mBinding.ivClose.setImageDrawable(SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_collapse))
                 }
 

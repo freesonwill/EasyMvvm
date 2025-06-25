@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,7 @@ import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
+import com.walisport.module.live.data.BetOnMenuStatus
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -53,6 +55,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args:LiveMainFragmentArgs
+    private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -69,7 +72,27 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
     }
-
+    //init DrawerLayout Content
+    private fun drawerContent() {
+        //蒙層顏色依照版型作變化
+        mBinding.drawerLayout.setScrimColor(
+            SkinnableResourceManager.getColor(
+                requireContext(),
+                R.color.drawer_scrim_color
+            )
+        )
+        if (drawerContentFragment == null) {
+            drawerContentFragment = LiveBetOnMenuFragment()
+        }
+        childFragmentManager.beginTransaction()
+            .replace(
+                mBinding.fragmentDrawerContent.id,
+                drawerContentFragment!!,
+                LiveBetOnMenuFragment.TAG
+            )
+            .commitNow()
+        mBinding.drawerLayout.openDrawer(GravityCompat.END)
+    }
     override fun initListener() {
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
@@ -159,6 +182,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
+        mViewModel.liveBetOnMenu.observe(viewLifecycleOwner){
+            when(it) {
+                BetOnMenuStatus.OPEN -> {
+                    drawerContent()
+                }
+                BetOnMenuStatus.CLOSE -> {
+                    mBinding.drawerLayout.closeDrawer(GravityCompat.END)
+                }
+            }
+        }
         //根据matchId变动进行数据刷新
         mViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.clearAllMatch()
@@ -355,5 +388,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         if(other !is LiveMainFragmentArgs) return false
         return this.sportId == other.sportId && this.matchId == other.matchId
     }
-
+    override fun onBackPressed(): Boolean {
+        //如果抽屉打开，截获此次返回事件，关闭抽屉
+        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.END)
+            return true
+        }
+        return super.onBackPressed()
+    }
 }

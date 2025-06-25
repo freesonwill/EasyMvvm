@@ -21,6 +21,7 @@ import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.google.android.material.tabs.TabLayout
 import com.walisport.module.live.R
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveBetOnBinding
 import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
@@ -124,7 +125,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         })
 
         mBinding.ivMenu.clickNoRepeat {
-            navigate(LiveMainFragmentDirections.actionLiveMainFragmentToLiveBetOnMenuFragment())
+            mainViewModel.setLiveBetOnMen(BetOnMenuStatus.OPEN)
         }
     }
 
@@ -202,6 +203,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
             //侧边栏筛选
             mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
+                mainViewModel.setLiveBetOnMen(BetOnMenuStatus.CLOSE)
                 mBinding.tabLayout.getTabAt(it[0])?.select()
                 tabPosition = it
                 mBinding.rvBetList.post {

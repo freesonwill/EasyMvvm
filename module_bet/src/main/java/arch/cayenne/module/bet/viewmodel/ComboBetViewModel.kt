@@ -21,29 +21,47 @@ class ComboBetViewModel(
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
+    private val _onBetListListener = MediatorLiveData<List<BetSelectionBean>>().apply {
+        addSource(_onComboMultiBetBeanListener) { bean ->
+            val failBet = bean.isEmpty() && bean.map { it.minAmount == 0L && it.maxAmount == 0L }.any { it }
+            if (failBet) {
+                value = value?.map { it.copy(isActive = false) }
+            }
+        }
+    }
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
     private val _onBalanceListener = MutableLiveData<InfoBean>()
     val onBalanceListener: LiveData<InfoBean> get() = _onBalanceListener
 
     private val _onCanBetListener = MediatorLiveData(false).apply {
-        addSource(_onBetListListener) { betList ->
-            val comboData = _onComboMultiBetBeanListener.value ?: return@addSource
-            if ((betList.size > 1) && comboData.isNotEmpty()) {
-                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && comboData.any { it.inputMoney > 0L }
-                value = canBet
+        val updateCanBet = {
+            val betList = _onBetListListener.value
+            val comboData = _onComboMultiBetBeanListener.value
+
+            value = if (betList != null && comboData != null) {
+                betList.size > 1 &&
+                        betList.all { it.isActive && it.isParlay } &&
+                        comboData.any { it.inputMoney > 0L }
+            } else {
+                false
             }
         }
-        addSource(_onComboMultiBetBeanListener) {
-            val betList = _onBetListListener.value ?: return@addSource
-            if ((betList.size > 1) && it.isNotEmpty()) {
-                val canBet = betList.all { bean -> bean.isActive && bean.isParlay } && it.any { it.inputMoney > 0L }
-                value = canBet
-            }
-        }
+
+        addSource(_onBetListListener) { updateCanBet() }
+        addSource(_onComboMultiBetBeanListener) { updateCanBet() }
     }
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
+
+    private val _onLoadDataFinishListener = MediatorLiveData(false).apply {
+        val checkBothLoaded = {
+            value = _onBetListListener.value != null && _onComboMultiBetBeanListener.value != null
+        }
+
+        addSource(_onBetListListener) { checkBothLoaded() }
+        addSource(_onComboMultiBetBeanListener) { checkBothLoaded() }
+    }
+    val onLoadDataFinishListener: LiveData<Boolean> get() = _onLoadDataFinishListener
 
     val remainingBalance: Long
         get() = onBalanceListener.value?.let { infoBean ->
@@ -127,12 +145,6 @@ class ComboBetViewModel(
     }
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
-        if (data.isEmpty()) {
-            _onBetListListener.value?.let { list ->
-                _onBetListListener.value = list.map { it.copy(isActive = false) }
-            }
-            if (!_onComboMultiBetBeanListener.value.isNullOrEmpty()) return
-        }
         _onComboMultiBetBeanListener.value = data
     }
 
@@ -143,14 +155,6 @@ class ComboBetViewModel(
     }
 
     private fun setBetList(betList: List<BetSelectionBean>) {
-        val comboList = _onComboMultiBetBeanListener.value
-
-        val updatedList = if (comboList != null && comboList.isEmpty()) {
-            betList.map { it.copy(isActive = false) }
-        } else {
-            betList
-        }
-
-        _onBetListListener.value = updatedList
+        _onBetListListener.value = betList
     }
 }

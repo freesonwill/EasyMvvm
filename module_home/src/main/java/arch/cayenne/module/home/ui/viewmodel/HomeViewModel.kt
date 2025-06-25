@@ -19,7 +19,6 @@ import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.repo.HomeRepository
-import galaxy.client.proto.Client
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -166,11 +165,6 @@ class HomeViewModel : BaseViewModel() {
         setState(HomeState.PlayTypeClick)
     }
 
-    fun resetLiveData() {
-        sportsStatistical.value = Event(arrayListOf())
-        tournaments.value = Event(arrayListOf())
-    }
-
     fun getCurrentPlayType() = currentPlayType
 
     fun getCurrentSportStatistical() {
@@ -207,6 +201,10 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Tournament.LoadSuccess)
             }
         })
+    }
+
+    fun resetSelectedDate() {
+        _selectedDate.value = Event(0L)
     }
 
     fun setSelectedDate(date: Long) {

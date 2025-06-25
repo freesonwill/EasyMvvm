@@ -44,6 +44,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
                             login()
                         }
+
                         else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
                         }
@@ -54,7 +55,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 commonRepository.observeAppNotifyChange().collect { result ->
                     if (result.error == null && result.data != null) {
                         val temp = result.data?.let {
-                            AppNotifyBean(it.type, it.sportId, it.title, it.content)
+                            AppNotifyBean(it.type, it.sportId, it.matchId, it.title, it.content)
                         }
                         _appNotifyListener.postValue(temp)
                     }

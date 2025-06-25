@@ -27,19 +27,24 @@ class SingleBetRepository(
     init {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
-                betDao.observeSelections(bet.betId).collect {
-                    val data = it.firstOrNull() ?: return@collect
-                    selectionFlow.emit(data)
-                    if (it.isNotEmpty()) {
-                        val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
-                        setComboMulti(data, lastDetail)
+                launch {
+                    betDao.observeSelections(bet.betId).collect {
+                        val data = it.firstOrNull() ?: return@collect
+                        selectionFlow.emit(data)
                     }
+                }
+                // TODO 之後可能改為盤口變動就須獲取限額
+                launch {
+                    val selection = betDao.getSelections(bet.betId)
+                    val data = selection.firstOrNull() ?: return@launch
+                    val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
+                    setComboMulti(data, lastDetail)
                 }
             }
         }
     }
 
-    private suspend fun setComboMulti(selection: BetSelectionBean, detailList: BetDetailBean? = null) {
+    private suspend fun setComboMulti(selection: BetSelectionBean, detailList: BetDetailBean? = null) = withContext(scope.coroutineContext) {
         remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
             if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
                 val detailBean = if (detailList == null) {
