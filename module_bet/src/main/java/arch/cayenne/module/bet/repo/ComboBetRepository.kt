@@ -210,13 +210,11 @@ class ComboBetRepository(
                 val combinations = data.combinations(k)
                 val odds = when (k) {
                     0 -> 0
-                    n -> oddsList.sum()
                     else -> oddsList.combinations(k)
                         .sumOf { it.reduce { acc, l -> acc.getOdds(l).toOdds() } }
                 }
                 val count = when (k) {
                     0 -> 0
-                    n -> n
                     else -> combinations.size
                 }
                 totalSumOdds += odds
@@ -226,8 +224,8 @@ class ComboBetRepository(
                     result.add(
                         ComboMultiBetBean(
                             serialValue = risk.serialValue,
-                            comboK = 0,
-                            comboV = 0,
+                            comboK = n,
+                            comboV = totalCount,
                             sumOdds = totalSumOdds,
                             count = totalCount,
                             minAmount = risk.minAmount,
@@ -238,8 +236,8 @@ class ComboBetRepository(
                     result.add(
                         ComboMultiBetBean(
                             serialValue = risk.serialValue,
-                            comboK = 0,
-                            comboV = 0,
+                            comboK = k,
+                            comboV = 1,
                             sumOdds = odds,
                             count = count,
                             minAmount = risk.minAmount,
@@ -250,7 +248,7 @@ class ComboBetRepository(
 
             }
         }
-        return result
+        return result.sortedWith(compareBy({ it.comboK }, { it.comboV }))
     }
 
     private fun <T> List<T>.combinations(k: Int): List<List<T>> {
