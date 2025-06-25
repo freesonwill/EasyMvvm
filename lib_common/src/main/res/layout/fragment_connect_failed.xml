@@ -2,6 +2,23 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#567812">
+    android:clickable="true"
+    android:focusable="true"
+    android:background="#7f000000"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_failed"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/card_background" >
+        <arch.cayenne.lib.common.ui.view.DynamicStateLayout
+            android:id="@+id/dsl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

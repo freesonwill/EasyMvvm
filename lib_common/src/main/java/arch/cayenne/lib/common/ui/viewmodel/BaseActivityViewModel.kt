@@ -41,17 +41,27 @@ abstract class BaseActivityViewModel : BaseViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
             commonRepository.getConnectStateFlow().collect { connectState ->
+                "KC_ connectState = $connectState".logi()
                 when (connectState) {
                     is ConnectState.ConnectSuccess -> {
                         "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                        withContext(Dispatchers.Main) {
+                            _connectFailed.value = connectState
+                        }
                         login()
                     }
                     is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                         "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                        commonRepository.tryToReconnect()
                         withContext(Dispatchers.Main) {
                             _connectFailed.value = connectState
                         }
 
+                    }
+                    is ConnectState.ReconnectFailure -> {
+                        withContext(Dispatchers.Main) {
+                            _connectFailed.value = connectState
+                        }
                     }
                     else -> Unit
                 }
@@ -96,6 +106,10 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                 }
             }
         }
+    }
+
+    fun reconnectNow() {
+        commonRepository.reconnectNow()
     }
 
     override fun reset() {

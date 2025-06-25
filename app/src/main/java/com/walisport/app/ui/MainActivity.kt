@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.walisport.app.R
@@ -37,7 +38,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             show(this@MainActivity)
         }
         connectFailedFragment = ConnectFailedFragment.newInstance().apply {
-            show(this@MainActivity)
+            setRefreshListener {
+                mViewModel.reconnectNow()
+            }
         }
     }
 
@@ -64,7 +67,13 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             (fabFragment as? FloatingButtonFragment)?.showDotAnimation(x, y)
         }
         mViewModel.connectFailed.observe(this) {
-            connectFailedFragment?.show(this@MainActivity)
+            if (it is ConnectState.ConnectSuccess) {
+                connectFailedFragment?.hide(this@MainActivity)
+            } else if (it is ConnectState.ReconnectFailure) {
+                connectFailedFragment?.showFailed(this@MainActivity)
+            } else {
+                connectFailedFragment?.showMask(this@MainActivity)
+            }
         }
     }
 
