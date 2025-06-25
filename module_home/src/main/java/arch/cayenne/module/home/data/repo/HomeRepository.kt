@@ -3,6 +3,7 @@ package arch.cayenne.module.home.data.repo
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
@@ -13,7 +14,6 @@ import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.constants.SportType
 import galaxy.client.proto.Client
-import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -93,7 +93,8 @@ class HomeRepository(
         data: Client.ListTournamentResp
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
-        data.tournamentList.forEach { tournament ->
+        "KC_ ${data.tournamentList.map { it.name to it.weight }}".logi()
+        data.tournamentList.forEachIndexed { index, tournament ->
             tournamentList.add(
                 TournamentBean(
                     id = tournament.id,
@@ -104,6 +105,7 @@ class HomeRepository(
                     icon = tournament.icon,
                     hot = tournament.hot,
                     weight = tournament.weight,
+                    index = index,
                 )
             )
         }
