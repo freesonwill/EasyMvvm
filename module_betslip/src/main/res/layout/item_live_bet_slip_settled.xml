@@ -98,12 +98,15 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
         android:text="\@1.85"
+        android:fontFamily="sans-serif-condensed-medium"
+        android:textFontWeight="500"
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_settled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_settled_tv_introduce"
-        tools:ignore="HardcodedText" />
+        tools:ignore="HardcodedText"
+        tools:targetApi="p" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/bet_settled_tv_status"
