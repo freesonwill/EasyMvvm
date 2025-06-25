@@ -54,7 +54,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
             override fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {
-                mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == id }?.let {
+                mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }?.let {
                     childFragmentManager.setFragmentResultListener(
                         KEY_RESULT,
                         viewLifecycleOwner
