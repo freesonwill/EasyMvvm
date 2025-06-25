@@ -5,9 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class TournamentBean(
-    @PrimaryKey(autoGenerate = true)
-    val pkId: Int = 0, //主键id
-    val id: Int,//联赛id, 不能用作存储id
+    @PrimaryKey val id: Int,
     val playType: Int,
     val sportId: Int,
     val name: String,
@@ -15,6 +13,7 @@ data class TournamentBean(
     val icon: String,
     val hot: Boolean,
     val weight: Int,
+    val index: Int,
 )
 
 //@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
