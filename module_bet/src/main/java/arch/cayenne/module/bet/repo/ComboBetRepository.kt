@@ -94,6 +94,8 @@ class ComboBetRepository(
                                 .build()
                         )
                     )
+                    val selections = betDao.getSelections(bet.betId)
+                    setComboMulti(selections)
                 }
             }
         }
