@@ -5,7 +5,7 @@
     style="@style/CustomToolbarStyle">
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/ivBack"
+        android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
         app:srcCompat="@drawable/bg_left_arrow"
         tools:ignore="MissingConstraints" />
@@ -17,8 +17,8 @@
         android:backgroundTint="@color/search_bg"
         android:gravity="center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/tvSearchText"
-        app:layout_constraintStart_toEndOf="@id/ivBack"
+        app:layout_constraintEnd_toStartOf="@id/tv_search_text"
+        app:layout_constraintStart_toEndOf="@id/iv_back"
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -43,7 +43,7 @@
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tvSearchText"
+        android:id="@+id/tv_search_text"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginTop="7dp"

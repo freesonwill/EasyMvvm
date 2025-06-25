@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -28,7 +29,6 @@ import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -126,6 +126,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 launch {
                     statusBarState.collect { isDefault ->
                         updateStatusTitleBar(isDefault)
+                        updateSearchBtnColor(isDefault)
                     }
                 }
                 launch {
@@ -154,15 +155,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 titleBar.loadSearchTitleBar(
                     hint = titleBarHintStr,
                     afterTextChanged = { text, binding ->
-                        val count = text?.length ?: 0
-                        val color =
-                            if (count > 0) Rc.color.search_btn
-                            else Rc.color.search_btn_normal
-                        binding.tvSearchText.setTextColor(color.getColor())
-
                         if (!canSearch) return@loadSearchTitleBar
 
                         // 搜索自动补充词汇
+                        val count = text?.length ?: 0
                         if (count > 0 && binding.ceSearch.hasFocus())
                             clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
@@ -298,12 +294,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         mViewModel.clearSearchRecommendList()
     }
 
+    private fun getSearchBtn(): TextView {
+        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.tv_search_text)
+    }
+
     private fun getSearchEditText(): ClearableEditText {
         return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ce_search)
     }
 
     private fun getTitleBarBackIcon(): SkinnableImageView {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ivBack)
+        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.iv_back)
     }
 
     private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
@@ -368,6 +368,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 )
             }
         }
+    }
+
+    private fun updateSearchBtnColor(isDefault: Boolean = true) {
+        getSearchBtn().setTextColor(
+            SkinnableResourceManager.getColor(
+                requireContext(),
+                if (isDefault) arch.cayenne.lib.common.R.color.search_btn_normal
+                else arch.cayenne.lib.common.R.color.search_btn_in_direct_match
+            )
+        )
     }
 
     private fun hideKeyboard(context: Context?, editText: EditText) {
