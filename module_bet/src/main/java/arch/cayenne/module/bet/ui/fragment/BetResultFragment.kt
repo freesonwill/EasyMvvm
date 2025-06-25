@@ -29,13 +29,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
-    private val detailAdapter by lazy { ResultMultiBetAdapter(
-        object : ResultMultiBetAdapter.ResultMultiBetListener {
-            override fun getBetSize(): Int {
-                return mViewModel.onBetSheetListener.value?.size ?: 0
-            }
-        }
-    ) }
+    private val detailAdapter by lazy { ResultMultiBetAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false

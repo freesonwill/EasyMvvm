@@ -11,7 +11,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemResultMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.BetResultDetailCompare
 
-class ResultMultiBetAdapter(private val listener: ResultMultiBetListener) :
+class ResultMultiBetAdapter :
     BaseAdapter<BetDetailBean, BaseViewHolder, ItemResultMultiBetBinding>(
         BetResultDetailCompare()
     ) {
@@ -21,7 +21,7 @@ class ResultMultiBetAdapter(private val listener: ResultMultiBetListener) :
         position: Int
     ) {
         val item = getItem(holder.adapterPosition)
-        val combo = holder.getString(R.string.title_combo_bet_odds).format(listener.getBetSize(), item.combo)
+        val combo = holder.getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
         binding.tvCombo.text = combo
         val odds ="@${item.sumOdds.getOdds()}"
         binding.tvOdds.text = odds
@@ -46,9 +46,5 @@ class ResultMultiBetAdapter(private val listener: ResultMultiBetListener) :
         viewType: Int
     ): BaseViewHolder {
         return BaseViewHolder(binding)
-    }
-
-    interface ResultMultiBetListener {
-        fun getBetSize(): Int
     }
 }

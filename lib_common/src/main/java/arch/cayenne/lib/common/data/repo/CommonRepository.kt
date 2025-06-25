@@ -137,7 +137,7 @@ class CommonRepository(
                             val matchName = selection.map { s -> s.matchName }
                             val resultLiteBean = BetResultLiteBean(
                                 matchName,
-                                detail.combo,
+                                detail.comboK,
                                 BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
                             )
                             resultList.add(resultLiteBean)

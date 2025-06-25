@@ -23,7 +23,7 @@ class ComboBetViewModel(
 
     private val _onBetListListener = MediatorLiveData<List<BetSelectionBean>>().apply {
         addSource(_onComboMultiBetBeanListener) { bean ->
-            val failBet = bean.isEmpty() && bean.map { it.minAmount == 0L && it.maxAmount == 0L }.any { it }
+            val failBet = bean.isEmpty() || bean.map { it.minAmount == 0L && it.maxAmount == 0L }.any { it }
             if (failBet) {
                 value = value?.map { it.copy(isActive = false) }
             }
@@ -101,7 +101,7 @@ class ComboBetViewModel(
                         }
                     } else {
                         beans.forEach { newBean ->
-                            val oldBean = oriData.find { it.combo == newBean.combo }
+                            val oldBean = oriData.find { it.serialValue == newBean.serialValue }
                             if (oldBean != null) {
                                 newBean.inputMoney = oldBean.inputMoney
                             }
@@ -126,10 +126,10 @@ class ComboBetViewModel(
         repo.removeAll()
     }
 
-    fun updateMultiBetMoney(combo: Int, money: Long) {
+    fun updateMultiBetMoney(serialValue: Int, money: Long) {
         _onComboMultiBetBeanListener.value?.let {
             val updatedList = it.map { rate ->
-                if (rate.combo == combo) {
+                if (rate.serialValue == serialValue) {
                     rate.copy(inputMoney = money)
                 } else {
                     rate
@@ -152,7 +152,7 @@ class ComboBetViewModel(
     }
 
     fun saveInputMoney() {
-        onComboMultiBetBeanListener.value?.let {
+        onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
             repo.saveInputMoney(it)
         }
     }

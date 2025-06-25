@@ -45,8 +45,7 @@ class ComboMultiBetAdapter(
     }
 
     interface OnComboMultiBetClickListener {
-        fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int)
-        fun getSize(): Int
+        fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int)
         fun getMoneySymbol(): String
     }
 }
