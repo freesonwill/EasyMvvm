@@ -9,7 +9,8 @@ import arch.cayenne.module.bet.ui.compare.ComboRateCompare
 import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
 class ComboMultiBetAdapter(
-    private val onComboMultiBetClickListener: OnComboMultiBetClickListener
+    private val onComboMultiBetClickListener: OnComboMultiBetClickListener,
+    private val onToggleClickListener: (isExpanded: Boolean) -> Unit
 ): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBetBinding>(
     ComboRateCompare()
 ) {
@@ -18,6 +19,7 @@ class ComboMultiBetAdapter(
         set(value) {
             field = value
             notifyDataSetChanged()
+            onToggleClickListener.invoke(value)
         }
 
     override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
@@ -43,14 +45,6 @@ class ComboMultiBetAdapter(
 
     fun toggleExpand() {
         isExpanded = !isExpanded
-    }
-
-    override fun getItem(position: Int): ComboMultiBetBean {
-        return if (isExpanded) {
-            currentList[position]
-        } else {
-            currentList.last()
-        }
     }
 
     override fun submitList(list: List<ComboMultiBetBean>?, commitCallback: Runnable?) {

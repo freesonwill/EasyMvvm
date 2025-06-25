@@ -1,9 +1,11 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
@@ -83,7 +85,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             override fun getMoneySymbol(): String {
                 return mViewModel.moneySymbol
             }
-        })
+        }) { isExpanded ->
+            setMultiLayoutHeight(isExpanded)
+        }
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -96,6 +100,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
+        mBinding.rvMultiBet.isNestedScrollingEnabled = true
+        (mBinding.rvMultiBet.layoutManager as? LinearLayoutManager)?.let {
+            it.reverseLayout = true
+            it.stackFromEnd = true
+        }
         setSumBetMoney(emptyList())
         initMaxHeight()
     }
@@ -187,11 +196,77 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val screenHeight = resources.displayMetrics.heightPixels
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
+            setMultiLayoutMaxHeight()
         } else {
             val layoutParams = mBinding.rvBet.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
+        }
+    }
+
+    // 獲取除串關方式外已使用的高度
+    private fun getMultiLayoutMargin(): Int {
+        val multiBottomMargin = (mBinding.clMultiBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonBottomMargin = (mBinding.clBottomButton.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonHeight = mBinding.clBottomButton.height
+        val underMargin = multiBottomMargin + buttonBottomMargin + buttonHeight
+        val topMargin = 22.dp2px
+        return topMargin + underMargin
+    }
+
+    private fun setMultiLayoutMaxHeight() {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+
+        val totalMargin = getMultiLayoutMargin()
+
+        val maxHeight = maxFragmentHeight - totalMargin
+        mBinding.clMultiBet.maxHeight = maxHeight
+    }
+
+    private fun setMultiLayoutHeight(isExpanded: Boolean) {
+        val adapter = mBinding.rvMultiBet.adapter ?: return
+        if (adapter.itemCount == 1) { // 只有一個項目時不調整高度
+            return
+        }
+        if (isExpanded) {
+            val screenHeight = resources.displayMetrics.heightPixels
+            val maxFragmentHeight = (screenHeight * 0.75).toInt()
+
+            val multiTitleHeight = mBinding.clMultiBetTitle.height
+            val totalMargin = getMultiLayoutMargin() + multiTitleHeight
+            val maxHeight = maxFragmentHeight - totalMargin
+
+            mBinding.rvMultiBet.post {
+
+
+                var totalHeight = 0
+                val visibleCount = adapter.itemCount.coerceAtMost(10) // 最多量測前10個，避免過慢
+
+                for (i in 0 until visibleCount) {
+                    val vh = mBinding.rvMultiBet.getChildAt(i)
+
+                    vh.measure(
+                        View.MeasureSpec.makeMeasureSpec(mBinding.rvMultiBet.width, View.MeasureSpec.EXACTLY),
+                        View.MeasureSpec.UNSPECIFIED
+                    )
+
+                    totalHeight += vh.measuredHeight
+                }
+
+                val lp = mBinding.rvMultiBet.layoutParams
+                lp.height = if (totalHeight < maxHeight) {
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                } else {
+                    maxHeight
+                }
+                mBinding.rvMultiBet.layoutParams = lp
+            }
+        } else {
+            val lp = mBinding.rvMultiBet.layoutParams
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            mBinding.rvMultiBet.layoutParams = lp
         }
     }
 
