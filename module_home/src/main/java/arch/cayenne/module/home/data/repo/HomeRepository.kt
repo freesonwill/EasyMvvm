@@ -3,7 +3,6 @@ package arch.cayenne.module.home.data.repo
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
@@ -93,7 +92,6 @@ class HomeRepository(
         data: Client.ListTournamentResp
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
-        "KC_ ${data.tournamentList.map { it.name to it.weight }}".logi()
         data.tournamentList.forEachIndexed { index, tournament ->
             tournamentList.add(
                 TournamentBean(
