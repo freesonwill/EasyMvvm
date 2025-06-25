@@ -11,6 +11,7 @@
         tools:ignore="MissingConstraints" />
 
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_search_bar"
         style="@style/CustomToolbarLine"
         android:layout_marginStart="3dp"
         android:background="@drawable/search_rounded_background"
@@ -37,7 +38,7 @@
             android:drawablePadding="@dimen/dp_10"
             android:imeOptions="actionSearch"
             android:singleLine="true"
-            android:textColor="@color/search_text"
+            android:textColor="@color/search_text_for_search_bar"
             android:textColorHint="@color/search_hint"
             tools:ignore="MissingConstraints" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

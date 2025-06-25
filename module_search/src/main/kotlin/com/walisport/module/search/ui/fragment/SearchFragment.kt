@@ -13,6 +13,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
@@ -31,6 +32,7 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
@@ -125,8 +127,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 }
                 launch {
                     statusBarState.collect { isDefault ->
-                        updateStatusTitleBar(isDefault)
-                        updateSearchBtnColor(isDefault)
+                        updateStatusSearchBar(isDefault)
                     }
                 }
                 launch {
@@ -294,6 +295,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         mViewModel.clearSearchRecommendList()
     }
 
+    private fun getSearchBar(): LinearLayout {
+        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ll_search_bar)
+    }
+
     private fun getSearchBtn(): TextView {
         return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.tv_search_text)
     }
@@ -348,6 +353,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
 
+    private fun updateStatusSearchBar(isDefault: Boolean = true) {
+        updateStatusTitleBar(isDefault)
+        updateTitleBarBackIcon(isDefault)
+        updateSearchTextColor(isDefault)
+        updateSearchBtnColor(isDefault)
+        updateSearchBarBackground(isDefault)
+    }
+
     private fun updateStatusTitleBar(isDefault: Boolean = true) {
         with(mBinding) {
             with(SkinnableResourceManager) {
@@ -360,14 +373,26 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             else false
                     }, clRoot
                 )
-
-                // 設置返回鍵顏色
-                getTitleBarBackIcon().setImageDrawable(
-                    if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-                    else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-                )
             }
         }
+    }
+
+    private fun updateTitleBarBackIcon(isDefault: Boolean = true) {
+        getTitleBarBackIcon().setImageDrawable(
+            if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+            else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
+        )
+    }
+
+    private fun updateSearchTextColor(isDefault: Boolean = true) {
+        getSearchEditText().setTextColor(
+            if (isDefault)
+                SkinnableResourceManager.getColor(
+                    requireContext(),
+                    arch.cayenne.lib.common.R.color.search_text_for_search_bar
+                )
+            else Color.WHITE
+        )
     }
 
     private fun updateSearchBtnColor(isDefault: Boolean = true) {
@@ -378,6 +403,15 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 else arch.cayenne.lib.common.R.color.search_btn_in_direct_match
             )
         )
+    }
+
+    private fun updateSearchBarBackground(isDefault: Boolean = true) {
+        getSearchBar().backgroundTintList =
+            SkinnableResourceManager.getColorStateList(
+                requireContext(),
+                if (isDefault) arch.cayenne.lib.common.R.color.search_bg
+                else arch.cayenne.lib.common.R.color.search_bg_in_direct_match
+            )
     }
 
     private fun hideKeyboard(context: Context?, editText: EditText) {
