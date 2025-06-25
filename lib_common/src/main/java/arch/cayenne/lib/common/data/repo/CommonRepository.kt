@@ -93,7 +93,6 @@ class CommonRepository(
 
 
         return if (resp.error == null && resp.data != null) {
-            "getBanlance ${resp.data!!.balance}".logd("balance")
             BalanceBean(resp.data!!.balance.balanceStringToLong(), resp.data!!.currency)
         } else {
             BalanceBean(0, "")
@@ -106,7 +105,6 @@ class CommonRepository(
             if (it.data == null || it.data!!.balance.isNullOrEmpty())
                 return@collect
             infoDao.queryInfo()?.apply {
-                "udapte ${it.data!!.balance}".logd("balance")
                 infoDao.update(
                     InfoBean(
                         this.uid,
