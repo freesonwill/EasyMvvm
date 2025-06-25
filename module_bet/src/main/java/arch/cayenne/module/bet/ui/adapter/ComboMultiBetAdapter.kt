@@ -9,19 +9,10 @@ import arch.cayenne.module.bet.ui.compare.ComboRateCompare
 import arch.cayenne.module.bet.ui.viewholder.ComboMultiBetViewHolder
 
 class ComboMultiBetAdapter(
-    private val onComboMultiBetClickListener: OnComboMultiBetClickListener,
-    private val onToggleClickListener: (isExpanded: Boolean) -> Unit
+    private val onComboMultiBetClickListener: OnComboMultiBetClickListener
 ): BaseAdapter<ComboMultiBetBean, ComboMultiBetViewHolder, ItemComboMultiBetBinding>(
     ComboRateCompare()
 ) {
-
-    var isExpanded = false
-        set(value) {
-            field = value
-            if (currentList.size == 1) return
-            notifyDataSetChanged()
-            onToggleClickListener.invoke(value)
-        }
 
     override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
         val item = getItem(holder.adapterPosition)
@@ -38,24 +29,6 @@ class ComboMultiBetAdapter(
 
     override fun createViewHolder(binding: ItemComboMultiBetBinding, viewType: Int): ComboMultiBetViewHolder {
         return ComboMultiBetViewHolder(binding, onComboMultiBetClickListener)
-    }
-
-    override fun getItemCount(): Int {
-        return if (isExpanded) currentList.size else minOf(1, currentList.size)
-    }
-
-    fun toggleExpand() {
-        isExpanded = !isExpanded
-    }
-
-    override fun submitList(list: List<ComboMultiBetBean>?, commitCallback: Runnable?) {
-        val runnable = Runnable {
-            commitCallback?.run()
-            if (!isExpanded) {
-                notifyItemChanged(0)
-            }
-        }
-        super.submitList(list, runnable)
     }
 
     override fun onBindViewHolder(

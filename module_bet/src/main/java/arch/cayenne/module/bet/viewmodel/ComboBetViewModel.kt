@@ -63,6 +63,9 @@ class ComboBetViewModel(
     }
     val onLoadDataFinishListener: LiveData<Boolean> get() = _onLoadDataFinishListener
 
+    private val _onMultiLayoutExpendListener = MutableLiveData<Boolean>(false)
+    val onMultiLayoutExpendListener: LiveData<Boolean> get() = _onMultiLayoutExpendListener
+
     val remainingBalance: Long
         get() = onBalanceListener.value?.let { infoBean ->
             onComboMultiBetBeanListener.value?.sumOf { it.amount }?.let { betAmount ->
@@ -156,5 +159,13 @@ class ComboBetViewModel(
 
     private fun setBetList(betList: List<BetSelectionBean>) {
         _onBetListListener.value = betList
+    }
+
+    fun toggleMultiLayoutExpend() {
+        _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
+    }
+
+    fun setExpandMultiLayout(expand: Boolean) {
+        _onMultiLayoutExpendListener.value = expand
     }
 }
