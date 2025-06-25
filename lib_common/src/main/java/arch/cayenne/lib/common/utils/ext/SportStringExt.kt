@@ -97,6 +97,7 @@ object SportStringExt {
         return try {
             BigDecimal(this)
                 .setScale(2, RoundingMode.DOWN)
+                .multiply(BigDecimal(100)) //服务器给的余额*/100,,为了保证精确到分*100，显示的时候*/100
                 .toLong()
         } catch (e: NumberFormatException) {
             0 // 或依需求處理錯誤情況
