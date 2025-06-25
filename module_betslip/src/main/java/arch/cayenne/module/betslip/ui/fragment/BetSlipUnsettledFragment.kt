@@ -65,7 +65,7 @@ class BetSlipUnsettledFragment :
                 val money = BetSlipUtils.earlySettlePrice(
                     order.betAmount, order.earlyBetAmount
                 )
-                BetSlipEarlySettledFragment.instance(money, it.settleMin).apply {
+                BetSlipEarlySettledFragment.instance(money, it.settleMin,order.currency).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(
                             it.betId,

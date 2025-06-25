@@ -45,8 +45,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         mViewModel.appNotifyListener.observe(this) {
             notifyFragment?.view?.visibility = View.VISIBLE
-            (notifyFragment as AppNotifyFragment).setNotifyMsg(it)
-            (notifyFragment as AppNotifyFragment).showEnterAnimation()
+            (notifyFragment as? AppNotifyFragment)?.showNotifyMsg(it)
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {

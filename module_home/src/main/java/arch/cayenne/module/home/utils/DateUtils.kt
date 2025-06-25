@@ -15,7 +15,7 @@ object DateUtils {
         calendar.set(Calendar.SECOND, 0)
         calendar.set(Calendar.MILLISECOND, 0)
 
-        val dateFormat = SimpleDateFormat("MMdd", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("M.dd", Locale.getDefault())
         val weekdayFormat = SimpleDateFormat("E", locale)
 
         repeat(days) {

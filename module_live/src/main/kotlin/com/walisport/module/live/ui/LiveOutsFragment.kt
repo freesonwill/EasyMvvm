@@ -1,9 +1,12 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
@@ -33,6 +36,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     private lateinit var awayLogo: String
 
     override fun initView(savedInstanceState: Bundle?) {
+        mBinding.mainLayout.setState(DynamicStateLayout.States.LOADING, "")
     }
 
     override fun initListener() {
@@ -65,9 +69,19 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
             //比赛技术统计推送数据(WebSocket接口)
             mainViewModel.statisticData.observe(viewLifecycleOwner) {
                 it?.let {
-                    parseTrendData(it.matchTrendData)  //比赛趋势信息
-                    parseStatsData(it.stats)           //统计进球红黄牌等信息
-                    parseHalfTeamData(it.team)         //统计进度条相关信息
+                    mBinding.mainLayout.setVisibilityGone()
+                    if (it.matchTrendData.data.isEmpty()) {
+                        mBinding.llContent.visibility = View.INVISIBLE
+                        mBinding.mainLayout.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
+                    } else {
+                        mBinding.llContent.visibility = View.VISIBLE
+                        parseTrendData(it.matchTrendData)  //比赛趋势信息
+                        parseStatsData(it.stats)           //统计进球红黄牌等信息
+                        parseHalfTeamData(it.team)         //统计进度条相关信息
+                    }
                 }
             }
         }
@@ -75,7 +89,6 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
 
     private fun parseTrendData(data: MatchTrendData) {
         matchTrendData = data
-        mBinding.mainLayout.setVisibilityGone()
         mBinding.viewTechStatic.setTrendData(data)
     }
 

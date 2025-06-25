@@ -4,7 +4,7 @@ import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 
-class BetSheetDecoration(private val space: Int): RecyclerView.ItemDecoration() {
+class BetSheetDecoration(private val space: Int, private val lastItemBottomMargin: Int? = null): RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -23,6 +23,10 @@ class BetSheetDecoration(private val space: Int): RecyclerView.ItemDecoration() 
         // 判斷是否是最後一個項目
         if (position != state.itemCount - 1) {
             outRect.bottom = space // 項目下方設置間隔
+        }
+
+        if (lastItemBottomMargin != null && position == state.itemCount - 1) {
+            outRect.bottom = lastItemBottomMargin
         }
     }
 }

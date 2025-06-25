@@ -82,6 +82,7 @@ enum class AddSelectionStatus {
     DISABLE_COMBO,
     UPDATE,
     REMOVE,
+    MAX_LIMIT,
     FAIL
 }
 

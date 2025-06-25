@@ -71,7 +71,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                 if (it.isEmpty() && standsAdapter.itemCount == 0) {
                     mBinding.mainLayout.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
-                        R.string.standings_empty.getString()
+                        R.string.lineup_empty.getString()
                     )
                 } else {
                     mBinding.mainLayout.setVisibilityGone()

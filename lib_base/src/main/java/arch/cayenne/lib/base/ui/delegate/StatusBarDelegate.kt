@@ -37,10 +37,10 @@ class StatusBarDelegate : IStatusBar {
     }
 
     constructor(fragment: DialogFragment) {
-        fragment.dialog?.window?.let { window ->
-            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-        }
+//        fragment.dialog?.window?.let { window ->
+//            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
+//        }
         immersionBar = ImmersionBar.with(fragment)
     }
 
