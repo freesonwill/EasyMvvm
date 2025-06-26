@@ -1,10 +1,14 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.View
 import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.common.data.constants.AppNotifyBean
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
@@ -16,6 +20,7 @@ import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.ref.WeakReference
 import kotlin.reflect.KClass
 
 class MainActivity : BaseNavActivity<MainViewModel>() {
@@ -25,6 +30,40 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
     private var fabFragment: Fragment? = null
     private var notifyFragment: Fragment? = null
+    private val mHandler by lazy { WeakReferenceHandler(this) }
+
+    companion object {
+        const val OPEN_NOTIFY = 1
+        const val CLOSE_NOTIFY = 2
+        const val CLICK_EVENT = 3
+        const val TOUCH_EVENT = 4
+    }
+
+    class WeakReferenceHandler(obj: MainActivity) : Handler(Looper.getMainLooper()) {
+        private val mRef: WeakReference<MainActivity> = WeakReference(obj)
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            mRef.get()?.run {
+                when (msg.what) {
+                    OPEN_NOTIFY -> {
+                        val obj = msg.obj as AppNotifyBean?
+                        (notifyFragment as? AppNotifyFragment)?.showNotifyMsg(obj)
+                    }
+
+                    CLICK_EVENT -> { //点击事件弹窗消失并跳转直播详情
+                        (notifyFragment as? AppNotifyFragment)?.showExitAnimation()
+                        (notifyFragment as? AppNotifyFragment)?.gotoMatchLive()
+                    }
+
+                    TOUCH_EVENT -> { //触摸事件只随手指移动并消失，不跳转直播详情
+                        (notifyFragment as? AppNotifyFragment)?.showExitAnimation()
+                    }
+
+                    else -> (notifyFragment as? AppNotifyFragment)?.showExitAnimation()
+                }
+            }
+        }
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -33,6 +72,22 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         notifyFragment = AppNotifyFragment.newInstance().apply {
             show(this@MainActivity)
+            //点击事件弹窗消失并跳转到直播详情页，触摸事件弹窗随手指移动后消失，不跳转直播详情页
+            setOnItemClickListener(object : AppNotifyFragment.OnClickListener {
+                override fun onDown() {
+                    mHandler.removeCallbacksAndMessages(null)
+                }
+
+                override fun onTouch() {
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(TOUCH_EVENT)
+                }
+
+                override fun onClick() {
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(CLICK_EVENT)
+                }
+            })
         }
     }
 
@@ -44,8 +99,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             showToast(toast, 3_000L)
         }
         mViewModel.appNotifyListener.observe(this) {
-            notifyFragment?.view?.visibility = View.VISIBLE
-            (notifyFragment as? AppNotifyFragment)?.showNotifyMsg(it)
+            val msg = Message.obtain()
+            msg.what = OPEN_NOTIFY
+            msg.obj = it
+            mHandler.sendMessage(msg)
+            mHandler.sendEmptyMessageDelayed(CLOSE_NOTIFY, 3000L)
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {
@@ -64,5 +122,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         StatusBarConfig.statusBarType = StatusBarMode.FULLSCREEN
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         return StatusBarConfig
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        //退出时移除所有未处理消息防止内存泄露
+        mHandler.removeCallbacksAndMessages(null)
     }
 }
