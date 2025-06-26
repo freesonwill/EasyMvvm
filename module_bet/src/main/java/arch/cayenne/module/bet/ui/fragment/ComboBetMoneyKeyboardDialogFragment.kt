@@ -164,38 +164,53 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun setDialogPosition() {
-        dialog?.window?.let {
-            it.setDimAmount(0.6f)
-            // 將 margin 設為 16dp
+        dialog?.window?.let { window ->
+            window.setDimAmount(0.6f)
             val marginInPx = 16.dp2px
-
-            // 螢幕寬度 - 左右 margin
             val screenWidth = Resources.getSystem().displayMetrics.widthPixels
             val maxWidth = screenWidth - marginInPx * 2
-            it.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window.setLayout(maxWidth, ViewGroup.LayoutParams.WRAP_CONTENT)
+            window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             val positionX = requireArguments().getInt(POSITION_X, -1)
             val positionY = requireArguments().getInt(POSITION_Y, -1)
 
             if (positionX != -1 && positionY != -1) {
-
-                val layoutParams = it.attributes
-                layoutParams.gravity = Gravity.TOP
                 mBinding.root.measure(
                     View.MeasureSpec.makeMeasureSpec(maxWidth, View.MeasureSpec.EXACTLY),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
-                layoutParams.y = positionY - mBinding.root.measuredHeight
-                it.attributes = layoutParams
+                val dialogHeight = mBinding.root.measuredHeight
+
+                val layoutParams = window.attributes
+                layoutParams.gravity = Gravity.TOP or Gravity.START
+                val triangleWidth = mBinding.triangle.width.takeIf { it > 0 } ?: 20.dp2px // 預設寬度
+                layoutParams.x = positionX - triangleWidth / 2
+                layoutParams.y = positionY - dialogHeight
+                window.attributes = layoutParams
 
                 mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                        setTrianglePosition(positionX)
-                        mBinding.root.post {
-                            mBinding.root.visibility = View.VISIBLE
-                        }
+
+                        // 動畫初始狀態
+                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                        mBinding.root.pivotY = dialogHeight.toFloat()
+                        mBinding.root.scaleX = 0f
+                        mBinding.root.scaleY = 0f
+                        mBinding.root.alpha = 0f
+
+                        // 開始動畫
+                        mBinding.root.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .alpha(1f)
+                            .setDuration(300)
+                            .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .withStartAction {
+                                mBinding.root.visibility = View.VISIBLE
+                            }
+                            .start()
                     }
                 })
             }
