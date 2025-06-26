@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.app.Dialog
 import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
@@ -64,6 +65,30 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private val resultBundle: Bundle by lazy {
         Bundle()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : Dialog(requireContext(), theme) {
+            override fun dismiss() {
+                if (mBinding.root.scaleX == 0f) {
+                    super.dismiss()
+                } else {
+                    mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                    mBinding.root.pivotY = mBinding.root.height.toFloat()
+
+                    mBinding.root.animate()
+                        .scaleX(0f)
+                        .scaleY(0f)
+                        .alpha(0f)
+                        .setDuration(200)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+                        .withEndAction {
+                            super.dismiss()
+                        }
+                        .start()
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -249,27 +274,12 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
     }
 
-    override fun dismiss() {
-        if (mBinding.root.scaleX != 0f) {
-            mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-            mBinding.root.pivotY = mBinding.root.height.toFloat()
-
-            // 開始收起動畫
-            mBinding.root.animate()
-                .scaleX(0f)
-                .scaleY(0f)
-                .alpha(0f)
-                .setDuration(200)
-                .setInterpolator(android.view.animation.AccelerateInterpolator())
-                .withEndAction {
-                    super.dismiss()
-                }
-                .start()
-        }
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
-        setFragmentResult(KEY_RESULT, resultBundle)
+        setFragmentResult(KEY_RESULT, resultBundle.apply {
+            if (!this.containsKey(VALUE_MONEY_INPUT)) {
+                putLong(VALUE_MONEY_INPUT, requireArguments().getLong(CURRENT_MONEY_NUMBER, 0L))
+            }
+        })
         super.onDismiss(dialog)
     }
 }
