@@ -53,13 +53,14 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        initMaxHeight()
+        setFitToContents()
         lifecycleScope.launch {
             mViewModel.getSelectionSize().let { size ->
                 if (size == 0) {
                     dismiss()
                 } else {
                     setStartDestination(size)
-                    setFitToContents()
                 }
             }
         }
@@ -80,6 +81,13 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
         }
+    }
+
+    private fun initMaxHeight() {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+        mBinding.root.maxHeight = maxFragmentHeight
+        mBinding.root.minHeight = screenHeight / 2
     }
 
     private fun setStartDestination(size: Int) {

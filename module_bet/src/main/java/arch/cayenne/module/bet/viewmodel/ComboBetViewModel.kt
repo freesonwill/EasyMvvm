@@ -148,6 +148,9 @@ class ComboBetViewModel(
     }
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
+        if (data.isEmpty()) {
+            setExpandMultiLayout(false)
+        }
         _onComboMultiBetBeanListener.value = data
     }
 
