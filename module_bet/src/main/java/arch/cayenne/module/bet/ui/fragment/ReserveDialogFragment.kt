@@ -48,6 +48,26 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override val vmClass: KClass<ReserveDialogViewModel>
         get() = ReserveDialogViewModel::class
 
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return object : Dialog(requireContext(), theme) {
+            override fun dismiss() {
+                // 讓系統其他地方調用 dismiss 時也會觸發動畫
+                if (mBinding.root.translationX == 0f) {
+                    mBinding.root.animate()
+                        .translationX(mBinding.root.width.toFloat())
+                        .setDuration(300)
+                        .setInterpolator(android.view.animation.DecelerateInterpolator())
+                        .withEndAction {
+                            super.dismiss()
+                        }
+                        .start()
+                } else {
+                    super.dismiss()
+                }
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
@@ -163,19 +183,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             mBinding.etRate.setText(text)
             val length = text.length
             mBinding.etRate.setSelection(length)
-        }
-    }
-
-    override fun dismiss() {
-        if (mBinding.root.translationX == 0f) {
-            mBinding.root.animate()
-                .translationX(mBinding.root.width.toFloat())
-                .setDuration(300)
-                .setInterpolator(android.view.animation.DecelerateInterpolator())
-                .withEndAction {
-                    super.dismiss()
-                }
-                .start()
         }
     }
 
