@@ -75,7 +75,11 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         tvTime.text = run {
                             when (basicInfo.status) {
                                 MatchStatusEnum.ONGOING ->
-                                    holder.itemView.context.getString(R.string.search_result_race_playing)
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_race_playing,
+                                        locale
+                                    )
 
                                 else -> {
                                     SimpleDateFormat("HH:mm", locale)
@@ -141,10 +145,20 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         }
                         btnBet.apply {
                             if(basicInfo.betStop) {
-                                text = holder.itemView.context.getString(R.string.search_result_btn_bet_finish)
+                                text =
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_btn_bet_finish,
+                                        locale
+                                    )
                                 isEnabled = false
                             } else {
-                                text = holder.itemView.context.getString(R.string.search_result_btn_bet)
+                                text =
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_btn_bet,
+                                        locale
+                                    )
                                 isEnabled = true
                                 clickNoRepeat {
                                     onBetClick?.invoke(itemData)
