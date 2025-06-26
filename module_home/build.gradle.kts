@@ -43,6 +43,7 @@ dependencies {
     implementation(project(":module_bet"))
     implementation(project(":module_betslip"))
     implementation(project(":module_account"))
+    implementation(project(":module_message"))
     implementation(libs.icu4j)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
