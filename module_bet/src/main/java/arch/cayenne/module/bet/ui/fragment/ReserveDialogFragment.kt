@@ -48,8 +48,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override val vmClass: KClass<ReserveDialogViewModel>
         get() = ReserveDialogViewModel::class
 
-    private var isDismissing = false
-
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
@@ -89,7 +87,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 it.attributes = layoutParams
 
                 // 設置初始位置在螢幕右側
-                mBinding.root.translationX = resources.displayMetrics.widthPixels.toFloat()
+                mBinding.root.translationX = pop.measuredWidth.toFloat()
 
                 mBinding.root.post {
                     mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -155,7 +153,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     putInt(KEY_ODDS_RESULT, odds)
                 }
             }
-            startDismissAnimation()
+            dismiss()
         }
     }
 
@@ -168,39 +166,16 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        return object : Dialog(requireContext(), theme) {
-            override fun dismiss() {
-                if (!isDismissing) {
-                    startDismissAnimation()
+    override fun dismiss() {
+        if (mBinding.root.translationX == 0f) {
+            mBinding.root.animate()
+                .translationX(mBinding.root.width.toFloat())
+                .setDuration(300)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .withEndAction {
+                    super.dismiss()
                 }
-            }
-        }
-    }
-
-    private fun startDismissAnimation() {
-        if (isDismissing) return
-        isDismissing = true
-        mBinding.root.animate()
-            .translationX(resources.displayMetrics.widthPixels.toFloat())
-            .setDuration(300)
-            .setInterpolator(android.view.animation.DecelerateInterpolator())
-            .withEndAction {
-                // 實際結束 Fragment
-                isDismissing = false
-                superDismiss()
-            }
-            .start()
-    }
-
-    private fun superDismiss() {
-        try {
-            // 防止 FragmentManager 錯誤
-            if (isAdded && !isRemoving) {
-                super.dismissAllowingStateLoss()
-            }
-        } catch (e: Exception) {
-            dismissAllowingStateLoss()
+                .start()
         }
     }
 
