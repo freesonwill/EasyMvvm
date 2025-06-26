@@ -5,6 +5,9 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BetResultRepository(
@@ -12,7 +15,21 @@ class BetResultRepository(
     private val betDao: BetDao
 ) : BaseRepository() {
 
-    fun observeLastBetOrder() = betDao.observeLastBetOrder()
+    private val lastBetOrderFlow = MutableSharedFlow<BetBean>(replay = 1, extraBufferCapacity = 1)
+
+    init {
+        scope.launch {
+            launch {
+                betDao.observeLastBetOrder().collect { bet ->
+                    bet?.let {
+                        lastBetOrderFlow.emit(it)
+                    }
+                }
+            }
+        }
+    }
+
+    fun observeLastBetOrder(): Flow<BetBean> = lastBetOrderFlow
 
     suspend fun getSelection(betId: Long) = withContext(scope.coroutineContext) {
         betDao.getSelections(betId)

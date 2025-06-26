@@ -107,7 +107,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text = getString(R.string.title_result_success_bet)
+            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
         mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
@@ -119,7 +119,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
         } else {
-            mBinding.tvTitle.text = getString(R.string.title_result_fail_bet)
+            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
         mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))

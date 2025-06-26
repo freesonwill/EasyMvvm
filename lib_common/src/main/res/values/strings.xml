@@ -13,4 +13,9 @@
     <string name="toast_over_max">投注超限</string>
 
     <string name="loading_view_text">讀取中</string>
+
+    <string name="title_combo_bet">%d串%d</string>
+
+    <string name="title_result_success_bet">投注成功</string>
+    <string name="title_result_fail_bet">投注失败</string>
 </resources>

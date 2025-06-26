@@ -121,6 +121,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
+            mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
             mViewModel.sendBet()
             navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
         }
