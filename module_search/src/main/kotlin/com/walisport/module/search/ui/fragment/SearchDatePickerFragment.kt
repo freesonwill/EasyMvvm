@@ -1,6 +1,8 @@
 package com.walisport.module.search.ui.fragment
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -25,8 +27,11 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import com.haibin.calendarview.CalendarView
+import com.haibin.calendarview.WeekBar
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchDatePickerBinding
+import com.walisport.module.search.ui.view.SearchCustomWeekBar
 import com.walisport.module.search.ui.viewmodel.SearchDatePickerViewModel
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import java.text.SimpleDateFormat
@@ -112,6 +117,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 setOnMonthChangeListener { year, month ->
                     setCalendarTitle(year, month)
                 }
+                updateWeekBarLocale()
                 setWeeColor(
                     Color.TRANSPARENT,
                     SkinnableResourceManager.getColor(requireContext(), R.color.search_calendar_week_text_color)
@@ -171,8 +177,32 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     mBinding.calendarView.curYear,
                     mBinding.calendarView.curMonth
                 )
+                // 更新weekBar的語言
+                updateWeekBarLocale()
             }
         }
+    }
+
+    @SuppressLint("DiscouragedApi")
+    private fun updateWeekBarLocale() {
+        with(mBinding.calendarView) {
+            getWeekBarByReflection()?.apply {
+                if(this is SearchCustomWeekBar) {
+                    setLocale(sharedViewModel.getCurrentLanguage())
+                    updateWeekBar()
+                }
+            }
+        }
+    }
+
+    private fun CalendarView.getWeekBarByReflection(): WeekBar? {
+        return runCatching {
+            CalendarView::class.java
+                .getDeclaredField("mWeekBar")
+                .apply { isAccessible = true }
+                .get(this) as? WeekBar
+        }.onFailure { it.printStackTrace() }
+            .getOrNull()
     }
 
     private fun createMaskGradient(): Drawable {
