@@ -35,8 +35,7 @@ class BetSlipConfirmItemViewHolder(binding: ViewBinding) :
             Glide.with(betConfirmIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betConfirmIvBall)
             betConfirmTvRace.text = match.matchName
             betConfirmTvIntroduce.text = item.selectionName
-            betConfirmTvAodds.text =
-                binding.root.resources.getString(R.string.live_bet_except_odds, item.odds)
+            betConfirmTvAodds.text = expectOdds(binding.root.resources.getString(R.string.live_bet_except_odds, item.odds))
             betConfirmTvStatus.isVisible = item.inPlay
             betConfirmTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
             betConfirmTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)

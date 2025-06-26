@@ -38,10 +38,7 @@ class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
                 Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
                 betInvalidTvRace.text = match.matchName
                 betInvalidTvIntroduce.text = item.selectionName
-                betInvalidTvAodds.text = binding.root.resources.getString(
-                    R.string.live_bet_except_odds,
-                    item.odds
-                )
+                betInvalidTvAodds.text = expectOdds(binding.root.resources.getString(R.string.live_bet_except_odds, item.odds))
                 betInvalidTvMatchStatus.isVisible = item.inPlay
                 betInvalidTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
