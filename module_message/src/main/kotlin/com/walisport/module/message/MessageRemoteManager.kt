@@ -47,7 +47,7 @@ class MessageRemoteManager(private val socketManager: WebSocketManager) {
             ) {
                 Client.SystemMsgStatusReq.newBuilder().apply {
                     this.id = id.toInt()  //消息ID
-                    this.status = status  //0未读 1已读 2删除
+                    this.status = status  //1未读 2已读 3删除
                 }.build()
             }
         if (result.error == null && result.data != null) {

@@ -56,11 +56,11 @@ class MessageMainRepository(
         return list
     }
 
-    //修改消息状态，删除或将消息设为已读 status = 0未读 1已读 2删除
+    //修改消息状态，删除或将消息设为已读 status = 1未读 2已读 3删除
     fun updateMessageStatus(id: Long, status: Int) {
         scope.launch {
             remoteManager.updateMessageStatus(scope, id, status)
-            if (status == 1) {
+            if (status == 2) {
                 msgDao.updateMessageStatus(status, id)
             } else {
                 msgDao.deleteMessageById(id)
