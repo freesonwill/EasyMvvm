@@ -1,5 +1,6 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -193,24 +194,31 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                     override fun onGlobalLayout() {
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                        // 動畫初始狀態
-                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                        mBinding.root.pivotY = dialogHeight.toFloat()
-                        mBinding.root.scaleX = 0f
-                        mBinding.root.scaleY = 0f
-                        mBinding.root.alpha = 0f
+                        // 先設定 triangle 位置
+                        setTrianglePosition(positionX)
 
-                        // 開始動畫
-                        mBinding.root.animate()
-                            .scaleX(1f)
-                            .scaleY(1f)
-                            .alpha(1f)
-                            .setDuration(300)
-                            .setInterpolator(android.view.animation.DecelerateInterpolator())
-                            .withStartAction {
-                                mBinding.root.visibility = View.VISIBLE
-                            }
-                            .start()
+                        mBinding.root.post {
+
+                            // 動畫初始狀態
+                            mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                            mBinding.root.pivotY = dialogHeight.toFloat()
+                            mBinding.root.scaleX = 0f
+                            mBinding.root.scaleY = 0f
+                            mBinding.root.alpha = 0f
+
+                            // 開始動畫
+                            mBinding.root.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .alpha(1f)
+                                .setDuration(200)
+                                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                                .withStartAction {
+                                    mBinding.root.visibility = View.VISIBLE
+                                }
+                                .start()
+                        }
+
                     }
                 })
             }
@@ -236,9 +244,24 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         }
     }
 
-
     override fun dismiss() {
-        super.dismiss()
+        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+        mBinding.root.pivotY = mBinding.root.height.toFloat()
+
+        // 開始收起動畫
+        mBinding.root.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.AccelerateInterpolator())
+            .withEndAction {
+                super.dismiss()
+            }
+            .start()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
         val bundle = Bundle()
         mViewModel.onEditNumber.value?.let {
             if (it.isNotEmpty()) {
@@ -247,5 +270,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             }
         }
         setFragmentResult(KEY_RESULT, bundle)
+        super.onDismiss(dialog)
     }
 }
