@@ -28,70 +28,79 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="@id/cl_filter" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_sport_filter"
         android:clickable="true"
         android:focusable="true"
         app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="18dp"
-            android:text="@string/sport_picker_title"
-            android:textColor="@color/secondary_text"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_sport"
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="15dp"
-            android:layout_marginTop="21dp"
-            android:layout_marginBottom="15dp"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/tv_reset"
-            app:layout_constraintTop_toBottomOf="@id/tv_title"
-            app:spanCount="4"
-            tools:itemCount="9"
-            tools:listitem="@layout/item_sport" />
+            android:background="@drawable/bg_sport_filter"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_reset"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_sport_filter_button_reset"
-            android:gravity="center"
-            android:paddingVertical="16dp"
-            android:text="@string/sport_picker_reset"
-            android:textColor="@color/navigation_bar"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/tv_confirm"
-            app:layout_constraintStart_toStartOf="parent" />
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                android:text="@string/sport_picker_title"
+                android:textColor="@color/secondary_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/tv_confirm"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_sport_filter_button_confirm"
-            android:gravity="center"
-            android:paddingVertical="16dp"
-            android:text="@string/confirm"
-            android:textColor="#000000"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/tv_reset" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_sport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="21dp"
+                android:layout_marginBottom="15dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toTopOf="@id/tv_reset"
+                app:layout_constraintTop_toBottomOf="@id/tv_title"
+                app:spanCount="4"
+                tools:itemCount="9"
+                tools:listitem="@layout/item_sport" />
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_reset"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_sport_filter_button_reset"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="@string/sport_picker_reset"
+                android:textColor="@color/navigation_bar"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_confirm"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_sport_filter_button_confirm"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="@string/confirm"
+                android:textColor="#000000"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_reset" />
+
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
