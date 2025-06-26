@@ -98,14 +98,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
         mBinding.rvMultiBet.isNestedScrollingEnabled = false
         setSumBetMoney(emptyList())
-        initMaxHeight()
-    }
-
-    private fun initMaxHeight() {
-        val screenHeight = resources.displayMetrics.heightPixels
-        val maxFragmentHeight = (screenHeight * 0.75).toInt()
-        mBinding.root.maxHeight = maxFragmentHeight
-        mBinding.root.minHeight = screenHeight / 2
+        setMultiLayoutMaxHeight()
     }
 
     override fun initListener() {
@@ -155,11 +148,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
             val isAdapterEmpty = comboMultiBetAdapter.itemCount == 0
-            val forceUpdate = it.isNotEmpty() && isAdapterEmpty
+            val forceUpdate = it.isEmpty() || isAdapterEmpty
 
             comboMultiBetAdapter.submitList(it) {
                 if (forceUpdate) {
-                    mViewModel.setExpandMultiLayout(false)
                     setMultiLayoutHeight(isExpanded = false, onComplete = {
                         setBetSheetView()
                     })
@@ -200,7 +192,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val screenHeight = resources.displayMetrics.heightPixels
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
-            setMultiLayoutMaxHeight()
         } else {
             val layoutParams = mBinding.rvBet.layoutParams
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
