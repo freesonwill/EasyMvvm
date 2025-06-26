@@ -190,6 +190,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     }
                 )
 
+                getTitleBarBackIcon().apply {
+                    setImageDrawable(
+                        getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    )
+                }
+
                 getSearchEditText().apply {
                     setOnFocusChangeListener { _, isFocused ->
                         if (isFocused) {
