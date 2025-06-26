@@ -4,6 +4,8 @@
     <color name="title_bar_white_blue">#222222</color>
 
     <color name="search_btn_white_blue">#000000</color>
+    <color name="search_btn_normal_white_blue">#222222</color>
+    <color name="search_btn_in_direct_match_white_blue">#ffffff</color>
     <color name="search_hint_white_blue">#929298</color>
     <color name="app_bg_white_blue">#F3F3F4</color>
     <color name="dynamic_text_white_blue">#666666</color>
@@ -15,6 +17,7 @@
     <color name="secondary_title_white_blue">#222222</color>
     <color name="secondary_text_white_blue">#666666</color>
     <color name="search_text_white_blue">#222222</color>
+    <color name="search_text_for_search_bar_white_blue">#222222</color>
     <color name="explanation_text_white_blue">#929292</color>
     <color name="navigation_bar_white_blue">#222222</color>
     <color name="navigation_lin_white_blue">#222222</color>
