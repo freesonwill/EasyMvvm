@@ -19,7 +19,7 @@ object DateUtils {
         calendar.set(Calendar.MILLISECOND, 0)
 
         val dateFormat = SimpleDateFormat("M.dd", Locale.getDefault())
-        val weekdayFormat = SimpleDateFormat("E", locale)
+        val weekdayFormat = SimpleDateFormat("EEEE", locale)
 
         repeat(days) {
             val dateStr = dateFormat.format(calendar.time) // MMdd
