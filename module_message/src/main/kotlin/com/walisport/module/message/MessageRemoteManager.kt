@@ -38,9 +38,9 @@ class MessageRemoteManager(private val socketManager: WebSocketManager) {
         scope: CoroutineScope,
         id: Long,
         status: Int
-    ): Client.SystemMsgStatusUpdateResp? {
+    ): Client.SystemMsgStatusResp? {
         val result =
-            socketManager.sendAndWaitProtoMessageResponse<Client.SystemMsgStatusUpdateResp>(
+            socketManager.sendAndWaitProtoMessageResponse<Client.SystemMsgStatusResp>(
                 scope = scope,
                 dispatcher = Dispatchers.IO,
                 apiCode = ApiCode.UPDATE_MESSAGE
