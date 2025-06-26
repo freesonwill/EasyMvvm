@@ -5,6 +5,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
@@ -71,6 +72,13 @@ class LivePlayerView @JvmOverloads constructor(
 
     fun setPlayerStateListener(listener: (PlayerState) -> Unit) {
         playerStateListener = listener
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        //移除window的时候需要将监听置空，否则因为LivePlayerView存在PlayerCache引发泄漏
+        onSingleTapListener = null
+        playerStateListener = null
     }
 
     fun setDataSource(url: String) {
