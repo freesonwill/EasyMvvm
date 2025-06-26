@@ -62,6 +62,10 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     override val vmClass: KClass<ComboBetMoneyKeyboardDialogViewModel>
         get() = ComboBetMoneyKeyboardDialogViewModel::class
 
+    private val resultBundle: Bundle by lazy {
+        Bundle()
+    }
+
     override fun onStart() {
         super.onStart()
         setDialogPosition()
@@ -240,36 +244,32 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
         } else {
+            resultBundle.putLong(VALUE_MONEY_INPUT, curAmount)
             dismiss()
         }
     }
 
     override fun dismiss() {
-        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-        mBinding.root.pivotY = mBinding.root.height.toFloat()
+        if (mBinding.root.scaleX != 0f) {
+            mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+            mBinding.root.pivotY = mBinding.root.height.toFloat()
 
-        // 開始收起動畫
-        mBinding.root.animate()
-            .scaleX(0f)
-            .scaleY(0f)
-            .alpha(0f)
-            .setDuration(200)
-            .setInterpolator(android.view.animation.AccelerateInterpolator())
-            .withEndAction {
-                super.dismiss()
-            }
-            .start()
+            // 開始收起動畫
+            mBinding.root.animate()
+                .scaleX(0f)
+                .scaleY(0f)
+                .alpha(0f)
+                .setDuration(200)
+                .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .withEndAction {
+                    super.dismiss()
+                }
+                .start()
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        val bundle = Bundle()
-        mViewModel.onEditNumber.value?.let {
-            if (it.isNotEmpty()) {
-                val money = it.toMoney()
-                bundle.putLong(VALUE_MONEY_INPUT, money)
-            }
-        }
-        setFragmentResult(KEY_RESULT, bundle)
+        setFragmentResult(KEY_RESULT, resultBundle)
         super.onDismiss(dialog)
     }
 }
