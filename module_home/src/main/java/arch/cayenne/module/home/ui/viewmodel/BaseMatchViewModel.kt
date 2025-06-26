@@ -129,6 +129,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         val ids = matchListChange.value?.filter { it.match.basicInfo.status == 5 && it.match.liveInfo.rollClock }?.map { it.match.matchId }?.toList() ?: return
         viewModelScope.launch(Dispatchers.IO) {
             val matchWithMarkets = repository.updateLiveMatch(ids)
+            if (matchWithMarkets.isEmpty()) return@launch
             val old = matchListChange.value!!.toMutableList()
             matchWithMarkets.forEach { matchWithMarket ->
                 val index =
