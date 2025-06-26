@@ -28,11 +28,9 @@
     <string name="title_reserve">预约</string>
 
     <string name="title_result_hint">无需在本页等待，稍后可在注单记录中查看结果</string>
-    <string name="title_result_success_bet">投注成功</string>
     <string name="title_result_success_reserve">预约成功</string>
     <string name="title_result_pending_bet">投注确认中</string>
     <string name="title_result_pending_reserve">预约确认中</string>
-    <string name="title_result_fail_bet">投注失败</string>
     <string name="title_result_fail_reserve">预约失败</string>
     <string name="title_result_amount">本金</string>
     <string name="title_result_win_single_bet">可赢</string>

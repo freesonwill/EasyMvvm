@@ -113,6 +113,7 @@ enum class BetResultStatusEnum(val code: Int) {
 
 data class BetResultLiteBean(
     val matchName: List<String>,
-    val combo: Int = 1,
+    val comboK: Int = 1,
+    val comboV: Int = 1,
     val isSuccessful: Boolean
 )
