@@ -23,8 +23,8 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
 
     companion object {
         const val TYPE_DEFAULT = 0
-        const val STATUS_READ = 1
-        const val STATUS_DEL = 2
+        const val STATUS_READ = 2
+        const val STATUS_DEL = 3
     }
 
     init {

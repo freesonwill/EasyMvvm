@@ -395,13 +395,6 @@ message ListCollectResp {
     repeated galaxy.common.proto.Match match = 1; //比赛
 }
 
-// 500-1050: 获取系统设置
-message GetSettingReq {
-}
-
-message GetSettingResp {
-    galaxy.common.proto.Setting setting = 1;
-}
 
 // 500-1051: 修改系统设置
 message UpdateSettingReq {
@@ -473,6 +466,7 @@ message GetSystemMsgReq {
     int32 id = 1; //消息ID，最大的一条
     int32 size = 2; //每页展示的数量
     int32 type = 3; //消息类型 0.全部 1.系统通知  2.活动通知
+    int32 status = 4; //默认0查询全部 1未读 2已读
 }
 message GetSystemMsgResp {
     repeated galaxy.common.proto.MsgRecord msgRecord = 1; // 消息记录
@@ -480,13 +474,27 @@ message GetSystemMsgResp {
 // 500-1107: 修改消息状态 已读或删除
 message SystemMsgStatusReq {
     int32 id = 1; //消息ID
-    int32 status = 3; // 0未读 1已读 2删除
+    int32 status = 3; // 1未读 2已读 3删除
 
 }
-message SystemMsgStatusUpdateResp {
+message SystemMsgStatusResp {
     bool success = 1;
 }
+// 500-1108: 获取消息统计数据
+message GetSystemMsgCountReq {
 
+}
+message GetSystemMsgCountResp {
+    repeated galaxy.common.proto.MsgCount msgCount = 1; // 消息统计
+}
+// 500-1109: 获取用户消息详情
+message GetSystemMsgDetailReq {
+    int32 id = 1; //消息ID
+
+}
+message GetSystemMsgDetailResp {
+     galaxy.common.proto.MsgRecord msgRecord = 1; // 消息记录
+}
 // 600-1005: 比赛盘口推送
 message MatchMarketNotify {
     int64 match_id = 1;         //比赛id
