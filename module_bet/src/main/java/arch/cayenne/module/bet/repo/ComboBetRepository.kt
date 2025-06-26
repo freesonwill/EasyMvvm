@@ -56,12 +56,14 @@ class ComboBetRepository(
     ) = withContext(scope.coroutineContext) {
         remoteManager.getComboRisk(data)?.let { riskList ->
             val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
-                val detail = detailList?.find { it.combo == bean.combo }
+                val detail = detailList?.find { it.serialValue == bean.serialValue }
                 if (detail == null) {
                     bean
                 } else {
                     ComboMultiBetBean(
-                        combo = bean.combo,
+                        serialValue = bean.serialValue,
+                        comboK = bean.comboK,
+                        comboV = bean.comboV,
                         sumOdds = bean.sumOdds,
                         count = bean.count,
                         inputMoney = detail.inputMoney,
@@ -94,6 +96,8 @@ class ComboBetRepository(
                                 .build()
                         )
                     )
+                    val selections = betDao.getSelections(bet.betId)
+                    setComboMulti(selections)
                 }
             }
         }
@@ -112,8 +116,10 @@ class ComboBetRepository(
                     val betId = bet.betId
                     val detailBean = data.map { bean ->
                         BetDetailBean(
+                            serialValue = bean.serialValue,
                             betId = betId,
-                            combo = bean.combo,
+                            comboK = bean.comboK,
+                            comboV = bean.comboV,
                             orderId = "",
                             sumOdds = bean.sumOdds,
                             count = bean.count,
@@ -136,8 +142,10 @@ class ComboBetRepository(
                     val selection = betDao.getSelections(betId)
                     val tempDetail = multiBet.map { bean ->
                         BetDetailBean(
+                            serialValue = bean.serialValue,
                             betId = betId,
-                            combo = bean.combo,
+                            comboK = bean.comboK,
+                            comboV = bean.comboV,
                             orderId = "",
                             sumOdds = bean.sumOdds,
                             count = bean.count,
@@ -150,10 +158,12 @@ class ComboBetRepository(
                     val resp = remoteManager.comboBet(selection, multiBet)
                     val detailBean = if (resp != null && resp.isSuccessful) {
                         multiBet.map { bean ->
-                            val res = resp.data.first { it.comboValue == bean.combo }
+                            val res = resp.data.first { it.serialValue == bean.serialValue }
                             BetDetailBean(
+                                serialValue = bean.serialValue,
                                 betId = betId,
-                                combo = res.comboValue,
+                                comboK = bean.comboK,
+                                comboV = bean.comboV,
                                 orderId = res.orderId,
                                 sumOdds = bean.sumOdds,
                                 count = bean.count,
@@ -164,8 +174,10 @@ class ComboBetRepository(
                     } else {
                         multiBet.map { bean ->
                             BetDetailBean(
+                                serialValue = bean.serialValue,
                                 betId = betId,
-                                combo = bean.combo,
+                                comboK = bean.comboK,
+                                comboV = bean.comboV,
                                 orderId = "",
                                 sumOdds = bean.sumOdds,
                                 count = bean.count,
@@ -189,35 +201,54 @@ class ComboBetRepository(
         val oddsList = data.map { it.odds }
         val n = data.size
 
-        val riskMap = riskList.associateBy { it.combo }
+        val riskMap = riskList.associateBy { it.serialValue }
+        var totalSumOdds = 0
+        var totalCount = 0
 
-        for (k in n downTo 1) {
+        for (k in n downTo 0) {
             riskMap[k]?.let { risk ->
                 val combinations = data.combinations(k)
                 val odds = when (k) {
-                    1 -> oddsList.reduce { acc, l -> acc.getOdds(l).toOdds() }
-                    n -> oddsList.sum()
+                    0 -> 0
                     else -> oddsList.combinations(k)
                         .sumOf { it.reduce { acc, l -> acc.getOdds(l).toOdds() } }
                 }
                 val count = when (k) {
-                    1 -> 1
-                    n -> n
+                    0 -> 0
                     else -> combinations.size
                 }
+                totalSumOdds += odds
+                totalCount += count
 
-                result.add(
-                    ComboMultiBetBean(
-                        combo = risk.combo,
-                        sumOdds = odds,
-                        count = count,
-                        minAmount = risk.minAmount,
-                        maxAmount = risk.maxAmount
+                if (k == 0) {
+                    result.add(
+                        ComboMultiBetBean(
+                            serialValue = risk.serialValue,
+                            comboK = n,
+                            comboV = totalCount,
+                            sumOdds = totalSumOdds,
+                            count = totalCount,
+                            minAmount = risk.minAmount,
+                            maxAmount = risk.maxAmount
+                        )
                     )
-                )
+                } else {
+                    result.add(
+                        ComboMultiBetBean(
+                            serialValue = risk.serialValue,
+                            comboK = k,
+                            comboV = 1,
+                            sumOdds = odds,
+                            count = count,
+                            minAmount = risk.minAmount,
+                            maxAmount = risk.maxAmount
+                        )
+                    )
+                }
+
             }
         }
-        return result
+        return result.sortedWith(compareBy({ it.comboK }, { it.comboV }))
     }
 
     private fun <T> List<T>.combinations(k: Int): List<List<T>> {

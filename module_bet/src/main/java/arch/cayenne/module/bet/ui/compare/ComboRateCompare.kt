@@ -5,7 +5,7 @@ import arch.cayenne.module.bet.data.ComboMultiBetBean
 
 class ComboRateCompare: DiffUtil.ItemCallback<ComboMultiBetBean>() {
     override fun areItemsTheSame(oldItem: ComboMultiBetBean, newItem: ComboMultiBetBean): Boolean {
-        return oldItem.combo == newItem.combo // 判斷唯一 ID
+        return oldItem.serialValue == newItem.serialValue // 判斷唯一 ID
     }
 
     override fun areContentsTheSame(oldItem: ComboMultiBetBean, newItem: ComboMultiBetBean): Boolean {

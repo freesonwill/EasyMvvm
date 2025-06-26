@@ -53,8 +53,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
-                mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
+            override fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {
+                mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }?.let {
                     childFragmentManager.setFragmentResultListener(
                         KEY_RESULT,
                         viewLifecycleOwner
@@ -62,7 +62,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
                             val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
-                            mViewModel.updateMultiBetMoney(id, money)
+                            mViewModel.updateMultiBetMoney(serialValue, money)
                         }
                     }
                     val currentMoney = if (it.inputMoney == 0L) null else it.inputMoney
@@ -78,10 +78,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         remainingMoney
                     ).show(childFragmentManager)
                 }
-            }
-
-            override fun getSize(): Int {
-                return mViewModel.onBetListListener.value?.size ?: 0
             }
 
             override fun getMoneySymbol(): String {

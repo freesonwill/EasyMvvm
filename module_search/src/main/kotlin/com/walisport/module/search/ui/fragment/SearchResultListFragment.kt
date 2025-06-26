@@ -2,6 +2,8 @@ package com.walisport.module.search.ui.fragment
 
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
@@ -72,6 +74,16 @@ class SearchResultListFragment :
                 }.apply {
                     attach()
                 }
+
+                // disable tooltip for tabs
+                (tlSearch.getChildAt(0) as ViewGroup)
+                    .children.forEach { tabView ->
+                        tabView.apply {
+                            setOnLongClickListener { true }
+                            tooltipText = null
+                        }
+                    }
+
                 switchTab(0, false)
             }
         }

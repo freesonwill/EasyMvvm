@@ -13,12 +13,14 @@ data class BetBean(
 )
 
 @Entity(
-    primaryKeys = ["betId", "combo"],
+    primaryKeys = ["betId", "serialValue"],
 )
 data class BetDetailBean(
     val betId: Long,
     var orderId: String = "",
-    val combo: Int = 1, // 串關次數
+    val serialValue: Int = 0, // 多少串一關，0為全串關
+    val comboK: Int = 1, // 3串2的3
+    val comboV: Int = 1, // 3串2的2
     val sumOdds: Int, // 串關後賠率加總
     val count: Int = 1, // 場次組合數量
     val inputMoney: Long,

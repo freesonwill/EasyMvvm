@@ -125,7 +125,7 @@ class BettingRemoteManager(
                 this.addAllCombo(
                     multi.map {
                         Common.BetCombo.newBuilder().apply {
-                            this.serialValue = if (it.combo == 1) 0 else it.combo
+                            this.serialValue = it.serialValue
                             this.betAmount = it.inputMoney.getMoney()
                             this.oddsChange = 2
                         }.build()
@@ -138,7 +138,7 @@ class BettingRemoteManager(
             val placeBetInfo = data.placeBetInfoList.map {
                 ComboMultiBetInfo(
                     orderId = it.orderId,
-                    comboValue = if (it.serialValue == 0) 1 else it.serialValue,
+                    serialValue = it.serialValue,
                     orderStatus = it.orderStatus,
                 )
             }
@@ -205,7 +205,7 @@ class BettingRemoteManager(
             val data = res.data!!
             data.riskList.map {
                 ComboRiskDataModel(
-                    combo = if (it.serialValue == 0) 1 else it.serialValue,
+                    serialValue = it.serialValue,
                     minAmount = it.min.toString().toMoney(),
                     maxAmount = it.max.toString().toMoney()
                 )

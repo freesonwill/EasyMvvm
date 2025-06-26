@@ -39,8 +39,10 @@
     <color name="app_bg">#0e0f19</color>
     <color name="search_btn">#24EE8A</color>
     <color name="search_btn_normal">#BBBBBB</color>
+    <color name="search_btn_in_direct_match">#ffffff</color>
     <color name="search_hint">#4B4C55</color>
     <color name="search_text">#BBBBBB</color>
+    <color name="search_text_for_search_bar">#FFFFFF</color>
     <color name="tran_0">#00000000</color>
 
     <color name="color_80000000">#80000000</color>
@@ -105,6 +107,7 @@
     <color name="live_tab_bg">#0E0F1A</color>
     <color name="keyboard_bg">#161823</color>
     <color name="search_bg">#232530</color>
+    <color name="search_bg_in_direct_match">#33FFFFFF</color>
     <color name="card_outline">#282A34</color>
     <color name="tab_outline">#929298</color>
     <color name="panel_outline">#1A1C29</color>
