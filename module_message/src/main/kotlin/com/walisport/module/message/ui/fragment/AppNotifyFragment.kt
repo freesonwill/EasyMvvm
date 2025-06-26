@@ -4,6 +4,8 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.AppNotifyBean
@@ -23,6 +25,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     override val vbClass: KClass<FragmentAppNotifyBinding> = FragmentAppNotifyBinding::class
     override val vmClass: KClass<TodayMatchViewModel> = TodayMatchViewModel::class
+    private var clicklistener: OnClickListener? = null
     private var sportId: Int = 0
     private var matchId: Long = 0L
 
@@ -42,6 +45,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         if (msg != null) {
             sportId = msg.sportId
             matchId = msg.matchId
+            mBinding.rootLayout.visibility = View.VISIBLE
             mBinding.tvNotifyTitle.text = msg.title
             mBinding.tvNotifyContent.text = msg.content
             if (msg.type == 1) {
@@ -54,22 +58,57 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     }
 
     private fun showEnterAnimation() {
+        offsetY = 0f
         val animator = ObjectAnimator.ofFloat(view, "translationY", -126.dp2px.toFloat(), 0f)
         animator.duration = 300
         animator.start()
     }
 
-    private fun showExitAnimation() {
-        val animator = ObjectAnimator.ofFloat(view, "translationY", 0f, -126.dp2px.toFloat())
+    fun showExitAnimation() {
+        val animator = ObjectAnimator.ofFloat(view, "translationY", offsetY, -126.dp2px.toFloat() + offsetY)
         animator.duration = 300
         animator.start()
     }
 
+    fun gotoMatchLive() {
+        navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
+    }
+
+    private var startY: Float = 0f
+    private var offsetY: Float = 0f
+
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        mBinding.rootLayout.setOnClickListener {
-            navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
-            showExitAnimation()
+        mBinding.rootLayout.setOnTouchListener { _, e ->
+            when (e.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startY = e.rawY
+                    clicklistener?.onDown()
+                    true
+                }
+
+                //点击事件弹窗消失并跳转到直播详情页，触摸事件弹窗随手指移动后消失，不跳转直播详情页
+                MotionEvent.ACTION_UP -> {
+                    val off = e.rawY - startY
+                    if (off < 10) {
+                        clicklistener?.onClick()
+                    } else {
+                        clicklistener?.onTouch()
+                    }
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    offsetY = e.rawY - startY
+                    if (offsetY > 40) {
+                        offsetY = 40f
+                    }
+                    mBinding.rootLayout.translationY = offsetY
+                    true
+                }
+
+                else -> false
+            }
         }
     }
 
@@ -79,5 +118,15 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     override fun createObserver() {
 
+    }
+
+    fun setOnItemClickListener(listener: OnClickListener) {
+        this.clicklistener = listener
+    }
+
+    interface OnClickListener {
+        fun onTouch()
+        fun onClick()
+        fun onDown()
     }
 }
