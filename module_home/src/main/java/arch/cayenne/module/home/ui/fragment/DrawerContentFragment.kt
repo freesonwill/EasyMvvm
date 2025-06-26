@@ -94,6 +94,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                         with (mBinding) {
                             if (i == 0) {
                                 itemNotification1.visibility = View.VISIBLE
+                                itemNotification2.visibility = View.GONE
                                 tvMessage1.text = item.title
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
                             } else {
