@@ -101,6 +101,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvMultiBet.isNestedScrollingEnabled = false
         setSumBetMoney(emptyList())
         setMultiLayoutMaxHeight()
+        forceUpdateLayout()
     }
 
     override fun initListener() {
