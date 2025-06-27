@@ -289,6 +289,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
+            } else if (mViewModel.isDatePickerOpen()) {
+                mViewModel.setIsDatePickerOpen(false)
             } else {
                 val navController = mBinding.fragmentContainer.findNavController()
                 val backStackId = navController.previousBackStackEntry?.destination?.id

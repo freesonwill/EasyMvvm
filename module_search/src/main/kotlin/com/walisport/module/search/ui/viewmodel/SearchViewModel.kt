@@ -49,9 +49,16 @@ class SearchViewModel : BaseViewModel() {
     private val _titleBarMaskEvent = MutableSharedFlow<Pair<Boolean, (() -> Unit)?>>()
     val titleBarMaskEvent: SharedFlow<Pair<Boolean, (() -> Unit)?>> = _titleBarMaskEvent
 
+    /** 日期選擇器開啟狀態 */
+    private val _isDatePickerOpen = MutableSharedFlow<Boolean>(replay = 1)
+    val isDatePickerOpen: SharedFlow<Boolean> = _isDatePickerOpen.asSharedFlow()
+
     init {
         // 初始化當前語系為預設語系
         _currentLanguage.tryEmit(Locale.getDefault())
+
+        // 初始化日期選擇器開啟狀態
+        _isDatePickerOpen.tryEmit(false)
 
         // 監聽語系變化
         viewModelScope.launch {
@@ -127,5 +134,17 @@ class SearchViewModel : BaseViewModel() {
         viewModelScope.launch {
             _titleBarMaskEvent.emit(Pair(isEnabled, onClick))
         }
+    }
+
+    /** 設置日期選擇器開啟狀態 */
+    fun setIsDatePickerOpen(isOpen: Boolean) {
+        viewModelScope.launch {
+            _isDatePickerOpen.emit(isOpen)
+        }
+    }
+
+    /** 取得日期選擇器是否開啟 */
+    fun isDatePickerOpen(): Boolean {
+        return _isDatePickerOpen.replayCache.firstOrNull() ?: false
     }
 }
