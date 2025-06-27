@@ -14,6 +14,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.data.LiveMainRepository
+import com.walisport.module.live.data.model.Incident
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchLiveData
@@ -25,12 +26,8 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
@@ -71,15 +68,12 @@ class LiveMainViewModel(
     private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
 
-
-
-
-
     //监听数据变化
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
-    fun observeConnectStateFlow():Flow<ConnectState> =repo.observeConnectStateFlow()
+    fun observeConnectStateFlow(): Flow<ConnectState> = repo.observeConnectStateFlow()
+
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
     val matchIdSportIdObserver: Flow<Pair<Long, Int>> =
@@ -211,7 +205,29 @@ class LiveMainViewModel(
             list.addAll(item.valuesList)
         }
         val trend = MatchTrendData(incidents, list)
-        return MatchLiveData(0, teams, stats, trend)
+        val event = data?.incidentsList?.mapIndexed { _, item ->
+            Incident(
+                position = item.position,
+                time = item.time,
+                type = item.type,
+                in_player_name_zh = item.inPlayerNameZh,
+                in_player_name_zht = item.inPlayerNameZht,
+                in_player_name_en = item.inPlayerNameEn,
+                out_player_name_zh = item.outPlayerNameZh,
+                out_player_name_zht = item.outPlayerNameZht,
+                out_player_name_en = item.outPlayerNameEn,
+                player_name_zh = item.playerNameZh,
+                player_name_zht = item.playerNameZht,
+                player_name_en = item.playerNameEn,
+                assist1_name_zh = item.assist1NameZh,
+                assist1_name_zht = item.assist1NameZht,
+                assist1_name_en = item.assist1NameEn,
+                assist2_name_zh = item.assist2NameZh,
+                assist2_name_zht = item.assist2NameZht,
+                assist2_name_en = item.assist2NameEn,
+            )
+        } ?: emptyList()
+        return MatchLiveData(0, teams, stats, trend, event)
     }
 
     fun getSelectionsEditAll(callback: (List<SelectionsEdit>) -> Unit) {
@@ -225,7 +241,6 @@ class LiveMainViewModel(
     fun reconnect() {
         repo.reconnect()
     }
-
 
     /**
      * 开启聊天服务

@@ -10,6 +10,7 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
 import com.walisport.module.live.data.EventEnum
+import com.walisport.module.live.data.model.Incident
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchTrendData
 import com.walisport.module.live.data.model.Stat
@@ -78,9 +79,10 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                         )
                     } else {
                         mBinding.llContent.visibility = View.VISIBLE
-                        parseTrendData(it.matchTrendData)  //比赛趋势信息
-                        parseStatsData(it.stats)           //统计进球红黄牌等信息
-                        parseHalfTeamData(it.team)         //统计进度条相关信息
+                        parseTrendData(it.matchTrendData)          //比赛趋势信息
+                        parseStatsData(it.stats)                   //统计进球红黄牌等信息
+                        parseHalfTeamData(it.team)                 //统计进度条相关信息
+                        parseTextLive(it.incidents)                //文字直播相关信息
                     }
                 }
             }
@@ -135,6 +137,10 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                 }
             }
         }
+    }
+
+    private fun parseTextLive(incidents: List<Incident>) {
+        mBinding.viewTechEvent.setData(incidents)
     }
 
     private fun showMatchTrendDialog(
