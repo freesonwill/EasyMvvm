@@ -94,9 +94,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //根据盘口获取投注注区
         launch {
             mViewModel.getLiveSelectionBean(marketIds).collect {it->
-                    LogUtils.d("投注列--------------------${it}")
+                   // LogUtils.d("投注列--------------------${it}")
                     mainViewModel.getSelectionsEditAll {selectionEdit->
-                        LogUtils.dTag("比赛推送","变化id----${selectionEdit}")
+                      //  LogUtils.dTag("比赛推送","变化id----${selectionEdit}")
                         mBinding.clDynamics.setVisibilityGone()
                         mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
                         liveBetOnAdapter.setData(
@@ -203,7 +203,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 it?.forEach {
                     marketIds.add(it.marketId)
                 }
-                LogUtils.e("showData${marketIds}")
+               // LogUtils.e("showData${marketIds}")
                 showData(it, marketIds)
             }
 

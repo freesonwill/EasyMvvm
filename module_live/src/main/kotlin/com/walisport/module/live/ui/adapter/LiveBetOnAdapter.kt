@@ -73,7 +73,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     false
                 }
                 var status = notifySelectionsId?.find { it.selectionId == listIt.selectionId }?.selectionId ?: 0L
-                LogUtils.dTag("比赛推送","status----${status}---oddsStatus${listIt.oddsStatus},---isNotify${isNotify}--notifySelectionsId${notifySelectionsId}")
+              //  LogUtils.dTag("比赛推送","status----${status}---oddsStatus${listIt.oddsStatus},---isNotify${isNotify}--notifySelectionsId${notifySelectionsId}")
                 var name =
                     if (listIt.style == StatesArrange.BO_DIAN.code) listIt.name else listIt.shortName
                 viewBinding.lbBet.submitList(

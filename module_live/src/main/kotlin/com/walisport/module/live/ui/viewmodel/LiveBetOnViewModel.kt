@@ -73,7 +73,7 @@ class LiveBetOnViewModel : BaseViewModel() {
 
     //根据盘口分类code获取盘口列表
     fun getMarketList(code: String) {
-      LogUtils.dTag("盘口选择","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
+     // LogUtils.dTag("盘口选择","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
         if (code.isEmpty()) {
             _getMarketList.postValue(marketMenu.value)
         } else {
@@ -84,7 +84,7 @@ class LiveBetOnViewModel : BaseViewModel() {
             marketIds.add(it.marketId)
         }
         //监听盘口数据变化
-        LogUtils.d("监听盘口数据变化observeSelection${marketIds}")
+       // LogUtils.d("监听盘口数据变化observeSelection${marketIds}")
         observeSelection(marketIds)
 
     }
@@ -114,7 +114,7 @@ class LiveBetOnViewModel : BaseViewModel() {
 
             repository.observeSelection(marketIds).collect {
                 _observeSelection.emit(it)
-                LogUtils.d("比赛详情--------observeSelection${it}")
+              //  LogUtils.d("比赛详情--------observeSelection${it}")
             }
         }
     }
@@ -124,7 +124,7 @@ class LiveBetOnViewModel : BaseViewModel() {
         marketIds.forEach {
             map[it] = repository.queryLiveSelectionBean(it)
         }
-        LogUtils.d("getLiveSelectionBean-----map---${map}")
+       // LogUtils.d("getLiveSelectionBean-----map---${map}")
         emit(map)
     }.flowOn(Dispatchers.IO)
 }
