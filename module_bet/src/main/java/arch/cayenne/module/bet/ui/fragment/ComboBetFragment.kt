@@ -144,13 +144,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
             val lastSize = comboMultiBetAdapter.itemCount
+            if (data.size <= 1) {
+                mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+            }
             comboMultiBetAdapter.submitList(data) {
                 if (lastSize == 0 && data.isNotEmpty()) {
                     setMultiLayoutExpandedHeight(false)
-                } else if (data.size <= 1) {
-                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
                 }
             }
             setSumBetMoney(data)
