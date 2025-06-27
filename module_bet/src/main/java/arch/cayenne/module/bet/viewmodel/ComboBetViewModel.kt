@@ -54,9 +54,9 @@ class ComboBetViewModel(
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
     private val _onForceUpdateListener = MediatorLiveData(false).apply {
-        var isFirstInit = false
+        var hasInit = false
         val checkBothLoaded = {
-            if (isFirstInit) {
+            if (hasInit) {
                 val comboMultiData = _onComboMultiBetBeanListener.value
                 val betListData = _onBetListListener.value
                 if (comboMultiData != null && betListData != null) {
@@ -65,12 +65,14 @@ class ComboBetViewModel(
                         value = true
                     } else if (betListData.size == 2) {
                         value = true
+                    } else if (comboMultiData.isEmpty()) {
+                        value = true
                     }
                 }
 
             } else {
                 if (_onBetListListener.value != null && _onComboMultiBetBeanListener.value != null) {
-                    isFirstInit = true
+                    hasInit = true
                     value = true
                 }
             }

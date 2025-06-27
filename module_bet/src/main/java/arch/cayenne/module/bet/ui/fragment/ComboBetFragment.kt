@@ -147,6 +147,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             comboMultiBetAdapter.submitList(data) {
                 if (lastSize == 0 && data.isNotEmpty()) {
                     setMultiLayoutExpandedHeight(false)
+                } else if (data.size <= 1) {
+                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
                 }
             }
             setSumBetMoney(data)
@@ -175,7 +179,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             } else {
                 mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
             }
-            setMultiLayoutExpandedHeight(it)
+            if (mViewModel.onBetListListener.value != null && mViewModel.onComboMultiBetBeanListener.value != null) {
+                setMultiLayoutExpandedHeight(it)
+            }
         }
     }
 
@@ -239,9 +245,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun setMultiLayoutExpandedHeight(isExpanded: Boolean) {
         val adapter = mBinding.rvMultiBet.adapter ?: return
-        if (adapter.itemCount <= 1) return
+        if (adapter.itemCount <= 1) {
+            return
+        }
         val currentHeight = mBinding.rvMultiBet.height
-
         mBinding.rvMultiBet.post {
             val itemHeight = getMultiItemHeight()
             val targetHeight = itemHeight * if (isExpanded) adapter.itemCount.coerceAtMost(3) else 1
@@ -291,11 +298,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun getMultiItemHeight(): Int {
+        if (comboMultiBetAdapter.itemCount == 0) return 0
         val layoutManager = mBinding.rvMultiBet.layoutManager as? LinearLayoutManager
         val firstVisibleItemView =
             layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
         return if (firstVisibleItemView == null) {
-            return 90.dp2px
+            90.dp2px
         } else {
             // 不知道為什麼高度會少bottom(6dp)空白間距
             firstVisibleItemView.height + 6.dp2px
