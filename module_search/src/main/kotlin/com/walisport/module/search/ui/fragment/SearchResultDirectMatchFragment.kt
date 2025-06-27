@@ -83,6 +83,8 @@ class SearchResultDirectMatchFragment :
         }
     }
 
+    private var datePicker: SearchDatePickerFragment? = null
+
     enum class RaceViewState {
         Loading, Empty, Success
     }
@@ -187,6 +189,15 @@ class SearchResultDirectMatchFragment :
                                 )
                     }
                 }
+
+                launch {
+                    sharedViewModel.isDatePickerOpen.collect {
+                        // 僅用來處理點擊返回鍵時關閉DatePicker
+                        if (!it && datePicker?.isVisible == true) {
+                            datePicker?.close()
+                        }
+                    }
+                }
             }
 
             viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -203,6 +214,7 @@ class SearchResultDirectMatchFragment :
 
     override fun onDestroyView() {
         mBinding.recyclerView.adapter = null
+        datePicker = null
         super.onDestroyView()
     }
 
@@ -243,7 +255,7 @@ class SearchResultDirectMatchFragment :
                                         outRect.set(0, 0, 0, 0)
                                     }
 
-                                    else -> {
+                                    SearchResultRaceAdapter.VIEW_TYPE_ITEM -> {
                                         val prevType = linearAdapter.getItemViewType(position - 1)
                                         outRect.set(
                                             0,
@@ -251,6 +263,8 @@ class SearchResultDirectMatchFragment :
                                             0, 0
                                         )
                                     }
+
+                                    else -> Unit
                                 }
                             }
                         })
@@ -268,6 +282,8 @@ class SearchResultDirectMatchFragment :
 
             setTitleBarMask(false)
             setDateBarStatus(false)
+            setIsDatePickerOpen(false)
+            datePicker = null
 
             val newDate =
                 bundle.getLong(DATE_PICKER_RESULT_TIME_IN_MILLIS)
@@ -288,14 +304,19 @@ class SearchResultDirectMatchFragment :
             }
         }
 
-        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px
-        val datePicker = SearchDatePickerFragment.newInstance(
-            marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
-        )
+        datePicker =
+            SearchDatePickerFragment.Builder().apply {
+                setMarginTop(mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px)
+                setMarginStart(8.dp2px)
+                setMarginEnd(8.dp2px)
+                setSchemeDates(mViewModel.racedDateMap)
+                mViewModel.getSelectedDate()?.time?.let { setSelectedDate(it) }
+            }.build()
 
-        datePicker.show(childFragmentManager, mBinding.clRoot.id)
+        datePicker?.show(childFragmentManager, mBinding.clRoot.id)
+        setIsDatePickerOpen(true)
         setTitleBarMask(true) {
-            datePicker.close()
+            datePicker?.close()
         }
         setDateBarStatus(true)
     }
@@ -362,14 +383,14 @@ class SearchResultDirectMatchFragment :
                     tvTitle.text = data.name
                     tvSubTitle.text =
                         listOf(
-                            data.name,
+                            data.tournamentShortName,
                             data.teamName,
                             data.number.toString(),
                             data.position.name
                         ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
                             String.format(
                                 R.string.search_result_sub_title_player.toTranslatedStr(),
-                                data.name,
+                                data.tournamentShortName,
                                 data.teamName,
                                 data.number,
                                 data.position.name
@@ -431,5 +452,9 @@ class SearchResultDirectMatchFragment :
 
     private fun setTitleBarMask(isEnabled: Boolean, onClick: (() -> Unit)? = null) {
         sharedViewModel.setTitleBarMaskEvent(isEnabled, onClick)
+    }
+
+    private fun setIsDatePickerOpen(isOpen: Boolean) {
+        sharedViewModel.setIsDatePickerOpen(isOpen)
     }
 }

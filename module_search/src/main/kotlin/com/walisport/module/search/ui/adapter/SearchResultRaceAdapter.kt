@@ -16,6 +16,7 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.MatchStatusEnum
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.model.SearchMatchBean
+import com.walisport.module.search.databinding.ItemSearchResultNoMoreBinding
 import com.walisport.module.search.databinding.ItemSearchResultRaceBinding
 import com.walisport.module.search.databinding.ItemSearchResultRaceHeaderBinding
 import com.walisport.module.search.ui.compare.SearchResultRaceCompare
@@ -29,6 +30,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
     companion object {
         const val VIEW_TYPE_HEADER = 0
         const val VIEW_TYPE_ITEM = 1
+        const val VIEW_TYPE_NO_MORE = 2
     }
 
     var onBetClick: ((SearchMatchBean) -> Unit)? = null
@@ -40,7 +42,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
         return when (getItem(position)) {
             is SearchResultRaceItemType.Header -> VIEW_TYPE_HEADER
             is SearchResultRaceItemType.Item -> VIEW_TYPE_ITEM
-            else -> VIEW_TYPE_ITEM
+            is SearchResultRaceItemType.NoMore -> VIEW_TYPE_NO_MORE
         }
     }
 
@@ -75,7 +77,11 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         tvTime.text = run {
                             when (basicInfo.status) {
                                 MatchStatusEnum.ONGOING ->
-                                    holder.itemView.context.getString(R.string.search_result_race_playing)
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_race_playing,
+                                        locale
+                                    )
 
                                 else -> {
                                     SimpleDateFormat("HH:mm", locale)
@@ -141,10 +147,20 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         }
                         btnBet.apply {
                             if(basicInfo.betStop) {
-                                text = holder.itemView.context.getString(R.string.search_result_btn_bet_finish)
+                                text =
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_btn_bet_finish,
+                                        locale
+                                    )
                                 isEnabled = false
                             } else {
-                                text = holder.itemView.context.getString(R.string.search_result_btn_bet)
+                                text =
+                                    SkinnableResourceManager.getString(
+                                        holder.itemView.context,
+                                        R.string.search_result_btn_bet,
+                                        locale
+                                    )
                                 isEnabled = true
                                 clickNoRepeat {
                                     onBetClick?.invoke(itemData)
@@ -154,6 +170,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                     }
                 }
             }
+            VIEW_TYPE_NO_MORE -> Unit
         }
     }
 
@@ -165,6 +182,7 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
         return when (viewType) {
             VIEW_TYPE_HEADER -> ItemSearchResultRaceHeaderBinding.inflate(inflater, parent, false)
             VIEW_TYPE_ITEM -> ItemSearchResultRaceBinding.inflate(inflater, parent, false)
+            VIEW_TYPE_NO_MORE -> ItemSearchResultNoMoreBinding.inflate(inflater, parent, false)
             else -> throw IllegalArgumentException("Invalid view type: $viewType")
         }
     }

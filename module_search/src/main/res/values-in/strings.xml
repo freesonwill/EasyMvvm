@@ -3,7 +3,7 @@
     <string name="please_input_content">Silakan masukkan konten</string>
     <string name="delete_all">Hapus Semua</string>
     <string name="search_finish">Selesai</string>
-    <string name="history_record">Riwayat</string>
+    <string name="history_record">Riwayat Pencarian</string>
     <string name="hot_search">Pencarian Populer</string>
     <string name="no_search_result">Tidak ada data, silakan coba yang lain</string>
     <string name="tab_all">Semua</string>
@@ -25,4 +25,5 @@
     <string name="search_result_race_playing">Sedang Berlangsung</string>
     <string name="search_result_no_data">Tidak ada data</string>
     <string name="search_result_sub_title_tournament">Musim %1$s</string>
+    <string name="search_result_no_more_data">Tidak ada lagi</string>
 </resources>

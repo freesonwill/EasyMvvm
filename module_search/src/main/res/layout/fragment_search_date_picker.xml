@@ -22,6 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/shape_search_result_calendar_bg"
+        android:clickable="true"
+        android:focusable="true"
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -67,6 +69,7 @@
             app:calendar_height="40dp"
             app:day_text_size="14sp"
             app:layout_constraintTop_toBottomOf="@id/tv_calendar_title"
+            app:week_bar_view="com.walisport.module.search.ui.view.SearchCustomWeekBar"
             app:month_view="com.walisport.module.search.ui.view.SearchCustomMonthView"
             app:week_bar_height="17dp"
             app:week_text_size="13sp" />

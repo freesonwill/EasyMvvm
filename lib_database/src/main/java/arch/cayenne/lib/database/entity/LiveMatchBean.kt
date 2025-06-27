@@ -38,6 +38,10 @@ data class LiveSelectionBean(
     val oddsStatus: Int
 )
 
+@Entity
+data class SelectionsEdit(
+    @PrimaryKey val selectionId: Long,
+)
 
 @Entity
 data class LiveSelectionBeanRecord(

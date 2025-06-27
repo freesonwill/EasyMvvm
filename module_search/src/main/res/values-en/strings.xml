@@ -2,7 +2,7 @@
     <string name="please_input_content">Please enter content</string>
     <string name="delete_all">Delete All</string>
     <string name="search_finish">Finish</string>
-    <string name="history_record">History record</string>
+    <string name="history_record">Search History</string>
     <string name="hot_search">Popular Searches</string>
     <string name="no_search_result">No data available, please try something else.</string>
     <string name="tab_all">All</string>
@@ -24,4 +24,5 @@
     <string name="search_result_race_playing">In Progress</string>
     <string name="search_result_no_data">No data available</string>
     <string name="search_result_sub_title_tournament">%1$s Season</string>
+    <string name="search_result_no_more_data">No more data</string>
 </resources>

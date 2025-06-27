@@ -5,9 +5,10 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.qyplayer.R
 import arch.cayenne.lib.qyplayer.gesture.GestureDialogManager
@@ -17,8 +18,6 @@ import arch.cayenne.lib.qyplayer.util.ScreenUtils
 import com.xxx.qyplayer.PlayerConfig
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -58,7 +57,6 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mPlayerMode: PlayerMode
 
-    private val coroutineScope = CoroutineScope(Dispatchers.Main)
     private var bufferingTimeoutJob: Job? = null
 
     fun init(playerMode: PlayerMode) {
@@ -160,7 +158,7 @@ class LivePlayerView @JvmOverloads constructor(
 
         mRenderView.apply {
             setOnStateChangedListener {
-                (context as? Activity)?.runOnUiThread {
+                findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                     if (it.state == PlayerState.ERROR) {
                     }
 
@@ -172,7 +170,7 @@ class LivePlayerView @JvmOverloads constructor(
             setOnUpdateStatisticsListener { category, json ->
                 mOnUpdateStatisticsListener?.invoke(category, json)
                 if (category == "network") {
-                    (context as? Activity)?.runOnUiThread {
+                    findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
                         processNetworkSpeed(json)
                     }
                 }
@@ -399,8 +397,8 @@ class LivePlayerView @JvmOverloads constructor(
                 // 启动协程，10秒超时
                 // 如果10秒后还在loading状态， 展示加载失败页面
                 bufferingTimeoutJob?.cancel()
-                bufferingTimeoutJob = coroutineScope.launch {
-                    delay(10000)
+                bufferingTimeoutJob = findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+                    delay(10000) //这里延迟10s，如果用MainScope会造成泄漏，因为LivePlayerView存在复用
                     playerStateListener?.invoke(PlayerState.ERROR)
                 }
             }

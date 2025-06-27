@@ -120,4 +120,28 @@
     <string name="insufficient_bet_amount">有效投注额不足</string>
     <string name="insufficient_balance">余额不足</string>
 
+    <string name="event_jq">进球</string>
+    <string name="event_sz">射正</string>
+    <string name="event_sp">射偏</string>
+    <string name="event_dq">点球</string>
+    <string name="event_dqwj">点球未进</string>
+    <string name="event_wx">危险进攻</string>
+    <string name="event_wlq">乌龙球</string>
+    <string name="event_zg">助攻</string>
+    <string name="event_jiao">角球</string>
+    <string name="event_yellow">黄牌</string>
+    <string name="event_red">红牌</string>
+    <string name="event_jg">进攻</string>
+    <string name="event_lhbh">两黄变红</string>
+    <string name="event_yue">越位</string>
+    <string name="event_ryq">任意球</string>
+    <string name="event_qmq">球门球</string>
+    <string name="event_up">换上</string>
+    <string name="event_down">换下</string>
+    <string name="event_hr">换人</string>
+
+    <string name="event_sm">射门</string>
+    <string name="event_cq">传球</string>
+    <string name="event_kql">控球率</string>
+    <string name="event_cqcg">传球成功</string>
 </resources>

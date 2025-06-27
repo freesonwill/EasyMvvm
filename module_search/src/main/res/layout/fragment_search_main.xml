@@ -32,14 +32,15 @@
             <arch.cayenne.lib.skin.widget.SkinnableRelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true">
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true">
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
                     android:id="@+id/iv_click_show_delete"
-                    android:layout_width="@dimen/dp_20"
-                    android:layout_height="@dimen/dp_20"
-                    android:layout_marginEnd="@dimen/dp_8"
-                    app:srcCompat="@drawable/history_delete_icon" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    app:srcCompat="@drawable/ic_search_history_delete" />
 
                 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
                     android:id="@+id/ll_show_completed"
@@ -60,9 +61,9 @@
                     <View
                         android:layout_width="1dp"
                         android:layout_height="@dimen/dp_10"
-                        android:layout_marginLeft="@dimen/dp_10"
-                        android:layout_marginRight="@dimen/dp_10"
-                        android:background="@color/white"
+                        android:layout_marginStart="9dp"
+                        android:layout_marginEnd="9dp"
+                        android:background="@color/search_history_divider"
                         android:text="|"
                         android:textSize="15sp"
                         tools:ignore="HardcodedText" />
@@ -71,6 +72,7 @@
                         android:id="@+id/txt_completed_all"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:text="@string/search_finish"
                         android:textColor="@color/search_title"
                         android:textSize="15sp" />

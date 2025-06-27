@@ -3,7 +3,7 @@
     <string name="please_input_content">Por favor, insira o conteúdo</string>
     <string name="delete_all">Excluir Tudo</string>
     <string name="search_finish">Concluído</string>
-    <string name="history_record">Histórico</string>
+    <string name="history_record">Histórico de Pesquisa</string>
     <string name="hot_search">Pesquisas Populares</string>
     <string name="no_search_result">Sem dados, por favor tente outro</string>
     <string name="tab_all">Tudo</string>
@@ -25,4 +25,5 @@
     <string name="search_result_race_playing">Em Andamento</string>
     <string name="search_result_no_data">Nenhum dado disponível</string>
     <string name="search_result_sub_title_tournament">Temporada %1$s</string>
+    <string name="search_result_no_more_data">Não há mais</string>
 </resources>

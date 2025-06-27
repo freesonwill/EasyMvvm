@@ -75,8 +75,8 @@
       android:textSize="@dimen/sp_14"
       android:textStyle="bold"
       android:textColor="@color/substitution_text_color"
-      android:drawableStart="@drawable/lineup_substitution_top"
-      android:drawableEnd="@drawable/lineup_substitution_dow"
+      android:drawableLeft="@drawable/lineup_substitution_top"
+      android:drawableRight="@drawable/lineup_substitution_dow"
       android:layout_height="match_parent"
       tools:ignore="MissingConstraints" />
 
