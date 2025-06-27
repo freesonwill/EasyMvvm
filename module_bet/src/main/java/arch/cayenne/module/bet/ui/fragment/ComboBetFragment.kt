@@ -218,7 +218,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
-            mBinding.rvBet.post {
+            if (mViewModel.onMultiLayoutExpendListener.value == false) {
                 restoreBetLayoutPosition()
             }
         }
