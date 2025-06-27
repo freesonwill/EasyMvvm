@@ -51,7 +51,7 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
             detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
                 when (market.status) {
                     LiveMatchBetStatus.DELETE.code -> { // 删除
-                        LogUtils.e("selectionsToRoomData---delete--name${selection.name},${selection.name}-----")
+                     //   LogUtils.e("selectionsToRoomData---delete--name${selection.name},${selection.name}-----")
                         selectionsDelete.add(selection.selectionId)
                     }
 
@@ -69,7 +69,7 @@ fun List<Market>.selectionsToRoomData(rec: List<LiveSelectionBeanRecord>): LiveM
                         } else {
                             LiveOddsStatusEnum.SAME.status
                         }
-                        LogUtils.e("selectionsToRoomData-----name${selection.name}------oddsRecord=${data?.odds?.toDouble()}-----odds${selection?.odds?.toDouble()}-----status =${status}")
+                    //    LogUtils.e("selectionsToRoomData-----name${selection.name}------oddsRecord=${data?.odds?.toDouble()}-----odds${selection?.odds?.toDouble()}-----status =${status}")
                         selectionsRecord.add(
                             LiveSelectionBeanRecord(
                                 marketId = market.marketId,
