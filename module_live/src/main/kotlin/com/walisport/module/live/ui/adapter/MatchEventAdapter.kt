@@ -1,16 +1,16 @@
 package com.walisport.module.live.ui.adapter
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.AppCompatTextView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.MatchEventCompare
+import com.walisport.module.live.data.EventEnum
 import com.walisport.module.live.data.model.MatchEventBean
 import com.walisport.module.live.databinding.ItemMatchEventBinding
 import com.walisport.module.live.databinding.ItemMatchEventTitleBinding
@@ -32,23 +32,22 @@ class MatchEventAdapter(private val context: Context) :
     ) {
         val item = getItem(position)
         if (binding is ItemMatchEventBinding) {
-            binding.tvMatchMinutes.text = String.format("%s'", item.minutes)
+            //分钟
+            binding.tvMatchMinutes.text = String.format("%s'", item.time)
+            //主队
             binding.tvMatchPlayerLeft.text = item.homePlayer
-            binding.tvMatchPlayerLeftTwo.text = item.homePlayerTwo
+            binding.tvMatchPlayerLeftTwo.text = item.homeTwoPlayer
+            binding.tvMatchTypeLeft.text = getEventType(item.homeType)
+            binding.tvMatchTypeLeftTwo.text = getEventType(item.homeTwoType)
+            binding.ivMatchTypeLeft.background = getEventIcon(item.homeType)
+            binding.ivMatchTypeLeftTwo.background = getEventIcon(item.homeTwoType)
+            //客队
             binding.tvMatchPlayerRight.text = item.awayPlayer
-            binding.tvMatchPlayerRightTwo.text = item.awayPlayerTwo
-            setMatchEventData(item.homeType, binding.tvMatchTypeLeft, binding.ivMatchTypeLeft)
-            setMatchEventData(
-                item.homeTypeTwo,
-                binding.tvMatchTypeLeftTwo,
-                binding.ivMatchTypeLeftTwo
-            )
-            setMatchEventData(item.awayType, binding.tvMatchTypeRight, binding.ivMatchTypeRight)
-            setMatchEventData(
-                item.awayTypeTwo,
-                binding.tvMatchTypeRightTwo,
-                binding.ivMatchTypeRightTwo
-            )
+            binding.tvMatchPlayerRightTwo.text = item.awayTwoPlayer
+            binding.tvMatchTypeRight.text = getEventType(item.awayType)
+            binding.tvMatchTypeRightTwo.text = getEventType(item.awayTwoType)
+            binding.ivMatchTypeRight.background = getEventIcon(item.awayType)
+            binding.ivMatchTypeRightTwo.background = getEventIcon(item.awayTwoType)
         } else if (binding is ItemMatchEventTitleBinding) {
             if (position == itemCount - 1) {
                 binding.tvMatchTitle.text = context.getString(R.string.standings_over)
@@ -58,35 +57,18 @@ class MatchEventAdapter(private val context: Context) :
         }
     }
 
-    private fun setMatchEventData(type: Int, text: AppCompatTextView, icon: AppCompatImageView) {
-        when (type) {
-            1 -> {
-                text.text = context.getString(R.string.standings_goal)
-                icon.background =
-                    AppCompatResources.getDrawable(context, R.mipmap.icon_live_football)
-            }
+    private fun getEventType(type: Int): String {
+        return EventEnum.getEventByCode(type)?.desc ?: ""
+    }
 
-            2 -> {
-                text.text = context.getString(R.string.standings_yellow)
-                icon.background = AppCompatResources.getDrawable(context, R.mipmap.icon_live_yellow)
-            }
-
-            3 -> {
-                text.text = context.getString(R.string.standings_help)
-                icon.background = AppCompatResources.getDrawable(context, R.mipmap.icon_help_attack)
-            }
-
-            4 -> {
-                text.text = context.getString(R.string.standings_up)
-                icon.background = AppCompatResources.getDrawable(context, R.mipmap.icon_standing_up)
-            }
-
-            5 -> {
-                text.text = context.getString(R.string.standings_down)
-                icon.background =
-                    AppCompatResources.getDrawable(context, R.mipmap.icon_standing_down)
+    private fun getEventIcon(type: Int): Drawable? {
+        if (EventEnum.getEventByCode(type) != null) {
+            val icon = EventEnum.getEventByCode(type)?.icon
+            if (icon != null) {
+                return AppCompatResources.getDrawable(context, icon)
             }
         }
+        return null
     }
 
     override fun createViewBinding(
