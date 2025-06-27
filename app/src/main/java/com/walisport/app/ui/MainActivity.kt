@@ -123,7 +123,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         fabControlViewModel.onClickAnimationListener.observe(this) { (x, y) ->
             (fabFragment as? FloatingButtonFragment)?.showDotAnimation(x, y)
         }
-        mViewModel.connectFailed.observe(this) {
+        mViewModel.connectStateChange.observe(this) {
             if (it is ConnectState.ConnectSuccess) {
                 connectFailedFragment?.hide(this@MainActivity)
             } else if (it is ConnectState.ReconnectFailure) {
