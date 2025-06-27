@@ -64,9 +64,12 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val racedDateMap: Map<String, Calendar>
         get() = _raceDateMap
 
+    /** 是否為第一次載入 */
+    private var isFirst = true
+
     /** 重置搜尋結果 */
-    private fun resetResult(needResetDirect: Boolean = true) {
-        if(needResetDirect) {
+    private fun resetResult() {
+        if(isFirst) {
             _directData.value = null
         }
         _combineResult.value = null
@@ -78,6 +81,9 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             resetResult()
             setResult(data)
             setRaceDate(data)
+            if(isFirst) {
+                isFirst = false
+            }
         }
     }
 
@@ -89,15 +95,14 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         endTime: Long? = null,
     ) {
         viewModelScope.launch {
-            resetResult(false)
-            setResult(
-                repository.getSearchResult(
-                    word = id,
-                    type = type,
-                    startTime = startTime,
-                    endTime = endTime
-                )
-            )
+            repository.getSearchResult(
+                word = id,
+                type = type,
+                startTime = startTime,
+                endTime = endTime
+            ).let { data ->
+                getSearchResult(data)
+            }
         }
     }
 
@@ -141,6 +146,8 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             SearchResultTypeEnum.TOURNAMENT,
             SearchResultTypeEnum.TEAM,
             SearchResultTypeEnum.PLAYER -> {
+                if(!isFirst) return
+
                 _raceDateMap = result.matches
                     ?.asSequence()
                     ?.mapNotNull { match ->
