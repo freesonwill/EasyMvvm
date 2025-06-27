@@ -93,6 +93,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             })
         }
         connectFailedFragment = ConnectFailedFragment.newInstance().apply {
+            show(this@MainActivity)
             setRefreshListener {
                 mViewModel.reconnectNow()
             }
@@ -125,11 +126,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         mViewModel.connectStateChange.observe(this) {
             if (it is ConnectState.ConnectSuccess) {
-                connectFailedFragment?.hide(this@MainActivity)
+                connectFailedFragment?.hide()
             } else if (it is ConnectState.ReconnectFailure) {
-                connectFailedFragment?.showFailed(this@MainActivity)
+                connectFailedFragment?.showFailed()
             } else {
-                connectFailedFragment?.showMask(this@MainActivity)
+                connectFailedFragment?.showMask()
             }
         }
     }

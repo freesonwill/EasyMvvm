@@ -22,6 +22,7 @@ class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailed
                 refreshListener?.invoke()
             }
             mBinding.clFailed.visibility = View.GONE
+            mBinding.root.visibility = View.GONE
         }
     }
 
@@ -33,27 +34,33 @@ class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailed
 
     }
 
-    fun showMask(activity: AppCompatActivity) {
-        if (activity.supportFragmentManager.findFragmentByTag(this.javaClass.simpleName)?.isAdded == true) return
+    fun show(activity: AppCompatActivity) {
         activity.supportFragmentManager.beginTransaction()
             .add(android.R.id.content, this, this.javaClass.simpleName)
-            .commit()
+            .commitNow()
     }
 
-    fun showFailed(activity: AppCompatActivity) {
-        if (activity.supportFragmentManager.findFragmentByTag(this.javaClass.simpleName) == null) return
+    fun showMask() {
+        mBinding.root.visibility = View.VISIBLE
+        mBinding.clFailed.visibility = View.GONE
+    }
+
+    fun showFailed() {
+        mBinding.root.visibility = View.VISIBLE
         mBinding.clFailed.visibility = View.VISIBLE
     }
 
-    fun hide(activity: AppCompatActivity) {
-        if (activity.supportFragmentManager.findFragmentByTag(this.javaClass.simpleName) == null) return
-        activity.supportFragmentManager.beginTransaction()
-            .remove(this)
-            .commit()
+    fun hide() {
+        mBinding.root.visibility = View.GONE
     }
 
     fun setRefreshListener(listener: (()-> Unit)) {
         refreshListener = listener
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        refreshListener = null
     }
 
     companion object {

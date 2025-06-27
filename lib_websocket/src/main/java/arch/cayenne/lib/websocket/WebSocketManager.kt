@@ -85,6 +85,7 @@ class WebSocketManager(
             getConnectStateFlow().collect { state ->
                     when(state) {
                         is ConnectState.ConnectSuccess -> {
+                            retryCount = 0
                             stopReconnect()
                             startHeartbeat()
                         }
@@ -137,7 +138,6 @@ class WebSocketManager(
     }
     private fun stopReconnect() {
         "stop reconnect!".logi(this.javaClass.simpleName)
-        retryCount = 0
         reconnectJob?.cancel()
         reconnectDispatcher?.close()
     }
