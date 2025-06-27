@@ -114,87 +114,19 @@ class TechnicalCountView @JvmOverloads constructor(
 
     //设置比赛双方各项技术统计数据
     fun setMatchData(data: List<MatchHalfTeamStats>) {
-        mBinding.layData.removeAllViews()
         for (i in data.indices) {
             val item = data[i]
-            val progress = TechProgressView(context, null, 0)
             when (item.type) {
-                EventEnum.EVENT_BALL_CONTROL.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_kql),
-                        item.homeNum,
-                        item.awayNum,
-                        true
-                    )
-                }
-
-                EventEnum.EVENT_PASS_SUC.type -> {
-                    val total = (item.homeNum + item.awayNum).toFloat()
-                    val left = (item.homeNum / total) * 100f
-                    val right = (item.awayNum / total) * 100f
-                    progress.setData(
-                        context.getString(R.string.statistics_cqcgl),
-                        left.toInt(),
-                        right.toInt(),
-                        true
-                    )
-                }
-
-                EventEnum.EVENT_SHOOT.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_sms),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
-
-                EventEnum.EVENT_SHOOT_SUC.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_szs),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
-
-                EventEnum.EVENT_PASS.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_cqs),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
-
-                EventEnum.EVENT_FREE.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_ryq),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
-
-                EventEnum.EVENT_CORNER.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_jq),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
-
-                EventEnum.EVENT_OFFSIDE.type -> {
-                    progress.setData(
-                        context.getString(R.string.statistics_yw),
-                        item.homeNum,
-                        item.awayNum,
-                        false
-                    )
-                }
+                EventEnum.EVENT_BALL_CONTROL.type -> mBinding.techKql.setData(item, true)
+                EventEnum.EVENT_SHOOT.type -> mBinding.techSms.setData(item, false)
+                EventEnum.EVENT_SHOOT_SUC.type -> mBinding.techSzs.setData(item, false)
+                EventEnum.EVENT_PASS.type -> mBinding.techCqs.setData(item, false)
+                EventEnum.EVENT_PASS_SUC.type -> mBinding.techPassSuc.setData(item, true)
+                EventEnum.EVENT_FREE.type -> mBinding.techFree.setData(item, false)
+                EventEnum.EVENT_CORNER.type -> mBinding.techCorner.setData(item, false)
+                EventEnum.EVENT_OFFSIDE.type -> mBinding.techYue.setData(item, false)
+                EventEnum.EVENT_SHOOT.type -> mBinding.techPu.setData(item, false)
             }
-            mBinding.layData.addView(progress)
         }
     }
 
