@@ -34,6 +34,6 @@
             android:layout_height="10dp"
             android:layout_marginStart="10dp"
             android:visibility="gone"
-            app:srcCompat="@drawable/history_icon_close" />
+            app:srcCompat="@drawable/ic_search_history_close" />
     </androidx.appcompat.widget.LinearLayoutCompat>
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
