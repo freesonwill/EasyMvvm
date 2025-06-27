@@ -63,10 +63,8 @@ class ComboBetViewModel(
                 val betListData = _onBetListListener.value
                 if (comboMultiData != null && betListData != null) {
                     if (comboMultiData.size != lastComboSize || betListData.size != lastBetSize) {
-                        if (comboMultiData.size < 3 && lastComboSize >= 3 && _onMultiLayoutExpendListener.value == true) {
-                            setExpandMultiLayout(false)
-                            value = true
-                        } else if (betListData.size == 2) {
+                        if (comboMultiData.size < 3 && lastComboSize >= 3) {
+//                            setExpandMultiLayout(false)
                             value = true
                         } else if (comboMultiData.isEmpty() && lastComboSize != 0) {
                             value = true

@@ -188,9 +188,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun forceUpdateLayout() {
         if (betSelectionAdapter.itemCount == 0) return
-        mBinding.root.post {
-            adjustLayoutHeight()
-        }
+        adjustLayoutHeight()
     }
 
     private fun adjustLayoutHeight() {
@@ -219,6 +217,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.root.minHeight = 0
             mBinding.rvBet.layoutParams = layoutParams
+            mBinding.rvBet.post {
+                restoreBetLayoutPosition()
+            }
         }
     }
 
