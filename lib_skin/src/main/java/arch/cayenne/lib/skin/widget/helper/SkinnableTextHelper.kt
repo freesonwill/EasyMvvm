@@ -24,7 +24,6 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
     private var mTextResId = INVALID_ID
     private var mHintResId = INVALID_ID
 
-    private val languageManager: LanguageManager by inject(LanguageManager::class.java)
     override val mView: TextView
         get() = super.mView as TextView
 
@@ -208,32 +207,35 @@ open class SkinnableTextHelper(mView: TextView) : LanguageHelper(mView) {
     }
 
     /**
-     * 动态配置多语言 Text
+     * 有模版的动态多语言 Text
      * */
-    fun updateText(@StringRes stringRes:Int){
+    fun updateText(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
         if(checkResourceIdValid(stringRes)){
             mTextResId = stringRes
-            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes)
+            textFormatArgs = formatArgs
+            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes,*formatArgs)
         }
     }
+
 
     /**
      * 动态配置多语言 hint
      * */
-    fun updateHint(@StringRes stringRes: Int){
+    fun updateHint(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
         if(checkResourceIdValid(stringRes)){
             mHintResId = stringRes
-            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes)
+            hintFormatArgs = formatArgs
+            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,stringRes,*formatArgs)
         }
     }
 
     override fun updateLanguage(locale:Locale) {
         refreshContext(locale)
         if(checkResourceIdValid(mTextResId)){
-            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,mTextResId)
+            mView.text = resourcesManager.getTextResourceText(stringContext ?: mView.context,mTextResId,*textFormatArgs)
         }
         if(checkResourceIdValid(mHintResId)){
-            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,mHintResId)
+            mView.hint = resourcesManager.getTextResourceText(stringContext ?: mView.context,mHintResId,*hintFormatArgs)
         }
     }
 

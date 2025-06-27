@@ -8,12 +8,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
-import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 
 class SkinnableTextView : AppCompatTextView {
@@ -93,8 +90,8 @@ class SkinnableTextView : AppCompatTextView {
         textHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
-    fun setTextRes(@StringRes stringRes:Int){
-       textHelper.updateText(stringRes)
+    fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
+       textHelper.updateText(stringRes,*formatArgs)
     }
 
     override fun onDetachedFromWindow() {

@@ -39,7 +39,6 @@ class EmojiEditFilter(val tvSize:TextView) : InputFilter {
             .replace(dstart, dend, source.subSequence(start, end).toString())
             .toString()
         val newEffectiveLength = calculateEffectiveLength(newText)
-        "1 newEffctiveLength $newEffectiveLength origin $originalEffectiveLength".logd("aaa")
         // 如果新长度未超过限制，允许输入
         if (newEffectiveLength <= maxLength) {
             tvSize.text = "$newEffectiveLength/$maxLength"
