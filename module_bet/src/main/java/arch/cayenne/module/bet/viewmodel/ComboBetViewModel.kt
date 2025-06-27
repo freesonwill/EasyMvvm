@@ -53,15 +53,33 @@ class ComboBetViewModel(
     }
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
-    private val _onLoadDataFinishListener = MediatorLiveData(false).apply {
+    private val _onForceUpdateListener = MediatorLiveData(false).apply {
+        var isFirstInit = false
         val checkBothLoaded = {
-            value = _onBetListListener.value != null && _onComboMultiBetBeanListener.value != null
+            if (isFirstInit) {
+                val comboMultiData = _onComboMultiBetBeanListener.value
+                val betListData = _onBetListListener.value
+                if (comboMultiData != null && betListData != null) {
+                    if (comboMultiData.size < 3 && _onMultiLayoutExpendListener.value == true) {
+                        setExpandMultiLayout(false)
+                        value = true
+                    } else if (betListData.size == 2) {
+                        value = true
+                    }
+                }
+
+            } else {
+                if (_onBetListListener.value != null && _onComboMultiBetBeanListener.value != null) {
+                    isFirstInit = true
+                    value = true
+                }
+            }
         }
 
         addSource(_onBetListListener) { checkBothLoaded() }
         addSource(_onComboMultiBetBeanListener) { checkBothLoaded() }
     }
-    val onLoadDataFinishListener: LiveData<Boolean> get() = _onLoadDataFinishListener
+    val onForceUpdateListener: LiveData<Boolean> get() = _onForceUpdateListener
 
     private val _onMultiLayoutExpendListener = MutableLiveData<Boolean>(false)
     val onMultiLayoutExpendListener: LiveData<Boolean> get() = _onMultiLayoutExpendListener
@@ -148,9 +166,6 @@ class ComboBetViewModel(
     }
 
     private fun setMultiBetBean(data: List<ComboMultiBetBean>) {
-        if (data.isEmpty()) {
-            setExpandMultiLayout(false)
-        }
         _onComboMultiBetBeanListener.value = data
     }
 
@@ -168,7 +183,9 @@ class ComboBetViewModel(
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
 
-    fun setExpandMultiLayout(expand: Boolean) {
+    private fun setExpandMultiLayout(expand: Boolean) {
+        val currentValue = _onMultiLayoutExpendListener.value ?: false
+        if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
     }
 }
