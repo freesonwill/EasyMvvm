@@ -128,6 +128,7 @@
     <string name="event_wx">危险进攻</string>
     <string name="event_wlq">乌龙球</string>
     <string name="event_zg">助攻</string>
+    <string name="event_stbs">伤停补时</string>
     <string name="event_jiao">角球</string>
     <string name="event_yellow">黄牌</string>
     <string name="event_red">红牌</string>
@@ -144,4 +145,10 @@
     <string name="event_cq">传球</string>
     <string name="event_kql">控球率</string>
     <string name="event_cqcg">传球成功</string>
+
+    <string name="event_sms">射门数</string>
+    <string name="event_szs">射正数</string>
+    <string name="event_cqs">传球数</string>
+    <string name="event_cqcgl">传球成功率</string>
+    <string name="event_pj">扑救</string>
 </resources>

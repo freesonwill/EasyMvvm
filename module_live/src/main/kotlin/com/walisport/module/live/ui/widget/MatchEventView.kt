@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.bumptech.glide.Glide
 import com.walisport.module.live.data.EventEnum
@@ -38,7 +39,6 @@ class MatchEventView @JvmOverloads constructor(
                     // 返回true以拦截触摸事件，防止滑动
                     return true
                 }
-
                 override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {}
                 override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
             })
@@ -67,6 +67,9 @@ class MatchEventView @JvmOverloads constructor(
             val time = item.time
             val pos = item.position
             val type = item.type
+            if (type == 10 || type == 11 || type == 12) {
+                continue
+            }
             if (hashMap.containsKey(time)) {
                 if (pos == 1) {
                     hashMap[time]?.homeType = type
@@ -90,18 +93,18 @@ class MatchEventView @JvmOverloads constructor(
                 if (pos == 1) {
                     temp.homeType = type
                     if (type == 9) {
-                        hashMap[time]?.homeType = EventEnum.EVENT_UP.type
-                        hashMap[time]?.homeTwoType = EventEnum.EVENT_DW.type
-                        hashMap[time]?.homePlayer = item.in_player_name_zh
-                        hashMap[time]?.homeTwoPlayer = item.out_player_name_zh
+                        temp.homeType = EventEnum.EVENT_UP.type
+                        temp.homeTwoType = EventEnum.EVENT_DW.type
+                        temp.homePlayer = item.in_player_name_zh
+                        temp.homeTwoPlayer = item.out_player_name_zh
                     }
                 } else {
                     temp.awayType = type
                     if (type == 9) {
-                        hashMap[time]?.awayType = EventEnum.EVENT_UP.type
-                        hashMap[time]?.awayTwoType = EventEnum.EVENT_DW.type
-                        hashMap[time]?.awayPlayer = item.in_player_name_zh
-                        hashMap[time]?.awayTwoPlayer = item.out_player_name_zh
+                        temp.awayType = EventEnum.EVENT_UP.type
+                        temp.awayTwoType = EventEnum.EVENT_DW.type
+                        temp.awayPlayer = item.in_player_name_zh
+                        temp.awayTwoPlayer = item.out_player_name_zh
                     }
                 }
                 hashMap[time] = temp

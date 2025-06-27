@@ -95,17 +95,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     }
 
     private fun parseHalfTeamData(data: List<MatchHalfTeamStats>) {
-        val list = listOf(
-            EventEnum.EVENT_BALL_CONTROL.type,
-            EventEnum.EVENT_PASS_SUC.type,
-            EventEnum.EVENT_SHOOT.type,
-            EventEnum.EVENT_SHOOT_SUC.type,
-            EventEnum.EVENT_PASS.type,
-            EventEnum.EVENT_FREE.type,
-            EventEnum.EVENT_CORNER.type,
-            EventEnum.EVENT_OFFSIDE.type
-        )
-        mBinding.viewTechStatic.setMatchData(data.filter { it.type in list })
+        mBinding.viewTechStatic.setMatchData(data)
     }
 
     private fun parseStatsData(list: List<Stat>) {

@@ -49,6 +49,7 @@ enum class EventEnum(val type: Int, val desc: String, @DrawableRes val icon: Int
     EVENT_DIAN_FAD(16, R.string.event_dqwj.getString(), R.drawable.icon_event_dqwj),
     EVENT_WU(17, R.string.event_wlq.getString(), R.drawable.icon_event_wlq),
     EVENT_ASSISTS(18, R.string.event_zg.getString(), R.drawable.icon_event_zg),
+    EVENT_SHANG_BU(19, R.string.event_stbs.getString(), R.drawable.icon_event_shang),
     EVENT_SHOOT_SUC(21, R.string.event_sz.getString(), R.drawable.icon_event_sz),
     EVENT_SHOOT_FAD(22, R.string.event_sp.getString(), R.drawable.icon_event_sp),
     EVENT_ATTACK(23, R.string.event_jg.getString(), R.drawable.icon_event_jg),
@@ -57,6 +58,7 @@ enum class EventEnum(val type: Int, val desc: String, @DrawableRes val icon: Int
     EVENT_BALL_CONTROL(25, R.string.event_kql.getString(), null),
     EVENT_PASS(40, R.string.event_cq.getString(), null),
     EVENT_PASS_SUC(41, R.string.event_cqcg.getString(), null),
+    EVENT_PU(52, R.string.event_pj.getString(), null),
     EVENT_SHOOT(83, R.string.event_sm.getString(), null),
 
     EVENT_UP(200, R.string.event_up.getString(), R.drawable.icon_event_up),
