@@ -10,8 +10,10 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/ll_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:gravity="bottom">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:layout_width="match_parent"

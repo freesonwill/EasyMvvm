@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -128,8 +129,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
-        if (mViewModel.getCurrentPlayType() != PlayType.EARLY) resetDateTabsToAll()
-        mViewModel.resetLiveData()
+        resetDateTabs()
     }
 
     //init 二級導航欄位
@@ -156,10 +156,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             updateDateTabs(tlDateList, dateTabs)
             addDateTabListener()
 
-            tvTabAll.isSelected = true
-            mViewModel.setSelectedDate(0L)
             tvTabAll.clickNoRepeat {
-                resetDateTabsToAll()
+                resetDateTabs()
             }
 
             // 其他日期 Tab 設定
@@ -211,10 +209,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         tabLayout.selectTab(null)
     }
 
-    private fun resetDateTabsToAll() {
+    private fun resetDateTabs() {
         mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
-        mViewModel.setSelectedDate(0L)
+        mViewModel.resetSelectedDate()
     }
 
     /***
@@ -351,12 +349,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //設定標記紅色日期及可選取日期範圍
     private fun setSchemeDate(calendarView: CalendarView,list:List<Common.DailyMatchCount>) {
         val map: MutableMap<String, Calendar> = HashMap()
+//        val noMatchMap : MutableMap<String, Calendar> = HashMap()
         for (date in list) {
             //API回傳資料，有比賽的日期才需要標記紅字
+            val dateArray = date.day.split("-")
             if (date.count > 0) {
-                val dateArray = date.day.split("-")
-                map[getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt()).toString()] =
-                    getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+                val schemeCalendar =  getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
+                map[schemeCalendar.toString()] = schemeCalendar
             }
         }
         //可選取日期區間為未來第31天
@@ -384,7 +383,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (dateIndex != -1) {
                 tlDateList.getTabAt(dateIndex)?.select()
             } else {
-                resetDateTabsToAll()
+                resetDateTabs()
                 addDateTabListener()
             }
         }
@@ -427,6 +426,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 DrawerContentFragment.TAG
             )
             .commitNow()
+        //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
+        observeResult<String>("Drawer") {
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+        }
     }
 
     private fun updateDateTabs(
@@ -686,7 +689,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 ),
                 SkinnableResourceManager.getColor(
                     rootContext,
-                    arch.cayenne.lib.common.R.color.main_text
+                    arch.cayenne.lib.common.R.color.explanation_text
                 ),
                 SkinnableResourceManager.getColor(
                     rootContext,

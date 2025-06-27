@@ -13,8 +13,8 @@ import com.bumptech.glide.Glide
 class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
     BaseBetSlipItemViewHolder<ItemLiveBetSlipUnsettleBinding>(binding) {
 
-    override fun hideLastLine() {
-        mBinding.line.isVisible = false
+    override fun hideLastLine(isLast:Boolean) {
+        mBinding.line.isVisible = !isLast
     }
 
     override fun covertPlus(
@@ -34,7 +34,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
                 Glide.with(betUnsettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betUnsettledIvBall)
                 betUnsettledTvRace.text = match.matchName
                 betUnsettledTvIntroduce.text = item.selectionName
-                betUnsettledTvAodds.text = "@${item.odds}"
+                betUnsettledTvAodds.text = expectOdds("@${item.odds}")
                 betUnsettledTvStatus.isVisible = item.inPlay
                 val score = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betUnsettledTvScore.text = score

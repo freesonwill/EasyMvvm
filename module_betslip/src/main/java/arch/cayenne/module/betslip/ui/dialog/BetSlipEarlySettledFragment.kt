@@ -1,10 +1,13 @@
 package arch.cayenne.module.betslip.ui.dialog
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
+import androidx.core.view.isInvisible
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -29,15 +32,18 @@ class BetSlipEarlySettledFragment private constructor() :
     companion object {
         private const val BET_AMOUNT_MONEY = "bet_amount_money"
         private const val BET_AMOUNT_MIN = "bet_amount_min"
+        private const val BET_AMOUNT_CURRENCY = "bet_amount_currency"
 
         fun instance(
             money: String,
-            minAmount: String
+            minAmount: String,
+            currency: String,
         ): BetSlipEarlySettledFragment {
             return BetSlipEarlySettledFragment().apply {
                 arguments = Bundle().apply {
                     putString(BET_AMOUNT_MONEY, money)
                     putString(BET_AMOUNT_MIN, minAmount)
+                    putString(BET_AMOUNT_CURRENCY, currency)
                 }
             }
         }
@@ -48,14 +54,17 @@ class BetSlipEarlySettledFragment private constructor() :
     override val vmClass: KClass<EarlySettledKeyboardViewModel>
         get() = EarlySettledKeyboardViewModel::class
     private var onEarlySettleClick: ((money: String) -> Unit)? = null
+    var keyBoardHeight: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
 
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
-                if (!mBinding.groupKeyboard.isVisible) {
-                    mBinding.groupKeyboard.isVisible = true
+                if (mBinding.groupKeyboard.isInvisible) {
+                    collapseAnimation(true, onStart = {
+                        mBinding.groupKeyboard.isInvisible = false
+                    })
                 }
             }
             etMoney.requestFocus()
@@ -147,14 +156,50 @@ class BetSlipEarlySettledFragment private constructor() :
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
             btnCollapse.setOnClickListener {
-                mBinding.groupKeyboard.isVisible = false
+                collapseAnimation(false, onEnd = {
+                    groupKeyboard.isInvisible = true
+                })
             }
             btnPartSettle.clickNoRepeat {
                 sendMoney()
             }
             btnCancel.setOnClickListener { dismiss() }
+            arguments?.getString(BET_AMOUNT_CURRENCY)?.let {
+                tvMoney.text = CurrencySymbols.getSymbol(it)
+            }
         }
     }
+
+    /**
+     * 键盘收获或展开动画
+     * */
+    private fun collapseAnimation(
+        isShow: Boolean,
+        onStart: (() -> Unit)? = null,
+        onEnd: (() -> Unit)? = null
+    ) {
+        val height = mBinding.numberKeyboard.height
+        val animationArray = if (isShow)
+            floatArrayOf(height.toFloat(), 0f)
+        else
+            floatArrayOf(0f, height.toFloat())
+
+        ObjectAnimator.ofFloat(mBinding.clCalculator, "translationY", *animationArray)
+            .also {
+                it.duration = 200
+                it.addListener(onStart = {
+                    if (isShow) {
+                        onStart?.invoke()
+                    }
+                }, onEnd = {
+                    if (!isShow) {
+                        onEnd?.invoke()
+                    }
+                })
+                it.start()
+            }
+    }
+
 
     fun setOnEarlySettleListener(listener: (money: String) -> Unit) {
         this.onEarlySettleClick = listener
@@ -165,7 +210,6 @@ class BetSlipEarlySettledFragment private constructor() :
             mBinding.etMoney.setText(it)
             val length = it.length
             mBinding.etMoney.setSelection(length)
-            mBinding.earlySettleTvTip.isVisible = it.isNullOrEmpty()
             val money = it.ifEmpty {
                 "0.00"
             }
@@ -186,9 +230,10 @@ class BetSlipEarlySettledFragment private constructor() :
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_amount_early_settle))
-        } else {onEarlySettleClick?.invoke(
-            mViewModel.editValue
-        )
+        } else {
+            onEarlySettleClick?.invoke(
+                mViewModel.editValue
+            )
             dismiss()
         }
     }

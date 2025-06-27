@@ -14,12 +14,6 @@ class ComboMultiBetAdapter(
     ComboRateCompare()
 ) {
 
-    var isExpanded = false
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
-
     override fun convertPlus(holder: ComboMultiBetViewHolder, binding: ItemComboMultiBetBinding, position: Int) {
         val item = getItem(holder.adapterPosition)
         holder.bind(item)
@@ -37,32 +31,6 @@ class ComboMultiBetAdapter(
         return ComboMultiBetViewHolder(binding, onComboMultiBetClickListener)
     }
 
-    override fun getItemCount(): Int {
-        return if (isExpanded) currentList.size else minOf(1, currentList.size)
-    }
-
-    fun toggleExpand() {
-        isExpanded = !isExpanded
-    }
-
-    override fun getItem(position: Int): ComboMultiBetBean {
-        return if (isExpanded) {
-            currentList[position]
-        } else {
-            currentList.last()
-        }
-    }
-
-    override fun submitList(list: List<ComboMultiBetBean>?, commitCallback: Runnable?) {
-        val runnable = Runnable {
-            commitCallback?.run()
-            if (!isExpanded) {
-                notifyItemChanged(0)
-            }
-        }
-        super.submitList(list, runnable)
-    }
-
     override fun onBindViewHolder(
         holder: ComboMultiBetViewHolder,
         position: Int,
@@ -77,8 +45,7 @@ class ComboMultiBetAdapter(
     }
 
     interface OnComboMultiBetClickListener {
-        fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int)
-        fun getSize(): Int
+        fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int)
         fun getMoneySymbol(): String
     }
 }

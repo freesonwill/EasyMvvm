@@ -1,14 +1,12 @@
 package arch.cayenne.module.betslip.ui.fragment
 
-import android.animation.ValueAnimator
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
+import androidx.core.animation.addListener
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -113,51 +111,28 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     }
 
     private fun expandView() {
-        val clFilter = mBinding.clFilter
-
-        val targetHeight = clFilter.height
-
-        // 用 ValueAnimator 動畫拉高
-        val animator = ValueAnimator.ofInt(1, targetHeight)
-        animator.addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val lp = clFilter.layoutParams
-            lp.height = value
-            clFilter.layoutParams = lp
+        val clContent = mBinding.clContent
+        val height = clContent.height
+        ObjectAnimator.ofFloat(clContent, "translationY", -height.toFloat(), 0f).apply {
+            duration = 300
+            addListener(onStart = {
+                mBinding.clFilter.visibility = View.VISIBLE
+            })
+            start()
         }
-        animator.duration = 300
-        animator.interpolator = DecelerateInterpolator()
-        animator.doOnStart {
-            val layoutParams = clFilter.layoutParams
-            layoutParams.height = 1
-            clFilter.layoutParams = layoutParams
-            clFilter.visibility = View.VISIBLE
-        }
-        animator.start()
     }
 
     private fun collapseView() {
-        val clFilter = mBinding.clFilter
-
-        val targetHeight = clFilter.height
-
-        // 用 ValueAnimator 動畫拉高
-        val animator = ValueAnimator.ofInt(targetHeight, 1)
-        animator.addUpdateListener { valueAnimator ->
-            val value = valueAnimator.animatedValue as Int
-            val lp = clFilter.layoutParams
-            lp.height = value
-            clFilter.layoutParams = lp
-        }
-        animator.duration = 300
-        animator.interpolator = DecelerateInterpolator()
-        animator.doOnEnd {
-            mBinding.clFilter.visibility = View.INVISIBLE
-            mBinding.root.postDelayed({
+        val clContent = mBinding.clContent
+        val targetHeight = clContent.height
+        ObjectAnimator.ofFloat(clContent, "translationY", 0f, -targetHeight.toFloat()).apply {
+            duration = 300
+            addListener(onEnd = {
+                mBinding.clFilter.visibility = View.INVISIBLE
                 dismiss()
-            }, 300L)
+            })
+            start()
         }
-        animator.start()
     }
 
     fun show(manager: FragmentManager, containerId: Int) {

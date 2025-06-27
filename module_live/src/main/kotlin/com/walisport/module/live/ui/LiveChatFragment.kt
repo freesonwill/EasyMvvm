@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.addCallback
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -234,14 +232,14 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
                     it.liveChatGroupChat.isVisible = false
                     it.liveChatGroupStatus.isVisible = true
-                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_closed)
+                    it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_close)
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
 
                 MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.DELAYED -> {
                     it.liveChatGroupChat.isVisible = false
                     it.liveChatGroupStatus.isVisible = true
-                    it.liveChatIvStatus.setImageResource(R.drawable.live_chat_is_empty)
+                    it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_empty)
                     it.liveChatTvStatus.setText(R.string.live_chat_empty)
                 }
 

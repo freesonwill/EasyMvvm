@@ -243,7 +243,7 @@ class SearchResultDirectMatchFragment :
                                         outRect.set(0, 0, 0, 0)
                                     }
 
-                                    else -> {
+                                    SearchResultRaceAdapter.VIEW_TYPE_ITEM -> {
                                         val prevType = linearAdapter.getItemViewType(position - 1)
                                         outRect.set(
                                             0,
@@ -251,6 +251,8 @@ class SearchResultDirectMatchFragment :
                                             0, 0
                                         )
                                     }
+
+                                    else -> Unit
                                 }
                             }
                         })
@@ -288,10 +290,14 @@ class SearchResultDirectMatchFragment :
             }
         }
 
-        val marginTop = mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px
-        val datePicker = SearchDatePickerFragment.newInstance(
-            marginTop, 8.dp2px, 8.dp2px, mViewModel.getSelectedDate()?.time
-        )
+        val datePicker =
+            SearchDatePickerFragment.Builder().apply {
+                setMarginTop(mBinding.clBasicInfo.height + mBinding.clDate.height + 14.dp2px)
+                setMarginStart(8.dp2px)
+                setMarginEnd(8.dp2px)
+                setSchemeDates(mViewModel.racedDateMap)
+                mViewModel.getSelectedDate()?.time?.let { setSelectedDate(it) }
+            }.build()
 
         datePicker.show(childFragmentManager, mBinding.clRoot.id)
         setTitleBarMask(true) {
@@ -362,14 +368,14 @@ class SearchResultDirectMatchFragment :
                     tvTitle.text = data.name
                     tvSubTitle.text =
                         listOf(
-                            data.name,
+                            data.tournamentShortName,
                             data.teamName,
                             data.number.toString(),
                             data.position.name
                         ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
                             String.format(
                                 R.string.search_result_sub_title_player.toTranslatedStr(),
-                                data.name,
+                                data.tournamentShortName,
                                 data.teamName,
                                 data.number,
                                 data.position.name

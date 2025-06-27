@@ -13,7 +13,7 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
 
     @SuppressLint("ClickableViewAccessibility")
     fun bind(item: ComboMultiBetBean) {
-        val combo = getString(R.string.title_combo_bet_odds).format(onComboMultiBetClickListener.getSize(), item.combo)
+        val combo = getString(R.string.title_combo_bet_odds).format(item.comboK, item.comboV)
         val title = "$combo @${item.sumOdds.getOdds()}"
         mBinding.tvTitleCombo.text = title
         val multi = "${item.count}x"
@@ -24,10 +24,10 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         mBinding.etMoney.isFocusable = false
         mBinding.etMoney.setOnClickListener {
             val location = IntArray(2)
-            mBinding.etMoney.getLocationOnScreen(location)
+            mBinding.etMoney.getLocationInWindow(location)
             val x = location.first() + mBinding.etMoney.width / 2
             val y = location.last()
-            onComboMultiBetClickListener.onEditMoneyClick(item.combo, x, y)
+            onComboMultiBetClickListener.onEditMoneyClick(item.serialValue, x, y)
         }
     }
 

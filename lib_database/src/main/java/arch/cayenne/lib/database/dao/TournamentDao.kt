@@ -17,7 +17,7 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "bean.weight as weight, " +
             "bean.hot as hot " +
             "FROM TournamentBean bean WHERE playType =:playType and sportId =:sportId " +
-            "order by weight desc limit :limit"
+            "order by weight desc, `index` asc limit :limit"
     )
     abstract fun observeTournamentWithLimit(playType: Int, sportId: Int, limit: Int): Flow<List<TournamentDataModel>>
 
@@ -29,7 +29,7 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "bean.weight as weight, " +
             "bean.hot as hot " +
             "FROM TournamentBean bean " +
-            "order by weight desc"
+            "order by weight desc, `index` asc "
     )
     abstract fun queryTournament(): List<TournamentDataModel>
 

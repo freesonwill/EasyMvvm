@@ -1,7 +1,13 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ValueAnimator
 import android.os.Bundle
-import androidx.core.widget.NestedScrollView
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.animation.DecelerateInterpolator
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.animation.doOnEnd
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
@@ -47,8 +53,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private val comboMultiBetAdapter by lazy {
         ComboMultiBetAdapter(object : ComboMultiBetAdapter.OnComboMultiBetClickListener {
-            override fun onEditMoneyClick(id: Int, locationX: Int, locationY: Int) {
-                mViewModel.onComboMultiBetBeanListener.value?.find { it.combo == id }?.let {
+            override fun onEditMoneyClick(serialValue: Int, locationX: Int, locationY: Int) {
+                mViewModel.onComboMultiBetBeanListener.value?.find { it.serialValue == serialValue }?.let {
                     childFragmentManager.setFragmentResultListener(
                         KEY_RESULT,
                         viewLifecycleOwner
@@ -56,7 +62,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         childFragmentManager.clearFragmentResultListener(KEY_RESULT)
                         if (resultKey == KEY_RESULT) {
                             val money = bundle.getLong(VALUE_MONEY_INPUT, 0L)
-                            mViewModel.updateMultiBetMoney(id, money)
+                            mViewModel.updateMultiBetMoney(serialValue, money)
                         }
                     }
                     val currentMoney = if (it.inputMoney == 0L) null else it.inputMoney
@@ -74,10 +80,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 }
             }
 
-            override fun getSize(): Int {
-                return mViewModel.onBetListListener.value?.size ?: 0
-            }
-
             override fun getMoneySymbol(): String {
                 return mViewModel.moneySymbol
             }
@@ -90,11 +92,13 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         mBinding.rvBet.adapter = betSelectionAdapter
 
-        val decoration = BetSheetDecoration(6.dp2px)
+        val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
-        setBetSheetView()
+        mBinding.rvMultiBet.isNestedScrollingEnabled = false
+        setSumBetMoney(emptyList())
+        setMultiLayoutMaxHeight()
     }
 
     override fun initListener() {
@@ -102,17 +106,22 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
-            mViewModel.removeAll()
+            CommonDialog.newInstance(
+                title = "",
+                message = getString(R.string.title_dialog_remove),
+                okText = getString(R.string.btn_confirm),
+                cancelText = getString(R.string.btn_cancel)
+            ).apply {
+                setOnOkClickListener {
+                    mViewModel.removeAll()
+                }
+            }.show(childFragmentManager)
         }
         mBinding.llMultiBetCollapse.setOnClickListener {
-            comboMultiBetAdapter.toggleExpand()
-            if (comboMultiBetAdapter.isExpanded) {
-                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
-            } else {
-                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
-            }
+            mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
+            mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
             mViewModel.sendBet()
             navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
         }
@@ -128,22 +137,25 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
-                val isFirst = betSelectionAdapter.currentList.isEmpty()
+                val forceUpdateLayoutHeight = it.size == 2 && betSelectionAdapter.itemCount > 2
                 betSelectionAdapter.submitList(it) {
-                    if (isFirst) {
-                        scrollToDown()
+                    if (forceUpdateLayoutHeight) {
+                        mBinding.rvBet.post {
+                            adjustLayoutHeight(false)
+                        }
                     }
                 }
-                mBinding.clBet.isEnabled = it.all { bean -> bean.isActive && bean.isParlay }
             }
         }
-        var hasLockBetSheetView = false
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) {
+            val isAdapterEmpty = comboMultiBetAdapter.itemCount == 0
+            val forceUpdate = it.isEmpty() || isAdapterEmpty
+
             comboMultiBetAdapter.submitList(it) {
-                if (!hasLockBetSheetView) {
-                    hasLockBetSheetView = true
-                    setBetSheetView()
-                    scrollToDown()
+                if (forceUpdate) {
+                    setMultiLayoutHeight(isExpanded = false, onComplete = {
+                        setBetSheetView()
+                    })
                 }
             }
             setSumBetMoney(it)
@@ -151,6 +163,102 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onBalanceListener.observe(viewLifecycleOwner) {
             val money = "${mViewModel.moneySymbol} ${it.balance.getFormalMoney()}"
             mBinding.tvBalance.text = money
+        }
+        mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
+            mBinding.clBet.isEnabled = it
+        }
+        mViewModel.onLoadDataFinishListener.observe(viewLifecycleOwner) {
+            if (it) {
+                mViewModel.onLoadDataFinishListener.removeObservers(viewLifecycleOwner)
+                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        adjustLayoutHeight(betSelectionAdapter.itemCount > 2)
+                    }
+                })
+            }
+        }
+        mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
+            if (it) {
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
+            } else {
+                mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
+            }
+            setMultiLayoutHeight(it)
+        }
+    }
+
+    private fun adjustLayoutHeight(full: Boolean) {
+        if (full)  {
+            val screenHeight = resources.displayMetrics.heightPixels
+            val maxFragmentHeight = (screenHeight * 0.75).toInt()
+            mBinding.root.minHeight = maxFragmentHeight
+        } else {
+            val layoutParams = mBinding.rvBet.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            mBinding.root.minHeight = 0
+            mBinding.rvBet.layoutParams = layoutParams
+        }
+    }
+
+    // 獲取除串關方式外已使用的高度
+    private fun getMultiLayoutMargin(): Int {
+        val multiBottomMargin = (mBinding.clMultiBet.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonBottomMargin = (mBinding.clBottomButton.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
+        val buttonHeight = mBinding.clBottomButton.height
+        val underMargin = multiBottomMargin + buttonBottomMargin + buttonHeight
+        val topMargin = 22.dp2px
+        return topMargin + underMargin
+    }
+
+    private fun setMultiLayoutMaxHeight() {
+        val screenHeight = resources.displayMetrics.heightPixels
+        val maxFragmentHeight = (screenHeight * 0.75).toInt()
+
+        val totalMargin = getMultiLayoutMargin()
+
+        val maxHeight = maxFragmentHeight - totalMargin
+        mBinding.clMultiBet.maxHeight = maxHeight
+    }
+
+    private fun setMultiLayoutHeight(isExpanded: Boolean, onComplete: (() -> Unit)? = null) {
+        val adapter = mBinding.rvMultiBet.adapter ?: return
+        if (adapter.itemCount <= 1) {
+            return
+        }
+        val currentHeight = mBinding.rvMultiBet.height
+        mBinding.rvMultiBet.post {
+            val layoutManager = mBinding.rvMultiBet.layoutManager as? LinearLayoutManager
+            val firstVisibleItemView = layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+            val item = firstVisibleItemView ?: return@post
+
+            // 不知道為什麼高度會少bottom(6dp)空白間距
+            val totalHeight = (item.height + 6.dp2px) * if (isExpanded) adapter.itemCount.coerceAtMost(3) else 1
+
+            if (currentHeight > item.height) {
+                ValueAnimator.ofInt(currentHeight, totalHeight).apply {
+                    duration = 300
+                    interpolator = DecelerateInterpolator()
+                    addUpdateListener {
+                        val value = it.animatedValue as Int
+                        val lp = mBinding.rvMultiBet.layoutParams
+                        lp.height = value
+                        mBinding.rvMultiBet.layoutParams = lp
+                    }
+                    // 不要再設 WRAP_CONTENT
+                    doOnEnd {
+                        mBinding.rvMultiBet.scrollToPosition(0)
+                        onComplete?.invoke()
+                    }
+                    start()
+                }
+            } else {
+                val lp = mBinding.rvMultiBet.layoutParams
+                lp.height = totalHeight
+                mBinding.rvMultiBet.layoutParams = lp
+                mBinding.rvMultiBet.scrollToPosition(0)
+                onComplete?.invoke()
+            }
         }
     }
 
@@ -167,19 +275,21 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun setBetSheetView() {
         mBinding.root.post {
-            val paddingBottom = mBinding.clMultiBet.height + 22.dp2px
-            mBinding.rvBet.setPadding(0, 0, 0, paddingBottom)
+            val rvBeLp = mBinding.rvBet.layoutParams as? ConstraintLayout.LayoutParams ?:return@post
+            val clMultiBetLp = mBinding.clMultiBet.layoutParams as? ConstraintLayout.LayoutParams ?:return@post
+            val rvBetBottomMargin = rvBeLp.bottomMargin
+            val clMultiBetHeight = mBinding.clMultiBet.height
+            val clMultiBetBottomMargin = clMultiBetLp.bottomMargin
+            val totalHeight = rvBetBottomMargin + clMultiBetHeight + clMultiBetBottomMargin
+            rvBeLp.bottomToTop = mBinding.clBottomButton.id
+            rvBeLp.bottomMargin = totalHeight
+            mBinding.rvBet.layoutParams = rvBeLp
         }
-    }
-
-    private fun scrollToDown() {
-        mBinding.nsv.postDelayed( {
-            mBinding.nsv.fullScroll(NestedScrollView.FOCUS_DOWN)
-        }, 60L)
     }
 
     override fun dismiss(key: String, value: String) {
         mViewModel.saveInputMoney()
         sendResult(key, value, R.id.comboBetFragment)
     }
+
 }

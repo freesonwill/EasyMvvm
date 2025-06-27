@@ -62,7 +62,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
         )
     )
     this.marketList.forEach { market ->
-        LogUtils.e("matchMainMatchResult-------marketList--------id${market.marketId}--name${market.marketName}")
+       // LogUtils.d("matchMainMatchResult-------marketList--------id${market.marketId}--name${market.marketName}")
         markets.add(
             LiveMarketBean(
                 marketId = market.marketId,

@@ -8,6 +8,6 @@ data class ComboBetDataModel(
 
 data class ComboMultiBetInfo(
     val orderId: String,
-    val comboValue: Int,
+    val serialValue: Int, // 多少串一關，0為全串關
     val orderStatus: Int,
 )

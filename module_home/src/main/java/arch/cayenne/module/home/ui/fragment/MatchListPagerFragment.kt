@@ -87,7 +87,6 @@ class MatchListPagerFragment :
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-
             (rvHomeGameList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -141,14 +140,12 @@ class MatchListPagerFragment :
         matchAdapter.submitList(matchList)
         if (preEmpty && matchList.isNotEmpty()) {
             mBinding.rvHomeGameList.doOnPreDraw {
+                homeViewModel.changeState(HomeState.Match.LoadSuccess)
                 subscribeVisibleMatch()
             }
         }
     }
     override fun createObserver() {
-        homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            refreshListByDate(date)
-        }
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
@@ -176,7 +173,6 @@ class MatchListPagerFragment :
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
-                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
                         homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
@@ -203,7 +199,10 @@ class MatchListPagerFragment :
                     }
                 }
             }
+        }
 
+        homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+            refreshListByDate(date)
         }
     }
 

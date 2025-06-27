@@ -38,16 +38,16 @@ class MessageRemoteManager(private val socketManager: WebSocketManager) {
         scope: CoroutineScope,
         id: Long,
         status: Int
-    ): Client.SystemMsgStatusUpdateResp? {
+    ): Client.SystemMsgStatusResp? {
         val result =
-            socketManager.sendAndWaitProtoMessageResponse<Client.SystemMsgStatusUpdateResp>(
+            socketManager.sendAndWaitProtoMessageResponse<Client.SystemMsgStatusResp>(
                 scope = scope,
                 dispatcher = Dispatchers.IO,
                 apiCode = ApiCode.UPDATE_MESSAGE
             ) {
                 Client.SystemMsgStatusReq.newBuilder().apply {
                     this.id = id.toInt()  //消息ID
-                    this.status = status  //0未读 1已读 2删除
+                    this.status = status  //1未读 2已读 3删除
                 }.build()
             }
         if (result.error == null && result.data != null) {

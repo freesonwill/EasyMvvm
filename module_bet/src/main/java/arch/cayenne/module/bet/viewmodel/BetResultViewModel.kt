@@ -30,17 +30,15 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     init {
         viewModelScope.launch {
             repo.observeLastBetOrder().collect { bean ->
-                bean?.let {
-                    type = it.betType
-                    val selection = repo.getSelection(it.betId)
+                type = bean.betType
+                val selection = repo.getSelection(bean.betId)
 
-                    _onBetSheetListener.value = selection
+                _onBetSheetListener.value = selection
 
-                    launch {
-                        repo.observeDetail(it.betId).collect { detail ->
-                            _onDetailListener.value = detail
-                            setModeByDetail(detail)
-                        }
+                launch {
+                    repo.observeDetail(bean.betId).collect { detail ->
+                        _onDetailListener.value = detail
+                        setModeByDetail(detail)
                     }
                 }
             }

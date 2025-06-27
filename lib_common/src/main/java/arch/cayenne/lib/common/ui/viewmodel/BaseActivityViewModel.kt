@@ -40,47 +40,48 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
-            commonRepository.getConnectStateFlow().collect { connectState ->
-                "KC_ connectState = $connectState".logi()
-                when (connectState) {
-                    is ConnectState.ConnectSuccess -> {
-                        "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                        withContext(Dispatchers.Main) {
-                            _connectFailed.value = connectState
+            launch {
+                commonRepository.getConnectStateFlow().collect { connectState ->
+                    "KC_ connectState = $connectState".logi()
+                    when (connectState) {
+                        is ConnectState.ConnectSuccess -> {
+                            "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                            withContext(Dispatchers.Main) {
+                                _connectFailed.value = connectState
+                            }
+                            login()
                         }
-                        login()
-                    }
-                    is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
-                        "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
-                        commonRepository.tryToReconnect()
-                        withContext(Dispatchers.Main) {
-                            _connectFailed.value = connectState
+                        is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
+                            "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                            commonRepository.tryToReconnect()
+                            withContext(Dispatchers.Main) {
+                                _connectFailed.value = connectState
+                            }
                         }
-
-                    }
-                    is ConnectState.ReconnectFailure -> {
-                        withContext(Dispatchers.Main) {
-                            _connectFailed.value = connectState
+                        is ConnectState.ReconnectFailure -> {
+                            withContext(Dispatchers.Main) {
+                                _connectFailed.value = connectState
+                            }
                         }
+                        else -> Unit
                     }
-                    else -> Unit
                 }
             }
-            commonRepository.observeAppNotifyChange().collect { result ->
-                if (result.error == null && result.data != null) {
-                    val temp = result.data?.let {
-                        AppNotifyBean(it.type, it.sportId, it.title, it.content)
+            launch {
+                commonRepository.observeAppNotifyChange().collect { result ->
+                    if (result.error == null && result.data != null) {
+                        val temp = result.data?.let {
+                            AppNotifyBean(it.type, it.sportId, it.matchId, it.title, it.content)
+                        }
+                        _appNotifyListener.postValue(temp)
                     }
-                    _appNotifyListener.value = temp
                 }
             }
-            launch(Dispatchers.IO) {
+            launch {
                 commonRepository.getBetResultFlow().collect {
                     _betResultListener.postValue(it)
                 }
             }
-        }
-        viewModelScope.launch(Dispatchers.IO) {
             launch {
                 commonRepository.observeBalanceChange()
             }

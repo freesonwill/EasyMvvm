@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 
 class BetResultToastView: LinearLayout {
@@ -34,7 +36,7 @@ class BetResultToastView: LinearLayout {
         mBinding.groupSuccess.isVisible = data.isSuccessful
         mBinding.groupFailure.isVisible = !data.isSuccessful
         if (data.isSuccessful) {
-            mBinding.tvSuccessTitle.text = data.matchName.first()
+            mBinding.tvSuccessCombo.text = data.matchName.first()
         } else {
             mBinding.tvFailureCombo.text = data.matchName.first()
         }
@@ -46,10 +48,13 @@ class BetResultToastView: LinearLayout {
         val failureData = data.filter { !it.isSuccessful }
         mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
         mBinding.groupFailure.isVisible = failureData.isNotEmpty()
-        // TODO 之後補字串
-        mBinding.tvSuccessCombo.text =
-            successfulData.joinToString("、") { "${data.size} combo ${it.combo}" }
-        mBinding.tvFailureCombo.text =
-            failureData.joinToString("、") { "${data.size} combo ${it.combo}" }
+        val successfulTitle = successfulData
+            .sortedWith(compareBy({ it.comboK }, { it.comboV }))
+            .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
+        val failureTitle = failureData
+            .sortedWith(compareBy({ it.comboK }, { it.comboV }))
+            .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
+        mBinding.tvSuccessCombo.text = successfulTitle
+        mBinding.tvFailureCombo.text = failureTitle
     }
 }

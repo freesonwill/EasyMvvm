@@ -14,8 +14,8 @@ import com.bumptech.glide.Glide
 class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
     BaseBetSlipItemViewHolder<ItemLiveBetSlipInvalidBinding>(binding) {
 
-    override fun hideLastLine() {
-        mBinding.line.isVisible = false
+    override fun hideLastLine(isLast:Boolean) {
+        mBinding.line.isVisible = !isLast
     }
 
     override fun covertPlus(
@@ -38,10 +38,7 @@ class BetSlipInvalidItemViewHolder(binding: ViewBinding) :
                 Glide.with(betInvalidIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betInvalidIvBall)
                 betInvalidTvRace.text = match.matchName
                 betInvalidTvIntroduce.text = item.selectionName
-                betInvalidTvAodds.text = binding.root.resources.getString(
-                    R.string.live_bet_except_odds,
-                    item.odds
-                )
+                betInvalidTvAodds.text = expectOdds(binding.root.resources.getString(R.string.live_bet_except_odds, item.odds))
                 betInvalidTvMatchStatus.isVisible = item.inPlay
                 betInvalidTvScore.text = item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betInvalidTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)

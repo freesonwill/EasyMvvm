@@ -4,8 +4,11 @@
     <color name="title_bar_white_green">#222222</color>
 
     <color name="search_btn_white_green">#000000</color>
+    <color name="search_btn_normal_white_green">#222222</color>
+    <color name="search_btn_in_direct_match_white_green">#ffffff</color>
     <color name="search_hint_white_green">#929298</color>
     <color name="search_text_white_green">#000000</color>
+    <color name="search_text_for_search_bar_white_green">#222222</color>
 
     <color name="app_bg_white_green">#F3F3F4</color>
     <color name="dynamic_text_white_green">#666666</color>

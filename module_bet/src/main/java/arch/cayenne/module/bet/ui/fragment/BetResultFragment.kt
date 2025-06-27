@@ -1,8 +1,9 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.os.Bundle
+import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -28,13 +29,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
-    private val detailAdapter by lazy { ResultMultiBetAdapter(
-        object : ResultMultiBetAdapter.ResultMultiBetListener {
-            override fun getBetSize(): Int {
-                return mViewModel.onBetSheetListener.value?.size ?: 0
-            }
-        }
-    ) }
+    private val detailAdapter by lazy { ResultMultiBetAdapter() }
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
@@ -43,7 +38,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         mBinding.rvBet.adapter = betSelectionAdapter
         mBinding.rvComboOdds.adapter = detailAdapter
 
-        val decoration = BetSheetDecoration(6.dp2px)
+        val decoration = BetSheetDecoration(6.dp2px, 12.dp2px)
         mBinding.rvBet.addItemDecoration(decoration)
     }
 
@@ -66,10 +61,9 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             mBinding.rvComboOdds.isVisible = it.size > 1
-            val isFirst = betSelectionAdapter.currentList.isEmpty()
             betSelectionAdapter.submitList(it) {
-                if (isFirst) {
-                    scrollToDown()
+                mBinding.rvBet.post {
+                    adjustLayoutHeight(it.size > 2)
                 }
             }
             mBinding.tvMaxWin.text = if (it.size == 1 && mViewModel.type == BetTypeEnum.SINGLE) {
@@ -113,8 +107,10 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text = getString(R.string.title_result_success_bet)
+            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
+        mBinding.btnContinueBet.isEnabled = true
+        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -123,8 +119,10 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
         } else {
-            mBinding.tvTitle.text = getString(R.string.title_result_fail_bet)
+            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
+        mBinding.btnContinueBet.isEnabled = true
+        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
@@ -138,10 +136,17 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         detailAdapter.submitList(data)
     }
 
-    private fun scrollToDown() {
-        mBinding.nsv.postDelayed( {
-            mBinding.nsv.fullScroll(NestedScrollView.FOCUS_DOWN)
-        }, 60L)
+    private fun adjustLayoutHeight(full: Boolean) {
+        if (full)  {
+            val screenHeight = resources.displayMetrics.heightPixels
+            val maxFragmentHeight = (screenHeight * 0.75).toInt()
+            mBinding.root.minHeight = maxFragmentHeight
+        } else {
+            val layoutParams = mBinding.rvBet.layoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            mBinding.root.minHeight = 0
+            mBinding.rvBet.layoutParams = layoutParams
+        }
     }
 
     override fun dismiss(key: String, value: String) {

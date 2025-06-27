@@ -53,8 +53,12 @@ class FragivityFragmentNavigator(
                 } else if (mIsPendingPopBackStackOperation) { //正在回退
                     mIsPendingPopBackStackOperation = !isBackStackEqual()
                     // 回到前台时的生命周期
-                    val fragment = fragmentManager.primaryNavigationFragment
-                        ?: return@addOnBackStackChangedListener
+                    val fragment = let {
+                        val index = backStack.size - 1
+                        val tag = if(index == -1) null else generateBackStackName(index, backStack[index])
+                        val lastFragment = fragmentManager.findFragmentByTag(tag)
+                        lastFragment
+                    } ?: return@addOnBackStackChangedListener
                     // fragment (true) ?: onStart : onCreateView -> onResume
                     if (fragment.mState == Fragment.STARTED) {
                         fragment.mState = Fragment.ACTIVITY_CREATED

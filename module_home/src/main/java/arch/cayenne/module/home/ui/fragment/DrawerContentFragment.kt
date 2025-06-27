@@ -2,11 +2,13 @@ package arch.cayenne.module.home.ui.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import androidx.core.content.res.ResourcesCompat
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -14,6 +16,7 @@ import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.FragmentDrawerContentBinding
 import arch.cayenne.module.home.ui.viewmodel.DrawerContentViewModel
+import arch.cayenne.module.home.utils.DateUtils
 import kotlin.reflect.KClass
 
 class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawerContentBinding>() {
@@ -27,6 +30,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
+        mViewModel.getMessageList()
     }
 
     override fun initListener() {
@@ -73,12 +77,36 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     fun setOnFunctionClickListener(listener: () -> Unit) {
         onFunctionClick = listener
     }
+
     override fun createObserver() {
-        launch {
-            mViewModel.selectedSkinType.observe(viewLifecycleOwner) {
-                refreshDefaultNickName()
-            }
+
+            with (mViewModel) {
+                launch {
+                    selectedSkinType.observe(viewLifecycleOwner) {
+                        refreshDefaultNickName()
+                    }
+                }
+                notificationBean.observeEvent(viewLifecycleOwner,this@DrawerContentFragment) { list ->
+                    if (list.isEmpty()) return@observeEvent
+                    val untilIndex = if (list.size < 2) list.size else 2
+                    for(i in 0 until untilIndex) {
+                        val item = list[i]
+                        with (mBinding) {
+                            if (i == 0) {
+                                itemNotification1.visibility = View.VISIBLE
+                                itemNotification2.visibility = View.GONE
+                                tvMessage1.text = item.title
+                                tvTime1.text = DateUtils.getMessageTime(item.createTime)
+                            } else {
+                                itemNotification2.visibility = View.VISIBLE
+                                tvMessage2.text = item.title
+                                tvTime2.text = DateUtils.getMessageTime(item.createTime)
+                            }
+                        }
+                    }
+                }
         }
+
     }
     private fun refreshDefaultNickName() {
         val defaultResId = mViewModel.getDefaultResId()
@@ -86,10 +114,9 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             if (defaultResId == -1) {
                 ivIconNickname.setImageResource(R.drawable.ic_drawer_nickname)
             } else {
-                ivIconNickname.setImageDrawable(resources.getDrawable(defaultResId, null))
+                ivIconNickname.setImageDrawable(ResourcesCompat.getDrawable(resources, defaultResId, null))
             }
             val defaultNickName = mViewModel.getDefaultNickName()
-            "tvTitleNickname.text = $defaultNickName".logd()
             if (defaultNickName.isNotEmpty()) {
                 tvTitleNickname.text = defaultNickName
             } else {

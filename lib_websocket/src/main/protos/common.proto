@@ -45,6 +45,7 @@ message MatchLiveInfo {
     string period = 3;      //阶段
     string score = 4;       //比分
     bool live_video = 5;    //该比赛是否有视频或者直播
+    string animation_live_url = 12;    //动漫直播url
     bool chat_room = 6;    //是否开启了聊天室
     int32 viewer_count = 7;    //观看数量
     int64 clock_modified = 8;  //走表修改时间
@@ -187,10 +188,16 @@ message ReserveOrderSelection {
 message MsgRecord {
     int64 id = 1;     //消息记录id
     int32 type = 2;            //消息类型 1系统通知 2活动通知
-    int32 status = 3;        //状态 0未读 1已读
+    int32 status = 3;        //状态 1未读 2已读 3删除
     string title = 4;       //标题
     string content = 5;       //内容
     int64 create_time = 6;       //创建时间
+}
+// 消息统计
+message MsgCount {
+    int32 type = 1;            //消息类型 0全部 1系统通知 2活动通知
+    int32 un_read_count = 2;        //未读数量
+
 }
 // 提前结算报价
 message EarlySettlePrice {
