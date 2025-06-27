@@ -10,6 +10,7 @@ import android.graphics.drawable.TransitionDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -17,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -211,6 +213,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             getSearchRecommendList(text?.toString())
                         }
                     }
+                }
+
+                getSearchBtn().apply {
+                    TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        this,
+                        10,
+                        15,
+                        1,
+                        TypedValue.COMPLEX_UNIT_SP
+                    )
                 }
             }
         }
