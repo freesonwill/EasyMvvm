@@ -88,11 +88,13 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 }
                 notificationBean.observeEvent(viewLifecycleOwner,this@DrawerContentFragment) { list ->
                     if (list.isEmpty()) return@observeEvent
-                    for(i in 0 until 2) {
+                    val untilIndex = if (list.size < 2) list.size else 2
+                    for(i in 0 until untilIndex) {
                         val item = list[i]
                         with (mBinding) {
                             if (i == 0) {
                                 itemNotification1.visibility = View.VISIBLE
+                                itemNotification2.visibility = View.GONE
                                 tvMessage1.text = item.title
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
                             } else {

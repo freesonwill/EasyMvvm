@@ -52,7 +52,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
-            LogUtils.d("lineup","lineup_result${result.data!!.matchLineupDetail.awayOrBuilderList}")
+          //  LogUtils.d("lineup","lineup_result${result.data!!.matchLineupDetail.awayOrBuilderList}")
             return result.data!!.matchLineupDetail
         }
         return null
@@ -70,7 +70,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
-            LogUtils.dTag("result", "matchMainMatchResult----->${result.toString()}")
+        //    LogUtils.dTag("result", "matchMainMatchResult----->${result.toString()}")
             return result.data!!.match
         }
         return null
@@ -87,6 +87,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchIds
             }.build()
         }
+       // LogUtils.dTag("比赛推送","订阅比赛----${matchIds}")
     }
 
     // 500-1103: 取消订阅比赛详情
@@ -101,6 +102,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                     this.matchId = matchIds
                 }.build()
             }
+        //    LogUtils.dTag("比赛推送","取消订阅比赛----${matchIds}")
         }
     }
 
@@ -109,6 +111,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
             .transform { res ->
                 if (res.error == null && res.data != null) {
+                 //   LogUtils.dTag("比赛推送","详情数据----${res.data.toString()}")
                     emit(res.data!!)
                 }
             }
@@ -168,7 +171,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             }.build()
         }
         if (result.error == null && result.data != null) {
-            LogUtils.dTag("盘口分类","盘口分类----${result.data.toString()}")
+          //  LogUtils.dTag("盘口分类","盘口分类----${result.data.toString()}")
             return result.data!!.marketCategoryList
         }
         return null

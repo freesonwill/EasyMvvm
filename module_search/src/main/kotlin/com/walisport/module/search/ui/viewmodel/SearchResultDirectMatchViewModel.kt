@@ -3,6 +3,7 @@ package com.walisport.module.search.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.getFormatDate
+import com.haibin.calendarview.Calendar
 import com.walisport.module.search.data.constants.SearchResultRaceItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
@@ -58,9 +59,19 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val currentTitle: String?
         get() = _currentTitle
 
+    /** 暫存有比賽的日期 */
+    private var _raceDateMap: MutableMap<String, Calendar> = mutableMapOf()
+    val racedDateMap: Map<String, Calendar>
+        get() = _raceDateMap
+
+    /** 是否為第一次載入 */
+    private var isFirst = true
+
     /** 重置搜尋結果 */
     private fun resetResult() {
-        _directData.value = null
+        if(isFirst) {
+            _directData.value = null
+        }
         _combineResult.value = null
     }
 
@@ -69,6 +80,10 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         viewModelScope.launch {
             resetResult()
             setResult(data)
+            setRaceDate(data)
+            if(isFirst) {
+                isFirst = false
+            }
         }
     }
 
@@ -80,15 +95,14 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         endTime: Long? = null,
     ) {
         viewModelScope.launch {
-            resetResult()
-            setResult(
-                repository.getSearchResult(
-                    word = id,
-                    type = type,
-                    startTime = startTime,
-                    endTime = endTime
-                )
-            )
+            repository.getSearchResult(
+                word = id,
+                type = type,
+                startTime = startTime,
+                endTime = endTime
+            ).let { data ->
+                getSearchResult(data)
+            }
         }
     }
 
@@ -120,6 +134,41 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
             match.basicInfo.startTime.getFormatDate()
         }.toSortedMap().flatMap { (day, matchList) ->
             listOf(SearchResultRaceItemType.Header(day)) + matchList.map { SearchResultRaceItemType.Item(it) }
+        }.let {
+            if (it.isNotEmpty()) it + SearchResultRaceItemType.NoMore
+            else it
+        }
+    }
+
+    /** 處理賽事日期 */
+    private fun setRaceDate(result: SearchResultBean) {
+        when (result.type) {
+            SearchResultTypeEnum.TOURNAMENT,
+            SearchResultTypeEnum.TEAM,
+            SearchResultTypeEnum.PLAYER -> {
+                if(!isFirst) return
+
+                _raceDateMap = result.matches
+                    ?.asSequence()
+                    ?.mapNotNull { match ->
+                        match.basicInfo.startTime
+                            .getFormatDate()
+                            .split("/")
+                            .takeIf { it.size == 3 }
+                            ?.let { (year, month, day) ->
+                                val cal = Calendar().apply {
+                                    this.year = year.toInt()
+                                    this.month = month.toInt()
+                                    this.day = day.toInt()
+                                }
+
+                                cal.toString() to cal
+                            }
+                    }
+                    ?.toMap()
+                    ?.toMutableMap() ?: mutableMapOf()
+            }
+            else -> Unit
         }
     }
 

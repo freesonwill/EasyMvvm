@@ -7,9 +7,9 @@
     android:layout_marginStart="@dimen/dp_10"
     android:layout_marginTop="@dimen/dp_60"
     android:layout_marginEnd="@dimen/dp_10"
+    android:background="@drawable/shape_bg_notify"
     android:elevation="4dp"
-    android:visibility="gone"
-    android:background="@drawable/shape_bg_notify">
+    android:visibility="gone">
 
     <ImageView
         android:id="@+id/iv_notify_logo"
@@ -26,6 +26,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_14"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:ellipsize="end"
+        android:lines="1"
         android:textColor="@color/msg_title"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
@@ -38,6 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:ellipsize="end"
+        android:lines="1"
         android:textColor="@color/msg_type"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toEndOf="@+id/iv_notify_logo"

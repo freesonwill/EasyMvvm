@@ -136,7 +136,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
         app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
-        app:layout_constraintStart_toStartOf="@id/tv_name_home_team"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_away_team"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         tools:text="马恩岛" />
 
@@ -189,12 +189,12 @@
         android:gravity="center"
         android:maxLines="1"
         android:padding="7dp"
-        android:text="@string/search_result_btn_bet"
         android:textColor="@color/btn_search_result_bet_text"
         android:textSize="14sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/search_result_btn_bet" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
