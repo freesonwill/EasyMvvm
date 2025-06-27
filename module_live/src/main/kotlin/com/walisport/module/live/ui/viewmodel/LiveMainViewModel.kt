@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
@@ -24,6 +25,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -212,8 +214,15 @@ class LiveMainViewModel(
         return MatchLiveData(0, teams, stats, trend)
     }
 
+    fun getSelectionsEditAll(callback: (List<SelectionsEdit>) -> Unit) {
+        repo.getSelectionsEdit { it ->
+            viewModelScope.launch {
+                callback(it)
+            }
+        }
+    }
 
-    fun reconnect(){
+    fun reconnect() {
         repo.reconnect()
     }
 
@@ -237,12 +246,12 @@ class LiveMainViewModel(
      * */
     fun disConnectChatServer() {
         viewModelScope.launch {
-            try{
-                val value =  chatRepo.disconnect(viewModelScope)
+            try {
+                val value = chatRepo.disconnect(viewModelScope)
                 "chat disconnect viewModel $value".logd(TAG)
-            }catch (e:CancellationException){
+            } catch (e: CancellationException) {
                 "chat disconnect viewModel canceled".logi(TAG)
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

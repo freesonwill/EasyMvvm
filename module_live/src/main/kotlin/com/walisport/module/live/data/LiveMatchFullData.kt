@@ -92,7 +92,7 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                         active = selection.active,
                         parlay = selection.parlay,
                         style = market.style,
-                        oddsStatus = 3
+                        oddsStatus = LiveOddsStatusEnum.SAME.status
                     )
                 )
                 selectionsRecord.add(LiveSelectionBeanRecord(
