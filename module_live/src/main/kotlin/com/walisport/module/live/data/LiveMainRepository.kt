@@ -67,6 +67,7 @@ class LiveMainRepository(
     suspend fun updateFullMatchInfo(
         marketInfo: MatchBasicUpdate?, marketUpdate: List<Market>, matchId: Long
     ) {
+        database.liveMatchDao().deleteSelectionsEdit()
         marketInfo?.let {
             if (marketInfo.hasLiveInfo()) {
                 database.liveMatchDao().updateNotifyMatchInfo(

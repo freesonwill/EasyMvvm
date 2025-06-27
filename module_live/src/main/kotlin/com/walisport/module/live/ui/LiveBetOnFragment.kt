@@ -28,6 +28,8 @@ import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.utils.TabMarginExt.reflexMargin
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -54,6 +56,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     fun initAdapter() {
         mBinding.rvBetList.apply {
+
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
@@ -89,25 +92,23 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     fun showData(list: List<MarketMenuBean>?, marketIds: List<Long>) {
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         //根据盘口获取投注注区
-        mViewModel.getLiveSelectionBean(marketIds)
         launch {
-            mViewModel.getLiveSelectionBean.collect {
-                LogUtils.dTag("比赛推送","getLiveSelectionBean${it}")
-                mainViewModel.getSelectionsEditAll {selectionEdit->
-                    LogUtils.dTag("比赛推送","变化的注区id----${selectionEdit}")
-                    mBinding.clDynamics.setVisibilityGone()
-                    mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
-                    liveBetOnAdapter.setData(
-                        baseInfo?.homeTeam.toString(),
-                        baseInfo?.homeTeamIcon.toString(),
-                        baseInfo?.awayTeam.toString(),
-                        baseInfo?.awayTeamIcon.toString(), it, true,
-                        selectionEdit
-                    )
-
-                    liveBetOnAdapter.submitList(list)
-                    liveBetOnAdapter.setSelectionComboId(selectionComboId)
-                    liveBetOnAdapter.notifyDataSetChanged()
+            mViewModel.getLiveSelectionBean(marketIds).collect {it->
+                    LogUtils.d("投注列--------------------${it}")
+                    mainViewModel.getSelectionsEditAll {selectionEdit->
+                        LogUtils.dTag("比赛推送","变化id----${selectionEdit}")
+                        mBinding.clDynamics.setVisibilityGone()
+                        mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
+                        liveBetOnAdapter.setData(
+                            baseInfo?.homeTeam.toString(),
+                            baseInfo?.homeTeamIcon.toString(),
+                            baseInfo?.awayTeam.toString(),
+                            baseInfo?.awayTeamIcon.toString(), it, true,
+                            selectionEdit
+                        )
+                        liveBetOnAdapter.setSelectionComboId(selectionComboId)
+                        liveBetOnAdapter.submitList(list)
+                        liveBetOnAdapter.notifyDataSetChanged()
                 }
             }
         }
@@ -195,13 +196,14 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                 mBinding.clDynamics.setVisibilityGone()
             }
         }
+
             //根据盘口分类code获取盘口列表
             mViewModel.getMarketList.observe(viewLifecycleOwner) {
                 var marketIds: MutableList<Long> = mutableListOf()
                 it?.forEach {
                     marketIds.add(it.marketId)
                 }
-               // LogUtils.e("showData${marketIds}")
+                LogUtils.e("showData${marketIds}")
                 showData(it, marketIds)
             }
 
@@ -233,7 +235,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId)
+            liveBetOnAdapter.setSelectionComboId(selectionComboId,false)
             liveBetOnAdapter.notifyDataSetChanged()
         }
     }
