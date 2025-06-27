@@ -42,7 +42,6 @@ abstract class BaseActivityViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             launch {
                 commonRepository.getConnectStateFlow().collect { connectState ->
-                    "KC_ connectState = $connectState".logi()
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
