@@ -33,9 +33,10 @@
             android:id="@+id/tv_sub_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="2"
             android:textColor="@color/white"
             android:textSize="13sp"
             app:layout_constraintEnd_toStartOf="@id/barrier_icon_player"
@@ -46,8 +47,8 @@
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/space_under_title"
             android:layout_width="match_parent"
-            android:layout_height="20dp"
-            app:layout_constraintTop_toBottomOf="@id/tv_sub_title" />
+            android:layout_height="44dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_title" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_icon"
@@ -63,11 +64,10 @@
             android:id="@+id/iv_player"
             android:layout_width="wrap_content"
             android:layout_height="77dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="13dp"
             android:adjustViewBounds="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/barrier_sub_title"
             tools:srcCompat="@drawable/ic_search_result_player_placeholder" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -78,11 +78,11 @@
             app:constraint_referenced_ids="iv_icon,iv_player" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier_title_player"
+            android:id="@+id/barrier_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="space_under_title,iv_player" />
+            app:constraint_referenced_ids="tv_sub_title,space_under_title" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

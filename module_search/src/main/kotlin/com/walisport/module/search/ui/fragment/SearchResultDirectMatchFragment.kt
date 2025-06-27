@@ -362,14 +362,14 @@ class SearchResultDirectMatchFragment :
                     tvTitle.text = data.name
                     tvSubTitle.text =
                         listOf(
-                            data.name,
+                            data.tournamentShortName,
                             data.teamName,
                             data.number.toString(),
                             data.position.name
                         ).takeIf { it.all { item -> item.isNotEmpty() } }?.let {
                             String.format(
                                 R.string.search_result_sub_title_player.toTranslatedStr(),
-                                data.name,
+                                data.tournamentShortName,
                                 data.teamName,
                                 data.number,
                                 data.position.name

@@ -59,8 +59,10 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         get() = _currentTitle
 
     /** 重置搜尋結果 */
-    private fun resetResult() {
-        _directData.value = null
+    private fun resetResult(needResetDirect: Boolean = true) {
+        if(needResetDirect) {
+            _directData.value = null
+        }
         _combineResult.value = null
     }
 
@@ -80,7 +82,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         endTime: Long? = null,
     ) {
         viewModelScope.launch {
-            resetResult()
+            resetResult(false)
             setResult(
                 repository.getSearchResult(
                     word = id,
