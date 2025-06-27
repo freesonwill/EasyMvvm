@@ -9,11 +9,11 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.data.LiveMainRepository
-import com.walisport.module.live.data.model.Incident
 import com.walisport.module.live.data.model.Incidents
 import com.walisport.module.live.data.model.MatchHalfTeamStats
 import com.walisport.module.live.data.model.MatchLiveData
@@ -25,8 +25,12 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import plugin.koin.KoinViewModel
@@ -66,6 +70,9 @@ class LiveMainViewModel(
 
     private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
+
+
+
 
 
     //监听数据变化
@@ -230,6 +237,13 @@ class LiveMainViewModel(
         return MatchLiveData(0, teams, stats, trend, event)
     }
 
+    fun getSelectionsEditAll(callback: (List<SelectionsEdit>) -> Unit) {
+        repo.getSelectionsEdit { it ->
+            viewModelScope.launch {
+                callback(it)
+            }
+        }
+    }
 
     fun reconnect() {
         repo.reconnect()

@@ -17,7 +17,6 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.limitTitleLength
 import arch.cayenne.lib.common.utils.ext.toLocalDateTimeString
 import arch.cayenne.lib.common.utils.ext.toMinuteSecondFormat
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
@@ -54,6 +53,7 @@ class MatchItemViewHolder(
             rvOddsGrid.itemAnimator = null
             rvOddsGrid.apply {
                 setRecycledViewPool(viewPool)
+                setHasFixedSize(true)
                 layoutManager = GridLayoutManager(root.context, 3)
                 adapter = oddsColumnAdapter
 

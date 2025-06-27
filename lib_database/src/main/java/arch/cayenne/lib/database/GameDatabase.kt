@@ -37,6 +37,7 @@ import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBeanRecord
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MessageBean
 
@@ -63,7 +64,8 @@ import arch.cayenne.lib.database.entity.MessageBean
         LiveSelectionBean::class,
         LiveSelectionBeanRecord::class,
         BetSlipOrderBean::class,
-        BetSlipReserveBean::class
+        BetSlipReserveBean::class,
+        SelectionsEdit::class,
     ],
     version = 1,
     exportSchema = false

@@ -219,7 +219,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         launch {
             mViewModel.observeConnectStateFlow().collect {
-                LogUtils.d("observeConnectStateFlow flow $it")
+               // LogUtils.d("observeConnectStateFlow flow $it")
                 //监听连接变化
                 when (it) {
                     //网络异常

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/tv_no_more"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp"
+    android:text="@string/search_result_no_more_data"
+    android:textColor="@color/search_result_no_more_data" />

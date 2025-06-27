@@ -25,15 +25,8 @@ class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<Selecti
         if (oldMarket.defaultSelectionCount != newMarket.defaultSelectionCount) return false
 
         if (oldSelections.size != newSelections.size) return false
-
-        return oldSelections.zip(newSelections).all { (oldSel, newSel) ->
-            oldSel.selectionId == newSel.selectionId &&
-                    oldSel.shortName == newSel.shortName &&
-                    oldSel.odds == newSel.odds &&
-                    oldSel.active == newSel.active &&
-                    oldSel.parlay == newSel.parlay &&
-                    newSel.trend == 0 &&
-                    oldSel.isSelected == newSel.isSelected
+        return oldSelections.indices.all { index ->
+            oldSelections[index] == newSelections[index]
         }
     }
 
@@ -50,7 +43,8 @@ class OddsDiffCallback : DiffUtil.ItemCallback<Pair<MarketBeanLite, List<Selecti
             diff.add("defaultSelectionCount")
         }
 
-        oldSelections.zip(newSelections).forEach { (old, new) ->
+        oldSelections.forEachIndexed { index, old ->
+            val new = newSelections[index]
             if (old.odds != new.odds) diff.add("odds")
             if (old.shortName != new.shortName) diff.add("shortName")
             if (old.active != new.active) diff.add("active")

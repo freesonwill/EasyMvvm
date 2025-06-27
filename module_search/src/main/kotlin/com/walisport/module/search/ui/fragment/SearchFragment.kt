@@ -10,6 +10,7 @@ import android.graphics.drawable.TransitionDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -17,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -191,9 +193,11 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 )
 
                 getTitleBarBackIcon().apply {
-                    setImageDrawable(
-                        getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
-                    )
+                    post {
+                        setImageDrawable(
+                            getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                        )
+                    }
                 }
 
                 getSearchEditText().apply {
@@ -211,6 +215,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             getSearchRecommendList(text?.toString())
                         }
                     }
+                }
+
+                getSearchBtn().apply {
+                    TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                        this,
+                        10,
+                        15,
+                        1,
+                        TypedValue.COMPLEX_UNIT_SP
+                    )
                 }
             }
         }
@@ -277,6 +291,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
+            } else if (mViewModel.isDatePickerOpen()) {
+                mViewModel.setIsDatePickerOpen(false)
             } else {
                 val navController = mBinding.fragmentContainer.findNavController()
                 val backStackId = navController.previousBackStackEntry?.destination?.id
@@ -384,10 +400,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     private fun updateTitleBarBackIcon(isDefault: Boolean = true) {
-        getTitleBarBackIcon().setImageDrawable(
-            if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-            else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-        )
+        getTitleBarBackIcon().apply {
+            post {
+                setImageDrawable(
+                    if(isDefault) getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    else ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                )
+            }
+        }
     }
 
     private fun updateSearchTextColor(isDefault: Boolean = true) {
