@@ -15,6 +15,7 @@
     <color name="search_result_race_text_1">#929298</color>
     <color name="search_result_race_team_name">#ffffff</color>
     <color name="search_result_race_no_score">#666666</color>
+    <color name="search_result_no_more_data">#666666</color>
     <color name="search_calendar_current_month_text_color">#FFFFFF</color>
     <color name="search_calendar_other_month_text_color">#666666</color>
     <color name="search_calendar_selected_theme_color">#24EE8A</color>

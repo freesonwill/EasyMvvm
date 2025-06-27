@@ -25,4 +25,5 @@
     <string name="search_result_race_playing">Em Andamento</string>
     <string name="search_result_no_data">Nenhum dado disponível</string>
     <string name="search_result_sub_title_tournament">Temporada %1$s</string>
+    <string name="search_result_no_more_data">Não há mais</string>
 </resources>
