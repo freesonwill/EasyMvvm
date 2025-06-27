@@ -6,6 +6,7 @@
     <color name="hot_word">#00D271</color>
     <color name="tab_item_text_select">#ffffff</color>
     <color name="tab_item_text_unselect">#929298</color>
+    <color name="search_history_divider">#E0E0E0</color>
     <color name="search_result_date">#929298</color>
     <color name="search_result_date_selected">#24EE8A</color>
     <color name="search_result_more">#929298</color>
