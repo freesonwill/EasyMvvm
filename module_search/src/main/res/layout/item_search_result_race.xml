@@ -136,7 +136,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
         app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
-        app:layout_constraintStart_toStartOf="@id/tv_name_home_team"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_away_team"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         tools:text="马恩岛" />
 
