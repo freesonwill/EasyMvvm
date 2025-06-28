@@ -93,8 +93,12 @@ class SkinnableButton : AppCompatButton {
         mTextHelper.onSetCompoundDrawablesWithIntrinsicBounds(left, top, right, bottom)
     }
 
-    fun setTextRes(@StringRes stringRes:Int){
-        mTextHelper.updateText(stringRes)
+    fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
+        mTextHelper.updateText(stringRes,*formatArgs)
+    }
+
+    fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
+        mTextHelper.updateHint(stringRes,*formatArgs)
     }
 
     /**

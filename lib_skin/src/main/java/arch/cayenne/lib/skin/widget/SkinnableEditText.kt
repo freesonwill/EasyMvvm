@@ -96,8 +96,8 @@ open class SkinnableEditText : AppCompatEditText {
         mTextHelper.setTextColor(color)
     }
 
-    fun setTextHitRes(@StringRes stringRes:Int){
-        mTextHelper.updateHint(stringRes)
+    fun setTextHitRes(@StringRes stringRes:Int,vararg formatArg:Any = emptyArray()){
+        mTextHelper.updateHint(stringRes,*formatArg)
     }
 
 

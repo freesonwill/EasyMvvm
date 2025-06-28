@@ -1,12 +1,15 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.LinearLayout
+import android.widget.TextView
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
@@ -27,6 +30,9 @@ class BetSlipFragment :
         FragmentLiveBetSlipLayoutBinding::class
     override val vmClass: KClass<BetSlipPageViewModel> = BetSlipPageViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         initMenu()
@@ -71,11 +77,31 @@ class BetSlipFragment :
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
-            tabLayout.removeAllTips()
 
+            tabLayout.clearOnTabSelectedListeners()
+            tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                        targetPosition = tab?.position ?: 0,
+                        viewPager = mBinding.viewPager,
+                        fakeViewPager = mBinding.ivFaker
+                    )
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {
+                    (tab?.customView as? TextView)?.setTypeface(null, Typeface.NORMAL)
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab?) {
+                }
+            })
+
+            tabLayout.removeAllTips()
             reflexPadding(tabLayout)
         }
     }
+
+
 
     private fun reflexPadding(tabLayout: TabLayout) {
         tabLayout.post {

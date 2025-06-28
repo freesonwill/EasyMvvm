@@ -54,8 +54,12 @@ class SkinnableCheckBox : AppCompatCheckBox {
         super.setTextColor(colors)
     }
 
-    fun setTextRes(@StringRes stringRes:Int){
-        textHelper.updateText(stringRes)
+    fun setTextRes(@StringRes stringRes:Int,vararg formatArgs:Any = emptyArray()){
+        textHelper.updateText(stringRes,*formatArgs)
+    }
+
+    fun setHintRes(@StringRes stringRes: Int,vararg formatArgs:Any = emptyArray()){
+        textHelper.updateHint(stringRes,*formatArgs)
     }
 
     override fun onDetachedFromWindow() {
