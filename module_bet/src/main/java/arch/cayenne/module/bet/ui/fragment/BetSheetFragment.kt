@@ -92,7 +92,6 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
         val screenHeight = resources.displayMetrics.heightPixels
         val maxFragmentHeight = (screenHeight * 0.75).toInt()
         mBinding.root.maxHeight = maxFragmentHeight
-        mBinding.root.minHeight = screenHeight / 2
     }
 
     private fun setStartDestination(size: Int) {
