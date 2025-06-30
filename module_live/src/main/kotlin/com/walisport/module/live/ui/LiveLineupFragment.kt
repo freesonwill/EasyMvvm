@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -14,6 +15,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
 import com.walisport.module.live.data.PlayerPosition
 import com.walisport.module.live.data.model.MatchLineupDetail
@@ -26,7 +30,6 @@ import com.walisport.module.live.databinding.LineupRepairItemHomeBinding
 import com.walisport.module.live.databinding.LineupSubstitutionItemBinding
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import galaxy.client.proto.Sloth
 import kotlin.reflect.KClass
 
 /**
@@ -53,7 +56,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     }
 
     override fun createObserver() {
-        launch(Lifecycle.State.RESUMED){
+
             //监听比赛id变化
             mainViewModel.matchId.observe(viewLifecycleOwner){
                 mViewModel.geMatchLineupDetail(it)
@@ -89,7 +92,6 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
                 }
             }
-        }
     }
 
     // repeated Player home = 6;        // 主队阵型球员列表
@@ -179,8 +181,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.lineup_head_default)
-                .into(ivLogo)
+            loadLineupHeadImage(ivLogo,data.logo)
             stvName.text = data.name
             tvNumber.text = data.shirtNumber.toString()
             tvPosition.text = getPositionFromString(data.position)?.description
@@ -195,8 +196,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
             false
         )
         binding.apply {
-            Glide.with(this@LiveLineupFragment).load(data.logo).error(R.drawable.lineup_head_default)
-                .into(ivLogo)
+            loadLineupHeadImage(ivLogo,data.logo)
             stvName.text = data.name
             tvNumber.text = data.shirtNumber.toString()
             tvPosition.text = getPositionFromString(data.position)?.description
@@ -221,17 +221,17 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     homePositionName.text = getPositionFromString(positionName)?.description
                     homeTopNumber.text =
                         allPlayerInfo.find { it.id == itData.inPlayer.id }?.shirtNumber.toString()
-                    Glide.with(this@LiveLineupFragment)
-                        .load(allPlayerInfo.find { it.id == itData.inPlayer.id }?.logUrl)
-                        .error(R.drawable.lineup_head_default).into(homeTopLogo)
+                    loadLineupHeadImage(homeTopLogo,
+                        allPlayerInfo.find { it.id == itData.inPlayer.id }?.logUrl.toString()
+                    )
                     homeTopBottom.text = "${itData.time}'"
                     homeBottomName.text = itData.outPlayer.name
                     homeBottomPosition.text = getPositionFromString(positionName)?.description
                     homeBottomNumber.text =
                         allPlayerInfo.find { it.id == itData.outPlayer.id }?.shirtNumber.toString()
-                    Glide.with(this@LiveLineupFragment)
-                        .load(allPlayerInfo.find { it.id == itData.outPlayer.id }?.logUrl)
-                        .error(R.drawable.lineup_head_default).into(homeBottomLogo)
+                    loadLineupHeadImage(homeBottomLogo,
+                        allPlayerInfo.find { it.id == itData.outPlayer.id }?.logUrl.toString()
+                    )
                     homeTopNumber.setBackgroundResource(if (isHome) R.drawable.circle_badge else R.drawable.circle_badge_blue)
                     homeBottomNumber.setBackgroundResource(if (isHome) R.drawable.circle_badge else R.drawable.circle_badge_blue)
                 }
@@ -254,9 +254,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         binding.apply {
             shirtNumber.text = data.shirtNumber.toString()
             tvName.text = data.name
-            Glide.with(this@LiveLineupFragment).load(data.logo)
-                .error(R.drawable.lineup_head_default)
-                .into(imageLogo)
+            loadLineupHeadImage(imageLogo,data.logo)
             shirtNumber.setBackgroundResource(if (isTopView) R.drawable.circle_badge else R.drawable.circle_badge_blue)
         }
         return binding.root
@@ -298,6 +296,18 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
         } catch (e: IllegalArgumentException) {
             null // 如果字符串不匹配任何枚举值，返回 null
         }
+    }
+
+    fun loadLineupHeadImage(imageView: ImageView, url: String) {
+            val requestOptions = RequestOptions()
+                .override(28.dp2px,28.dp2px) // 指定宽高
+                .format(DecodeFormat.PREFER_RGB_565)
+            Glide.with(this@LiveLineupFragment)
+                .load(url)
+                .apply(requestOptions)
+                .thumbnail(0.5f)
+                .error(R.drawable.lineup_head_default)
+                .into(imageView)
     }
 
     data class LineupPlayerInfo(val id: Int, val logUrl: String, val shirtNumber: Int)
