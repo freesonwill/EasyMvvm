@@ -218,16 +218,49 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
         val betSheetHeight = getBetItemHeight() * betSelectionAdapter.itemCount
 
-        val isFull =
-            betSheetHeight + topTitleHeight + multiBetHeight + bottomButtonHeight >= maxFragmentHeight
+        // The ideal height the layout would take if it just wrapped its content.
+        val contentHeight = topTitleHeight + multiBetHeight + bottomButtonHeight + betSheetHeight
+        val isFull = contentHeight >= maxFragmentHeight
 
-        if (isFull) {
-            mBinding.root.minHeight = maxFragmentHeight
+        // The target height for the root view. Capped at maxFragmentHeight.
+        val targetHeight = if (isFull) maxFragmentHeight else contentHeight
+        val currentHeight = mBinding.root.height
+
+        if (targetHeight < currentHeight) {
+            // Animate the height change if the layout is shrinking.
+            ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                duration = 300
+                interpolator = DecelerateInterpolator()
+
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Int
+                    mBinding.root.layoutParams = mBinding.root.layoutParams.apply {
+                        height = value
+                    }
+                }
+
+                doOnEnd {
+                    // After the animation, restore dynamic height properties
+                    // to allow the layout to grow again if content is added.
+                    mBinding.root.layoutParams = mBinding.root.layoutParams.apply {
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+                    mBinding.root.minHeight = if (isFull) maxFragmentHeight else 0
+                    if (!isFull) {
+                        val rvLp = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+                        rvLp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        mBinding.rvBet.layoutParams = rvLp
+                    }
+                }
+            }.start()
         } else {
-            mBinding.root.minHeight = 0
-            val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            mBinding.rvBet.layoutParams = layoutParams
+            // No animation, just apply the properties directly.
+            mBinding.root.minHeight = if (isFull) maxFragmentHeight else 0
+            if (!isFull) {
+                val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+                layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                mBinding.rvBet.layoutParams = layoutParams
+            }
         }
     }
 
