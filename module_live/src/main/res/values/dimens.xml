@@ -5,5 +5,7 @@
 
     <dimen name="video_landscape_statistics_fragment_width">@dimen/dp_372</dimen>
     <dimen name="video_landscape_share_fragment_width">@dimen/dp_253</dimen>
+    <dimen name="video_source_portrait_height">153dp</dimen>
+    <dimen name="video_source_portrait_margin_top">-153dp</dimen>
 
 </resources>
