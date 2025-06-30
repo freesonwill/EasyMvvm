@@ -1,8 +1,6 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.common.ui.BaseNavActivity
@@ -23,17 +21,17 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     override fun navigationID(): Int = R.navigation.nav_graph_app
     override val vmClass: KClass<MainViewModel> = MainViewModel::class
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
-    private var fabFragment: Fragment? = null
-    private var notifyFragment: Fragment? = null
+    private val fabFragment: FloatingButtonFragment by lazy {
+        FloatingButtonFragment.newInstance()
+    }
+    private val notifyFragment: AppNotifyFragment by lazy {
+        AppNotifyFragment.newInstance()
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        fabFragment = FloatingButtonFragment.newInstance().apply {
-            show(this@MainActivity)
-        }
-        notifyFragment = AppNotifyFragment.newInstance().apply {
-            show(this@MainActivity)
-        }
+        fabFragment.show(this)
+        notifyFragment.show(this)
     }
 
     override fun createObserver() {
@@ -44,17 +42,17 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             showToast(toast, 3_000L)
         }
         mViewModel.appNotifyListener.observe(this) {
-            (notifyFragment as? AppNotifyFragment)?.sendNotifyMsg(it)
+            notifyFragment.sendNotifyMsg(it)
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {
-                fabFragment?.view?.visibility = View.VISIBLE
+                fabFragment.show()
             } else {
-                fabFragment?.view?.visibility = View.GONE
+                fabFragment.hide()
             }
         }
         fabControlViewModel.onClickAnimationListener.observe(this) { (x, y) ->
-            (fabFragment as? FloatingButtonFragment)?.showDotAnimation(x, y)
+            fabFragment.showDotAnimation(x, y)
         }
     }
 

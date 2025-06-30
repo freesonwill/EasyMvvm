@@ -41,9 +41,12 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     }
 
     fun show(activity: AppCompatActivity) {
-        activity.supportFragmentManager.beginTransaction()
-            .add(android.R.id.content, this, this.javaClass.simpleName)
-            .commit()
+        val f = activity.supportFragmentManager.findFragmentByTag(TAG)
+        if (f == null) {
+            activity.supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, this, TAG)
+                .commit()
+        }
     }
 
     private fun showNotifyMsg(msg: AppNotifyBean) {
