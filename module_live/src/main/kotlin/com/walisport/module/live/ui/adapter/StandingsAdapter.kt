@@ -61,7 +61,7 @@ class StandingsAdapter :
                 itemBinding.tvTeamName.text = temp.name
                 val index = i + 1
                 itemBinding.tvStandingsRank.text = index.toString()
-                loadLineupHeadImage(holder.itemView.context,itemBinding.ivTeamLogo,temp.logo)
+                loadLogoImage(holder.itemView.context,itemBinding.ivTeamLogo,temp.logo)
                 itemBinding.tvTotal.text = temp.total.toString()
                 itemBinding.tvWonDrawLoss.text =
                     String.format("%d/%d/%d", temp.win, temp.draw, temp.loss)
@@ -90,15 +90,14 @@ class StandingsAdapter :
     }
 
 
-    fun loadLineupHeadImage(context: Context,imageView: ImageView, url: String) {
+    fun loadLogoImage(context: Context,imageView: ImageView, url: String) {
         val requestOptions = RequestOptions()
             .override(25.dp2px,16.dp2px) // 指定宽高
-            .format(DecodeFormat.PREFER_RGB_565) // 图片压缩格式
+            .format(DecodeFormat.PREFER_RGB_565)
         Glide.with(context)
             .load(url)
-            .diskCacheStrategy(DiskCacheStrategy.ALL) // 缓存原始和缩放后的图片
             .apply(requestOptions)
-            .thumbnail(0.25f) // 缩略图比例
+            .thumbnail(0.25f)
             .error(
                 getErrorDrawable(
                     context,
