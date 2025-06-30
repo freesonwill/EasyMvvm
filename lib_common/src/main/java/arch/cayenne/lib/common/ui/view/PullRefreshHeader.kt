@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.ViewSportHeaderBinding
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
@@ -49,9 +48,7 @@ class PullRefreshHeader : SimpleComponent, RefreshHeader {
     ) {
         when (newState) {
             RefreshState.PullDownToRefresh -> {
-                "KC_ text = ${binding.tvTitle.text}".logi()
-                binding.tvTitle.setText(R.string.pull_refresh)
-//                binding.tvTitle.text = ContextCompat.getString(context, R.string.pull_refresh)
+                binding.tvTitle.text = ContextCompat.getString(context, R.string.pull_refresh)
                 loadingAnim?.cancel()
                 loadingAnim = binding.ivProgress.startSafeObjectAnimator(
                     "rotation",  // 属性名称
