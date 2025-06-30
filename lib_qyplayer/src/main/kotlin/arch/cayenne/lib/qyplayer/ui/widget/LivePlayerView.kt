@@ -153,6 +153,10 @@ class LivePlayerView @JvmOverloads constructor(
         mRenderView.pause()
     }
 
+    fun switchUrl(url: String): Int {
+        return mRenderView.switchUrl(url)
+    }
+
     private fun initRenderView() {
         mRenderView = findViewById(R.id.renderView)
 
