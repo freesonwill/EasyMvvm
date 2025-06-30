@@ -31,7 +31,31 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     private var clicklistener: OnClickListener? = null
     private var sportId: Int = 0
     private var matchId: Long = 0L
-    private var mHandler: Handler? = null
+    private var isDestroyed = false
+    private val mHandler by lazy {
+        object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                when (msg.what) {
+                    OPEN_NOTIFY -> {
+                        val obj = msg.obj as AppNotifyBean
+                        showNotifyMsg(obj)
+                    }
+
+                    CLICK_EVENT -> { //点击事件弹窗消失并跳转直播详情
+                        showExitAnimation()
+                        gotoMatchLive()
+                    }
+
+                    TOUCH_EVENT -> { //触摸事件只随手指移动并消失，不跳转直播详情
+                        showExitAnimation()
+                    }
+
+                    else -> showExitAnimation()
+                }
+            }
+        }
+    }
 
     companion object {
         fun newInstance(): AppNotifyFragment {
@@ -65,13 +89,12 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     }
 
     fun sendNotifyMsg(msg: AppNotifyBean) {
-        mHandler?.let {
-            val message = Message.obtain()
-            message.what = OPEN_NOTIFY
-            message.obj = msg
-            it.sendMessage(message)
-            it.sendEmptyMessageDelayed(CLOSE_NOTIFY, CLOSE_TIMEOUT)
-        }
+        if (isDestroyed) return
+        val message = Message.obtain()
+        message.what = OPEN_NOTIFY
+        message.obj = msg
+        mHandler.sendMessage(message)
+        mHandler.sendEmptyMessageDelayed(CLOSE_NOTIFY, CLOSE_TIMEOUT)
     }
 
     private fun showEnterAnimation() {
@@ -96,42 +119,20 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
-        mHandler = object : Handler(Looper.myLooper() ?: Looper.getMainLooper()) {
-            override fun handleMessage(msg: Message) {
-                super.handleMessage(msg)
-                when (msg.what) {
-                    OPEN_NOTIFY -> {
-                        val obj = msg.obj as AppNotifyBean
-                        showNotifyMsg(obj)
-                    }
-
-                    CLICK_EVENT -> { //点击事件弹窗消失并跳转直播详情
-                        showExitAnimation()
-                        gotoMatchLive()
-                    }
-
-                    TOUCH_EVENT -> { //触摸事件只随手指移动并消失，不跳转直播详情
-                        showExitAnimation()
-                    }
-
-                    else -> showExitAnimation()
-                }
-            }
-        }
         setOnItemClickListener(
             object : OnClickListener {
                 override fun onDown() {
-                    mHandler?.removeCallbacksAndMessages(null)
+                    mHandler.removeCallbacksAndMessages(null)
                 }
 
                 override fun onTouch() {
-                    mHandler?.removeCallbacksAndMessages(null)
-                    mHandler?.sendEmptyMessage(TOUCH_EVENT)
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(TOUCH_EVENT)
                 }
 
                 override fun onClick() {
-                    mHandler?.removeCallbacksAndMessages(null)
-                    mHandler?.sendEmptyMessage(CLICK_EVENT)
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(CLICK_EVENT)
                 }
             }
         )
@@ -181,8 +182,8 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     }
 
     override fun onDestroy() {
-        mHandler?.removeCallbacksAndMessages(null)
-        mHandler = null
+        isDestroyed = true
+        mHandler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
