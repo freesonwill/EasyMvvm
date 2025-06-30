@@ -5,10 +5,12 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
@@ -52,20 +54,25 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                 val headerBinding = binding as ItemSearchResultRaceHeaderBinding
                 val item = getItem(position) as SearchResultRaceItemType.Header
 
-                headerBinding.tvTitle.text =
-                    run {
-                        SimpleDateFormat(
-                            SkinnableResourceManager.getString(
-                                holder.itemView.context,
-                                R.string.search_result_race_date_format_display,
+                headerBinding.tvTitle.apply {
+                    updatePadding(
+                        top = if (position == 0) 4.dp2px else paddingTop
+                    )
+                    text =
+                        run {
+                            SimpleDateFormat(
+                                SkinnableResourceManager.getString(
+                                    holder.itemView.context,
+                                    R.string.search_result_race_date_format_display,
+                                    locale
+                                ),
                                 locale
-                            ),
-                            locale
-                        )
-                    }.run {
-                        SimpleDateFormat("yyyy/M/d", locale).parse(item.title)
-                            ?.let { format(it) } ?: item.title
-                    }
+                            )
+                        }.run {
+                            SimpleDateFormat("yyyy/M/d", locale).parse(item.title)
+                                ?.let { format(it) } ?: item.title
+                        }
+                }
             }
             VIEW_TYPE_ITEM -> {
                 val itemBinding = binding as ItemSearchResultRaceBinding
@@ -126,16 +133,11 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         if (basicInfo.status == MatchStatusEnum.ENDED) {
                             val homeScore = basicInfo.liveInfo?.homeScore ?: 0
                             val awayScore = basicInfo.liveInfo?.awayScore ?: 0
-                            if (homeScore > awayScore) {
-                                ivArrowTeamHome.visibility = View.VISIBLE
-                                ivArrowTeamAway.visibility = View.GONE
-                            } else if (homeScore < awayScore) {
-                                ivArrowTeamHome.visibility = View.GONE
-                                ivArrowTeamAway.visibility = View.VISIBLE
-                            } else {
-                                ivArrowTeamHome.visibility = View.GONE
-                                ivArrowTeamAway.visibility = View.GONE
-                            }
+                            ivArrowTeamHome.visibility = if (homeScore > awayScore) View.VISIBLE else View.GONE
+                            ivArrowTeamAway.visibility = if (homeScore < awayScore) View.VISIBLE else View.GONE
+                        } else {
+                            ivArrowTeamHome.visibility = View.GONE
+                            ivArrowTeamAway.visibility = View.GONE
                         }
                         btnFavorite.apply {
                             isEnabled = !basicInfo.betStop

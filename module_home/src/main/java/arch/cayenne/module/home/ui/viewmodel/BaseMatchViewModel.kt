@@ -68,7 +68,9 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             _state.value = Event(MatchListState.NO_MORE_DATA)
             return
         }
-        if (_state.value?.peekContent() != MatchListState.IDLE) return
+        if (_state.value?.peekContent() != MatchListState.IDLE) {
+            return
+        }
         page++
         _state.value = Event(MatchListState.LOADING_NEXT)
         getMatchListData()

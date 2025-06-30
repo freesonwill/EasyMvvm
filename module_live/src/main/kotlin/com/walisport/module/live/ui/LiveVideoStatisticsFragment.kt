@@ -40,6 +40,8 @@ class LiveVideoStatisticsFragment :
     override fun initData() {
         super.initData()
         mViewModel.getMainMatch(mViewModel.matchId())
+        mainViewModel.registerStatisticsNotify(mViewModel.matchId())
+        mainViewModel.observeMatchStaticsNotify()
     }
 
     override fun initListener() {

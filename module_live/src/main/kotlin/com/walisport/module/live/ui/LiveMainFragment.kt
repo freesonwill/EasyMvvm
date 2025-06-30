@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -16,7 +17,6 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -42,7 +42,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
-import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
@@ -54,7 +53,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
-    private lateinit var args:LiveMainFragmentArgs
+    private lateinit var args: LiveMainFragmentArgs
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
@@ -63,6 +62,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val viewPagerAnimHelper by lazy {
         ViewPagerAnimHelper()
     }
+
     @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
@@ -72,6 +72,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
     }
+
     //init DrawerLayout Content
     private fun drawerContent() {
         //蒙層顏色依照版型作變化
@@ -93,6 +94,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             .commitNow()
         mBinding.drawerLayout.openDrawer(GravityCompat.END)
     }
+
     override fun initListener() {
         with(titleBarBinding) {
             ivBack.clickNoRepeat {
@@ -137,7 +139,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager
                     )
-                    mBinding.vpPage.setCurrentItem(it.position,false)
+                    mBinding.vpPage.setCurrentItem(it.position, false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -182,11 +184,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
-        mViewModel.liveBetOnMenu.observe(viewLifecycleOwner){
-            when(it) {
+        mViewModel.liveBetOnMenu.observe(viewLifecycleOwner) {
+            when (it) {
                 BetOnMenuStatus.OPEN -> {
                     drawerContent()
                 }
+
                 BetOnMenuStatus.CLOSE -> {
                     mBinding.drawerLayout.closeDrawer(GravityCompat.END)
                 }
@@ -200,15 +203,21 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             mViewModel.registerMatchInfoNotify(it)
         }
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
-            titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
+            titleBarBinding.tvMoney.text =
+                "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
         }
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
-                mViewModel.setLeagueID(it.basicInfo.tournamentId)    //联赛ID
-                mViewModel.setLeagueName(it.basicInfo.tournamentName)  //联赛名称
-                mViewModel.setLeagueLogo(it.basicInfo.tournamentIcon) //联赛LOGO
-                Glide.with(this).load(mViewModel.leagueLogo.value)
-                    .error(R.drawable.title_league_icon).into(titleBarBinding.ivLandscapeLeagueIcon)
+                mViewModel.setLeagueID(it.basicInfo.tournamentId)     //联赛ID
+                mViewModel.setLeagueName(it.basicInfo.tournamentName) //联赛名称
+                val logo = it.basicInfo.tournamentIcon                //联赛LOGO
+                mViewModel.setLeagueLogo(logo)
+                if (TextUtils.isEmpty(logo)) {
+                    titleBarBinding.ivLandscapeLeagueIcon.visibility = View.GONE
+                } else {
+                    titleBarBinding.ivLandscapeLeagueIcon.visibility = View.VISIBLE
+                    Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
+                }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
             }
         }
@@ -219,14 +228,17 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         launch {
             mViewModel.observeConnectStateFlow().collect {
-               // LogUtils.d("observeConnectStateFlow flow $it")
+                // LogUtils.d("observeConnectStateFlow flow $it")
                 //监听连接变化
                 when (it) {
                     //网络异常
                     ConnectState.NetworkUnavailable -> {
                         mBinding.liveMain.visibility = View.GONE
-                        mBinding.clDynamics.setState(States.NETWORK_ANOMALY, arch.cayenne.lib.common.R.string.error_net.getString()){
-                        mViewModel.reconnect()
+                        mBinding.clDynamics.setState(
+                            States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        ) {
+                            mViewModel.reconnect()
                         }
                     }
                     //连接成功
@@ -237,6 +249,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                             mViewModel.registerMatchInfoNotify(it)
                         }
                     }
+
                     else -> {}
                 }
             }
@@ -296,7 +309,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            launch(Lifecycle.State.RESUMED){
+            launch(Lifecycle.State.RESUMED) {
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
@@ -364,9 +377,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        val newArgs:LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
-        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${this.args.equal(newArgs)}".logd(TAG)
-        if(this.args.equal(newArgs)) return
+        val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
+        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${
+            this.args.equal(
+                newArgs
+            )
+        }".logd(TAG)
+        if (this.args.equal(newArgs)) return
         this.args = newArgs
         updateMatchId(newArgs.matchId)
     }
@@ -377,7 +394,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
-        switchTabAnimJob=null
+        switchTabAnimJob = null
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }
@@ -385,12 +402,13 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun LiveMainFragmentArgs.equal(other: Any?): Boolean {
-        if(other !is LiveMainFragmentArgs) return false
+        if (other !is LiveMainFragmentArgs) return false
         return this.sportId == other.sportId && this.matchId == other.matchId
     }
+
     override fun onBackPressed(): Boolean {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
-        if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
+        if (mBinding.drawerLayout.isDrawerOpen(GravityCompat.END)) {
             mBinding.drawerLayout.closeDrawer(GravityCompat.END)
             return true
         }
