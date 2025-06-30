@@ -1,11 +1,15 @@
 package arch.cayenne.module.bet.ui.fragment
 
+import android.animation.ValueAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
+import androidx.core.animation.doOnEnd
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -46,6 +50,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     private var lastLiveData: LiveData<String>? = null
+    private var isAnimating: Boolean = false
 
     override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
         val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.BetModuleTheme)
@@ -108,6 +113,7 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
         navController.addOnDestinationChangedListener { _, destination, _ ->
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
+            animateLayoutChange()
         }
     }
 
@@ -121,6 +127,55 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
 
         lastLiveData = backStackEntry.savedStateHandle.getLiveData<String>(KEY_RESULT).apply {
             observe(viewLifecycleOwner, dismissObserver)
+        }
+    }
+
+    private fun animateLayoutChange() {
+        if (isAnimating) return
+
+        val mainNav = mBinding.mainNav
+        val currentHeight = mainNav.height
+
+        // 2. 立刻鎖定目前高度，防止閃爍
+        mainNav.layoutParams = mainNav.layoutParams.apply {
+            height = currentHeight
+        }
+
+        // 3. post確保新佈局計算完成後再取新高度
+        mainNav.post {
+            // 手動觸發一次測量，取得新內容應有高度
+            mainNav.measure(
+                View.MeasureSpec.makeMeasureSpec(mainNav.width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            val targetHeight = mainNav.measuredHeight
+
+            if (targetHeight == currentHeight) {
+                // 如果高度沒變，也要恢復wrap_content並開始監聽
+                mainNav.layoutParams = mainNav.layoutParams.apply {
+                    height = ViewGroup.LayoutParams.WRAP_CONTENT
+                }
+                return@post
+            }
+
+            // 4. 開始動畫
+            isAnimating = true
+            val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                duration = 200L
+                interpolator = DecelerateInterpolator()
+                addUpdateListener { animation ->
+                    val value = animation.animatedValue as Int
+                    mainNav.layoutParams = mainNav.layoutParams.apply { height = value }
+                }
+                doOnEnd {
+                    // 5. 動畫結束後，恢復wrap_content以便未來變化
+                    mainNav.layoutParams = mainNav.layoutParams.apply {
+                        height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    }
+                    isAnimating = false
+                }
+            }
+            animator.start()
         }
     }
 
