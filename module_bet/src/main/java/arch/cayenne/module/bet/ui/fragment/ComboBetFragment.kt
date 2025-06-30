@@ -91,8 +91,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        mBinding.rvMultiBet.itemAnimator = null
-        mBinding.rvBet.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
 
@@ -142,10 +140,17 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
+                val isRemoving = it.size < betSelectionAdapter.itemCount
                 if (it.size <= 2) {
                     restoreBetLayoutPosition()
                 }
                 betSelectionAdapter.submitList(it)
+                if (isRemoving) {
+                    val animator = mBinding.rvBet.itemAnimator
+                    mBinding.rvBet.postDelayed({
+                        mBinding.rvBet.invalidateItemDecorations()
+                    }, animator?.removeDuration ?: 120L)
+                }
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
