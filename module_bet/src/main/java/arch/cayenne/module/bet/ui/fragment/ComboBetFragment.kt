@@ -91,6 +91,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        mBinding.rvMultiBet.itemAnimator = null
+        mBinding.rvBet.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
 
@@ -140,6 +142,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                     null
                 )
             } else {
+                if (it.size <= 2) {
+                    restoreBetLayoutPosition()
+                }
                 betSelectionAdapter.submitList(it)
             }
         }
@@ -214,13 +219,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         if (isFull) {
             mBinding.root.minHeight = maxFragmentHeight
         } else {
-            val layoutParams = mBinding.rvBet.layoutParams
-            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.root.minHeight = 0
+            val layoutParams = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+            layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mBinding.rvBet.layoutParams = layoutParams
-            if (mViewModel.onMultiLayoutExpendListener.value == false) {
-                restoreBetLayoutPosition()
-            }
         }
     }
 
