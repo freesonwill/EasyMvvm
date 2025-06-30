@@ -12,7 +12,8 @@
             android:id="@+id/llContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <com.walisport.module.live.ui.widget.TechnicalCountView
                 android:id="@+id/view_tech_static"
