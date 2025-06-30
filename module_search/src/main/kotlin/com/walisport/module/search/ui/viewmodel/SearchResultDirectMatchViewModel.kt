@@ -32,7 +32,7 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val directData: StateFlow<SearchResultBaseBean?> = _directData.asStateFlow()
 
     /** 整理後搜尋結果 賽事用 */
-    private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>?>(emptyList())
+    private val _combineResult = MutableStateFlow<List<SearchResultRaceItemType>?>(null)
     val combineResult: StateFlow<List<SearchResultRaceItemType>?> = _combineResult.asStateFlow()
 
     /** 選擇的日期 */
