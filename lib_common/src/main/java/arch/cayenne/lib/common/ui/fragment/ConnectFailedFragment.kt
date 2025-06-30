@@ -6,13 +6,18 @@ import androidx.appcompat.app.AppCompatActivity
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.constants.CurConnectFailedType
 import arch.cayenne.lib.common.databinding.FragmentConnectFailedBinding
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import kotlin.reflect.KClass
 
 class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailedBinding>() {
     override val vbClass: KClass<FragmentConnectFailedBinding> = FragmentConnectFailedBinding::class
     override val vmClass: KClass<EmptyViewModel> = EmptyViewModel::class
+
+    private val connectFailedViewModel: ConnectFailedViewModel by activityViewModel()
 
     private var refreshListener: (() -> Unit)? = null
 
@@ -31,27 +36,28 @@ class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailed
     }
 
     override fun createObserver() {
-
+        connectFailedViewModel.curConnectFailedType.observe(viewLifecycleOwner) {
+            when(it) {
+                CurConnectFailedType.SHOW_MASK -> {
+                    mBinding.root.visibility = View.VISIBLE
+                    mBinding.clFailed.visibility = View.GONE
+                }
+                CurConnectFailedType.SHOW_FAILED -> {
+                    mBinding.root.visibility = View.VISIBLE
+                    mBinding.clFailed.visibility = View.VISIBLE
+                }
+                CurConnectFailedType.HIDE -> {
+                    mBinding.root.visibility = View.GONE
+                    mBinding.clFailed.visibility = View.GONE
+                }
+            }
+        }
     }
 
     fun show(activity: AppCompatActivity) {
         activity.supportFragmentManager.beginTransaction()
             .add(android.R.id.content, this, this.javaClass.simpleName)
             .commitNow()
-    }
-
-    fun showMask() {
-        mBinding.root.visibility = View.VISIBLE
-        mBinding.clFailed.visibility = View.GONE
-    }
-
-    fun showFailed() {
-        mBinding.root.visibility = View.VISIBLE
-        mBinding.clFailed.visibility = View.VISIBLE
-    }
-
-    fun hide() {
-        mBinding.root.visibility = View.GONE
     }
 
     fun setRefreshListener(listener: (()-> Unit)) {
