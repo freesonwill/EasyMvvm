@@ -33,6 +33,11 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         fun newInstance(): AppNotifyFragment {
             return AppNotifyFragment()
         }
+        private const val OPEN_NOTIFY = 1
+        private const val CLOSE_NOTIFY = 2
+        private const val CLICK_EVENT = 3
+        private const val TOUCH_EVENT = 4
+        private const val CLOSE_TIMEOUT = 3000L
     }
 
     fun show(activity: AppCompatActivity) {
@@ -41,20 +46,25 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
             .commit()
     }
 
-    fun showNotifyMsg(msg: AppNotifyBean?) {
-        if (msg != null) {
-            sportId = msg.sportId
-            matchId = msg.matchId
-            mBinding.rootLayout.visibility = View.VISIBLE
-            mBinding.tvNotifyTitle.text = msg.title
-            mBinding.tvNotifyContent.text = msg.content
-            if (msg.type == 1) {
-                Glide.with(this).load(R.drawable.icon_message_football).into(mBinding.ivNotifyLogo)
-            } else {
-                Glide.with(this).load(R.drawable.icon_message_kai).into(mBinding.ivNotifyLogo)
-            }
-            showEnterAnimation()
+    private fun showNotifyMsg(msg: AppNotifyBean) {
+        sportId = msg.sportId
+        matchId = msg.matchId
+        mBinding.rootLayout.visibility = View.VISIBLE
+        mBinding.tvNotifyTitle.text = msg.title
+        mBinding.tvNotifyContent.text = msg.content
+        if (msg.type == 1) {
+            Glide.with(this).load(R.drawable.icon_message_football).into(mBinding.ivNotifyLogo)
+        } else {
+            Glide.with(this).load(R.drawable.icon_message_kai).into(mBinding.ivNotifyLogo)
         }
+        showEnterAnimation()
+    }
+
+    fun sendNotifyMsg(msg: AppNotifyBean) {
+        showNotifyMsg(msg)
+        mBinding.root.postDelayed({
+            showExitAnimation()
+        }, CLOSE_TIMEOUT)
     }
 
     private fun showEnterAnimation() {
@@ -64,13 +74,13 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         animator.start()
     }
 
-    fun showExitAnimation() {
+    private fun showExitAnimation() {
         val animator = ObjectAnimator.ofFloat(view, "translationY", offsetY, -126.dp2px.toFloat() + offsetY)
         animator.duration = 300
         animator.start()
     }
 
-    fun gotoMatchLive() {
+    private fun gotoMatchLive() {
         navigate(Uri.parse("walisport://module_live/liveFragment?matchId=${matchId}&sportId=${sportId}"))
     }
 
@@ -79,6 +89,22 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
+        setOnItemClickListener(
+            object : OnClickListener {
+                override fun onDown() {
+
+                }
+
+                override fun onTouch() {
+                    showExitAnimation()
+                }
+
+                override fun onClick() {
+                    showEnterAnimation()
+                    gotoMatchLive()
+                }
+            }
+        )
         mBinding.rootLayout.setOnTouchListener { _, e ->
             when (e.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -120,7 +146,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     }
 
-    fun setOnItemClickListener(listener: OnClickListener) {
+    private fun setOnItemClickListener(listener: OnClickListener) {
         this.clicklistener = listener
     }
 
