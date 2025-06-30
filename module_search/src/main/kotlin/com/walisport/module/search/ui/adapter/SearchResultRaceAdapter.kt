@@ -133,16 +133,11 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
                         if (basicInfo.status == MatchStatusEnum.ENDED) {
                             val homeScore = basicInfo.liveInfo?.homeScore ?: 0
                             val awayScore = basicInfo.liveInfo?.awayScore ?: 0
-                            if (homeScore > awayScore) {
-                                ivArrowTeamHome.visibility = View.VISIBLE
-                                ivArrowTeamAway.visibility = View.GONE
-                            } else if (homeScore < awayScore) {
-                                ivArrowTeamHome.visibility = View.GONE
-                                ivArrowTeamAway.visibility = View.VISIBLE
-                            } else {
-                                ivArrowTeamHome.visibility = View.GONE
-                                ivArrowTeamAway.visibility = View.GONE
-                            }
+                            ivArrowTeamHome.visibility = if (homeScore > awayScore) View.VISIBLE else View.GONE
+                            ivArrowTeamAway.visibility = if (homeScore < awayScore) View.VISIBLE else View.GONE
+                        } else {
+                            ivArrowTeamHome.visibility = View.GONE
+                            ivArrowTeamAway.visibility = View.GONE
                         }
                         btnFavorite.apply {
                             isEnabled = !basicInfo.betStop
