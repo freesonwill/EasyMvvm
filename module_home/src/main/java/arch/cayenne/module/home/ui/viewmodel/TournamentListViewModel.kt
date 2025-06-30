@@ -1,11 +1,13 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.data.TournamentListItem
+import arch.cayenne.module.home.data.constants.TournamentListState
+import arch.cayenne.module.home.data.constants.TournamentListUiState
 import arch.cayenne.module.home.data.repo.TournamentListRepository
 import arch.cayenne.module.home.ui.fragment.TournamentListType
 import com.ibm.icu.text.Transliterator
@@ -22,94 +24,95 @@ class TournamentListViewModel : BaseViewModel() {
     private val repo: TournamentListRepository by inject()
     private val transliterator: Transliterator by inject()
 
-    private val _isLoading = MutableLiveData<Boolean>()
-
-    private val _tournamentList = MutableLiveData<List<BaseTournamentData>>()
-
-    private val _activeHeaderIndex = MutableLiveData<Int?>()
-    val activeHeaderIndex: MutableLiveData<Int?> get() = _activeHeaderIndex
-
-    private val letterPositionMap = mutableMapOf<Char, Int>()
-
-    private var _lastSelectedLetter: Char? = null
-
-    //輸入查詢字串
-    private val _searchQuery = MutableLiveData<String?>()
-    val searchQuery: String?
-        get() = _searchQuery.value
-
-    private val _isSearchMode = MutableLiveData(false)
-    val isSearchMode: Boolean
-        get() = _isSearchMode.value == true
-
-    //統一觀察來源，搜尋結果或完整列表
-    private val _displayList = MediatorLiveData<List<TournamentListItem>>()
-    val displayList: MediatorLiveData<List<TournamentListItem>> get() = _displayList
+    private val _uiState = MutableLiveData<TournamentListUiState>()
+    val uiState: LiveData<TournamentListUiState> get() = _uiState
 
     private var lastGroupedList: List<TournamentListItem> = emptyList()
+    private var _tournamentList: List<BaseTournamentData> = emptyList()
+    private var _searchQuery: String = ""
+    private var _isSearchMode: Boolean = false
+    val isSearchMode: Boolean get() = _isSearchMode
 
-    init {
-        // 監聽原始數據變化，在 IO 線程處理
-        displayList.addSource(_tournamentList) { tournaments ->
-            if (!isSearchMode && tournaments.isNotEmpty()) {
-                processTournamentListAsync(tournaments)
-            }
-        }
+    private val _activeHeaderIndex = MutableLiveData<Int?>()
+    val activeHeaderIndex: LiveData<Int?> get() = _activeHeaderIndex
 
-        // 監聽搜尋查詢變化
-        displayList.addSource(_searchQuery) { updateDisplayList(it) }
-    }
 
     fun setSearchMode(enabled: Boolean) {
-        _isSearchMode.value = enabled
+        _isSearchMode = enabled
         if (!enabled) {
-            // 只清空搜尋字串，觸發 updateDisplayList
-            _searchQuery.value = null
+            _searchQuery = ""
         }
+        updateUiModel()
     }
 
     fun searchTournament(query: String) {
-        _searchQuery.value = query
+        _searchQuery = query
+        updateUiModel()
     }
 
-    /**
-     * 異步處理聯賽列表
-     */
-    private fun processTournamentListAsync(tournaments: List<BaseTournamentData>) {
+    fun setSportId(sportId: Int) {
+        this.sportId = sportId
+    }
+
+    fun setType(type: TournamentListType) {
+        this.type = type
+    }
+
+    fun getType() = type
+
+    fun getTournaments() {
         viewModelScope.launch(Dispatchers.IO) {
-            val processedList = processTournamentList(tournaments)
+            val list = repo.getAllTournaments(type, sportId)
+            val groupedList = processTournamentList(list)
             withContext(Dispatchers.Main) {
-                _displayList.value = processedList
+                _tournamentList = list
+                lastGroupedList = groupedList
+                updateUiModel(true)
             }
         }
     }
 
-    private fun updateDisplayList(searchString: String?) {
-        val query = searchString?.trim().orEmpty()
-        // 只在搜尋狀態下才會發送空列表或搜尋結果
-        if (isSearchMode) {
-            _displayList.value = if (query.isBlank()) {
-                emptyList()
-            } else {
-                _tournamentList.value.orEmpty().filter {
-                    it.name.contains(query, ignoreCase = true)
-                }.mapNotNull { tournament ->
+    private fun updateUiModel(isInit: Boolean = false) {
+        val query = _searchQuery.trim()
+        val hasData = lastGroupedList.isNotEmpty()
+        val searchResult = if (_isSearchMode && query.isNotBlank()) {
+            _tournamentList.filter { it.name.contains(query, ignoreCase = true) }
+                .mapNotNull { tournament ->
                     val start = tournament.name.indexOf(query, ignoreCase = true)
                     if (start >= 0) {
                         val end = start + query.length
                         TournamentListItem.TournamentItem(tournament, start, end)
                     } else null
                 }
+        } else emptyList<TournamentListItem>()
+
+        val state = when {
+            // 非搜尋模式的狀態
+            !_isSearchMode -> when {
+                hasData -> if (isInit) TournamentListState.INIT_LIST else TournamentListState.RESTORE_LIST
+                else -> TournamentListState.LIST_DATA_EMPTY
             }
-        } else {
-            // 非搜尋狀態下，直接顯示分組列表
-            _displayList.value = lastGroupedList
+
+            // 搜尋模式的狀態
+            query.isBlank() -> TournamentListState.SEARCH_INIT
+            searchResult.isNotEmpty() -> TournamentListState.SEARCH_MATCH
+            else -> TournamentListState.SEARCH_DATA_EMPTY
         }
+
+        val displayList = when (state) {
+            TournamentListState.INIT_LIST, TournamentListState.RESTORE_LIST -> lastGroupedList
+            TournamentListState.LIST_DATA_EMPTY -> emptyList()
+            TournamentListState.SEARCH_INIT -> emptyList()
+            TournamentListState.SEARCH_MATCH -> searchResult
+            TournamentListState.SEARCH_DATA_EMPTY -> emptyList()
+        }
+        setState(state, displayList)
     }
 
-    /**
-     * 處理聯賽列表，按拼音首字母分組並創建顯示列表
-     */
+    private fun setState(state: TournamentListState, displayList: List<TournamentListItem>) {
+        _uiState.value = TournamentListUiState(state, displayList)
+    }
+
     private suspend fun processTournamentList(tournaments: List<BaseTournamentData>): List<TournamentListItem> {
         return withContext(Dispatchers.IO) {
             val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
@@ -117,7 +120,6 @@ class TournamentListViewModel : BaseViewModel() {
             val otherList = mutableListOf<BaseTournamentData>()
             val displayList = mutableListOf<TournamentListItem>()
 
-            letterPositionMap.clear()
             tournaments.forEach { tournament ->
                 val pinyin = transliterator.transliterate(tournament.name).trim()
                 val firstChar = pinyin.firstOrNull()?.uppercaseChar()
@@ -134,7 +136,6 @@ class TournamentListViewModel : BaseViewModel() {
             // 添加熱門聯賽
             if (hotList.isNotEmpty()) {
                 displayList.add(TournamentListItem.Header('*'))
-                letterPositionMap['*'] = displayList.size - 1
                 displayList.addAll(hotList.map {
                     TournamentListItem.TournamentItem(
                         it,
@@ -146,14 +147,12 @@ class TournamentListViewModel : BaseViewModel() {
 
             // 添加按字母排序的聯賽
             groupedMap.toSortedMap().forEach { (letter, list) ->
-                letterPositionMap[letter] = displayList.size
                 displayList.add(TournamentListItem.Header(letter))
                 displayList.addAll(list.map { TournamentListItem.TournamentItem(it, null, null) })
             }
 
             // 添加其他聯賽
             if (otherList.isNotEmpty()) {
-                letterPositionMap['#'] = displayList.size
                 displayList.add(TournamentListItem.Header('#'))
                 displayList.addAll(otherList.map {
                     TournamentListItem.TournamentItem(
@@ -168,8 +167,18 @@ class TournamentListViewModel : BaseViewModel() {
         }
     }
 
-    fun setLastSelectedLetter(letter: Char?) {
-        _lastSelectedLetter = letter
+    fun getAvailableIndexLetters(): List<Char> {
+        // 直接從 lastGroupedList 取出所有 Header 字母
+        return lastGroupedList.filterIsInstance<TournamentListItem.Header>()
+            .map { it.letter }
+            .sortedWith(compareBy {
+                when (it) {
+                    '*' -> 0
+                    in 'A'..'Z' -> it.code
+                    '#' -> 999
+                    else -> 1000
+                }
+            })
     }
 
     fun setActiveHeaderIndex(index: Int?) {
@@ -180,46 +189,15 @@ class TournamentListViewModel : BaseViewModel() {
 
     fun getActiveHeaderIndex(): Int? = _activeHeaderIndex.value
 
+    fun getHeaderIndex(letter: Char): Int? {
+        // 回傳 lastGroupedList 中對應 header 的 index
+        return lastGroupedList.indexOfFirst {
+            it is TournamentListItem.Header && it.letter == letter
+        }.takeIf { it >= 0 }
+    }
+
     fun selectLetter(letter: Char) {
-        val index = letterPositionMap[letter]
-        if (index != null) {
-            setActiveHeaderIndex(index)
-        }
-    }
-
-    fun getHeaderIndex(letter: Char): Int? = letterPositionMap[letter]
-
-    fun getAvailableIndexLetters(): List<Char> {
-        return letterPositionMap.keys.sortedWith(compareBy {
-            when (it) {
-                '*' -> 0             // 熱門聯賽（星號）排最前
-                in 'A'..'Z' -> it.code // 英文字母照 ASCII 排序 ('A' = 65, 'B' = 66 ...)
-                '#' -> 999           // 其他無法分類的排字母之後
-                else -> 1000         // 剩下非預期字元排最後
-            }
-        })
-    }
-
-    fun setType(type: TournamentListType) {
-        this.type = type
-    }
-
-    fun getType() = type
-
-    fun setSportId(sportId: Int) {
-        this.sportId = sportId
-    }
-
-    fun getTournaments() {
-        _isLoading.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repo.getAllTournaments(type, sportId)
-            val groupedList = processTournamentList(list)
-            withContext(Dispatchers.Main) {
-                _tournamentList.value = list
-                lastGroupedList = groupedList
-                _displayList.value = groupedList
-            }
-        }
+        val index = getHeaderIndex(letter)
+        setActiveHeaderIndex(index)
     }
 }

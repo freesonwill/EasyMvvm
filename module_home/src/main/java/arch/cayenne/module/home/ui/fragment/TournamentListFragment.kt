@@ -24,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.TournamentListState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
@@ -104,9 +105,8 @@ class TournamentListFragment :
                     if (hasFocus && !hasInput()) {
                         // 進入搜尋模式顯示空列表
                         mViewModel.setSearchMode(true)
-                        mBinding.llIndexContainer.visibility = View.GONE
                     } else if (!hasFocus && !hasInput()) {
-                        restoreList()
+                        mViewModel.setSearchMode(false)
                     }
                 }
                 setOnEditorActionListener { _, actionId, event ->
@@ -117,8 +117,6 @@ class TournamentListFragment :
                         val keyword = text?.toString()?.trim().orEmpty()
                         if (hasInput()) {
                             mViewModel.searchTournament(keyword)
-                        } else {
-                            restoreList()
                         }
                         true
                     } else {
@@ -130,7 +128,7 @@ class TournamentListFragment :
                     override fun afterTextChanged(s: Editable?) {
                         val keyword = s?.toString()?.trim().orEmpty()
                         if (keyword.isEmpty() && !mBinding.ceSearch.hasFocus()) {
-                            restoreList()
+                            mViewModel.setSearchMode(false)
                         }
                     }
 
@@ -191,24 +189,39 @@ class TournamentListFragment :
     }
 
     override fun createObserver() {
-        mViewModel.displayList.observe(viewLifecycleOwner) { displayList ->
-            adapter.submitList(displayList) {
-                if (mViewModel.isSearchMode) {
-                    // 只有搜尋模式且有搜尋過關鍵字無數據時才顯示 no data
-                    val keyword = mViewModel.searchQuery?.trim().orEmpty()
-                    if (keyword.isNotEmpty() && displayList.isNullOrEmpty()) {
-                        showSearchNoData()
-                    } else {
-                        hideSearchNoData()
-                    }
-                } else {
-                    if (!displayList.isNullOrEmpty()) {
+        mViewModel.uiState.observe(viewLifecycleOwner) { model ->
+            adapter.submitList(model.displayList)
+            if (!mViewModel.isSearchMode) homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
+            with(mBinding) {
+                when (model.state) {
+                    TournamentListState.INIT_LIST -> {
                         setupAZIndex()
-                    } else {
-                        mBinding.groupTop.visibility = View.GONE
-                        mBinding.clDynamics.visibility = View.VISIBLE
                     }
-                    homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
+
+                    TournamentListState.RESTORE_LIST -> {
+                        clDynamics.visibility = View.GONE
+                        groupTop.visibility = View.VISIBLE
+                        llIndexContainer.visibility = View.VISIBLE
+                    }
+
+                    TournamentListState.LIST_DATA_EMPTY -> {
+                        clDynamics.visibility = View.VISIBLE
+                        groupTop.visibility = View.GONE
+                        llIndexContainer.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_MATCH -> {
+                        clDynamics.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_INIT -> {
+                        clDynamics.visibility = View.GONE
+                        llIndexContainer.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_DATA_EMPTY -> {
+                        clDynamics.visibility = View.VISIBLE
+                    }
                 }
             }
         }
@@ -253,7 +266,6 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
-        mViewModel.setLastSelectedLetter(currentLetter)
         mBinding.llIndexContainer.setSelectedLetter(currentLetter)
     }
 
@@ -288,22 +300,6 @@ class TournamentListFragment :
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
-
-    private fun showSearchNoData() {
-        mBinding.clDynamics.visibility = View.VISIBLE
-    }
-
-    private fun hideSearchNoData() {
-        mBinding.clDynamics.visibility = View.GONE
-    }
-
-    private fun restoreList() {
-        // 離開搜尋模式還原完整列表
-        hideSearchNoData()
-        mViewModel.setSearchMode(false)
-        mBinding.llIndexContainer.visibility = View.VISIBLE
-    }
-
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"
