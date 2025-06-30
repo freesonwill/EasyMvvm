@@ -4,6 +4,9 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -28,6 +31,31 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     private var clicklistener: OnClickListener? = null
     private var sportId: Int = 0
     private var matchId: Long = 0L
+    private var isDestroyed = false
+    private val mHandler by lazy {
+        object : Handler(Looper.getMainLooper()) {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+                when (msg.what) {
+                    OPEN_NOTIFY -> {
+                        val obj = msg.obj as AppNotifyBean
+                        showNotifyMsg(obj)
+                    }
+
+                    CLICK_EVENT -> { //点击事件弹窗消失并跳转直播详情
+                        showExitAnimation()
+                        gotoMatchLive()
+                    }
+
+                    TOUCH_EVENT -> { //触摸事件只随手指移动并消失，不跳转直播详情
+                        showExitAnimation()
+                    }
+
+                    else -> showExitAnimation()
+                }
+            }
+        }
+    }
 
     companion object {
         fun newInstance(): AppNotifyFragment {
@@ -64,10 +92,12 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
     }
 
     fun sendNotifyMsg(msg: AppNotifyBean) {
-        showNotifyMsg(msg)
-        mBinding.root.postDelayed({
-            showExitAnimation()
-        }, CLOSE_TIMEOUT)
+        if (isDestroyed) return
+        val message = Message.obtain()
+        message.what = OPEN_NOTIFY
+        message.obj = msg
+        mHandler.sendMessage(message)
+        mHandler.sendEmptyMessageDelayed(CLOSE_NOTIFY, CLOSE_TIMEOUT)
     }
 
     private fun showEnterAnimation() {
@@ -95,16 +125,17 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         setOnItemClickListener(
             object : OnClickListener {
                 override fun onDown() {
-
+                    mHandler.removeCallbacksAndMessages(null)
                 }
 
                 override fun onTouch() {
-                    showExitAnimation()
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(TOUCH_EVENT)
                 }
 
                 override fun onClick() {
-                    showEnterAnimation()
-                    gotoMatchLive()
+                    mHandler.removeCallbacksAndMessages(null)
+                    mHandler.sendEmptyMessage(CLICK_EVENT)
                 }
             }
         )
@@ -151,6 +182,12 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     private fun setOnItemClickListener(listener: OnClickListener) {
         this.clicklistener = listener
+    }
+
+    override fun onDestroy() {
+        isDestroyed = true
+        mHandler.removeCallbacksAndMessages(null)
+        super.onDestroy()
     }
 
     interface OnClickListener {
