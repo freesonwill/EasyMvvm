@@ -13,7 +13,8 @@ data class BetInsertBean(
     val matchName: String, // 赛事名称 ex. 中國 vs 日本
     var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
-    var isParlay: Boolean
+    var isParlay: Boolean,
+    val provider: Int = 0  // 提供商ID
 ) {
     fun toBetSelectionBean(betId: Long): BetSelectionBean {
         return BetSelectionBean(
@@ -28,7 +29,8 @@ data class BetInsertBean(
             matchName = matchName,
             isActive = isActive,
             isPlaying = isPlaying,
-            isParlay = isParlay
+            isParlay = isParlay,
+            provider = provider
         )
     }
 }
