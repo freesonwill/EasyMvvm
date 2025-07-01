@@ -119,10 +119,8 @@ class DatePickerFragment private constructor() :
                     val time = requireArguments().getLong(Config.VALUE_SELECTED_MILLISECOND)
                     mViewModel.setCustomTime(time)
                 }
-            } else {
-                val position = date.ordinal
-                mViewModel.setSelected(position)
             }
+            mViewModel.setSelected(date.ordinal)
         }
     }
 
@@ -131,15 +129,10 @@ class DatePickerFragment private constructor() :
             datePickerAdapter.submitList(it)
         }
         mViewModel.customTimeListener.observe(viewLifecycleOwner) { time ->
-            time?.let {
-                val c = Calendar.getInstance()
-                c.timeInMillis = it
-
-                initYearPicker(c)
-                initMonthPicker(c)
-                initDayPicker(c)
-            }
-
+            val c = mViewModel.calendar
+            initYearPicker(c)
+            initMonthPicker(c)
+            initDayPicker(c)
         }
         mViewModel.pageListener.observe(viewLifecycleOwner) { page ->
             if (page == DatePickerViewModel.Page.DATE) {
@@ -211,7 +204,7 @@ class DatePickerFragment private constructor() :
     }
 
     private fun updateDayPicker(year: Int, month: Int, day: Int) {
-        val calendar = Calendar.getInstance()
+        val calendar = mViewModel.calendar
         calendar.set(Calendar.YEAR, year)
         calendar.set(Calendar.MONTH, month - 1)
         calendar.set(Calendar.DAY_OF_MONTH, 1)

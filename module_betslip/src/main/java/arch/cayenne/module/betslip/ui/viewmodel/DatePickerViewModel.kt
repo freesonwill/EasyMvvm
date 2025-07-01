@@ -25,10 +25,10 @@ class DatePickerViewModel : BaseViewModel() {
     private val _pageListener = MutableLiveData<Page>()
     val pageListener: LiveData<Page> get() = _pageListener
 
+    val calendar: Calendar = Calendar.getInstance()
+
     val getCustomTime: Long
         get() {
-            val calendar = Calendar.getInstance()
-            calendar.timeInMillis = _customTimeListener.value ?: System.currentTimeMillis()
             calendar.set(Calendar.HOUR_OF_DAY, 23)
             calendar.set(Calendar.MINUTE, 59)
             calendar.set(Calendar.SECOND, 59)
@@ -47,12 +47,8 @@ class DatePickerViewModel : BaseViewModel() {
     }
 
     fun setCustomTime(time: Long?) {
+        calendar.timeInMillis = time ?: System.currentTimeMillis()
         _customTimeListener.value = time
-        if (time != null) {
-            _dateTitleListener.value?.let {
-                setSelected(it.lastIndex)
-            }
-        }
     }
 
     fun setSelected(position: Int) {
@@ -116,7 +112,6 @@ class DatePickerViewModel : BaseViewModel() {
     }
 
     fun turnToDatePicker() {
-        setCustomTime(getCustomTime)
         _pageListener.value = Page.DATE
     }
 
