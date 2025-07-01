@@ -3,11 +3,16 @@ package com.walisport.app.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.common.data.constants.AppNotifyBean
+import arch.cayenne.lib.common.data.constants.CurConnectFailedType
 import arch.cayenne.lib.common.ui.BaseNavActivity
+import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
+import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.walisport.app.R
@@ -21,6 +26,8 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     override fun navigationID(): Int = R.navigation.nav_graph_app
     override val vmClass: KClass<MainViewModel> = MainViewModel::class
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
+    private val connectFailedViewModel: ConnectFailedViewModel by viewModel()
+    private var connectFailedFragment : ConnectFailedFragment? = null
     private val fabFragment: FloatingButtonFragment by lazy {
         FloatingButtonFragment.newInstance()
     }
@@ -53,6 +60,23 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         }
         fabControlViewModel.onClickAnimationListener.observe(this) { (x, y) ->
             fabFragment.showDotAnimation(x, y)
+        }
+        mViewModel.connectStateChange.observe(this) {
+            if (connectFailedFragment == null) {
+                connectFailedFragment = ConnectFailedFragment.newInstance().apply {
+                    show(this@MainActivity)
+                    setRefreshListener {
+                        mViewModel.reconnectNow()
+                    }
+                }
+            }
+            connectFailedViewModel.changeCurrencyFailedView(
+                when(it) {
+                    is ConnectState.ConnectSuccess -> CurConnectFailedType.HIDE
+                    is ConnectState.ReconnectFailure -> CurConnectFailedType.SHOW_FAILED
+                    else -> CurConnectFailedType.SHOW_MASK
+                }
+            )
         }
     }
 

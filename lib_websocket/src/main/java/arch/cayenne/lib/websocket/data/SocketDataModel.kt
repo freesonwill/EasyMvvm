@@ -23,6 +23,8 @@ sealed class ConnectState {
     data object ConnectClosed : ConnectState()
     data object NetworkUnavailable : ConnectState()
     data object ConnectFailure : ConnectState()
+
+    data object ReconnectFailure : ConnectState()
 }
 
 @Suppress("ArrayInDataClass")
