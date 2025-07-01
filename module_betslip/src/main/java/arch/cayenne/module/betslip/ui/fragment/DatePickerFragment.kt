@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.content.DialogInterface
 import android.os.Bundle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -78,7 +79,6 @@ class DatePickerFragment private constructor() :
 
     override fun initListener() {
         mBinding.tvCancel.setOnClickListener {
-            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, Bundle())
             dismiss()
         }
         mBinding.tvConfirm.setOnClickListener {
@@ -114,5 +114,13 @@ class DatePickerFragment private constructor() :
         mViewModel.dateTitleListener.observe(viewLifecycleOwner) {
             datePickerAdapter.submitList(it)
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        if (!resultBundle.containsKey(Config.VALUE_SELECTED_DATE)) {
+            // 如果沒有選擇日期，則清除結果
+            parentFragmentManager.setFragmentResult(Config.KEY_RESULT, resultBundle)
+        }
+        super.onDismiss(dialog)
     }
 }
