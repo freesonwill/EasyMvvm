@@ -54,14 +54,13 @@
         app:layout_constraintVertical_bias="0.111"
         app:layout_goneMarginTop="10dp"
         tools:itemCount="4"
-        tools:layout_editor_absoluteX="10dp"
         tools:listitem="@layout/item_bet_sheet" />
 
     <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
         android:id="@+id/rv_combo_odds"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="12dp"
         android:background="@drawable/bg_bet_sheet"
         android:nestedScrollingEnabled="false"
         android:paddingHorizontal="12dp"
@@ -69,7 +68,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@id/cl_combo_bet_money"
         tools:itemCount="2"
-        tools:layout_editor_absoluteX="10dp"
         tools:listitem="@layout/item_result_multi_bet" />
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
