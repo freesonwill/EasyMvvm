@@ -20,6 +20,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
@@ -44,7 +45,8 @@ class WebSocketManager(
 
     companion object {
         private const val heartbeatInterval: Long = 10000
-        private const val reconnectInterval: Long = 5000
+        private const val reconnectInterval: Long = 2000
+        private const val maxRetryCount: Int = 3
 
         const val responseTimeout: Long = 5000
     }
@@ -52,8 +54,8 @@ class WebSocketManager(
         observeState()
     }
 
-    suspend fun connect(host: String) : Flow<ConnectState> {
-        setNetWorkCallback()
+    fun connect(host: String) : Flow<ConnectState> {
+//        setNetWorkCallback()
         return socket.connect(host)
     }
 
@@ -81,17 +83,21 @@ class WebSocketManager(
     private fun observeState(){
         workingScope.launch {
             getConnectStateFlow().collect { state ->
-                when(state) {
-                    is ConnectState.ConnectSuccess -> {
-                        stopReconnect()
-                        startHeartbeat()
+                    when(state) {
+                        is ConnectState.ConnectSuccess -> {
+                            retryCount = 0
+                            stopReconnect()
+                            startHeartbeat()
+                        }
+                        is ConnectState.ConnectClosed -> Unit
+                        is ConnectState.ReconnectFailure -> {
+                            stopReconnect()
+                        }
+                        else -> {
+                            stopHeartbeat()
+                            startReconnect()
+                        }
                     }
-                    is ConnectState.ConnectClosed -> Unit
-                    else -> {
-                        stopHeartbeat()
-                        startReconnect()
-                    }
-                }
             }
         }
 
@@ -116,13 +122,13 @@ class WebSocketManager(
         return socket.send(data)
     }
 
-    private fun startReconnect() {
+    fun startReconnect() {
         if (reconnectJob?.isActive == true) return
         "startReconnect!".logi(this.javaClass.simpleName)
         reconnectJob?.cancel()
         reconnectDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         reconnectJob = CoroutineScope(reconnectDispatcher!!).launch {
-            while (retryCount < 5) {
+            while (retryCount < maxRetryCount) {
                 delay(reconnectInterval)
                 retryCount++
                 "try to reconnect! retry count = $retryCount".logi(this.javaClass.simpleName)
@@ -132,7 +138,6 @@ class WebSocketManager(
     }
     private fun stopReconnect() {
         "stop reconnect!".logi(this.javaClass.simpleName)
-        retryCount = 0
         reconnectJob?.cancel()
         reconnectDispatcher?.close()
     }
@@ -161,5 +166,11 @@ class WebSocketManager(
     }
 
     fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
-    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
+    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve().transform {
+        if ((it is ConnectState.ConnectFailure || it is ConnectState.NetworkUnavailable) && retryCount >= maxRetryCount) {
+            emit(ConnectState.ReconnectFailure)
+        } else {
+            emit(it)
+        }
+    }
 }

@@ -61,7 +61,7 @@ class SocketClientService(
     private var webSocket: WebSocket? = null
     private var host: String = ""
 
-    override suspend fun connect(host: String): SharedFlow<ConnectState> {
+    override fun connect(host: String): SharedFlow<ConnectState> {
         if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
             throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")
         }

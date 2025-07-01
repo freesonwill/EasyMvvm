@@ -26,6 +26,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayName: String? = ""
     private var awayLogo: String? = ""
     private var selectionComboId: Long? = null
+    private var beforePosition:Int = 0
     private lateinit var map: Map<Long, List<LiveSelectionBean>>
     private var isNotify = false
     private var notifySelectionsId: List<SelectionsEdit>? = null
@@ -64,13 +65,15 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
-
-                var isisCombo: Boolean = if (selectionComboId == null) {
+                var isCombo: Boolean = if (selectionComboId == null) {
                     false
                 } else if (selectionComboId == listIt.selectionId) {
                     true
                 } else {
                     false
+                }
+                if (isCombo){
+                    beforePosition = position
                 }
                 var status = notifySelectionsId?.find { it.selectionId == listIt.selectionId }?.selectionId ?: 0L
               //  LogUtils.dTag("比赛推送","status----${status}---oddsStatus${listIt.oddsStatus},---isNotify${isNotify}--notifySelectionsId${notifySelectionsId}")
@@ -85,9 +88,9 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     listIt.active,
                     if (status == 0L) LiveOddsStatusEnum.SAME.status else listIt.oddsStatus,
                     isNotify,
-                    isisCombo,
+                    isCombo,
                 ) { it, x, y ->
-                    callback.itemListCallback(it, listIt.selectionId, x, y)
+                    callback.itemListCallback(it, listIt.selectionId, x, y,position,beforePosition)
                 }
             }
         }
@@ -140,7 +143,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
 }
 
 interface LivBetListCallback {
-    fun itemListCallback(marketI: Long, selectionId: Long, x: Float, y: Float)
+    fun itemListCallback(marketI: Long, selectionId: Long, x: Float, y: Float,position:Int,beforePosition:Int)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {

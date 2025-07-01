@@ -5,16 +5,20 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
+import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.TablesCompare
 import com.walisport.module.live.data.model.StandingsBean
 import com.walisport.module.live.databinding.ItemStandingsBinding
 import com.walisport.module.live.databinding.ItemStandingsLayBinding
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class StandingsAdapter :
     BaseAdapter<StandingsBean, BaseViewHolder, ViewBinding>(
@@ -29,24 +33,7 @@ class StandingsAdapter :
     ) {
         val item = getItem(position)
         if (binding is ItemStandingsBinding) {
-            when (item.group) {
-                1 -> {
-                    binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
-                }
-
-                2 -> {
-                    binding.tvStandingsTeam.text = holder.getString(R.string.standings_b)
-                }
-
-                3 -> {
-                    binding.tvStandingsTeam.text = holder.getString(R.string.standings_c)
-                }
-
-                4 -> {
-                    binding.tvStandingsTeam.text = holder.getString(R.string.standings_d)
-                }
-            }
-            binding.tvStandingsTeam.text = holder.getString(R.string.standings_a)
+            binding.tvStandingsTeam.text = getGroupName(item.group, holder)
             binding.layTeam.removeAllViews()
             val size = item.rows.size
             for (i in 0..<size) {
@@ -56,20 +43,7 @@ class StandingsAdapter :
                 itemBinding.tvTeamName.text = temp.name
                 val index = i + 1
                 itemBinding.tvStandingsRank.text = index.toString()
-                Glide.with(holder.itemView.context).load(temp.logo)
-                    .error(
-                        getErrorDrawable(
-                            holder.itemView.context,
-                            R.drawable.icon_standings_error_logo
-                        )
-                    )
-                    .placeholder(
-                        getErrorDrawable(
-                            holder.itemView.context,
-                            R.drawable.icon_standings_error_logo
-                        )
-                    )
-                    .into(itemBinding.ivTeamLogo)
+                loadLogoImage(holder.itemView.context, itemBinding.ivTeamLogo, temp.logo)
                 itemBinding.tvTotal.text = temp.total.toString()
                 itemBinding.tvWonDrawLoss.text =
                     String.format("%d/%d/%d", temp.win, temp.draw, temp.loss)
@@ -95,5 +69,45 @@ class StandingsAdapter :
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {
         return BaseViewHolder(binding)
+    }
+
+    private fun loadLogoImage(context: Context, imageView: ImageView, url: String) {
+        val requestOptions = RequestOptions()
+            .override(25.dp2px, 16.dp2px)
+            .format(DecodeFormat.PREFER_RGB_565)
+        Glide.with(context)
+            .load(url)
+            .apply(requestOptions)
+            .thumbnail(0.25f)
+            .error(
+                getErrorDrawable(
+                    context,
+                    R.drawable.icon_standings_error_logo
+                )
+            )
+            .placeholder(
+                getErrorDrawable(
+                    context,
+                    R.drawable.icon_standings_error_logo
+                )
+            )
+            .into(imageView)
+    }
+
+    private fun getGroupName(group: Int, holder: BaseViewHolder): String {
+        return when (group) {
+            GROUP_A -> holder.getString(R.string.standings_a)
+            GROUP_B -> holder.getString(R.string.standings_b)
+            GROUP_C -> holder.getString(R.string.standings_c)
+            GROUP_D -> holder.getString(R.string.standings_d)
+            else -> holder.getString(R.string.standings_a)
+        }
+    }
+
+    companion object {
+        const val GROUP_A = 1
+        const val GROUP_B = 2
+        const val GROUP_C = 3
+        const val GROUP_D = 4
     }
 }

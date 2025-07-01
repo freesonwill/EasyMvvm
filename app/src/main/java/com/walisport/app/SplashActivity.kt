@@ -7,15 +7,20 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import com.walisport.app.ui.viewmodel.SplashViewModel
-import com.walisport.app.databinding.ActivitySplashBinding
-import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.CurConnectFailedType
+import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
+import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
+import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.ui.MainActivity
+import com.walisport.app.ui.viewmodel.SplashViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -101,6 +106,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
     override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
 
+    private var connectFailedFragment : ConnectFailedFragment? = null
+
+    private val connectFailedViewModel: ConnectFailedViewModel by viewModel()
+
     override fun configStatusBar(): StatusBarConfig {
         StatusBarConfig.statusBarDarkFont = false
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND(
@@ -123,7 +132,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
-        mViewModel.connectToServer()
     }
 
     override fun initListener() {
@@ -148,7 +156,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             }
         }
 
-        mViewModel.connectingError.observe(this) {
+        mViewModel.loginError.observe(this) {
             when(it) {
                 is LoginTokenFailedError -> {   //準備登入時沒有取得token或是uid
                     //TODO 跳到登入頁
@@ -160,6 +168,24 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                     Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+
+        mViewModel.connectStateChange.observe(this) {
+            if (connectFailedFragment == null) {
+                connectFailedFragment = ConnectFailedFragment.newInstance().apply {
+                    show(this@SplashActivity)
+                    setRefreshListener {
+                        mViewModel.reconnectNow()
+                    }
+                }
+            }
+            connectFailedViewModel.changeCurrencyFailedView(
+                when(it) {
+                    is ConnectState.ConnectSuccess -> CurConnectFailedType.HIDE
+                    is ConnectState.ReconnectFailure -> CurConnectFailedType.SHOW_FAILED
+                    else -> CurConnectFailedType.SHOW_MASK
+                }
+            )
         }
     }
 

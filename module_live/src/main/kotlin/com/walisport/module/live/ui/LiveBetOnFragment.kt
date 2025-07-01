@@ -44,6 +44,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
+    private var mCurrentItemPosition:Int = 0
+    private var mBeforePosition:Int = 0
     private var selectionComboId: Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
@@ -65,8 +67,11 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     marketI: Long,
                     selectionId: Long,
                     x: Float,
-                    y: Float
+                    y: Float,
+                    position:Int,
+                    beforePosition:Int
                 ) {
+
                     launch {
                         val status = mainViewModel.matchId.value?.let {
                             mViewModel.setSelection(
@@ -79,6 +84,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         } else if (status == AddSelectionStatus.DISABLE_COMBO) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
+                            mCurrentItemPosition  = position
+                            mBeforePosition  = beforePosition
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }
@@ -236,7 +243,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
             liveBetOnAdapter.setSelectionComboId(selectionComboId,false)
-            liveBetOnAdapter.notifyDataSetChanged()
+            liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
+            liveBetOnAdapter.notifyItemChanged(mBeforePosition)
         }
     }
 

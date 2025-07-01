@@ -7,8 +7,10 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
+import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.factoryOf
@@ -28,6 +30,7 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
         factoryOf(::BalanceRepository)
         single { UserDataManager() }
+        viewModel { ConnectFailedViewModel() }
     })
 
     /**

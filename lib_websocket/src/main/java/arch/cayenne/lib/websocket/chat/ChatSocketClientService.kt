@@ -18,7 +18,6 @@ import arch.cayenne.lib.websocket.data.InvalidEncryptDataError
 import arch.cayenne.lib.websocket.data.InvalidNetworkError
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
-import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,6 @@ import kotlinx.coroutines.launch
 import okhttp3.*
 import okio.ByteString
 import okio.ByteString.Companion.toByteString
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.concurrent.TimeUnit
 
@@ -67,7 +65,7 @@ class ChatSocketClientService(
     private var webSocket: WebSocket? = null
     private var host: String = ""
 
-    override suspend fun connect(host: String): SharedFlow<ConnectState> {
+    override fun connect(host: String): SharedFlow<ConnectState> {
         "connect $currentState".logd(this@ChatSocketClientService.javaClass.simpleName)
         if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
             throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")

@@ -1,16 +1,14 @@
 package com.walisport.app.data.repo
 
-import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.LanguageType
+import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.utils.helper.CountDownHelper
 import arch.cayenne.lib.websocket.WebSocketManager
-import arch.cayenne.lib.websocket.data.ConnectState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.first
 
 class SplashRepository(
     override val scope: CoroutineScope,
@@ -40,10 +38,5 @@ class SplashRepository(
     //获取语言类型
     fun getLanguageType(): String {
         return userDataManager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
-    }
-
-    //开始连接服务器
-    suspend fun startSocket(): ConnectState {
-        return socketManager.connect("wss://betwavepro.ja700.com/fb-ws").first()
     }
 }

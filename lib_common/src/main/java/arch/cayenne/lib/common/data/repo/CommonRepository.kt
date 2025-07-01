@@ -154,6 +154,14 @@ class CommonRepository(
         socketManager.reset()
     }
 
+    fun tryToReconnect() {
+        socketManager.startReconnect()
+    }
+
+    fun reconnectNow() {
+        socketManager.reconnect()
+    }
+
     //读取用户系统配置信息
     private fun getSystemSetting(): Setting {
         val language = getLanguageType()
