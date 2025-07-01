@@ -251,13 +251,7 @@ class TournamentListFragment :
 
         updateAZIndexHighlight()
 
-        val scroller = object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int = SNAP_TO_START
-            override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
-                return layoutManager.computeScrollVectorForPosition(targetPosition)
-            }
-        }
-        scroller.targetPosition = index
+        val scroller = createFastScroller(context, layoutManager, index)
         layoutManager.startSmoothScroll(scroller)
     }
 
@@ -300,6 +294,27 @@ class TournamentListFragment :
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
+
+    private fun createFastScroller(
+        context: Context?,
+        layoutManager: LinearLayoutManager,
+        targetPosition: Int,
+        speedPerPixel: Float = 0.08f
+    ): LinearSmoothScroller {
+        return object : LinearSmoothScroller(context) {
+            override fun getVerticalSnapPreference(): Int = SNAP_TO_START
+            override fun computeScrollVectorForPosition(targetPosition: Int): PointF? {
+                return layoutManager.computeScrollVectorForPosition(targetPosition)
+            }
+
+            override fun calculateSpeedPerPixel(displayMetrics: android.util.DisplayMetrics): Float {
+                return speedPerPixel / displayMetrics.density
+            }
+        }.apply {
+            this.targetPosition = targetPosition
+        }
+    }
+
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"
