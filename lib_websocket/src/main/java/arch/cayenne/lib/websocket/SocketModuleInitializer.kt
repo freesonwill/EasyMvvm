@@ -19,7 +19,7 @@ class SocketModuleInitializer : DefaultInitializer<String> {
     private val TAG = this.javaClass.simpleName
 
     override fun create(context: Context):String {
-        "$TAG init....~~~~".logd(TAG)
+        "$TAG create ....".logd(TAG)
         loadKoinModules(moduleList)
         return TAG
     }
