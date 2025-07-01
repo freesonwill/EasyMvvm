@@ -53,14 +53,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             override fun dismiss() {
                 // 讓系統其他地方調用 dismiss 時也會觸發動畫
                 if (mBinding.root.translationX == 0f) {
-                    mBinding.root.animate()
-                        .translationX(mBinding.root.width.toFloat())
-                        .setDuration(300)
-                        .setInterpolator(android.view.animation.DecelerateInterpolator())
-                        .withEndAction {
-                            super.dismiss()
-                        }
-                        .start()
+                    doExitAnim()
                 } else {
                     super.dismiss()
                 }
@@ -173,7 +166,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     putInt(KEY_ODDS_RESULT, odds)
                 }
             }
-            dismiss()
+            doExitAnim()
         }
     }
 
@@ -184,6 +177,17 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             val length = text.length
             mBinding.etRate.setSelection(length)
         }
+    }
+
+    private fun doExitAnim() {
+        mBinding.root.animate()
+            .translationX(mBinding.root.width.toFloat())
+            .setDuration(300)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withEndAction {
+                super.dismiss()
+            }
+            .start()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

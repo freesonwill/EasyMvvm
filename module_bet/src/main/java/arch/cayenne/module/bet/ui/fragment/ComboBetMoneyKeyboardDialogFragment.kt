@@ -73,19 +73,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 if (mBinding.root.scaleX == 0f) {
                     super.dismiss()
                 } else {
-                    mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                    mBinding.root.pivotY = mBinding.root.height.toFloat()
-
-                    mBinding.root.animate()
-                        .scaleX(0f)
-                        .scaleY(0f)
-                        .alpha(0f)
-                        .setDuration(200)
-                        .setInterpolator(android.view.animation.DecelerateInterpolator())
-                        .withEndAction {
-                            super.dismiss()
-                        }
-                        .start()
+                    doExitAnim()
                 }
             }
         }
@@ -270,8 +258,24 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             showToast(getString(R.string.hint_less_min_amount))
         } else {
             resultBundle.putLong(VALUE_MONEY_INPUT, curAmount)
-            dismiss()
+            doExitAnim()
         }
+    }
+
+    private fun doExitAnim() {
+        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+        mBinding.root.pivotY = mBinding.root.height.toFloat()
+
+        mBinding.root.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withEndAction {
+                super.dismiss()
+            }
+            .start()
     }
 
     override fun onDismiss(dialog: DialogInterface) {
