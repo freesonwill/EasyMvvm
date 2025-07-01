@@ -208,11 +208,6 @@ class RoundHexagonView @JvmOverloads constructor(
                 R.drawable.icon_control_6
             )
 
-            RATE_7 -> SkinnableResourceManager.getDrawable(
-                mBinding.root.context,
-                R.drawable.icon_control_7
-            )
-
             else -> SkinnableResourceManager.getDrawable(
                 mBinding.root.context,
                 R.drawable.icon_control_7
