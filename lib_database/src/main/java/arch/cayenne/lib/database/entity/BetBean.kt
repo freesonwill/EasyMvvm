@@ -52,6 +52,7 @@ data class BetSelectionBean(
     var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
     var isParlay: Boolean,
+    val provider: Int,
     var oddsStatus: OddsStatusEnum? = null
 ) {
     fun updateOdds(newOdds: Int) {
@@ -81,7 +82,8 @@ enum class BetStatusEnum {
 enum class AddSelectionStatus {
     SINGLE,
     COMBO,
-    DISABLE_COMBO,
+    DISABLE_COMBO_FOR_PARLAY, // isParlay = false
+    DISABLE_COMBO_FOR_PROVIDER, // 不同供應商
     UPDATE,
     REMOVE,
     MAX_LIMIT,

@@ -73,8 +73,10 @@ class MatchListPagerFragment :
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
-                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY) {
                             showToast(getString(R.string.disabled_to_combo))
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER) {
+                            showToast(getString(R.string.disabled_to_combo_for_provider))
                         } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
                             fabViewModel.setClickAnimation(x, y)
                         }
