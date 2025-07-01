@@ -25,7 +25,7 @@ import org.koin.java.KoinJavaComponent.getKoin
  * @description:
  */
 class HomeModuleInitializer: DefaultInitializer<Unit> {
-    private val TAG = "ModuleInitializer"
+    private val TAG = "HomeModuleInitializer"
     override fun create(context: Context) {
         "$TAG create ....".logd(TAG)
         loadKoinModules(moduleList)

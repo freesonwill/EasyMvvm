@@ -14,15 +14,16 @@ import arch.cayenne.lib.common.CommonModuleInitializer
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.TimesExitOnBackPressedHelper
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.websocket.SocketModuleInitializer
+import arch.cayenne.lib.websocket.WebSocketManager
+import arch.cayenne.module.home.HomeModuleInitializer
 import com.walisport.app.data.repo.MainRepository
 import com.walisport.app.data.repo.SplashRepository
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.app.ui.viewmodel.SplashViewModel
-import arch.cayenne.module.home.HomeModuleInitializer
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.core.context.GlobalContext
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -76,6 +77,7 @@ class ModuleInitializer : DefaultInitializer<String> {
         "$TAG create ....".logd(TAG)
         loadKoinModules(moduleList)
         (context as Application).registerActivityLifecycleCallbacks(activityLifecycleCallback)
+        startSocket()
         return TAG
     }
 
@@ -85,6 +87,14 @@ class ModuleInitializer : DefaultInitializer<String> {
             CommonModuleInitializer::class.java,
             HomeModuleInitializer::class.java,
         )
+    }
+
+
+
+    //开始连接服务器
+    private fun startSocket() {
+        val socketManager: WebSocketManager = GlobalContext.get().get()
+        socketManager.connect("wss://betwavepro.ja700.com/fb-ws")
     }
 
     private val viewModules = module {

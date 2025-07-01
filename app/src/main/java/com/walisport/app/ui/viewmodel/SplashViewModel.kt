@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.common.data.constants.SkinType
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.common.ui.viewmodel.BaseActivityViewModel
 import arch.cayenne.lib.skin.LanguageManager
+import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.app.data.repo.SplashRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.shareIn
@@ -54,12 +53,6 @@ class SplashViewModel : BaseActivityViewModel() {
 
     fun saveUserData(uid: Int, token: String) {
         repository.saveUserData(uid, token)
-    }
-
-    fun connectToServer() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.startSocket()
-        }
     }
 
     //加载皮肤和语言方案
