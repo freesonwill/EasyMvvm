@@ -68,6 +68,8 @@ class ComboBetViewModel(
                             value = true
                         } else if (comboMultiData.isEmpty() && lastComboSize != 0) {
                             value = true
+                        } else if (betListData.size in 2..3) {
+                            value = true
                         }
                     }
                 }

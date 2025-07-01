@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -96,6 +95,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             dismiss()
         }
         mBinding.clBet.setOnClickListener {
+            mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
             sendBet()
         }
         mBinding.btnReserve.setOnClickListener {

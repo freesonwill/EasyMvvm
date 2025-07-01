@@ -8,6 +8,7 @@
         android:id="@+id/cl_title_bet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/layout_bet"
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
@@ -56,15 +57,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        app:layout_constraintTop_toBottomOf="@id/cl_title_bet" />
+        android:layout_marginBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/cl_title_bet"
+        app:layout_constraintBottom_toTopOf="@id/cl_calculator" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_calculator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/layout_bet">
+        android:layout_marginBottom="12dp"
+        app:layout_constraintTop_toBottomOf="@id/layout_bet"
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_money"
@@ -83,8 +87,8 @@
                 android:id="@+id/tv_money"
                 android:layout_width="18dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
                 android:layout_marginVertical="14dp"
+                android:layout_marginStart="12dp"
                 android:background="@drawable/bg_input_money"
                 android:gravity="center"
                 android:textColor="@color/money_color"
@@ -378,9 +382,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="10dp"
-        android:layout_marginVertical="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cl_calculator">
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <ImageView
             android:id="@+id/btn_delete"
