@@ -25,7 +25,6 @@ import arch.cayenne.module.betslip.ui.viewmodel.HomeBetSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ReserveSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.SportPickerViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.TimePickerViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.UnsettledViewModel
 
 import org.koin.dsl.module
@@ -52,7 +51,6 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
         viewModelOf(::BetSlipModifyOddsViewModel)
         viewModelOf(::EarlySettledKeyboardViewModel)
         viewModelOf(::DatePickerViewModel)
-        viewModelOf(::TimePickerViewModel)
         viewModelOf(::HomeBetSlipViewModel)
         viewModelOf(::SportPickerViewModel)
         viewModelOf(::BetSlipFilterViewModel)
