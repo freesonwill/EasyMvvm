@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.AddSelectionStatus
+import arch.cayenne.lib.database.entity.LiveMarketListBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
@@ -15,6 +16,7 @@ import com.walisport.module.live.data.repository.LiveBetOnRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import arch.cayenne.module.bet.repo.BetRepository
+import com.walisport.module.live.data.toData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -37,6 +39,9 @@ class LiveBetOnViewModel : BaseViewModel() {
 
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
+
+    private val _liveMarketListBean = MutableLiveData<List<LiveMarketListBean>?>()
+    val liveMarketListBean: LiveData<List<LiveMarketListBean>?> = _liveMarketListBean
 
     //监听盘口筛选变化
     private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
@@ -83,10 +88,20 @@ class LiveBetOnViewModel : BaseViewModel() {
         getMarketList.value?.forEach {
             marketIds.add(it.marketId)
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            val list: MutableList<LiveSelectionBean> = mutableListOf()
+            marketIds.forEach {
+                list.addAll(repository.queryLiveSelectionBean(it))
+            }
+            val selections =  getMarketList.value?.toData(list,code)
+            viewModelScope.launch(Dispatchers.Main) {
+                _liveMarketListBean.value = selections?.markets
+            }
+        }
+
         //监听盘口数据变化
        // LogUtils.d("监听盘口数据变化observeSelection${marketIds}")
         observeSelection(marketIds)
-
     }
 
     fun observeSelectionGetMarketList(code: String) {
