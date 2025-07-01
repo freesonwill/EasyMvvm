@@ -142,7 +142,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             } else {
                 val isRemoving = it.size < betSelectionAdapter.itemCount
                 if (it.size <= 2) {
-                    restoreBetLayoutPosition()
+                    val rvBetLp = mBinding.rvBet.layoutParams as ConstraintLayout.LayoutParams
+                    rvBetLp.bottomToTop = mBinding.clMultiBet.id
+                    rvBetLp.bottomMargin = 0
+                    rvBetLp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    mBinding.rvBet.layoutParams = rvBetLp
                 }
                 betSelectionAdapter.submitList(it)
                 if (isRemoving) {
@@ -216,7 +220,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mBinding.clBottomButton.height + (mBinding.clBottomButton.layoutParams as ConstraintLayout.LayoutParams).bottomMargin
 
 
-        val betSheetHeight = getBetItemHeight() * betSelectionAdapter.itemCount
+        val betSheetHeight = getBetItemHeight() * (mViewModel.onBetListListener.value?.size ?: 1)
 
         // The ideal height the layout would take if it just wrapped its content.
         val contentHeight = topTitleHeight + multiBetHeight + bottomButtonHeight + betSheetHeight
