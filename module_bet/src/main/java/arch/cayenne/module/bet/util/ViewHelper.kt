@@ -2,7 +2,7 @@ package arch.cayenne.module.bet.util
 
 import android.animation.ValueAnimator
 import android.view.View
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -51,8 +51,8 @@ internal object ViewHelper {
         val initialHeight = view.height
 
         val animator = ValueAnimator.ofInt(initialHeight, 0)
-        animator.duration = 300L
-        animator.interpolator = DecelerateInterpolator()
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -87,8 +87,8 @@ internal object ViewHelper {
         // 先設為 0 高度，逐步展開
         val targetHeight = snapshot.height
         val animator = ValueAnimator.ofInt(0, targetHeight)
-        animator.duration = 300L
-        animator.interpolator = DecelerateInterpolator()
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
