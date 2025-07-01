@@ -108,6 +108,15 @@ class DatePickerFragment private constructor() :
             val day = mBinding.dayPicker.value
             updateDayPicker(year, newVal, day)
         }
+        mBinding.dayPicker.setOnValueChangedListener { _, _, newVal ->
+            val year = mBinding.yearPicker.value
+            val month = mBinding.monthPicker.value
+
+            val calendar = mViewModel.calendar
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, newVal)
+        }
     }
 
     override fun initData() {
@@ -129,10 +138,12 @@ class DatePickerFragment private constructor() :
             datePickerAdapter.submitList(it)
         }
         mViewModel.customTimeListener.observe(viewLifecycleOwner) { time ->
-            val c = mViewModel.calendar
-            initYearPicker(c)
-            initMonthPicker(c)
-            initDayPicker(c)
+            time?.let {
+                val c = mViewModel.calendar
+                initYearPicker(c)
+                initMonthPicker(c)
+                initDayPicker(c)
+            }
         }
         mViewModel.pageListener.observe(viewLifecycleOwner) { page ->
             if (page == DatePickerViewModel.Page.DATE) {

@@ -58,17 +58,9 @@ class DatePickerViewModel : BaseViewModel() {
             }
             val newList = it.mapIndexed { index, datePickerBean ->
                 when (index) {
-                    it.lastIndex -> {
-                        datePickerBean.copy(title = getFormatDate(), isSelected = index == position)
-                    }
-
-                    position -> {
-                        datePickerBean.copy(isSelected = true)
-                    }
-
-                    else -> {
-                        datePickerBean.copy(isSelected = false)
-                    }
+                    it.lastIndex -> datePickerBean.copy(title = getFormatDate(), isSelected = index == position)
+                    position -> datePickerBean.copy(isSelected = true)
+                    else -> datePickerBean.copy(isSelected = false)
                 }
             }
             _dateTitleListener.value = newList
@@ -86,12 +78,10 @@ class DatePickerViewModel : BaseViewModel() {
         setCustomTime(null)
         _dateTitleListener.value?.let {
             val newList = it.mapIndexed { index, datePickerBean ->
-                if (index == 0) {
-                    datePickerBean.copy(isSelected = true)
-                } else if (index == it.lastIndex) {
-                    datePickerBean.copy(title = getFormatDate(), isSelected = false)
-                } else {
-                    datePickerBean.copy(isSelected = false)
+                when (index) {
+                    0 -> datePickerBean.copy(isSelected = true)
+                    it.lastIndex -> datePickerBean.copy(title = getFormatDate(), isSelected = false)
+                    else -> datePickerBean.copy(isSelected = false)
                 }
             }
             _dateTitleListener.value = newList
@@ -112,6 +102,9 @@ class DatePickerViewModel : BaseViewModel() {
     }
 
     fun turnToDatePicker() {
+        if (_customTimeListener.value == null) {
+            setCustomTime(System.currentTimeMillis())
+        }
         _pageListener.value = Page.DATE
     }
 
