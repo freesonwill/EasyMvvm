@@ -10,11 +10,11 @@
         android:id="@+id/tv_statistics_title"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_44"
+        android:layout_margin="@dimen/dp_1"
         android:background="@drawable/bg_shape_outs_title"
         android:gravity="center_vertical"
         android:paddingStart="@dimen/dp_12"
         android:paddingEnd="0dp"
-        android:layout_margin="@dimen/dp_1"
         android:text="@string/technical_statistics"
         android:textColor="@color/video_tab_text_color"
         android:textSize="@dimen/sp_14" />
@@ -39,12 +39,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxWidth="@dimen/dp_100"
+            android:singleLine="true"
             android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_15"
-            android:singleLine="true"
-            android:maxWidth="@dimen/dp_100"
-            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_home_logo"
             app:layout_constraintTop_toTopOf="parent" />
@@ -83,12 +83,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dp_6"
+            android:ellipsize="end"
             android:gravity="center_vertical"
+            android:maxWidth="@dimen/dp_100"
+            android:singleLine="true"
             android:textColor="@color/standing_text"
             android:textSize="@dimen/sp_15"
-            android:singleLine="true"
-            android:maxWidth="@dimen/dp_100"
-            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_away_logo"
             app:layout_constraintTop_toTopOf="parent" />
@@ -234,9 +234,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_fe3666"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_attack"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -246,9 +246,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_4150f6"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_attack"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -285,9 +285,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_fe3666"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_danger_attack"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -297,9 +297,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_4150f6"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_danger_attack"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -336,9 +336,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_fe3666"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_ball_control_rate"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -348,9 +348,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_6"
+                android:text="0"
                 android:textColor="@color/color_4150f6"
                 android:textSize="@dimen/sp_14"
-                android:text="0"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_ball_control_rate"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -551,5 +551,60 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_20"
-        android:orientation="vertical"/>
+        android:orientation="vertical">
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_kql"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_kql"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_sms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_sms"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_szs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_szs"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_cqs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_cqs"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_pass_suc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_cqcgl"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_free"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_ryq"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_corner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_jiao"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_yue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_yue"/>
+
+        <com.walisport.module.live.ui.widget.TechProgressView
+            android:id="@+id/tech_pu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:titleBar="@string/event_pj"/>
+    </LinearLayout>
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

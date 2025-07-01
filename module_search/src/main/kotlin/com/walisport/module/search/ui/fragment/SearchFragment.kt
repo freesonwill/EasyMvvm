@@ -193,9 +193,11 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 )
 
                 getTitleBarBackIcon().apply {
-                    setImageDrawable(
-                        getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
-                    )
+                    post {
+                        setImageDrawable(
+                            getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                        )
+                    }
                 }
 
                 getSearchEditText().apply {
@@ -289,6 +291,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
+            } else if (mViewModel.isDatePickerOpen()) {
+                mViewModel.setIsDatePickerOpen(false)
             } else {
                 val navController = mBinding.fragmentContainer.findNavController()
                 val backStackId = navController.previousBackStackEntry?.destination?.id
@@ -396,10 +400,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     private fun updateTitleBarBackIcon(isDefault: Boolean = true) {
-        getTitleBarBackIcon().setImageDrawable(
-            if(isDefault) getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-            else ContextCompat.getDrawable(requireContext(), Rc.drawable.bg_left_arrow)
-        )
+        getTitleBarBackIcon().apply {
+            post {
+                setImageDrawable(
+                    if(isDefault) getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    else ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                )
+            }
+        }
     }
 
     private fun updateSearchTextColor(isDefault: Boolean = true) {

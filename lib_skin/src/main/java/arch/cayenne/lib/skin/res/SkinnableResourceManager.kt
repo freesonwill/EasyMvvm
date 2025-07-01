@@ -34,8 +34,12 @@ object SkinnableResourceManager {
     internal fun getTextResourceText(
         context: Context,
         @StringRes resId: Int,
+        vararg formatArgs: Any = emptyArray()
     ): String {
-        return context.resources.getString(resId)
+        return if (formatArgs.isEmpty())
+            context.resources.getString(resId)
+        else
+            context.resources.getString(resId, *formatArgs)
     }
 
     fun getColor(context: Context, @ColorRes resId: Int): Int =
@@ -56,11 +60,16 @@ object SkinnableResourceManager {
      * */
     fun getString(
         context: Context,
-        @StringRes resId: Int, locale: Locale?
+        @StringRes resId: Int, locale: Locale?,
+        vararg formatArgs: Any = emptyArray()
     ): String {
         val configuration = context.resources.configuration
         configuration.setLocale(locale)
-        return context.applicationContext.createConfigurationContext(configuration).getString(resId)
+        val localContext = context.applicationContext.createConfigurationContext(configuration)
+        return if (formatArgs.isEmpty())
+            localContext.getString(resId)
+        else
+            localContext.getString(resId, *formatArgs)
     }
 
     fun getSkinName() = resourceLoader.getSkinName()

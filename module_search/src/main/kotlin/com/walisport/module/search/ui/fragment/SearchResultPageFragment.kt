@@ -14,6 +14,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
@@ -176,7 +177,11 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                         dynamicStateLayout.visibility = View.VISIBLE
                         dynamicStateLayout.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
-                            ContextCompat.getString(requireContext(), R.string.no_search_result)
+                            SkinnableResourceManager.getString(
+                                requireContext(),
+                                R.string.no_search_result,
+                                sharedViewModel.getCurrentLanguage()
+                            )
                         )
                         recyclerView.visibility = View.GONE
                     } else {

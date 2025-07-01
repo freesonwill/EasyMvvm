@@ -1,15 +1,18 @@
 package arch.cayenne.lib.common.ui.view
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
 import arch.cayenne.lib.common.databinding.ViewLoadingBinding
+import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 
 class LoadingView : LinearLayout {
     private lateinit var binding: ViewLoadingBinding
-    private lateinit var progressDrawable: ProgressDrawable
+    private var loadingAnim: ObjectAnimator? = null
 
     constructor(context: Context) : super(context) {
         initView()
@@ -25,21 +28,29 @@ class LoadingView : LinearLayout {
         orientation = VERTICAL
         val inflater = LayoutInflater.from(context)
         binding = ViewLoadingBinding.inflate(inflater, this)
-        progressDrawable = ProgressDrawable()
-        binding.ivProgress.setImageDrawable(progressDrawable)
     }
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         if (visibility == View.VISIBLE) {
-            progressDrawable.start()
+            loadingAnim?.cancel()
+            loadingAnim = binding.ivProgress.startSafeObjectAnimator(
+                "rotation",  // 属性名称
+                0f, 360f, // 从 0 度旋转到 360 度
+                duration = 1000L, // 持续时间 1 秒
+                repeatCount = ObjectAnimator.INFINITE, // 无限循环
+                interpolator = LinearInterpolator(), // 匀速旋转
+                start = true
+            )
         } else {
-            progressDrawable.stop()
+            loadingAnim?.cancel()
+            loadingAnim = null
         }
         super.onVisibilityChanged(changedView, visibility)
     }
 
     override fun onDetachedFromWindow() {
-        progressDrawable.stop()
+        loadingAnim?.cancel()
+        loadingAnim = null
         super.onDetachedFromWindow()
     }
 }

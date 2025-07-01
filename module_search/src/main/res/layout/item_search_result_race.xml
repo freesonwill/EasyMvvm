@@ -51,11 +51,11 @@
         android:id="@+id/view_divider"
         android:layout_width="1dp"
         android:layout_height="34dp"
-        android:layout_marginStart="18dp"
+        android:layout_marginStart="56dp"
         android:background="@color/search_result_race_divider"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
         app:layout_constraintEnd_toStartOf="@id/iv_icon_home_team"
-        app:layout_constraintStart_toEndOf="@id/tv_time"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/iv_icon_home_team" />
 
     <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -136,7 +136,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@id/iv_icon_away_team"
         app:layout_constraintEnd_toEndOf="@id/barrier_score_start"
-        app:layout_constraintStart_toStartOf="@id/tv_name_home_team"
+        app:layout_constraintStart_toEndOf="@id/iv_icon_away_team"
         app:layout_constraintTop_toTopOf="@id/iv_icon_away_team"
         tools:text="马恩岛" />
 

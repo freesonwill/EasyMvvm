@@ -3,7 +3,7 @@
     <string name="please_input_content">Por favor, insira o conteúdo</string>
     <string name="delete_all">Excluir Tudo</string>
     <string name="search_finish">Concluído</string>
-    <string name="history_record">Histórico</string>
+    <string name="history_record">Histórico de Pesquisa</string>
     <string name="hot_search">Pesquisas Populares</string>
     <string name="no_search_result">Sem dados, por favor tente outro</string>
     <string name="tab_all">Tudo</string>

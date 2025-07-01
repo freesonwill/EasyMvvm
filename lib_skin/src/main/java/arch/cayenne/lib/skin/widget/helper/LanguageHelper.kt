@@ -13,6 +13,8 @@ import java.util.Locale
 abstract class LanguageHelper(mView: View) : SkinnableHelper(mView) {
     protected var stringContext: Context? = null //更新语言
     private var lastLanguage: Locale? = null
+    protected var  textFormatArgs: Array<out Any> = emptyArray()
+    protected var  hintFormatArgs: Array<out Any> = emptyArray()
 
     /**
      * 更新语言时，更新context的configuration local

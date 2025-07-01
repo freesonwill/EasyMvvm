@@ -274,23 +274,24 @@ class LiveBetListLayout @JvmOverloads constructor(
     }
 
     private fun isOddsStatus(oddStatus: Int, top: View, down: View) {
-        if (!isNotify) return
-        when (oddStatus) {
-            LiveOddsStatusEnum.UP.status -> {
-                down.isVisible = false
-                top.isVisible = true
-                handler.postDelayed({ top.isVisible = false }, 2000)
+        if (isNotify){
+            when (oddStatus) {
+                LiveOddsStatusEnum.UP.status -> {
+                    down.isVisible = false
+                    top.isVisible = true
+                    handler.postDelayed({ top.isVisible = false }, 2000)
+                }
+                LiveOddsStatusEnum.DOWN.status -> {
+                    down.isVisible = true
+                    top.isVisible = false
+                    handler.postDelayed({ down.isVisible = false }, 2000)
+                }
+                LiveOddsStatusEnum.SAME.status -> {
+                    down.isVisible = false
+                    top.isVisible = false
+                }
+                else ->{}
             }
-            LiveOddsStatusEnum.DOWN.status -> {
-                down.isVisible = true
-                top.isVisible = false
-                handler.postDelayed({ down.isVisible = false }, 2000)
-            }
-            LiveOddsStatusEnum.SAME.status -> {
-                down.isVisible = false
-                top.isVisible = false
-            }
-            else ->{}
         }
     }
 

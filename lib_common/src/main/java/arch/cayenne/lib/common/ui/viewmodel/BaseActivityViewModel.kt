@@ -34,8 +34,8 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     val connectStateChange : LiveData<ConnectState> = _connectStateChange
 
     //APP通知消息
-    private val _appNotifyListener = MutableLiveData<AppNotifyBean?>()
-    val appNotifyListener: LiveData<AppNotifyBean?> get() = _appNotifyListener
+    private val _appNotifyListener = MutableLiveData<AppNotifyBean>()
+    val appNotifyListener: LiveData<AppNotifyBean> get() = _appNotifyListener
 
     override fun initViewModel() {
         super.initViewModel()
@@ -69,10 +69,10 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             launch {
                 commonRepository.observeAppNotifyChange().collect { result ->
                     if (result.error == null && result.data != null) {
-                        val temp = result.data?.let {
-                            AppNotifyBean(it.type, it.sportId, it.matchId, it.title, it.content)
+                        result.data?.let {
+                            val notify = AppNotifyBean(it.type, it.sportId, it.matchId, it.title, it.content)
+                            _appNotifyListener.postValue(notify)
                         }
-                        _appNotifyListener.postValue(temp)
                     }
                 }
             }

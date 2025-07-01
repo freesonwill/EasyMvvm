@@ -7,10 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
+import arch.cayenne.lib.database.entity.SelectionsEdit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.walisport.module.live.data.LiveOddsStatusEnum
 import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 
@@ -23,8 +26,10 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayName: String? = ""
     private var awayLogo: String? = ""
     private var selectionComboId: Long? = null
+    private var beforePosition:Int = 0
     private lateinit var map: Map<Long, List<LiveSelectionBean>>
     private var isNotify = false
+    private var notifySelectionsId: List<SelectionsEdit>? = null
 
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
         private val viewBinding: AdapterLiveBetItemLayoutBinding =
@@ -60,14 +65,18 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
-
-                var isisCombo: Boolean = if (selectionComboId == null) {
+                var isCombo: Boolean = if (selectionComboId == null) {
                     false
                 } else if (selectionComboId == listIt.selectionId) {
                     true
                 } else {
                     false
                 }
+                if (isCombo){
+                    beforePosition = position
+                }
+                var status = notifySelectionsId?.find { it.selectionId == listIt.selectionId }?.selectionId ?: 0L
+              //  LogUtils.dTag("比赛推送","status----${status}---oddsStatus${listIt.oddsStatus},---isNotify${isNotify}--notifySelectionsId${notifySelectionsId}")
                 var name =
                     if (listIt.style == StatesArrange.BO_DIAN.code) listIt.name else listIt.shortName
                 viewBinding.lbBet.submitList(
@@ -77,38 +86,37 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     listIt.odds,
                     listIt.selectionId,
                     listIt.active,
-                    listIt.oddsStatus,
+                    if (status == 0L) LiveOddsStatusEnum.SAME.status else listIt.oddsStatus,
                     isNotify,
-                    isisCombo,
-                ) {it,x,y ->
-                    callback.itemListCallback(it, listIt.selectionId,x,y)
+                    isCombo,
+                ) { it, x, y ->
+                    callback.itemListCallback(it, listIt.selectionId, x, y,position,beforePosition)
                 }
             }
         }
     }
 
-    fun setHomeAway(
+    fun setData(
         homeName: String,
         homeLogo: String,
         awayName: String,
         awayLogo: String,
         map: Map<Long, List<LiveSelectionBean>>,
-        isNotify: Boolean
+        isNotify: Boolean,
+        notifySelectionsId: List<SelectionsEdit>?
     ) {
+        this.notifySelectionsId = emptyList()
         this.homeName = homeName
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
         this.map = map
         this.isNotify = isNotify
+        this.notifySelectionsId = notifySelectionsId
     }
 
-
-    fun setIsNotify(isNotify: Boolean) {
+    fun setSelectionComboId(selectionComboId: Long?,isNotify: Boolean = true) {
         this.isNotify = isNotify
-    }
-
-    fun setSelectionComboId(selectionComboId: Long?) {
         this.selectionComboId = selectionComboId
     }
 
@@ -135,7 +143,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
 }
 
 interface LivBetListCallback {
-    fun itemListCallback(marketI: Long, selectionId: Long,x: Float,y:Float)
+    fun itemListCallback(marketI: Long, selectionId: Long, x: Float, y: Float,position:Int,beforePosition:Int)
 }
 
 class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/shape_search_item">
@@ -8,7 +9,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:layout_width="@dimen/dp_17"
         android:layout_height="@dimen/dp_17"
-        android:background="@drawable/history_top_icon"
+        android:background="@drawable/ic_search_history_top_arrow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,16 +18,17 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:text="0"
-        android:visibility="invisible"
         android:paddingLeft="10dp"
         android:paddingTop="5dp"
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
+        android:text="0"
+        android:textSize="15sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 

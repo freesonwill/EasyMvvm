@@ -87,9 +87,12 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
     }
 
     fun show(activity: AppCompatActivity) {
-        activity.supportFragmentManager.beginTransaction()
-            .add(android.R.id.content, this, this.javaClass.simpleName)
-            .commit()
+        val f = activity.supportFragmentManager.findFragmentByTag(TAG)
+        if (f == null) {
+            activity.supportFragmentManager.beginTransaction()
+                .add(android.R.id.content, this, TAG)
+                .commit()
+        }
     }
 
     fun showDotAnimation(x: Float, y: Float) {
@@ -168,5 +171,13 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
         }
 
         animator.start()
+    }
+
+    fun hide() {
+        mBinding.root.visibility = View.GONE
+    }
+
+    fun show() {
+        mBinding.root.visibility = View.VISIBLE
     }
 }

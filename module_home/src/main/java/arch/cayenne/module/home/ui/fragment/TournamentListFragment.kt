@@ -21,18 +21,16 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableBottomBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
+import arch.cayenne.module.home.data.constants.TournamentListState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
 import arch.cayenne.module.home.ui.view.decoration.StickyHeaderItemDecoration
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.ui.viewmodel.TournamentListViewModel
-import com.ibm.icu.text.Transliterator
-import org.koin.android.ext.android.inject
 import kotlin.reflect.KClass
 
 class TournamentListFragment :
@@ -46,8 +44,6 @@ class TournamentListFragment :
     private lateinit var adapter: TournamentSectionAdapter
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
-
-    private val transliterator: Transliterator by inject()
 
     override fun initData() {
         arguments?.apply {
@@ -65,63 +61,15 @@ class TournamentListFragment :
         }
     }
 
-
-    @SuppressLint("ClickableViewAccessibility")
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            llRoot.setOnTouchListener { v, event ->
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    if (ceSearch.hasFocus()) {
-                        ceSearch.hideKeyboardAndClearFocus(requireContext())
-                    }
+            clDynamics.setState(
+                DynamicStateLayout.States.DATA_EMPTY,
+                R.string.lineup_empty.getString()
+            )
 
-                    v.performClick()
-                }
-                false
-            }
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
-            ceSearch.setOnEditorActionListener { _, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH ||
-                    (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
-                ) {
-                    ceSearch.hideKeyboardAndClearFocus(requireContext())
-                    true // 表示已處理此事件
-                } else {
-                    false
-                }
-            }
-
-            ceSearch.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-                    val keyword = s?.toString()?.trim().orEmpty()
-                    if (keyword.isNotEmpty()) {
-                        mBinding.llIndexContainer.visibility = View.GONE
-                        mViewModel.searchTournament(keyword)
-                    } else {
-                        mViewModel.clearSearch()
-                        rvTournamentList.smoothScrollToPosition(0)
-                        mBinding.llIndexContainer.visibility = View.VISIBLE
-                    }
-                }
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    mBinding.llIndexContainer.visibility = View.GONE
-                }
-            })
-
-            ivHomeLeagueCollapse.setOnClickListener {
-                homeViewModel.requestCollapseTournamentDropdown()
-            }
-
             adapter = TournamentSectionAdapter(
                 onTournamentClick = { tournament ->
                     homeViewModel.onTournamentListSelected(tournament)
@@ -133,9 +81,81 @@ class TournamentListFragment :
             rvTournamentList.layoutManager = LinearLayoutManager(context)
             rvTournamentList.adapter = adapter
             rvTournamentList.enableBottomBounce()
+        }
+        setupStickyHeader()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun initListener() {
+        with(mBinding) {
+            llRoot.setOnTouchListener { v, event ->
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    if (!ceSearch.hasFocus()) {
+                        ceSearch.hideKeyboardAndClearFocus(requireContext())
+                    }
+
+                    v.performClick()
+                }
+                false
+            }
+
+            with(ceSearch) {
+                fun hasInput(): Boolean = text?.toString()?.trim()?.isNotEmpty() == true
+                setOnFocusChangeListener { _, hasFocus ->
+                    if (hasFocus && !hasInput()) {
+                        // 進入搜尋模式顯示空列表
+                        mViewModel.setSearchMode(true)
+                    } else if (!hasFocus && !hasInput()) {
+                        mViewModel.setSearchMode(false)
+                    }
+                }
+                setOnEditorActionListener { _, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH ||
+                        (event?.keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_DOWN)
+                    ) {
+                        hideKeyboardAndClearFocus(requireContext())
+                        val keyword = text?.toString()?.trim().orEmpty()
+                        if (hasInput()) {
+                            mViewModel.searchTournament(keyword)
+                        }
+                        true
+                    } else {
+                        false
+                    }
+                }
+
+                addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        val keyword = s?.toString()?.trim().orEmpty()
+                        if (keyword.isEmpty() && !mBinding.ceSearch.hasFocus()) {
+                            mViewModel.setSearchMode(false)
+                        }
+                    }
+
+                    override fun beforeTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        count: Int,
+                        after: Int
+                    ) {
+                    }
+
+                    override fun onTextChanged(
+                        s: CharSequence?,
+                        start: Int,
+                        before: Int,
+                        count: Int
+                    ) {
+                    }
+                })
+            }
+
+            ivHomeLeagueCollapse.setOnClickListener {
+                homeViewModel.requestCollapseTournamentDropdown()
+            }
+
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    // 點字母時忽略以下頂部item判斷, 避免排序最底的字母分類, 因為底部空間不足無法吸頂時, 無法被選中
                     if (isJumpingByIndex) return
 
                     val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
@@ -155,7 +175,6 @@ class TournamentListFragment :
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        // 如果是點字母觸發的 scroll，直接選中並更新 ViewModel 狀態
                         if (isJumpingByIndex) {
                             pendingJumpIndex?.let {
                                 mViewModel.setActiveHeaderIndex(it)
@@ -167,27 +186,43 @@ class TournamentListFragment :
                 }
             })
         }
-        setupStickyHeader()
-    }
-
-    override fun initListener() {
     }
 
     override fun createObserver() {
-        mViewModel.displayList.observe(viewLifecycleOwner) { displayList ->
-            if (mViewModel.isSearchMode) {
-                adapter.submitList(displayList)
-            } else {
-                if (!displayList.isNullOrEmpty()) {
-                    setTournamentList(mViewModel.getTournamentListOrEmpty())
-                } else {
-                    mBinding.clDynamics.visibility = View.VISIBLE
-                    mBinding.clDynamics.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
-                        R.string.lineup_empty.getString()
-                    )
+        mViewModel.uiState.observe(viewLifecycleOwner) { model ->
+            adapter.submitList(model.displayList)
+            if (!mViewModel.isSearchMode) homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
+            with(mBinding) {
+                when (model.state) {
+                    TournamentListState.INIT_LIST -> {
+                        setupAZIndex()
+                    }
+
+                    TournamentListState.RESTORE_LIST -> {
+                        clDynamics.visibility = View.GONE
+                        groupTop.visibility = View.VISIBLE
+                        llIndexContainer.visibility = View.VISIBLE
+                    }
+
+                    TournamentListState.LIST_DATA_EMPTY -> {
+                        clDynamics.visibility = View.VISIBLE
+                        groupTop.visibility = View.GONE
+                        llIndexContainer.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_MATCH -> {
+                        clDynamics.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_INIT -> {
+                        clDynamics.visibility = View.GONE
+                        llIndexContainer.visibility = View.GONE
+                    }
+
+                    TournamentListState.SEARCH_DATA_EMPTY -> {
+                        clDynamics.visibility = View.VISIBLE
+                    }
                 }
-                homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
             }
         }
 
@@ -195,48 +230,6 @@ class TournamentListFragment :
             updateAZIndexHighlight()
             mBinding.rvTournamentList.invalidateItemDecorations()
         }
-    }
-
-    private fun setTournamentList(tournaments: List<BaseTournamentData>) {
-        val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
-        val hotList = mutableListOf<BaseTournamentData>()
-        val otherList = mutableListOf<BaseTournamentData>()
-        val displayList = mutableListOf<TournamentListItem>()
-        val letterPositionMap = mutableMapOf<Char, Int>()
-
-        tournaments.forEach { tournament ->
-            val pinyin = transliterator.transliterate(tournament.name).trim()
-            val firstChar = pinyin.firstOrNull()?.uppercaseChar()
-            when {
-                tournament.hot -> hotList.add(tournament)
-                firstChar != null && firstChar in 'A'..'Z' -> {
-                    groupedMap.getOrPut(firstChar) { mutableListOf() }.add(tournament)
-                }
-
-                else -> otherList.add(tournament)
-            }
-        }
-
-        if (hotList.isNotEmpty()) {
-            displayList.add(TournamentListItem.Header('*'))
-            letterPositionMap['*'] = displayList.size - 1
-            displayList.addAll(hotList.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-
-        groupedMap.toSortedMap().forEach { (letter, list) ->
-            letterPositionMap[letter] = displayList.size
-            displayList.add(TournamentListItem.Header(letter))
-            displayList.addAll(list.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-
-        if (otherList.isNotEmpty()) {
-            letterPositionMap['#'] = displayList.size
-            displayList.add(TournamentListItem.Header('#'))
-            displayList.addAll(otherList.map { TournamentListItem.TournamentItem(it, null, null) })
-        }
-        adapter.submitList(displayList)
-        mViewModel.setLetterPositionMap(letterPositionMap)
-        setupAZIndex()
     }
 
     private fun setupAZIndex() {
@@ -273,7 +266,6 @@ class TournamentListFragment :
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
-        mViewModel.setLastSelectedLetter(currentLetter)
         mBinding.llIndexContainer.setSelectedLetter(currentLetter)
     }
 
@@ -308,8 +300,6 @@ class TournamentListFragment :
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(windowToken, 0)
     }
-
-
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"
