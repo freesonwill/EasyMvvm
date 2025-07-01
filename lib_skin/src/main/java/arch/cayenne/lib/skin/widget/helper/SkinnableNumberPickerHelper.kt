@@ -8,7 +8,6 @@ import android.widget.EditText
 import android.widget.NumberPicker
 import arch.cayenne.lib.skin.R
 import arch.cayenne.lib.skin.data.SkinMsgType
-import java.util.Locale
 
 open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mView) {
 
@@ -21,22 +20,40 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val context = mView.context
 
-        val a = context.obtainStyledAttributes(attrs, R.styleable.SportNumberPickerHelper, defStyleAttr, 0)
-        val textAppearanceId = a.getResourceId(R.styleable.SportNumberPickerHelper_android_textAppearance, INVALID_ID)
+        val a = context.obtainStyledAttributes(
+            attrs,
+            R.styleable.SportNumberPickerHelper,
+            defStyleAttr,
+            0
+        )
+        val textAppearanceId =
+            a.getResourceId(R.styleable.SportNumberPickerHelper_android_textAppearance, INVALID_ID)
         if (textAppearanceId != INVALID_ID) {
-            val ta = context.obtainStyledAttributes(textAppearanceId, R.styleable.SportNumberPickerTextAppearance)
+            val ta = context.obtainStyledAttributes(
+                textAppearanceId,
+                R.styleable.SportNumberPickerTextAppearance
+            )
             if (ta.hasValue(R.styleable.SportNumberPickerTextAppearance_android_textColor)) {
-                textColorResId = ta.getResourceId(R.styleable.SportNumberPickerTextAppearance_android_textColor, INVALID_ID)
+                textColorResId = ta.getResourceId(
+                    R.styleable.SportNumberPickerTextAppearance_android_textColor,
+                    INVALID_ID
+                )
             }
             if (ta.hasValue(R.styleable.SportNumberPickerTextAppearance_android_textSize)) {
-                val textSize = ta.getDimensionPixelSize(R.styleable.SportNumberPickerTextAppearance_android_textSize, INVALID_ID)
+                val textSize = ta.getDimensionPixelSize(
+                    R.styleable.SportNumberPickerTextAppearance_android_textSize,
+                    INVALID_ID
+                )
                 if (textSize != INVALID_ID) {
-                    val fontScale = context.resources.configuration.fontScale
-                    val density = context.resources.displayMetrics.density
-                    val textSizeInSp = (textSize / density) / fontScale
 
                     if (textSize > 0) {
-                        textSizeSp = textSizeInSp
+                        textSizeSp = if (Build.VERSION.SDK_INT >= 29) {
+                            textSize.toFloat()
+                        } else {
+                            val fontScale = context.resources.configuration.fontScale
+                            val density = context.resources.displayMetrics.density
+                            (textSize / density) / fontScale
+                        }
                     }
                 }
             }
@@ -48,7 +65,7 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
     }
 
     override fun updateSkin(msgType: SkinMsgType) {
-        if(checkSkinName(msgType)){
+        if (checkSkinName(msgType)) {
             return
         }
         applyTextColorResource()
@@ -73,7 +90,8 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
                         if (field.name == "mSelectorWheelPaint") {
                             field.isAccessible = true
                             field.get(mView)?.let { paint ->
-                                paint.javaClass.getMethod("setColor", Int::class.java).invoke(paint, color)
+                                paint.javaClass.getMethod("setColor", Int::class.java)
+                                    .invoke(paint, color)
                             }
                             break
                         }
@@ -88,9 +106,9 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
 
     private fun applyTextSizeResource() {
         if (textSizeSp > 0f) {
-//            if (Build.VERSION.SDK_INT >= 29) {
-//                mView.textSize = textSizeSp
-//            } else {
+            if (Build.VERSION.SDK_INT >= 29) {
+                mView.textSize = textSizeSp
+            } else {
                 applyToEditTextViews {
                     it.textSize = textSizeSp
                 }
@@ -107,10 +125,11 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
                             break
                         }
                     }
+                    mView.invalidate()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
-//            }
+            }
         }
     }
 
@@ -127,6 +146,7 @@ open class SkinnableNumberPickerHelper(mView: NumberPicker) : SkinnableHelper(mV
     private fun disableEditTextInteraction() {
         applyToEditTextViews {
             it.isFocusable = false
+            it.isFocusableInTouchMode = false
             it.isClickable = false
             it.isLongClickable = false
             it.isCursorVisible = false
