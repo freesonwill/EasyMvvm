@@ -8,20 +8,32 @@ import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.model.DateFilterBean
+import java.util.Calendar
 
 class DatePickerViewModel : BaseViewModel() {
+
+    enum class Page {
+        TIME, DATE
+    }
 
     private val _dateTitleListener = MutableLiveData<List<DateFilterBean>>()
     val dateTitleListener: LiveData<List<DateFilterBean>> get() = _dateTitleListener
 
-    var customTime: Long? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                _dateTitleListener.value?.let {
-                    setSelected(it.lastIndex)
-                }
-            }
+    private val _customTimeListener = MutableLiveData<Long?>()
+    val customTimeListener: LiveData<Long?> get() = _customTimeListener
+
+    private val _pageListener = MutableLiveData<Page>()
+    val pageListener: LiveData<Page> get() = _pageListener
+
+    val getCustomTime: Long
+        get() {
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = _customTimeListener.value ?: System.currentTimeMillis()
+            calendar.set(Calendar.HOUR_OF_DAY, 23)
+            calendar.set(Calendar.MINUTE, 59)
+            calendar.set(Calendar.SECOND, 59)
+            calendar.set(Calendar.MILLISECOND, 999)
+            return calendar.timeInMillis
         }
 
     init {
@@ -34,10 +46,19 @@ class DatePickerViewModel : BaseViewModel() {
         _dateTitleListener.value = data
     }
 
+    fun setCustomTime(time: Long?) {
+        _customTimeListener.value = time
+        if (time != null) {
+            _dateTitleListener.value?.let {
+                setSelected(it.lastIndex)
+            }
+        }
+    }
+
     fun setSelected(position: Int) {
         _dateTitleListener.value?.let {
             if (position != it.lastIndex) {
-                customTime = null
+                setCustomTime(null)
             }
             val newList = it.mapIndexed { index, datePickerBean ->
                 when (index) {
@@ -59,14 +80,14 @@ class DatePickerViewModel : BaseViewModel() {
     }
 
     private fun getFormatDate(): String {
-        return customTime?.let {
+        return _customTimeListener.value?.let {
             val date = it.getFormatDate()
             R.string.date_picker_date_before.getString(date)
         } ?: BetSlipDateFilterEnum.entries.last().title
     }
 
     fun cancel() {
-        customTime = null
+        setCustomTime(null)
         _dateTitleListener.value?.let {
             val newList = it.mapIndexed { index, datePickerBean ->
                 if (index == 0) {
@@ -92,5 +113,14 @@ class DatePickerViewModel : BaseViewModel() {
             }
         }
         return BetSlipDateFilterEnum.ALL
+    }
+
+    fun turnToDatePicker() {
+        setCustomTime(getCustomTime)
+        _pageListener.value = Page.DATE
+    }
+
+    fun backToTimePicker() {
+        _pageListener.value = Page.TIME
     }
 }
