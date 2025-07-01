@@ -34,7 +34,9 @@ class BetResultToastView: LinearLayout {
     private fun setSingleResult(data: BetResultLiteBean) {
         mBinding.tvTitle.isVisible = false
         mBinding.groupSuccess.isVisible = data.isSuccessful
+        mBinding.tvSuccessCombo.isVisible = data.isSuccessful
         mBinding.groupFailure.isVisible = !data.isSuccessful
+        mBinding.tvFailureCombo.isVisible = !data.isSuccessful
         if (data.isSuccessful) {
             mBinding.tvSuccessCombo.text = data.matchName.first()
         } else {
@@ -47,7 +49,9 @@ class BetResultToastView: LinearLayout {
         val successfulData = data.filter { it.isSuccessful }
         val failureData = data.filter { !it.isSuccessful }
         mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
+        mBinding.tvSuccessCombo.isVisible = successfulData.isNotEmpty()
         mBinding.groupFailure.isVisible = failureData.isNotEmpty()
+        mBinding.tvFailureCombo.isVisible = failureData.isNotEmpty()
         val successfulTitle = successfulData
             .sortedWith(compareBy({ it.comboK }, { it.comboV }))
             .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
