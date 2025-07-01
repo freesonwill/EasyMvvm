@@ -14,7 +14,7 @@ data class BetInsertBean(
     var isActive: Boolean, // 是否停止下注
     var isPlaying: Boolean, // 是否滾球
     var isParlay: Boolean,
-    val provider: Int = 0  // 提供商ID
+    val provider: Int  // 提供商ID
 ) {
     fun toBetSelectionBean(betId: Long): BetSelectionBean {
         return BetSelectionBean(

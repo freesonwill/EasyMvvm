@@ -47,7 +47,8 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                 sportName = this.basicInfo.sportName,
                 betStop = this.basicInfo.betStop,
                 tournamentHot = this.basicInfo.tournamentHot,
-                tournamentWeight = this.basicInfo.tournamentWeight
+                tournamentWeight = this.basicInfo.tournamentWeight,
+                provider = this.basicInfo.provider
             ),
             liveInfo = LiveMatchLiveInfoBean(
                 clock = this.basicInfo.liveInfo.clock,

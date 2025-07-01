@@ -93,7 +93,8 @@ private fun matchSelectionInsertBean(
                 matchName = match.basicInfo.matchName,
                 isActive = selectionBean.active,
                 isPlaying = match.basicInfo.status == 5,
-                isParlay = selectionBean.parlay
+                isParlay = selectionBean.parlay,
+                provider = match.basicInfo.provider
             )
         return null
     }
