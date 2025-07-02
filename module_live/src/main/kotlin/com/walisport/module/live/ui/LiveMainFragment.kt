@@ -244,9 +244,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     ConnectState.ConnectSuccess -> {
                         mBinding.liveMain.visibility = View.VISIBLE
                         mBinding.clDynamics.setVisibilityGone()
-                        mViewModel.matchId.value?.let { iid ->
-                            mViewModel.registerMatchInfoNotify(iid)
-                            mViewModel.registerStatisticsNotify(iid)
+                        mViewModel.matchId.value?.let { matchId ->
+                            mViewModel.registerMatchInfoNotify(matchId)
+                            mViewModel.registerStatisticsNotify(matchId)
                             mViewModel.observeMatchStaticsNotify()
                         }
                     }
