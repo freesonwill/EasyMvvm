@@ -35,12 +35,20 @@ internal class ToastHelper private constructor() {
         get() = viewHolder?.get()
         set(value) { viewHolder = if(value == null) null else WeakReference(value) }
 
+    // 新增 blockToast 機制
+    private var blockToast: Boolean = false
+    fun setBlockToast(block: Boolean) {
+        blockToast = block
+    }
+    fun isBlockToast(): Boolean = blockToast
+
     /***
      * 預設toast
      * @param context
      * @param msg
      */
     fun showDefaultToast(context: Context, msg: String?, duration: Long = DEFAULT_DURATION) {
+        if (blockToast) return
         cancelToast(context)
         if (toastJob != null) {
             return
@@ -57,6 +65,7 @@ internal class ToastHelper private constructor() {
      * @param view 需先自行實作view
      */
     fun showCustomToast(view: View, duration: Long = DEFAULT_DURATION) {
+        if (blockToast) return
         cancelToast(view.context)
         if (toastJob != null) {
             return
@@ -79,6 +88,7 @@ internal class ToastHelper private constructor() {
     }
 
     private fun showToast(view: View, duration: Long) {
+        if (blockToast) return
         this.view = view
         val wm = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = WindowManager.LayoutParams()
@@ -155,4 +165,8 @@ fun Activity.showToast(msg: String, duration: Long = ToastHelper.DEFAULT_DURATIO
 
 fun Activity.showToast(view: View, duration: Long = ToastHelper.DEFAULT_DURATION) {
     ToastHelper.instance.showCustomToast(view, duration)
+}
+
+fun Fragment.blockToast(block: Boolean) {
+    ToastHelper.instance.setBlockToast(block)
 }
