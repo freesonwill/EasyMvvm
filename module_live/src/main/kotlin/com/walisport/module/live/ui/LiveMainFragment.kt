@@ -228,7 +228,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
         launch {
             mViewModel.observeConnectStateFlow().collect {
-                // LogUtils.d("observeConnectStateFlow flow $it")
                 //监听连接变化
                 when (it) {
                     //网络异常
@@ -245,8 +244,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     ConnectState.ConnectSuccess -> {
                         mBinding.liveMain.visibility = View.VISIBLE
                         mBinding.clDynamics.setVisibilityGone()
-                        mViewModel.matchId.value?.let {
-                            mViewModel.registerMatchInfoNotify(it)
+                        mViewModel.matchId.value?.let { iid ->
+                            mViewModel.registerMatchInfoNotify(iid)
+                            mViewModel.registerStatisticsNotify(iid)
+                            mViewModel.observeMatchStaticsNotify()
                         }
                     }
 
@@ -255,7 +256,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             }
         }
     }
-
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
