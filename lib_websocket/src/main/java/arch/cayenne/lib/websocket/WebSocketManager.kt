@@ -95,7 +95,6 @@ class WebSocketManager(
                         }
                         else -> {
                             stopHeartbeat()
-                            startReconnect()
                         }
                     }
             }
