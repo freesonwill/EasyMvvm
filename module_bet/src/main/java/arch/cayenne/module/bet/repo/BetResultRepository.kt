@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.repo
 
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import kotlinx.coroutines.CoroutineScope
@@ -12,6 +13,7 @@ import kotlinx.coroutines.withContext
 
 class BetResultRepository(
     override val scope: CoroutineScope,
+    private val infoDao: InfoDao,
     private val betDao: BetDao
 ) : BaseRepository() {
 
@@ -27,6 +29,10 @@ class BetResultRepository(
                 }
             }
         }
+    }
+
+    suspend fun getCurrency(): String = withContext(scope.coroutineContext) {
+        infoDao.getCurrency()
     }
 
     fun observeLastBetOrder(): Flow<BetBean> = lastBetOrderFlow

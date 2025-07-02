@@ -30,7 +30,13 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
-    private val detailAdapter by lazy { ResultMultiBetAdapter() }
+    private val detailAdapter by lazy {
+        ResultMultiBetAdapter(object : ResultMultiBetAdapter.OnResultMultiBetListener {
+            override fun getMoneySymbol(): String {
+                return mViewModel.moneySymbol
+            }
+        })
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,8 +59,15 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let { type ->
                     when (type) {
-                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
-                        BetTypeEnum.COMBO -> navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> navigate(
+                            BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(),
+                            null
+                        )
+
+                        BetTypeEnum.COMBO -> navigate(
+                            BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(),
+                            null
+                        )
                     }
                 }
             }
@@ -113,10 +126,16 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
+            mBinding.tvTitle.text =
+                getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
+        mBinding.btnContinueBet.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.brand_color
+            )
+        )
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -125,16 +144,24 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
         } else {
-            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
+            mBinding.tvTitle.text =
+                getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
+        mBinding.btnContinueBet.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.brand_color
+            )
+        )
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
-        val total = "\$${data.sumOf { it.inputMoney }.getMoney()}"
+        val symbols = mViewModel.moneySymbol
+        val total = "$symbols${data.sumOf { it.inputMoney }.getMoney()}"
         mBinding.tvAmountMoney.text = total
-        val win = "\$${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
+        val win =
+            "$symbols${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
         mBinding.tvMaxWinMoney.text = win
     }
 
@@ -143,7 +170,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun adjustLayoutHeight(full: Boolean) {
-        if (full)  {
+        if (full) {
             val screenHeight = resources.displayMetrics.heightPixels
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
