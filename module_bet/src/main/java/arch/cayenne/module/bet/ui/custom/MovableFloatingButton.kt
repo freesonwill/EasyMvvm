@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import arch.cayenne.lib.common.utils.ViewUtils.getNavigationBarHeight
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
@@ -105,7 +106,40 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
         this.performClick = performClick
     }
 
-    fun setCount(count: Int) {
-        binding.tvFloatPin.text = count.toString()
+    fun setCount(newCount: Int) {
+        val oldCount = binding.tvFloatPin.text.toString().toIntOrNull() ?: 0
+        if (oldCount == newCount) return
+        val direction = if (newCount > oldCount) -1 else 1
+        val parent = binding.tvFloatPin.parent as ViewGroup
+        val animText = android.widget.TextView(context).apply {
+            text = newCount.toString()
+            textSize = binding.tvFloatPin.textSize / resources.displayMetrics.scaledDensity
+            setTextColor(binding.tvFloatPin.currentTextColor)
+            typeface = binding.tvFloatPin.typeface
+            gravity = binding.tvFloatPin.gravity
+            layoutParams = binding.tvFloatPin.layoutParams
+            x = binding.tvFloatPin.x
+            y = binding.tvFloatPin.y - direction * binding.tvFloatPin.height
+            alpha = 0f
+        }
+        parent.addView(animText)
+        // 舊數字往上/下淡出
+        binding.tvFloatPin.animate()
+            .translationYBy(direction * binding.tvFloatPin.height.toFloat())
+            .alpha(0f)
+            .setDuration(200)
+            .withEndAction {
+                binding.tvFloatPin.text = newCount.toString()
+                binding.tvFloatPin.translationY = 0f
+                binding.tvFloatPin.alpha = 1f
+                parent.removeView(animText)
+            }
+            .start()
+        // 新數字從下/上進入
+        animText.animate()
+            .translationYBy(direction * binding.tvFloatPin.height.toFloat())
+            .alpha(1f)
+            .setDuration(200)
+            .start()
     }
 }
