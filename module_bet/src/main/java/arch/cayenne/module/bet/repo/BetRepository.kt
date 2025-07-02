@@ -25,10 +25,6 @@ class BetRepository(
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
 
-
-   suspend fun queryCurrentSelectionsByMatchId(matchId: Long): Long? {
-       return withContext(IO){betDao.queryCurrentSelectionsByMatchId(matchId)}
-    }
     /***
      * 新增投注資料
      * @return type 返回單注or串關
