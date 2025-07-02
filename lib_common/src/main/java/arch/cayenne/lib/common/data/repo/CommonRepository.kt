@@ -155,6 +155,7 @@ class CommonRepository(
 
     fun reset() {
         socketManager.reset()
+        setIsLogin(false)
     }
 
     fun tryToReconnect() {
