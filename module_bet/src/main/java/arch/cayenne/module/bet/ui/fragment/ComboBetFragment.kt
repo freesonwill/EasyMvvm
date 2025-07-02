@@ -20,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_MONEY_INPUT
 import arch.cayenne.module.bet.databinding.FragmentComboBetBinding
@@ -126,7 +127,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clBet.setOnClickListener {
             mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
             mViewModel.sendBet()
-            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment())
+            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
         }
     }
 
@@ -136,7 +137,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                 dismiss()
             } else if (it.size == 1) {
                 navigate(
-                    ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(),
+                    ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment().apply {
+                        this.arguments.putString(Config.KEY_NON_ANIM, "")
+                    },
                     null
                 )
             } else {
