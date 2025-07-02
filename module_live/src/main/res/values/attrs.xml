@@ -3,4 +3,8 @@
     <declare-styleable name="TechProgressView">
         <attr name="titleBar" format="string"/>
     </declare-styleable>
+
+    <declare-styleable name="RoundHexagonView">
+        <attr name="viewType" format="integer" />
+    </declare-styleable>
 </resources>

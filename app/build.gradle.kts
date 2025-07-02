@@ -54,6 +54,11 @@ android {
             jniLibs.srcDirs("jniLibs")
         }
     }
+    packaging {
+        resources {
+            excludes += "**/*.proto"
+        }
+    }
 }
 
 dependencies {
