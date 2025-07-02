@@ -252,7 +252,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun sendMoney() {
-        val minAmount = mViewModel.mixMoney
+        val minAmount = mViewModel.minMoney
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
