@@ -44,7 +44,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
-    private var mCurrentItemPosition: Int = -1
+    private var mCurrentItemPosition: Int = 0
     private var mBeforePosition: Int = 0
     private var selectionComboId: Long? = null
     override fun initView(savedInstanceState: Bundle?) {
@@ -58,7 +58,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     fun initAdapter() {
         mBinding.rvBetList.apply {
-
+            itemAnimator = null
             layoutManager = LinearLayoutManager(
                 this@LiveBetOnFragment.context, LinearLayoutManager.VERTICAL, false
             )
@@ -98,7 +98,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override fun initListener() {
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                initAdapter()
+                launch {
+                    delay(100)
+                    mBinding.rvBetList.scrollToPosition(0)
+                }
                 mViewModel.getMarketList(
                     (if (tab.position == 0) "" else mViewModel.marketType.value?.get(
                         tab.position - 1
@@ -182,6 +185,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         mViewModel.liveMarketListBean.observe(viewLifecycleOwner) {
             var baseInfo = mainViewModel.mainMatch.value?.basicInfo
             mainViewModel.getSelectionsEditAll { selectionEdit ->
+                // LogUtils.dTag("盘口推","---------------${selectionEdit}")
                 mBinding.clDynamics.setVisibilityGone()
                 liveBetOnAdapter.setData(
                     baseInfo?.homeTeam.toString(),
@@ -222,24 +226,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(it, false)
-            val positionsToUpdate = mutableSetOf<Int>()
-            if (mCurrentItemPosition == -1) {
-                val beforePosition = liveBetOnAdapter.getBeforePosition()
-                if (beforePosition != -1 && beforePosition < liveBetOnAdapter.itemCount) {
-                    positionsToUpdate.add(beforePosition)
-                }
-            } else {
-                if (mCurrentItemPosition < liveBetOnAdapter.itemCount) {
-                    positionsToUpdate.add(mCurrentItemPosition)
-                }
-                if (mBeforePosition != -1 && mBeforePosition < liveBetOnAdapter.itemCount && mBeforePosition != mCurrentItemPosition) {
-                    positionsToUpdate.add(mBeforePosition)
-                }
-            }
-            positionsToUpdate.forEach { position ->
-                liveBetOnAdapter.notifyItemChanged(position)
-            }
+            liveBetOnAdapter.setSelectionComboId(selectionComboId,false)
+            liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
+            liveBetOnAdapter.notifyItemChanged(mBeforePosition)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui.adapter
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.LiveMarketListBean
+import arch.cayenne.lib.database.entity.LiveMarketSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
@@ -20,7 +22,7 @@ import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
 
 class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<LiveMarketListBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
-        ItemDiffCallback()
+        LiveMarketListBeanDiffCallback()
     ) {
     private var homeName: String? = ""
     private var homeLogo: String? = ""
@@ -42,7 +44,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         private fun setOnClickListener() {
 
         }
-
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
@@ -124,6 +125,17 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
         holder.updateItem(position)
     }
+    override fun onBindViewHolder(
+        holder: LiveBetOnViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            holder.updateItem(position)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
 
     override fun createViewBinding(
         inflater: LayoutInflater,
@@ -147,12 +159,37 @@ interface LivBetListCallback {
     fun itemListCallback(marketI: Long, selectionId: Long, x: Float, y: Float,position:Int,beforePosition:Int)
 }
 
-class ItemDiffCallback : DiffUtil.ItemCallback<LiveMarketListBean>() {
-    override fun areItemsTheSame(oldItem: LiveMarketListBean, c: LiveMarketListBean): Boolean {
-        return false
+class LiveMarketListBeanDiffCallback : DiffUtil.ItemCallback<LiveMarketListBean>() {
+
+    override fun areItemsTheSame(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Boolean {
+        return oldItem.marketId == newItem.marketId
     }
 
     override fun areContentsTheSame(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Boolean {
-        return oldItem==newItem
+        return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Any? {
+        return areListsEqual(oldItem.list,newItem.list)
+    }
+
+    private fun areListsEqual(
+        oldList: List<LiveMarketSelectionBean>,
+        newList: List<LiveMarketSelectionBean>
+    ): Boolean {
+        if (oldList.size != newList.size) return false
+        return oldList.zip(newList).all { (old, new) ->
+            old.code == new.code &&
+                    old.selectionId == new.selectionId &&
+                    old.name == new.name &&
+                    old.shortName == new.shortName &&
+                    old.odds == new.odds &&
+                    old.active == new.active &&
+                    old.parlay == new.parlay &&
+                    old.marketId == new.marketId &&
+                    old.marketName == new.marketName &&
+                    old.style == new.style &&
+                    old.oddsStatus == new.oddsStatus
+        }
     }
 }

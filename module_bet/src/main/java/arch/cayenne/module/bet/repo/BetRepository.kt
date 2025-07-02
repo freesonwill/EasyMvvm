@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext
@@ -24,6 +25,10 @@ class BetRepository(
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
 
+
+   suspend fun queryCurrentSelectionsByMatchId(matchId: Long): Long? {
+       return withContext(IO){betDao.queryCurrentSelectionsByMatchId(matchId)}
+    }
     /***
      * 新增投注資料
      * @return type 返回單注or串關

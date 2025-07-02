@@ -111,7 +111,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return socketManager.observeProtoMessage<Client.MatchInfoNotify>(ApiCode.MATCH_INFO_NOTIFY)
             .transform { res ->
                 if (res.error == null && res.data != null) {
-                 //   LogUtils.dTag("比赛推送","详情数据----${res.data.toString()}")
+                //  LogUtils.dTag("c","详情数据----${res.data.toString()}")
                     emit(res.data!!)
                 }
             }

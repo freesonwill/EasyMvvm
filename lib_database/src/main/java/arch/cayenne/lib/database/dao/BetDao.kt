@@ -102,6 +102,15 @@ abstract class BetDao : BaseDao<BetBean>() {
                 "    ) and matchId = :matchId"
     )
     abstract fun observeCurrentSelectionsByMatchId(matchId: Long, status: BetStatusEnum = BetStatusEnum.PENDING): Flow<Long?>
+    @Query(
+        "SELECT selectionId FROM BetSelectionBean WHERE betId = (" +
+                "        SELECT betId FROM BetBean" +
+                "        WHERE status = :status" +
+                "        ORDER BY betId DESC" +
+                "        LIMIT 1" +
+                "    ) and matchId = :matchId"
+    )
+    abstract fun queryCurrentSelectionsByMatchId(matchId: Long, status: BetStatusEnum = BetStatusEnum.PENDING): Long?
 
     @Update
     abstract fun updateSelection(data: BetSelectionBean): Int
