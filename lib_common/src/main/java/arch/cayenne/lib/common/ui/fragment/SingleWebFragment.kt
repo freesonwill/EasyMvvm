@@ -82,85 +82,78 @@ class SingleWebFragment : BaseFragment<EmptyViewModel, FragmentSingleWebBinding>
      * 设置配置webView
      */
     private fun settingConfig() {
-        val binding = mBinding
-        binding.jsBridgeView.getSettings().domStorageEnabled = true
-        binding.jsBridgeView.setDefaultHandler(DefaultHandler())
-        binding.jsBridgeView.getSettings().displayZoomControls = true
-        binding.jsBridgeView.getSettings().mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        //打开缓存
-        binding.jsBridgeView.getSettings().databaseEnabled = true
-        // 开启
-        //binding.jsBridgeView.getSettings().setAppCacheEnabled(true);
-        // 设置缓存模式，非常重要，决定了webview缓存资源的方式
-        binding.jsBridgeView.getSettings().cacheMode = WebSettings.LOAD_DEFAULT
-        binding.jsBridgeView.getSettings().mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            binding.jsBridgeView.getSettings().mixedContentMode =
-                WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-        }
-        binding.jsBridgeView.getSettings().blockNetworkImage = false //解决图片不显示
-        //解决webview不能使用h5定位问题
-        val dir: String =
-            requireActivity().applicationContext.getDir("database", Context.MODE_PRIVATE).path
-        binding.jsBridgeView.getSettings().setGeolocationDatabasePath(dir)
-        binding.jsBridgeView.getSettings().setGeolocationEnabled(true) // 启用地理
+        val webSettings = mBinding.jsBridgeView.settings
 
-        val webSettings: WebSettings = binding.jsBridgeView.getSettings()
-        webSettings.useWideViewPort = true
-        webSettings.loadWithOverviewMode = true
-        webSettings.defaultTextEncodingName = "UTF-8"
-        webSettings.allowContentAccess = true // 是否可访问Content Provider的资源，默认值 true
-        webSettings.allowFileAccess = true // 是否可访问本地文件，默认值 true
-        // 是否允许通过file url加载的Javascript读取本地文件，默认值 false
-        webSettings.allowFileAccessFromFileURLs = true
-        // 是否允许通过file url加载的Javascript读取全部资源(包括文件,http,https)，默认值 false
-        webSettings.allowUniversalAccessFromFileURLs = true
+        with(webSettings) {
+            domStorageEnabled = true
+            displayZoomControls = true
+            databaseEnabled = true
+            cacheMode = WebSettings.LOAD_DEFAULT
+            blockNetworkImage = false
+            setGeolocationEnabled(true)
+            setGeolocationDatabasePath(
+                requireActivity().applicationContext.getDir("database", Context.MODE_PRIVATE).path
+            )
+            useWideViewPort = true
+            loadWithOverviewMode = true
+            defaultTextEncodingName = "UTF-8"
+            allowContentAccess = true
+            allowFileAccess = true
+            allowFileAccessFromFileURLs = true
+            allowUniversalAccessFromFileURLs = true
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            webSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
-        webSettings.blockNetworkImage = false //解决图片不显示
+
+        mBinding.jsBridgeView.setDefaultHandler(DefaultHandler())
     }
 
     /**
      * 设置webView监听Client
      */
     private fun setClient() {
-        val binding = mBinding
-        binding.jsBridgeView.setWebViewClient(object :
-            BridgeWebViewClient(binding.jsBridgeView) {
+        with(mBinding) {
+            jsBridgeView.setWebViewClient(object :
+                BridgeWebViewClient(jsBridgeView) {
 
-            override fun onFormResubmission(view: WebView?, dontResend: Message?, resend: Message) {
-                super.onFormResubmission(view, dontResend, resend)
-                resend.sendToTarget()
-            }
-
-            override fun onPageFinished(view: WebView, url: String?) {
-                view.settings.apply {
-                    blockNetworkImage = false
-                    if (!loadsImagesAutomatically) {
-                        loadsImagesAutomatically = true
-                    }
+                override fun onFormResubmission(
+                    view: WebView?,
+                    dontResend: Message?,
+                    resend: Message
+                ) {
+                    super.onFormResubmission(view, dontResend, resend)
+                    resend.sendToTarget()
                 }
-                super.onPageFinished(view, url)
-            }
-        })
 
-        binding.jsBridgeView.requestFocus()
-        binding.jsBridgeView.setWebChromeClient(object : WebChromeClient() {
-            override fun onShowFileChooser(
-                webView: WebView,
-                filePathCallback: ValueCallback<Array<Uri>>,
-                fileChooserParams: FileChooserParams
-            ): Boolean {
-                return true
-            }
+                override fun onPageFinished(view: WebView, url: String?) {
+                    view.settings.apply {
+                        blockNetworkImage = false
+                        if (!loadsImagesAutomatically) {
+                            loadsImagesAutomatically = true
+                        }
+                    }
+                    super.onPageFinished(view, url)
+                }
+            })
 
-            override fun onProgressChanged(view: WebView, newProgress: Int) {
-                super.onProgressChanged(view, newProgress)
-                showProgress(newProgress)
-            }
-        })
+            jsBridgeView.requestFocus()
+            jsBridgeView.setWebChromeClient(object : WebChromeClient() {
+                override fun onShowFileChooser(
+                    webView: WebView,
+                    filePathCallback: ValueCallback<Array<Uri>>,
+                    fileChooserParams: FileChooserParams
+                ): Boolean {
+                    return true
+                }
+
+                override fun onProgressChanged(view: WebView, newProgress: Int) {
+                    super.onProgressChanged(view, newProgress)
+                    showProgress(newProgress)
+                }
+            })
+        }
     }
 
     fun showProgress(newProgress: Int) {

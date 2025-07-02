@@ -54,6 +54,7 @@ class ComboBetViewModel(
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
     private val _onForceUpdateListener = MediatorLiveData(false).apply {
+        var updateBox = Pair(false, false)
         var hasInit = false
         var lastBetSize = 0
         var lastComboSize = 0
@@ -62,18 +63,11 @@ class ComboBetViewModel(
                 val comboMultiData = _onComboMultiBetBeanListener.value
                 val betListData = _onBetListListener.value
                 if (comboMultiData != null && betListData != null) {
-                    if (comboMultiData.size != lastComboSize || betListData.size != lastBetSize) {
-                        if (comboMultiData.size < 3 && lastComboSize >= 3) {
-//                            setExpandMultiLayout(false)
-                            value = true
-                        } else if (comboMultiData.isEmpty() && lastComboSize != 0) {
-                            value = true
-                        } else if (betListData.size in 2..3) {
-                            value = true
-                        }
+                    if (updateBox.first && updateBox.second) {
+                        value = true
+                        updateBox = Pair(false, false)
                     }
                 }
-
             } else {
                 if (_onBetListListener.value != null && _onComboMultiBetBeanListener.value != null) {
                     hasInit = true
@@ -84,10 +78,16 @@ class ComboBetViewModel(
 
         addSource(_onBetListListener) {
             checkBothLoaded()
+            if (lastBetSize != it.size) {
+                updateBox = Pair(true, updateBox.second)
+            }
             lastBetSize = it.size
         }
         addSource(_onComboMultiBetBeanListener) {
             checkBothLoaded()
+            if (lastComboSize != it.size) {
+                updateBox = Pair(updateBox.first, true)
+            }
             lastComboSize = it.size
         }
     }

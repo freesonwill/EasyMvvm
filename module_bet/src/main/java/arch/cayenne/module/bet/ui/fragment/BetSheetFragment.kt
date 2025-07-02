@@ -1,15 +1,14 @@
 package arch.cayenne.module.bet.ui.fragment
 
-import android.animation.ValueAnimator
+import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import androidx.core.animation.doOnEnd
+import androidx.core.animation.addListener
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -17,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
@@ -25,7 +25,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
-class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
+class BetSheetFragment private constructor() :
+    BaseBottomSheetFragment<BetSheetViewModel, FragmentBetSheetBinding>() {
 
     companion object {
 
@@ -75,7 +76,8 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     private fun setFitToContents() {
-        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
+        val bottomSheet =
+            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet) as? FrameLayout
         bottomSheet?.let { sheet ->
             val behavior = BottomSheetBehavior.from(sheet)
 
@@ -109,10 +111,14 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     override fun createObserver() {
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
-        navController.addOnDestinationChangedListener { _, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, bundle ->
+            if (bundle != null && bundle.containsKey(Config.KEY_NON_ANIM)) {
+                bundle.remove(Config.KEY_NON_ANIM)
+            } else {
+                animateLayoutChange()
+            }
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
-            animateLayoutChange()
         }
     }
 
@@ -130,52 +136,34 @@ class BetSheetFragment private constructor(): BaseBottomSheetFragment<BetSheetVi
     }
 
     private fun animateLayoutChange() {
-        if (isAnimating) return
-
-        val mainNav = mBinding.mainNav
-        val currentHeight = mainNav.height
-
-        // 2. 立刻鎖定目前高度，防止閃爍
-        mainNav.layoutParams = mainNav.layoutParams.apply {
-            height = currentHeight
-        }
-
-        // 3. post確保新佈局計算完成後再取新高度
-        mainNav.post {
-            // 手動觸發一次測量，取得新內容應有高度
-            mainNav.measure(
-                View.MeasureSpec.makeMeasureSpec(mainNav.width, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        if (isAnimating || lastLiveData == null) return
+        isAnimating = true
+        val collapseAnim = ObjectAnimator.ofFloat(
+            mBinding.root,
+            "translationY",
+            0f,
+            mBinding.root.height.toFloat()
+        )
+        collapseAnim.duration = 300
+        collapseAnim.interpolator = LinearInterpolator()
+        collapseAnim.addListener(onEnd = {
+            val expendAnim = ObjectAnimator.ofFloat(
+                mBinding.root,
+                "translationY",
+                mBinding.root.height.toFloat(),
+                0f
             )
-            val targetHeight = mainNav.measuredHeight
-
-            if (targetHeight == currentHeight) {
-                // 如果高度沒變，也要恢復wrap_content並開始監聽
-                mainNav.layoutParams = mainNav.layoutParams.apply {
-                    height = ViewGroup.LayoutParams.WRAP_CONTENT
-                }
-                return@post
-            }
-
-            // 4. 開始動畫
-            isAnimating = true
-            val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
-                duration = 200L
-                interpolator = DecelerateInterpolator()
-                addUpdateListener { animation ->
-                    val value = animation.animatedValue as Int
-                    mainNav.layoutParams = mainNav.layoutParams.apply { height = value }
-                }
-                doOnEnd {
-                    // 5. 動畫結束後，恢復wrap_content以便未來變化
-                    mainNav.layoutParams = mainNav.layoutParams.apply {
-                        height = ViewGroup.LayoutParams.WRAP_CONTENT
-                    }
+            expendAnim.duration = 300
+            expendAnim.interpolator = LinearInterpolator()
+            expendAnim.addListener(
+                onEnd = {
                     isAnimating = false
                 }
-            }
-            animator.start()
-        }
+            )
+            expendAnim.start()
+        })
+        collapseAnim.start()
+
     }
 
     override fun superDismiss() {
