@@ -41,7 +41,7 @@ class SocketClientService(
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
     private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
         MutableSharedFlow(
-            replay = 0,
+            replay = 1,
             extraBufferCapacity = 5,
             onBufferOverflow = BufferOverflow.DROP_OLDEST
         )

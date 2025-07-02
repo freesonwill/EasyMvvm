@@ -52,6 +52,7 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                            commonRepository.setIsLogin(false)
                             commonRepository.tryToReconnect()
                             withContext(Dispatchers.Main) {
                                 _connectStateChange.value = connectState
@@ -93,6 +94,12 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     //當連線成功時，自動地去做補登入
     private fun login() {
         viewModelScope.launch(Dispatchers.IO) {
+            if (commonRepository.checkIsLogin()) {
+                withContext(Dispatchers.Main) {
+                    loginIsSuccess.value = true
+                }
+                return@launch
+            }
             val result = commonRepository.sendLogin()
             withContext(Dispatchers.Main) {
                 when (result.error) {
