@@ -24,9 +24,9 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     abstract suspend fun getCurrency(): String
 
     @Query("SELECT login FROM InfoBean limit 1")
-    abstract fun isLogin(): Boolean
+    abstract suspend fun isLogin(): Boolean
 
     @Query("UPDATE InfoBean SET login = :isLogin WHERE uid = :uid")
-    abstract fun setLogin(uid: Int, isLogin: Boolean)
+    abstract suspend fun setLogin(uid: Int, isLogin: Boolean)
 
 }

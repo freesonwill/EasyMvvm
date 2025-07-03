@@ -55,7 +55,6 @@ class WebSocketManager(
     }
 
     fun connect(host: String) : Flow<ConnectState> {
-//        setNetWorkCallback()
         return socket.connect(host)
     }
 
@@ -153,7 +152,7 @@ class WebSocketManager(
                 socket.send(
                     Client.PingBackReq.newBuilder().apply {
                         this.data = "1234567"
-                    }.build().asRemoteRequest(ApiCode.PING, 0)
+                    }.build().asRemoteRequest(ApiCode.PING, nextRid())
                 )
             }
         }

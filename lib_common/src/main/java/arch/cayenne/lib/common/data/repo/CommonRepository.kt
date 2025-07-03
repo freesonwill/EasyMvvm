@@ -38,7 +38,7 @@ class CommonRepository(
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
 
-    fun checkIsLogin(): Boolean {
+    suspend fun checkIsLogin(): Boolean {
         return infoDao.isLogin()
     }
 
@@ -153,7 +153,7 @@ class CommonRepository(
     }
 
 
-    fun reset() {
+    suspend fun reset() {
         socketManager.reset()
         setIsLogin(false)
     }
@@ -267,7 +267,7 @@ class CommonRepository(
     fun observeAppNotifyChange() =
         socketManager.observeProtoMessage<Client.AppNoticeNotify>(ApiCode.APP_NOTIFY)
 
-    fun setIsLogin(b: Boolean) {
+    suspend fun setIsLogin(b: Boolean) {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         if (uid == -1) return
         infoDao.setLogin(uid, b)
