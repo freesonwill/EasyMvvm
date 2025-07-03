@@ -18,7 +18,7 @@ class BetResultToastView: LinearLayout {
         fun canShowToast(activity: FragmentActivity): Boolean {
             fun checkFragments(fragments: List<Fragment>): Boolean {
                 for (fragment in fragments) {
-                    if (fragment is Block) return false
+                    if (fragment is Block && fragment.isResumed) return false
                     if (fragment.isAdded) {
                         if (!checkFragments(fragment.childFragmentManager.fragments)) return false
                     }
