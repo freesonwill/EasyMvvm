@@ -9,5 +9,6 @@
     <string name="multiple_logins_title">系统提示</string>
     <string name="multiple_logins_message">您的帐户已在其他地方登录</string>
     <string name="enter">确认</string>
+    <string name="single_confirm">好的</string>
 
 </resources>

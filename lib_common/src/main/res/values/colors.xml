@@ -66,7 +66,7 @@
 
     <color name="text_on_theme_color">#000000</color>
     <color name="brand_color">#24EE8A</color>
-
+    <color name="brand_color_opacity10">#1A24EE8A</color>
 
     <color name="input_word">#929298</color>
 
