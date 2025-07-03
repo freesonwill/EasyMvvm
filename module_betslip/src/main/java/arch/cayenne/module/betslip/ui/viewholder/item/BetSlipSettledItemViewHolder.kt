@@ -37,7 +37,7 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
                 Glide.with(betSettledIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betSettledIvBall)
                 betSettledTvRace.text = match.matchName
                 betSettledTvIntroduce.text = item.selectionName
-                betSettledTvAodds.text = expectOdds( "@${item.odds}")
+                betSettledTvAodds.text =expectOdds( "@${item.odds}")
                 betSettledTvStatus.isVisible = it.inPlay
                 betSettledTvScore.text =  item.marketName + "  (${whenScoreIsNull(item.betScore)})"
                 betSettledTvScore1.text = whenScoreIsNull(item.endScore)

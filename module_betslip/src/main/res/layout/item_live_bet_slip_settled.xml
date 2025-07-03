@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <ImageView
         android:id="@+id/bet_settled_iv_ball"
@@ -98,9 +99,8 @@
         android:layout_height="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_12"
         android:text="\@1.85"
-        android:fontFamily="sans-serif-condensed-medium"
-        android:textFontWeight="500"
         android:textColor="@color/main_text"
+        android:textStyle="bold"
         android:textSize="@dimen/sp_14"
         app:layout_constraintBottom_toBottomOf="@id/bet_settled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"

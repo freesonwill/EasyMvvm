@@ -54,7 +54,7 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             spannable.setSpan(
-                VerticalOffsetSpan(-1),
+                VerticalOffsetSpan(-2),
                 atIndex+1,
                 str.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE

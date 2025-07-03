@@ -36,7 +36,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
             Glide.with(betReserveIvBall.context).load(SportEnum.getSportEnumById(match.sportId)?.resId ?: SportEnum.Default.resId).into(betReserveIvBall)
             betReserveTvRace.text = match.matchName
             betReserveTvIntroduce.text = item.selectionName
-            betReserveTvAodds.text = expectOdds(itemView.context.getString(R.string.live_bet_except_odds, item.odds))
+            betReserveTvAodds.text =expectOdds(itemView.context.getString(R.string.live_bet_except_odds, item.odds))
             betReserveTvScore.text = item.marketName + "  (${whenScoreIsNull(item.liveInfo.score)})"
             betReserveTvStart.text = BetSlipDateUtil.getMDHm(match.startTime)
         }
