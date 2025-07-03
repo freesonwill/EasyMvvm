@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
@@ -25,7 +26,7 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBinding>(),
-    BetSheetListener {
+    BetSheetListener, BetResultToastView.Block {
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
