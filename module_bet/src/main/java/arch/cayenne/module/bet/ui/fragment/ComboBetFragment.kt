@@ -345,7 +345,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun dismiss(key: String, value: String) {
-        mViewModel.saveInputMoney()
         sendResult(key, value, R.id.comboBetFragment)
     }
 

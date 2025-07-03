@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
-import arch.cayenne.lib.common.data.constants.NumberOverEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -113,26 +112,8 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             }
             launch {
                 betRepo.observeComboBean().collect {
-                    _onComboMultiBetBeanListener.value = it
+                    setComboMultiBet(it)
                     setNumberLimit(it.minAmount, it.maxAmount)
-                    val oriData = onEditNumber.value
-                    if (oriData.isNullOrEmpty()) {
-                        val balance = balanceRepo.getBalance()
-                        if (it.inputMoney > balance) {
-                            it.inputMoney = 0L
-                            setOverNumberListener(NumberOverEnum.OVER_REMAINING)
-                        } else if (it.inputMoney > it.maxAmount) {
-                            it.inputMoney = it.maxAmount
-                        }
-                        if (it.inputMoney > 0L) {
-                            setEditNumber(it.inputMoney)
-                        }
-                    } else {
-                        val curMoney = oriData.toMoney()
-                        if (curMoney > 0L) {
-                            setEditNumber(curMoney)
-                        }
-                    }
                 }
             }
             launch {
@@ -144,9 +125,6 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             launch {
                 betRepo.getBetType()?.let {
                     _betTypeListener.value = it
-                    if (it == BetTypeEnum.RESERVE) {
-                        _onReserveOddsListener.value = betRepo.getReserveOdds()
-                    }
                 }
             }
         }
@@ -172,7 +150,6 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
                 }
             }
         }
-
     }
 
     fun removeBet() {
@@ -184,17 +161,23 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     }
 
     fun saveToCombo() {
-        onEditNumber.value?.let {
-            if (it.isEmpty()) return@let
-            val money = it.toMoney()
-            betRepo.saveInputMoney(money)
-        }
         betRepo.saveToCombo()
     }
 
     fun saveToReserve(odds: Int) {
         _onReserveOddsListener.value = odds
-//        betRepo.saveToReserve(odds)
+    }
+
+    private fun setComboMultiBet(data: ComboMultiBetBean) {
+        val lastData = _onComboMultiBetBeanListener.value
+        if (lastData != null) {
+            data.inputMoney = if (lastData.inputMoney > data.maxAmount) {
+                data.maxAmount
+            } else {
+                lastData.inputMoney
+            }
+        }
+        _onComboMultiBetBeanListener.value = data
     }
 
     private fun setBetSheet(bet: BetSelectionBean) {
