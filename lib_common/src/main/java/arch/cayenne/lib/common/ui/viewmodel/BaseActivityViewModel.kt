@@ -37,6 +37,9 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     private val _appNotifyListener = MutableLiveData<AppNotifyBean>()
     val appNotifyListener: LiveData<AppNotifyBean> get() = _appNotifyListener
 
+    private val _aberrantNotify = MutableLiveData<Int>()
+    val aberrantNotify : LiveData<Int> = _aberrantNotify
+
     override fun initViewModel() {
         super.initViewModel()
         viewModelScope.launch(Dispatchers.IO) {
@@ -87,6 +90,15 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             }
             launch {
                 commonRepository.observeBettingOrderStatus()
+            }
+            launch {
+                commonRepository.observeAberrantNotify().collect {notify ->
+                    if (notify.error == null && notify.data != null) {
+                        withContext(Dispatchers.Main){
+                            _aberrantNotify.value = notify.data!!.code
+                        }
+                    }
+                }
             }
         }
     }

@@ -6,4 +6,8 @@
     <string name="more_taps_to_exit">再次操作退出App</string>
     <string name="more_taps_to_exit2">还需%1$s次操作退出App</string>
 
+    <string name="multiple_logins_title">系统提示</string>
+    <string name="multiple_logins_message">您的帐户已在其他地方登录</string>
+    <string name="enter">确认</string>
+
 </resources>
