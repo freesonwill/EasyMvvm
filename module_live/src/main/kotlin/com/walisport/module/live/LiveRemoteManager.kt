@@ -177,6 +177,25 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         return null
     }
 
+    //700-1100: 取消比赛统计数据推送 比赛id  -1：取消订阅
+    suspend fun unregisterMatchStaticsNotify(
+        scope: CoroutineScope,
+        matchIds: Long
+    ): Sloth.MatchLiveData? {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeMatchLiveResp>(
+            scope = scope,
+            dispatcher = Dispatchers.IO,
+            apiCode = ApiCode.MATCH_STATICS,
+        ) {
+            Client.SubscribeMatchLiveReq.newBuilder().apply {
+                this.matchId = matchIds
+            }.build()
+        }
+        if (result.error == null && result.data != null) {
+            return result.data!!.matchLiveData
+        }
+        return null
+    }
     //700-1100: 订阅比赛统计数据推送
     suspend fun registerMatchStaticsNotify(
         scope: CoroutineScope,
