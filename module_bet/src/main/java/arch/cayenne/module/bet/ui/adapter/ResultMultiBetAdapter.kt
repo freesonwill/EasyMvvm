@@ -11,7 +11,7 @@ import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.databinding.ItemResultMultiBetBinding
 import arch.cayenne.module.bet.ui.compare.BetResultDetailCompare
 
-class ResultMultiBetAdapter :
+class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
     BaseAdapter<BetDetailBean, BaseViewHolder, ItemResultMultiBetBinding>(
         BetResultDetailCompare()
     ) {
@@ -25,7 +25,7 @@ class ResultMultiBetAdapter :
         binding.tvCombo.text = combo
         val odds ="@${item.sumOdds.getOdds()}"
         binding.tvOdds.text = odds
-        val money = "\$${item.inputMoney.getMoney()}"
+        val money = "${listener.getMoneySymbol()}${item.inputMoney.getMoney()}"
         binding.tvBetMoney.text = money
 
         val multi = "${item.count} x"
@@ -46,5 +46,9 @@ class ResultMultiBetAdapter :
         viewType: Int
     ): BaseViewHolder {
         return BaseViewHolder(binding)
+    }
+
+    interface OnResultMultiBetListener {
+        fun getMoneySymbol(): String
     }
 }

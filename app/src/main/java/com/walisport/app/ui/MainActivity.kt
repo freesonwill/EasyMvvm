@@ -3,7 +3,6 @@ package com.walisport.app.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.common.data.constants.AppNotifyBean
 import arch.cayenne.lib.common.data.constants.CurConnectFailedType
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
@@ -44,9 +43,11 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     override fun createObserver() {
         super.createObserver()
         mViewModel.betResultListener.observe(this) {
-            val toast = BetResultToastView(this@MainActivity)
-            toast.setResult(it)
-            showToast(toast, 3_000L)
+            if (BetResultToastView.canShowToast(this)) {
+                val toast = BetResultToastView(this@MainActivity)
+                toast.setResult(it)
+                showToast(toast, 3_000L)
+            }
         }
         mViewModel.appNotifyListener.observe(this) {
             notifyFragment.sendNotifyMsg(it)
