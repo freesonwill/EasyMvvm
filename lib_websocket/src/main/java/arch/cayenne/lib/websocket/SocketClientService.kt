@@ -67,14 +67,15 @@ class SocketClientService(
     private var job: Job? = null
 
     override fun connect(host: String): SharedFlow<ConnectState> {
-        if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
-            throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")
+        return when(currentState) {
+            SocketConnectState.Connecting -> { connectStateFlow }
+            else -> {
+                connectStateFlow.collectFirstSubscribe {
+                    this.host = host
+                    openWebSocket()
+                }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+            }
         }
-
-        return connectStateFlow.collectFirstSubscribe {
-            this.host = host
-            openWebSocket()
-        }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
     }
 
     private fun openWebSocket() {
