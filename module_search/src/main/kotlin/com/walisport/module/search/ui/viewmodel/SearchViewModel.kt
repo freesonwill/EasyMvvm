@@ -44,10 +44,6 @@ class SearchViewModel : BaseViewModel() {
     private val _statusBarUpdateEvent = MutableSharedFlow<Unit>()
     val statusBarUpdateEvent: SharedFlow<Unit> = _statusBarUpdateEvent.asSharedFlow()
 
-    /** 標題欄遮罩狀態 */
-    private val _titleBarMaskEvent = MutableSharedFlow<Pair<Boolean, (() -> Unit)?>>()
-    val titleBarMaskEvent: SharedFlow<Pair<Boolean, (() -> Unit)?>> = _titleBarMaskEvent
-
     /** 日期選擇器開啟狀態 */
     private val _isDatePickerOpen = MutableSharedFlow<Boolean>(replay = 1)
     val isDatePickerOpen: SharedFlow<Boolean> = _isDatePickerOpen.asSharedFlow()
@@ -125,13 +121,6 @@ class SearchViewModel : BaseViewModel() {
     fun notifyStatusBarUpdate() {
         viewModelScope.launch {
             _statusBarUpdateEvent.emit(Unit)
-        }
-    }
-
-    /** 設置標題欄遮罩狀態 */
-    fun setTitleBarMaskEvent(isEnabled: Boolean, onClick: (() -> Unit)? = null) {
-        viewModelScope.launch {
-            _titleBarMaskEvent.emit(Pair(isEnabled, onClick))
         }
     }
 

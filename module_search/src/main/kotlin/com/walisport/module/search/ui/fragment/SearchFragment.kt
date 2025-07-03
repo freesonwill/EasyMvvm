@@ -132,21 +132,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         updateStatusSearchBar()
                     }
                 }
-                launch {
-                    titleBarMaskEvent.collect { event ->
-                        with(mBinding.maskTitleBar) {
-                            if (event.first) {
-                                visibility = View.VISIBLE
-                                setOnClickListener {
-                                    event.second?.invoke()
-                                }
-                            } else {
-                                visibility = View.GONE
-                                setOnClickListener(null)
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -160,8 +145,13 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     afterTextChanged = { text, binding ->
                         if (!canSearch) return@loadSearchTitleBar
 
-                        // 搜索自动补充词汇
                         val count = text?.length ?: 0
+                        // 避免點擊清空搜尋時失去焦點且收起鍵盤
+                        if (count == 0) {
+                            showKeyboard(requireContext(), getSearchEditText())
+                        }
+
+                        // 搜索自动补充词汇
                         if (count > 0 && binding.ceSearch.hasFocus())
                             clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
@@ -179,6 +169,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         updateSearchBtnColor()
                     },
                     onSearch = { content, _ ->
+                        closeDatePicker()
                         if (TextUtils.isEmpty(content)) {
                             showToast(titleBarHintStr)
                             return@loadSearchTitleBar
@@ -205,6 +196,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     setOnFocusChangeListener { _, isFocused ->
                         updateSearchBtnColor()
                         if (isFocused) {
+                            closeDatePicker()
                             clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
                                 getSearchRecommendList(text.toString())
@@ -317,6 +309,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
         mViewModel.clearSearchRecommendList()
+    }
+
+    private fun closeDatePicker() {
+        if (mViewModel.isDatePickerOpen()) {
+            mViewModel.setIsDatePickerOpen(false)
+        }
     }
 
     private fun getSearchBar(): LinearLayout {
@@ -456,6 +454,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
         editText.clearFocus()
+    }
+
+    private fun showKeyboard(context: Context?, editText: EditText) {
+        editText.requestFocus()
+        val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun doNavigate(event: SearchNavigationEvent) {
