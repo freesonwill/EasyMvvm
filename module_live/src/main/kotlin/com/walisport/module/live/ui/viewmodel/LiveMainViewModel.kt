@@ -230,12 +230,8 @@ class LiveMainViewModel(
         return MatchLiveData(0, teams, stats, trend, event)
     }
 
-    fun getSelectionsEditAll(callback: (List<SelectionsEdit>) -> Unit) {
-        repo.getSelectionsEdit { it ->
-            viewModelScope.launch {
-                callback(it)
-            }
-        }
+   suspend fun getSelectionsEditAll(): List<SelectionsEdit>{
+        return  repo.getSelectionsEdit()
     }
 
     fun reconnect() {

@@ -40,8 +40,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabList: MutableList<String> = mutableListOf()
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
-    private var mCurrentItemPosition:Int = 0
-    private var mBeforePosition:Int = 0
+    private var mCurrentItemPosition: Int = 0
+    private var mBeforePosition: Int = 0
     private var selectionComboId: Long? = null
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
@@ -64,8 +64,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     selectionId: Long,
                     x: Float,
                     y: Float,
-                    position:Int,
-                    beforePosition:Int
+                    position: Int,
+                    beforePosition: Int
                 ) {
 
                     launch {
@@ -82,8 +82,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER) {
                             showToast(getString(R.string.disabled_to_combo_for_provider))
                         } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
-                            mCurrentItemPosition  = position
-                            mBeforePosition  = beforePosition
+                            mCurrentItemPosition = position
+                            mBeforePosition = beforePosition
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }
@@ -98,23 +98,22 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         var baseInfo = mainViewModel.mainMatch.value?.basicInfo
         //根据盘口获取投注注区
         launch {
-            mViewModel.getLiveSelectionBean(marketIds).collect {it->
-                   // LogUtils.d("投注列--------------------${it}")
-                    mainViewModel.getSelectionsEditAll {selectionEdit->
-                      //  LogUtils.dTag("比赛推送","变化id----${selectionEdit}")
-                        mBinding.clDynamics.setVisibilityGone()
-                        mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
-                        liveBetOnAdapter.setData(
-                            baseInfo?.homeTeam.toString(),
-                            baseInfo?.homeTeamIcon.toString(),
-                            baseInfo?.awayTeam.toString(),
-                            baseInfo?.awayTeamIcon.toString(), it, true,
-                            selectionEdit
-                        )
-                        liveBetOnAdapter.setSelectionComboId(selectionComboId)
-                        liveBetOnAdapter.submitList(list)
-                        liveBetOnAdapter.notifyDataSetChanged()
-                }
+            mViewModel.getLiveSelectionBean(marketIds).collect { it ->
+                // LogUtils.d("投注列--------------------${it}")
+                var selections = mainViewModel.getSelectionsEditAll()
+                //  LogUtils.dTag("比赛推送","变化id----${selectionEdit}")
+                mBinding.clDynamics.setVisibilityGone()
+                mBinding.rvBetList.setItemViewCacheSize(list?.size ?: 0)
+                liveBetOnAdapter.setData(
+                    baseInfo?.homeTeam.toString(),
+                    baseInfo?.homeTeamIcon.toString(),
+                    baseInfo?.awayTeam.toString(),
+                    baseInfo?.awayTeamIcon.toString(), it, true,
+                    selections
+                )
+                liveBetOnAdapter.setSelectionComboId(selectionComboId)
+                liveBetOnAdapter.submitList(list)
+                liveBetOnAdapter.notifyDataSetChanged()
             }
         }
     }
@@ -202,15 +201,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             }
         }
 
-            //根据盘口分类code获取盘口列表
-            mViewModel.getMarketList.observe(viewLifecycleOwner) {
-                var marketIds: MutableList<Long> = mutableListOf()
-                it?.forEach {
-                    marketIds.add(it.marketId)
-                }
-               // LogUtils.e("showData${marketIds}")
-                showData(it, marketIds)
+        //根据盘口分类code获取盘口列表
+        mViewModel.getMarketList.observe(viewLifecycleOwner) {
+            var marketIds: MutableList<Long> = mutableListOf()
+            it?.forEach {
+                marketIds.add(it.marketId)
             }
+            // LogUtils.e("showData${marketIds}")
+            showData(it, marketIds)
+        }
 
         //侧边栏筛选
         mViewModel.observeMarketMenu.observe(viewLifecycleOwner) {
@@ -220,8 +219,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.rvBetList.post {
                 launch {
                     delay(200)
-                    val layoutManager =  mBinding.rvBetList.layoutManager as LinearLayoutManager
-                    layoutManager.scrollToPositionWithOffset( tabPosition[1],0)
+                    val layoutManager = mBinding.rvBetList.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPositionWithOffset(tabPosition[1], 0)
                 }
             }
         }
@@ -240,7 +239,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId,false)
+            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
             liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
             liveBetOnAdapter.notifyItemChanged(mBeforePosition)
         }
