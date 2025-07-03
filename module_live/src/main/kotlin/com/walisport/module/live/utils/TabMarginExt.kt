@@ -13,7 +13,6 @@ object TabMarginExt {
     fun TabLayout.reflexMargin(leftMargin: Int, rightMargin: Int, margin: Int) {
         val tabLayout = this
         tabLayout.post {
-            try {
                 val mTabStrip = tabLayout.getChildAt(0) as LinearLayout
                 for (i in 0 until mTabStrip.childCount) {
                     val tabView = mTabStrip.getChildAt(i)
@@ -35,11 +34,7 @@ object TabMarginExt {
                         }
                     }
                     tabView.layoutParams = params
-                    tabView.invalidate()
                 }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
         }
     }
 }
