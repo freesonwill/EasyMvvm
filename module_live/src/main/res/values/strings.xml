@@ -88,7 +88,6 @@
     <string name="keyboard_clear">清空</string>
     <string name="keyboard_double">双倍</string>
     <string name="cancel">取消</string>
-    <string name="refund_amount">返还金额$%1$s</string>
     <string name="want_settle_early">确定提前结算吗?</string>
     <string name="capital">本金</string>
     <string-array name="keyboard_percent">

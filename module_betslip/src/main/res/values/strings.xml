@@ -28,7 +28,7 @@
     <string name="see_more">查看更多</string>
     <string name="fold_up">向上收起</string>
     <string name="cancel">取消</string>
-    <string name="refund_amount">返还金额$%1$s</string>
+    <string name="refund_amount">返还金额%1$s%2$s</string>
     <string name="want_settle_early">确定提前结算吗?</string>
     <string name="capital">本金</string>
     <string-array name="keyboard_percent">
