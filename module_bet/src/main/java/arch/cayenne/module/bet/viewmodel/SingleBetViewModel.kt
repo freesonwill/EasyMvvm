@@ -47,19 +47,29 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
     val onReserveOddsListener: LiveData<Int?> get() = _onReserveOddsListener
 
     private val _onCanBetListener = MediatorLiveData(false).apply {
-        val checkBoth = {
-            if (onEditNumber.value != null && _onBetSheetListener.value != null) {
+        val checkEligibility = {
+            val betSheet = _onBetSheetListener.value
+            val editNumber = onEditNumber.value
+            val odds = _onReserveOddsListener.value
+
+            value = if (betSheet == null || editNumber == null) {
+                false
+            } else {
                 val money = editValue.toMoney()
-                val betSheet = _onBetSheetListener.value!!
-                value = betSheet.isActive && minMoney != 0L && money >= minMoney
+                val isMoneyValid = minMoney != 0L && money >= minMoney
+                val isBetSheetActive = betSheet.isActive
+
+                if (odds == null) {
+                    isBetSheetActive && isMoneyValid
+                } else {
+                    isBetSheetActive && isMoneyValid && odds > betSheet.odds
+                }
             }
         }
-        addSource(_onBetSheetListener) {
-            checkBoth()
-        }
-        addSource(onEditNumber) {
-            checkBoth()
-        }
+
+        addSource(_onBetSheetListener) { checkEligibility() }
+        addSource(onEditNumber) { checkEligibility() }
+        addSource(_onReserveOddsListener) { checkEligibility() }
     }
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
