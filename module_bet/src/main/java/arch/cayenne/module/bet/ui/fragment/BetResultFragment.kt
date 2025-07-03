@@ -12,7 +12,6 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.helper.blockToast
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -36,11 +35,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 return mViewModel.moneySymbol
             }
         })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        blockToast(true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -184,10 +178,5 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun dismiss(key: String, value: String) {
         sendResult(key, value, R.id.betResultFragment)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        blockToast(false)
     }
 }
