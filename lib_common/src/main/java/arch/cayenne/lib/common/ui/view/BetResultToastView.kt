@@ -5,12 +5,30 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 
 class BetResultToastView: LinearLayout {
+
+    companion object {
+        fun canShowToast(activity: FragmentActivity): Boolean {
+            fun checkFragments(fragments: List<Fragment>): Boolean {
+                for (fragment in fragments) {
+                    if (fragment is Block && fragment.isResumed) return false
+                    if (fragment.isAdded) {
+                        if (!checkFragments(fragment.childFragmentManager.fragments)) return false
+                    }
+                }
+                return true
+            }
+
+            return checkFragments(activity.supportFragmentManager.fragments)
+        }
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -63,4 +81,6 @@ class BetResultToastView: LinearLayout {
         mBinding.tvSuccessCombo.text = successfulTitle
         mBinding.tvFailureCombo.text = failureTitle
     }
+
+    interface Block
 }

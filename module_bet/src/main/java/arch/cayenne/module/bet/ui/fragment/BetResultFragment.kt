@@ -7,16 +7,15 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
-import arch.cayenne.lib.common.utils.helper.blockToast
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
-import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBinding>(),
-    BetSheetListener {
+    BetSheetListener, BetResultToastView.Block {
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
@@ -36,11 +35,6 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 return mViewModel.moneySymbol
             }
         })
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        blockToast(true)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -181,10 +175,5 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
 
     override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.betResultFragment)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        blockToast(false)
     }
 }

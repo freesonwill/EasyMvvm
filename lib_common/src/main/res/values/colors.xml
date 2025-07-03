@@ -38,6 +38,7 @@
     <color name="blue">#0000FF</color>
     <color name="app_bg">#0e0f19</color>
     <color name="search_btn">#24EE8A</color>
+    <color name="search_btn_highlight">#24EE8A</color>
     <color name="search_btn_normal">#BBBBBB</color>
     <color name="search_btn_in_direct_match">#ffffff</color>
     <color name="search_hint">#4B4C55</color>

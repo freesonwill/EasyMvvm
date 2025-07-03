@@ -17,7 +17,9 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -61,15 +63,19 @@ class SocketClientService(
     private var webSocket: WebSocket? = null
     private var host: String = ""
 
-    override fun connect(host: String): SharedFlow<ConnectState> {
-        if (currentState != SocketConnectState.None && currentState != SocketConnectState.Closed) {
-            throw IllegalStateException("socket need to set back to none or using reconnect! but now state is $currentState")
-        }
+    private var sendQueue: Channel<ByteArray>? = null
+    private var job: Job? = null
 
-        return connectStateFlow.collectFirstSubscribe {
-            this.host = host
-            openWebSocket()
-        }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+    override fun connect(host: String): SharedFlow<ConnectState> {
+        return when(currentState) {
+            SocketConnectState.Connecting -> { connectStateFlow }
+            else -> {
+                connectStateFlow.collectFirstSubscribe {
+                    this.host = host
+                    openWebSocket()
+                }.shareIn(CoroutineScope(Dispatchers.IO), SharingStarted.Lazily)
+            }
+        }
     }
 
     private fun openWebSocket() {
@@ -107,6 +113,7 @@ class SocketClientService(
                 "Socket Client -> ConnectOpen".loge(SocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
+                initQueue()
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
             }
 
@@ -119,9 +126,6 @@ class SocketClientService(
                     "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
-                        workingScope.launch(Dispatchers.Main) {
-
-                        }
                         val data = security.decrypt(byteArray)
                         workingScope.launch { socketResponseFlow.emit(data) }
                     }
@@ -151,6 +155,7 @@ class SocketClientService(
             currentState = SocketConnectState.None
             return
         }
+        closeQueue()
         webSocket?.close(1001, SocketConnectState.None.name)
     }
 
@@ -163,9 +168,26 @@ class SocketClientService(
         return if (byteArray == null) {
             InvalidEncryptDataError()
         } else {
-            webSocket?.send(byteArray.toByteString())
+            sendQueue?.trySend(byteArray)
             null
         }
+    }
+
+    private fun initQueue() {
+        sendQueue = Channel(Channel.UNLIMITED)
+        job?.cancel()
+        job = workingScope.launch {
+            for (data in sendQueue!!) {
+                webSocket?.send(data.toByteString())
+            }
+        }
+    }
+
+    private fun closeQueue() {
+        sendQueue?.close()
+        sendQueue = null
+        job?.cancel()
+        job = null
     }
 
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow
