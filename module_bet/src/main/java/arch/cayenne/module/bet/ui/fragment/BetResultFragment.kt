@@ -106,7 +106,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun setPending(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = true
+        mBinding.tvHint.text = getString(R.string.title_result_hint)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_pending)
         mBinding.tvTitle.text = if (type == BetTypeEnum.RESERVE) {
             getString(R.string.title_result_pending_reserve)
@@ -116,7 +116,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun setComplete(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = false
+        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_success)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
@@ -134,7 +134,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun setFail(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = false
+        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
         mBinding.ivTitle.setImageResource(arch.cayenne.lib.common.R.mipmap.icon_bet_result_fail)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
