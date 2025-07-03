@@ -129,7 +129,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clBet.setOnClickListener {
             mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
             mViewModel.sendBet()
-            navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
+            showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
         }
     }
 
@@ -345,6 +345,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun dismiss(key: String, value: String) {
+        sendResult(key, value, R.id.comboBetFragment)
+    }
+
+    override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.comboBetFragment)
     }
 
