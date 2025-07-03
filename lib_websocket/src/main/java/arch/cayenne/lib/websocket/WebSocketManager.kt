@@ -153,7 +153,7 @@ class WebSocketManager(
                 socket.send(
                     Client.PingBackReq.newBuilder().apply {
                         this.data = "1234567"
-                    }.build().asRemoteRequest(ApiCode.PING, 0)
+                    }.build().asRemoteRequest(ApiCode.PING, nextRid())
                 )
             }
         }
