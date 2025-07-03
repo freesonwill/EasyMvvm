@@ -219,8 +219,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.rvBetList.post {
                 launch {
                     delay(200)
-                    val layoutManager = mBinding.rvBetList.layoutManager as LinearLayoutManager
-                    layoutManager.scrollToPositionWithOffset(tabPosition[1], 0)
+                    val layoutManager =  mBinding.rvBetList.layoutManager as LinearLayoutManager
+                    layoutManager.scrollToPositionWithOffset( tabPosition[1],0)
                 }
             }
         }
