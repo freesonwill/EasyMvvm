@@ -177,19 +177,6 @@ class LiveMarketListBeanDiffCallback : DiffUtil.ItemCallback<LiveMarketListBean>
         oldList: List<LiveMarketSelectionBean>,
         newList: List<LiveMarketSelectionBean>
     ): Boolean {
-        if (oldList.size != newList.size) return false
-        return oldList.zip(newList).all { (old, new) ->
-            old.code == new.code &&
-                    old.selectionId == new.selectionId &&
-                    old.name == new.name &&
-                    old.shortName == new.shortName &&
-                    old.odds == new.odds &&
-                    old.active == new.active &&
-                    old.parlay == new.parlay &&
-                    old.marketId == new.marketId &&
-                    old.marketName == new.marketName &&
-                    old.style == new.style &&
-                    old.oddsStatus == new.oddsStatus
-        }
+        return oldList.size == newList.size
     }
 }

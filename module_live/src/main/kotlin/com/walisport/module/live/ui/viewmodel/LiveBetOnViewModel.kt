@@ -93,18 +93,6 @@ class LiveBetOnViewModel : BaseViewModel() {
         codes?.forEach {
             marketIds.add(it.marketId)
         }
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val list: MutableList<LiveSelectionBean> = mutableListOf()
-//            marketIds.forEach {
-//                list.addAll(repository.queryLiveSelectionBean(it))
-//            }
-//            val selections =  codes?.toData(list,code)
-//            viewModelScope.launch(Dispatchers.Main) {
-//                _liveMarketListBean.value = selections?.markets
-//            }
-//        }
-        //监听盘口数据变化
-       // LogUtils.d("监听盘口数据变化observeSelection${marketIds}")
         //订阅数据
         observeSelection(marketIds)
     }
