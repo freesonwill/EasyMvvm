@@ -115,12 +115,22 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent" />
 
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_animation_entry"
+                    android:layout_width="@dimen/dp_28"
+                    android:layout_height="@dimen/dp_28"
+                    android:layout_marginEnd="@dimen/dp_19"
+                    android:layout_marginBottom="@dimen/dp_8"
+                    android:src="@drawable/video_fragment_animation_entry"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/iv_choose_source" />
+
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_choose_source"
                     android:layout_width="@dimen/dp_28"
                     android:layout_height="@dimen/dp_28"
-                    android:layout_marginEnd="@dimen/dp_16"
+                    android:layout_marginEnd="@dimen/dp_19"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:src="@drawable/video_fragment_choose_source"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -145,6 +155,10 @@
         <include
             android:id="@+id/included_match_not_in_progress"
             layout="@layout/layout_match_not_in_progress" />
+
+        <include
+            android:id="@+id/included_match_animation"
+            layout="@layout/layout_match_animation" />
 
     </LinearLayout>
 </layout>

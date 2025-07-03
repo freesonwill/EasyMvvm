@@ -44,7 +44,7 @@ dependencies {
     api(project(":lib_skin"))
     api(project(":lib_websocket"))
     api(project(":lib_database"))
-    implementation(libs.jsbridge)
+    api(libs.jsbridge)
     api(libs.androidx.core.ktx)
     api(libs.androidx.appcompat)
     api(libs.material)
