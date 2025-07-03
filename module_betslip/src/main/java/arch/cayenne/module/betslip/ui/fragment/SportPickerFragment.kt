@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
+import androidx.core.view.isInvisible
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -127,7 +128,9 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         val targetHeight = clContent.height
         ObjectAnimator.ofFloat(clContent, "translationY", 0f, -targetHeight.toFloat()).apply {
             duration = 300
-            addListener(onEnd = {
+            addListener(onStart={
+                mBinding.maskView.isInvisible = true
+            },onEnd = {
                 mBinding.clFilter.visibility = View.INVISIBLE
                 dismiss()
             })
