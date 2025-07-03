@@ -32,6 +32,7 @@ class BetResultToastView: LinearLayout {
     }
 
     private fun setSingleResult(data: BetResultLiteBean) {
+        if (data.matchName.isEmpty()) return
         mBinding.tvTitle.isVisible = false
         mBinding.groupSuccess.isVisible = data.isSuccessful
         mBinding.tvSuccessCombo.isVisible = data.isSuccessful
@@ -45,6 +46,7 @@ class BetResultToastView: LinearLayout {
     }
 
     private fun setComboResult(data: List<BetResultLiteBean>) {
+        if (data.isEmpty() || data.first().matchName.isNotEmpty()) return
         mBinding.tvTitle.text = data.first().matchName.joinToString("、")
         val successfulData = data.filter { it.isSuccessful }
         val failureData = data.filter { !it.isSuccessful }
