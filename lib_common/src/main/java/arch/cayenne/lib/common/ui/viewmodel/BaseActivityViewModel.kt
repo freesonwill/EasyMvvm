@@ -120,6 +120,9 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     }
 
     override fun reset() {
-        commonRepository.reset()
+        viewModelScope.launch(Dispatchers.IO) {
+            commonRepository.reset()
+        }
+
     }
 }
