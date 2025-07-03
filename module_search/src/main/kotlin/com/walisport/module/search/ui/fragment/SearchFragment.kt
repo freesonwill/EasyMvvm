@@ -28,6 +28,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -44,7 +45,6 @@ import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
-import arch.cayenne.lib.common.R as Rc
 
 /**
  * @author: caomei
@@ -81,7 +81,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     override fun onStart() {
-        mViewModel.setStatusBarState(true)
+        mViewModel.notifyStatusBarUpdate()
         super.onStart()
     }
 
@@ -128,8 +128,8 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     }
                 }
                 launch {
-                    statusBarState.collect { isDefault ->
-                        updateStatusSearchBar(isDefault)
+                    statusBarUpdateEvent.collect {
+                        updateStatusSearchBar()
                     }
                 }
                 launch {
@@ -176,6 +176,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             recommendAdapter.updateMatchKeyword(this)
                             getSearchRecommendList(this)
                         }
+                        updateSearchBtnColor()
                     },
                     onSearch = { content, _ ->
                         if (TextUtils.isEmpty(content)) {
@@ -202,6 +203,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
                 getSearchEditText().apply {
                     setOnFocusChangeListener { _, isFocused ->
+                        updateSearchBtnColor()
                         if (isFocused) {
                             clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
@@ -318,19 +320,19 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     private fun getSearchBar(): LinearLayout {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ll_search_bar)
+        return mBinding.titleBar.findViewById(RC.id.ll_search_bar)
     }
 
     private fun getSearchBtn(): TextView {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.tv_search_text)
+        return mBinding.titleBar.findViewById(RC.id.tv_search_text)
     }
 
     private fun getSearchEditText(): ClearableEditText {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ce_search)
+        return mBinding.titleBar.findViewById(RC.id.ce_search)
     }
 
     private fun getTitleBarBackIcon(): SkinnableImageView {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.iv_back)
+        return mBinding.titleBar.findViewById(RC.id.iv_back)
     }
 
     private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
@@ -375,15 +377,20 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
 
-    private fun updateStatusSearchBar(isDefault: Boolean = true) {
-        updateStatusTitleBar(isDefault)
-        updateTitleBarBackIcon(isDefault)
-        updateSearchTextColor(isDefault)
-        updateSearchBtnColor(isDefault)
-        updateSearchBarBackground(isDefault)
+    private fun updateStatusSearchBar() {
+        updateStatusTitleBar()
+        updateTitleBarBackIcon()
+        updateSearchTextColor()
+        updateSearchBtnColor()
+        updateSearchBarBackground()
     }
 
-    private fun updateStatusTitleBar(isDefault: Boolean = true) {
+    private fun isDirectMatch(): Boolean {
+        return findChildNavController(mBinding.fragmentContainer.id)
+            .currentDestination?.id == R.id.searchResultDirectMatchFragment
+    }
+
+    private fun updateStatusTitleBar() {
         with(mBinding) {
             with(SkinnableResourceManager) {
                 setStatusBar(
@@ -391,52 +398,57 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         statusBarType = StatusBarMode.DRAW_BEHIND()
                         statusBarColor = android.R.color.transparent
                         statusBarDarkFont =
-                            if(isDefault) getSkinName().lowercase().startsWith("white")
-                            else false
+                            if(isDirectMatch()) false
+                            else getSkinName().lowercase().startsWith("white")
                     }, clRoot
                 )
             }
         }
     }
 
-    private fun updateTitleBarBackIcon(isDefault: Boolean = true) {
+    private fun updateTitleBarBackIcon() {
         getTitleBarBackIcon().apply {
             post {
                 setImageDrawable(
-                    if(isDefault) getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
-                    else ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    if(isDirectMatch()) ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
+                    else getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
                 )
             }
         }
     }
 
-    private fun updateSearchTextColor(isDefault: Boolean = true) {
+    private fun updateSearchTextColor() {
         getSearchEditText().setTextColor(
-            if (isDefault)
-                SkinnableResourceManager.getColor(
-                    requireContext(),
-                    arch.cayenne.lib.common.R.color.search_text_for_search_bar
-                )
-            else Color.WHITE
-        )
-    }
-
-    private fun updateSearchBtnColor(isDefault: Boolean = true) {
-        getSearchBtn().setTextColor(
-            SkinnableResourceManager.getColor(
+            if (isDirectMatch()) Color.WHITE
+            else SkinnableResourceManager.getColor(
                 requireContext(),
-                if (isDefault) arch.cayenne.lib.common.R.color.search_btn_normal
-                else arch.cayenne.lib.common.R.color.search_btn_in_direct_match
+                RC.color.search_text_for_search_bar
             )
         )
     }
 
-    private fun updateSearchBarBackground(isDefault: Boolean = true) {
+    private fun updateSearchBtnColor() {
+        val isHighLight =
+            getSearchEditText().hasFocus() && getSearchEditText().text?.isNotBlank() == true
+
+        getSearchBtn().setTextColor(
+            SkinnableResourceManager.getColor(
+                requireContext(),
+                when {
+                    isHighLight -> RC.color.search_btn_highlight
+                    isDirectMatch() -> RC.color.search_btn_in_direct_match
+                    else -> RC.color.search_btn_normal
+                }
+            )
+        )
+    }
+
+    private fun updateSearchBarBackground() {
         getSearchBar().backgroundTintList =
             SkinnableResourceManager.getColorStateList(
                 requireContext(),
-                if (isDefault) arch.cayenne.lib.common.R.color.search_bg
-                else arch.cayenne.lib.common.R.color.search_bg_in_direct_match
+                if (isDirectMatch()) RC.color.search_bg_in_direct_match
+                else RC.color.search_bg
             )
     }
 

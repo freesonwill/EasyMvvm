@@ -4,6 +4,7 @@
     <color name="title_bar_white_blue">#222222</color>
 
     <color name="search_btn_white_blue">#000000</color>
+    <color name="search_btn_highlight_white_blue">#00D271</color>
     <color name="search_btn_normal_white_blue">#222222</color>
     <color name="search_btn_in_direct_match_white_blue">#ffffff</color>
     <color name="search_hint_white_blue">#929298</color>
