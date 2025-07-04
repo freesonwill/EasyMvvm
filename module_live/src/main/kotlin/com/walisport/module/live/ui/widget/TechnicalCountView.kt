@@ -77,21 +77,21 @@ class TechnicalCountView @JvmOverloads constructor(
     fun setAttackData(home: Int, away: Int) {
         mBinding.tvAttackHome.text = home.toString()
         mBinding.tvAttackAway.text = away.toString()
-        mBinding.ivAttack.background = getAttackBackground(home, away)
+        mBinding.ivAttack.setData(home, away)
     }
 
     //设置危险进攻数据
     fun setDangerAttackData(home: Int, away: Int) {
         mBinding.tvDangerAttackHome.text = home.toString()
         mBinding.tvDangerAttackAway.text = away.toString()
-        mBinding.ivDangerAttack.background = getDangerAttackBackground(home, away)
+        mBinding.ivDangerAttack.setData(home, away)
     }
 
     //设置控球率数据
     fun setBallControlData(home: Int, away: Int) {
         mBinding.tvBallControlHome.text = home.toString()
         mBinding.tvBallControlAway.text = away.toString()
-        mBinding.ivBallControlRate.background = getBallControlBackground(home, away)
+        mBinding.ivBallControlRate.setData(home, away)
     }
 
     //设置比赛双方角球数据
@@ -168,105 +168,6 @@ class TechnicalCountView @JvmOverloads constructor(
                     textView.layoutParams = params
                 }
             }
-        }
-    }
-
-    private fun getAttackBackground(home: Int, away: Int): Drawable? {
-        return if (home < away) {
-            if (home == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_attack_zero
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_attack_left
-                )
-            }
-        } else if (home > away) {
-            if (away == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_attack_hundred
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_attack_right
-                )
-            }
-        } else {
-            SkinnableResourceManager.getDrawable(
-                mBinding.root.context,
-                R.drawable.icon_attack
-            )
-        }
-    }
-
-    private fun getDangerAttackBackground(home: Int, away: Int): Drawable? {
-        return if (home < away) {
-            if (home == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_danger_attack_zero
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_danger_attack_left
-                )
-            }
-        } else if (home > away) {
-            if (away == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_danger_attack_hundred
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_danger_attack_right
-                )
-            }
-        } else {
-            SkinnableResourceManager.getDrawable(
-                mBinding.root.context,
-                R.drawable.icon_danger_attack
-            )
-        }
-    }
-
-    private fun getBallControlBackground(home: Int, away: Int): Drawable? {
-        return if (home < away) {
-            if (home == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_control_rate_zero
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_control_rate_left
-                )
-            }
-        } else if (home > away) {
-            if (away == 0) {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_control_rate_hundred
-                )
-            } else {
-                SkinnableResourceManager.getDrawable(
-                    mBinding.root.context,
-                    R.drawable.icon_control_rate_right
-                )
-            }
-        } else {
-            SkinnableResourceManager.getDrawable(
-                mBinding.root.context,
-                R.drawable.icon_control_rate
-            )
         }
     }
 

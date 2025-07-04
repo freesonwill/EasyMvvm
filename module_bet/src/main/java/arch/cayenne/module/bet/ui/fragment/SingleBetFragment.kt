@@ -4,11 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
@@ -18,6 +16,7 @@ import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
@@ -209,6 +208,10 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         sendResult(key, value, R.id.singleBetFragment)
     }
 
+    override fun showExitAnim(key: String, value: String) {
+        sendResult(key, value, R.id.singleBetFragment)
+    }
+
     private fun hideKeyboard() {
         ViewHelper.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
         mBinding.etMoney.clearFocus()
@@ -226,13 +229,14 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun sendBet() {
-        val minAmount = mViewModel.mixMoney
+        val minAmount = mViewModel.minMoney
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
         } else {
+            mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
             mViewModel.sendBet()
-            navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
+            showExitAnim(value = Config.VALUE_SINGLE_TO_RESULT)
         }
     }
 }

@@ -7,15 +7,20 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
-import com.walisport.app.ui.viewmodel.SplashViewModel
-import com.walisport.app.databinding.ActivitySplashBinding
-import com.walisport.app.ui.MainActivity
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.CurConnectFailedType
+import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
+import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
+import com.walisport.app.databinding.ActivitySplashBinding
+import com.walisport.app.ui.MainActivity
+import com.walisport.app.ui.viewmodel.SplashViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -63,33 +68,33 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     //qatest1
     //55468822
-    //token=NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U
+    //token=NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX
 
     //qatest2
     //55468823
-    //token=NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0
+    //token=NTU0Njg4MjNfMTc1MTM1NDk3MzM3MTpsMEZTMTNoUzNONTJDRTIz
 
     //qatest3
     //55468824
-    //token=NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0
+    //token=NTU0Njg4MjRfMTc1MTM1NDkzNzg0NTpUZ3BsZGF6dXhHSGJYQUZo
 
     //qatest4
     //55468825
-    //token=NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy
+    //token=NTU0Njg4MjVfMTc1MTM1NDg2NjEyMDoyZzh0Tk52eXF4VGxMZlA5
 
     //qatest5
     //55468826
-    //token=NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP
+    //token=NTU0Njg4MjZfMTc1MTM1NDgxMzUwMjoyNVJHMnVObXVhNnk5NnpC
 
     private val pair: Pair<Int, String> = if (BuildConfig.BUILD_TYPE == "debug") {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1MDMyNTIxMjY3NDpNSnlXYUFnNk9mc1I2cE9U"),
-            Pair(55468823, "NTU0Njg4MjNfMTc1MDMyNTIzOTAyNzoxdXZOSmtqRVZRemlDT2s0"),
-            Pair(55468824, "NTU0Njg4MjRfMTc1MDMyNTI2NjI1Mjo3ZDVUejljSXNFa05sWjI0"),
-            Pair(55468825, "NTU0Njg4MjVfMTc1MDMyNTI5MjY3NTpQY0NFdk1WQ1JpTGlJZFYy"),
-            Pair(55468826, "NTU0Njg4MjZfMTc1MDMyNTMyMzAxNDpyb1RVNlNJTFN3N05JTmxP")
+            Pair(55468822, "NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1MTM1NDk3MzM3MTpsMEZTMTNoUzNONTJDRTIz"),
+            Pair(55468824, "NTU0Njg4MjRfMTc1MTM1NDkzNzg0NTpUZ3BsZGF6dXhHSGJYQUZo"),
+            Pair(55468825, "NTU0Njg4MjVfMTc1MTM1NDg2NjEyMDoyZzh0Tk52eXF4VGxMZlA5"),
+            Pair(55468826, "NTU0Njg4MjZfMTc1MTM1NDgxMzUwMjoyNVJHMnVObXVhNnk5NnpC")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")
@@ -100,6 +105,10 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
+
+    private var connectFailedFragment : ConnectFailedFragment? = null
+
+    private val connectFailedViewModel: ConnectFailedViewModel by viewModel()
 
     override fun configStatusBar(): StatusBarConfig {
         StatusBarConfig.statusBarDarkFont = false
@@ -123,7 +132,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         super.initData()
         "uid:$uid, token:$token".logd(TAG)
         mViewModel.saveUserData(uid, token)  //TODO 實作登入頁後就不需要這個了
-        mViewModel.connectToServer()
     }
 
     override fun initListener() {
@@ -148,7 +156,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
             }
         }
 
-        mViewModel.connectingError.observe(this) {
+        mViewModel.loginError.observe(this) {
             when(it) {
                 is LoginTokenFailedError -> {   //準備登入時沒有取得token或是uid
                     //TODO 跳到登入頁
@@ -160,6 +168,24 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                     Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
                 }
             }
+        }
+
+        mViewModel.connectStateChange.observe(this) {
+            if (connectFailedFragment == null) {
+                connectFailedFragment = ConnectFailedFragment.newInstance().apply {
+                    show(this@SplashActivity)
+                    setRefreshListener {
+                        mViewModel.reconnectNow()
+                    }
+                }
+            }
+            connectFailedViewModel.changeCurrencyFailedView(
+                when(it) {
+                    is ConnectState.ConnectSuccess -> CurConnectFailedType.HIDE
+                    is ConnectState.ReconnectFailure -> CurConnectFailedType.SHOW_FAILED
+                    else -> CurConnectFailedType.SHOW_MASK
+                }
+            )
         }
     }
 

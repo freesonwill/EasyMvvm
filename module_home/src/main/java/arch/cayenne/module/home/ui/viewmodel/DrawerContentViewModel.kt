@@ -16,14 +16,13 @@ import plugin.koin.KoinViewModel
 
 @KoinViewModel
 class DrawerContentViewModel: BaseViewModel() {
-    // TODO:("通知API待連接")
     private val repository: DrawerContentRepository by inject()
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val messageMainRepository: MessageMainRepository by inject { parametersOf(viewModelScope) }
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
     private var cursorId: Long = 0L
-    private var cursorType: Int = 0
+    private val cursorType: Int = 0
     private val _notificationBean = MutableLiveData<Event<List<NotificationBean>>>()
     val notificationBean: LiveData<Event<List<NotificationBean>>> = _notificationBean
 
@@ -36,7 +35,7 @@ class DrawerContentViewModel: BaseViewModel() {
         }
         //監聽系统消息列表
         viewModelScope.launch {
-            messageMainRepository.observeMessageBean().collect {
+            messageMainRepository.observeLatestMessage().collect {
                 val temp = it.map { item ->
                     NotificationBean(
                         id = item.id,
@@ -47,11 +46,7 @@ class DrawerContentViewModel: BaseViewModel() {
                         createTime = item.time
                     )
                 }
-                if (cursorType == 0) {
-                    _notificationBean.value = Event(temp)
-                } else {
-                    _notificationBean.value = Event(temp.filter { it.type == cursorType })
-                }
+                _notificationBean.value = Event(temp)
             }
         }
     }

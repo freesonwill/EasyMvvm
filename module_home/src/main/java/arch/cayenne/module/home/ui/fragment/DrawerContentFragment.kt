@@ -11,6 +11,7 @@ import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.module.account.data.constants.KeyConfig
 import arch.cayenne.module.home.R
@@ -23,16 +24,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override val vbClass: KClass<FragmentDrawerContentBinding> = FragmentDrawerContentBinding::class
     override val vmClass: KClass<DrawerContentViewModel> = DrawerContentViewModel::class
     private var onFunctionClick: (() -> Unit)? = null
-
     companion object {
         const val TAG = "DrawerContentFragment"
     }
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
-        mViewModel.getMessageList()
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.getMessageList()
+    }
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
@@ -54,22 +57,27 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             llRecharge.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
+            llRecharge.addScaleOnTouchAnimation(ivRecharge)
             llDrawerTutorial.clickNoRepeat {
                 navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
             }
+            llDrawerTutorial.addScaleOnTouchAnimation(ivDrawerTutorial)
             llDrawerSetting.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
-
+            llDrawerSetting.addScaleOnTouchAnimation(ivDrawerSetting)
             llDrawerFeedback.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
             }
+            llDrawerFeedback.addScaleOnTouchAnimation(ivDrawerFeedback)
             llBetSlip.clickNoRepeat {
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
+            llBetSlip.addScaleOnTouchAnimation(ivBetSlip)
         }
     }
+
     private fun navigatePage(uri: Uri) {
         onFunctionClick?.invoke()
         navigate(uri)
@@ -96,10 +104,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                                 itemNotification1.visibility = View.VISIBLE
                                 itemNotification2.visibility = View.GONE
                                 tvMessage1.text = item.title
+                                ivMessage1Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
                             } else {
                                 itemNotification2.visibility = View.VISIBLE
                                 tvMessage2.text = item.title
+                                ivMessage2Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
                                 tvTime2.text = DateUtils.getMessageTime(item.createTime)
                             }
                         }

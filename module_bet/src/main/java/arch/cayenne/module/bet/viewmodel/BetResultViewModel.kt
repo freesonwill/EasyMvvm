@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.repo.BetResultRepository
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel() {
@@ -24,23 +24,33 @@ class BetResultViewModel(private val repo: BetResultRepository) : BaseViewModel(
     private val _onBetModeListener = MutableLiveData<Pair<BetTypeEnum, BetResultStatusEnum>>()
     val onBetModeListener: LiveData<Pair<BetTypeEnum, BetResultStatusEnum>> get() = _onBetModeListener
 
+    private val _currencyListener = MutableLiveData<String>()
+
+    val moneySymbol: String
+        get() = CurrencySymbols.getSymbol(_currencyListener.value ?: "")
+
     var type: BetTypeEnum = BetTypeEnum.SINGLE
         private set
 
     init {
         viewModelScope.launch {
-            repo.observeLastBetOrder().collect { bean ->
-                type = bean.betType
-                val selection = repo.getSelection(bean.betId)
+            launch {
+                repo.observeLastBetOrder().collect { bean ->
+                    type = bean.betType
+                    val selection = repo.getSelection(bean.betId)
 
-                _onBetSheetListener.value = selection
+                    _onBetSheetListener.value = selection
 
-                launch {
-                    repo.observeDetail(bean.betId).collect { detail ->
-                        _onDetailListener.value = detail
-                        setModeByDetail(detail)
+                    launch {
+                        repo.observeDetail(bean.betId).collect { detail ->
+                            _onDetailListener.value = detail
+                            setModeByDetail(detail)
+                        }
                     }
                 }
+            }
+            launch {
+                _currencyListener.value = repo.getCurrency()
             }
         }
     }

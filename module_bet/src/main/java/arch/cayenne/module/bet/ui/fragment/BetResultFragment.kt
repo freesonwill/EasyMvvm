@@ -7,15 +7,16 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
+import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.databinding.FragmentBetResultBinding
 import arch.cayenne.module.bet.ui.adapter.BetSelectionAdapter
 import arch.cayenne.module.bet.ui.adapter.ResultMultiBetAdapter
@@ -25,11 +26,17 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBinding>(),
-    BetSheetListener {
+    BetSheetListener, BetResultToastView.Block {
     override val vbClass: KClass<FragmentBetResultBinding> = FragmentBetResultBinding::class
     override val vmClass: KClass<BetResultViewModel> = BetResultViewModel::class
     private val betSelectionAdapter by lazy { BetSelectionAdapter() }
-    private val detailAdapter by lazy { ResultMultiBetAdapter() }
+    private val detailAdapter by lazy {
+        ResultMultiBetAdapter(object : ResultMultiBetAdapter.OnResultMultiBetListener {
+            override fun getMoneySymbol(): String {
+                return mViewModel.moneySymbol
+            }
+        })
+    }
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvComboOdds.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
@@ -47,8 +54,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
             lifecycleScope.launch {
                 mViewModel.continueBet()?.let { type ->
                     when (type) {
-                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
-                        BetTypeEnum.COMBO -> navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                        BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> showExitAnim(value = Config.VALUE_RESULT_TO_SINGLE)
+                        BetTypeEnum.COMBO -> showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
                     }
                 }
             }
@@ -92,7 +99,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun setPending(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = true
+        mBinding.tvHint.text = getString(R.string.title_result_hint)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_pending)
         mBinding.tvTitle.text = if (type == BetTypeEnum.RESERVE) {
             getString(R.string.title_result_pending_reserve)
@@ -102,33 +109,47 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun setComplete(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = false
+        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
         mBinding.ivTitle.setImageResource(R.mipmap.icon_bet_result_success)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_success_reserve)
         } else {
-            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
+            mBinding.tvTitle.text =
+                getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
+        mBinding.btnContinueBet.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.brand_color
+            )
+        )
     }
 
     private fun setFail(type: BetTypeEnum) {
-        mBinding.tvHint.isVisible = false
+        mBinding.tvHint.text = getString(R.string.title_result_hint_complete)
         mBinding.ivTitle.setImageResource(arch.cayenne.lib.common.R.mipmap.icon_bet_result_fail)
         if (type == BetTypeEnum.RESERVE) {
             mBinding.tvTitle.text = getString(R.string.title_result_fail_reserve)
         } else {
-            mBinding.tvTitle.text = getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
+            mBinding.tvTitle.text =
+                getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(ContextCompat.getColor(requireContext(), arch.cayenne.lib.common.R.color.brand_color))
+        mBinding.btnContinueBet.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                arch.cayenne.lib.common.R.color.brand_color
+            )
+        )
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
-        val total = "\$${data.sumOf { it.inputMoney }.getMoney()}"
+        val symbols = mViewModel.moneySymbol
+        val total = "$symbols${data.sumOf { it.inputMoney }.getMoney()}"
         mBinding.tvAmountMoney.text = total
-        val win = "\$${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
+        val win =
+            "$symbols${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
         mBinding.tvMaxWinMoney.text = win
     }
 
@@ -137,7 +158,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     private fun adjustLayoutHeight(full: Boolean) {
-        if (full)  {
+        if (full) {
             val screenHeight = resources.displayMetrics.heightPixels
             val maxFragmentHeight = (screenHeight * 0.75).toInt()
             mBinding.root.minHeight = maxFragmentHeight
@@ -150,6 +171,10 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
     }
 
     override fun dismiss(key: String, value: String) {
+        sendResult(key, value, R.id.betResultFragment)
+    }
+
+    override fun showExitAnim(key: String, value: String) {
         sendResult(key, value, R.id.betResultFragment)
     }
 }

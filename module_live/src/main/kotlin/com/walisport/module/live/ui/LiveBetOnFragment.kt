@@ -7,10 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -28,8 +26,6 @@ import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.utils.TabMarginExt.reflexMargin
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -81,8 +77,10 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         }
                         if (status == AddSelectionStatus.SINGLE) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
-                        } else if (status == AddSelectionStatus.DISABLE_COMBO) {
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY) {
                             showToast(getString(R.string.disabled_to_combo))
+                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER) {
+                            showToast(getString(R.string.disabled_to_combo_for_provider))
                         } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
                             mCurrentItemPosition = position
                             mBeforePosition = beforePosition
@@ -226,7 +224,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId,false)
+            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
             liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
             liveBetOnAdapter.notifyItemChanged(mBeforePosition)
         }

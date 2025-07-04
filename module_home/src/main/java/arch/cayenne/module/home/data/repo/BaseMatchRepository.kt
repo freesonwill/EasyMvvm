@@ -204,7 +204,8 @@ abstract class BaseMatchRepository(
                 matchName = match.match.basicInfo.matchName,
                 isActive = selectionBean.active,
                 isPlaying = match.match.basicInfo.status == 5,
-                isParlay = selectionBean.parlay
+                isParlay = selectionBean.parlay,
+                provider = match.match.basicInfo.provider
             )
         }
         return null

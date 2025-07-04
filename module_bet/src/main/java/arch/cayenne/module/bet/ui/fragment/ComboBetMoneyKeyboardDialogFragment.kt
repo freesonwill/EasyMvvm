@@ -73,19 +73,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 if (mBinding.root.scaleX == 0f) {
                     super.dismiss()
                 } else {
-                    mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                    mBinding.root.pivotY = mBinding.root.height.toFloat()
-
-                    mBinding.root.animate()
-                        .scaleX(0f)
-                        .scaleY(0f)
-                        .alpha(0f)
-                        .setDuration(200)
-                        .setInterpolator(android.view.animation.DecelerateInterpolator())
-                        .withEndAction {
-                            super.dismiss()
-                        }
-                        .start()
+                    doExitAnim()
                 }
             }
         }
@@ -212,11 +200,14 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 )
                 val dialogHeight = mBinding.root.measuredHeight
 
+                val statusBarHeight =  ViewUtils.getStatusBarHeight(requireContext())
+
                 val layoutParams = window.attributes
                 layoutParams.gravity = Gravity.TOP or Gravity.START
-                val triangleWidth = mBinding.triangle.width.takeIf { it > 0 } ?: 20.dp2px // 預設寬度
+                val triangleWidth = mBinding.triangle.measuredWidth // 預設寬度
+                val triangleHeight = mBinding.triangle.measuredHeight // 預設高度
                 layoutParams.x = positionX - triangleWidth / 2
-                layoutParams.y = positionY - dialogHeight
+                layoutParams.y = positionY - dialogHeight - statusBarHeight - triangleHeight
                 window.attributes = layoutParams
 
                 mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
@@ -264,14 +255,30 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun sendMoney() {
-        val minAmount = mViewModel.mixMoney
+        val minAmount = mViewModel.minMoney
         val curAmount = mViewModel.editValue.toMoney()
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
         } else {
             resultBundle.putLong(VALUE_MONEY_INPUT, curAmount)
-            dismiss()
+            doExitAnim()
         }
+    }
+
+    private fun doExitAnim() {
+        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+        mBinding.root.pivotY = mBinding.root.height.toFloat()
+
+        mBinding.root.animate()
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
+            .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withEndAction {
+                super.dismiss()
+            }
+            .start()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

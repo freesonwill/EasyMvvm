@@ -1,13 +1,13 @@
 package arch.cayenne.module.bet.ui.custom
 
-import android.app.Activity
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TextView
 import arch.cayenne.lib.common.utils.ViewUtils.getNavigationBarHeight
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.module.bet.databinding.LayoutMovableFloatingButtonBinding
@@ -96,6 +96,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
 
 
     override fun performClick(): Boolean {
+        playBounceAnimation()
         performClick?.invoke()
         super.performClick()
         return true
@@ -105,7 +106,74 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
         this.performClick = performClick
     }
 
-    fun setCount(count: Int) {
-        binding.tvFloatPin.text = count.toString()
+    fun setCount(newCount: Int) {
+        val oldCount = binding.tvFloatPin.text.toString().toIntOrNull() ?: 0
+        if (oldCount == newCount) return
+
+        val direction = if (newCount > oldCount) -1 else 1
+        val translationDistance = direction * binding.tvFloatPin.height.toFloat()
+        val animTextView = createAnimatedTextView(newCount, direction)
+
+        (binding.tvFloatPin.parent as ViewGroup).addView(animTextView)
+
+        playBounceAnimation()
+        playOldTextOutAnimation(direction, newCount, animTextView)
+        playNewTextInAnimation(animTextView, translationDistance)
     }
+
+    private fun createAnimatedTextView(newCount: Int, direction: Int): TextView {
+        val textView = TextView(context).apply {
+            text = newCount.toString()
+            textSize = binding.tvFloatPin.textSize / resources.displayMetrics.scaledDensity
+            setTextColor(binding.tvFloatPin.currentTextColor)
+            typeface = binding.tvFloatPin.typeface
+            gravity = binding.tvFloatPin.gravity
+            layoutParams = binding.tvFloatPin.layoutParams
+            x = binding.tvFloatPin.x
+            y = binding.tvFloatPin.y - direction * binding.tvFloatPin.height
+            alpha = 0f
+        }
+        return textView
+    }
+
+    private fun playBounceAnimation() {
+        this.animate()
+            .scaleX(1.2f)
+            .scaleY(1.2f)
+            .setDuration(75)
+            .withEndAction {
+                this.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(75)
+                    .start()
+            }
+            .start()
+    }
+
+    private fun playOldTextOutAnimation(direction: Int, newCount: Int, animTextView: TextView) {
+        val translationDistance = direction * binding.tvFloatPin.height.toFloat()
+        val parent = binding.tvFloatPin.parent as ViewGroup
+
+        binding.tvFloatPin.animate()
+            .translationYBy(translationDistance)
+            .alpha(0f)
+            .setDuration(100)
+            .withEndAction {
+                binding.tvFloatPin.text = newCount.toString()
+                binding.tvFloatPin.translationY = 0f
+                binding.tvFloatPin.alpha = 1f
+                parent.removeView(animTextView)
+            }
+            .start()
+    }
+
+    private fun playNewTextInAnimation(animTextView: TextView, translationDistance: Float) {
+        animTextView.animate()
+            .translationYBy(translationDistance)
+            .alpha(1f)
+            .setDuration(100)
+            .start()
+    }
+
 }

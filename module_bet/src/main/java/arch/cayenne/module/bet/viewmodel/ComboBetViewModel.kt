@@ -54,6 +54,7 @@ class ComboBetViewModel(
     val onCanBetListener: LiveData<Boolean> get() = _onCanBetListener
 
     private val _onForceUpdateListener = MediatorLiveData(false).apply {
+        var updateBox = Pair(false, false)
         var hasInit = false
         var lastBetSize = 0
         var lastComboSize = 0
@@ -62,16 +63,11 @@ class ComboBetViewModel(
                 val comboMultiData = _onComboMultiBetBeanListener.value
                 val betListData = _onBetListListener.value
                 if (comboMultiData != null && betListData != null) {
-                    if (comboMultiData.size != lastComboSize || betListData.size != lastBetSize) {
-                        if (comboMultiData.size < 3 && lastComboSize >= 3) {
-//                            setExpandMultiLayout(false)
-                            value = true
-                        } else if (comboMultiData.isEmpty() && lastComboSize != 0) {
-                            value = true
-                        }
+                    if (updateBox.first && updateBox.second) {
+                        value = true
+                        updateBox = Pair(false, false)
                     }
                 }
-
             } else {
                 if (_onBetListListener.value != null && _onComboMultiBetBeanListener.value != null) {
                     hasInit = true
@@ -82,10 +78,16 @@ class ComboBetViewModel(
 
         addSource(_onBetListListener) {
             checkBothLoaded()
+            if (lastBetSize != it.size) {
+                updateBox = Pair(true, updateBox.second)
+            }
             lastBetSize = it.size
         }
         addSource(_onComboMultiBetBeanListener) {
             checkBothLoaded()
+            if (lastComboSize != it.size) {
+                updateBox = Pair(updateBox.first, true)
+            }
             lastComboSize = it.size
         }
     }
@@ -120,22 +122,23 @@ class ComboBetViewModel(
             }
             launch {
                 repo.observeComboMultiBet().collect { beans ->
-                    val oriData = _onComboMultiBetBeanListener.value
-                    if (oriData.isNullOrEmpty()) {
-                        val balance = balanceRepo.getBalance()
-                        val sumMoney = beans.sumOf { it.inputMoney }
-                        if (sumMoney > balance) {
-                            beans.forEach { it.inputMoney = 0L }
-                        }
+                    val lastList = _onComboMultiBetBeanListener.value
+
+                    // 如果舊資料是 null，代表第一次載入，直接設值
+                    if (lastList == null) {
+                        _onComboMultiBetBeanListener.value = beans
                     } else {
-                        beans.forEach { newBean ->
-                            val oldBean = oriData.find { it.serialValue == newBean.serialValue }
-                            if (oldBean != null) {
-                                newBean.inputMoney = oldBean.inputMoney
-                            }
+                        val updatedList = beans.mapIndexed { index, newItem ->
+                            val oldItem = lastList.getOrNull(index)
+                            val updatedInputMoney = oldItem?.inputMoney?.let { oldInput ->
+                                if (oldInput > newItem.maxAmount) newItem.maxAmount else oldInput
+                            } ?: newItem.inputMoney
+
+                            newItem.copy(inputMoney = updatedInputMoney)
                         }
+
+                        _onComboMultiBetBeanListener.value = updatedList
                     }
-                    setMultiBetBean(beans)
                 }
             }
             launch {
@@ -179,23 +182,11 @@ class ComboBetViewModel(
         _onComboMultiBetBeanListener.value = data
     }
 
-    fun saveInputMoney() {
-        onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
-            repo.saveInputMoney(it)
-        }
-    }
-
     private fun setBetList(betList: List<BetSelectionBean>) {
         _onBetListListener.value = betList
     }
 
     fun toggleMultiLayoutExpend() {
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
-    }
-
-    private fun setExpandMultiLayout(expand: Boolean) {
-        val currentValue = _onMultiLayoutExpendListener.value ?: false
-        if (currentValue == expand) return // No change needed
-        _onMultiLayoutExpendListener.value = expand
     }
 }

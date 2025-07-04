@@ -57,7 +57,8 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                     sportName = match.basicInfo.sportName,
                     betStop = match.basicInfo.betStop,
                     tournamentHot = match.basicInfo.tournamentHot,
-                    tournamentWeight = match.basicInfo.tournamentWeight
+                    tournamentWeight = match.basicInfo.tournamentWeight,
+                    provider = match.basicInfo.provider
                 ),
                 liveInfo = MatchLiveInfoBean(
                     clock = match.basicInfo.liveInfo.clock,
@@ -350,7 +351,8 @@ fun List<Common.Match>.toMatchWithMarket(): List<MatchWithMarkets> {
                         sportName = originMatch.basicInfo.sportName,
                         betStop = originMatch.basicInfo.betStop,
                         tournamentHot = originMatch.basicInfo.tournamentHot,
-                        tournamentWeight = originMatch.basicInfo.tournamentWeight
+                        tournamentWeight = originMatch.basicInfo.tournamentWeight,
+                        provider = originMatch.basicInfo.provider
                     ),
                     liveInfo = MatchLiveInfoBean(
                         clock = originMatch.basicInfo.liveInfo.clock,

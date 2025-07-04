@@ -1,9 +1,11 @@
 package arch.cayenne.module.bet.util
 
+import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.view.View
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.ImageView
+import androidx.core.animation.addListener
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
@@ -51,8 +53,8 @@ internal object ViewHelper {
         val initialHeight = view.height
 
         val animator = ValueAnimator.ofInt(initialHeight, 0)
-        animator.duration = 300L
-        animator.interpolator = DecelerateInterpolator()
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -87,8 +89,8 @@ internal object ViewHelper {
         // 先設為 0 高度，逐步展開
         val targetHeight = snapshot.height
         val animator = ValueAnimator.ofInt(0, targetHeight)
-        animator.duration = 300L
-        animator.interpolator = DecelerateInterpolator()
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
 
         animator.addUpdateListener { valueAnimator ->
             val animatedValue = valueAnimator.animatedValue as Int
@@ -111,5 +113,30 @@ internal object ViewHelper {
         }
 
         animator.start()
+    }
+
+    fun collapseView(view: View, onEnd: (() -> Unit)? = null) {
+        val height = view.height
+        ObjectAnimator.ofFloat(view, "translationY", 0f, height.toFloat())
+            .also {
+                it.interpolator = LinearInterpolator()
+                it.duration = 100
+                it.addListener(onEnd = {
+                    onEnd?.invoke()
+                })
+                it.start()
+            }
+    }
+
+    fun expandView(view: View, height: Float, onEnd: (() -> Unit)? = null) {
+        ObjectAnimator.ofFloat(view, "translationY", height, 0f)
+            .also {
+                it.interpolator = LinearInterpolator()
+                it.duration = 100
+                it.addListener(onEnd = {
+                    onEnd?.invoke()
+                })
+                it.start()
+            }
     }
 }

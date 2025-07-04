@@ -8,6 +8,7 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
+import android.widget.FrameLayout
 import androidx.activity.ComponentDialog
 import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.R
@@ -149,12 +151,15 @@ class LiveVideoSourcePortraitFragment :
     private fun playEnterAnimations() {
         mBinding.llRoot.startSafeAnimateSet({
             playTogether(
-                ValueAnimator.ofInt(0, 153.dp2px).apply {
+                ValueAnimator.ofInt(
+                    R.dimen.video_source_portrait_margin_top.getDimensionPixelSize(),
+                    0
+                ).apply {
                     addUpdateListener {
-                        val lp = mBinding.root.layoutParams
-                        lp.height = it.animatedValue as Int
+                        val lp = mBinding.llRoot.layoutParams as FrameLayout.LayoutParams
+                        lp.topMargin = it.animatedValue as Int
 
-                        mBinding.root.layoutParams = lp
+                        mBinding.llRoot.layoutParams = lp
                     }
                 },
             )
@@ -169,12 +174,15 @@ class LiveVideoSourcePortraitFragment :
 
         mBinding.llRoot.startSafeAnimateSet({
             playTogether(
-                ValueAnimator.ofInt(153.dp2px, 0).apply {
+                ValueAnimator.ofInt(
+                    0,
+                    R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
+                ).apply {
                     addUpdateListener {
-                        val lp = mBinding.root.layoutParams
-                        lp.height = it.animatedValue as Int
+                        val lp = mBinding.llRoot.layoutParams as FrameLayout.LayoutParams
+                        lp.topMargin = it.animatedValue as Int
 
-                        mBinding.root.layoutParams = lp
+                        mBinding.llRoot.layoutParams = lp
                     }
                 },
             )

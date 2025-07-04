@@ -7,10 +7,10 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.AppNotifyBean
-import arch.cayenne.lib.websocket.data.ConnectState
-import arch.cayenne.lib.websocket.data.SocketResponseError
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.database.entity.BetResultLiteBean
+import arch.cayenne.lib.websocket.data.ConnectState
+import arch.cayenne.lib.websocket.data.SocketResponseError
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -26,13 +26,19 @@ abstract class BaseActivityViewModel : BaseViewModel() {
 
     // 每個activity針對登入和離線錯誤都有不同的處理，接收到相對應的livedata後各自處理
     val loginIsSuccess = MutableLiveData<Boolean>()
-    val connectingError = MutableLiveData<SocketResponseError>()
+    val loginError = MutableLiveData<SocketResponseError>()
     private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
     val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
+
+    private val _connectStateChange = MutableLiveData<ConnectState>()
+    val connectStateChange : LiveData<ConnectState> = _connectStateChange
 
     //APP通知消息
     private val _appNotifyListener = MutableLiveData<AppNotifyBean>()
     val appNotifyListener: LiveData<AppNotifyBean> get() = _appNotifyListener
+
+    private val _aberrantNotify = MutableLiveData<Int>()
+    val aberrantNotify : LiveData<Int> = _aberrantNotify
 
     override fun initViewModel() {
         super.initViewModel()
@@ -42,12 +48,25 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
+                            withContext(Dispatchers.Main) {
+                                _connectStateChange.value = connectState
+                            }
                             login()
                         }
-
-                        else -> {   //收到這錯誤，可以根據需求處理，SocketManager會啟動自動重連機制
+                        is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
+                            commonRepository.setIsLogin(false)
+                            commonRepository.tryToReconnect()
+                            withContext(Dispatchers.Main) {
+                                _connectStateChange.value = connectState
+                            }
                         }
+                        is ConnectState.ReconnectFailure -> {
+                            withContext(Dispatchers.Main) {
+                                _connectStateChange.value = connectState
+                            }
+                        }
+                        else -> Unit
                     }
                 }
             }
@@ -72,12 +91,27 @@ abstract class BaseActivityViewModel : BaseViewModel() {
             launch {
                 commonRepository.observeBettingOrderStatus()
             }
+            launch {
+                commonRepository.observeAberrantNotify().collect {notify ->
+                    if (notify.error == null && notify.data != null) {
+                        withContext(Dispatchers.Main){
+                            _aberrantNotify.value = notify.data!!.code
+                        }
+                    }
+                }
+            }
         }
     }
 
     //當連線成功時，自動地去做補登入
     private fun login() {
         viewModelScope.launch(Dispatchers.IO) {
+            if (commonRepository.checkIsLogin()) {
+                withContext(Dispatchers.Main) {
+                    loginIsSuccess.value = true
+                }
+                return@launch
+            }
             val result = commonRepository.sendLogin()
             withContext(Dispatchers.Main) {
                 when (result.error) {
@@ -85,16 +119,22 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                         "Login  Is Success? = ${result.data?.success}".logi(this@BaseActivityViewModel::class.java.simpleName)
                         loginIsSuccess.value = result.data?.success == true
                     }
-
                     else -> {   //其餘錯誤
-                        connectingError.value = result.error!!
+                        loginError.value = result.error!!
                     }
                 }
             }
         }
     }
 
+    fun reconnectNow() {
+        commonRepository.reconnectNow()
+    }
+
     override fun reset() {
-        commonRepository.reset()
+        viewModelScope.launch(Dispatchers.IO) {
+            commonRepository.reset()
+        }
+
     }
 }

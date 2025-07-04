@@ -42,8 +42,7 @@ class ComboBetRepository(
                 launch {
                     val selection = betDao.getSelections(bet.betId)
                     if (selection.isNotEmpty()) {
-                        val detail = betDao.getDetail(bet.betId)
-                        setComboMulti(selection, detail)
+                        setComboMulti(selection)
                     }
                 }
             }
@@ -51,26 +50,19 @@ class ComboBetRepository(
     }
 
     private suspend fun setComboMulti(
-        data: List<BetSelectionBean>,
-        detailList: List<BetDetailBean>? = null
+        data: List<BetSelectionBean>
     ) = withContext(scope.coroutineContext) {
         remoteManager.getComboRisk(data)?.let { riskList ->
             val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
-                val detail = detailList?.find { it.serialValue == bean.serialValue }
-                if (detail == null) {
-                    bean
-                } else {
-                    ComboMultiBetBean(
-                        serialValue = bean.serialValue,
-                        comboK = bean.comboK,
-                        comboV = bean.comboV,
-                        sumOdds = bean.sumOdds,
-                        count = bean.count,
-                        inputMoney = detail.inputMoney,
-                        minAmount = bean.minAmount,
-                        maxAmount = bean.maxAmount
-                    )
-                }
+                ComboMultiBetBean(
+                    serialValue = bean.serialValue,
+                    comboK = bean.comboK,
+                    comboV = bean.comboV,
+                    sumOdds = bean.sumOdds,
+                    count = bean.count,
+                    minAmount = bean.minAmount,
+                    maxAmount = bean.maxAmount
+                )
             }
             comboMultiBetFlow.emit(multiBet)
         } ?: run {
@@ -106,29 +98,6 @@ class ComboBetRepository(
     fun removeAll() {
         scope.launch {
             betDao.removeCurrentBet()
-        }
-    }
-
-    fun saveInputMoney(data: List<ComboMultiBetBean>) {
-        scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                if (bet.betType == BetTypeEnum.COMBO) {
-                    val betId = bet.betId
-                    val detailBean = data.map { bean ->
-                        BetDetailBean(
-                            serialValue = bean.serialValue,
-                            betId = betId,
-                            comboK = bean.comboK,
-                            comboV = bean.comboV,
-                            orderId = "",
-                            sumOdds = bean.sumOdds,
-                            count = bean.count,
-                            inputMoney = bean.inputMoney
-                        )
-                    }
-                    betDao.insertDetail(detailBean)
-                }
-            }
         }
     }
 

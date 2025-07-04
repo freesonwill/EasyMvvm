@@ -12,7 +12,7 @@
     <string name="toast_over_remaining">余额不足</string>
     <string name="toast_over_max">投注超限</string>
 
-    <string name="loading_view_text">讀取中</string>
+    <string name="loading_view_text">加载中</string>
 
     <string name="title_combo_bet">%d串%d</string>
 

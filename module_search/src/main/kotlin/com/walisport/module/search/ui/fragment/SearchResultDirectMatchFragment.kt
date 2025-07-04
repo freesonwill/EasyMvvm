@@ -219,7 +219,7 @@ class SearchResultDirectMatchFragment :
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
-        sharedViewModel.setStatusBarState(hidden)
+        sharedViewModel.notifyStatusBarUpdate()
         super.onHiddenChanged(hidden)
     }
 
@@ -443,11 +443,11 @@ class SearchResultDirectMatchFragment :
         sharedViewModel.setResultBackgroundColor(color)
         if (color != null)
             mViewModel.setTempBackgroundColor(color)
-        setStatusBarState(color == null)
+        setStatusBarState()
     }
 
-    private fun setStatusBarState(isEnabled: Boolean) {
-        sharedViewModel.setStatusBarState(isEnabled)
+    private fun setStatusBarState() {
+        sharedViewModel.notifyStatusBarUpdate()
     }
 
     private fun setTitleBarMask(isEnabled: Boolean, onClick: (() -> Unit)? = null) {

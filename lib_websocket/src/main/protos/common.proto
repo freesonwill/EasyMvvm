@@ -8,7 +8,7 @@ message Match {
     int64 match_id = 1;       //比赛id
     bool collect = 2;         //用户是否收藏
     MatchBasicInfo basic_info = 3; //比赛基本信息
-    repeated Market market = 4;  // 所有的选择和赔率
+    repeated Market market = 4;  // 所有的盘口和赔率
 }
 
 //比赛基本信息
@@ -17,25 +17,26 @@ message MatchBasicInfo {
     string match_name = 2;    //比赛名称
     string home_team = 3;     //主队名称
     int32 home_team_id = 4;   //主队id
-    string home_team_icon = 5; //主队icon
-    repeated int32 home_history_vs = 22; //主队历史比赛输赢 -1输 1赢 0平
+    string home_team_icon = 5;//主队icon
     string away_team = 6;     //客队名称
     int32 away_team_id = 7;   //客队id
-    string away_team_icon = 8; //客队icon
-    repeated int32 away_history_vs = 23; //主队历史比赛输赢 -1输 1赢 0平
-    int64 start_time = 9;     //开始时间,13位时间戳
-    int32 status = 10;         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
-    int32 tournament_id = 11;  //联赛id
+    string away_team_icon = 8;  //客队icon
+    int64 start_time = 9;       //开始时间,13位时间戳
+    int32 status = 10;          //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
+    int32 tournament_id = 11;   //联赛id
     string tournament_name = 12;  //联赛
     string tournament_short_name = 13;
-    string tournament_icon = 14;  //联赛icon
-    int32 sport_id = 15;      //球类
-    string sport_name = 16;      //球类
-    MatchLiveInfo live_info = 17;  //比赛实时信息
+    string tournament_icon = 14;    //联赛icon
+    int32 sport_id = 15;            //球类
+    string sport_name = 16;         //球类
+    MatchLiveInfo live_info = 17;   //比赛实时信息
     bool bet_stop = 18;         // false: 未停止投注, true: 已停止投注
-    bool tournament_hot = 19;  //是否热门联赛
-    int32 tournament_weight = 20;           //联赛权重
+    bool tournament_hot = 19;   //是否热门联赛
+    int32 tournament_weight = 20;    //联赛权重
     int32 match_type = 21;           //比赛类型： 1冠军 2常规体育
+    repeated int32 home_history_vs = 22; //主队历史比赛输赢 -1输 1赢 0平
+    repeated int32 away_history_vs = 23; //主队历史比赛输赢 -1输 1赢 0平
+    int32 provider = 24;       //供应商 1-sr  2-bg  3-fb  4-后台自定义
 }
 
 //比赛实时信息

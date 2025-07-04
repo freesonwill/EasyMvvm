@@ -37,37 +37,40 @@ class BetRepository(
             val selections = betDao.getSelections(betId)
             val existing = selections.find { it.matchId == insertBean.matchId }
 
-            // 1. 同場次 selection 存在且相同 → 刪除
             if (existing?.selectionId == insertBean.selectionId) {
                 betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
                 checkBetBeanType(betId)
                 return@withContext AddSelectionStatus.REMOVE
             }
 
-            // 2. 該場次還沒加進去 → 新增
+            if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
+                return@withContext AddSelectionStatus.MAX_LIMIT
+            }
+
+
             if (existing == null) {
-
-                // 非讓分盤則無法加入組合單
                 if (!insertBean.isParlay && selections.isNotEmpty()) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO
-                }
-
-                if (selections.size >= MAX_LIMIT_SIZE) {
-                    return@withContext AddSelectionStatus.MAX_LIMIT
+                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                } else if (selections.isNotEmpty() && insertBean.provider != selections.first().provider) {
+                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
                 }
 
                 val newBean = insertBean.toBetSelectionBean(betId)
                 betDao.insertSelection(newBean)
                 checkBetBeanType(betId)
                 return@withContext if (selections.isEmpty()) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
+            } else {
+                if (!insertBean.isParlay) {
+                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                } else if (insertBean.provider != existing.provider) {
+                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
+                }
+                val newBean = insertBean.toBetSelectionBean(betId)
+                betDao.updateSelection(newBean)
+
+                checkBetBeanType(betId)
+                return@withContext AddSelectionStatus.UPDATE
             }
-
-            // 3. 同場次但不同 selection → 更新
-            val newBean = insertBean.toBetSelectionBean(betId)
-            betDao.updateSelection(newBean)
-
-            checkBetBeanType(betId)
-            return@withContext AddSelectionStatus.UPDATE
         }
 
     private suspend fun checkBetBeanType(betId: Long) {

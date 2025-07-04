@@ -24,8 +24,8 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         mBinding.etMoney.isFocusable = false
         mBinding.etMoney.setOnClickListener {
             val location = IntArray(2)
-            mBinding.etMoney.getLocationInWindow(location)
-            val x = location.first() + mBinding.etMoney.width / 2
+            it.getLocationOnScreen(location)
+            val x = location.first() + it.width / 2
             val y = location.last()
             onComboMultiBetClickListener.onEditMoneyClick(item.serialValue, x, y)
         }

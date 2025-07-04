@@ -38,6 +38,10 @@ class CommonRepository(
     fun getConnectStateFlow() = socketManager.getConnectStateFlow()
     fun getBetResultFlow(): Flow<List<BetResultLiteBean>> = betResultFlow
 
+    suspend fun checkIsLogin(): Boolean {
+        return infoDao.isLogin()
+    }
+
     suspend fun sendLogin(): SocketResponseData<Client.LoginResp> {
         val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
         val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
@@ -76,7 +80,6 @@ class CommonRepository(
                 )
             )
         }
-
         return loginResp
     }
 
@@ -150,8 +153,17 @@ class CommonRepository(
     }
 
 
-    fun reset() {
+    suspend fun reset() {
         socketManager.reset()
+        setIsLogin(false)
+    }
+
+    fun tryToReconnect() {
+        socketManager.startReconnect()
+    }
+
+    fun reconnectNow() {
+        socketManager.reconnect()
     }
 
     //读取用户系统配置信息
@@ -254,4 +266,12 @@ class CommonRepository(
 
     fun observeAppNotifyChange() =
         socketManager.observeProtoMessage<Client.AppNoticeNotify>(ApiCode.APP_NOTIFY)
+
+    suspend fun setIsLogin(b: Boolean) {
+        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
+        if (uid == -1) return
+        infoDao.setLogin(uid, b)
+    }
+
+    fun observeAberrantNotify() = socketManager.observeProtoMessage<Client.AberrantNotify>(ApiCode.ABERRANT_NOTIFY)
 }

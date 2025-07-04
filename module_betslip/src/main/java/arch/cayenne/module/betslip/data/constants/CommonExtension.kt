@@ -105,7 +105,8 @@ object CommonExtension {
             sportName = sportName,
             betStop = betStop,
             tournamentHot = tournamentHot,
-            tournamentWeight = tournamentWeight
+            tournamentWeight = tournamentWeight,
+            provider = provider
         )
     }
 

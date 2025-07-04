@@ -5,6 +5,10 @@ import android.graphics.Bitmap
 import android.util.AttributeSet
 import android.view.Surface
 import android.widget.FrameLayout
+import arch.cayenne.lib.qyplayer.render.IRenderCallback
+import arch.cayenne.lib.qyplayer.render.IRenderView
+import arch.cayenne.lib.qyplayer.render.SurfaceRenderView
+import arch.cayenne.lib.qyplayer.render.TextureRenderView
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.MediaInfo
 import com.xxx.qyplayer.MirrorMode
@@ -15,10 +19,6 @@ import com.xxx.qyplayer.RotateMode
 import com.xxx.qyplayer.ScaleMode
 import com.xxx.qyplayer.StateInfo
 import com.xxx.qyplayer.ViewportRatioMode
-import arch.cayenne.lib.qyplayer.render.IRenderCallback
-import arch.cayenne.lib.qyplayer.render.IRenderView
-import arch.cayenne.lib.qyplayer.render.SurfaceRenderView
-import arch.cayenne.lib.qyplayer.render.TextureRenderView
 
 enum class SurfaceType {
     /**
@@ -215,6 +215,10 @@ class QYRenderView @JvmOverloads constructor(
         mQYPlayer.setOnFirstDataReceivedListener(onFirstDataReceived)
     }
 
+    fun setOnLogListener(listener: (level: Int, tag: String, msg: String) -> Unit) {
+        mQYPlayer.setOnLogListener(listener)
+    }
+
     fun setAudioDecrypt(decrypt: DecryptMode): Int {
         return mQYPlayer.setAudioDecrypt(decrypt)
     }
@@ -273,6 +277,22 @@ class QYRenderView @JvmOverloads constructor(
 
     fun setLogLevel(level: Int) {
         mQYPlayer.setLogLevel(level)
+    }
+
+    fun setEnableLog(enable: Boolean) {
+        mQYPlayer.setEnableLog(enable)
+    }
+
+    fun getVideoWidth(): Int {
+        return mQYPlayer.getVideoWidth()
+    }
+
+    fun getVideoHeight(): Int {
+        return mQYPlayer.getVideoHeight()
+    }
+
+    fun switchUrl(url: String): Int {
+        return mQYPlayer.switchUrl(url)
     }
 
     fun release() {

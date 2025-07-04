@@ -3,7 +3,6 @@ package com.walisport.module.search.ui.viewmodel
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.LanguageManager
-import arch.cayenne.lib.skin.SkinnableManager
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.repo.SearchRepository
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -41,9 +40,9 @@ class SearchViewModel : BaseViewModel() {
     private val _resultBackgroundColor = MutableSharedFlow<Int?>()
     val resultBackgroundColor: SharedFlow<Int?> = _resultBackgroundColor.asSharedFlow()
 
-    /** 狀態欄狀態 */
-    private val _statusBarState = MutableSharedFlow<Boolean>(replay = 1)
-    val statusBarState: SharedFlow<Boolean> = _statusBarState.asSharedFlow()
+    /** 狀態欄更新事件通知 */
+    private val _statusBarUpdateEvent = MutableSharedFlow<Unit>()
+    val statusBarUpdateEvent: SharedFlow<Unit> = _statusBarUpdateEvent.asSharedFlow()
 
     /** 標題欄遮罩狀態 */
     private val _titleBarMaskEvent = MutableSharedFlow<Pair<Boolean, (() -> Unit)?>>()
@@ -122,10 +121,10 @@ class SearchViewModel : BaseViewModel() {
         }
     }
 
-    /** 設置狀態欄狀態 */
-    fun setStatusBarState(isDefault: Boolean) {
+    /** 發送狀態欄更新事件 */
+    fun notifyStatusBarUpdate() {
         viewModelScope.launch {
-            _statusBarState.emit(isDefault)
+            _statusBarUpdateEvent.emit(Unit)
         }
     }
 

@@ -5,12 +5,30 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 
 class BetResultToastView: LinearLayout {
+
+    companion object {
+        fun canShowToast(activity: FragmentActivity): Boolean {
+            fun checkFragments(fragments: List<Fragment>): Boolean {
+                for (fragment in fragments) {
+                    if (fragment is Block && fragment.isResumed) return false
+                    if (fragment.isAdded) {
+                        if (!checkFragments(fragment.childFragmentManager.fragments)) return false
+                    }
+                }
+                return true
+            }
+
+            return checkFragments(activity.supportFragmentManager.fragments)
+        }
+    }
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
@@ -32,9 +50,12 @@ class BetResultToastView: LinearLayout {
     }
 
     private fun setSingleResult(data: BetResultLiteBean) {
+        if (data.matchName.isEmpty()) return
         mBinding.tvTitle.isVisible = false
         mBinding.groupSuccess.isVisible = data.isSuccessful
+        mBinding.tvSuccessCombo.isVisible = data.isSuccessful
         mBinding.groupFailure.isVisible = !data.isSuccessful
+        mBinding.tvFailureCombo.isVisible = !data.isSuccessful
         if (data.isSuccessful) {
             mBinding.tvSuccessCombo.text = data.matchName.first()
         } else {
@@ -43,11 +64,14 @@ class BetResultToastView: LinearLayout {
     }
 
     private fun setComboResult(data: List<BetResultLiteBean>) {
+        if (data.isEmpty() || data.first().matchName.isNotEmpty()) return
         mBinding.tvTitle.text = data.first().matchName.joinToString("、")
         val successfulData = data.filter { it.isSuccessful }
         val failureData = data.filter { !it.isSuccessful }
         mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
+        mBinding.tvSuccessCombo.isVisible = successfulData.isNotEmpty()
         mBinding.groupFailure.isVisible = failureData.isNotEmpty()
+        mBinding.tvFailureCombo.isVisible = failureData.isNotEmpty()
         val successfulTitle = successfulData
             .sortedWith(compareBy({ it.comboK }, { it.comboV }))
             .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
@@ -57,4 +81,6 @@ class BetResultToastView: LinearLayout {
         mBinding.tvSuccessCombo.text = successfulTitle
         mBinding.tvFailureCombo.text = failureTitle
     }
+
+    interface Block
 }

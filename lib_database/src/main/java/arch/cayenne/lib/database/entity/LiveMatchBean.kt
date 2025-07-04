@@ -76,6 +76,7 @@ data class LiveMatchBasicInfoBean(
     val betStop: Boolean,// false: 未停止投注, true: 已停止投注
     val tournamentHot: Boolean,
     val tournamentWeight: Int,
+    val provider: Int
 )
 
 data class LiveMatchLiveInfoBean(
