@@ -7,12 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -23,15 +23,6 @@ class MatchStatusViewModel(
     private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 
-    //比赛ID
-    private val _matchId = MutableLiveData<Long>(0)
-    val matchId: LiveData<Long> = _matchId
-
-    private val _mainMatch = MutableLiveData<LiveMatchBean>()
-    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
-
-    //比赛状态
-    private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
 
     //主队名称
     private val _homeTeamName = MutableLiveData("")
@@ -105,15 +96,16 @@ class MatchStatusViewModel(
         repo.matchId = matchId
     }
 
-    fun createObserver() {
+    private var job: Job? = null
 
-        viewModelScope.launch(Dispatchers.IO) {
+    fun createObserver() {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
             repo.observeMatchBean(repo.matchId).collect { matchBean ->
 
                 matchBean?.let { match ->
                     withContext(Dispatchers.Main) {
 //                    "match.${match}".logd("matchIssue")
-                        _matchBeanLiveData.value = match
 
                         _homeTeamName.value = match.basicInfo.homeTeam
                         _homeTeamIcon.value = match.basicInfo.homeTeamIcon

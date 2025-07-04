@@ -6,8 +6,10 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.bumptech.glide.Glide
 import com.walisport.module.live.databinding.FragmentMatchStatusBinding
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.MatchStatusViewModel
 import kotlin.reflect.KClass
 
@@ -18,6 +20,8 @@ import kotlin.reflect.KClass
 class MatchStatusFragment : BaseFragment<MatchStatusViewModel, FragmentMatchStatusBinding>() {
     override val vbClass: KClass<FragmentMatchStatusBinding> = FragmentMatchStatusBinding::class
     override val vmClass: KClass<MatchStatusViewModel> = MatchStatusViewModel::class
+
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +46,12 @@ class MatchStatusFragment : BaseFragment<MatchStatusViewModel, FragmentMatchStat
     }
 
     override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            mViewModel.setMatchId(it)
+            mViewModel.createObserver()
+        }
+
         with(mViewModel) {
             homeTeamName.observe(viewLifecycleOwner) {
                 it?.let {
