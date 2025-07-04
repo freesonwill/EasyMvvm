@@ -159,7 +159,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         super.onPause()
         mainViewModel.matchId.value?.let {
             //required 比赛id  -1：取消订阅
-            mainViewModel.unregisterStatisticsNotify(-1)
+            mainViewModel.unregisterStatisticsNotify()
         }
     }
 }
