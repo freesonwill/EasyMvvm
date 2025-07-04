@@ -3,6 +3,7 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import android.util.TypedValue.COMPLEX_UNIT_PX
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import com.bumptech.glide.Glide
@@ -120,6 +121,7 @@ class MatchStatusFragment : BaseFragment<MatchStatusViewModel, FragmentMatchStat
 
 
         val matchId = arguments?.getLong("matchId") ?: 0
+        "matchId:${matchId}".logd(TAG)
         mViewModel.setMatchId(matchId)
 
         mViewModel.createObserver()

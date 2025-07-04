@@ -17,14 +17,9 @@ class VideoMainViewModel(
     private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 
-    //比赛ID
-    private val _matchId = MutableLiveData<Long>(0)
-    val matchId: LiveData<Long> = _matchId
-
     //比赛状态
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
     val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
-
 
     fun matchId() = repo.matchId
 
@@ -38,7 +33,6 @@ class VideoMainViewModel(
 
                 matchBean?.let { match ->
                     withContext(Dispatchers.Main) {
-//                    "match.${match}".logd("matchIssue")
                         _matchBeanLiveData.value = match
 
                     }

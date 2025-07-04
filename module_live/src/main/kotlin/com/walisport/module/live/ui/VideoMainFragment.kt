@@ -2,6 +2,7 @@ package com.walisport.module.live.ui
 
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentVideoMainBinding
 import com.walisport.module.live.ui.viewmodel.VideoMainViewModel
@@ -75,15 +76,14 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
     }
 
     private fun showVideoView() {
+        "showVideoView".logd(TAG)
         childFragmentManager.findFragmentByTag(VideoPlayerFragment.TAG) as? VideoPlayerFragment
             ?: VideoPlayerFragment().also {
                 it.arguments = Bundle().apply {
-                    mViewModel.matchId.value?.let { value ->
-                        putLong(
-                            "matchId",
-                            value
-                        )
-                    }
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
                 }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, VideoPlayerFragment.TAG).commitNow()
@@ -91,15 +91,14 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
     }
 
     private fun showStatusView(){
+        "showStatusView".logd(TAG)
         childFragmentManager.findFragmentByTag(MatchStatusFragment.TAG) as? MatchStatusFragment
             ?: MatchStatusFragment().also {
                 it.arguments = Bundle().apply {
-                    mViewModel.matchId.value?.let { value ->
-                        putLong(
-                            "matchId",
-                            value
-                        )
-                    }
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
                 }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, MatchStatusFragment.TAG).commitNow()
