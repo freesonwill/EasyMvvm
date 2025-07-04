@@ -81,9 +81,9 @@ class BetSheetFragment private constructor() :
         bottomSheet?.let { sheet ->
             val behavior = BottomSheetBehavior.from(sheet)
 
-            behavior.isDraggable = false
-            behavior.skipCollapsed = false  // ← 允許收合
-            behavior.isHideable = false      // ← 允許向下滑關閉
+            behavior.isDraggable = true
+            behavior.skipCollapsed = true  // ← 允許收合
+            behavior.isHideable = true      // ← 允許向下滑關閉
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
