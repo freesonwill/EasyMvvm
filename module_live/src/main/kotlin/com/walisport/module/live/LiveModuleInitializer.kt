@@ -24,7 +24,7 @@ import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import com.walisport.module.live.ui.viewmodel.MatchStatusViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
-import com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -44,7 +44,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         includes(defaultModule)
         viewModelOf(::LiveMatchMediaViewModel)
-        viewModelOf(::VideoPlayerViewModel)
+        viewModelOf(::LiveVideoPlayerViewModel)
         viewModelOf(::MatchStatusViewModel)
         viewModelOf(::LiveChatViewModel)
         viewModelOf(::LeagueViewModel)

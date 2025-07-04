@@ -21,7 +21,7 @@ import org.koin.core.parameter.parametersOf
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
-class VideoPlayerViewModel(
+class LiveVideoPlayerViewModel(
     private val repo: LiveVideoRepository,
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {

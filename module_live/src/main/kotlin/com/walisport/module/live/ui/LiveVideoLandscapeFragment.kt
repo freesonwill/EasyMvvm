@@ -34,7 +34,7 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.ZOOM_ANIMATION_DURATION
 import com.walisport.module.live.databinding.FragmentLiveVideoLandscapeBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
-import com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
@@ -50,11 +50,11 @@ import kotlin.reflect.KClass
  * 视频横屏播放页
  */
 class LiveVideoLandscapeFragment :
-    BaseFragment<VideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoLandscapeBinding>(), CancelAdapt {
 
     override val vbClass: KClass<FragmentLiveVideoLandscapeBinding> =
         FragmentLiveVideoLandscapeBinding::class
-    override val vmClass: KClass<VideoPlayerViewModel> = VideoPlayerViewModel::class
+    override val vmClass: KClass<LiveVideoPlayerViewModel> = LiveVideoPlayerViewModel::class
 
     private lateinit var videoView: LivePlayerView
 

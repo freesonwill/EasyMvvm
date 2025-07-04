@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.TypedValue.COMPLEX_UNIT_PX
-import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
@@ -21,8 +19,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
@@ -31,15 +27,14 @@ import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
-import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
-import com.walisport.module.live.databinding.FragmentVideoPlayerBinding
+import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
@@ -53,9 +48,11 @@ import kotlin.reflect.KClass
 /**
  * 竖屏播放视频页， 用在直播详情的首页
  */
-class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlayerBinding>() {
-    override val vbClass: KClass<FragmentVideoPlayerBinding> = FragmentVideoPlayerBinding::class
-    override val vmClass: KClass<VideoPlayerViewModel> = VideoPlayerViewModel::class
+class LiveVideoPlayerFragment :
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoPlayerBinding>() {
+    override val vbClass: KClass<FragmentLiveVideoPlayerBinding> =
+        FragmentLiveVideoPlayerBinding::class
+    override val vmClass: KClass<LiveVideoPlayerViewModel> = LiveVideoPlayerViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
@@ -207,7 +204,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
                     }
-                    show(this@VideoPlayerFragment.childFragmentManager)
+                    show(this@LiveVideoPlayerFragment.childFragmentManager)
                 }
 
             }
@@ -226,7 +223,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
 
     override fun createObserver() {
         //监听比赛id变化
-        mainViewModel.matchId.observe(viewLifecycleOwner){
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)
             mViewModel.createObserver()
         }
@@ -397,7 +394,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
                     override fun onAnimationRepeat(animation: Animator) {
                     }
                 })
-            }, 
+            },
             duration = BUTTONS_ANIMATION_DURATION,
             start = true
         )
@@ -502,7 +499,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
     }
 
     companion object {
-        const val TAG = "VideoPlayerFragment"
+        const val TAG = "LiveVideoPlayerFragment"
     }
 
 

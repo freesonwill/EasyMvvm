@@ -87,8 +87,8 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
     private fun showVideoView() {
         "showVideoView".logd(TAG)
-        childFragmentManager.findFragmentByTag(VideoPlayerFragment.TAG) as? VideoPlayerFragment
-            ?: VideoPlayerFragment().also {
+        childFragmentManager.findFragmentByTag(LiveVideoPlayerFragment.TAG) as? LiveVideoPlayerFragment
+            ?: LiveVideoPlayerFragment().also {
                 it.arguments = Bundle().apply {
                     putLong(
                         "matchId",
@@ -96,7 +96,7 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, VideoPlayerFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveVideoPlayerFragment.TAG).commitNow()
             }
     }
 
