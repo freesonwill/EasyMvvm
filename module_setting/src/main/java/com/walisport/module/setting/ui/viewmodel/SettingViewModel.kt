@@ -40,7 +40,7 @@ class SettingViewModel : BaseViewModel() {
     init {
         viewModelScope.launch {
             launch {
-                _displayType.value = getOddsType()
+                _displayType.value = repository.getOddsType()
             }
             launch(Dispatchers.IO) {
                 repository.observerOddsDisplay.collect {
@@ -185,10 +185,6 @@ class SettingViewModel : BaseViewModel() {
             SkinType.SKIN_WHITE_GREEN.value -> SkinType.SKIN_WHITE_BLUE.value
             else -> SkinType.SKIN_CLASSIC.value
         }
-    }
-
-    private fun getOddsType(): OddsDisplayEnum {
-        return OddsDisplayEnum.entries[repository.getOddsType()]
     }
 
     fun getLanguage() = languageManager.getLanguage()

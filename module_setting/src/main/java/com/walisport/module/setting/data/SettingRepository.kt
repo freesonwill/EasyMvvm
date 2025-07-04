@@ -113,7 +113,8 @@ class SettingRepository(
         }
     }
 
-    fun getOddsType(): Int {
-        return manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
+    fun getOddsType(): OddsDisplayEnum {
+        val value = manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
+        return OddsDisplayEnum.entries[value]
     }
 }
