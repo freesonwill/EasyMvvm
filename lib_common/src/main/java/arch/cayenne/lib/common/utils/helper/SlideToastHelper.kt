@@ -67,8 +67,8 @@ internal class SlideToastHelper private constructor() {
         val wm = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = WindowManager.LayoutParams()
 
-        layoutParams.height = WindowManager.LayoutParams.MATCH_PARENT
-        layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
         layoutParams.format = PixelFormat.TRANSLUCENT
         layoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                 or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
