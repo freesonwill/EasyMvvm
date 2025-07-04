@@ -1,0 +1,198 @@
+package com.walisport.module.live.ui.viewmodel
+
+import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.database.entity.LiveMatchBean
+import com.walisport.module.live.R
+import com.walisport.module.live.data.constants.MatchStatus
+import com.walisport.module.live.data.repository.LiveVideoRepository
+import com.walisport.module.live.utils.LiveDateUtil
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/**
+ * 比赛状态页面对应的ViewModel
+ */
+class MatchStatusViewModel(
+    private val repo: LiveVideoRepository
+) : BaseViewModel() {
+
+    //比赛ID
+    private val _matchId = MutableLiveData<Long>(0)
+    val matchId: LiveData<Long> = _matchId
+
+    private val _mainMatch = MutableLiveData<LiveMatchBean>()
+    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
+
+    //比赛状态
+    private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
+    val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
+
+    //主队名称
+    private val _homeTeamName = MutableLiveData("")
+    val homeTeamName: LiveData<String> = _homeTeamName
+
+    //主队图标
+    private val _homeTeamIcon = MutableLiveData<String>("")
+    val homeTeamIcon: LiveData<String> = _homeTeamIcon
+
+    //主队历史比赛输赢 -1输 1赢 0平
+    private val _homeHistoryVs = MutableLiveData<List<Int>>()
+    val homeHistoryVs: LiveData<List<Int>> = _homeHistoryVs
+
+    //客队名称
+    private val _awayTeamName = MutableLiveData("")
+    val awayTeamName: LiveData<String> = _awayTeamName
+
+    //客队图标
+    private val _awayTeamIcon = MutableLiveData<String>("")
+    val awayTeamIcon: LiveData<String> = _awayTeamIcon
+
+    //客队历史比赛输赢 -1输 1赢 0平
+    private val _awayHistoryVs = MutableLiveData<List<Int>>()
+    val awayHistoryVs: LiveData<List<Int>> = _awayHistoryVs
+
+    //比赛名称
+    private val _matchName = MutableLiveData("")
+
+    //标题信息
+    private val _titleText = MutableLiveData<String>("")
+    val titleText: LiveData<String> = _titleText
+
+    @ColorRes
+    private val _titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
+
+    @ColorRes
+    val titleTextColor: LiveData<Int> = _titleTextColor
+
+    @DimenRes
+    private val _titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
+
+    @DimenRes
+    val titleTextSize: LiveData<Int> = _titleTextSize
+
+    //副标题信息
+    private val _subTitleText = MutableLiveData<String>("")
+    val subTitleText: LiveData<String> = _subTitleText
+
+    @ColorRes
+    private val _subTitleTextColor =
+        MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
+
+    @ColorRes
+    val subTitleTextColor: LiveData<Int> = _subTitleTextColor
+
+    @DimenRes
+    private val _subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
+
+    @DimenRes
+    val subTitleTextSize: LiveData<Int> = _subTitleTextSize
+
+    /**
+     * 联赛图标
+     */
+    private val _tournamentIcon = MutableLiveData("")
+
+
+    fun matchId() = repo.matchId
+
+    fun setMatchId(matchId: Long) {
+        repo.matchId = matchId
+    }
+
+    fun createObserver() {
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.observeMatchBean(repo.matchId).collect { matchBean ->
+
+                matchBean?.let { match ->
+                    withContext(Dispatchers.Main) {
+//                    "match.${match}".logd("matchIssue")
+                        _matchBeanLiveData.value = match
+
+                        _homeTeamName.value = match.basicInfo.homeTeam
+                        _homeTeamIcon.value = match.basicInfo.homeTeamIcon
+
+                        if (match.basicInfo.homeHistoryVs.isNotEmpty()) {
+                            _homeHistoryVs.value =
+                                match.basicInfo.homeHistoryVs.split(",").map { it.toInt() }
+                        }
+                        _awayTeamName.value = match.basicInfo.awayTeam
+                        _awayTeamIcon.value = match.basicInfo.awayTeamIcon
+
+                        if (match.basicInfo.awayHistoryVs.isNotEmpty()) {
+                            _awayHistoryVs.value =
+                                match.basicInfo.awayHistoryVs.split(",").map { it.toInt() }
+                        }
+
+                        //比赛名称
+                        _matchName.value = match.basicInfo.matchName
+
+                        //联赛图标
+                        _tournamentIcon.value = match.basicInfo.tournamentIcon
+
+                        val matchStatus =
+                            MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
+
+                        matchStatus?.let {
+                            when (it) {
+                                MatchStatus.NOT_STARTED -> {
+                                    val (date, time) = LiveDateUtil.getDisplay(matchBean.basicInfo.startTime)
+                                    _titleText.value = time
+                                    _titleTextColor.value = arch.cayenne.lib.common.R.color.white
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_17
+                                    _subTitleText.value = date
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.common.R.color.color_666666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                                }
+
+                                MatchStatus.IN_PROGRESS -> {
+                                    _titleText.value = match.liveInfo.score
+                                    _titleTextColor.value =
+                                        arch.cayenne.lib.common.R.color.color_fe3666
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                    _subTitleText.value = "" // 比赛进行中不展示副标题
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.common.R.color.color_fe3666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                                }
+
+                                else -> {
+                                    _titleText.value = match.liveInfo.score
+                                    _titleTextColor.value =
+                                        arch.cayenne.lib.common.R.color.color_fe3666
+                                    _titleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_24
+                                    _subTitleText.value = when (it) {
+                                        MatchStatus.FINISHED -> R.string.match_finished.getString()
+                                        MatchStatus.POSTPONED -> R.string.match_postponed.getString()
+                                        MatchStatus.INTERRUPTED -> R.string.match_interrupted.getString()
+                                        MatchStatus.CANCELED -> R.string.match_cancelled.getString()
+                                        MatchStatus.DELAYED -> R.string.match_delayed.getString()
+                                        MatchStatus.ABANDONED -> R.string.match_abandoned.getString()
+                                        MatchStatus.PAUSED -> R.string.match_suspended.getString()
+                                        else -> "" // 防止遗漏
+                                    }
+                                    _subTitleTextColor.value =
+                                        arch.cayenne.lib.common.R.color.color_fe3666
+                                    _subTitleTextSize.value = arch.cayenne.lib.common.R.dimen.sp_14
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            }
+        }
+
+    }
+
+
+}
