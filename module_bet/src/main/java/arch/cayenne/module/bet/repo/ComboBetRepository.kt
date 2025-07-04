@@ -263,4 +263,10 @@ class ComboBetRepository(
 
         return withHead + withoutHead
     }
+
+    suspend fun getBetSize(): Int = withContext(scope.coroutineContext) {
+        betDao.getCurrentBet()?.let {
+            betDao.getSelections(it.betId).size
+        } ?: 0
+    }
 }

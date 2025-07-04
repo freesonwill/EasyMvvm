@@ -200,4 +200,6 @@ class ComboBetViewModel(
         if (currentValue == expand) return // No change needed
         _onMultiLayoutExpendListener.value = expand
     }
+
+    suspend fun getBetSize(): Int = repo.getBetSize()
 }
