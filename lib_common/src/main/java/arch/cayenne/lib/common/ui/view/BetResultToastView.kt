@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import arch.cayenne.lib.common.R
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.BetResultLiteBean
@@ -63,11 +64,14 @@ class BetResultToastView: LinearLayout {
         } else {
             mBinding.tvFailureCombo.text = data.matchName
         }
+        SportEnum.getSportEnumById(data.sportId)?.let {
+            mBinding.ivSport.setImageResource(it.resId)
+        }
     }
 
     private fun setComboResult(data: List<ComboBetResultBean>) {
-        if (data.isEmpty() || data.first().matchName.isNotEmpty()) return
-        mBinding.tvTitle.text = data.first().matchName.joinToString("、")
+        if (data.isEmpty() || data.first().matchName.isEmpty()) return
+        mBinding.tvMatch.text = data.first().matchName.joinToString("、")
         val successfulData = data.filter { it.isSuccessful }
         val failureData = data.filter { !it.isSuccessful }
         mBinding.groupSuccess.isVisible = successfulData.isNotEmpty()
@@ -82,6 +86,9 @@ class BetResultToastView: LinearLayout {
             .joinToString("、") { R.string.title_combo_bet.getString(it.comboK, it.comboV) }
         mBinding.tvSuccessCombo.text = successfulTitle
         mBinding.tvFailureCombo.text = failureTitle
+        SportEnum.getSportEnumById(data.first().sportIds.first())?.let {
+            mBinding.ivSport.setImageResource(it.resId)
+        }
     }
 
     interface Block

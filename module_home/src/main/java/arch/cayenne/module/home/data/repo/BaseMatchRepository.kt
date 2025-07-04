@@ -194,6 +194,7 @@ abstract class BaseMatchRepository(
             market.selections.find { it.selectionId == selectionBean.selectionId } != null
         }?.let { market ->
             return BetInsertBean(
+                sportId = match.match.basicInfo.sportId,
                 matchId = match.match.matchId,
                 marketId = market.market.marketId,
                 marketName = market.market.marketName,

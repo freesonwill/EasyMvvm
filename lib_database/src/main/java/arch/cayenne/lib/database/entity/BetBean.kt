@@ -41,6 +41,7 @@ data class BetSelectionLiteBean(
 )
 data class BetSelectionBean(
     val betId: Long,
+    val sportId: Int,
     val matchId: Long,
     val marketId: Long, // 盘口ID
     val marketName: String, // 盘口名称 ex. 讓分盤
@@ -118,12 +119,14 @@ interface BetResultLiteBean {
 }
 
 data class SingleBetResultBean(
+    val sportId: Int,
     val matchName: String,
     val selectionName: String,
     override val isSuccessful: Boolean
 ): BetResultLiteBean
 
 data class ComboBetResultBean(
+    val sportIds: List<Int>,
     val matchName: List<String>,
     val comboK: Int,
     val comboV: Int,

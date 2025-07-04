@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
 import android.graphics.PixelFormat
-import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -40,7 +39,6 @@ internal class SlideToastHelper private constructor() {
      * @param view 需先自行實作view
      */
     fun showView(view: View, duration: Long = DEFAULT_DURATION) {
-        Log.d("abcd", "++++ ")
         cancelToast(view.context)
         if (toastJob != null) {
             return

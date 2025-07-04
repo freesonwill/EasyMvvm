@@ -142,13 +142,16 @@ class CommonRepository(
                             val resultLiteBean = if (selection.size == 1) {
                                 val s = selection.first()
                                 SingleBetResultBean(
+                                    s.sportId,
                                     s.matchName,
                                     s.name,
                                     BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
                                 )
                             } else {
+                                val sportIds = selection.map { s -> s.sportId }
                                 val matchName = selection.map { s -> s.matchName }
                                 ComboBetResultBean(
+                                    sportIds,
                                     matchName,
                                     detail.comboK,
                                     detail.comboV,

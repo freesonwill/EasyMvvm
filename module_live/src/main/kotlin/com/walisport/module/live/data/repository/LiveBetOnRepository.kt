@@ -83,6 +83,7 @@ private fun matchSelectionInsertBean(
         selectionBean: LiveSelectionBean
     ): BetInsertBean? {
             return BetInsertBean(
+                sportId = match.basicInfo.sportId,
                 matchId = match.matchId,
                 marketId = selectionBean.marketId,
                 marketName = selectionBean.marketName,
