@@ -28,7 +28,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -45,6 +44,7 @@ import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.R as RC
 
 /**
  * @author: caomei
@@ -287,21 +287,21 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
-            } else if (mViewModel.isDatePickerOpen()) {
-                mViewModel.setIsDatePickerOpen(false)
-            } else {
-                val navController = mBinding.fragmentContainer.findNavController()
-                val backStackId = navController.previousBackStackEntry?.destination?.id
+            }
 
-                when (backStackId) {
-                    R.id.searchResultBaseFragment -> {
-                        navController.popBackStack(R.id.searchResultBaseFragment, true)
-                    }
-                    else -> {
-                        if (!navController.popBackStack()) {
-                            isEnabled = false
-                            requireActivity().onBackPressedDispatcher.onBackPressed()
-                        }
+            closeDatePicker()
+
+            val navController = mBinding.fragmentContainer.findNavController()
+            val backStackId = navController.previousBackStackEntry?.destination?.id
+
+            when (backStackId) {
+                R.id.searchResultBaseFragment -> {
+                    navController.popBackStack(R.id.searchResultBaseFragment, true)
+                }
+                else -> {
+                    if (!navController.popBackStack()) {
+                        isEnabled = false
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
                 }
             }
