@@ -17,6 +17,8 @@ class MessageMainRepository(
 
     //监听数据表变化
     fun observeMessageBean() = msgDao.observeMessageBean()
+    //监听最新的两条消息,按时间降序排列
+    fun observeLatestMessage() = msgDao.observeLatestMessage()
 
     //插入消息列表
     private fun insertMessage(message: List<NotificationBean>) {

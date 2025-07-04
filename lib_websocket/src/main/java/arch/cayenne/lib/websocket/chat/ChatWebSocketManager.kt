@@ -25,8 +25,8 @@ import java.util.concurrent.Executors
 class ChatWebSocketManager(
     private val socket: ChatSocketClientService
 ) {
+    private val TAG = this::class.java.simpleName
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
-
     private var heartbeatJob: Job? = null
     private var heartbeatDispatcher: ExecutorCoroutineDispatcher? = null
 
@@ -124,7 +124,7 @@ class ChatWebSocketManager(
             while (true) {
                 delay(reconnectInterval)
                 retryCount++
-                "try to reconnect! retry count = $retryCount".logi(this.javaClass.simpleName)
+                "try to reconnect! retry count = $retryCount".logi(TAG)
                 reconnect()
             }
         }
@@ -144,7 +144,7 @@ class ChatWebSocketManager(
         heartbeatJob = CoroutineScope(heartbeatDispatcher!!).launch {
             while (true) {
                 delay(heartbeatInterval)
-                "Send Heartbeat!".logi(this.javaClass.simpleName)
+                "Send Heartbeat!".logi(TAG)
                 socket.send(
                     ChatPinRequestData("1234567").chatAsRemoteRequest(ApiCode.CHAT_PING, 0)
                 )

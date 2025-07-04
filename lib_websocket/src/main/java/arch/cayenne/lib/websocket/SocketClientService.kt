@@ -17,9 +17,7 @@ import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.extension.collectFirstSubscribe
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -39,6 +37,7 @@ class SocketClientService(
     private val context: WeakReference<Application>,
     private val security: ISecurity<IRequest, ByteArray, IResponse>
 ) : ISocket<IRequest, IResponse, ConnectState> {
+    private  val TAG = "SocketClientService"
     private var currentState : SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
     private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
@@ -62,10 +61,9 @@ class SocketClientService(
     }
     private var webSocket: WebSocket? = null
     private var host: String = ""
+    private val lock = Any()
 
-    private var sendQueue: Channel<ByteArray>? = null
-    private var job: Job? = null
-
+    /************* Method **************/
     override fun connect(host: String): SharedFlow<ConnectState> {
         return when(currentState) {
             SocketConnectState.Connecting -> { connectStateFlow }
@@ -88,17 +86,17 @@ class SocketClientService(
                 super.onFailure(webSocket, t, response)
                 currentState = SocketConnectState.Failure
                 if (!hasNetworkConnection()) {
-                    "Socket Client -> NetworkUnavailable".loge(SocketClientService::class.java.simpleName)
+                    "Socket Client -> NetworkUnavailable,${t.message},response:$response".loge(TAG)
                     workingScope.launch { connectStateFlow.emit(ConnectState.NetworkUnavailable) }
                 } else {
-                    "Socket Client -> ConnectFailure:$t".loge(SocketClientService::class.java.simpleName)
+                    "Socket Client -> ConnectFailure:$t,${t.message},response:$response".loge(TAG)
                     workingScope.launch { connectStateFlow.emit(ConnectState.ConnectFailure) }
                 }
             }
 
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
-                "Socket Client -> ConnectClosed".loge(SocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectClosed,code:$code,reason:$reason".loge(TAG)
                 currentState = if (reason == SocketConnectState.None.name) {
                     SocketConnectState.None
                 } else {
@@ -113,7 +111,6 @@ class SocketClientService(
                 "Socket Client -> ConnectOpen".loge(SocketClientService::class.java.simpleName)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
-                initQueue()
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
             }
 
@@ -155,7 +152,6 @@ class SocketClientService(
             currentState = SocketConnectState.None
             return
         }
-        closeQueue()
         webSocket?.close(1001, SocketConnectState.None.name)
     }
 
@@ -164,30 +160,15 @@ class SocketClientService(
         if (currentState != SocketConnectState.Connecting) {
             return InvalidNetworkError()
         }
-        val byteArray = security.encrypt(data)
-        return if (byteArray == null) {
-            InvalidEncryptDataError()
-        } else {
-            sendQueue?.trySend(byteArray)
-            null
-        }
-    }
-
-    private fun initQueue() {
-        sendQueue = Channel(Channel.UNLIMITED)
-        job?.cancel()
-        job = workingScope.launch {
-            for (data in sendQueue!!) {
-                webSocket?.send(data.toByteString())
+        return synchronized(lock) {
+            val byteArray = security.encrypt(data)
+            if (byteArray == null) {
+                InvalidEncryptDataError()
+            } else {
+                webSocket?.send(byteArray.toByteString())
+                null
             }
         }
-    }
-
-    private fun closeQueue() {
-        sendQueue?.close()
-        sendQueue = null
-        job?.cancel()
-        job = null
     }
 
     override fun responseObserve(): SharedFlow<IResponse> = socketResponseFlow

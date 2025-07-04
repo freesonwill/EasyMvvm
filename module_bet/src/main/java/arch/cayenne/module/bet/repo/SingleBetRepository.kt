@@ -21,8 +21,10 @@ class SingleBetRepository(
     private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
-    private val selectionFlow = MutableSharedFlow<BetSelectionBean>(replay = 1, extraBufferCapacity = 1)
-    private val comboFlow = MutableSharedFlow<ComboMultiBetBean>(replay = 1, extraBufferCapacity = 1)
+    private val selectionFlow =
+        MutableSharedFlow<BetSelectionBean>(replay = 1, extraBufferCapacity = 1)
+    private val comboFlow =
+        MutableSharedFlow<ComboMultiBetBean>(replay = 1, extraBufferCapacity = 1)
 
     init {
         scope.launch {
@@ -37,45 +39,39 @@ class SingleBetRepository(
                 launch {
                     val selection = betDao.getSelections(bet.betId)
                     val data = selection.firstOrNull() ?: return@launch
-                    val lastDetail = betDao.getDetail(bet.betId).firstOrNull()
-                    setComboMulti(data, lastDetail)
+                    setComboMulti(data)
                 }
             }
         }
     }
 
-    private suspend fun setComboMulti(selection: BetSelectionBean, detailList: BetDetailBean? = null) = withContext(scope.coroutineContext) {
-        remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
-            if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
-                val detailBean = if (detailList == null) {
-                    ComboMultiBetBean(
-                        sumOdds = selection.odds,
-                        minAmount = risk.minAmount,
-                        maxAmount = risk.maxAmount
-                    )
-                } else {
-                    ComboMultiBetBean(
-                        sumOdds = selection.odds,
-                        inputMoney = detailList.inputMoney,
-                        minAmount = risk.minAmount,
-                        maxAmount = risk.maxAmount,
-                    )
+    private suspend fun setComboMulti(selection: BetSelectionBean) =
+        withContext(scope.coroutineContext) {
+            remoteManager.getSingleRisk(selection.matchId, selection.selectionId)?.let { risk ->
+                if (risk.matchId == selection.matchId && risk.selectionId == selection.selectionId) {
+                    val detailBean =
+                        ComboMultiBetBean(
+                            sumOdds = selection.odds,
+                            minAmount = risk.minAmount,
+                            maxAmount = risk.maxAmount,
+                        )
+                    comboFlow.emit(detailBean)
                 }
-                comboFlow.emit(detailBean)
+            } ?: run {
+                comboFlow.emit(
+                    ComboMultiBetBean(
+                        sumOdds = selection.odds,
+                        minAmount = 0,
+                        maxAmount = 0
+                    )
+                )
             }
-        } ?: run {
-            comboFlow.emit(ComboMultiBetBean(
-                sumOdds = selection.odds,
-                minAmount = 0,
-                maxAmount = 0
-            ))
         }
-    }
 
     fun observeSelectionBean(): Flow<BetSelectionBean> = selectionFlow
     fun observeComboBean(): Flow<ComboMultiBetBean> = comboFlow
-    fun observeBetType(): Flow<BetTypeEnum?> = betDao.observeCurrentBetType()
-    suspend fun getBetType(): BetTypeEnum? = withContext(scope.coroutineContext) { betDao.getCurrentBet()?.betType }
+    suspend fun getBetType(): BetTypeEnum? =
+        withContext(scope.coroutineContext) { betDao.getCurrentBet()?.betType }
 
     fun removeBet() {
         scope.launch {
@@ -103,34 +99,6 @@ class SingleBetRepository(
             return@withContext betDao.updateBetType(it.betId, BetTypeEnum.RESERVE) == 1
         }
         false
-    }
-
-    suspend fun getReserveOdds() = withContext(scope.coroutineContext) {
-        betDao.getCurrentBet()?.let {
-            if (it.betType == BetTypeEnum.RESERVE) {
-                return@withContext betDao.getDetail(it.betId).firstOrNull()?.sumOdds
-            }
-        }
-        null
-    }
-
-    fun saveInputMoney(money: Long) {
-        scope.launch {
-            betDao.getCurrentBet()?.let {
-                if (it.betType == BetTypeEnum.SINGLE) {
-                    val betId = it.betId
-                    val selection = betDao.getSelections(betId).firstOrNull()
-                    if (selection != null) {
-                        val detailBean = BetDetailBean(
-                            betId = betId,
-                            sumOdds = selection.odds,
-                            inputMoney = money
-                        )
-                        betDao.insertDetail(detailBean)
-                    }
-                }
-            }
-        }
     }
 
     fun sendBet(money: Long) {
