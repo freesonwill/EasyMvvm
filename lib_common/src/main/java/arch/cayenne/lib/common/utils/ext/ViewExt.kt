@@ -198,16 +198,18 @@ fun View.startSafeAnimateSet(
 }
 
 /**
- * 仿iOS滑動列表底部回彈效果
+ * 仿iOS滑動列表頂/底部回彈效果
  *
  * @param maxOverscroll 最大拉伸距離（預設為 200f）
  */
-fun RecyclerView.enableBottomBounce(
+fun RecyclerView.enableRecyclerViewBounce(
     maxOverscroll: Float = 200f
 ) {
     var lastY = 0f
     var isDragging = false
     var isEligible = false // 是否進入底部拉伸狀態
+    var isTopDragging = false
+    var isTopEligible = false // 是否進入頂部拉伸狀態
 
     setOnTouchListener { _, event ->
         when (event.actionMasked) {
@@ -215,6 +217,9 @@ fun RecyclerView.enableBottomBounce(
                 lastY = event.rawY
                 isDragging = false
                 isEligible = false
+                isTopDragging = false
+                isTopEligible = false
+                translationY = 0f // 頂部回彈時重置位移
                 children.forEach { it.translationY = 0f }
             }
 
@@ -223,8 +228,10 @@ fun RecyclerView.enableBottomBounce(
                 val dy = currentY - lastY
 
                 val canScrollDown = canScrollVertically(1)
+                val canScrollUp = canScrollVertically(-1)
 
-                if (!canScrollDown && dy < 0) {
+                // 底部回彈
+                if (!canScrollDown && dy < 0 && !isTopDragging) {
                     if (!isEligible) {
                         lastY = currentY
                         isEligible = true
@@ -240,22 +247,49 @@ fun RecyclerView.enableBottomBounce(
                         child.translationY = newTranslation.coerceIn(-maxOverscroll, 0f)
                     }
                     return@setOnTouchListener true
+                }
+                // 頂部回彈 - 移動整個 RecyclerView
+                else if (!canScrollUp && dy > 0 && !isDragging) {
+                    if (!isTopEligible) {
+                        lastY = currentY
+                        isTopEligible = true
+                        return@setOnTouchListener true
+                    }
+
+                    isTopDragging = true
+                    lastY = currentY
+
+                    val offset = dy / 2f
+                    val newTranslation = translationY + offset
+                    translationY = newTranslation.coerceIn(0f, maxOverscroll)
+                    return@setOnTouchListener true
                 } else {
                     lastY = currentY
                 }
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (isDragging) {
-                    children.forEach { child ->
-                        child.animate()
+                if (isDragging || isTopDragging) {
+                    // 頂部回彈動畫
+                    if (isTopDragging) {
+                        animate()
                             .translationY(0f)
                             .setInterpolator(DecelerateInterpolator())
                             .setDuration(250)
                             .start()
+                    } else {
+                        children.forEach { child ->
+                            child.animate()
+                                .translationY(0f)
+                                .setInterpolator(DecelerateInterpolator())
+                                .setDuration(250)
+                                .start()
+                        }
                     }
                     isDragging = false
                     isEligible = false
+                    isTopDragging = false
+                    isTopEligible = false
                     return@setOnTouchListener true
                 } else {
                     performClick()
