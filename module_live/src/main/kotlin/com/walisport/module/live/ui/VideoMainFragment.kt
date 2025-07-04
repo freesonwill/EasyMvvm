@@ -8,16 +8,17 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import com.bumptech.glide.Glide
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveVideoMainBinding
-import com.walisport.module.live.ui.viewmodel.LiveVideoMainViewModel
+import com.walisport.module.live.databinding.FragmentVideoMainBinding
+import com.walisport.module.live.ui.viewmodel.VideoMainViewModel
 import kotlin.reflect.KClass
 
 
 /**
  * 竖屏播放视频页， 用在直播详情的首页
  */
-class LiveVideoMainFragment : BaseFragment<LiveVideoMainViewModel, FragmentLiveVideoMainBinding>() {
-    override val vbClass: KClass<FragmentLiveVideoMainBinding> = FragmentLiveVideoMainBinding::class
-    override val vmClass: KClass<LiveVideoMainViewModel> = LiveVideoMainViewModel::class
+class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBinding>() {
+    override val vbClass: KClass<FragmentVideoMainBinding> = FragmentVideoMainBinding::class
+    override val vmClass: KClass<VideoMainViewModel> = VideoMainViewModel::class
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -280,8 +280,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun setVideoView() {
-        childFragmentManager.findFragmentByTag(LiveVideoMainFragment.TAG) as? LiveVideoMainFragment
-            ?: LiveVideoMainFragment().also {
+        childFragmentManager.findFragmentByTag(VideoMainFragment.TAG) as? VideoMainFragment
+            ?: VideoMainFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
                         putLong(
@@ -291,7 +291,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveVideoMainFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, VideoMainFragment.TAG).commitNow()
             }
     }
 

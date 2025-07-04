@@ -24,7 +24,7 @@ import com.walisport.module.live.R
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
-class LiveVideoMainViewModel(
+class VideoMainViewModel(
     private val repo: LiveVideoRepository,
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
