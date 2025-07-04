@@ -6,49 +6,51 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/LLCBetOn"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/linear"
+            android:id="@+id/LLCBetOn"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingTop="13dp"
-            android:paddingBottom="13dp">
+            android:layout_height="match_parent">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/linear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:paddingTop="13dp"
+                android:paddingBottom="13dp">
 
-            <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="0dp"
-                android:layout_height="32dp"
+                <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:background="@color/app_bg"
+                    app:sportTabBackground="@drawable/tab_selected_background"
+                    app:tabGravity="start"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabMode="scrollable"
+                    app:tabRippleColor="@null"
+                    app:tabTextAppearance="@style/CustomTabText"
+                    app:tabTextColor="@drawable/live_bet_selected_text"
+                    tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
+
+                <ImageView
+                    android:id="@+id/ivMenu"
+                    android:layout_width="@dimen/dp_25"
+                    android:layout_height="@dimen/dp_25"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:src="@drawable/live_bet_on_menu" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvBetList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:background="@color/app_bg"
-                app:sportTabBackground="@drawable/tab_selected_background"
-                app:tabGravity="start"
-                app:tabIndicatorHeight="0dp"
-                app:tabMode="scrollable"
-                app:tabRippleColor="@null"
-                app:tabTextAppearance="@style/CustomTabText"
-                app:tabTextColor="@drawable/live_bet_selected_text"
-                tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
-
-            <ImageView
-                android:id="@+id/ivMenu"
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:src="@drawable/live_bet_on_menu" />
-
+                app:layout_constraintTop_toBottomOf="@id/linear" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvBetList"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            app:layout_constraintTop_toBottomOf="@id/linear" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </arch.cayenne.lib.common.ui.view.DynamicStateLayout>
