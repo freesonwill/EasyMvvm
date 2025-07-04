@@ -9,23 +9,10 @@
             type="com.walisport.module.live.ui.viewmodel.VideoMainViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_height="@dimen/dp_211"
+        android:fitsSystemWindows="false" />
 
-
-
-        <include
-            android:id="@+id/included_match_not_in_progress"
-            layout="@layout/layout_match_not_in_progress" />
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_video"
-            android:fitsSystemWindows="false"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_211" />
-
-    </LinearLayout>
 </layout>

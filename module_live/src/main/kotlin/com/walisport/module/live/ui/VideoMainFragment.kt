@@ -30,7 +30,6 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
-        mBinding.includedMatchNotInProgress.model = mViewModel
     }
 
 
