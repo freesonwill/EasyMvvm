@@ -20,19 +20,6 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
     }
@@ -102,8 +89,8 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
     private fun showStatusView(){
         "showStatusView".logd(TAG)
-        childFragmentManager.findFragmentByTag(MatchStatusFragment.TAG) as? MatchStatusFragment
-            ?: MatchStatusFragment().also {
+        childFragmentManager.findFragmentByTag(LiveMatchStatusFragment.TAG) as? LiveMatchStatusFragment
+            ?: LiveMatchStatusFragment().also {
                 it.arguments = Bundle().apply {
                     putLong(
                         "matchId",
@@ -111,26 +98,10 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, MatchStatusFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchStatusFragment.TAG).commitNow()
             }
     }
 
-
-    override fun initData() {
-        super.initData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 
 
     companion object {

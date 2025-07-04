@@ -8,33 +8,21 @@ import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.bumptech.glide.Glide
-import com.walisport.module.live.databinding.FragmentMatchStatusBinding
+import com.walisport.module.live.databinding.FragmentLiveMatchStatusBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.ui.viewmodel.MatchStatusViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchStatusViewModel
 import kotlin.reflect.KClass
 
 
 /**
  * 比赛状态页面， 用在比赛没有进行时（未开赛，已结束等状态）的信息展示
  */
-class MatchStatusFragment : BaseFragment<MatchStatusViewModel, FragmentMatchStatusBinding>() {
-    override val vbClass: KClass<FragmentMatchStatusBinding> = FragmentMatchStatusBinding::class
-    override val vmClass: KClass<MatchStatusViewModel> = MatchStatusViewModel::class
+class LiveMatchStatusFragment : BaseFragment<LiveMatchStatusViewModel, FragmentLiveMatchStatusBinding>() {
+    override val vbClass: KClass<FragmentLiveMatchStatusBinding> = FragmentLiveMatchStatusBinding::class
+    override val vmClass: KClass<LiveMatchStatusViewModel> = LiveMatchStatusViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
@@ -138,25 +126,8 @@ class MatchStatusFragment : BaseFragment<MatchStatusViewModel, FragmentMatchStat
     }
 
 
-    override fun initData() {
-        super.initData()
-    }
-
-    override fun onPause() {
-        super.onPause()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
-
-
     companion object {
-        const val TAG = "MatchStatusFragment"
+        const val TAG = "LiveMatchStatusFragment"
     }
 
 

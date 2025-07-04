@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 /**
  * 比赛状态页面对应的ViewModel
  */
-class MatchStatusViewModel(
+class LiveMatchStatusViewModel(
     private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 

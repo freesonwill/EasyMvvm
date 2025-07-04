@@ -312,9 +312,6 @@ class LiveVideoPlayerFragment :
     }
 
 
-    override fun initData() {
-        super.initData()
-    }
 
     override fun onPause() {
         super.onPause()
