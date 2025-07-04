@@ -3,8 +3,10 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentVideoMainBinding
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.VideoMainViewModel
 import kotlin.reflect.KClass
 
@@ -15,6 +17,8 @@ import kotlin.reflect.KClass
 class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBinding>() {
     override val vbClass: KClass<FragmentVideoMainBinding> = FragmentVideoMainBinding::class
     override val vmClass: KClass<VideoMainViewModel> = VideoMainViewModel::class
+
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,12 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
     }
 
     override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            mViewModel.setMatchId(it)
+            mViewModel.createObserver()
+        }
+
         with(mViewModel) {
 
             //比赛状态的监听

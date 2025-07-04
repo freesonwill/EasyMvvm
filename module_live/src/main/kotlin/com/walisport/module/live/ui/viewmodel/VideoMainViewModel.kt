@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -21,6 +22,8 @@ class VideoMainViewModel(
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
     val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
 
+    private var job: Job? = null
+
     fun matchId() = repo.matchId
 
     fun setMatchId(matchId: Long) {
@@ -28,7 +31,8 @@ class VideoMainViewModel(
     }
 
     fun createObserver() {
-        viewModelScope.launch(Dispatchers.IO) {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
             repo.observeMatchBean(repo.matchId).collect { matchBean ->
 
                 matchBean?.let { match ->
