@@ -12,10 +12,12 @@ import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LiveMainRepository(
     private val remoteManager: LiveRemoteManager, private val database: GameDatabase
@@ -109,10 +111,10 @@ class LiveMainRepository(
         remoteManager.unregisterMatchInfoNotify(scope, matchId)
     }
 
-    fun getSelectionsEdit(callback: (List<SelectionsEdit>) -> Unit) {
-        scope.launch(Dispatchers.IO) {
-            callback(database.liveMatchDao().getSelectionsEdit())
-        }
+   suspend fun getSelectionsEdit() :List<SelectionsEdit>{
+       return withContext(IO){
+           database.liveMatchDao().getSelectionsEdit()
+       }
     }
 
     fun clearAllMatch() {
