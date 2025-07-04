@@ -7,7 +7,6 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import com.walisport.module.live.data.LiveUnregisterStatisticsEnum
 import galaxy.client.proto.Client
 import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common
@@ -188,7 +187,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
             apiCode = ApiCode.MATCH_STATICS,
         ) {
             Client.SubscribeMatchLiveReq.newBuilder().apply {
-                this.matchId = LiveUnregisterStatisticsEnum.ID.status
+               //matchId= -1：取消订阅
+                this.matchId = -1
             }.build()
         }
         if (result.error == null && result.data != null) {
