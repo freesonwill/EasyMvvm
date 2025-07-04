@@ -9,24 +9,19 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
-import com.walisport.module.live.data.LiveMainRepository
-import com.walisport.module.live.data.MuteManager
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
 import com.walisport.module.live.R
 
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
 class VideoMainViewModel(
-    private val repo: LiveVideoRepository,
-    private val mainRepo: LiveMainRepository
+    private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 
     //比赛ID
@@ -40,100 +35,34 @@ class VideoMainViewModel(
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
     val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
 
-    //主队名称
-    private val _homeTeamName = MutableLiveData("")
-    val homeTeamName: LiveData<String> = _homeTeamName
-
     //主队图标
     private val _homeTeamIcon = MutableLiveData<String>("")
     val homeTeamIcon: LiveData<String> = _homeTeamIcon
-
-    //主队历史比赛输赢 -1输 1赢 0平
-    private val _homeHistoryVs = MutableLiveData<List<Int>>()
-    val homeHistoryVs: LiveData<List<Int>> = _homeHistoryVs
-
-    //客队名称
-    private val _awayTeamName = MutableLiveData("")
-    val awayTeamName: LiveData<String> = _awayTeamName
 
     //客队图标
     private val _awayTeamIcon = MutableLiveData<String>("")
     val awayTeamIcon: LiveData<String> = _awayTeamIcon
 
-    //客队历史比赛输赢 -1输 1赢 0平
-    private val _awayHistoryVs = MutableLiveData<List<Int>>()
-    val awayHistoryVs: LiveData<List<Int>> = _awayHistoryVs
-
-    //比赛名称
-    private val _matchName = MutableLiveData("")
-
     //标题信息
     private val _titleText = MutableLiveData<String>("")
-    val titleText: LiveData<String> = _titleText
 
     @ColorRes
     private val _titleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.white)
 
-    @ColorRes
-    val titleTextColor: LiveData<Int> = _titleTextColor
-
     @DimenRes
     private val _titleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_17)
 
-    @DimenRes
-    val titleTextSize: LiveData<Int> = _titleTextSize
-
     //副标题信息
     private val _subTitleText = MutableLiveData<String>("")
-    val subTitleText: LiveData<String> = _subTitleText
 
     @ColorRes
     private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
 
-    @ColorRes
-    val subTitleTextColor: LiveData<Int> = _subTitleTextColor
-
     @DimenRes
     private val _subTitleTextSize = MutableLiveData<Int>(arch.cayenne.lib.common.R.dimen.sp_14)
 
-    @DimenRes
-    val subTitleTextSize: LiveData<Int> = _subTitleTextSize
-
-    /**
-     * 联赛图标
-     */
-    private val _tournamentIcon = MutableLiveData("")
-
     private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
-    val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
 
-    private val muteManager: MuteManager by inject { parametersOf() }
-
-    fun mutedData() = muteManager.mutedLiveData
-
-
-    /**
-     * 改变静音状态
-     */
-    fun changeMuteStatus() {
-        viewModelScope.launch {
-            muteManager.changeMuteStatus()
-        }
-    }
-
-    /**
-     * 设置静音
-     */
-    fun mute() {
-        viewModelScope.launch { muteManager.mute() }
-    }
-
-    /**
-     * 取消静音
-     */
-    fun unMute() {
-        viewModelScope.launch { muteManager.unMute() }
-    }
 
     fun matchId() = repo.matchId
 
@@ -160,26 +89,6 @@ class VideoMainViewModel(
 //                    "match.${match}".logd("matchIssue")
                         _matchBeanLiveData.value = match
 
-                        _homeTeamName.value = match.basicInfo.homeTeam
-                        _homeTeamIcon.value = match.basicInfo.homeTeamIcon
-
-                        if (match.basicInfo.homeHistoryVs.isNotEmpty()) {
-                            _homeHistoryVs.value =
-                                match.basicInfo.homeHistoryVs.split(",").map { it.toInt() }
-                        }
-                        _awayTeamName.value = match.basicInfo.awayTeam
-                        _awayTeamIcon.value = match.basicInfo.awayTeamIcon
-
-                        if (match.basicInfo.awayHistoryVs.isNotEmpty()) {
-                            _awayHistoryVs.value =
-                                match.basicInfo.awayHistoryVs.split(",").map { it.toInt() }
-                        }
-
-                        //比赛名称
-                        _matchName.value = match.basicInfo.matchName
-
-                        //联赛图标
-                        _tournamentIcon.value = match.basicInfo.tournamentIcon
 
                         val matchStatus =
                             MatchStatus.entries.find { it.code == matchBean.basicInfo.status }
