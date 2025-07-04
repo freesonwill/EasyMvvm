@@ -1,8 +1,9 @@
 package arch.cayenne.lib.websocket
 
-import android.util.Log
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
 import arch.cayenne.lib.websocket.data.ISecurity
@@ -11,6 +12,7 @@ import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 
 class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
+    private val TAG = this::class.java.simpleName
     companion object {
         const val CIPHER_TYPE_PB = 1
         const val CIPHER_TYPE_JSON = 2
@@ -33,14 +35,14 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
     private var mNativePtr: Long = 0
     private fun createChiper() {
         mNativePtr = 0
-        Log.d("NativeLib", "createChiper1:$mNativePtr")
+        "createChiper1:$mNativePtr".logd(TAG)
         mNativePtr = nativeCreateChiper()
-        Log.d("NativeLib", "createChiper2:$mNativePtr")
+        "createChiper2:$mNativePtr".logd(TAG)
         init(CIPHER_TYPE_PB)
     }
 
     protected fun finalize() {
-        Log.d("NativeLib", "finalize:$mNativePtr")
+        "finalize:$mNativePtr".logd(TAG)
         kotlin.runCatching {
             nativeFinalizer(mNativePtr)
         }
@@ -61,7 +63,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
                 val sid = (unpack[1] as Int).toShort()
                 val rid = (unpack[2] as Int).toShort()
                 val jsonPayload = unpack[3] as ByteArray
-                "封包解密 mid=$mid, sid=$sid proto=${jsonPayload}".logi(NativeLib::class.java.simpleName)
+                "封包解密 api:${ApiCode.of(mid,sid)} proto=${jsonPayload}".logi(TAG)
                 SocketOriginResponseData(
                     mid = mid,
                     sid = sid,
@@ -77,8 +79,7 @@ class NativeLib : ISecurity<IRequest, ByteArray, IResponse> {
 
     override fun encrypt(data: IRequest): ByteArray? {
         if (data !is SocketRequestData) return null
-        "Request加密 -> mid = ${data.mid}, sid = ${data.sid} rid = ${data.rid} data = ${data.payloadByteArray}".logi(
-            NativeLib::class.java.simpleName)
+        "Request加密 -> api:${ApiCode.of(data.mid, data.sid)} rid = ${data.rid} data = ${data.payloadByteArray}".logi(TAG)
         return newPack(
             mid = data.mid,
             sid = data.sid,

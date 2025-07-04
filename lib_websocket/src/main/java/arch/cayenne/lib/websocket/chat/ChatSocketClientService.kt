@@ -41,6 +41,7 @@ class ChatSocketClientService(
 ) : ISocket<IRequest, IResponse, ConnectState> {
     private var currentState: SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
+    private val lock = Any()
     private val socketConnectStateFlow: MutableStateFlow<SocketConnectState> =
         MutableStateFlow(SocketConnectState.None)
     private val connectStateFlow: MutableSharedFlow<ConnectState> by lazy {
@@ -169,12 +170,14 @@ class ChatSocketClientService(
         if (currentState != SocketConnectState.Connecting) {
             return InvalidNetworkError()
         }
-        val byteArray = security.encrypt(data)
-        return if (byteArray == null) {
-            InvalidEncryptDataError()
-        } else {
-            webSocket?.send(byteArray.toByteString())
-            null
+        return synchronized(lock) {
+            val byteArray = security.encrypt(data)
+            if (byteArray == null) {
+                InvalidEncryptDataError()
+            } else {
+                webSocket?.send(byteArray.toByteString())
+                null
+            }
         }
     }
 
