@@ -428,7 +428,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             .commitNow()
         //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
         observeResult<String>("Drawer") {
-            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
         }
     }
 
