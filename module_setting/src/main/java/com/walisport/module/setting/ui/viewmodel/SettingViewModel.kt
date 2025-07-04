@@ -9,17 +9,14 @@ import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import com.walisport.module.setting.R
 import com.walisport.module.setting.data.OddsDisplayEnum
 import com.walisport.module.setting.data.SettingRepository
-import galaxy.common.proto.Common.Setting
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 import plugin.koin.KoinViewModel
-import java.util.Locale
 
 @KoinViewModel
 class SettingViewModel : BaseViewModel() {
@@ -28,8 +25,8 @@ class SettingViewModel : BaseViewModel() {
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     private val languageManager: LanguageManager by inject { parametersOf(viewModelScope) }
 
-    private val _language = MutableLiveData<String>()
-    val language: LiveData<String> = _language
+    private val _language = MutableLiveData<LanguageType>()
+    val language: LiveData<LanguageType> get() =  _language
 
     private val _skinType = MutableLiveData<String>()
     val skinType: LiveData<String> = _skinType
@@ -39,32 +36,26 @@ class SettingViewModel : BaseViewModel() {
 
     init {
         viewModelScope.launch {
-            launch {
-                _displayType.value = repository.getOddsType()
+            launch(Dispatchers.IO) {
+                repository.observerOddsDisplay.onStart {
+                    _displayType.postValue(repository.getOddsType())
+                }.collect {
+                    repository.observerOddsDisplay.collect {
+                        val type = OddsDisplayEnum.entries[it]
+                        _displayType.postValue(type)
+                    }
+                }
             }
             launch(Dispatchers.IO) {
-                repository.observerOddsDisplay.collect {
-                    val type = OddsDisplayEnum.entries[it]
-                    _displayType.postValue(type)
+                repository.observerLanguage.onStart {
+                    _language.postValue(repository.getLanguageType())
+                }.collect {
+                    repository.observerLanguage.collect { lang ->
+                        _language.postValue(LanguageType.findLanguage(lang))
+                    }
                 }
             }
         }
-    }
-
-    //设置语言类型
-    fun setLanguageType(type: String) {
-        viewModelScope.launch {
-            repository.setLanguageType(type)
-            languageManager.changeLanguage(Locale(type))
-            val setting = getSystemSetting()
-            repository.updateSettingReq(setting)
-            _language.value = type
-        }
-    }
-
-    //获取语言类型
-    fun getLanguageType(): String {
-        return repository.getLanguageType()
     }
 
     //获取皮肤背景
@@ -135,47 +126,6 @@ class SettingViewModel : BaseViewModel() {
 
     fun getAppAll(): Boolean {
         return repository.getAppAll()
-    }
-
-    fun getSkinnableLanguage(context: Context): String {
-        val lang = repository.getLanguageType()
-        return when (lang) {
-            LanguageType.LANGUAGE_ENGLISH.value -> SkinnableResourceManager.getString(
-                context,
-                R.string.menu_language_english,
-                languageManager.getLanguage()
-            )
-
-            LanguageType.LANGUAGE_PT.value -> SkinnableResourceManager.getString(
-                context,
-                R.string.menu_language_portugal,
-                languageManager.getLanguage()
-            )
-
-            LanguageType.LANGUAGE_ID.value -> SkinnableResourceManager.getString(
-                context,
-                R.string.menu_language_indonesia,
-                languageManager.getLanguage()
-            )
-
-            else -> SkinnableResourceManager.getString(
-                context,
-                R.string.menu_language_simple,
-                languageManager.getLanguage()
-            )
-        }
-    }
-
-    private fun getSystemSetting(): Setting {
-        val language = getLanguageType()
-        return Setting.newBuilder().apply {
-            lang = when (language) {
-                LanguageType.LANGUAGE_ENGLISH.value -> "en-US"
-                LanguageType.LANGUAGE_ID.value -> "id-ID"
-                LanguageType.LANGUAGE_PT.value -> "pt-PT"
-                else -> "zh-CN"
-            }
-        }.build()
     }
 
     //UI界面上有6种主题，但是逻辑上暂时就白蓝和经典两种
