@@ -55,7 +55,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 mViewModel.continueBet()?.let { type ->
                     when (type) {
                         BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> showExitAnim(value = Config.VALUE_RESULT_TO_SINGLE)
-                        BetTypeEnum.COMBO -> showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
+                        BetTypeEnum.COMBO -> showExitAnim(value = Config.VALUE_RESULT_TO_COMBO)
                     }
                 }
             }
