@@ -71,7 +71,7 @@
         android:textColor="@color/main_text"
         android:textSize="@dimen/sp_14"
         android:textFontWeight="500"
-        android:textStyle="bold"
+        android:fontFamily="sans-serif"
         app:layout_constraintBottom_toBottomOf="@id/bet_unsettled_tv_introduce"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_introduce"

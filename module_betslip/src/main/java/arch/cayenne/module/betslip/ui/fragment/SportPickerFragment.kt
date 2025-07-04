@@ -121,6 +121,15 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
             })
             start()
         }
+        val maskHeight = mBinding.maskView.height
+        ObjectAnimator.ofFloat(mBinding.maskView, "translationY", -maskHeight.toFloat(), 0f).apply {
+            duration = 100
+            addListener(onStart = {
+                mBinding.maskView.visibility = View.VISIBLE
+            })
+            start()
+        }
+
     }
 
     private fun collapseView() {
@@ -128,11 +137,17 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         val targetHeight = clContent.height
         ObjectAnimator.ofFloat(clContent, "translationY", 0f, -targetHeight.toFloat()).apply {
             duration = 300
-            addListener(onStart={
-                mBinding.maskView.isInvisible = true
-            },onEnd = {
+            addListener(onEnd = {
                 mBinding.clFilter.visibility = View.INVISIBLE
                 dismiss()
+            })
+            start()
+        }
+        val maskHeight = mBinding.maskView.height
+        ObjectAnimator.ofFloat( mBinding.maskView, "translationY", 0f, -maskHeight.toFloat()).apply {
+            duration = 150
+            addListener(onEnd = {
+                mBinding.maskView.visibility = View.INVISIBLE
             })
             start()
         }
