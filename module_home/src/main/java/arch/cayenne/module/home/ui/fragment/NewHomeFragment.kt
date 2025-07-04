@@ -23,6 +23,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -539,18 +540,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
-
             llFavoriteEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
-
+            llFavoriteEntry.addScaleOnTouchAnimation(tvFavoriteIcon)
             llSearchEntry.setOnClickListener {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
-
+            llSearchEntry.addScaleOnTouchAnimation(tvSearchIcon)
             llBetEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
+            llBetEntry.addScaleOnTouchAnimation(tvBetIcon)
         }
     }
 
