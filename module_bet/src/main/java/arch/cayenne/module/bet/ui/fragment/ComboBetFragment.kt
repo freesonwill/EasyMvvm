@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -158,13 +158,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
             val lastSize = comboMultiBetAdapter.itemCount
             comboMultiBetAdapter.submitList(data) {
-                if (lastSize == 0 && data.isNotEmpty()) {
-                    setMultiLayoutExpandedHeight(false)
-                } else if (data.size <= 1) {
-                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-                        height = getMultiItemHeight() * data.size
-                        restoreBetLayoutPosition()
-                    }
+                if (lastSize == 0) {
+                    initMultiLayout(data.size)
                 }
             }
             setSumBetMoney(data)
@@ -212,6 +207,31 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     private fun forceUpdateLayout() {
         if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
         adjustLayoutHeight()
+    }
+
+    private fun initMultiLayout(size: Int) {
+        if (size == 0 ) {
+            restoreBetLayoutPosition()
+        } else {
+            val currentHeight = mBinding.rvMultiBet.height
+            val targetHeight = getMultiItemHeight() * size.coerceAtMost(1)
+            val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
+                duration = 200
+                interpolator = LinearInterpolator()
+
+                addUpdateListener {
+                    val height = it.animatedValue as Int
+                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
+                        this.height = height
+                    }
+                }
+                doOnEnd {
+                    mBinding.rvMultiBet.scrollToPosition(0)
+                    restoreBetLayoutPosition()
+                }
+            }
+            animator.start()
+        }
     }
 
     private fun adjustLayoutHeight() {
@@ -309,8 +329,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             val targetHeight = itemHeight * if (isExpanded) adapter.itemCount.coerceAtMost(3) else adapter.itemCount.coerceAtMost(1)
 
             val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
-                duration = 300
-                interpolator = DecelerateInterpolator()
+                duration = 200
+                interpolator = LinearInterpolator()
 
                 addUpdateListener {
                     val height = it.animatedValue as Int
