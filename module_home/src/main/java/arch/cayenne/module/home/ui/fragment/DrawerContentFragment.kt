@@ -30,9 +30,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
-        mViewModel.getMessageList()
     }
 
+    override fun initData() {
+        super.initData()
+        mViewModel.getMessageList()
+    }
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
