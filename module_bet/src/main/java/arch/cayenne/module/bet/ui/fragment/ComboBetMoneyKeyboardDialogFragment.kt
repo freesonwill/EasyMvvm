@@ -183,7 +183,7 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private fun setDialogPosition() {
         dialog?.window?.let { window ->
-            window.setDimAmount(0.6f)
+            window.setDimAmount(0.75f)
             val marginInPx = 16.dp2px
             val screenWidth = Resources.getSystem().displayMetrics.widthPixels
             val maxWidth = screenWidth - marginInPx * 2
