@@ -113,9 +113,19 @@ enum class BetResultStatusEnum(val code: Int) {
 
 }
 
-data class BetResultLiteBean(
-    val matchName: List<String>,
-    val comboK: Int = 1,
-    val comboV: Int = 1,
+interface BetResultLiteBean {
     val isSuccessful: Boolean
-)
+}
+
+data class SingleBetResultBean(
+    val matchName: String,
+    val selectionName: String,
+    override val isSuccessful: Boolean
+): BetResultLiteBean
+
+data class ComboBetResultBean(
+    val matchName: List<String>,
+    val comboK: Int,
+    val comboV: Int,
+    override val isSuccessful: Boolean
+): BetResultLiteBean

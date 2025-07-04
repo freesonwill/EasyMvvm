@@ -9,7 +9,9 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.database.entity.BetResultStatusEnum
+import arch.cayenne.lib.database.entity.ComboBetResultBean
 import arch.cayenne.lib.database.entity.InfoBean
+import arch.cayenne.lib.database.entity.SingleBetResultBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
@@ -137,13 +139,22 @@ class CommonRepository(
 
                         betDao.getDetailByOrderId(resp.orderId)?.let { detail ->
                             val selection = betDao.getSelections(detail.betId)
-                            val matchName = selection.map { s -> s.matchName }
-                            val resultLiteBean = BetResultLiteBean(
-                                matchName,
-                                detail.comboK,
-                                detail.comboV,
-                                BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
-                            )
+                            val resultLiteBean = if (selection.size == 1) {
+                                val s = selection.first()
+                                SingleBetResultBean(
+                                    s.matchName,
+                                    s.name,
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                )
+                            } else {
+                                val matchName = selection.map { s -> s.matchName }
+                                ComboBetResultBean(
+                                    matchName,
+                                    detail.comboK,
+                                    detail.comboV,
+                                    BetResultStatusEnum.getStatusByCode(resp.status) == BetResultStatusEnum.SUCCESS_BET
+                                )
+                            }
                             resultList.add(resultLiteBean)
                         }
                     }

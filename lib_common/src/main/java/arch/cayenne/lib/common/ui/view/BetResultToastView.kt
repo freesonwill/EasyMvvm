@@ -11,6 +11,8 @@ import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutBetResultToastBinding
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.database.entity.BetResultLiteBean
+import arch.cayenne.lib.database.entity.ComboBetResultBean
+import arch.cayenne.lib.database.entity.SingleBetResultBean
 
 class BetResultToastView: LinearLayout {
 
@@ -42,28 +44,28 @@ class BetResultToastView: LinearLayout {
     }
 
     fun setResult(data: List<BetResultLiteBean>) {
-        if (data.size == 1 && data.first().matchName.size == 1) {
-            setSingleResult(data.first())
+        if (data.size == 1 && data.first() is SingleBetResultBean) {
+            setSingleResult(data.first() as SingleBetResultBean)
         } else {
-            setComboResult(data)
+            val newData = data.filterIsInstance<ComboBetResultBean>()
+            setComboResult(newData)
         }
     }
 
-    private fun setSingleResult(data: BetResultLiteBean) {
-        if (data.matchName.isEmpty()) return
-        mBinding.tvTitle.isVisible = false
+    private fun setSingleResult(data: SingleBetResultBean) {
+        mBinding.tvMatch.text = data.selectionName
         mBinding.groupSuccess.isVisible = data.isSuccessful
         mBinding.tvSuccessCombo.isVisible = data.isSuccessful
         mBinding.groupFailure.isVisible = !data.isSuccessful
         mBinding.tvFailureCombo.isVisible = !data.isSuccessful
         if (data.isSuccessful) {
-            mBinding.tvSuccessCombo.text = data.matchName.first()
+            mBinding.tvSuccessCombo.text = data.matchName
         } else {
-            mBinding.tvFailureCombo.text = data.matchName.first()
+            mBinding.tvFailureCombo.text = data.matchName
         }
     }
 
-    private fun setComboResult(data: List<BetResultLiteBean>) {
+    private fun setComboResult(data: List<ComboBetResultBean>) {
         if (data.isEmpty() || data.first().matchName.isNotEmpty()) return
         mBinding.tvTitle.text = data.first().matchName.joinToString("、")
         val successfulData = data.filter { it.isSuccessful }
