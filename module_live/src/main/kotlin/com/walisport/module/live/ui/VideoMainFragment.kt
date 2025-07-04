@@ -154,8 +154,8 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
     }
 
     private fun showVideoView() {
-        childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG) as? LiveVideoFragment
-            ?: LiveVideoFragment().also {
+        childFragmentManager.findFragmentByTag(VideoPlayerFragment.TAG) as? VideoPlayerFragment
+            ?: VideoPlayerFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
                         putLong(
@@ -165,13 +165,13 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, VideoPlayerFragment.TAG).commitNow()
             }
     }
 
     private fun showStatusView(){
-        childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG) as? LiveVideoFragment
-            ?: LiveVideoFragment().also {
+        childFragmentManager.findFragmentByTag(VideoPlayerFragment.TAG) as? VideoPlayerFragment
+            ?: VideoPlayerFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
                         putLong(
@@ -181,7 +181,7 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, VideoPlayerFragment.TAG).commitNow()
             }
     }
 
@@ -204,7 +204,7 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
 
 
     companion object {
-        const val TAG = "LiveVideoMainFragment"
+        const val TAG = "VideoMainFragment"
     }
 
 

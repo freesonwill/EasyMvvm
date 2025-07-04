@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.walisport.module.live.ui.viewmodel.LiveVideoViewModel" />
+            type="com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel" />
     </data>
 
     <LinearLayout

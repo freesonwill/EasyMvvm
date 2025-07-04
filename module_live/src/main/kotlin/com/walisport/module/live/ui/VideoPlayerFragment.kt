@@ -35,9 +35,9 @@ import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
-import com.walisport.module.live.databinding.FragmentLiveVideoBinding
+import com.walisport.module.live.databinding.FragmentVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
-import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
@@ -51,9 +51,9 @@ import kotlin.reflect.KClass
 /**
  * 竖屏播放视频页， 用在直播详情的首页
  */
-class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBinding>() {
-    override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
-    override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
+class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlayerBinding>() {
+    override val vbClass: KClass<FragmentVideoPlayerBinding> = FragmentVideoPlayerBinding::class
+    override val vmClass: KClass<VideoPlayerViewModel> = VideoPlayerViewModel::class
 
     private lateinit var videoView: LivePlayerView
 
@@ -203,7 +203,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                             ViewGroup.LayoutParams.WRAP_CONTENT
                         )
                     }
-                    show(this@LiveVideoFragment.childFragmentManager)
+                    show(this@VideoPlayerFragment.childFragmentManager)
                 }
 
             }

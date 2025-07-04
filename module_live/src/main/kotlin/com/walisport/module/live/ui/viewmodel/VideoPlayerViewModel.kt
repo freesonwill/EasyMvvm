@@ -26,7 +26,7 @@ import com.xxx.qyplayer.PlayerState
 /**
  * 竖屏播放视频时， 视频fragment对应的ViewModel
  */
-class LiveVideoViewModel(
+class VideoPlayerViewModel(
     private val repo: LiveVideoRepository,
     private val mainRepo: LiveMainRepository
 ) : BaseViewModel() {
