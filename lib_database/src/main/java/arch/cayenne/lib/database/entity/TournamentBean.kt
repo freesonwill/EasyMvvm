@@ -6,24 +6,20 @@ import androidx.room.PrimaryKey
 @Entity
 data class TournamentBean(
     @PrimaryKey val id: Int,
-    val playType: Int,
-    val sportId: Int,
     val name: String,
     val simpleName: String,
     val icon: String,
+)
+
+@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
+data class SportTournamentCrossRef(
+    val tournamentId: Int,
+    val sportId: Int,
+    val playType: Int,
     val hot: Boolean,
     val weight: Int,
     val index: Int,
 )
-
-//@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
-//data class SportTournamentCrossRef(
-//    val tournamentId: Int,
-//    val sportId: Int,
-//    val playType: Int,
-//    val hot: Boolean,
-//    val weight: Int,
-//)
 
 abstract class BaseTournamentData {
     abstract val id: Int

@@ -7,7 +7,6 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -95,30 +94,25 @@ class HomeViewModel : BaseViewModel() {
         _collapseTournamentDropdown.value = Event(false)
     }
 
-    private fun addNewTournament(id: Int) {
+    private fun addNewTournament(tournament: TournamentDataModel) {
 
         val currentList = tournaments.value?.peekContent().orEmpty()
-        val existsInCurrent = currentList.any { it.id == id }
+        val existsInCurrent = currentList.any { it.id == tournament.id }
         if (existsInCurrent) {
-            _selectedTournamentId.postValue(Event(id))
+            _selectedTournamentId.postValue(Event(tournament.id))
         } else {
             viewModelScope.launch(Dispatchers.IO) {
-                val tournament = repository.getTournamentById(id)
-                if (tournament != null) {
-                    val updatedList = currentList
-                        .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
-                        .toMutableList()
-                        .apply { add(tournament) }
+                val updatedList = currentList
+                    .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
+                    .toMutableList()
+                    .apply { add(tournament) }
 
-                    val fullList =
-                        listOf(TournamentDataModel.createAllItem(currentSportId)) + updatedList
+                val fullList =
+                    listOf(TournamentDataModel.createAllItem(currentSportId)) + updatedList
 
-                    withContext(Dispatchers.Main) {
-                        tournaments.value = Event(fullList)
-                        _selectedTournamentId.postValue(Event(id))
-                    }
-                } else {
-                    "Tournament ID:$id not found".loge(this::class.java.simpleName)
+                withContext(Dispatchers.Main) {
+                    tournaments.value = Event(fullList)
+                    _selectedTournamentId.postValue(Event(tournament.id))
                 }
             }
         }
@@ -126,7 +120,7 @@ class HomeViewModel : BaseViewModel() {
 
     fun onTournamentListSelected(tournament: BaseTournamentData) {
         if (tournament is TournamentDataModel) {
-            addNewTournament(tournament.id)
+            addNewTournament(tournament)
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
 
@@ -189,18 +183,22 @@ class HomeViewModel : BaseViewModel() {
         tournamentJob = viewModelScope.launch {
             repository.observeTenTournaments(currentPlayType.id, currentSportId).collect {
                 val data = mutableListOf<TournamentDataModel>()
+                if (it.isEmpty()) {
+                    callApi({
+                        repository.getTenTournaments(currentPlayType.id, currentSportId)
+                    }, {
+                        if (it is ApiResponseState.Succeeded<*>) {
+                            setState(HomeState.Tournament.LoadSuccess)
+                        }
+                    })
+                    return@collect
+                }
                 data.add(TournamentDataModel.createAllItem(currentSportId))
                 data.addAll(it)
                 tournaments.value = Event(data)
             }
         }
-        callApi({
-            repository.getTenTournaments(currentPlayType.id, currentSportId)
-        }, {
-            if (it is ApiResponseState.Succeeded<*>) {
-                setState(HomeState.Tournament.LoadSuccess)
-            }
-        })
+
     }
 
     fun resetSelectedDate() {

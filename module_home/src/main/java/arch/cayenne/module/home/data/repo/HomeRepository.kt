@@ -3,11 +3,12 @@ package arch.cayenne.module.home.data.repo
 import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
+import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
-import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
@@ -66,7 +67,7 @@ class HomeRepository(
 
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): ApiResponseState = withContext(scope.coroutineContext) {
-        clearMatchCache()
+        "KC_ 取得联赛资料 playType = $playType, sportId = $sportId".logi(this@HomeRepository::class.java.simpleName)
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListTournamentResp>(
             scope = scope,
@@ -92,32 +93,32 @@ class HomeRepository(
         data: Client.ListTournamentResp
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
+        val refs = mutableListOf<SportTournamentCrossRef>()
         data.tournamentList.forEachIndexed { index, tournament ->
             tournamentList.add(
                 TournamentBean(
                     id = tournament.id,
-                    playType = playType,
-                    sportId = sportId,
                     name = tournament.name,
                     simpleName = tournament.simpleName,
                     icon = tournament.icon,
+                )
+            )
+            refs.add(
+                SportTournamentCrossRef(
+                    tournamentId = tournament.id,
+                    playType = playType,
+                    sportId = sportId,
                     hot = tournament.hot,
                     weight = tournament.weight,
                     index = index,
                 )
             )
         }
+
         tournamentDao.insert(tournamentList)
-        tournamentDao.deleteMissing(tournamentList.map { it.id })
+        tournamentDao.insertSportTournamentCrossRefs(refs)
+        tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
         return ApiResponseState.Succeeded(tournamentList)
-    }
-
-
-    // HomeRepository.kt
-    fun getTournamentById(
-        tournamentId: Int
-    ): TournamentDataModel? {
-        return tournamentDao.getTournamentById(tournamentId)
     }
 
     private fun clearMatchCache() {
