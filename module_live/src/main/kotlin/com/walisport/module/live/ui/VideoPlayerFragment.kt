@@ -24,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
@@ -37,6 +38,7 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.VideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
@@ -54,6 +56,8 @@ import kotlin.reflect.KClass
 class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlayerBinding>() {
     override val vbClass: KClass<FragmentVideoPlayerBinding> = FragmentVideoPlayerBinding::class
     override val vmClass: KClass<VideoPlayerViewModel> = VideoPlayerViewModel::class
+
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
     private lateinit var videoView: LivePlayerView
 
@@ -221,6 +225,12 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
     }
 
     override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner){
+            mViewModel.setMatchId(it)
+            mViewModel.createObserver()
+        }
+
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
@@ -274,17 +284,12 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
                     matchStatus?.let { _ ->
                         when (matchStatus) {
                             MatchStatus.IN_PROGRESS -> {
-                                //比赛正在进行中
-                                mBinding.ctVideoPlay.visibility = View.VISIBLE
                                 //比赛正在进行中才会拉取视频流
                                 mViewModel.queryLiveStream()
                             }
 
                             else -> {
-                                //其他情况
-                                mBinding.ctVideoPlay.visibility = View.GONE
-                                //比赛从正在进行中变更为其他状态时，需要停止视频播放
-                                videoView.pause()
+
                             }
                         }
 
@@ -294,78 +299,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
 
             }
 
-            homeTeamName.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvHomeTeam.text = it
-                }
-            }
 
-            homeTeamIcon.observe(viewLifecycleOwner) {
-                it?.let {
-                    Glide.with(requireContext())
-                        .load(it)
-                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
-                        .error(arch.cayenne.lib.common.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotInProgress.ivHomeTeam)
-                }
-            }
-
-            homeHistoryVs.observe(viewLifecycleOwner) {
-//                "homeList:$it".logd("scoreIssue")
-                mBinding.includedMatchNotInProgress.homeHistory.setData(it)
-            }
-
-            awayTeamName.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvAwayTeam.text = it }
-            }
-
-            awayTeamIcon.observe(viewLifecycleOwner) {
-                it?.let {
-                    Glide.with(requireContext())
-                        .load(it)
-                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
-                        .error(arch.cayenne.lib.common.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
-                }
-            }
-
-            awayHistoryVs.observe(viewLifecycleOwner) {
-//                "awayList:$it".logd("scoreIssue")
-                mBinding.includedMatchNotInProgress.awayHistory.setData(it)
-            }
-
-            titleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvTitle.text = it }
-            }
-
-            titleTextSize.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvTitle.setTextSize(
-                        COMPLEX_UNIT_PX,
-                        it.getDimension()
-                    )
-                }
-            }
-
-            titleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvTitle.setTextColor(it.getColor()) }
-            }
-
-            subTitleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.text = it }
-            }
-
-            subTitleTextSize.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvSubtitle.setTextSize(
-                        COMPLEX_UNIT_PX,
-                        it.getDimension()
-                    )
-                }
-            }
-            subTitleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
-            }
 
             playerState.observe(viewLifecycleOwner) {
                 onPlayerStateReceived(it)
@@ -568,7 +502,7 @@ class VideoPlayerFragment : BaseFragment<VideoPlayerViewModel, FragmentVideoPlay
     }
 
     companion object {
-        const val TAG = "LiveVideoFragment"
+        const val TAG = "VideoPlayerFragment"
     }
 
 
