@@ -32,7 +32,6 @@ class MatchStatusViewModel(
 
     //比赛状态
     private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
-    val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
 
     //主队名称
     private val _homeTeamName = MutableLiveData("")
