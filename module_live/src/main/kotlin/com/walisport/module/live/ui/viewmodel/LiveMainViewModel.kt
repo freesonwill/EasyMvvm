@@ -162,9 +162,9 @@ class LiveMainViewModel(
     }
 
     //取消订阅比赛技术统计推送
-    fun unregisterStatisticsNotify(matchId: Long) {
+    fun unregisterStatisticsNotify() {
         viewModelScope.launch {
-            repo.unregisterStatisticsNotify(matchId)
+            repo.unregisterStatisticsNotify()
         }
     }
 

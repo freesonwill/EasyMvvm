@@ -125,8 +125,8 @@ class LiveMainRepository(
         return remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
-    suspend fun unregisterStatisticsNotify(matchId: Long) {
-        remoteManager.registerMatchStaticsNotify(scope, matchId)
+    suspend fun unregisterStatisticsNotify() {
+        remoteManager.unregisterMatchStaticsNotify(scope)
     }
 
     suspend fun observeMatchStaticsNotify(): Flow<Sloth.MatchLiveData> {
