@@ -5,18 +5,18 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.MatchStatus
-import com.walisport.module.live.databinding.FragmentVideoMainBinding
+import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.ui.viewmodel.VideoMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import kotlin.reflect.KClass
 
 
 /**
- * 竖屏播放视频页， 用在直播详情的首页
+ * 竖屏播放时的媒体页， 用来展示比赛视频，比赛动画或者比赛信息
  */
-class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBinding>() {
-    override val vbClass: KClass<FragmentVideoMainBinding> = FragmentVideoMainBinding::class
-    override val vmClass: KClass<VideoMainViewModel> = VideoMainViewModel::class
+class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiveMatchMediaBinding>() {
+    override val vbClass: KClass<FragmentLiveMatchMediaBinding> = FragmentLiveMatchMediaBinding::class
+    override val vmClass: KClass<LiveMatchMediaViewModel> = LiveMatchMediaViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
 
@@ -134,7 +134,7 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
 
 
     companion object {
-        const val TAG = "VideoMainFragment"
+        const val TAG = "LiveMatchMediaFragment"
     }
 
 

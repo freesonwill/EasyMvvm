@@ -12,9 +12,11 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 /**
- * 竖屏播放视频时， 视频fragment对应的ViewModel
+ *
+ * LiveMatchMediaFragment对应的ViewModel
+ *
  */
-class VideoMainViewModel(
+class LiveMatchMediaViewModel(
     private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 
