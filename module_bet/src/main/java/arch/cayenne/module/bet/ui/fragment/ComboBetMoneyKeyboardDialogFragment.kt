@@ -200,11 +200,14 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
                 )
                 val dialogHeight = mBinding.root.measuredHeight
 
+                val statusBarHeight =  ViewUtils.getStatusBarHeight(requireContext())
+
                 val layoutParams = window.attributes
                 layoutParams.gravity = Gravity.TOP or Gravity.START
-                val triangleWidth = mBinding.triangle.width.takeIf { it > 0 } ?: 20.dp2px // 預設寬度
+                val triangleWidth = mBinding.triangle.measuredWidth // 預設寬度
+                val triangleHeight = mBinding.triangle.measuredHeight // 預設高度
                 layoutParams.x = positionX - triangleWidth / 2
-                layoutParams.y = positionY - dialogHeight
+                layoutParams.y = positionY - dialogHeight - statusBarHeight - triangleHeight
                 window.attributes = layoutParams
 
                 mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {

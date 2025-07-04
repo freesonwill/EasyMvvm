@@ -1,11 +1,13 @@
 package arch.cayenne.lib.base
 
 import android.content.Context
+import android.os.Looper
 import androidx.startup.Initializer
 import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.data.repository.EmptyRepository
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.log.FrameDropLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -39,8 +41,17 @@ class ApplicationModuleInitializer : DefaultInitializer<String> {
             androidContext(context)
             modules(moduleList)
         }
+        detectFrameDrop()
         "$TAG init....".logd(TAG)
         return TAG
+    }
+
+    private fun detectFrameDrop(){
+        if(BuildConfig.DEBUG) {
+            val frameDropLogger = FrameDropLogger()
+            frameDropLogger.start()
+            Looper.getMainLooper().setMessageLogging(FrameDropLogger.LooperMonitor())
+        }
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
