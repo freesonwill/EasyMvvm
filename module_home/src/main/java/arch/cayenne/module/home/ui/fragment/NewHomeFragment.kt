@@ -314,6 +314,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 this?.calendarView?.scrollToPre(true)
             }
             this?.calendarBtnCancel?.clickNoRepeat {
+                this?.calendarView?.scrollToCurrent()
+                setSelectedDateTab(selectedDate)
                 customPopup?.dismiss() // 關閉 Popup
             }
             this?.calendarBtnOk?.clickNoRepeat {
