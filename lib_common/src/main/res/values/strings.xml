@@ -18,4 +18,5 @@
 
     <string name="title_result_success_bet">投注成功</string>
     <string name="title_result_fail_bet">投注失败</string>
+    <string name="title_result_toast">投注结果通知</string>
 </resources>
