@@ -51,7 +51,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/rv_combo_odds"
         app:layout_constraintTop_toBottomOf="@id/tv_hint"
-        app:layout_constraintVertical_bias="0.111"
         app:layout_goneMarginTop="10dp"
         tools:itemCount="4"
         tools:listitem="@layout/item_bet_sheet" />
