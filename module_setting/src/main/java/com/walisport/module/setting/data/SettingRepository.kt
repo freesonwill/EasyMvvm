@@ -13,14 +13,14 @@ import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.java.KoinJavaComponent.inject
 
 class SettingRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
+    private val manager: UserDataManager
 ) : BaseRepository() {
 
-    private val manager: UserDataManager by inject(UserDataManager::class.java)
+    val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
 
     //设置皮肤背景
     fun setSkinType(type: String) {
@@ -30,16 +30,6 @@ class SettingRepository(
     //获取皮肤背景
     fun getSkinType(): String {
         return manager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
-    }
-
-    //设置赔率显示方式
-    fun setOddsType(type: Int) {
-        manager.setKeyValue(UserDataKey.KEY_ODDS, type)
-    }
-
-    //获取赔率显示方式
-    fun getOddsType(): Int {
-        return manager.getValue(UserDataKey.KEY_ODDS, 0)
     }
 
     //设置语言类型
@@ -121,5 +111,9 @@ class SettingRepository(
                 }.build()
             }
         }
+    }
+
+    fun getOddsType(): Int {
+        return manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
     }
 }

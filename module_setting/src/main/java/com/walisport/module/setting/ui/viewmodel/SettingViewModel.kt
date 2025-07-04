@@ -7,13 +7,14 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.SkinType
-import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
+import com.walisport.module.setting.data.OddsDisplayEnum
 import com.walisport.module.setting.data.SettingRepository
 import galaxy.common.proto.Common.Setting
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -33,14 +34,21 @@ class SettingViewModel : BaseViewModel() {
     private val _skinType = MutableLiveData<String>()
     val skinType: LiveData<String> = _skinType
 
-    //设置赔率方式
-    fun setOddsType(type: Int) {
-        repository.setOddsType(type)
-    }
+    private val _displayType = MutableLiveData<OddsDisplayEnum>()
+    val displayType: LiveData<OddsDisplayEnum> get() = _displayType
 
-    //获取赔率显示方式
-    fun getOddsType(): Int {
-        return repository.getOddsType()
+    init {
+        viewModelScope.launch {
+            launch {
+                _displayType.value = getOddsType()
+            }
+            launch(Dispatchers.IO) {
+                repository.observerOddsDisplay.collect {
+                    val type = OddsDisplayEnum.entries[it]
+                    _displayType.postValue(type)
+                }
+            }
+        }
     }
 
     //设置语言类型
@@ -158,22 +166,6 @@ class SettingViewModel : BaseViewModel() {
         }
     }
 
-    fun getSkinnableOddsType(context: Context, oddsType: Int): String {
-        return if (oddsType == 0) {
-            SkinnableResourceManager.getString(
-                context,
-                R.string.menu_europe,
-                languageManager.getLanguage()
-            )
-        } else {
-            SkinnableResourceManager.getString(
-                context,
-                R.string.menu_hk,
-                languageManager.getLanguage()
-            )
-        }
-    }
-
     private fun getSystemSetting(): Setting {
         val language = getLanguageType()
         return Setting.newBuilder().apply {
@@ -194,4 +186,10 @@ class SettingViewModel : BaseViewModel() {
             else -> SkinType.SKIN_CLASSIC.value
         }
     }
+
+    private fun getOddsType(): OddsDisplayEnum {
+        return OddsDisplayEnum.entries[repository.getOddsType()]
+    }
+
+    fun getLanguage() = languageManager.getLanguage()
 }
