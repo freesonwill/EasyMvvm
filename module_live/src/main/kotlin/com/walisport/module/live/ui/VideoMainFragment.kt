@@ -96,8 +96,8 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
     }
 
     private fun showStatusView(){
-        childFragmentManager.findFragmentByTag(VideoPlayerFragment.TAG) as? VideoPlayerFragment
-            ?: VideoPlayerFragment().also {
+        childFragmentManager.findFragmentByTag(MatchStatusFragment.TAG) as? MatchStatusFragment
+            ?: MatchStatusFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
                         putLong(
@@ -107,7 +107,7 @@ class VideoMainFragment : BaseFragment<VideoMainViewModel, FragmentVideoMainBind
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, VideoPlayerFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, MatchStatusFragment.TAG).commitNow()
             }
     }
 
