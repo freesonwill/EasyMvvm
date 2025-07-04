@@ -116,6 +116,12 @@ class MatchItemViewHolder(
             setIconWithDefault(basicInfo.homeTeamIcon, R.drawable.ic_default_team, ivHomeIcon)
             tvHomeName.text = basicInfo.homeTeam.limitTitleLength()
             tvWatchCount.text = liveInfo.viewerCount.toString()
+            ivLiveAnimation.setImageResource(
+                if (liveInfo.liveAnimation.isBlank()) R.drawable.ic_live_animation_disabled else R.drawable.ic_live_animation
+            )
+            ivLiveVideo.setImageResource(
+                if (liveInfo.liveVideo) R.drawable.ic_live_video else R.drawable.ic_live_video_disabled
+            )
             ivFavorite.isSelected = data.match.collect
 
             if (basicInfo.status == 5) {
@@ -171,6 +177,18 @@ class MatchItemViewHolder(
 
             if ("viewerCount" in changes) {
                 tvWatchCount.text = liveInfo.viewerCount.toString()
+            }
+
+            if ("liveAnimation" in changes) {
+                ivLiveAnimation.setImageResource(
+                    if (liveInfo.liveAnimation.isBlank()) R.drawable.ic_live_animation_disabled else R.drawable.ic_live_animation
+                )
+            }
+
+            if ("liveVideo" in changes) {
+                ivLiveVideo.setImageResource(
+                    if (liveInfo.liveVideo) R.drawable.ic_live_video else R.drawable.ic_live_video_disabled
+                )
             }
             if ("odds" in changes) {
                 val selectionsGrouped = item.markets.map { it.market to it.selections }

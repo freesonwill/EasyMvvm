@@ -152,6 +152,7 @@ abstract class BaseMatchRepository(
                 clockModified = match.liveInfo.clockModified + 1000,
                 homeScore = match.liveInfo.homeScore,
                 awayScore = match.liveInfo.awayScore,
+                liveAnimation = match.liveInfo.liveAnimation
             )
             matchLites.add(
                 MatchBeanLite(
