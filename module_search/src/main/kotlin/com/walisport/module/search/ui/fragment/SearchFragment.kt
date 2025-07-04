@@ -157,6 +157,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
+                                    backToSearchMainFragment()
                                     setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
                                     resetSearchRecommend()
                                 }
@@ -176,6 +177,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         }
                         resetSearchRecommend()
                         addSearchRecord(content)
+                        backToSearchMainFragment()
                         setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
                         hideKeyboard(requireContext(), getSearchEditText())
                     },
@@ -460,6 +462,11 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         editText.requestFocus()
         val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun backToSearchMainFragment() {
+        val navController = findChildNavController(mBinding.fragmentContainer.id)
+        navController.popBackStack(R.id.searchMainFragment, false)
     }
 
     private fun doNavigate(event: SearchNavigationEvent) {
