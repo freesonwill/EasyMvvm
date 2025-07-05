@@ -7,36 +7,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.database.entity.LiveMatchBean
-import arch.cayenne.lib.database.entity.LiveVideoBean
-import com.walisport.module.live.data.LiveMainRepository
-import com.walisport.module.live.data.MuteManager
+import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.repository.LiveVideoRepository
 import com.walisport.module.live.utils.LiveDateUtil
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.koin.core.component.inject
-import org.koin.core.parameter.parametersOf
-import com.walisport.module.live.R
-import com.walisport.module.live.data.LandscapeVideoFragmentLifeCycle
-import com.xxx.qyplayer.PlayerState
 
 /**
- * 竖屏播放视频时， 视频fragment对应的ViewModel
+ * 比赛状态页面对应的ViewModel
  */
-class LiveVideoViewModel(
-    private val repo: LiveVideoRepository,
-    private val mainRepo: LiveMainRepository
+class LiveMatchStatusViewModel(
+    private val repo: LiveVideoRepository
 ) : BaseViewModel() {
 
-    private val _mainMatch = MutableLiveData<LiveMatchBean>()
-    val mainMatch: LiveData<LiveMatchBean> = _mainMatch
-
-    //比赛状态
-    private val _matchBeanLiveData = MutableLiveData<LiveMatchBean>()
-    val matchBeanLiveData: LiveData<LiveMatchBean> = _matchBeanLiveData
 
     //主队名称
     private val _homeTeamName = MutableLiveData("")
@@ -64,7 +50,6 @@ class LiveVideoViewModel(
 
     //比赛名称
     private val _matchName = MutableLiveData("")
-    val matchName: LiveData<String> = _matchName
 
     //标题信息
     private val _titleText = MutableLiveData<String>("")
@@ -87,7 +72,8 @@ class LiveVideoViewModel(
     val subTitleText: LiveData<String> = _subTitleText
 
     @ColorRes
-    private val _subTitleTextColor = MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
+    private val _subTitleTextColor =
+        MutableLiveData<Int>(arch.cayenne.lib.common.R.color.color_929298)
 
     @ColorRes
     val subTitleTextColor: LiveData<Int> = _subTitleTextColor
@@ -103,52 +89,6 @@ class LiveVideoViewModel(
      */
     private val _tournamentIcon = MutableLiveData("")
 
-    /**
-     * 联赛图标
-     */
-    val tournamentIcon: LiveData<String> = _tournamentIcon
-
-    private val _liveVideoBean = MutableLiveData<LiveVideoBean>()
-    val liveVideoBean: LiveData<LiveVideoBean> get() = _liveVideoBean
-
-    private val muteManager: MuteManager by inject { parametersOf() }
-
-    fun mutedData() = muteManager.mutedLiveData
-
-    private val landscapeVideoFragmentLifeCycle: LandscapeVideoFragmentLifeCycle by inject { parametersOf() }
-
-    fun landscapeVideoFragmentDestroyedEvent() = landscapeVideoFragmentLifeCycle.destroyedEvent
-
-    /**
-     * 播放状态
-     */
-    private val _playerState = MutableLiveData(PlayerState.IDLE)
-    val playerState: LiveData<PlayerState> get() = _playerState
-
-    /**
-     * 改变静音状态
-     */
-    fun changeMuteStatus() {
-        viewModelScope.launch {
-            muteManager.changeMuteStatus()
-        }
-    }
-
-    /**
-     * 设置静音
-     */
-    fun mute() {
-        viewModelScope.launch { muteManager.mute() }
-    }
-
-    /**
-     * 取消静音
-     */
-    fun unMute() {
-        viewModelScope.launch { muteManager.unMute() }
-    }
-
-    var leagueID = 0
 
     fun matchId() = repo.matchId
 
@@ -156,24 +96,16 @@ class LiveVideoViewModel(
         repo.matchId = matchId
     }
 
-    fun createObserver() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.observeLiveVideoBean(repo.matchId).collect {
-                withContext(Dispatchers.Main) {
-                    if (it != null) {
-                        _liveVideoBean.value = it
-                    }
-                }
-            }
-        }
+    private var job: Job? = null
 
-        viewModelScope.launch(Dispatchers.IO) {
+    fun createObserver() {
+        job?.cancel()
+        job = viewModelScope.launch(Dispatchers.IO) {
             repo.observeMatchBean(repo.matchId).collect { matchBean ->
 
                 matchBean?.let { match ->
                     withContext(Dispatchers.Main) {
 //                    "match.${match}".logd("matchIssue")
-                        _matchBeanLiveData.value = match
 
                         _homeTeamName.value = match.basicInfo.homeTeam
                         _homeTeamIcon.value = match.basicInfo.homeTeamIcon
@@ -254,19 +186,4 @@ class LiveVideoViewModel(
     }
 
 
-    fun queryLiveStream() {
-        repo.queryLiveStream()
-    }
-
-    fun getMainMatch(matchId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            mainRepo.getMatchRes(matchId) {
-                _mainMatch.value = it
-            }
-        }
-    }
-
-    fun setPlayerState(it: PlayerState) {
-        _playerState.value = it
-    }
 }
