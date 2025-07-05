@@ -28,7 +28,7 @@ class LiveVideoRepository(
     var matchId: Long = 0
 
     fun observeLiveVideoBean(observeMatchId: Long) =
-        liveVideoDao.observeLiveVideoBean(observeMatchId)
+        liveVideoDao.observeLiveVideoBean(observeMatchId).flowOn(Dispatchers.IO)
 
     fun observeMatchBean(observeMatchId: Long) =
         liveMatchDao.observeMatchById(observeMatchId).flowOn(Dispatchers.IO)
