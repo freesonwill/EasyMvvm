@@ -34,16 +34,11 @@ class LiveMatchMediaViewModel(
 
     fun createObserver() {
         job?.cancel()
-        job = viewModelScope.launch(Dispatchers.IO) {
-            repo.observeMatchBean(repo.matchId).collect { matchBean ->
-
-                matchBean?.let { match ->
-                    withContext(Dispatchers.Main) {
-                        _matchBeanLiveData.value = match
-
-                    }
+        job = viewModelScope.launch {
+            repo.observeMatchBean(repo.matchId).collect {
+                it?.let {
+                    _matchBeanLiveData.value = it
                 }
-
             }
         }
 
