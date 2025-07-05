@@ -138,6 +138,10 @@ class LiveMainViewModel(
     fun registerMatchInfoNotify(matchId: Long) {
         viewModelScope.launch {
             repo.registerMatchInfoNotify(matchId)
+        }
+    }
+    fun observeMatchInfoNotify() {
+        viewModelScope.launch {
             repo.observeMatchInfoNotify()
         }
     }
