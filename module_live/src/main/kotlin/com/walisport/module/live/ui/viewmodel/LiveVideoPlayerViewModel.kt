@@ -14,6 +14,7 @@ import com.xxx.qyplayer.PlayerState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -135,9 +136,13 @@ class LiveVideoPlayerViewModel(
     }
 
     fun getMainMatch(matchId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            mainRepo.getMatchRes(matchId) {
-                _mainMatch.value = it
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                mainRepo.getMatchRes(matchId)
+            }
+            result?.let {
+                _mainMatch.value = it  // 主线程更新 LiveData }
+
             }
         }
     }
