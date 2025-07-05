@@ -1,5 +1,6 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -114,41 +115,36 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
     private fun expandView() {
         val clContent = mBinding.clContent
         val height = clContent.height
-        ObjectAnimator.ofFloat(clContent, "translationY", -height.toFloat(), 0f).apply {
+        val contentAnimate =
+            ObjectAnimator.ofFloat(clContent, "translationY", -height.toFloat(), 0f).apply {
+                addListener(onStart = {
+                    mBinding.clFilter.visibility = View.VISIBLE
+                    mBinding.maskView.visibility = View.VISIBLE
+                })
+            }
+        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0f, 0.5f)
+        AnimatorSet().apply {
             duration = 300
-            addListener(onStart = {
-                mBinding.clFilter.visibility = View.VISIBLE
-            })
+            playTogether(contentAnimate, maskAlphaAnimate)
             start()
         }
-        val maskHeight = mBinding.maskView.height
-        ObjectAnimator.ofFloat(mBinding.maskView, "translationY", -maskHeight.toFloat(), 0f).apply {
-            duration = 100
-            addListener(onStart = {
-                mBinding.maskView.visibility = View.VISIBLE
-            })
-            start()
-        }
-
     }
 
     private fun collapseView() {
         val clContent = mBinding.clContent
         val targetHeight = clContent.height
-        ObjectAnimator.ofFloat(clContent, "translationY", 0f, -targetHeight.toFloat()).apply {
+        val contentAnimate =
+            ObjectAnimator.ofFloat(clContent, "translationY", 0f, -targetHeight.toFloat()).apply {
+                addListener(onEnd = {
+                    mBinding.clFilter.visibility = View.INVISIBLE
+                    mBinding.maskView.visibility = View.INVISIBLE
+                    dismiss()
+                })
+            }
+        val maskAlphaAnimate = ObjectAnimator.ofFloat(mBinding.maskView, "alpha", 0.5f, 0f)
+        AnimatorSet().apply {
             duration = 300
-            addListener(onEnd = {
-                mBinding.clFilter.visibility = View.INVISIBLE
-                dismiss()
-            })
-            start()
-        }
-        val maskHeight = mBinding.maskView.height
-        ObjectAnimator.ofFloat( mBinding.maskView, "translationY", 0f, -maskHeight.toFloat()).apply {
-            duration = 150
-            addListener(onEnd = {
-                mBinding.maskView.visibility = View.INVISIBLE
-            })
+            playTogether(contentAnimate, maskAlphaAnimate)
             start()
         }
     }
