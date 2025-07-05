@@ -33,7 +33,9 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
+import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
@@ -55,6 +57,9 @@ class LiveVideoPlayerFragment :
     override val vmClass: KClass<LiveVideoPlayerViewModel> = LiveVideoPlayerViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
+    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+
 
     private lateinit var videoView: LivePlayerView
 
@@ -217,6 +222,8 @@ class LiveVideoPlayerFragment :
             }
 
             ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }
+
+            ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
 
     }

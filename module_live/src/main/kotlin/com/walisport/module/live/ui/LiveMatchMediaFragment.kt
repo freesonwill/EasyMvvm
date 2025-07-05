@@ -63,6 +63,10 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
             }
 
+            animationSwitch.observe(viewLifecycleOwner){
+                showAnimationView()
+            }
+
         }
 
 
@@ -99,6 +103,21 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
                 }
                 childFragmentManager.beginTransaction()
                     .replace(mBinding.fragmentVideo.id, it, LiveMatchStatusFragment.TAG).commitNow()
+            }
+    }
+
+    private fun showAnimationView(){
+        "showAnimationView".logd(TAG)
+        childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) as? LiveMatchAnimationFragment
+            ?: LiveMatchAnimationFragment().also {
+                it.arguments = Bundle().apply {
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG).commitNow()
             }
     }
 
