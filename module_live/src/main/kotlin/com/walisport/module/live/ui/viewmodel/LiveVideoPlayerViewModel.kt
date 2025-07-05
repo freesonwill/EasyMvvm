@@ -14,7 +14,6 @@ import com.xxx.qyplayer.PlayerState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
@@ -103,26 +102,20 @@ class LiveVideoPlayerViewModel(
 
     fun createObserver() {
         liveBeanJob?.cancel()
-        liveBeanJob = viewModelScope.launch(Dispatchers.IO) {
+        liveBeanJob = viewModelScope.launch {
             repo.observeLiveVideoBean(repo.matchId).collect {
-                withContext(Dispatchers.Main) {
-                    if (it != null) {
-                        _liveVideoBean.value = it
-                    }
+                if (it != null) {
+                    _liveVideoBean.value = it
                 }
             }
         }
 
         matchBeanJob?.cancel()
-        matchBeanJob = viewModelScope.launch(Dispatchers.IO) {
+        matchBeanJob = viewModelScope.launch {
             repo.observeMatchBean(repo.matchId).collect { matchBean ->
-
                 matchBean?.let { match ->
-                    withContext(Dispatchers.Main) {
 //                    "match.${match}".logd("matchIssue")
-                        _matchBeanLiveData.value = match
-
-                    }
+                    _matchBeanLiveData.value = match
                 }
 
             }
