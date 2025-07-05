@@ -16,8 +16,10 @@ import kotlin.reflect.KClass
 /**
  * 比赛动画页
  */
-class LiveMatchAnimationFragment : BaseFragment<LiveMatchAnimationViewModel, FragmentLiveMatchAnimationBinding>() {
-    override val vbClass: KClass<FragmentLiveMatchAnimationBinding> = FragmentLiveMatchAnimationBinding::class
+class LiveMatchAnimationFragment :
+    BaseFragment<LiveMatchAnimationViewModel, FragmentLiveMatchAnimationBinding>() {
+    override val vbClass: KClass<FragmentLiveMatchAnimationBinding> =
+        FragmentLiveMatchAnimationBinding::class
     override val vmClass: KClass<LiveMatchAnimationViewModel> = LiveMatchAnimationViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
@@ -33,15 +35,18 @@ class LiveMatchAnimationFragment : BaseFragment<LiveMatchAnimationViewModel, Fra
 
     override fun createObserver() {
         //监听比赛id变化
-        mainViewModel.matchId.observe(viewLifecycleOwner){
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)
             mViewModel.createObserver()
         }
 
         with(mViewModel) {
-
-            //比赛状态的监听
-
+            //比赛动画url监听
+            animationLiveUrl.observe(viewLifecycleOwner) { url ->
+                url?.also {
+                    mBinding.animationView.loadUrl(it)
+                }
+            }
 
         }
 
@@ -51,8 +56,6 @@ class LiveMatchAnimationFragment : BaseFragment<LiveMatchAnimationViewModel, Fra
 
         mViewModel.createObserver()
     }
-
-
 
 
     companion object {
