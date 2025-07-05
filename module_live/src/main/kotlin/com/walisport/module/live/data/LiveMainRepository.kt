@@ -14,8 +14,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -24,8 +23,8 @@ class LiveMainRepository(
 ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance()
-    fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
+    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance().flowOn(Dispatchers.IO)
+    fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
     fun observeConnectStateFlow(): Flow<ConnectState> = remoteManager.getConnectStateFlow()
 
     // 500-1003: 获取比赛详情

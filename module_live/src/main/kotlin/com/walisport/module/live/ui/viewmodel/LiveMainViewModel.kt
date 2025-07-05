@@ -84,11 +84,9 @@ class LiveMainViewModel(
     override fun initViewModel() {
         super.initViewModel()
         //监听余额变化
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             repo.observeBalance().collect {
-                withContext(Dispatchers.Main) {
-                    currentBalanceChange.value = it
-                }
+                currentBalanceChange.value = it
             }
         }
     }
