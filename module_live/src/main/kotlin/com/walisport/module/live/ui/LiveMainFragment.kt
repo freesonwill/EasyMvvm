@@ -71,6 +71,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setSportId(args.sportId)
         setVideoView()
         loadFragment()
+        mViewModel.observeMatchInfoNotify()
     }
 
     //init DrawerLayout Content
@@ -247,7 +248,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         mViewModel.matchId.value?.let { matchId ->
                             mViewModel.registerMatchInfoNotify(matchId)
                             mViewModel.registerStatisticsNotify(matchId)
-                            mViewModel.observeMatchStaticsNotify()
                         }
                     }
 

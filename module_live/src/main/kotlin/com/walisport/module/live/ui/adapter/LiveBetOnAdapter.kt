@@ -38,7 +38,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayLogo: String? = ""
     private var selectionComboId: Long? = null
     private var beforePosition: Int = 0
-    private lateinit var map: Map<Long, List<LiveSelectionBean>>
     private var isNotify = false
     private var notifySelectionsId: List<SelectionsEdit>? = null
 
@@ -56,7 +55,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
-            var lists = map[item.marketId]
             viewBinding.lbBet.viewInit()
             item.list.withIndex().forEach { (index, listIt) ->
                 if (position == 0 || listIt.style == StatesArrange.BO_DIAN.code) {
@@ -191,6 +189,6 @@ class LiveMarketListBeanDiffCallback : DiffUtil.ItemCallback<LiveMarketListBean>
         oldList: List<LiveMarketSelectionBean>,
         newList: List<LiveMarketSelectionBean>
     ): Boolean {
-        return oldList.size == newList.size
+        return oldList == newList
     }
 }

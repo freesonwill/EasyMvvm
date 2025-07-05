@@ -33,7 +33,7 @@ fun List<MarketMenuBean>.toData(selections:List<LiveSelectionBean>,code: String)
                 LiveMarketListBean(
                     marketId = menuBean.marketId,
                     marketName = menuBean.marketName,
-                    isSelect = menuBean.isSelect, // Default value
+                    isSelect = menuBean.isSelect,
                     code = menuBean.code,
                     list = matchingSelections
                 )

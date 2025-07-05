@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -43,6 +44,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var mCurrentItemPosition: Int = 0
     private var mBeforePosition: Int = 0
     private var selectionComboId: Long? = null
+    private var isTabClicked: Boolean = false
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
         mBinding.clDynamics.setState(States.LOADING, "")
@@ -96,10 +98,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     override fun initListener() {
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                launch {
-                    delay(100)
-                    mBinding.rvBetList.scrollToPosition(0)
-                }
+                isTabClicked = true
                 mViewModel.getMarketList(
                     (if (tab.position == 0) "" else mViewModel.marketType.value?.get(
                         tab.position - 1
@@ -118,6 +117,23 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
     @SuppressLint("NotifyDataSetChanged")
     override fun createObserver() {
+        liveBetOnAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
+            override fun onChanged() {
+
+            }
+
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            }
+
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payloads: Any?) {
+                if (isTabClicked) {
+                    mBinding.rvBetList.post {
+                        mBinding.rvBetList.scrollToPosition(0)
+                    }
+                    isTabClicked = false
+                }
+            }
+        })
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mBinding.clDynamics.setState(States.LOADING, "")
             mBinding.LLCBetOn.visibility = View.GONE
@@ -181,8 +197,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
         //根据盘口分类code获取盘口列表
         mViewModel.liveMarketListBean.observe(viewLifecycleOwner) {
-            var baseInfo = mainViewModel.mainMatch.value?.basicInfo
-            mainViewModel.getSelectionsEditAll { selectionEdit ->
+            launch {
+                var baseInfo = mainViewModel.mainMatch.value?.basicInfo
+                var selectionsEdit = mainViewModel.getSelectionsEditAll()
                 // LogUtils.dTag("盘口推","---------------${selectionEdit}")
                 mBinding.clDynamics.setVisibilityGone()
                 liveBetOnAdapter.setData(
@@ -190,7 +207,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     baseInfo?.homeTeamIcon.toString(),
                     baseInfo?.awayTeam.toString(),
                     baseInfo?.awayTeamIcon.toString(), true,
-                    selectionEdit
+                    selectionsEdit
                 )
                 liveBetOnAdapter.setSelectionComboId(selectionComboId)
                 liveBetOnAdapter.submitList(it)
@@ -213,7 +230,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
 
         //盘口数据变动
         launch {
-            mViewModel.observeSelection.collect {
+            mViewModel.observeSelection.observe(viewLifecycleOwner) {
                 mViewModel.observeSelectionGetMarketList(
                     (if (mBinding.tabLayout.selectedTabPosition <= 0) "" else mViewModel.marketType.value?.get(
                         mBinding.tabLayout.selectedTabPosition - 1

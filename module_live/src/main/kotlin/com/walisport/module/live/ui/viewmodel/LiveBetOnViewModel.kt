@@ -1,10 +1,9 @@
 package com.walisport.module.live.ui.viewmodel
 
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.database.entity.AddSelectionStatus
@@ -19,18 +18,14 @@ import arch.cayenne.module.bet.repo.BetRepository
 import com.walisport.module.live.data.toData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import org.koin.core.parameter.parametersOf
 
 class LiveBetOnViewModel : BaseViewModel() {
     private val repository: LiveBetOnRepository by inject()
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
     private var observeJob: Job? = null
-    private val _observeSelection = MutableSharedFlow<List<LiveSelectionBean>?>(replay = 1)
-    val observeSelection: Flow<List<LiveSelectionBean>?> = _observeSelection
+    private val _observeSelection = UnPeekLiveData<List<LiveSelectionBean>?>()
+    val observeSelection: UnPeekLiveData<List<LiveSelectionBean>?> = _observeSelection
 
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
@@ -41,10 +36,8 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
 
-
-
-    private val _liveMarketListBean = MutableLiveData<List<LiveMarketListBean>?>()
-    val liveMarketListBean: LiveData<List<LiveMarketListBean>?> = _liveMarketListBean
+    private val _liveMarketListBean = UnPeekLiveData<List<LiveMarketListBean>?>()
+    val liveMarketListBean: UnPeekLiveData<List<LiveMarketListBean>?> = _liveMarketListBean
 
     //监听盘口筛选变化
     private val _observeMarketMenu = MutableLiveData<MutableList<Int>>()
@@ -138,8 +131,8 @@ class LiveBetOnViewModel : BaseViewModel() {
         // 启动新的协程
         observeJob = viewModelScope.launch {
             repository.observeSelection(marketIds).collect {
-                _observeSelection.emit(it)
-              //  LogUtils.d("比赛详情--------observeSelection${it}")
+                LogUtils.d("比赛详情--------observeSelection${it}")
+                _observeSelection.value  = it
             }
         }
     }
