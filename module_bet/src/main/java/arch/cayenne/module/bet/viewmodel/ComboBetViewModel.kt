@@ -189,4 +189,12 @@ class ComboBetViewModel(
     fun toggleMultiLayoutExpend() {
         _onMultiLayoutExpendListener.value = _onMultiLayoutExpendListener.value?.not() ?: true
     }
+
+    private fun setExpandMultiLayout(expand: Boolean) {
+        val currentValue = _onMultiLayoutExpendListener.value ?: false
+        if (currentValue == expand) return // No change needed
+        _onMultiLayoutExpendListener.value = expand
+    }
+
+    suspend fun getBetSize(): Int = repo.getBetSize()
 }

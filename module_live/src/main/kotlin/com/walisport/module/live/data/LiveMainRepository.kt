@@ -29,19 +29,20 @@ class LiveMainRepository(
     fun observeConnectStateFlow(): Flow<ConnectState> = remoteManager.getConnectStateFlow()
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchRes(matchId: Long, callback: (LiveMatchBean) -> Unit) {
+    suspend fun getMatchRes(matchId: Long): LiveMatchBean? {
         clearMatchCache()
         var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
         if (matchFullData != null) {
-            matchFullData.match.find { it.matchId == matchId }
-                ?.let { scope.launch(Dispatchers.Main) { callback(it) } }
             database.liveMatchDao().insertFullMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
                 selectionsRecord = matchFullData.selectionsRecord,
             )
+
+            return matchFullData.match.find { it.matchId == matchId }
         }
+        return null
     }
 
     private fun clearMatchCache() {
