@@ -61,6 +61,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
         fun newInstance(): AppNotifyFragment {
             return AppNotifyFragment()
         }
+
         private const val OPEN_NOTIFY = 1
         private const val CLOSE_NOTIFY = 2
         private const val CLICK_EVENT = 3
@@ -102,13 +103,13 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     private fun showEnterAnimation() {
         offsetY = 0f
-        val animator = ObjectAnimator.ofFloat(view, "translationY", -126.dp2px.toFloat(), 0f)
+        val animator = ObjectAnimator.ofFloat(view, "translationY", -156.dp2px.toFloat(), 0f)
         animator.duration = 300
         animator.start()
     }
 
     private fun showExitAnimation() {
-        val animator = ObjectAnimator.ofFloat(view, "translationY", offsetY, -126.dp2px.toFloat() + offsetY)
+        val animator = ObjectAnimator.ofFloat(view, "translationY", offsetY, -156.dp2px.toFloat())
         animator.duration = 300
         animator.start()
     }

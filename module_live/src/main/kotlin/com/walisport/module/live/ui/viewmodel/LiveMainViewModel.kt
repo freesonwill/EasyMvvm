@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -62,8 +63,8 @@ class LiveMainViewModel(
     val mainMatch: LiveData<LiveMatchBean> = _mainMatch
 
     //技术统计
-    private val _statisticData = MutableLiveData<MatchLiveData>()
-    val statisticData: LiveData<MatchLiveData> = _statisticData
+    private val _statisticData = UnPeekLiveData<MatchLiveData>()
+    val statisticData: UnPeekLiveData<MatchLiveData> = _statisticData
 
     private val _liveBetOnMenu = MutableLiveData<BetOnMenuStatus>()
     val liveBetOnMenu: LiveData<BetOnMenuStatus> = _liveBetOnMenu
@@ -161,9 +162,9 @@ class LiveMainViewModel(
     }
 
     //取消订阅比赛技术统计推送
-    fun unregisterStatisticsNotify(matchId: Long) {
+    fun unregisterStatisticsNotify() {
         viewModelScope.launch {
-            repo.unregisterStatisticsNotify(matchId)
+            repo.unregisterStatisticsNotify()
         }
     }
 
@@ -230,12 +231,8 @@ class LiveMainViewModel(
         return MatchLiveData(0, teams, stats, trend, event)
     }
 
-    fun getSelectionsEditAll(callback: (List<SelectionsEdit>) -> Unit) {
-        repo.getSelectionsEdit { it ->
-            viewModelScope.launch {
-                callback(it)
-            }
-        }
+   suspend fun getSelectionsEditAll(): List<SelectionsEdit>{
+        return  repo.getSelectionsEdit()
     }
 
     fun reconnect() {

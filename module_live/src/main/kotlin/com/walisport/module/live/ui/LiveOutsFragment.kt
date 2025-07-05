@@ -158,7 +158,8 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     override fun onPause() {
         super.onPause()
         mainViewModel.matchId.value?.let {
-            mainViewModel.unregisterStatisticsNotify(it)
+            //required 比赛id  -1：取消订阅
+            mainViewModel.unregisterStatisticsNotify()
         }
     }
 }

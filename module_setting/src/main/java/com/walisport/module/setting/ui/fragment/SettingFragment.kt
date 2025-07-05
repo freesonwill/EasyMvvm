@@ -1,14 +1,17 @@
 package com.walisport.module.setting.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
+import com.walisport.module.setting.data.OddsDisplayEnum
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
-import com.walisport.module.setting.ui.dialog.OddsDisplayDialog
+import com.walisport.module.setting.ui.dialog.OddsDisplayDialogFragment
 import kotlin.reflect.KClass
 
 /**
@@ -21,7 +24,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
     private var skinType: String = ""
-    private var oddsType: Int = 0
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
@@ -33,9 +35,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         //设置语言
         val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
         mBinding.tvLanguageType.text = lang
-        //设置赔率显示方式
-        oddsType = mViewModel.getOddsType()
-        mBinding.tvDisplay.text = mViewModel.getSkinnableOddsType(mBinding.root.context, oddsType)
     }
 
     override fun initListener() {
@@ -53,7 +52,11 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
     }
 
-    override fun createObserver() {}
+    override fun createObserver() {
+        mViewModel.displayType.observe(viewLifecycleOwner) { value ->
+            mBinding.tvDisplay.text = getSkinnableOddsString(value)
+        }
+    }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
@@ -61,10 +64,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             //语言类型
             val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
             mBinding.tvLanguageType.text = lang
-            //赔率显示方式
-            oddsType = mViewModel.getOddsType()
-            mBinding.tvDisplay.text =
-                mViewModel.getSkinnableOddsType(mBinding.root.context, oddsType)
+            mBinding.tvDisplay.text = getSkinnableOddsString(mViewModel.displayType.value ?: OddsDisplayEnum.EU)
             //皮肤设置
             skinType = mViewModel.getSkinType()
             mViewModel.setSkinType(skinType)
@@ -72,37 +72,22 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     private fun showOddsDisplayDialog() {
-        val fragmentManager = requireActivity().supportFragmentManager
-        OddsDisplayDialog().apply {
-            arguments = Bundle().apply {
-                putInt(bundle, oddsType)
-            }
-            setOnItemClickListener(object : OddsDisplayDialog.OnClickListener {
-                override fun onClickEP() {
-                    oddsType = 0
-                    mViewModel.setOddsType(0)
-                    mBinding.tvDisplay.text = getString(R.string.menu_europe)
-                    //延迟关闭弹窗防止RadioButton状态尚未改变就关闭
-                    mBinding.tvDisplay.postDelayed({
-                        dialog?.dismiss()
-                    }, 300)
-                }
+        OddsDisplayDialogFragment().show(childFragmentManager)
+    }
 
-                override fun onClickHK() {
-                    oddsType = 1
-                    mViewModel.setOddsType(1)
-                    mBinding.tvDisplay.text = getString(R.string.menu_hk)
-                    mBinding.tvDisplay.postDelayed({
-                        dialog?.dismiss()
-                    }, 300)
-                }
-
-                override fun onClickClose() {
-                    mBinding.titleBar.postDelayed({
-                        dialog?.dismiss()
-                    }, 300)
-                }
-            })
-        }.show(fragmentManager)
+    private fun getSkinnableOddsString(oddsType: OddsDisplayEnum): String {
+        return if (oddsType == OddsDisplayEnum.EU) {
+            SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_europe,
+                mViewModel.getLanguage()
+            )
+        } else {
+            SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_hk,
+                mViewModel.getLanguage()
+            )
+        }
     }
 }

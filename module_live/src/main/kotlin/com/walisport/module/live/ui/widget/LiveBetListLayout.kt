@@ -29,12 +29,8 @@ class LiveBetListLayout @JvmOverloads constructor(
     private val binding = LiveBetContentListItemLayoutBinding.inflate(
         LayoutInflater.from(context), this, false
     )
-    private var isNotify: Boolean = false
+    private var isNotify: Boolean = true
     private val handler = Handler(Looper.getMainLooper())
-
-    init {
-        viewInit()
-    }
 
      fun viewInit() {
         removeAllViews()

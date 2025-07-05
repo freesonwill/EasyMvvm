@@ -272,4 +272,6 @@ class CommonRepository(
         if (uid == -1) return
         infoDao.setLogin(uid, b)
     }
+
+    fun observeAberrantNotify() = socketManager.observeProtoMessage<Client.AberrantNotify>(ApiCode.ABERRANT_NOTIFY)
 }

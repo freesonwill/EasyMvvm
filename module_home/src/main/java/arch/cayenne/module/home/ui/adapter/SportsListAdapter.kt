@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.ItemSportsBinding
@@ -15,7 +16,6 @@ class SportsListAdapter(
 ) : BaseAdapter<SportDataModel, BaseViewHolder, ItemSportsBinding>(
     SportDataModelCompare()
 ) {
-
     private var selectedPosition = 0
     override fun convertPlus(holder: BaseViewHolder, binding: ItemSportsBinding, position: Int) {
         val sport = getItem(position)
@@ -44,6 +44,7 @@ class SportsListAdapter(
 
                 onItemClick(sport.id)
             }
+            root.addScaleOnTouchAnimation(tvSportIcon)
         }
     }
 

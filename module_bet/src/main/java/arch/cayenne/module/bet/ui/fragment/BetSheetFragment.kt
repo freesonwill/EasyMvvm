@@ -1,14 +1,11 @@
 package arch.cayenne.module.bet.ui.fragment
 
-import android.animation.ObjectAnimator
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
-import androidx.core.animation.addListener
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
@@ -20,6 +17,7 @@ import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
 import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentBetSheetBinding
+import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.launch
@@ -44,14 +42,36 @@ class BetSheetFragment private constructor() :
     override val vmClass: KClass<BetSheetViewModel>
         get() = BetSheetViewModel::class
 
+    private lateinit var controller: NavController
+
     private val dismissObserver = Observer<String> { value ->
-        if (value == VALUE_DISMISS) {
-            dismiss()
+        val v = mBinding.root
+        when (value) {
+            VALUE_DISMISS -> dismiss()
+            Config.VALUE_SINGLE_TO_RESULT -> {
+                ViewHelper.collapseView(v) {
+                    controller.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToBetResultFragment(), null)
+                }
+            }
+            Config.VALUE_COMBO_TO_RESULT -> {
+                ViewHelper.collapseView(v) {
+                    controller.navigate(ComboBetFragmentDirections.actionComboBetFragmentToBetResultFragment(), null)
+                }
+            }
+            Config.VALUE_RESULT_TO_SINGLE -> {
+                ViewHelper.collapseView(v) {
+                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToSingleBetFragment(), null)
+                }
+            }
+            Config.VALUE_RESULT_TO_COMBO -> {
+                ViewHelper.collapseView(v) {
+                    controller.navigate(BetResultFragmentDirections.actionBetResultFragmentToComboBetFragment(), null)
+                }
+            }
         }
     }
 
     private var lastLiveData: LiveData<String>? = null
-    private var isAnimating: Boolean = false
 
     override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
         val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.BetModuleTheme)
@@ -81,9 +101,9 @@ class BetSheetFragment private constructor() :
         bottomSheet?.let { sheet ->
             val behavior = BottomSheetBehavior.from(sheet)
 
-            behavior.isDraggable = false
-            behavior.skipCollapsed = false  // ← 允許收合
-            behavior.isHideable = false      // ← 允許向下滑關閉
+            behavior.isDraggable = true
+            behavior.skipCollapsed = true  // ← 允許收合
+            behavior.isHideable = true      // ← 允許向下滑關閉
             behavior.isFitToContents = true
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.saveFlags = BottomSheetBehavior.SAVE_ALL
@@ -97,7 +117,9 @@ class BetSheetFragment private constructor() :
     }
 
     private fun setStartDestination(size: Int) {
-        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
+        val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment()).apply {
+            controller = this
+        }
         val navGraph = navController.navInflater.inflate(R.navigation.nav_bet)
 
         if (size == 1) {
@@ -112,11 +134,7 @@ class BetSheetFragment private constructor() :
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            if (bundle != null && bundle.containsKey(Config.KEY_NON_ANIM)) {
-                bundle.remove(Config.KEY_NON_ANIM)
-            } else {
-                animateLayoutChange()
-            }
+            showEnterAnim()
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
         }
@@ -135,35 +153,11 @@ class BetSheetFragment private constructor() :
         }
     }
 
-    private fun animateLayoutChange() {
-        if (isAnimating || lastLiveData == null) return
-        isAnimating = true
-        val collapseAnim = ObjectAnimator.ofFloat(
-            mBinding.root,
-            "translationY",
-            0f,
-            mBinding.root.height.toFloat()
-        )
-        collapseAnim.duration = 300
-        collapseAnim.interpolator = LinearInterpolator()
-        collapseAnim.addListener(onEnd = {
-            val expendAnim = ObjectAnimator.ofFloat(
-                mBinding.root,
-                "translationY",
-                mBinding.root.height.toFloat(),
-                0f
-            )
-            expendAnim.duration = 300
-            expendAnim.interpolator = LinearInterpolator()
-            expendAnim.addListener(
-                onEnd = {
-                    isAnimating = false
-                }
-            )
-            expendAnim.start()
-        })
-        collapseAnim.start()
-
+    private fun showEnterAnim() {
+        if (lastLiveData == null) return
+        val v = mBinding.root
+        val h = v.height.toFloat()
+        ViewHelper.expandView(v, h)
     }
 
     override fun superDismiss() {
@@ -182,4 +176,5 @@ class BetSheetFragment private constructor() :
 
 interface BetSheetListener {
     fun dismiss(key: String = KEY_RESULT, value: String = VALUE_DISMISS)
+    fun showExitAnim(key: String = KEY_RESULT, value: String)
 }
