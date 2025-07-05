@@ -18,13 +18,14 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveLineupViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchStatusViewModel
 import com.walisport.module.live.ui.viewmodel.LiveOutsViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.ui.viewmodel.LiveStandingsViewModel
-import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
-import com.walisport.module.live.ui.viewmodel.LiveMatchStatusViewModel
-import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import org.koin.androidx.viewmodel.dsl.viewModelOf
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -46,6 +47,7 @@ class LiveModuleInitializer : DefaultInitializer<String> {
         viewModelOf(::LiveMatchMediaViewModel)
         viewModelOf(::LiveVideoPlayerViewModel)
         viewModelOf(::LiveMatchStatusViewModel)
+        viewModelOf(::LiveMatchAnimationViewModel)
         viewModelOf(::LiveChatViewModel)
         viewModelOf(::LeagueViewModel)
         viewModelOf(::LiveOutsViewModel)
