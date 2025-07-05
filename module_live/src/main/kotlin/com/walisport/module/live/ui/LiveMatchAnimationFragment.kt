@@ -44,6 +44,7 @@ class LiveMatchAnimationFragment :
             //比赛动画url监听
             animationLiveUrl.observe(viewLifecycleOwner) { url ->
                 url?.also {
+                    "url:$url".logd(TAG)
                     mBinding.animationView.loadUrl(it)
                 }
             }
