@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.TournamentListType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -18,9 +19,9 @@ class TournamentListRepository(
     private val tournamentDao: TournamentDao
 ) : BaseRepository() {
 
-    suspend fun getAllTournaments(type: TournamentListType, sportId: Int): List<BaseTournamentData> {
+    suspend fun getAllTournaments(type: TournamentListType, playTypeId: Int, sportId: Int): List<BaseTournamentData> {
         return if (type == TournamentListType.MORE) {
-            tournamentDao.queryTournament()
+            tournamentDao.queryTournament(playTypeId, sportId)
         } else {
             getChampionTournament(sportId)
         }
@@ -42,6 +43,7 @@ class TournamentListRepository(
                     id = it.tournamentId,
                     championMatchId = it.matchId,
                     sportId = it.sportId,
+                    playTypeId = PlayType.CHAMPION.id,
                     name = it.tournamentName,
                     simpleName = "",
                     icon = it.tournamentIcon,

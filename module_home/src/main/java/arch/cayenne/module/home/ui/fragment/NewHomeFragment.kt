@@ -232,7 +232,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.VISIBLE
 
-            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId(), type)
+            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.currentPlayTypeId, mViewModel.currentSportId, type)
 
             fm.beginTransaction().apply {
                 if (type == TournamentListType.MORE) {
@@ -510,6 +510,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab?.customView?.isSelected = true
                     val selectedIndex = tab?.position ?: 0
                     getSelectedRecently31Scheduled(selectedIndex)
+
+                    tournaments.getOrNull(selectedIndex)?.id?.apply {
+                        mViewModel.setCurrentTournamentId(this)
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -619,8 +623,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     HomeState.Sport.LoadSuccess -> {
                         if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
                             toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                        } else {
-                            mViewModel.getCurrentTournament()
                         }
                     }
                     DataState.NetworkUnavailable, DataState.DataEmpty -> {

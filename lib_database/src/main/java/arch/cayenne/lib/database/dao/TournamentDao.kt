@@ -16,20 +16,7 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
 
     @Query("SELECT bean.id as id, " +
             "ref.sportId as sportId, " +
-            "bean.name as name, " +
-            "bean.simpleName as simpleName, " +
-            "bean.icon as icon, " +
-            "ref.weight as weight, " +
-            "ref.hot as hot " +
-            "FROM TournamentBean bean " +
-            "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
-            "WHERE playType =:playType and sportId =:sportId " +
-            "order by weight desc, `index` asc limit :limit"
-    )
-    abstract fun observeTournamentWithLimit(playType: Int, sportId: Int, limit: Int): Flow<List<TournamentDataModel>>
-
-    @Query("SELECT bean.id as id, " +
-            "ref.sportId as sportId, " +
+            "ref.playType as playTypeId, " +
             "bean.name as name, " +
             "bean.simpleName as simpleName, " +
             "bean.icon as icon, " +
@@ -39,7 +26,22 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
             "order by weight desc, `index` asc "
     )
-    abstract fun queryTournament(): List<TournamentDataModel>
+    abstract fun observeTournamentWithLimit(): Flow<List<TournamentDataModel>>
+
+    @Query("SELECT bean.id as id, " +
+            "ref.sportId as sportId, " +
+            "ref.playType as playTypeId, " +
+            "bean.name as name, " +
+            "bean.simpleName as simpleName, " +
+            "bean.icon as icon, " +
+            "ref.weight as weight, " +
+            "ref.hot as hot " +
+            "FROM TournamentBean bean " +
+            "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
+            "WHERE ref.playType =:playTypeId and ref.sportId =:sportId " +
+            "order by weight desc, `index` asc"
+    )
+    abstract fun queryTournament(playTypeId: Int, sportId: Int): List<TournamentDataModel>
 
     @Query("DELETE FROM SportTournamentCrossRef " +
             "WHERE sportId = :sportId AND playType = :playType AND tournamentId NOT IN (:ids)")

@@ -24,6 +24,7 @@ data class SportTournamentCrossRef(
 abstract class BaseTournamentData {
     abstract val id: Int
     abstract val sportId: Int
+    abstract val playTypeId: Int
     abstract val name: String
     abstract val simpleName: String
     abstract val icon: String
@@ -34,6 +35,7 @@ abstract class BaseTournamentData {
 data class TournamentDataModel(
     override val id: Int,
     override val sportId: Int,
+    override val playTypeId: Int,
     override val name: String,
     override val simpleName: String,
     override val icon: String,
@@ -41,10 +43,11 @@ data class TournamentDataModel(
     override val weight: Int,
 ) : BaseTournamentData() {
     companion object {
-        fun createAllItem(sportId: Int): TournamentDataModel {
+        fun createAllItem(playTypeId: Int, sportId: Int): TournamentDataModel {
             return TournamentDataModel(
                 id = 0,
                 sportId = sportId,
+                playTypeId = playTypeId,
                 name = "ALL",
                 simpleName = "ALL",
                 icon = "",
@@ -59,6 +62,7 @@ data class ChampionTournamentDataModel(
     val championMatchId: Long,
     override val id: Int,
     override val sportId: Int,
+    override val playTypeId: Int,
     override val name: String,
     override val simpleName: String,
     override val icon: String,

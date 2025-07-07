@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.data.constants.SportEnum
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
@@ -25,6 +26,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,14 +45,13 @@ class HomeViewModel : BaseViewModel() {
     val currentPlayTypeId: Int
         get() = _currentPlayTypeId.value
 
-//    private val _currentSportId: MutableLiveData<Event<Int>> = MutableLiveData(>
-//    val currentSportId: LiveData<Event<Int>> = _currentSportId
-//    fun getCurrentSportId(): Int = currentSportId.value?.peekContent() ?: 0
+    private val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
+    val currentSportId: Int
+        get() = _currentSportId.value
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
-    private var currentSportId: Int = 0
     private var currentTournamentId = 0
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
@@ -116,6 +118,40 @@ class HomeViewModel : BaseViewModel() {
                     }
                 }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeTenTournaments()
+                .combine(_currentPlayTypeId) { list, playTypeId ->
+                    list.filter { it.playTypeId == playTypeId }
+                }.combine(_currentSportId.filter { it != SportEnum.Default.id }) { list, sportId ->
+                    list.filter { it.sportId == sportId }
+                }.map {
+                    it.take(10)  //limit
+                }.collect {
+                    val homeSelectedBean = repository.getCurrentHomeSelectedData(currentPlayTypeId)
+                    withContext(Dispatchers.Main) {
+                        val list = mutableListOf<TournamentDataModel>()
+                        if (it.isEmpty()) {
+                            getCurrentTournament()
+                            return@withContext
+                        }
+                        list.add(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId))
+                        list.addAll(it)
+
+                        tournaments.value = Event(list)
+                        if (homeSelectedBean == null || !it.any {data -> data.id == homeSelectedBean.tournamentId}) {
+                            setCurrentTournamentId(0)
+                        } else {
+                            setCurrentTournamentId(homeSelectedBean.tournamentId)
+                        }
+
+                        if (homeSelectedBean == null || homeSelectedBean.date == 0L) {
+                            resetSelectedDate()
+                        } else  {
+                            setSelectedDate(homeSelectedBean.date)
+                        }
+                    }
+            }
+        }
     }
 
     fun setIsHomeLoading(isLoading: Boolean) {
@@ -144,7 +180,7 @@ class HomeViewModel : BaseViewModel() {
                     .apply { add(tournament) }
 
                 val fullList =
-                    listOf(TournamentDataModel.createAllItem(currentSportId)) + updatedList
+                    listOf(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId)) + updatedList
 
                 withContext(Dispatchers.Main) {
                     tournaments.value = Event(fullList)
@@ -200,64 +236,41 @@ class HomeViewModel : BaseViewModel() {
         setState(HomeState.Sport.Loading)
         callApi({
             repository.getSportStatistical()
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                setState(HomeState.Sport.LoadSuccess)
+            }
         })
     }
 
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
-        currentSportId = sportId
+        _currentSportId.value = sportId
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
-
-        setState(HomeState.Sport.LoadSuccess)
     }
 
-    fun getCurrentSportId() = currentSportId
-
+    //切換當前的三級選項(聯賽)
     fun setCurrentTournamentId(tournamentId: Int) {
         currentTournamentId = tournamentId
         _selectedTournamentId.postValue(Event(tournamentId))
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateSelectedTournament(currentPlayTypeId, currentSportId, currentTournamentId)
+        }
     }
 
     fun getCurrentTournamentId() = currentTournamentId
 
     fun getCurrentTournament() {
         setState(HomeState.Tournament.Loading)
-        tournamentJob?.cancel()
-        // TODO 之後需移到init做監聽
-        tournamentJob = viewModelScope.launch(Dispatchers.IO) {
-            repository.observeTenTournaments(currentPlayTypeId, currentSportId).collect {
-                val homeSelectedBean = repository.getCurrentHomeSelectedData(currentPlayTypeId)
-                withContext(Dispatchers.Main) {
-                    val list = mutableListOf<TournamentDataModel>()
-                    if (it.isEmpty()) {
-                        callApi({
-                            repository.getTenTournaments(currentPlayTypeId, currentSportId)
-                        }, {
-                            if (it is ApiResponseState.Succeeded<*>) {
-                                setState(HomeState.Tournament.LoadSuccess)
-                            }
-                        })
-                        return@withContext
-                    }
-                    list.add(TournamentDataModel.createAllItem(currentSportId))
-                    list.addAll(it)
-                    if (homeSelectedBean == null || !it.any {data -> data.id == homeSelectedBean.tournamentId}) {
-                        setCurrentTournamentId(0)
-                    } else {
-                        setCurrentTournamentId(homeSelectedBean.tournamentId)
-                    }
-                    tournaments.value = Event(list)
-
-                    if (homeSelectedBean == null || homeSelectedBean.date == 0L) {
-                        resetSelectedDate()
-                    } else  {
-                        setSelectedDate(homeSelectedBean.date)
-                    }
-                }
+        callApi({
+            repository.getTenTournaments(currentPlayTypeId, currentSportId)
+        }, {
+            if (it is ApiResponseState.Succeeded<*>) {
+                setState(HomeState.Tournament.LoadSuccess)
             }
-        }
+        })
 
     }
 

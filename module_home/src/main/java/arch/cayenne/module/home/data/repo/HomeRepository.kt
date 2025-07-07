@@ -31,7 +31,7 @@ class HomeRepository(
     private val homeSelectedDao = database.homeSelectedDao()
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
-    fun observeTenTournaments(playType: Int, sportId: Int) = tournamentDao.observeTournamentWithLimit(playType = playType, sportId = sportId, limit = 10)
+    fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
 
     @Transaction
     suspend fun getSportStatistical(): ApiResponseState = withContext(scope.coroutineContext) {
@@ -156,6 +156,12 @@ class HomeRepository(
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
         val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
+        homeSelectedDao.insert(bean)
+
+    }
+
+    suspend fun updateSelectedTournament(playType: Int, sportId: Int, tournamentId: Int) {
+        val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(tournamentId = tournamentId) ?: HomeSelectedBean(playType, sportId, tournamentId ,0L)
         homeSelectedDao.insert(bean)
 
     }
