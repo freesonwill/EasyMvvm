@@ -1,13 +1,15 @@
 package arch.cayenne.module.home.ui.view.decoration
 
+import android.content.Context
 import android.graphics.Canvas
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 
 class StickyHeaderItemDecoration(
     private val isHeader: (position: Int) -> Boolean,
-    private val createHeaderView: () -> View,
+    private val createHeaderView: (Context, ViewGroup) -> View,
     private val bindHeaderView: (headerView: View, position: Int) -> Unit
 ) : RecyclerView.ItemDecoration() {
 
@@ -19,16 +21,20 @@ class StickyHeaderItemDecoration(
         val headerPos = findCurrentHeaderPosition(topChildPosition)
         if (headerPos == -1) return
 
-        val headerView = createHeaderView()
+        val context = parent.context
+        val headerView = createHeaderView(context, parent)
         bindHeaderView(headerView, headerPos)
 
         val widthSpec = View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY)
-        val heightSpec =
-            View.MeasureSpec.makeMeasureSpec(parent.height, View.MeasureSpec.UNSPECIFIED)
+        val heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
         headerView.measure(widthSpec, heightSpec)
-        headerView.layout(0, 2.dp2px, headerView.measuredWidth, headerView.measuredHeight)
+        headerView.layout(
+            0,
+            2.dp2px,
+            parent.width,
+            parent.paddingTop + headerView.measuredHeight
+        )
 
-        // 計算是否被下一個 header 推上來
         val contactPoint = headerView.bottom
         val childInContact = getChildInContact(parent, contactPoint)
         val childPos = childInContact?.let { parent.getChildAdapterPosition(it) } ?: -1

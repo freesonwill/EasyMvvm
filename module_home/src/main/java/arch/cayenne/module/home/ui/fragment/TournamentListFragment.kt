@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.KeyEvent
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -44,7 +45,7 @@ class TournamentListFragment :
     private lateinit var adapter: TournamentSectionAdapter
     private var isJumpingByIndex = false
     private var pendingJumpIndex: Int? = null
-
+    private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
     override fun initData() {
         arguments?.apply {
             val type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -267,12 +268,16 @@ class TournamentListFragment :
     }
 
     private fun setupStickyHeader() {
-        val decoration = StickyHeaderItemDecoration(
+        stickyHeaderDecoration = StickyHeaderItemDecoration(
             isHeader = { position ->
                 adapter.currentList.getOrNull(position) is TournamentListItem.Header
             },
-            createHeaderView = {
-                ItemTournamentHeaderBinding.inflate(layoutInflater).root
+            createHeaderView = { context, parent ->
+                ItemTournamentHeaderBinding.inflate(
+                    LayoutInflater.from(context),
+                    parent, // parent 設為 recyclerView
+                    false
+                ).root
             },
             bindHeaderView = { view, position ->
                 val item = adapter.currentList.getOrNull(position) as? TournamentListItem.Header
@@ -287,10 +292,10 @@ class TournamentListFragment :
                 }
             }
         )
-
-        mBinding.rvTournamentList.addItemDecoration(decoration)
+        stickyHeaderDecoration?.let {
+            mBinding.rvTournamentList.addItemDecoration(it)
+        }
     }
-
     private fun View.hideKeyboardAndClearFocus(context: Context) {
         clearFocus()
         val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -316,7 +321,13 @@ class TournamentListFragment :
             this.targetPosition = targetPosition
         }
     }
-
+    override fun onDestroyView() {
+        super.onDestroyView()
+        stickyHeaderDecoration?.let {
+            mBinding.rvTournamentList.removeItemDecoration(it)
+        }
+        stickyHeaderDecoration = null
+    }
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"
