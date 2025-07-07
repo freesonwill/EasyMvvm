@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.BetSlipOrderDao
 import arch.cayenne.lib.database.dao.BetSlipReserveDao
+import arch.cayenne.lib.database.dao.HomeSelectedDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.LiveMatchDao
 import arch.cayenne.lib.database.dao.LiveVideoDao
@@ -22,6 +23,7 @@ import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
+import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.LiveMarketBean
 import arch.cayenne.lib.database.entity.LiveMatchBean
@@ -50,6 +52,7 @@ import arch.cayenne.lib.database.entity.TournamentMatchRef
         BetSelectionBean::class,
         BetDetailBean::class,
         LiveVideoBean::class,
+        HomeSelectedBean::class,
         SportBean::class,
         SportTournamentCrossRef::class,
         TournamentBean::class,
@@ -107,4 +110,5 @@ abstract class GameDatabase: RoomDatabase() {
     abstract fun infoDao(): InfoDao
     abstract fun betSlipOrderDao(): BetSlipOrderDao
     abstract fun betSlipReserveDao(): BetSlipReserveDao
+    abstract fun homeSelectedDao(): HomeSelectedDao
 }

@@ -129,7 +129,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
-        resetDateTabs()
     }
 
     //init 二級導航欄位
@@ -510,7 +509,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     )
                     tab?.customView?.isSelected = true
                     val selectedIndex = tab?.position ?: 0
-                    vpGameList.currentItem = selectedIndex
                     getSelectedRecently31Scheduled(selectedIndex)
                 }
 
@@ -642,6 +640,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
             mBinding.apply {
                 updateCalendarSkin()
+            }
+        }
+
+        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) {
+            if (it == 0L) {
+                mBinding.layoutContainer.tvTabAll.isSelected = true
             }
         }
     }

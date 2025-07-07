@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.GameDatabase
+import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
@@ -26,6 +27,7 @@ class HomeRepository(
     private val sportDao = database.sportDao()
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
+    private val homeSelectedDao = database.homeSelectedDao()
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
     fun observeTenTournaments(playType: Int, sportId: Int) = tournamentDao.observeTournamentWithLimit(playType = playType, sportId = sportId, limit = 10)
@@ -142,5 +144,13 @@ class HomeRepository(
         } else {
             ApiResponseState.Failed(res.error)
         }
+    }
+
+    fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
+
+    suspend fun updateHomeSelected(playType: Int, sportId: Int, tournamentId: Int, date: Long) {
+        homeSelectedDao.insert(
+            HomeSelectedBean(playType, sportId, tournamentId, date)
+        )
     }
 }

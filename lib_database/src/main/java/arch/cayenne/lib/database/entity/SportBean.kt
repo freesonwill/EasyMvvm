@@ -33,5 +33,6 @@ data class SportDataModel (
     val id: Int,
     val matchCount: Int,
     val order: Int,
+    var isSelected: Boolean = false
 )
 
