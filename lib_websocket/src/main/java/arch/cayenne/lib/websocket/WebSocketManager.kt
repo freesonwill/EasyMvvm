@@ -28,6 +28,7 @@ class WebSocketManager(
     private val socket : ISocket<IRequest, IResponse, ConnectState>,
     private val connectionManager: ConnectivityManager
 ) {
+    private val TAG = this::class.java.simpleName
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
 
     private var heartbeatJob: Job? = null
@@ -129,7 +130,7 @@ class WebSocketManager(
             while (retryCount < maxRetryCount) {
                 delay(reconnectInterval)
                 retryCount++
-                "try to reconnect! retry count = $retryCount".logi(this.javaClass.simpleName)
+                "try to reconnect! retry count = $retryCount".logi(TAG)
                 reconnect()
             }
         }
@@ -158,7 +159,7 @@ class WebSocketManager(
         }
     }
     private fun stopHeartbeat() {
-        "stopHeartbeat!".logi(this.javaClass.simpleName)
+        "stopHeartbeat!".logi(TAG)
         heartbeatJob?.cancel()
         heartbeatDispatcher?.close()
     }

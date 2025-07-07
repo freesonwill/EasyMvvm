@@ -79,4 +79,9 @@ enum class ApiCode(val mid: Short, val sid: Short) {
     RECENTLY_31_MATCH_SCHEDULE_COUNT(500, 1009), // 500-1009: 获取近31日比赛日程count
 
     ABERRANT_NOTIFY(600,1010), //600-1010: 异常推送
+
+    ;
+    companion object{
+        fun of(mid: Short, sid: Short):ApiCode? = entries.find { it.mid == mid && it.sid == sid }
+    }
 }
