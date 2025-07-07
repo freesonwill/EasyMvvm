@@ -21,7 +21,7 @@ class TournamentListRepository(
 
     suspend fun getAllTournaments(type: TournamentListType, playTypeId: Int, sportId: Int): List<BaseTournamentData> {
         return if (type == TournamentListType.MORE) {
-            tournamentDao.queryTournament(playTypeId, sportId)
+            tournamentDao.queryTournaments(playTypeId, sportId)
         } else {
             getChampionTournament(sportId)
         }

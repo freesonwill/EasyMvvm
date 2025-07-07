@@ -41,7 +41,22 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "WHERE ref.playType =:playTypeId and ref.sportId =:sportId " +
             "order by weight desc, `index` asc"
     )
-    abstract fun queryTournament(playTypeId: Int, sportId: Int): List<TournamentDataModel>
+    abstract fun queryTournaments(playTypeId: Int, sportId: Int): List<TournamentDataModel>
+
+    @Query("SELECT bean.id as id, " +
+            "ref.sportId as sportId, " +
+            "ref.playType as playTypeId, " +
+            "bean.name as name, " +
+            "bean.simpleName as simpleName, " +
+            "bean.icon as icon, " +
+            "ref.weight as weight, " +
+            "ref.hot as hot " +
+            "FROM TournamentBean bean " +
+            "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
+            "WHERE ref.playType =:playTypeId and ref.sportId =:sportId and tournamentId = :tournamentId " +
+            "order by weight desc, `index` asc"
+    )
+    abstract fun queryTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel?
 
     @Query("DELETE FROM SportTournamentCrossRef " +
             "WHERE sportId = :sportId AND playType = :playType AND tournamentId NOT IN (:ids)")

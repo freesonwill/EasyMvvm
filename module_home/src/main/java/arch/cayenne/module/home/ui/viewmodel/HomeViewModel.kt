@@ -127,7 +127,7 @@ class HomeViewModel : BaseViewModel() {
                 }.map {
                     it.take(10)  //limit
                 }.collect {
-                    val homeSelectedBean = repository.getCurrentHomeSelectedData(currentPlayTypeId)
+                    val selectedTournament = repository.getCurrentSelectedTournament(currentPlayTypeId, currentSportId)
                     withContext(Dispatchers.Main) {
                         val list = mutableListOf<TournamentDataModel>()
                         if (it.isEmpty()) {
@@ -138,17 +138,19 @@ class HomeViewModel : BaseViewModel() {
                         list.addAll(it)
 
                         tournaments.value = Event(list)
-                        if (homeSelectedBean == null || !it.any {data -> data.id == homeSelectedBean.tournamentId}) {
+                        if (selectedTournament == null) {
                             setCurrentTournamentId(0)
+                        } else if (!it.any {data -> data.id == selectedTournament.id}) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
+                            addNewTournament(selectedTournament)
                         } else {
-                            setCurrentTournamentId(homeSelectedBean.tournamentId)
+                            setCurrentTournamentId(selectedTournament.id)
                         }
 
-                        if (homeSelectedBean == null || homeSelectedBean.date == 0L) {
-                            resetSelectedDate()
-                        } else  {
-                            setSelectedDate(homeSelectedBean.date)
-                        }
+//                        if (homeSelectedBean == null || homeSelectedBean.date == 0L) {
+//                            resetSelectedDate()
+//                        } else  {
+//                            setSelectedDate(homeSelectedBean.date)
+//                        }
                     }
             }
         }
@@ -167,26 +169,20 @@ class HomeViewModel : BaseViewModel() {
     }
 
     private fun addNewTournament(tournament: TournamentDataModel) {
-
-        val currentList = tournaments.value?.peekContent().orEmpty()
-        val existsInCurrent = currentList.any { it.id == tournament.id }
-        if (existsInCurrent) {
-            setCurrentTournamentId(tournament.id)
-        } else {
-            viewModelScope.launch(Dispatchers.IO) {
-                val updatedList = currentList
-                    .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
-                    .toMutableList()
-                    .apply { add(tournament) }
-
-                val fullList =
+        viewModelScope.launch(Dispatchers.Main) {
+            val currentList = tournaments.value?.peekContent().orEmpty()
+            val existsInCurrent = currentList.any { it.id == tournament.id }
+            if (!existsInCurrent) {
+                val fullList = withContext(Dispatchers.IO) {
+                    val updatedList = currentList
+                        .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
+                        .toMutableList()
+                        .apply { add(tournament) }
                     listOf(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId)) + updatedList
-
-                withContext(Dispatchers.Main) {
-                    tournaments.value = Event(fullList)
-                    setCurrentTournamentId(tournament.id)
                 }
+                tournaments.value = Event(fullList)
             }
+            setCurrentTournamentId(tournament.id)
         }
     }
 

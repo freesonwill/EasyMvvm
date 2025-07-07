@@ -10,6 +10,7 @@ import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportBean
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
+import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
@@ -32,6 +33,8 @@ class HomeRepository(
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
+
+    suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
 
     @Transaction
     suspend fun getSportStatistical(): ApiResponseState = withContext(scope.coroutineContext) {
@@ -153,6 +156,11 @@ class HomeRepository(
     }
 
     fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
+
+    fun getCurrentSelectedTournament(playType: Int, sportId: Int): TournamentDataModel? {
+        val homeSelectedBean = homeSelectedDao.queryHomeSelectedData(playType) ?: return null  //從DB找不到點擊的data
+        return tournamentDao.queryTournament(playType, sportId, homeSelectedBean.tournamentId)  //null表示這個點擊資料已經沒有在目前的聯賽中
+    }
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
         val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
