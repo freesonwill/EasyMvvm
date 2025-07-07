@@ -13,4 +13,9 @@ abstract class HomeSelectedDao: BaseDao<HomeSelectedBean>() {
         "WHERE playType = :playType"
     )
     abstract fun queryHomeSelectedData(playType: Int): HomeSelectedBean?
+
+    @Query("UPDATE HomeSelectedBean " +
+            "SET sportId = :sportId " +
+            "WHERE playType = :playTypeId ")
+    abstract fun updateSportId(playTypeId: Int, sportId: Int)
 }

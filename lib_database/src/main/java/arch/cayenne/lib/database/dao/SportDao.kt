@@ -11,9 +11,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class SportDao : BaseDao<SportBean>() {
 
-    @Query("SELECT bean.sportId as id, bean.matchCount as matchCount, bean.sportOrder as `order`, 0 as isSelected " +
-            "FROM SportBean bean WHERE bean.type = :type and bean.sportId in (:filter) order by sportOrder")
-    abstract fun observeSportsMatchCount(type: ShowType = ShowType.HOME, filter: List<Int>): Flow<List<SportDataModel>>
+    @Query("SELECT bean.sportId as id, bean.matchCount as matchCount, bean.type as type, bean.sportOrder as `order`, 0 as isSelected " +
+            "FROM SportBean bean WHERE bean.sportId in (:filter) order by sportOrder")
+    abstract fun observeSportsMatchCount(filter: List<Int>): Flow<List<SportDataModel>>
 
 
     @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")

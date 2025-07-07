@@ -13,6 +13,7 @@ import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
+import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
@@ -34,7 +35,7 @@ class HomeRepository(
 
     @Transaction
     suspend fun getSportStatistical(): ApiResponseState = withContext(scope.coroutineContext) {
-        //從API拿取
+        "取得球類資料(500-1000)".logi(HomeRepository::class.java.simpleName)
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.StatisticalResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -57,7 +58,12 @@ class HomeRepository(
                     sportName = sport.sportName,
                     matchCount = sport.matchCount,
                     sportOrder = index,
-                    type = ShowType.HOME
+                    type = when(play.playType) {
+                        PlayType.TODAY.id -> ShowType.HOME_TODAY
+                        PlayType.EARLY.id -> ShowType.HOME_EARLY
+                        PlayType.CHAMPION.id -> ShowType.HOME_CHAMPION
+                        else -> ShowType.HOME_TODAY
+                    }
                 )
                 dataList.add(bean)
             }
@@ -69,7 +75,7 @@ class HomeRepository(
 
     @Transaction
     suspend fun getTenTournaments(playType: Int, sportId: Int): ApiResponseState = withContext(scope.coroutineContext) {
-        "KC_ 取得联赛资料 playType = $playType, sportId = $sportId".logi(this@HomeRepository::class.java.simpleName)
+        "取得联赛资料 playType = $playType, sportId = $sportId".logi(this@HomeRepository::class.java.simpleName)
         //從API拿取
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListTournamentResp>(
             scope = scope,
@@ -147,6 +153,12 @@ class HomeRepository(
     }
 
     fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
+
+    suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
+        val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
+        homeSelectedDao.insert(bean)
+
+    }
 
     suspend fun updateHomeSelected(playType: Int, sportId: Int, tournamentId: Int, date: Long) {
         homeSelectedDao.insert(

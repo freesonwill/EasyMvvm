@@ -13,7 +13,9 @@ data class SportBean(
 
 enum class ShowType {
     ALL,
-    HOME,
+    HOME_TODAY,
+    HOME_EARLY,
+    HOME_CHAMPION,
 }
 
 data class SportLiteBean(
@@ -31,6 +33,7 @@ data class SportLiteBean(
 
 data class SportDataModel (
     val id: Int,
+    val type: ShowType,
     val matchCount: Int,
     val order: Int,
     var isSelected: Boolean = false

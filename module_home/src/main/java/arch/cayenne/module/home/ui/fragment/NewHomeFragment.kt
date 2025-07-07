@@ -108,7 +108,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
                         //看db, 點擊的不在matchBean中會爆掉
-                        mViewModel.setCurrentPlayType(PlayType.entries[this])
+                        mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
 
@@ -474,10 +474,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
             if (tournaments.isNotEmpty()) {
-                if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                if (mViewModel.currentPlayTypeId == PlayType.TODAY.id) {
                     llDateFilterContainer.visibility = View.GONE
                     llOtherDate.visibility = View.GONE
-                } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+                } else if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
                     llDateFilterContainer.visibility = View.VISIBLE
                     llOtherDate.visibility = View.VISIBLE
                 }
@@ -488,7 +488,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
-                playType = mViewModel.getCurrentPlayType()
+                playTypeId = mViewModel.currentPlayTypeId
             )
 
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
@@ -519,7 +519,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
-        if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+        if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             val list = mViewModel.tournaments.value?.peekContent().orEmpty()
             if (list.isEmpty()) return
             mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
@@ -528,7 +528,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initData() {
         super.initData()
-        mViewModel.setCurrentPlayType(PlayType.TODAY)
     }
 
     override fun initListener() {
@@ -613,13 +612,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     HomeState.PlayTypeClick -> {
                         mViewModel.setIsHomeLoading(true)
                         resetHomeView()
-                        mViewModel.getCurrentSportStatistical()
                         groupHomeMain.visibility = View.VISIBLE
                         loadingView.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
                     HomeState.Sport.LoadSuccess -> {
-                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
                             toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
                         } else {
                             mViewModel.getCurrentTournament()
