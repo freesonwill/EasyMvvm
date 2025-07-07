@@ -23,6 +23,8 @@ class LiveMatchAnimationFragment :
     override val vmClass: KClass<LiveMatchAnimationViewModel> = LiveMatchAnimationViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
@@ -30,6 +32,9 @@ class LiveMatchAnimationFragment :
 
 
     override fun initListener() {
+        mBinding.ivChooseSource.setOnClickListener {
+            mediaViewModel.chooseSourceView()
+        }
 
     }
 

@@ -184,34 +184,7 @@ class LiveVideoPlayerFragment :
 
         with(mBinding) {
             ivChooseSource.setOnClickListener {
-                val location = IntArray(2)
-                videoView.getLocationOnScreen(location)
-                val x = location[0]
-                val y =
-                    location[1] + videoView.measuredHeight - getStatusBarHeight(requireContext())
-                LiveVideoSourcePortraitFragment().apply {
-                    arguments = Bundle().apply {
-                        putLong("matchId", mViewModel.matchId())
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
-                            x
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
-                            y
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                    }
-                    show(this@LiveVideoPlayerFragment.childFragmentManager)
-                }
-
+                mediaViewModel.chooseSourceView()
             }
 
             ivToFullscreen.clickNoRepeat {

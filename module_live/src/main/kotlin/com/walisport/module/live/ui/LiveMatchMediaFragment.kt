@@ -1,8 +1,10 @@
 package com.walisport.module.live.ui
 
 import android.os.Bundle
+import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
@@ -14,8 +16,10 @@ import kotlin.reflect.KClass
 /**
  * 竖屏播放时的媒体页， 用来展示比赛视频，比赛动画或者比赛信息
  */
-class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiveMatchMediaBinding>() {
-    override val vbClass: KClass<FragmentLiveMatchMediaBinding> = FragmentLiveMatchMediaBinding::class
+class LiveMatchMediaFragment :
+    BaseFragment<LiveMatchMediaViewModel, FragmentLiveMatchMediaBinding>() {
+    override val vbClass: KClass<FragmentLiveMatchMediaBinding> =
+        FragmentLiveMatchMediaBinding::class
     override val vmClass: KClass<LiveMatchMediaViewModel> = LiveMatchMediaViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
@@ -31,7 +35,7 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
     override fun createObserver() {
         //监听比赛id变化
-        mainViewModel.matchId.observe(viewLifecycleOwner){
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)
             mViewModel.createObserver()
         }
@@ -53,7 +57,7 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
                             else -> {
                                 //其他情况
-                              showStatusView()
+                                showStatusView()
                             }
                         }
 
@@ -63,8 +67,12 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
 
             }
 
-            animationSwitch.observe(viewLifecycleOwner){
+            animationSwitch.observe(viewLifecycleOwner) {
                 showAnimationView()
+            }
+
+            chooseSource.observe(viewLifecycleOwner) {
+                showChooseSourceView()
             }
 
         }
@@ -91,7 +99,7 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
             }
     }
 
-    private fun showStatusView(){
+    private fun showStatusView() {
         "showStatusView".logd(TAG)
         childFragmentManager.findFragmentByTag(LiveMatchStatusFragment.TAG) as? LiveMatchStatusFragment
             ?: LiveMatchStatusFragment().also {
@@ -106,7 +114,7 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
             }
     }
 
-    private fun showAnimationView(){
+    private fun showAnimationView() {
         "showAnimationView".logd(TAG)
         childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) as? LiveMatchAnimationFragment
             ?: LiveMatchAnimationFragment().also {
@@ -117,10 +125,40 @@ class LiveMatchMediaFragment : BaseFragment<LiveMatchMediaViewModel, FragmentLiv
                     )
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG)
+                    .commitNow()
             }
     }
 
+    private fun showChooseSourceView() {
+        val location = IntArray(2)
+        mBinding.root.getLocationOnScreen(location)
+        val x = location[0]
+        val y =
+            location[1] + mBinding.root.measuredHeight - getStatusBarHeight(requireContext())
+        LiveVideoSourcePortraitFragment().apply {
+            arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
+                    x
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
+                    y
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            show(this@LiveMatchMediaFragment.childFragmentManager)
+        }
+    }
 
 
     companion object {

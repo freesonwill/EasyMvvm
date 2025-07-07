@@ -26,6 +26,9 @@ class LiveMatchMediaViewModel(
     private val _animationSwitch: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
     val animationSwitch: UnPeekLiveData<Boolean> = _animationSwitch
 
+    private val _chooseSource: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
+    val chooseSource: UnPeekLiveData<Boolean> = _chooseSource
+
     private var job: Job? = null
 
     fun matchId() = repo.matchId
@@ -48,6 +51,10 @@ class LiveMatchMediaViewModel(
 
     fun switchToAnimation() {
         _animationSwitch.value = true
+    }
+
+    fun chooseSourceView() {
+        _chooseSource.value = true
     }
 
 
