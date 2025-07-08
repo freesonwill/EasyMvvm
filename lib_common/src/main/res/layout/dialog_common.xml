@@ -2,10 +2,10 @@
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="280dp"
     android:layout_height="wrap_content"
+    android:background="@color/card_background"
     android:elevation="8dp"
     android:orientation="vertical"
-    android:paddingTop="16dp"
-    android:background="@color/card_background">
+    android:paddingTop="16dp">
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_common_dialog_title"
@@ -25,15 +25,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:minHeight="76dp"
+        android:minHeight="6dp"
         android:paddingHorizontal="24dp"
         android:paddingTop="12dp"
         android:paddingBottom="20dp"
         android:text=""
         android:textColor="@color/secondary_text"
-        android:textSize="15sp" />
+        android:textSize="14sp" />
 
     <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/v_divider_content"
         android:layout_width="match_parent"
         android:layout_height="0.8dp"
         android:layout_gravity="bottom"
@@ -41,6 +42,7 @@
 
     <!--分隔線-->
     <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+        android:id="@+id/ll_double_button"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
@@ -52,7 +54,6 @@
             android:id="@+id/btn_common_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/dp_12"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:text=""
@@ -61,15 +62,16 @@
 
 
         <arch.cayenne.lib.skin.widget.SkinnableView
+            android:id="@+id/v_divider"
             android:layout_width="0.8dp"
             android:layout_height="match_parent"
+            android:layout_marginHorizontal="@dimen/dp_12"
             android:background="@color/district_line" />
 
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_common_dialog_ok"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="@dimen/dp_12"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="center"
@@ -77,4 +79,20 @@
             android:textColor="@color/dialog_title"
             android:textSize="15sp" />
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableButton
+        android:id="@+id/btn_single_confirm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginHorizontal="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:layout_weight="1"
+        android:background="@drawable/dialog_round_single_button"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/brand_color"
+        android:textSize="15sp"
+        android:visibility="gone" />
+
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>

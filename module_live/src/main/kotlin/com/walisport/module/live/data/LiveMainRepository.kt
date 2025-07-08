@@ -69,7 +69,6 @@ class LiveMainRepository(
     suspend fun updateFullMatchInfo(
         marketInfo: MatchBasicUpdate?, marketUpdate: List<Market>, matchId: Long
     ) {
-        database.liveMatchDao().deleteSelectionsEdit()
         marketInfo?.let {
             if (marketInfo.hasLiveInfo()) {
                 database.liveMatchDao().updateNotifyMatchInfo(
@@ -98,6 +97,7 @@ class LiveMainRepository(
         }
         val selections =
             marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
+        database.liveMatchDao().deleteSelectionsEdit()
         database.liveMatchDao().updateLiveSelectionBean(
             selections.selectionsEdit,
             selections.selectionsRecord,

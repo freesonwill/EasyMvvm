@@ -156,7 +156,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         insertSelectionsRecord(selectionsRecord)
     }
 
-    @Transaction
     open suspend fun updateLiveSelectionBean(
         selectionsEdit: List<LiveSelectionBean>,
         selectionsRecord: List<LiveSelectionBeanRecord>,
