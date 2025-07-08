@@ -628,7 +628,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mViewModel.setIsHomeLoading(true)
                         resetHomeView()
                         groupHomeMain.visibility = View.VISIBLE
-                        loadingView.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
                     HomeState.Sport.LoadSuccess -> {
@@ -639,10 +638,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     DataState.NetworkUnavailable, DataState.DataEmpty -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
-                        loadingView.visibility = View.GONE
-                    }
-                    HomeState.Match.LoadSuccess, HomeState.Tournament.LoadListSuccess -> {
-                        loadingView.visibility = View.GONE
                     }
                     else -> Unit
                 }
