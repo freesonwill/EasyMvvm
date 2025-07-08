@@ -52,7 +52,9 @@ class LiveMatchMediaFragment :
                         when (matchStatus) {
                             MatchStatus.IN_PROGRESS -> {
                                 //比赛正在进行中
-                                showVideoView()
+                                if (!isAnimationViewShowing()) {
+                                    showVideoView()
+                                }
                             }
 
                             else -> {
@@ -128,6 +130,13 @@ class LiveMatchMediaFragment :
                     .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG)
                     .commitNow()
             }
+    }
+
+    private fun isAnimationViewShowing(): Boolean {
+        val flag =
+            childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) is LiveMatchAnimationFragment
+        "isAnimationViewShowing:$flag".logd(TAG)
+        return flag
     }
 
     private fun showChooseSourceView() {
