@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.databinding.ItemSportsBinding
@@ -32,6 +33,7 @@ class SportsListAdapter(
                 if (!tvSportIcon.isEnabled) return@setOnClickListener
                 onItemClick(sport.id)
             }
+            root.addScaleOnTouchAnimation(tvSportIcon)
         }
     }
 

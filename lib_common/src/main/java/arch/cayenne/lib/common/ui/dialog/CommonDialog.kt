@@ -44,6 +44,17 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
             tvCommonDialogMessage.text = message ?: ""
             btnCommonDialogOk.text = okText ?: ""
             btnCommonDialogCancel.text = cancelText ?: ""
+
+            if (cancelText.isNullOrEmpty()) {
+                llDoubleButton.visibility = View.GONE
+                vDividerContent.visibility = View.GONE
+                btnSingleConfirm.visibility = View.VISIBLE
+                btnSingleConfirm.text = okText ?: ""
+            } else {
+                llDoubleButton.visibility = View.VISIBLE
+                vDividerContent.visibility = View.VISIBLE
+                btnSingleConfirm.visibility = View.GONE
+            }
         }
     }
 
@@ -56,6 +67,11 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
 
             btnCommonDialogCancel.setOnClickListener {
                 onCancelClick?.invoke()
+                dismiss()
+            }
+
+            btnSingleConfirm.setOnClickListener {
+                onOkClick?.invoke()
                 dismiss()
             }
         }

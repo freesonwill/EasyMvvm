@@ -3,6 +3,7 @@ package arch.cayenne.lib.common.utils.ext
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
+import android.annotation.SuppressLint
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -196,18 +197,57 @@ fun View.startSafeAnimateSet(
     }
     return animator
 }
-
 /**
- * 仿iOS滑動列表底部回彈效果
+ * 為 View 添加觸摸時縮放的動畫效果。
+ * @param targetView 實際要進行縮放動畫的 View，預設為觸摸的 View 本身
+ * @param scaleRatio 按下時縮放的比例，預設為 0.9f
+ * @param duration 動畫的持續時間（毫秒），預設為 100L
+ */
+@SuppressLint("ClickableViewAccessibility")
+fun View.addScaleOnTouchAnimation(
+    targetView: View = this, // 預設情況下，被觸摸的 View 就是被縮放的 View
+    scaleRatio: Float = 0.9f,
+    duration: Long = 100L,
+) {
+    this.setOnTouchListener { _, event ->
+        if (!this.isEnabled || !targetView.isEnabled) return@setOnTouchListener false
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                // 按下時，取消任何正在進行的動畫，並開始縮小動畫
+                targetView.animate().cancel() // 取消正在執行的動畫
+                targetView.animate()
+                    .scaleX(scaleRatio)
+                    .scaleY(scaleRatio)
+                    .setDuration(duration)
+                    .start()
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                // 放開或取消觸摸時，取消任何正在進行的動畫，並開始恢復動畫
+                targetView.animate().cancel()
+                targetView.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .setDuration(duration)
+                    .start()
+            }
+        }
+        // 返回 false，表示事件未被完全消費，允許其他監聽器（如 OnClickListener）繼續處理此事件
+        return@setOnTouchListener false
+    }
+}
+/**
+ * 仿iOS滑動列表頂/底部回彈效果
  *
  * @param maxOverscroll 最大拉伸距離（預設為 200f）
  */
-fun RecyclerView.enableBottomBounce(
+fun RecyclerView.enableRecyclerViewBounce(
     maxOverscroll: Float = 200f
 ) {
     var lastY = 0f
     var isDragging = false
     var isEligible = false // 是否進入底部拉伸狀態
+    var isTopDragging = false
+    var isTopEligible = false // 是否進入頂部拉伸狀態
 
     setOnTouchListener { _, event ->
         when (event.actionMasked) {
@@ -215,6 +255,9 @@ fun RecyclerView.enableBottomBounce(
                 lastY = event.rawY
                 isDragging = false
                 isEligible = false
+                isTopDragging = false
+                isTopEligible = false
+                translationY = 0f // 頂部回彈時重置位移
                 children.forEach { it.translationY = 0f }
             }
 
@@ -223,8 +266,10 @@ fun RecyclerView.enableBottomBounce(
                 val dy = currentY - lastY
 
                 val canScrollDown = canScrollVertically(1)
+                val canScrollUp = canScrollVertically(-1)
 
-                if (!canScrollDown && dy < 0) {
+                // 底部回彈
+                if (!canScrollDown && dy < 0 && !isTopDragging) {
                     if (!isEligible) {
                         lastY = currentY
                         isEligible = true
@@ -240,22 +285,49 @@ fun RecyclerView.enableBottomBounce(
                         child.translationY = newTranslation.coerceIn(-maxOverscroll, 0f)
                     }
                     return@setOnTouchListener true
+                }
+                // 頂部回彈 - 移動整個 RecyclerView
+                else if (!canScrollUp && dy > 0 && !isDragging) {
+                    if (!isTopEligible) {
+                        lastY = currentY
+                        isTopEligible = true
+                        return@setOnTouchListener true
+                    }
+
+                    isTopDragging = true
+                    lastY = currentY
+
+                    val offset = dy / 2f
+                    val newTranslation = translationY + offset
+                    translationY = newTranslation.coerceIn(0f, maxOverscroll)
+                    return@setOnTouchListener true
                 } else {
                     lastY = currentY
                 }
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (isDragging) {
-                    children.forEach { child ->
-                        child.animate()
+                if (isDragging || isTopDragging) {
+                    // 頂部回彈動畫
+                    if (isTopDragging) {
+                        animate()
                             .translationY(0f)
                             .setInterpolator(DecelerateInterpolator())
                             .setDuration(250)
                             .start()
+                    } else {
+                        children.forEach { child ->
+                            child.animate()
+                                .translationY(0f)
+                                .setInterpolator(DecelerateInterpolator())
+                                .setDuration(250)
+                                .start()
+                        }
                     }
                     isDragging = false
                     isEligible = false
+                    isTopDragging = false
+                    isTopEligible = false
                     return@setOnTouchListener true
                 } else {
                     performClick()

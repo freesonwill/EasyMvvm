@@ -24,6 +24,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -321,6 +322,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 this.calendarView.scrollToPre(true)
             }
             this?.calendarBtnCancel?.clickNoRepeat {
+                this.calendarView.scrollToCurrent()
+                val index = getFutureThirtyOneDays().indexOfFirst{ it.first == selectedDate }
+                setSelectedDateTab(index)
                 customPopup?.dismiss() // 關閉 Popup
             }
             this?.calendarBtnOk?.clickNoRepeat {
@@ -434,7 +438,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             .commitNow()
         //如果由模拟投注页面跳转到首页需要关闭左侧菜单栏
         observeResult<String>("Drawer") {
-            mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            mBinding.drawerLayout.closeDrawer(GravityCompat.START,false)
         }
     }
 
@@ -547,18 +551,18 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
                 navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
-
             llFavoriteEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
-
+            llFavoriteEntry.addScaleOnTouchAnimation(tvFavoriteIcon)
             llSearchEntry.setOnClickListener {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
-
+            llSearchEntry.addScaleOnTouchAnimation(tvSearchIcon)
             llBetEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
+            llBetEntry.addScaleOnTouchAnimation(tvBetIcon)
         }
     }
 

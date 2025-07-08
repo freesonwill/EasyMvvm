@@ -280,7 +280,6 @@ class SearchResultDirectMatchFragment :
         childFragmentManager.setFragmentResultListener(DATE_PICKER_RESULT_KEY, viewLifecycleOwner) { _, bundle ->
             childFragmentManager.clearFragmentResultListener(DATE_PICKER_RESULT_KEY)
 
-            setTitleBarMask(false)
             setDateBarStatus(false)
             setIsDatePickerOpen(false)
             datePicker = null
@@ -315,9 +314,6 @@ class SearchResultDirectMatchFragment :
 
         datePicker?.show(childFragmentManager, mBinding.clRoot.id)
         setIsDatePickerOpen(true)
-        setTitleBarMask(true) {
-            datePicker?.close()
-        }
         setDateBarStatus(true)
     }
 
@@ -448,10 +444,6 @@ class SearchResultDirectMatchFragment :
 
     private fun setStatusBarState() {
         sharedViewModel.notifyStatusBarUpdate()
-    }
-
-    private fun setTitleBarMask(isEnabled: Boolean, onClick: (() -> Unit)? = null) {
-        sharedViewModel.setTitleBarMaskEvent(isEnabled, onClick)
     }
 
     private fun setIsDatePickerOpen(isOpen: Boolean) {

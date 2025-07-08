@@ -13,12 +13,14 @@ import arch.cayenne.lib.websocket.data.SocketResponseError
 import com.google.protobuf.GeneratedMessageLite
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 
 fun GeneratedMessageLite<*, *>.asRemoteRequest(apiCode: ApiCode, rid: Short) : SocketRequestData {
@@ -64,8 +66,8 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     dispatcher: CoroutineDispatcher,
     apiCode: ApiCode,
     timeout: Long = responseTimeout,
-    request: () -> GeneratedMessageLite<*, *>
-): SocketResponseData<T> {
+    crossinline request: () -> GeneratedMessageLite<*, *>
+): SocketResponseData<T> = withContext(Dispatchers.IO){
     val rid = nextRid()
     val deferred = scope.async(dispatcher) {
         withTimeoutOrNull(timeout) {
@@ -73,7 +75,7 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
         }
     }
     val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
-    return if (errorRes != null && errorRes is SocketResponseError) {
+    return@withContext if (errorRes != null && errorRes is SocketResponseError) {
         SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,

@@ -12,34 +12,36 @@ import galaxy.client.proto.Sloth
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class LiveMainRepository(
     private val remoteManager: LiveRemoteManager, private val database: GameDatabase
 ) : BaseRepository() {
 
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
-    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance()
-    fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId)
+    fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance().flowOn(Dispatchers.IO)
+    fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
     fun observeConnectStateFlow(): Flow<ConnectState> = remoteManager.getConnectStateFlow()
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchRes(matchId: Long, callback: (LiveMatchBean) -> Unit) {
+    suspend fun getMatchRes(matchId: Long): LiveMatchBean? {
         clearMatchCache()
         var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
         if (matchFullData != null) {
-            matchFullData.match.find { it.matchId == matchId }
-                ?.let { scope.launch(Dispatchers.Main) { callback(it) } }
             database.liveMatchDao().insertFullMatch(
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
                 selectionsRecord = matchFullData.selectionsRecord,
             )
+
+            return matchFullData.match.find { it.matchId == matchId }
         }
+        return null
     }
 
     private fun clearMatchCache() {
@@ -67,7 +69,6 @@ class LiveMainRepository(
     suspend fun updateFullMatchInfo(
         marketInfo: MatchBasicUpdate?, marketUpdate: List<Market>, matchId: Long
     ) {
-        database.liveMatchDao().deleteSelectionsEdit()
         marketInfo?.let {
             if (marketInfo.hasLiveInfo()) {
                 database.liveMatchDao().updateNotifyMatchInfo(
@@ -95,6 +96,7 @@ class LiveMainRepository(
         }
         val selections =
             marketUpdate.selectionsToRoomData(database.liveMatchDao().getSelectionsRecord())
+        database.liveMatchDao().deleteSelectionsEdit()
         database.liveMatchDao().updateLiveSelectionBean(
             selections.selectionsEdit,
             selections.selectionsRecord,
@@ -109,10 +111,10 @@ class LiveMainRepository(
         remoteManager.unregisterMatchInfoNotify(scope, matchId)
     }
 
-    fun getSelectionsEdit(callback: (List<SelectionsEdit>) -> Unit) {
-        scope.launch(Dispatchers.IO) {
-            callback(database.liveMatchDao().getSelectionsEdit())
-        }
+   suspend fun getSelectionsEdit() :List<SelectionsEdit>{
+       return withContext(IO){
+           database.liveMatchDao().getSelectionsEdit()
+       }
     }
 
     fun clearAllMatch() {
@@ -125,8 +127,8 @@ class LiveMainRepository(
         return remoteManager.registerMatchStaticsNotify(scope, matchId)
     }
 
-    suspend fun unregisterStatisticsNotify(matchId: Long) {
-        remoteManager.registerMatchStaticsNotify(scope, matchId)
+    suspend fun unregisterStatisticsNotify() {
+        remoteManager.unregisterMatchStaticsNotify(scope)
     }
 
     suspend fun observeMatchStaticsNotify(): Flow<Sloth.MatchLiveData> {

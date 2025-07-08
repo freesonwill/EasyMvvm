@@ -28,7 +28,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.R as RC
 import arch.cayenne.lib.common.ui.view.ClearableEditText
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -45,6 +44,7 @@ import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.R as RC
 
 /**
  * @author: caomei
@@ -132,21 +132,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         updateStatusSearchBar()
                     }
                 }
-                launch {
-                    titleBarMaskEvent.collect { event ->
-                        with(mBinding.maskTitleBar) {
-                            if (event.first) {
-                                visibility = View.VISIBLE
-                                setOnClickListener {
-                                    event.second?.invoke()
-                                }
-                            } else {
-                                visibility = View.GONE
-                                setOnClickListener(null)
-                            }
-                        }
-                    }
-                }
             }
         }
     }
@@ -160,13 +145,19 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     afterTextChanged = { text, binding ->
                         if (!canSearch) return@loadSearchTitleBar
 
-                        // 搜索自动补充词汇
                         val count = text?.length ?: 0
+                        // 避免點擊清空搜尋時失去焦點且收起鍵盤
+                        if (count == 0) {
+                            showKeyboard(requireContext(), getSearchEditText())
+                        }
+
+                        // 搜索自动补充词汇
                         if (count > 0 && binding.ceSearch.hasFocus())
                             clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
+                                    backToSearchMainFragment()
                                     setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
                                     resetSearchRecommend()
                                 }
@@ -179,12 +170,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         updateSearchBtnColor()
                     },
                     onSearch = { content, _ ->
+                        closeDatePicker()
                         if (TextUtils.isEmpty(content)) {
                             showToast(titleBarHintStr)
                             return@loadSearchTitleBar
                         }
                         resetSearchRecommend()
                         addSearchRecord(content)
+                        backToSearchMainFragment()
                         setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
                         hideKeyboard(requireContext(), getSearchEditText())
                     },
@@ -205,6 +198,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     setOnFocusChangeListener { _, isFocused ->
                         updateSearchBtnColor()
                         if (isFocused) {
+                            closeDatePicker()
                             clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
                                 getSearchRecommendList(text.toString())
@@ -293,21 +287,21 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
-            } else if (mViewModel.isDatePickerOpen()) {
-                mViewModel.setIsDatePickerOpen(false)
-            } else {
-                val navController = mBinding.fragmentContainer.findNavController()
-                val backStackId = navController.previousBackStackEntry?.destination?.id
+            }
 
-                when (backStackId) {
-                    R.id.searchResultBaseFragment -> {
-                        navController.popBackStack(R.id.searchResultBaseFragment, true)
-                    }
-                    else -> {
-                        if (!navController.popBackStack()) {
-                            isEnabled = false
-                            requireActivity().onBackPressedDispatcher.onBackPressed()
-                        }
+            closeDatePicker()
+
+            val navController = mBinding.fragmentContainer.findNavController()
+            val backStackId = navController.previousBackStackEntry?.destination?.id
+
+            when (backStackId) {
+                R.id.searchResultBaseFragment -> {
+                    navController.popBackStack(R.id.searchResultBaseFragment, true)
+                }
+                else -> {
+                    if (!navController.popBackStack()) {
+                        isEnabled = false
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
                     }
                 }
             }
@@ -317,6 +311,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     private fun resetSearchRecommend() {
         mBinding.clSearchRecommend.visibility = View.GONE
         mViewModel.clearSearchRecommendList()
+    }
+
+    private fun closeDatePicker() {
+        if (mViewModel.isDatePickerOpen()) {
+            mViewModel.setIsDatePickerOpen(false)
+        }
     }
 
     private fun getSearchBar(): LinearLayout {
@@ -456,6 +456,17 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
         editText.clearFocus()
+    }
+
+    private fun showKeyboard(context: Context?, editText: EditText) {
+        editText.requestFocus()
+        val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        im.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun backToSearchMainFragment() {
+        val navController = findChildNavController(mBinding.fragmentContainer.id)
+        navController.popBackStack(R.id.searchMainFragment, false)
     }
 
     private fun doNavigate(event: SearchNavigationEvent) {
