@@ -77,6 +77,10 @@ class LiveMatchMediaFragment :
                 showChooseSourceView()
             }
 
+            switchToVideo.observe(viewLifecycleOwner) {
+                showVideoView()
+            }
+
         }
 
 

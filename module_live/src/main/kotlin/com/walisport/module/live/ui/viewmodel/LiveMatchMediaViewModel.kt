@@ -29,6 +29,10 @@ class LiveMatchMediaViewModel(
     private val _chooseSource: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
     val chooseSource: UnPeekLiveData<Boolean> = _chooseSource
 
+    //切到视频播放页面
+    private val _switchToVideo: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
+    val switchToVideo: UnPeekLiveData<Boolean> = _switchToVideo
+
     private var job: Job? = null
 
     fun matchId() = repo.matchId
@@ -55,6 +59,10 @@ class LiveMatchMediaViewModel(
 
     fun chooseSourceView() {
         _chooseSource.value = true
+    }
+
+    fun switchToVideo() {
+        _switchToVideo.value = true
     }
 
 
