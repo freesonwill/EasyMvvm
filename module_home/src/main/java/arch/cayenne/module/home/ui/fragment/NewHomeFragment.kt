@@ -111,7 +111,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
-                        //看db, 點擊的不在matchBean中會爆掉
                         mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
@@ -543,6 +542,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initData() {
         super.initData()
+        mViewModel.setCurrentPlayType(PlayType.TODAY.id)
     }
 
     override fun initListener() {

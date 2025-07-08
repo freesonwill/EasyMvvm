@@ -104,7 +104,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 } else {
                     Pair(_selectedDate.value, _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP)
                 }
-                "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(this::class.java.name)
+                "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(TAG)
                 isPageEnd = !repository.getAllMatch(
                     playType = _playType,
                     sportId = _sportId,

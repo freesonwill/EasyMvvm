@@ -26,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
@@ -93,14 +94,20 @@ class HomeViewModel : BaseViewModel() {
                         else -> ShowType.HOME_TODAY
                     }
                     list.filter { it.type == type }
+                }.distinctUntilChanged { old, new ->
+                    if (old.size != new.size) return@distinctUntilChanged false
+                    return@distinctUntilChanged old.indices.all { index ->
+                        old[index].id == new[index].id
+                            && old[index].matchCount == new[index].matchCount
+                            && old[index].order == new[index].order
+                    }
                 }.collect { list ->
-                    if (list.isEmpty() && apiStateListener.value != HomeState.Sport.Loading) {
-                        launch(Dispatchers.Main) {
-                            getCurrentSportStatistical()
-                        }
+                    if (list.isEmpty()) {
+//                        launch(Dispatchers.Main) {
+//                            getCurrentSportStatistical()
+//                        }
                         return@collect
                     }
-
                     val selectedSportId = repository.getCurrentHomeSelectedData(currentPlayTypeId)?.sportId
                     launch(Dispatchers.Main) {
                         if (selectedSportId == null || !list.any {data ->  data.id == selectedSportId }) {  //从DB找不到目前点击的sport
@@ -111,7 +118,6 @@ class HomeViewModel : BaseViewModel() {
                             setCurrentSport(selectedSportId)
                             list.firstOrNull {data -> data.id == selectedSportId }?.isSelected = true
                         }
-
                         sportsStatistical.value = Event(list)
                     }
                 }
@@ -129,7 +135,6 @@ class HomeViewModel : BaseViewModel() {
                     withContext(Dispatchers.Main) {
                         val list = mutableListOf<TournamentDataModel>()
                         if (it.isEmpty()) {
-                            getCurrentTournament()
                             return@withContext
                         }
                         list.add(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId))
@@ -237,6 +242,7 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
+        getCurrentTournament()
     }
 
     //切換當前的三級選項(聯賽)
