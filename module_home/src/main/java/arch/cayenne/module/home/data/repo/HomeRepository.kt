@@ -158,18 +158,18 @@ class HomeRepository(
     fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
 
     fun getCurrentSelectedTournament(playType: Int, sportId: Int): TournamentDataModel? {
-        val homeSelectedBean = homeSelectedDao.queryHomeSelectedData(playType) ?: return null  //從DB找不到點擊的data
+        val homeSelectedBean = getCurrentHomeSelectedData(playType) ?: return null  //從DB找不到點擊的data
         return tournamentDao.queryTournament(playType, sportId, homeSelectedBean.tournamentId)  //null表示這個點擊資料已經沒有在目前的聯賽中
     }
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
-        val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
+        val bean = getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
         homeSelectedDao.insert(bean)
 
     }
 
     suspend fun updateSelectedTournament(playType: Int, sportId: Int, tournamentId: Int) {
-        val bean = homeSelectedDao.queryHomeSelectedData(playType)?.copy(tournamentId = tournamentId) ?: HomeSelectedBean(playType, sportId, tournamentId ,0L)
+        val bean = getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId) ?: HomeSelectedBean(playType, sportId, tournamentId ,0L)
         homeSelectedDao.insert(bean)
 
     }

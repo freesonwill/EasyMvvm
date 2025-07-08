@@ -52,7 +52,6 @@ class HomeViewModel : BaseViewModel() {
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
     private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
-    private var currentTournamentId = 0
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
@@ -82,7 +81,6 @@ class HomeViewModel : BaseViewModel() {
     val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
-    private var tournamentJob: Job? = null
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -145,12 +143,6 @@ class HomeViewModel : BaseViewModel() {
                         } else {
                             setCurrentTournamentId(selectedTournament.id)
                         }
-
-//                        if (homeSelectedBean == null || homeSelectedBean.date == 0L) {
-//                            resetSelectedDate()
-//                        } else  {
-//                            setSelectedDate(homeSelectedBean.date)
-//                        }
                     }
             }
         }
@@ -249,14 +241,18 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的三級選項(聯賽)
     fun setCurrentTournamentId(tournamentId: Int) {
-        currentTournamentId = tournamentId
         _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateSelectedTournament(currentPlayTypeId, currentSportId, currentTournamentId)
+            repository.updateSelectedTournament(currentPlayTypeId, currentSportId, tournamentId)
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val date = repository.getCurrentHomeSelectedData(currentPlayTypeId)?.date ?: 0L
+            launch(Dispatchers.Main) {
+                if (date == 0L) resetSelectedDate() else setSelectedDate(date)
+            }
         }
     }
-
-    fun getCurrentTournamentId() = currentTournamentId
 
     fun getCurrentTournament() {
         setState(HomeState.Tournament.Loading)
@@ -267,22 +263,33 @@ class HomeViewModel : BaseViewModel() {
                 setState(HomeState.Tournament.LoadSuccess)
             }
         })
-
     }
 
-    fun resetSelectedDate() {
+    suspend fun resetSelectedDate() {
+        if (_selectedDate.value?.peekContent() == 0L) return
+        withContext(Dispatchers.IO) {
+            repository.updateHomeSelected(
+                currentPlayTypeId,
+                currentSportId,
+                selectedTournamentId.value?.peekContent() ?: TOURNAMENT_ALL_ID,
+                0
+            )
+        }
         _selectedDate.value = Event(0L)
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.updateHomeSelected(currentPlayTypeId, currentSportId, currentTournamentId, 0)
-//        }
     }
 
-    fun setSelectedDate(date: Long) {
+    suspend fun setSelectedDate(date: Long) {
+
         if (_selectedDate.value?.peekContent() == date) return
+        withContext(Dispatchers.IO) {
+            repository.updateHomeSelected(
+                currentPlayTypeId,
+                currentSportId,
+                selectedTournamentId.value?.peekContent() ?: TOURNAMENT_ALL_ID,
+                date
+            )
+        }
         _selectedDate.value = Event(date)
-//        viewModelScope.launch(Dispatchers.IO) {
-//            repository.updateHomeSelected(currentPlayTypeId, currentSportId, currentTournamentId, date)
-//        }
     }
 
     //
