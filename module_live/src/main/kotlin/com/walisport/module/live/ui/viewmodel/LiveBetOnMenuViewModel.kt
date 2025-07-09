@@ -35,8 +35,8 @@ class LiveBetOnMenuViewModel : BaseViewModel() {
         }
     }
 
-    fun getMarketMenuByCode(code: String,marketBeanMenCallback: (List<MarketMenuBean>) -> Unit) {
-        var data : List<MarketMenuBean> = marketMenu.value?.filter { it.code == code }!!
-        marketBeanMenCallback(data)
+    fun getMarketMenuByCode(code: String): List<MarketMenuBean> {
+        val data: List<MarketMenuBean> = marketMenu.value?.filter { it.code == code }!!
+        return data
     }
 }
