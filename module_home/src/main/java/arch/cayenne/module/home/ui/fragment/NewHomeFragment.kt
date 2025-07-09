@@ -457,10 +457,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
-                        layoutParams = LinearLayout.LayoutParams(56.dp2px, 50.dp2px).apply {
-                            setMargins(4.dp2px, 0, 0, 0)
-                        }
-                        setPadding(0, 0, 0, 0)
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
                         isSelected = false
                     }
@@ -512,6 +508,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
+                    // 換頁前禁用回彈
+                    (tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer)?.enableBounce =
+                        false
                     viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab?.position ?: 0,
                         viewPager = mBinding.layoutContainer.vpGameList,
@@ -528,6 +527,24 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+            // 註冊 ViewPager2 換頁狀態監聽，換頁期間禁用回彈，換頁完成後啟用回彈
+            vpGameList.registerOnPageChangeCallback(object :
+                androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrollStateChanged(state: Int) {
+                    val bounceContainer =
+                        tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
+                    when (state) {
+                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING,
+                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING -> {
+                            bounceContainer?.enableBounce = false
+                        }
+
+                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE -> {
+                            bounceContainer?.enableBounce = true
+                        }
+                    }
+                }
             })
         }
     }

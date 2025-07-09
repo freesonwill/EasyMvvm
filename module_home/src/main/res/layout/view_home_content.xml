@@ -6,28 +6,34 @@
     android:layout_height="match_parent"
     tools:ignore="MissingDefaultResource">
 
-    <arch.cayenne.lib.skin.widget.SkinnableTabLayout
-        android:id="@+id/tl_league_list"
+    <arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
+        android:id="@+id/tl_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_52"
-        android:background="@color/bg_card"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingVertical="@dimen/dp_9"
-        android:paddingStart="@dimen/dp_8"
-        android:paddingEnd="@dimen/dp_30"
-        android:overScrollMode="never"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tabGravity="center"
-        app:tabIndicator="@null"
-        app:tabIndicatorColor="@null"
-        app:tabIndicatorHeight="0dp"
-        app:tabMode="scrollable"
-        app:tabRippleColor="@null"
-        app:tabSelectedTextColor="@color/league_tab_tint_select"
-        app:tabTextColor="@color/league_tab_tint_unselect" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+            android:id="@+id/tl_league_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/bg_card"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingVertical="@dimen/dp_9"
+            android:paddingStart="@dimen/dp_8"
+            android:paddingEnd="@dimen/dp_30"
+            app:tabGravity="center"
+            app:tabIndicator="@null"
+            app:tabIndicatorColor="@null"
+            app:tabIndicatorHeight="0dp"
+            app:tabMode="scrollable"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/league_tab_tint_select"
+            app:tabTextColor="@color/league_tab_tint_unselect" />
+    </arch.cayenne.module.home.ui.view.BounceTabLayoutContainer>
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/ll_date_filter_container"
@@ -40,7 +46,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/ll_other_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tl_league_list">
+        app:layout_constraintTop_toBottomOf="@id/tl_container">
 
         <!-- 固定「全部」tab -->
         <TextView
@@ -100,7 +106,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ll_date_filter_container"
-        app:layout_constraintTop_toBottomOf="@+id/tl_league_list">
+        app:layout_constraintTop_toBottomOf="@+id/tl_container">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/tv_date"

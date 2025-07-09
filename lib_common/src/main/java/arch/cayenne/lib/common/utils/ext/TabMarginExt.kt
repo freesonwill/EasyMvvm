@@ -1,14 +1,13 @@
-package com.walisport.module.live.utils
+package arch.cayenne.lib.common.utils.ext
 
 import android.widget.LinearLayout
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import com.google.android.material.tabs.TabLayout
 
 /**
  * @date: 2025/5/30 11:55
  * @description: tabLayout扩展
  */
-object TabMarginExt {
+object TabLayoutExt {
     //设置tab之间的外边距
     fun TabLayout.reflexMargin(leftMargin: Int, rightMargin: Int, margin: Int) {
         val tabLayout = this
