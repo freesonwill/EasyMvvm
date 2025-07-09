@@ -98,7 +98,9 @@ class LiveMatchAnimationFragment :
             animationLiveUrl.observe(viewLifecycleOwner) { url ->
                 url?.also {
                     "url:$url".logd(TAG)
-                    mBinding.animationView.loadUrl(it)
+                    if (url != mBinding.animationView.url) {
+                        mBinding.animationView.loadUrl(it)
+                    }
                 }
             }
 
