@@ -24,6 +24,8 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
@@ -177,7 +179,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
 
-        mBinding.ivHomeLeagueMore.clickNoRepeat {
+        mBinding.ivTournamentMore.clickNoRepeat {
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+        mBinding.llHomeTournamentMore.clickNoRepeat {
             toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
     }
@@ -267,7 +272,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             //TODO 把進出的anim優化
             container.postDelayed({
-                mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
+                mBinding.ivTournamentMore.visibility = View.VISIBLE
                 container.visibility = View.GONE
             }, delay)
         }
@@ -503,6 +508,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { it.attach() }
+
+            // 使用 reflexMargin 擴展方法設置更小的 tab 間距
+            tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
+            
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
@@ -523,6 +532,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tournaments.getOrNull(selectedIndex)?.id?.apply {
                         mViewModel.setCurrentTournamentId(this)
                     }
+
+                    // 延遲重新啟用回彈效果，確保 ViewPager 動畫完成
+                    tlLeagueList.postDelayed({
+                        (tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer)?.enableBounce =
+                            true
+                    }, 300) // 300ms 後重新啟用回彈
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -535,17 +550,29 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val bounceContainer =
                         tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
                     when (state) {
-                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING,
-                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING -> {
+                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING -> {
+                            // 只在用戶拖拽時禁用回彈
                             bounceContainer?.enableBounce = false
                         }
-
+                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING -> {
+                            // 在設置過程中保持禁用
+                            bounceContainer?.enableBounce = false
+                        }
                         androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE -> {
-                            bounceContainer?.enableBounce = true
+                            // 延遲重新啟用回彈，確保動畫完全結束
+                            vpGameList.postDelayed({
+                                bounceContainer?.enableBounce = true
+                            }, 100)
                         }
                     }
                 }
             })
+            // 註冊 TabLayout scroll end more監聽與初始化動畫
+            tlLeagueList.setupEndTabMoreAnimation(
+                mBinding.ivTournamentMore,
+                mBinding.llHomeTournamentMore,
+                triggerRatio = 0.8f
+            )
         }
     }
 
