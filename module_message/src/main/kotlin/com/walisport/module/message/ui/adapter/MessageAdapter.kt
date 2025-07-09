@@ -46,7 +46,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
-                    clicklistener?.onDetail(item.id)
+                    clicklistener?.onDetail(item)
                 }
             }
 
@@ -58,7 +58,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
-                    clicklistener?.onDetail(item.id)
+                    clicklistener?.onDetail(item)
                 }
                 //Glide.with(binding.root).load(item.url).into(binding.ivMsgImage)
             }
@@ -68,7 +68,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
-                    clicklistener?.onDetail(item.id)
+                    clicklistener?.onDetail(item)
                 }
             }
         }
@@ -109,6 +109,6 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
 
     interface OnClickListener {
         fun onDelete(id: Long)
-        fun onDetail(id: Long)
+        fun onDetail(item: NotificationBean)
     }
 }
