@@ -123,7 +123,7 @@ class MatchListPagerFragment :
         val firstViewTop = firstView?.top ?: 0
         val itemHeight = firstView?.height ?: 0
         val scrollY = firstPos * itemHeight - firstViewTop
-        homeViewModel.updatePosition(
+        homeViewModel.updateCoordinate(
             playTypeId = mViewModel.getPlayTypeId(),
             sportId = mViewModel.getSportId(),
             tournamentId = mViewModel.getTournamentId(),

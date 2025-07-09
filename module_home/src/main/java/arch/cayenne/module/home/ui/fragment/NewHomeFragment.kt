@@ -217,7 +217,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-            mViewModel.resetSelectedDate()
+            mViewModel.setSelectedDate(0L)
         }
 
     }

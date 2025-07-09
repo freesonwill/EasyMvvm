@@ -177,26 +177,27 @@ class HomeRepository(
         }
     }
 
-    fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
-
-    suspend fun getCurrentPageCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int) : Int? = tournamentDao.getSportTournamentCrossRef(playTypeId, sportId, tournamentId)?.coordinateY
-
-    fun getCurrentSelectedTournament(playType: Int, sportId: Int): TournamentDataModel? {
-        val homeSelectedBean = getCurrentHomeSelectedData(playType) ?: return null  //從DB找不到點擊的data
-        return tournamentDao.queryTournament(playType, sportId, homeSelectedBean.tournamentId)  //null表示這個點擊資料已經沒有在目前的聯賽中
-    }
+    private fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
         val bean = getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 )
         homeSelectedDao.insert(bean)
-
     }
+    suspend fun getCurrentSelectedSportId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.sportId
 
-    suspend fun updateSelectedTournament(playType: Int, tournamentId: Int) {
+    suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) {
         getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId)?.apply {
             homeSelectedDao.insert(this)
         }
     }
+    suspend fun getCurrentSelectedTournamentId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.tournamentId
+
+    suspend fun updateSelectedDate(showType: ShowType, sportId: Int, date: Long) {
+        sportDao.getSportById(sportId, showType)?.copy(date = date)?.apply {
+            sportDao.insert(this)
+        }
+    }
+    suspend fun getCurrentSelectedDate(showType: ShowType, sportId: Int): Long? = sportDao.getSportById(sportId, showType)?.date
 
     suspend fun updateScrollCoordinate(
         playTypeId: Int,
@@ -206,12 +207,5 @@ class HomeRepository(
     ) {
         tournamentDao.updateRefCoordinate(playTypeId, sportId, tournamentId, coordinate)
     }
-
-    suspend fun updateSelectedDate(showType: ShowType, sportId: Int, date: Long) {
-        sportDao.getSportById(sportId, showType)?.copy(date = date)?.apply {
-            sportDao.insert(this)
-        }
-    }
-
-    suspend fun getCurrentSelectedDate(showType: ShowType, sportId: Int): Long? = sportDao.getSportById(sportId, showType)?.date
+    suspend fun getCurrentPageCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int) : Int? = tournamentDao.getSportTournamentCrossRef(playTypeId, sportId, tournamentId)?.coordinateY
 }

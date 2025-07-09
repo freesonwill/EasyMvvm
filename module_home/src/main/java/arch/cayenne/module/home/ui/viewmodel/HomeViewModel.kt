@@ -99,7 +99,7 @@ class HomeViewModel : BaseViewModel() {
                     if (list.isEmpty()) {
                         return@collect
                     }
-                    val selectedSportId = repository.getCurrentHomeSelectedData(currentPlayTypeId)?.sportId
+                    val selectedSportId = repository.getCurrentSelectedSportId(currentPlayTypeId)
                     launch(Dispatchers.Main) {
                         if (selectedSportId == null || !list.any {data ->  data.id == selectedSportId }) {  //从DB找不到目前点击的sport
                             val bean = list.find {data ->  data.matchCount > 0 } ?: list.first()
@@ -123,7 +123,10 @@ class HomeViewModel : BaseViewModel() {
                     it.take(10)  //limit
                 }.distinctUntilChanged()
                 .collect {
-                    val selectedTournament = repository.getCurrentSelectedTournament(currentPlayTypeId, currentSportId)
+                    val selectedTournament = repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
+                        repository.getTournament(currentPlayTypeId, currentSportId, it)
+                    }
+
                     withContext(Dispatchers.Main) {
                         val list = mutableListOf<TournamentDataModel>()
                         if (it.isEmpty()) {
@@ -241,13 +244,13 @@ class HomeViewModel : BaseViewModel() {
     fun setCurrentTournamentId(tournamentId: Int) {
         _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateSelectedTournament(currentPlayTypeId, tournamentId)
+            repository.updateSelectedTournamentId(currentPlayTypeId, tournamentId)
         }
 
         viewModelScope.launch(Dispatchers.IO) {
             val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
             launch(Dispatchers.Main) {
-                if (date == 0L) resetSelectedDate() else setSelectedDate(date)
+                setSelectedDate(date)
             }
         }
     }
@@ -263,14 +266,6 @@ class HomeViewModel : BaseViewModel() {
         })
     }
 
-    suspend fun resetSelectedDate() {
-        if (_selectedDate.value?.peekContent() == 0L) return
-        withContext(Dispatchers.IO) {
-            repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, 0L)
-        }
-        _selectedDate.value = Event(0L)
-    }
-
     suspend fun setSelectedDate(date: Long) {
 
         if (_selectedDate.value?.peekContent() == date) return
@@ -280,7 +275,7 @@ class HomeViewModel : BaseViewModel() {
         _selectedDate.value = Event(date)
     }
 
-    fun updatePosition(
+    fun updateCoordinate(
         playTypeId: Int,
         sportId: Int,
         tournamentId: Int,
