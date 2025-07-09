@@ -18,11 +18,13 @@ import arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import com.walisport.module.live.R
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import kotlin.reflect.KClass
 
@@ -35,6 +37,9 @@ class LiveVideoSourcePortraitFragment :
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
         FragmentLiveSourcePortraitBinding::class
     override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
+
+    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+
 
     private var isDismissing = false
 
@@ -56,6 +61,7 @@ class LiveVideoSourcePortraitFragment :
                     }
 
                     setOnClickListener {
+                        mediaViewModel.switchToVideo()
                         mViewModel.setPlayingVideoId(it)
                     }
                 }

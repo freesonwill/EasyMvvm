@@ -58,7 +58,8 @@ fun Common.Match.toRoomData(): LiveMatchFullData {
                 liveVideo = this.basicInfo.liveInfo.liveVideo,
                 charRoom = this.basicInfo.liveInfo.chatRoom,
                 viewerCount = this.basicInfo.liveInfo.viewerCount,
-                clockModified = this.basicInfo.liveInfo.clockModified
+                clockModified = this.basicInfo.liveInfo.clockModified,
+                animationLiveUrl = this.basicInfo.liveInfo.animationLiveUrl,
             )
         )
     )

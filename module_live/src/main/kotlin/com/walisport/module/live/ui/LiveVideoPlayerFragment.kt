@@ -33,7 +33,9 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
+import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
@@ -55,6 +57,9 @@ class LiveVideoPlayerFragment :
     override val vmClass: KClass<LiveVideoPlayerViewModel> = LiveVideoPlayerViewModel::class
 
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
+    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+
 
     private lateinit var videoView: LivePlayerView
 
@@ -179,34 +184,7 @@ class LiveVideoPlayerFragment :
 
         with(mBinding) {
             ivChooseSource.setOnClickListener {
-                val location = IntArray(2)
-                videoView.getLocationOnScreen(location)
-                val x = location[0]
-                val y =
-                    location[1] + videoView.measuredHeight - getStatusBarHeight(requireContext())
-                LiveVideoSourcePortraitFragment().apply {
-                    arguments = Bundle().apply {
-                        putLong("matchId", mViewModel.matchId())
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
-                            x
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
-                            y
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                    }
-                    show(this@LiveVideoPlayerFragment.childFragmentManager)
-                }
-
+                mediaViewModel.chooseSourceView()
             }
 
             ivToFullscreen.clickNoRepeat {
@@ -217,6 +195,8 @@ class LiveVideoPlayerFragment :
             }
 
             ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }
+
+            ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
 
     }

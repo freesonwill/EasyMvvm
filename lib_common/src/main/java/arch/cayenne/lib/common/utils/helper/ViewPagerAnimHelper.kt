@@ -1,7 +1,6 @@
 package arch.cayenne.lib.common.utils.helper
 
 import android.animation.Animator
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.view.ViewTreeObserver
 import android.widget.ImageView
@@ -14,7 +13,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import androidx.core.animation.addListener
+
 class ViewPagerAnimHelper {
 
     private var job: Job? = null
@@ -127,7 +126,7 @@ class ViewPagerAnimHelper {
 
 
             viewPager.startSafeAnimateSet({
-                duration = 100L
+                duration = 200L
                 playTogether(animationList)
                 addListener(object : android.animation.AnimatorListenerAdapter() {
                     override fun onAnimationStart(animation: Animator) {

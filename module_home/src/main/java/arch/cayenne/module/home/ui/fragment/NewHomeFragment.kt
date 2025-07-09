@@ -512,7 +512,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                    viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab?.position ?: 0,
                         viewPager = mBinding.layoutContainer.vpGameList,
                         fakeViewPager = mBinding.layoutContainer.ivFaker
