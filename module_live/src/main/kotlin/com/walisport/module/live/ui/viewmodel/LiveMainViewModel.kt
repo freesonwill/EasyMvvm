@@ -251,7 +251,7 @@ class LiveMainViewModel(
     fun startChatServer() {
         viewModelScope.launch {
             val state = chatRepo.getConnectStateFlow().value
-            "startChatserver $state".logd(TAG)
+            "startChatServer $state".logd(TAG)
             if (state != SocketConnectState.None && state != SocketConnectState.Closed) {
                 return@launch
             }
