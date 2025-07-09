@@ -246,7 +246,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mBeforePosition = position
                     liveBetOnAdapter.notifyItemChanged(position) }  }
             } else {
-                selectionComboId = it
                 liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
                 liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
                 liveBetOnAdapter.notifyItemChanged(mBeforePosition!!)
