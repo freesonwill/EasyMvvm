@@ -13,12 +13,12 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.InfoBean
-import arch.cayenne.lib.database.entity.ShowType
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
+import arch.cayenne.module.home.data.constants.playTypeToShowType
 import arch.cayenne.module.home.data.repo.HomeRepository
 import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
@@ -87,13 +87,7 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
                 .combine(_currentPlayTypeId) { list, playTypeId ->
-                    val type = when(playTypeId) {
-                        PlayType.TODAY.id -> ShowType.HOME_TODAY
-                        PlayType.EARLY.id -> ShowType.HOME_EARLY
-                        PlayType.CHAMPION.id -> ShowType.HOME_CHAMPION
-                        else -> ShowType.HOME_TODAY
-                    }
-                    list.filter { it.type == type }
+                    list.filter { it.type == playTypeId.playTypeToShowType() }
                 }.distinctUntilChanged { old, new ->
                     if (old.size != new.size) return@distinctUntilChanged false
                     return@distinctUntilChanged old.indices.all { index ->
@@ -103,9 +97,6 @@ class HomeViewModel : BaseViewModel() {
                     }
                 }.collect { list ->
                     if (list.isEmpty()) {
-//                        launch(Dispatchers.Main) {
-//                            getCurrentSportStatistical()
-//                        }
                         return@collect
                     }
                     val selectedSportId = repository.getCurrentHomeSelectedData(currentPlayTypeId)?.sportId
@@ -130,7 +121,8 @@ class HomeViewModel : BaseViewModel() {
                     list.filter { it.sportId == sportId }
                 }.map {
                     it.take(10)  //limit
-                }.collect {
+                }.distinctUntilChanged()
+                .collect {
                     val selectedTournament = repository.getCurrentSelectedTournament(currentPlayTypeId, currentSportId)
                     withContext(Dispatchers.Main) {
                         val list = mutableListOf<TournamentDataModel>()
@@ -249,11 +241,11 @@ class HomeViewModel : BaseViewModel() {
     fun setCurrentTournamentId(tournamentId: Int) {
         _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
-            repository.updateSelectedTournament(currentPlayTypeId, currentSportId, tournamentId)
+            repository.updateSelectedTournament(currentPlayTypeId, tournamentId)
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val date = repository.getCurrentHomeSelectedData(currentPlayTypeId)?.date ?: 0L
+            val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
             launch(Dispatchers.Main) {
                 if (date == 0L) resetSelectedDate() else setSelectedDate(date)
             }
@@ -274,12 +266,7 @@ class HomeViewModel : BaseViewModel() {
     suspend fun resetSelectedDate() {
         if (_selectedDate.value?.peekContent() == 0L) return
         withContext(Dispatchers.IO) {
-            repository.updateHomeSelected(
-                currentPlayTypeId,
-                currentSportId,
-                selectedTournamentId.value?.peekContent() ?: TOURNAMENT_ALL_ID,
-                0
-            )
+            repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, 0L)
         }
         _selectedDate.value = Event(0L)
     }
@@ -288,14 +275,30 @@ class HomeViewModel : BaseViewModel() {
 
         if (_selectedDate.value?.peekContent() == date) return
         withContext(Dispatchers.IO) {
-            repository.updateHomeSelected(
-                currentPlayTypeId,
-                currentSportId,
-                selectedTournamentId.value?.peekContent() ?: TOURNAMENT_ALL_ID,
-                date
-            )
+            repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, date)
         }
         _selectedDate.value = Event(date)
+    }
+
+    fun updatePosition(
+        playTypeId: Int,
+        sportId: Int,
+        tournamentId: Int,
+        coordinate: Int
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.updateScrollCoordinate(playTypeId, sportId, tournamentId, coordinate)
+        }
+    }
+
+    suspend fun getCurrentPageCoordinate(
+        playTypeId: Int,
+        sportId: Int,
+        tournamentId: Int,
+    ): Int {
+        return withContext(Dispatchers.IO) {
+            repository.getCurrentPageCoordinate(playTypeId, sportId, tournamentId) ?: 0
+        }
     }
 
     //

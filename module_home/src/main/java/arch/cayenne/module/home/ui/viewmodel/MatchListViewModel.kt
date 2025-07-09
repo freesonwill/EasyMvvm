@@ -57,7 +57,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun getTournamentId() = _tournamentId
 
-    fun getPosition() = _position
+    fun getSportId() = _sportId
 
     fun startObserveMatch() {
         _state.value = Event(MatchListState.FIRST_LOADING)

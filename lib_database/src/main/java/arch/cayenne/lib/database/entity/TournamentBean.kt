@@ -19,6 +19,7 @@ data class SportTournamentCrossRef(
     val hot: Boolean,
     val weight: Int,
     val index: Int,
+    val coordinateY: Int,
 )
 
 abstract class BaseTournamentData {

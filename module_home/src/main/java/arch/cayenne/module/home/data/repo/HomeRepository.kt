@@ -14,8 +14,8 @@ import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
-import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
+import arch.cayenne.module.home.data.constants.playTypeToShowType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,19 +56,20 @@ class HomeRepository(
         val dataList = mutableListOf<SportBean>()
         data.statisticalList.forEach { play ->
             play.sportStatisticalList.forEachIndexed { index, sport ->
-                val bean = SportBean(
-                    sportId = sport.sportId,
-                    sportName = sport.sportName,
-                    matchCount = sport.matchCount,
-                    sportOrder = index,
-                    type = when(play.playType) {
-                        PlayType.TODAY.id -> ShowType.HOME_TODAY
-                        PlayType.EARLY.id -> ShowType.HOME_EARLY
-                        PlayType.CHAMPION.id -> ShowType.HOME_CHAMPION
-                        else -> ShowType.HOME_TODAY
+                dataList.add(
+                    sportDao.getSportById(sport.sportId, play.playType.playTypeToShowType())?.copy(
+                        matchCount = sport.matchCount
+                    ) ?: run {
+                        SportBean(
+                            sportId = sport.sportId,
+                            sportName = sport.sportName,
+                            matchCount = sport.matchCount,
+                            sportOrder = index,
+                            type = play.playType.playTypeToShowType(),
+                            date = 0L
+                        )
                     }
                 )
-                dataList.add(bean)
             }
         }
         sportDao.insert(dataList)
@@ -104,7 +105,21 @@ class HomeRepository(
         data: Client.ListTournamentResp
     ): ApiResponseState.Succeeded<*> {
         val tournamentList = mutableListOf<TournamentBean>()
-        val refs = mutableListOf<SportTournamentCrossRef>()
+        val refs = mutableListOf<SportTournamentCrossRef>().apply {
+            add(
+                tournamentDao.getSportTournamentCrossRef(playType, sportId, 0) ?: run {
+                    SportTournamentCrossRef(
+                        tournamentId = 0,
+                        playType = playType,
+                        sportId = sportId,
+                        hot = false,
+                        weight = Int.MAX_VALUE,
+                        index = 0,
+                        coordinateY = 0,
+                    )
+                }
+            )
+        }
         data.tournamentList.forEachIndexed { index, tournament ->
             tournamentList.add(
                 TournamentBean(
@@ -115,14 +130,21 @@ class HomeRepository(
                 )
             )
             refs.add(
-                SportTournamentCrossRef(
-                    tournamentId = tournament.id,
-                    playType = playType,
-                    sportId = sportId,
-                    hot = tournament.hot,
-                    weight = tournament.weight,
-                    index = index,
-                )
+                tournamentDao.getSportTournamentCrossRef(playType, sportId, tournament.id)?.copy(
+                hot = tournament.hot,
+                weight = tournament.weight,
+                index = index+1,
+                ) ?: run {
+                    SportTournamentCrossRef(
+                        tournamentId = tournament.id,
+                        playType = playType,
+                        sportId = sportId,
+                        hot = tournament.hot,
+                        weight = tournament.weight,
+                        index = index+1,
+                        coordinateY = 0,
+                    )
+                }
             )
         }
 
@@ -157,26 +179,39 @@ class HomeRepository(
 
     fun getCurrentHomeSelectedData(playType: Int): HomeSelectedBean? = homeSelectedDao.queryHomeSelectedData(playType)
 
+    suspend fun getCurrentPageCoordinate(playTypeId: Int, sportId: Int, tournamentId: Int) : Int? = tournamentDao.getSportTournamentCrossRef(playTypeId, sportId, tournamentId)?.coordinateY
+
     fun getCurrentSelectedTournament(playType: Int, sportId: Int): TournamentDataModel? {
         val homeSelectedBean = getCurrentHomeSelectedData(playType) ?: return null  //從DB找不到點擊的data
         return tournamentDao.queryTournament(playType, sportId, homeSelectedBean.tournamentId)  //null表示這個點擊資料已經沒有在目前的聯賽中
     }
 
     suspend fun updateSelectedSportId(playType: Int, sportId: Int) {
-        val bean = getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 ,0L)
+        val bean = getCurrentHomeSelectedData(playType)?.copy(sportId = sportId) ?: HomeSelectedBean(playType, sportId, 0 )
         homeSelectedDao.insert(bean)
 
     }
 
-    suspend fun updateSelectedTournament(playType: Int, sportId: Int, tournamentId: Int) {
-        val bean = getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId) ?: HomeSelectedBean(playType, sportId, tournamentId ,0L)
-        homeSelectedDao.insert(bean)
-
+    suspend fun updateSelectedTournament(playType: Int, tournamentId: Int) {
+        getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId)?.apply {
+            homeSelectedDao.insert(this)
+        }
     }
 
-    suspend fun updateHomeSelected(playType: Int, sportId: Int, tournamentId: Int, date: Long) {
-        homeSelectedDao.insert(
-            HomeSelectedBean(playType, sportId, tournamentId, date)
-        )
+    suspend fun updateScrollCoordinate(
+        playTypeId: Int,
+        sportId: Int,
+        tournamentId: Int,
+        coordinate: Int
+    ) {
+        tournamentDao.updateRefCoordinate(playTypeId, sportId, tournamentId, coordinate)
     }
+
+    suspend fun updateSelectedDate(showType: ShowType, sportId: Int, date: Long) {
+        sportDao.getSportById(sportId, showType)?.copy(date = date)?.apply {
+            sportDao.insert(this)
+        }
+    }
+
+    suspend fun getCurrentSelectedDate(showType: ShowType, sportId: Int): Long? = sportDao.getSportById(sportId, showType)?.date
 }

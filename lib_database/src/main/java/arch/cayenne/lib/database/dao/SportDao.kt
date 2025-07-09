@@ -22,6 +22,9 @@ abstract class SportDao : BaseDao<SportBean>() {
     @Query("SELECT sportId, sportName FROM SportBean WHERE sportId IN (:ids) AND type = :type")
     abstract fun getSportByIds(ids: List<Int>, type: ShowType = ShowType.ALL): List<SportLiteBean>
 
+    @Query("SELECT * FROM SportBean WHERE sportId = :id AND type = :type")
+    abstract fun getSportById(id: Int, type: ShowType = ShowType.ALL): SportBean?
+
     @Query("DELETE FROM SportBean WHERE sportId NOT IN (:keepIds)")
     abstract suspend fun deleteMissing(keepIds: List<Int>)
 }

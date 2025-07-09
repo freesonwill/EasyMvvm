@@ -8,7 +8,8 @@ data class SportBean(
     val sportName: String,
     val matchCount: Int,
     val sportOrder: Int,
-    val type: ShowType
+    val type: ShowType,
+    val date: Long,
 )
 
 enum class ShowType {
