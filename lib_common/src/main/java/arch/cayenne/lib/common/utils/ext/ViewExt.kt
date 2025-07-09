@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.OnAttachStateChangeListener
 import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -140,13 +141,13 @@ fun View.startSafeObjectAnimator(
     }
 
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    doOnAttach {
-        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                animator.cancel()
-            }
-        })
-    }
+    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {}
+        override fun onViewDetachedFromWindow(v: View) {
+            removeOnAttachStateChangeListener(this)
+            animator.cancel()
+        }
+    })
     return animator
 }
 
@@ -156,20 +157,20 @@ fun View.startSafeObjectAnimator(
 ): ObjectAnimator {
     val animator = ObjectAnimator.ofFloat(this, property, *values)
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    doOnAttach {
-        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                animator.cancel()
-            }
-        })
-    }
+    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {}
+        override fun onViewDetachedFromWindow(v: View) {
+            removeOnAttachStateChangeListener(this)
+            animator.cancel()
+        }
+    })
     return animator
 }
 
 /**
  * 安全启动AnimatorSet
  *
- * @param animators
+ * @param config
  * @param duration
  * @param interpolator
  * @param start
@@ -188,13 +189,13 @@ fun View.startSafeAnimateSet(
         if(start) start()
     }
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    doOnAttach {
-        findViewTreeLifecycleOwner()!!.lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                animator.cancel()
-            }
-        })
-    }
+    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {}
+        override fun onViewDetachedFromWindow(v: View) {
+            removeOnAttachStateChangeListener(this)
+            animator.cancel()
+        }
+    })
     return animator
 }
 /**
