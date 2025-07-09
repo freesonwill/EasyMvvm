@@ -1,7 +1,5 @@
 package com.walisport.module.live.ui.adapter
 
-import android.content.Context
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,11 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.database.entity.LiveMarketListBean
 import arch.cayenne.lib.database.entity.LiveMarketSelectionBean
-import arch.cayenne.lib.database.entity.LiveSelectionBean
-import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
@@ -22,11 +18,6 @@ import com.bumptech.glide.request.RequestOptions
 import com.walisport.module.live.data.LiveOddsStatusEnum
 import com.walisport.module.live.data.constants.StatesArrange
 import com.walisport.module.live.databinding.AdapterLiveBetItemLayoutBinding
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class LiveBetOnAdapter(var callback: LivBetListCallback) :
     BaseAdapter<LiveMarketListBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
@@ -42,16 +33,9 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var notifySelectionsId: List<SelectionsEdit>? = null
 
     inner class LiveBetOnViewHolder(binding: ViewBinding) : BaseViewHolder(binding) {
-        private val viewBinding: AdapterLiveBetItemLayoutBinding =
-            binding as AdapterLiveBetItemLayoutBinding
+        private val viewBinding: AdapterLiveBetItemLayoutBinding = binding as AdapterLiveBetItemLayoutBinding
 
-        init {
-            setOnClickListener()
-        }
 
-        private fun setOnClickListener() {
-
-        }
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
@@ -68,7 +52,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
-                var isCombo: Boolean = if (selectionComboId == null) {
+                val isCombo: Boolean = if (selectionComboId == null) {
                     false
                 } else if (selectionComboId == listIt.selectionId) {
                     true
