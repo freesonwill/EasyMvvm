@@ -53,6 +53,7 @@ class TournamentListFragment :
                 getSerializable(ARG_TOURNAMENT_TYPE) as? TournamentListType
             }
             mViewModel.setSportId(getInt(ARG_SPORT_ID))
+            mViewModel.setPlayTypeId(getInt(ARG_PLAY_TYPE_ID))
             type?.apply {
                 mViewModel.setType(this)
                 mBinding.ivHomeLeagueCollapse.isVisible = this == TournamentListType.MORE
@@ -319,9 +320,11 @@ class TournamentListFragment :
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"
         private const val ARG_SPORT_ID = "sport_id"
-        fun newInstance(sportId: Int, type: TournamentListType): TournamentListFragment {
+        private const val ARG_PLAY_TYPE_ID = "play_type_id"
+        fun newInstance(playTypeId: Int, sportId: Int, type: TournamentListType): TournamentListFragment {
             return TournamentListFragment().apply {
                 arguments = Bundle().apply {
+                    putInt(ARG_PLAY_TYPE_ID, playTypeId)
                     putInt(ARG_SPORT_ID, sportId)
                     putSerializable(ARG_TOURNAMENT_TYPE, type)
                 }

@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -49,6 +50,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.haibin.calendarview.Calendar
 import com.haibin.calendarview.CalendarView
 import galaxy.common.proto.Common
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -108,8 +111,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tlHome.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     tab?.position?.apply {
-                        //看db, 點擊的不在matchBean中會爆掉
-                        mViewModel.setCurrentPlayType(PlayType.entries[this])
+                        mViewModel.setCurrentPlayType(PlayType.entries[this].id)
                     }
                 }
 
@@ -130,7 +132,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llDateFilterContainer.visibility = View.GONE
             llOtherDate.visibility = View.GONE
         }
-        resetDateTabs()
     }
 
     //init 二級導航欄位
@@ -190,7 +191,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 tab?.position?.let { index ->
                     val dateTriple = getFutureThirtyOneDays().getOrNull(index)
                     val dateTimestamp = dateTriple?.third ?: return
-                    mViewModel.setSelectedDate(dateTimestamp)
+                    lifecycleScope.launch {
+                        mViewModel.setSelectedDate(dateTimestamp)
+                    }
                 }
             }
 
@@ -213,7 +216,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun resetDateTabs() {
         mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
-        mViewModel.resetSelectedDate()
+        lifecycleScope.launch {
+            mViewModel.setSelectedDate(0L)
+        }
+
     }
 
     /***
@@ -234,7 +240,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             if (fm.findFragmentByTag(tag) != null) return
             container.visibility = View.VISIBLE
 
-            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.getCurrentSportId(), type)
+            val tournamentListFragment = TournamentListFragment.newInstance(mViewModel.currentPlayTypeId, mViewModel.currentSportId, type)
 
             fm.beginTransaction().apply {
                 if (type == TournamentListType.MORE) {
@@ -309,18 +315,20 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
             // 透過 binding 操作 Popup 內部的 View
             this?.ivRightClick?.clickNoRepeat {
-                this?.calendarView?.scrollToNext(true)
+                this.calendarView.scrollToNext(true)
             }
             this?.ivLeftClick?.clickNoRepeat {
-                this?.calendarView?.scrollToPre(true)
+                this.calendarView.scrollToPre(true)
             }
             this?.calendarBtnCancel?.clickNoRepeat {
-                this?.calendarView?.scrollToCurrent()
-                setSelectedDateTab(selectedDate)
+                this.calendarView.scrollToCurrent()
+                val index = getFutureThirtyOneDays().indexOfFirst{ it.first == selectedDate }
+                setSelectedDateTab(index)
                 customPopup?.dismiss() // 關閉 Popup
             }
             this?.calendarBtnOk?.clickNoRepeat {
-                setSelectedDateTab(selectedDate)
+                val index = getFutureThirtyOneDays().indexOfFirst{ it.first == selectedDate }
+                setSelectedDateTab(index)
                 customPopup?.dismiss()
             }
             setCurrentDate(customPopup!!.binding,tabSelectedDate)
@@ -332,7 +340,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
                 override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
                     if (calendar == null) return
-                    selectedDate = "$calendar"
+                    val dateFormat = SimpleDateFormat("M.dd", Locale.getDefault())
+                    selectedDate = dateFormat.format(calendar.toCalendar().time)
                     tvCurrentMonth.text =
                         "${calendar.month.toChineseMonth()} ${calendar.year}"
                     //控制左右按鈕的enabled
@@ -378,13 +387,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(selectedDate: String) {
+    private fun setSelectedDateTab(index: Int) {
         with(mBinding.layoutContainer) {
-            val dateIndex = mViewModel.recently31MatchScheduleCount.value?.peekContent()
-                ?.indexOfFirst { it.day.replace("-", "") == selectedDate }
-                ?: -1
-            if (dateIndex != -1) {
-                tlDateList.getTabAt(dateIndex)?.select()
+            if (index != -1) {
+                tlDateList.getTabAt(index)?.select()
             } else {
                 resetDateTabs()
                 addDateTabListener()
@@ -478,10 +484,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
             if (tournaments.isNotEmpty()) {
-                if (mViewModel.getCurrentPlayType() == PlayType.TODAY) {
+                if (mViewModel.currentPlayTypeId == PlayType.TODAY.id) {
                     llDateFilterContainer.visibility = View.GONE
                     llOtherDate.visibility = View.GONE
-                } else if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+                } else if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
                     llDateFilterContainer.visibility = View.VISIBLE
                     llOtherDate.visibility = View.VISIBLE
                 }
@@ -492,7 +498,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
-                playType = mViewModel.getCurrentPlayType()
+                playTypeId = mViewModel.currentPlayTypeId
             )
 
             TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
@@ -513,8 +519,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     )
                     tab?.customView?.isSelected = true
                     val selectedIndex = tab?.position ?: 0
-                    vpGameList.currentItem = selectedIndex
                     getSelectedRecently31Scheduled(selectedIndex)
+
+                    tournaments.getOrNull(selectedIndex)?.id?.apply {
+                        mViewModel.setCurrentTournamentId(this)
+                    }
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -524,7 +533,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun getSelectedRecently31Scheduled(selectedIndex: Int) {
-        if (mViewModel.getCurrentPlayType() == PlayType.EARLY) {
+        if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
             val list = mViewModel.tournaments.value?.peekContent().orEmpty()
             if (list.isEmpty()) return
             mViewModel.getRecently31MatchScheduleCount(list[selectedIndex].id)
@@ -533,7 +542,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     override fun initData() {
         super.initData()
-        mViewModel.setCurrentPlayType(PlayType.TODAY)
+        mViewModel.setCurrentPlayType(PlayType.TODAY.id)
     }
 
     override fun initListener() {
@@ -618,25 +627,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     HomeState.PlayTypeClick -> {
                         mViewModel.setIsHomeLoading(true)
                         resetHomeView()
-                        mViewModel.getCurrentSportStatistical()
                         groupHomeMain.visibility = View.VISIBLE
-                        loadingView.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
                     HomeState.Sport.LoadSuccess -> {
-                        if (mViewModel.getCurrentPlayType() == PlayType.CHAMPION) {
+                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
                             toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                        } else {
-                            mViewModel.getCurrentTournament()
                         }
                     }
                     DataState.NetworkUnavailable, DataState.DataEmpty -> {
                         groupHomeMain.visibility = View.GONE
                         dslFailed.visibility = View.VISIBLE
-                        loadingView.visibility = View.GONE
-                    }
-                    HomeState.Match.LoadSuccess, HomeState.Tournament.LoadListSuccess -> {
-                        loadingView.visibility = View.GONE
                     }
                     else -> Unit
                 }
@@ -646,6 +647,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.apply {
                 updateCalendarSkin()
             }
+        }
+
+        mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
+            val index = getFutureThirtyOneDays().indexOfFirst{ it.third == select }
+            setSelectedDateTab(index)
         }
     }
     private fun updateCalendarSkin() {

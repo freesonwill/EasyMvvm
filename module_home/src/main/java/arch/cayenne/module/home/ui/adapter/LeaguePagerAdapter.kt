@@ -5,18 +5,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.ui.fragment.MatchListPagerFragment
 
 class LeaguePagerAdapter(
     fragmentManager: FragmentManager,
     lifecycle: Lifecycle,
     private var tournament: List<TournamentDataModel>,
-    private val playType: PlayType
+    private val playTypeId: Int
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     override fun getItemId(position: Int): Long {
-        return playType.id * 10000L + position
+        return playTypeId * 10000L + position
     }
 
     override fun getItemCount(): Int = tournament.size
@@ -25,6 +24,6 @@ class LeaguePagerAdapter(
         val list = tournament
         val sportId = list[position].sportId
         val leagueId = list[position].id
-        return MatchListPagerFragment.newInstance(sportId, playType.id, leagueId, position)
+        return MatchListPagerFragment.newInstance(sportId, playTypeId, leagueId, position)
     }
 }
