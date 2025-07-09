@@ -24,7 +24,7 @@
             android:overScrollMode="never"
             android:paddingVertical="@dimen/dp_9"
             android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_30"
+            android:paddingEnd="@dimen/dp_65"
             app:tabGravity="center"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
