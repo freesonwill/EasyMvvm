@@ -18,4 +18,7 @@ abstract class HomeSelectedDao: BaseDao<HomeSelectedBean>() {
             "SET sportId = :sportId " +
             "WHERE playType = :playTypeId ")
     abstract fun updateSportId(playTypeId: Int, sportId: Int)
+
+    @Query("DELETE FROM HomeSelectedBean")
+    abstract fun clearAllHomeSelectedData()
 }

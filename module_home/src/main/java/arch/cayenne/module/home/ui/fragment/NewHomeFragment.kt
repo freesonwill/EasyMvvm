@@ -653,6 +653,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             val index = getFutureThirtyOneDays().indexOfFirst{ it.third == select }
             setSelectedDateTab(index)
         }
+        mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
+            mBinding.tlHome.getTabAt(it)?.select()
+        }
+
     }
     private fun updateCalendarSkin() {
         if (customPopup == null) return

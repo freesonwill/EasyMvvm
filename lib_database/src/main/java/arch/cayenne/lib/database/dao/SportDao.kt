@@ -15,7 +15,6 @@ abstract class SportDao : BaseDao<SportBean>() {
             "FROM SportBean bean WHERE bean.sportId in (:filter) order by sportOrder")
     abstract fun observeSportsMatchCount(filter: List<Int>): Flow<List<SportDataModel>>
 
-
     @Query("SELECT sportId, sportName FROM SportBean WHERE type = :type")
     abstract fun getAllSports(type: ShowType = ShowType.ALL): List<SportLiteBean>
 
@@ -27,4 +26,7 @@ abstract class SportDao : BaseDao<SportBean>() {
 
     @Query("DELETE FROM SportBean WHERE sportId NOT IN (:keepIds)")
     abstract suspend fun deleteMissing(keepIds: List<Int>)
+
+    @Query("DELETE FROM SportBean")
+    abstract suspend fun clearSportBean()
 }

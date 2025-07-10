@@ -68,4 +68,9 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "WHERE sportId = :sportId AND playType = :playType AND tournamentId NOT IN (:ids)")
     abstract suspend fun deleteMissing(sportId: Int, playType: Int, ids: List<Int>)
 
+    @Query("DELETE FROM SportTournamentCrossRef")
+    abstract suspend fun clearAllSportTournamentCrossRef()
+
+    @Query("DELETE FROM TournamentBean")
+    abstract suspend fun clearAllTournaments()
 }
