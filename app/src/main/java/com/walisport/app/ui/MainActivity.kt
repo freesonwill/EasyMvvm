@@ -86,7 +86,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 CommonDialog.newInstance(
                     title = getString(R.string.multiple_logins_title),
                     message = getString(R.string.multiple_logins_message),
-                    okText = getString(R.string.enter)
+                    okText = getString(R.string.single_confirm)
                 ).apply {
                     setOnOkClickListener {
                         exitProcess(0)

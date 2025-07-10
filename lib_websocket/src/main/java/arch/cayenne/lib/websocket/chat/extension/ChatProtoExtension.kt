@@ -81,16 +81,14 @@ suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitP
     rid: Short = nextRid(),
     timeout: Long = responseTimeout,
     crossinline request: () -> ChatRequestData
-): ChatResponseData<T> {
-    val response = withContext(Dispatchers.IO) {
-        send(request.invoke().chatAsRemoteRequest(apiCode, rid))
-        withTimeoutOrNull(timeout) {
-            chatObserveProtoMessage<T>(responseCode).filter {
-                it.rid == rid
-            }.first()
-        }
+): ChatResponseData<T> = withContext(Dispatchers.IO) {
+    send(request.invoke().chatAsRemoteRequest(apiCode, rid))
+    val response = withTimeoutOrNull(timeout) {
+        chatObserveProtoMessage<T>(responseCode).filter {
+            it.rid == rid
+        }.first()
     }
-    return response ?: ChatResponseData(
+    return@withContext response ?: ChatResponseData(
         mid = apiCode.mid,
         sid = apiCode.sid,
         rid = rid,

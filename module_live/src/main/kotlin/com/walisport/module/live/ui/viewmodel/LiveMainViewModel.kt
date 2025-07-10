@@ -84,11 +84,9 @@ class LiveMainViewModel(
     override fun initViewModel() {
         super.initViewModel()
         //监听余额变化
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             repo.observeBalance().collect {
-                withContext(Dispatchers.Main) {
-                    currentBalanceChange.value = it
-                }
+                currentBalanceChange.value = it
             }
         }
     }
@@ -118,9 +116,13 @@ class LiveMainViewModel(
     }
 
     fun getMainMatch(matchId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.getMatchRes(matchId) {
-                _mainMatch.value = it
+        viewModelScope.launch {
+            val result = withContext(Dispatchers.IO) {
+                repo.getMatchRes(matchId)
+            }
+            result?.let {
+                _mainMatch.value = it  // 主线程更新 LiveData
+
             }
         }
     }
@@ -136,6 +138,10 @@ class LiveMainViewModel(
     fun registerMatchInfoNotify(matchId: Long) {
         viewModelScope.launch {
             repo.registerMatchInfoNotify(matchId)
+        }
+    }
+    fun observeMatchInfoNotify() {
+        viewModelScope.launch {
             repo.observeMatchInfoNotify()
         }
     }

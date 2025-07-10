@@ -71,6 +71,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.setSportId(args.sportId)
         setVideoView()
         loadFragment()
+        mViewModel.observeMatchInfoNotify()
     }
 
     //init DrawerLayout Content
@@ -247,7 +248,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         mViewModel.matchId.value?.let { matchId ->
                             mViewModel.registerMatchInfoNotify(matchId)
                             mViewModel.registerStatisticsNotify(matchId)
-                            mViewModel.observeMatchStaticsNotify()
                         }
                     }
 
@@ -280,8 +280,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun setVideoView() {
-        childFragmentManager.findFragmentByTag(LiveVideoFragment.TAG) as? LiveVideoFragment
-            ?: LiveVideoFragment().also {
+        childFragmentManager.findFragmentByTag(LiveMatchMediaFragment.TAG) as? LiveMatchMediaFragment
+            ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
                         putLong(
@@ -291,7 +291,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveVideoFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG).commitNow()
             }
     }
 

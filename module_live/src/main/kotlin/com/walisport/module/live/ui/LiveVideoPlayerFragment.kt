@@ -9,8 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
-import android.util.TypedValue.COMPLEX_UNIT_PX
-import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
@@ -21,23 +19,24 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
-import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimension
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import arch.cayenne.lib.qyplayer.GlobalConfig
 import arch.cayenne.lib.qyplayer.transformFromPlayerConfig
 import arch.cayenne.lib.qyplayer.transformToPlayerConfig
 import arch.cayenne.lib.qyplayer.ui.widget.LivePlayerView
-import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
-import com.walisport.module.live.databinding.FragmentLiveVideoBinding
+import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
-import com.walisport.module.live.ui.viewmodel.LiveVideoViewModel
+import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import com.xxx.qyplayer.DecryptMode
 import com.xxx.qyplayer.PlayerMode
 import com.xxx.qyplayer.PlayerState
@@ -51,9 +50,16 @@ import kotlin.reflect.KClass
 /**
  * 竖屏播放视频页， 用在直播详情的首页
  */
-class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBinding>() {
-    override val vbClass: KClass<FragmentLiveVideoBinding> = FragmentLiveVideoBinding::class
-    override val vmClass: KClass<LiveVideoViewModel> = LiveVideoViewModel::class
+class LiveVideoPlayerFragment :
+    BaseFragment<LiveVideoPlayerViewModel, FragmentLiveVideoPlayerBinding>() {
+    override val vbClass: KClass<FragmentLiveVideoPlayerBinding> =
+        FragmentLiveVideoPlayerBinding::class
+    override val vmClass: KClass<LiveVideoPlayerViewModel> = LiveVideoPlayerViewModel::class
+
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
+    private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
+
 
     private lateinit var videoView: LivePlayerView
 
@@ -104,7 +110,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
-        mBinding.includedMatchNotInProgress.model = mViewModel
 
         initVideoView()
         scheduleHideButtons()
@@ -179,34 +184,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
         with(mBinding) {
             ivChooseSource.setOnClickListener {
-                val location = IntArray(2)
-                videoView.getLocationOnScreen(location)
-                val x = location[0]
-                val y =
-                    location[1] + videoView.measuredHeight - getStatusBarHeight(requireContext())
-                LiveVideoSourcePortraitFragment().apply {
-                    arguments = Bundle().apply {
-                        putLong("matchId", mViewModel.matchId())
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
-                            x
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
-                            y
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
-                            ViewGroup.LayoutParams.MATCH_PARENT
-                        )
-                        putInt(
-                            arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT
-                        )
-                    }
-                    show(this@LiveVideoFragment.childFragmentManager)
-                }
-
+                mediaViewModel.chooseSourceView()
             }
 
             ivToFullscreen.clickNoRepeat {
@@ -217,11 +195,19 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
             }
 
             ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }
+
+            ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
 
     }
 
     override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
+            mViewModel.setMatchId(it)
+            mViewModel.createObserver()
+        }
+
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {
@@ -275,17 +261,12 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     matchStatus?.let { _ ->
                         when (matchStatus) {
                             MatchStatus.IN_PROGRESS -> {
-                                //比赛正在进行中
-                                mBinding.ctVideoPlay.visibility = View.VISIBLE
                                 //比赛正在进行中才会拉取视频流
                                 mViewModel.queryLiveStream()
                             }
 
                             else -> {
-                                //其他情况
-                                mBinding.ctVideoPlay.visibility = View.GONE
-                                //比赛从正在进行中变更为其他状态时，需要停止视频播放
-                                videoView.pause()
+
                             }
                         }
 
@@ -295,78 +276,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
 
             }
 
-            homeTeamName.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvHomeTeam.text = it
-                }
-            }
 
-            homeTeamIcon.observe(viewLifecycleOwner) {
-                it?.let {
-                    Glide.with(requireContext())
-                        .load(it)
-                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
-                        .error(arch.cayenne.lib.common.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotInProgress.ivHomeTeam)
-                }
-            }
-
-            homeHistoryVs.observe(viewLifecycleOwner) {
-//                "homeList:$it".logd("scoreIssue")
-                mBinding.includedMatchNotInProgress.homeHistory.setData(it)
-            }
-
-            awayTeamName.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvAwayTeam.text = it }
-            }
-
-            awayTeamIcon.observe(viewLifecycleOwner) {
-                it?.let {
-                    Glide.with(requireContext())
-                        .load(it)
-                        .placeholder(arch.cayenne.lib.common.R.color.color_333A45)
-                        .error(arch.cayenne.lib.common.R.color.color_333A45)
-                        .into(mBinding.includedMatchNotInProgress.ivAwayTeam)
-                }
-            }
-
-            awayHistoryVs.observe(viewLifecycleOwner) {
-//                "awayList:$it".logd("scoreIssue")
-                mBinding.includedMatchNotInProgress.awayHistory.setData(it)
-            }
-
-            titleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvTitle.text = it }
-            }
-
-            titleTextSize.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvTitle.setTextSize(
-                        COMPLEX_UNIT_PX,
-                        it.getDimension()
-                    )
-                }
-            }
-
-            titleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvTitle.setTextColor(it.getColor()) }
-            }
-
-            subTitleText.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.text = it }
-            }
-
-            subTitleTextSize.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.includedMatchNotInProgress.tvSubtitle.setTextSize(
-                        COMPLEX_UNIT_PX,
-                        it.getDimension()
-                    )
-                }
-            }
-            subTitleTextColor.observe(viewLifecycleOwner) {
-                it?.let { mBinding.includedMatchNotInProgress.tvSubtitle.setTextColor(it.getColor()) }
-            }
 
             playerState.observe(viewLifecycleOwner) {
                 onPlayerStateReceived(it)
@@ -382,9 +292,6 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
 
-    override fun initData() {
-        super.initData()
-    }
 
     override fun onPause() {
         super.onPause()
@@ -464,7 +371,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
                     override fun onAnimationRepeat(animation: Animator) {
                     }
                 })
-            }, 
+            },
             duration = BUTTONS_ANIMATION_DURATION,
             start = true
         )
@@ -569,7 +476,7 @@ class LiveVideoFragment : BaseFragment<LiveVideoViewModel, FragmentLiveVideoBind
     }
 
     companion object {
-        const val TAG = "LiveVideoFragment"
+        const val TAG = "LiveVideoPlayerFragment"
     }
 
 

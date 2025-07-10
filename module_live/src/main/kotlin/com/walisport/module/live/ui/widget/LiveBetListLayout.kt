@@ -249,7 +249,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                 }
                 else ->{}
             }
-            selectableView.isVisible = active
+            selectableView.isClickable = active
             lockView.isVisible = !active
         }
     }

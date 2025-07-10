@@ -66,6 +66,9 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
     @Query("SELECT * FROM LiveSelectionBeanRecord")
     abstract suspend fun getSelectionsRecord(): List<LiveSelectionBeanRecord>
 
+    @Query("SELECT live_animationLiveUrl FROM LiveMatchBean WHERE matchId = :matchId")
+    abstract fun observeAnimationLiveUrl(matchId: Long): Flow<String?>
+
     @Query("DELETE FROM LiveMatchBean")
     abstract fun deleteMatchBean()
 
@@ -104,7 +107,8 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
                 "live_liveVideo = :liveVideo, " +
                 "live_charRoom = :charRoom, " +
                 "live_viewerCount = :viewerCount, " +
-                "live_clockModified = :clockModified " +
+                "live_clockModified = :clockModified, " +
+                "live_animationLiveUrl = :animationLiveUrl " +
                 "WHERE matchId = :matchId"
     )
     abstract fun updateNotifyMatchInfo(
@@ -119,7 +123,8 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         liveVideo: Boolean,
         charRoom: Boolean,
         viewerCount: Int,
-        clockModified: Long
+        clockModified: Long,
+        animationLiveUrl: String
     )
 
     //收到notify更新数据
@@ -151,7 +156,6 @@ abstract class LiveMatchDao : BaseDao<LiveMatchBean>() {
         insertSelectionsRecord(selectionsRecord)
     }
 
-    @Transaction
     open suspend fun updateLiveSelectionBean(
         selectionsEdit: List<LiveSelectionBean>,
         selectionsRecord: List<LiveSelectionBeanRecord>,

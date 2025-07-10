@@ -1,6 +1,7 @@
 package com.walisport.module.live.ui.adapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.utils.LogUtils
+import arch.cayenne.lib.database.entity.LiveMarketListBean
+import arch.cayenne.lib.database.entity.LiveMarketSelectionBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.SelectionsEdit
@@ -26,8 +29,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LiveBetOnAdapter(var callback: LivBetListCallback) :
-    BaseAdapter<MarketMenuBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
-        ItemDiffCallback()
+    BaseAdapter<LiveMarketListBean, LiveBetOnAdapter.LiveBetOnViewHolder, ViewBinding>(
+        LiveMarketListBeanDiffCallback()
     ) {
     private var homeName: String? = ""
     private var homeLogo: String? = ""
@@ -35,7 +38,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayLogo: String? = ""
     private var selectionComboId: Long? = null
     private var beforePosition: Int = 0
-    private lateinit var map: Map<Long, List<LiveSelectionBean>>
     private var isNotify = false
     private var notifySelectionsId: List<SelectionsEdit>? = null
 
@@ -50,13 +52,11 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         private fun setOnClickListener() {
 
         }
-
         fun updateItem(position: Int) {
             val item = getItem(position)
             viewBinding.tvBetName.text = item.marketName
-            var lists = map[item.marketId]
             viewBinding.lbBet.viewInit()
-            lists?.withIndex()?.forEach { (index, listIt) ->
+            item.list.withIndex().forEach { (index, listIt) ->
                 if (position == 0 || listIt.style == StatesArrange.BO_DIAN.code) {
                     viewBinding.clBet.visibility = View.VISIBLE
                     viewBinding.awayName.text = awayName
@@ -64,7 +64,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
                     loadLogoImage(viewBinding.roots, viewBinding.homeLogo, homeLogo)
                     loadLogoImage(viewBinding.roots, viewBinding.awayLogo, awayLogo)
                     viewBinding.andName.visibility =
-                        if (lists[0].style == StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
+                        if (listIt.style == StatesArrange.BO_DIAN.code) View.VISIBLE else View.GONE
                 } else {
                     viewBinding.clBet.visibility = View.GONE
                 }
@@ -108,7 +108,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         homeLogo: String,
         awayName: String,
         awayLogo: String,
-        map: Map<Long, List<LiveSelectionBean>>,
         isNotify: Boolean,
         notifySelectionsId: List<SelectionsEdit>?
     ) {
@@ -117,7 +116,6 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         this.homeLogo = homeLogo
         this.awayName = awayName
         this.awayLogo = awayLogo
-        this.map = map
         this.isNotify = isNotify
         this.notifySelectionsId = notifySelectionsId
     }
@@ -127,8 +125,23 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
         this.selectionComboId = selectionComboId
     }
 
+    fun getBeforePosition():Int{
+        return beforePosition
+    }
+
     override fun convertPlus(holder: LiveBetOnViewHolder, binding: ViewBinding, position: Int) {
         holder.updateItem(position)
+    }
+    override fun onBindViewHolder(
+        holder: LiveBetOnViewHolder,
+        position: Int,
+        payloads: MutableList<Any>
+    ) {
+        if (payloads.isNotEmpty()) {
+            holder.updateItem(position)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     override fun createViewBinding(
@@ -158,12 +171,24 @@ interface LivBetListCallback {
     )
 }
 
-class ItemDiffCallback : DiffUtil.ItemCallback<MarketMenuBean>() {
-    override fun areItemsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
+class LiveMarketListBeanDiffCallback : DiffUtil.ItemCallback<LiveMarketListBean>() {
+
+    override fun areItemsTheSame(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Boolean {
         return oldItem.marketId == newItem.marketId
     }
 
-    override fun areContentsTheSame(oldItem: MarketMenuBean, newItem: MarketMenuBean): Boolean {
+    override fun areContentsTheSame(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Boolean {
         return oldItem == newItem
+    }
+
+    override fun getChangePayload(oldItem: LiveMarketListBean, newItem: LiveMarketListBean): Any? {
+        return areListsEqual(oldItem.list,newItem.list)
+    }
+
+    private fun areListsEqual(
+        oldList: List<LiveMarketSelectionBean>,
+        newList: List<LiveMarketSelectionBean>
+    ): Boolean {
+        return oldList == newList
     }
 }

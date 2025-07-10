@@ -36,6 +36,10 @@ class PullRefreshFooter : SimpleComponent, RefreshFooter {
 
     override fun onInitialized(kernel: RefreshKernel, height: Int, maxDragHeight: Int) {
         super.onInitialized(kernel, height, maxDragHeight)
+        if (childCount > 0) {
+            // 如果已经有子视图，直接移除所有子视图
+            removeAllViews()
+        }
         val inflater = LayoutInflater.from(context)
         binding = ViewSportHeaderBinding.inflate(inflater, this, true)
     }

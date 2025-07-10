@@ -96,6 +96,7 @@ class MatchListPagerFragment :
                     // 滑動停止時觸發
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         subscribeVisibleMatch()
+                        updateMatchListPosition()
                     }
                 }
             })
@@ -113,6 +114,31 @@ class MatchListPagerFragment :
                     .map { it.match.matchId }
                     .toSet()
             )
+        }
+    }
+
+    private fun updateMatchListPosition() {
+        val firstView = gameLayoutManager.getChildAt(0)
+        val firstPos = gameLayoutManager.findFirstVisibleItemPosition()
+        val firstViewTop = firstView?.top ?: 0
+        val itemHeight = firstView?.height ?: 0
+        val scrollY = firstPos * itemHeight - firstViewTop
+        homeViewModel.updateCoordinate(
+            playTypeId = mViewModel.getPlayTypeId(),
+            sportId = mViewModel.getSportId(),
+            tournamentId = mViewModel.getTournamentId(),
+            coordinate = scrollY
+        )
+    }
+
+    private fun setMatchListPosition() {
+        lifecycleScope.launch {
+            val position = homeViewModel.getCurrentPageCoordinate(
+                playTypeId = mViewModel.getPlayTypeId(),
+                sportId = mViewModel.getSportId(),
+                tournamentId = mViewModel.getTournamentId()
+            )
+            mBinding.rvHomeGameList.scrollBy(0, position)
         }
     }
 
@@ -144,6 +170,7 @@ class MatchListPagerFragment :
             mBinding.rvHomeGameList.doOnPreDraw {
                 homeViewModel.changeState(HomeState.Match.LoadSuccess)
                 subscribeVisibleMatch()
+                setMatchListPosition()
             }
         }
     }

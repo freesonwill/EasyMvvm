@@ -7,6 +7,7 @@ import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.withContext

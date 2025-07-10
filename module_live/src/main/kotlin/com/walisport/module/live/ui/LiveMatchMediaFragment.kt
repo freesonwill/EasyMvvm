@@ -1,0 +1,182 @@
+package com.walisport.module.live.ui
+
+import android.os.Bundle
+import android.view.ViewGroup
+import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
+import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import com.walisport.module.live.data.constants.MatchStatus
+import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
+import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
+import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import kotlin.reflect.KClass
+
+
+/**
+ * 竖屏播放时的媒体页， 用来展示比赛视频，比赛动画或者比赛信息
+ */
+class LiveMatchMediaFragment :
+    BaseFragment<LiveMatchMediaViewModel, FragmentLiveMatchMediaBinding>() {
+    override val vbClass: KClass<FragmentLiveMatchMediaBinding> =
+        FragmentLiveMatchMediaBinding::class
+    override val vmClass: KClass<LiveMatchMediaViewModel> = LiveMatchMediaViewModel::class
+
+    private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
+
+    override fun initView(savedInstanceState: Bundle?) {
+        mBinding.model = mViewModel
+    }
+
+
+    override fun initListener() {
+
+    }
+
+    override fun createObserver() {
+        //监听比赛id变化
+        mainViewModel.matchId.observe(viewLifecycleOwner) {
+            mViewModel.setMatchId(it)
+            mViewModel.createObserver()
+        }
+
+        with(mViewModel) {
+
+            //比赛状态的监听
+            matchBeanLiveData.observe(viewLifecycleOwner) {
+                it?.let { matchBean ->
+                    val matchStatus =
+                        MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
+
+                    matchStatus?.let { _ ->
+                        when (matchStatus) {
+                            MatchStatus.IN_PROGRESS -> {
+                                //比赛正在进行中
+                                if (!isAnimationViewShowing()) {
+                                    showVideoView()
+                                }
+                            }
+
+                            else -> {
+                                //其他情况
+                                showStatusView()
+                            }
+                        }
+
+                    }
+
+                }
+
+            }
+
+            animationSwitch.observe(viewLifecycleOwner) {
+                showAnimationView()
+            }
+
+            chooseSource.observe(viewLifecycleOwner) {
+                showChooseSourceView()
+            }
+
+            switchToVideo.observe(viewLifecycleOwner) {
+                showVideoView()
+            }
+
+        }
+
+
+        val matchId = arguments?.getLong("matchId") ?: 0
+        mViewModel.setMatchId(matchId)
+
+        mViewModel.createObserver()
+    }
+
+    private fun showVideoView() {
+        "showVideoView".logd(TAG)
+        childFragmentManager.findFragmentByTag(LiveVideoPlayerFragment.TAG) as? LiveVideoPlayerFragment
+            ?: LiveVideoPlayerFragment().also {
+                it.arguments = Bundle().apply {
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentVideo.id, it, LiveVideoPlayerFragment.TAG).commitNow()
+            }
+    }
+
+    private fun showStatusView() {
+        "showStatusView".logd(TAG)
+        childFragmentManager.findFragmentByTag(LiveMatchStatusFragment.TAG) as? LiveMatchStatusFragment
+            ?: LiveMatchStatusFragment().also {
+                it.arguments = Bundle().apply {
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchStatusFragment.TAG).commitNow()
+            }
+    }
+
+    private fun showAnimationView() {
+        "showAnimationView".logd(TAG)
+        childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) as? LiveMatchAnimationFragment
+            ?: LiveMatchAnimationFragment().also {
+                it.arguments = Bundle().apply {
+                    putLong(
+                        "matchId",
+                        mViewModel.matchId()
+                    )
+                }
+                childFragmentManager.beginTransaction()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchAnimationFragment.TAG)
+                    .commitNow()
+            }
+    }
+
+    private fun isAnimationViewShowing(): Boolean {
+        val flag =
+            childFragmentManager.findFragmentByTag(LiveMatchAnimationFragment.TAG) is LiveMatchAnimationFragment
+        "isAnimationViewShowing:$flag".logd(TAG)
+        return flag
+    }
+
+    private fun showChooseSourceView() {
+        val location = IntArray(2)
+        mBinding.root.getLocationOnScreen(location)
+        val x = location[0]
+        val y =
+            location[1] + mBinding.root.measuredHeight - getStatusBarHeight(requireContext())
+        LiveVideoSourcePortraitFragment().apply {
+            arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_X,
+                    x
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.POSITION_Y,
+                    y
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.WIDTH,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+                putInt(
+                    arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment.HEIGHT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            show(this@LiveMatchMediaFragment.childFragmentManager)
+        }
+    }
+
+
+    companion object {
+        const val TAG = "LiveMatchMediaFragment"
+    }
+
+
+}
