@@ -2,51 +2,73 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="10dp"
     android:background="@drawable/bg_broder_toast"
-    android:padding="16dp">
+    android:paddingHorizontal="12dp"
+    android:paddingTop="12dp"
+    android:paddingBottom="18dp">
+
+    <ImageView
+        android:id="@+id/iv_sport"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/tv_title"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="14dp"
+        android:layout_marginStart="10dp"
+        android:text="@string/title_result_toast"
+        android:textColor="@color/main_text"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/iv_sport"
+        app:layout_constraintStart_toEndOf="@id/iv_sport"
+        app:layout_constraintTop_toTopOf="@id/iv_sport" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_match"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:ellipsize="end"
         android:gravity="start"
         android:lines="1"
-        android:textColor="@color/main_text"
-        app:layout_constraintBottom_toTopOf="@id/cl_content"
-        app:layout_constraintEnd_toEndOf="@id/cl_content"
-        app:layout_constraintStart_toStartOf="@id/cl_content"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:textColor="@color/secondary_text"
+        app:layout_constraintTop_toBottomOf="@id/iv_sport" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_content"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_match">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_combo"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="14dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cl_bet_result"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintWidth_default="wrap"
-            app:layout_constraintHorizontal_bias="0">
+            app:layout_constraintWidth_default="wrap">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_success_combo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="start"
                 android:ellipsize="end"
+                android:gravity="start"
                 android:lines="1"
                 android:textColor="@color/main_text"
                 app:layout_constraintStart_toStartOf="parent"
@@ -57,13 +79,15 @@
                 android:id="@+id/tv_failure_combo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="start"
+                android:layout_marginTop="16dp"
                 android:ellipsize="end"
+                android:gravity="start"
                 android:lines="1"
                 android:textColor="@color/main_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tv_success_combo"
+                app:layout_goneMarginTop="0dp"
                 tools:text="3串2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -71,52 +95,50 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_bet_result"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/cl_content"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="@id/cl_content">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_success_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:textColor="@color/main_text"
+                android:layout_marginEnd="6dp"
                 android:text="@string/title_result_success_bet"
-                app:layout_constraintBottom_toBottomOf="@id/iv_success"
+                android:textColor="@color/main_text"
                 app:layout_constraintEnd_toStartOf="@id/iv_success"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_success" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_success"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/icon_bet_result_success"
+                app:layout_constraintBottom_toBottomOf="@id/tv_success_title"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@id/tv_success_title" />
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_failure_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:textColor="@color/main_text"
+                android:layout_marginEnd="6dp"
                 android:text="@string/title_result_fail_bet"
-                app:layout_constraintBottom_toBottomOf="@id/iv_failure"
+                android:textColor="@color/main_text"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/iv_failure"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/iv_failure" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <ImageView
                 android:id="@+id/iv_failure"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:layout_goneMarginTop="0dp"
                 android:src="@mipmap/icon_bet_result_fail"
+                app:layout_constraintBottom_toBottomOf="@id/tv_failure_title"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/iv_success" />
+                app:layout_constraintTop_toTopOf="@id/tv_failure_title" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_success"

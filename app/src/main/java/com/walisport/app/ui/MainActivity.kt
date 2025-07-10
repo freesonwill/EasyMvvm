@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.helper.showToast
+import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
@@ -48,7 +49,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             if (BetResultToastView.canShowToast(this)) {
                 val toast = BetResultToastView(this@MainActivity)
                 toast.setResult(it)
-                showToast(toast, 3_000L)
+                showToast(toast, ToastSlideAnimation())
             }
         }
         mViewModel.appNotifyListener.observe(this) {

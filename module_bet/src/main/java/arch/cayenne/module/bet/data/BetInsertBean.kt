@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.data
 import arch.cayenne.lib.database.entity.BetSelectionBean
 
 data class BetInsertBean(
+    val sportId: Int,
     val matchId: Long,
     val marketId: Long,
     val marketName: String, // 盘口名称 ex. 讓分盤
@@ -19,6 +20,7 @@ data class BetInsertBean(
     fun toBetSelectionBean(betId: Long): BetSelectionBean {
         return BetSelectionBean(
             betId = betId,
+            sportId = sportId,
             matchId = matchId,
             marketId = marketId,
             marketName = marketName,
