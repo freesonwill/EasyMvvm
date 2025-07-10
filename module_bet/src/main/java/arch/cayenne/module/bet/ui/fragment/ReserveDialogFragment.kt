@@ -19,6 +19,7 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
+import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
@@ -50,7 +51,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
-            override fun dismiss() {
+            override fun cancel() {
+                if (!mBinding.root.isEnabled) return
                 // 讓系統其他地方調用 dismiss 時也會觸發動畫
                 if (mBinding.root.translationX == 0f) {
                     doExitAnim()
@@ -185,6 +187,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     }
 
     private fun doExitAnim() {
+        if (!mBinding.root.isEnabled) return
+        mBinding.root.isEnabled = false
         mBinding.root.animate()
             .scaleX(0f)
             .scaleY(0f)
