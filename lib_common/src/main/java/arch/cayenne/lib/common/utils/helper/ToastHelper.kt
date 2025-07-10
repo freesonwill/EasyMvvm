@@ -64,7 +64,7 @@ class ToastHelper private constructor() {
 
 }
 
-fun Fragment.showToast(msg: String) {
+fun Fragment.showToast(msg: String?) {
     val inflater = LayoutInflater.from(requireActivity())
     val layout = ToastLayoutBinding.inflate(inflater, null, false)
 
@@ -81,7 +81,7 @@ fun Activity.showToast(msg: String) {
     val layout = ToastLayoutBinding.inflate(inflater, null, false)
 
     layout.toastText.text = msg
-    ToastHelper.instance.showToast(layout.root, ToastDefaultAnimation())
+    showToast(layout.root, ToastDefaultAnimation())
 }
 
 fun Activity.showToast(view: View, toastAnimation: ToastAnimation) {

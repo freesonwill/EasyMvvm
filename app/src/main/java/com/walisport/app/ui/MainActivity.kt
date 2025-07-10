@@ -11,7 +11,6 @@ import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
-import arch.cayenne.lib.common.utils.helper.showSlideToast
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
 import arch.cayenne.lib.websocket.data.ConnectState
