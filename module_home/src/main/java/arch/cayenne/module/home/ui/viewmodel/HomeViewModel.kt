@@ -261,6 +261,7 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
+        setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
         getCurrentTournament()
     }
 
@@ -269,13 +270,6 @@ class HomeViewModel : BaseViewModel() {
         _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedTournamentId(currentPlayTypeId, tournamentId)
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
-            launch(Dispatchers.Main) {
-                setSelectedDate(date)
-            }
         }
     }
 
@@ -290,8 +284,16 @@ class HomeViewModel : BaseViewModel() {
         })
     }
 
-    suspend fun setSelectedDate(date: Long) {
+    private fun setCurrentSelectedDate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
+            launch(Dispatchers.Main) {
+                selectedDate(date)
+            }
+        }
+    }
 
+    suspend fun selectedDate(date: Long) {
         if (_selectedDate.value?.peekContent() == date) return
         withContext(Dispatchers.IO) {
             repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, date)

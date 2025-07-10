@@ -192,7 +192,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     val dateTriple = getFutureThirtyOneDays().getOrNull(index)
                     val dateTimestamp = dateTriple?.third ?: return
                     lifecycleScope.launch {
-                        mViewModel.setSelectedDate(dateTimestamp)
+                        mViewModel.selectedDate(dateTimestamp)
                     }
                 }
             }
@@ -217,7 +217,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mBinding.layoutContainer.tvTabAll.isSelected = true
         clearDateTabSelection()
         lifecycleScope.launch {
-            mViewModel.setSelectedDate(0L)
+            mViewModel.selectedDate(0L)
         }
 
     }
