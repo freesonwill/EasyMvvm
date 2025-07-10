@@ -27,7 +27,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     private var _tournamentId: Int = HomeViewModel.TOURNAMENT_ALL_ID
     private var _position = -1
     private var _selectedDate = MutableStateFlow<Long>(0)
-    private var _homeOrPullLoadingState = false
     override val repository: MatchListRepository by inject()
 
     fun setSportId(id: Int) {
@@ -44,7 +43,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     fun setSelectedDate(id: Long = 0) {
         page = 1
-        _state.value = Event(MatchListState.REFRESHING)
+//        _state.value = Event(MatchListState.REFRESHING)
         _selectedDate.value = id
 //        getCurrentMatch()
     }
@@ -60,7 +59,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
     fun getSportId() = _sportId
 
     fun startObserveMatch() {
-        _state.value = Event(MatchListState.FIRST_LOADING)
+
         viewModelScope.launch {
             combine(
                 _selectedDate,
@@ -70,6 +69,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             }.collect { (selectedDate, refs) ->
                 val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
+                    if (_state.value?.peekContent() == MatchListState.INIT) {
+                        _state.value = Event(MatchListState.FIRST_LOADING_API)
+                    }
                     getMatchListData()
                     return@collect
                 }
@@ -143,15 +145,5 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
 
     override fun clearCurrentMatch() {
         repository.clearCurrentMatch(_playType, _tournamentId, _selectedDate.value)
-    }
-
-    fun setHomeOrPullLoadingState(isLoading: Boolean = false) {
-        _homeOrPullLoadingState = isLoading
-    }
-
-    fun showLoading() {
-        if (!_homeOrPullLoadingState) {
-            _state.value = Event(MatchListState.SHOW_LOADING)
-        }
     }
 }

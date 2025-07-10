@@ -625,7 +625,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             with(mBinding) {
                 when(state) {
                     HomeState.PlayTypeClick -> {
-                        mViewModel.setIsHomeLoading(true)
                         resetHomeView()
                         groupHomeMain.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE

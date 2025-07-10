@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -52,7 +53,6 @@ class MatchListPagerFragment :
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
-                mViewModel.setHomeOrPullLoadingState(true)
                 mViewModel.reload()
             }
             refreshLayout.setOnLoadMoreListener {
@@ -181,28 +181,23 @@ class MatchListPagerFragment :
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
 
-        homeViewModel.isHomeLoading.observe(viewLifecycleOwner) {
-            mViewModel.setHomeOrPullLoadingState(it)
-        }
-
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
+            "KC_ state $state".logi()
             with(mBinding) {
                 when(state) {
-                    MatchListState.FIRST_LOADING -> {
+                    MatchListState.FIRST_LOADING_API -> {
+                        lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     MatchListState.REFRESHING -> {
-                        mViewModel.showLoading()
                         clDynamics.visibility = View.GONE
-                        mViewModel.setHomeOrPullLoadingState(false)
                     }
                     MatchListState.IDLE -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
-                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
                         lvMatchLoading.visibility = View.GONE
@@ -214,7 +209,6 @@ class MatchListPagerFragment :
                             R.string.lineup_empty.getString()
                         )
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
-                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
@@ -222,10 +216,7 @@ class MatchListPagerFragment :
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
                     }
-
-                    MatchListState.SHOW_LOADING -> {
-                        lvMatchLoading.visibility = View.VISIBLE
-                    }
+                    else -> Unit
                 }
             }
         }

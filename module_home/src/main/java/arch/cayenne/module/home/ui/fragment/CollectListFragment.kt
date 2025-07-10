@@ -159,7 +159,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
             with(mBinding) {
                 when (state) {
-                    MatchListState.FIRST_LOADING -> {
+                    MatchListState.FIRST_LOADING_API -> {
                         clDynamics.visibility = View.GONE
                         loadingView.visibility = View.VISIBLE
 //                        homeViewModel.changeState(HomeState.LOADING_MATCH)
