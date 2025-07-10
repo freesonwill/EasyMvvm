@@ -500,6 +500,7 @@ message MatchMarketNotify {
     int64 match_id = 1;         //比赛id
     MatchBasicUpdate basic_update = 2;
     repeated galaxy.common.proto.Market market_update = 3; //只推送有变化的盘口
+    galaxy.common.proto.MatchBasicInfo  matchBasicInfo = 4; // 只在订阅时返回
 }
 
 // 500-1105: 取消订阅比赛盘口
@@ -548,6 +549,7 @@ message OrderStatus {
     int32 combo_v = 3;         //串关v 4串11*11 为11
     int32 combo_count = 4;         //串关组合数量 4串11*11 为11
     int32 status = 5;   //2-拒单 4-接单成功
+    repeated galaxy.common.proto.OrderSelection selections = 6; //选项
 }
 
 //600-1010: 异常推送
