@@ -123,7 +123,7 @@ class WebSocketManager(
 
     fun startReconnect() {
         if (reconnectJob?.isActive == true) return
-        "startReconnect!".logi(this.javaClass.simpleName)
+        "startReconnect!".logi(TAG)
         reconnectJob?.cancel()
         reconnectDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         reconnectJob = CoroutineScope(reconnectDispatcher!!).launch {
@@ -136,19 +136,19 @@ class WebSocketManager(
         }
     }
     private fun stopReconnect() {
-        "stop reconnect!".logi(this.javaClass.simpleName)
+        "stop reconnect!".logi(TAG)
         reconnectJob?.cancel()
         reconnectDispatcher?.close()
     }
 
     private fun startHeartbeat() {
-        "startHeartbeat!".logi(this.javaClass.simpleName)
+        "startHeartbeat!".logi(TAG)
         heartbeatJob?.cancel()
         heartbeatDispatcher = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
         heartbeatJob = CoroutineScope(heartbeatDispatcher!!).launch {
             while (true) {
                 delay(heartbeatInterval)
-                "Send Heartbeat!".logi(this.javaClass.simpleName)
+                "Send Heartbeat!".logi(TAG)
 
                 socket.send(
                     Client.PingBackReq.newBuilder().apply {

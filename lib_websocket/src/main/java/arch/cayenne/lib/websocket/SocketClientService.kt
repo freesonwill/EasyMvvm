@@ -37,7 +37,7 @@ class SocketClientService(
     private val context: WeakReference<Application>,
     private val security: ISecurity<IRequest, ByteArray, IResponse>
 ) : ISocket<IRequest, IResponse, ConnectState> {
-    private  val TAG = "SocketClientService"
+    private val TAG = this::class.java.simpleName
     private var currentState : SocketConnectState = SocketConnectState.None
     private val workingScope by lazy { CoroutineScope(Dispatchers.IO) }
     private val connectStateFlow : MutableSharedFlow<ConnectState> by lazy {
@@ -108,19 +108,19 @@ class SocketClientService(
 
             override fun onOpen(webSocket: WebSocket, response: Response) {
                 super.onOpen(webSocket, response)
-                "Socket Client -> ConnectOpen".loge(SocketClientService::class.java.simpleName)
+                "Socket Client -> ConnectOpen".loge(TAG)
                 currentState = SocketConnectState.Connecting
                 this@SocketClientService.webSocket = webSocket
                 workingScope.launch { connectStateFlow.emit(ConnectState.ConnectSuccess) }
             }
 
             override fun onMessage(webSocket: WebSocket, text: String) {
-                "onMessage text $text".logi(this@SocketClientService::class.java.simpleName)
+                "onMessage text $text".logi(TAG)
             }
 
             override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
                 try {
-                    "onMessage bytes $bytes".logi(this@SocketClientService::class.java.simpleName)
+                    "onMessage bytes $bytes".logi(TAG)
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         val data = security.decrypt(byteArray)
@@ -146,7 +146,7 @@ class SocketClientService(
     }
 
     override fun reset() {
-        "reset webSocket to init state".logi(this::class.java.simpleName)
+        "reset webSocket to init state".logi(TAG)
         //當前狀態不是連線中，不需要特別等socket關掉再設定，直接設定回初始值就好
         if (currentState != SocketConnectState.Connecting) {
             currentState = SocketConnectState.None

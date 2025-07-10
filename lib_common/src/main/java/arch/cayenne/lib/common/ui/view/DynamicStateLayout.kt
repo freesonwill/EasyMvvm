@@ -5,10 +5,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
+import androidx.core.animation.addListener
 import androidx.core.view.contains
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.databinding.LayoutEmptyErrorCloseBinding
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -104,6 +102,7 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.llLoading.visibility = VISIBLE
 
                 // 创建旋转动画
+                loadingAnim?.cancel()
                 loadingAnim = binding.ivLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
                     0f, 360f, // 从 0 度旋转到 360 度
@@ -111,7 +110,9 @@ class DynamicStateLayout @JvmOverloads constructor(
                     repeatCount = ObjectAnimator.INFINITE, // 无限循环
                     interpolator = LinearInterpolator(), // 匀速旋转
                     start = true
-                )
+                ).apply {
+                    addListener(onEnd = { loadingAnim = null })
+                }
             }
         }
 

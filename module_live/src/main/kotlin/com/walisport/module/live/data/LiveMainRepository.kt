@@ -30,7 +30,7 @@ class LiveMainRepository(
     // 500-1003: 获取比赛详情
     suspend fun getMatchRes(matchId: Long): LiveMatchBean? {
         clearMatchCache()
-        var matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
+        val matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
         if (matchFullData != null) {
             database.liveMatchDao().insertFullMatch(
                 matches = matchFullData.match,

@@ -69,11 +69,6 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
     crossinline request: () -> GeneratedMessageLite<*, *>
 ): SocketResponseData<T> = withContext(Dispatchers.IO){
     val rid = nextRid()
-    val deferred = scope.async(dispatcher) {
-        withTimeoutOrNull(timeout) {
-            observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
-        }
-    }
     val errorRes = send(request.invoke().asRemoteRequest(apiCode, rid))
     return@withContext if (errorRes != null && errorRes is SocketResponseError) {
         SocketResponseData(
@@ -84,7 +79,10 @@ suspend inline fun<reified T: GeneratedMessageLite<*,*>> WebSocketManager.sendAn
             error = errorRes
         )
     } else {
-        deferred.await() ?: SocketResponseData(
+        val responseData = withTimeoutOrNull(timeout) {
+            observeProtoMessage<T>(apiCode).filter { it.rid == rid }.first()
+        }
+        responseData ?: SocketResponseData(
             mid = apiCode.mid,
             sid = apiCode.sid,
             rid = rid,

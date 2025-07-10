@@ -11,19 +11,21 @@ import arch.cayenne.lib.database.entity.LiveMarketListBean
 import arch.cayenne.lib.database.entity.LiveSelectionBean
 import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.lib.database.entity.MarketTypeBean
-import com.walisport.module.live.data.repository.LiveBetOnRepository
-import kotlinx.coroutines.launch
-import org.koin.core.component.inject
 import arch.cayenne.module.bet.repo.BetRepository
+import com.walisport.module.live.data.repository.LiveBetOnRepository
 import com.walisport.module.live.data.toData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
 
 class LiveBetOnViewModel : BaseViewModel() {
     private val repository: LiveBetOnRepository by inject()
     private val betRepository: BetRepository by inject { parametersOf(viewModelScope) }
-    private var observeJob: Job? = null
+    private var observeSelectionJob: Job? = null
+    private var observerSelectionComboJob: Job? = null
     private val _observeSelection = UnPeekLiveData<List<LiveSelectionBean>?>()
     val observeSelection: UnPeekLiveData<List<LiveSelectionBean>?> = _observeSelection
 
@@ -61,7 +63,8 @@ class LiveBetOnViewModel : BaseViewModel() {
 
     //监听串关数据变化//监听串关数据变化
     fun observerSelectionComboByMatchId(matchId: Long) {
-        viewModelScope.launch {
+        observerSelectionComboJob?.cancel()
+        observerSelectionComboJob = viewModelScope.launch {
             betRepository.observerSelectionByMatchId(matchId).collect {
                 _observerSelectionCombo.value = it
             }
@@ -77,7 +80,7 @@ class LiveBetOnViewModel : BaseViewModel() {
     //根据盘口分类code获取盘口列表
     fun getMarketList(code: String) {
      // LogUtils.dTag("盘口选择","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
-       var codes = if (code.isEmpty()) {
+        val codes = if (code.isEmpty()) {
             marketMenu.value
         } else {
             getMarketMenuByCode(code)
@@ -92,14 +95,14 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     fun observeSelectionGetMarketList(code: String) {
-         LogUtils.dTag("盘口推送","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
-        var codes = if (code.isEmpty()) {
+        LogUtils.dTag("盘口推送","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
+        val codes = if (code.isEmpty()) {
             marketMenu.value
         } else {
             getMarketMenuByCode(code)
         }
         _getMarketList.value = codes
-        var marketIds: MutableList<Long> = mutableListOf()
+        val marketIds: MutableList<Long> = mutableListOf()
         codes?.forEach {
             marketIds.add(it.marketId)
         }
@@ -109,7 +112,7 @@ class LiveBetOnViewModel : BaseViewModel() {
                 list.addAll(repository.queryLiveSelectionBean(it))
             }
             val selections =  codes?.toData(list,code)
-            viewModelScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Main) {
                 _liveMarketListBean.value = selections?.markets
             }
         }
@@ -127,11 +130,11 @@ class LiveBetOnViewModel : BaseViewModel() {
     //监听盘口数据变化
     private fun observeSelection(marketIds: List<Long>) {
         // 取消之前的协程
-        observeJob?.cancel()
+        observeSelectionJob?.cancel()
         // 启动新的协程
-        observeJob = viewModelScope.launch {
+        observeSelectionJob = viewModelScope.launch {
             repository.observeSelection(marketIds).collect {
-                LogUtils.d("比赛详情--------observeSelection${it}")
+                //LogUtils.d("比赛详情--------observeSelection${it}")
                 _observeSelection.value  = it
             }
         }
