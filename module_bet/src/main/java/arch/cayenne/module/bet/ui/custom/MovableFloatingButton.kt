@@ -35,6 +35,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                playZoomOutAnimation()
                 downRawX = event.rawX
                 downRawY = event.rawY
                 dX = v.x - downRawX
@@ -73,6 +74,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 return true
             }
             MotionEvent.ACTION_UP -> {
+                playZoomInAnimation()
                 val upRawX = event.rawX
                 val upRawY = event.rawY
 
@@ -84,6 +86,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 return true
             }
             MotionEvent.ACTION_CANCEL -> {
+                playZoomInAnimation()
                 downRawX = 0f
                 downRawY = 0f
                 dX = 0f
@@ -176,4 +179,21 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
             .start()
     }
 
+    private fun playZoomOutAnimation() {
+        if (binding.root.scaleX == 0.9f && binding.root.scaleY == 0.9f) return
+        binding.root.animate()
+            .scaleX(0.9f)
+            .scaleY(0.9f)
+            .setDuration(100)
+            .start()
+    }
+
+    private fun playZoomInAnimation() {
+        if (binding.root.scaleX == 1f && binding.root.scaleY == 1f) return
+        binding.root.animate()
+            .scaleX(1f)
+            .scaleY(1f)
+            .setDuration(100)
+            .start()
+    }
 }
