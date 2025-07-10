@@ -12,6 +12,18 @@
         tools:layout="@layout/fragment_message_main">
 
         <deepLink app:uri="walisport://module_message/messageFragment" />
+
+        <action
+            android:id="@+id/action_messageMainFragment_to_messageDetailFragment"
+            app:destination="@id/messageDetailFragment">
+
+        </action>
     </fragment>
+
+    <fragment
+        android:id="@+id/messageDetailFragment"
+        android:name="com.walisport.module.message.ui.fragment.MessageDetailFragment"
+        android:label="fragment_message_detail"
+        tools:layout="@layout/fragment_message_detail" />
 
 </navigation>

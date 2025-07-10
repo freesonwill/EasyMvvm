@@ -2,6 +2,7 @@ package com.walisport.module.message.ui.fragment
 
 import android.graphics.Rect
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -11,11 +12,16 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import com.walisport.module.message.R
+import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.adapter.MessageAdapter
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 /**
@@ -81,8 +87,28 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                     showConfirmDialog(id)
                 }
 
-                override fun onDetail(id: Long) {
-                    mViewModel.setMessageRead(id)
+                override fun onDetail(item: NotificationBean) {
+                    var content = ""
+                    var url = ""
+                    //提取文本
+                    val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
+                    val matcher: Matcher = pattern.matcher(item.content)
+                    while (matcher.find()) {
+                        content = matcher.group(1)?.toString() ?: ""
+                    }
+                    //提取图片
+                    val patternImg = Pattern.compile("<url>(.*?)</url>")
+                    val matcherImg = patternImg.matcher(item.content)
+                    while (matcherImg.find()) {
+                        url = matcherImg.group(1)?.toString() ?: ""
+                    }
+                    navigate(
+                        MessageMainFragmentDirections.actionMessageMainFragmentToMessageDetailFragment()
+                            .apply {
+                                arguments.putString("content", content)
+                                arguments.putString("url", url)
+                            })
+                    mViewModel.setMessageRead(item.id)
                 }
             })
         }
