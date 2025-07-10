@@ -21,6 +21,7 @@ import plugin.koin.KoinViewModel
 class TournamentListViewModel : BaseViewModel() {
     private var type: TournamentListType = TournamentListType.MORE
     private var sportId = -1
+    private var playTypeId = 2
     private val repo: TournamentListRepository by inject()
     private val transliterator: Transliterator by inject()
 
@@ -54,6 +55,10 @@ class TournamentListViewModel : BaseViewModel() {
         this.sportId = sportId
     }
 
+    fun setPlayTypeId(playTypeId: Int) {
+        this.playTypeId = playTypeId
+    }
+
     fun setType(type: TournamentListType) {
         this.type = type
     }
@@ -62,7 +67,7 @@ class TournamentListViewModel : BaseViewModel() {
 
     fun getTournaments() {
         viewModelScope.launch(Dispatchers.IO) {
-            val list = repo.getAllTournaments(type, sportId)
+            val list = repo.getAllTournaments(type, playTypeId, sportId)
             val groupedList = processTournamentList(list)
             withContext(Dispatchers.Main) {
                 _tournamentList = list

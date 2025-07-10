@@ -84,6 +84,7 @@ class LiveMainRepository(
                     charRoom = marketInfo.liveInfo.chatRoom,
                     viewerCount = marketInfo.liveInfo.viewerCount,
                     clockModified = marketInfo.liveInfo.clockModified,
+                    animationLiveUrl = marketInfo.liveInfo.animationLiveUrl
                 )
             } else {
                 database.liveMatchDao().updateNotifyMatchInfo(

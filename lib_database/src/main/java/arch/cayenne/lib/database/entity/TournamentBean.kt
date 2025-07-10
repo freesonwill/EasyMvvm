@@ -6,28 +6,26 @@ import androidx.room.PrimaryKey
 @Entity
 data class TournamentBean(
     @PrimaryKey val id: Int,
-    val playType: Int,
-    val sportId: Int,
     val name: String,
     val simpleName: String,
     val icon: String,
+)
+
+@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
+data class SportTournamentCrossRef(
+    val tournamentId: Int,
+    val sportId: Int,
+    val playType: Int,
     val hot: Boolean,
     val weight: Int,
     val index: Int,
+    val coordinateY: Int,
 )
-
-//@Entity(primaryKeys = ["tournamentId", "sportId", "playType"])
-//data class SportTournamentCrossRef(
-//    val tournamentId: Int,
-//    val sportId: Int,
-//    val playType: Int,
-//    val hot: Boolean,
-//    val weight: Int,
-//)
 
 abstract class BaseTournamentData {
     abstract val id: Int
     abstract val sportId: Int
+    abstract val playTypeId: Int
     abstract val name: String
     abstract val simpleName: String
     abstract val icon: String
@@ -38,6 +36,7 @@ abstract class BaseTournamentData {
 data class TournamentDataModel(
     override val id: Int,
     override val sportId: Int,
+    override val playTypeId: Int,
     override val name: String,
     override val simpleName: String,
     override val icon: String,
@@ -45,10 +44,11 @@ data class TournamentDataModel(
     override val weight: Int,
 ) : BaseTournamentData() {
     companion object {
-        fun createAllItem(sportId: Int): TournamentDataModel {
+        fun createAllItem(playTypeId: Int, sportId: Int): TournamentDataModel {
             return TournamentDataModel(
                 id = 0,
                 sportId = sportId,
+                playTypeId = playTypeId,
                 name = "ALL",
                 simpleName = "ALL",
                 icon = "",
@@ -63,6 +63,7 @@ data class ChampionTournamentDataModel(
     val championMatchId: Long,
     override val id: Int,
     override val sportId: Int,
+    override val playTypeId: Int,
     override val name: String,
     override val simpleName: String,
     override val icon: String,

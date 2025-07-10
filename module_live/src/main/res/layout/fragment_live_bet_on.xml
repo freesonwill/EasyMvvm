@@ -32,7 +32,7 @@
                     app:tabRippleColor="@null"
                     app:tabTextAppearance="@style/CustomTabText"
                     app:tabTextColor="@drawable/live_bet_selected_text"
-                    tools:ignore="MissingConstraints,SpeakableTextPresentCheck" />
+                    tools:ignore="SpeakableTextPresentCheck" />
 
                 <ImageView
                     android:id="@+id/ivMenu"

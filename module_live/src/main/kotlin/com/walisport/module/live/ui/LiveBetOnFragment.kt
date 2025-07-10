@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
@@ -42,7 +43,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var mCurrentItemPosition: Int = 0
-    private var mBeforePosition: Int = 0
+    private var mBeforePosition: Int? = null
     private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
     override fun initView(savedInstanceState: Bundle?) {
@@ -138,7 +139,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             mBinding.clDynamics.setState(States.LOADING, "")
             mBinding.LLCBetOn.visibility = View.GONE
             mBinding.ivMenu.visibility = View.GONE
-            mViewModel.observerSelectionComboByMatchId(it)
         }
 
         //推送盘口关闭和开启发生变化
@@ -167,6 +167,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     mViewModel.getMarketType(it.matchId)
                 }
             }
+            mViewModel.observerSelectionComboByMatchId(it.matchId)
         }
         mViewModel.marketType.observe(viewLifecycleOwner) { list ->
             if (list!!.isEmpty()) {
@@ -241,11 +242,30 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
-            liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
-            liveBetOnAdapter.notifyItemChanged(mBeforePosition)
+            if (mBeforePosition == null) {
+                it?.let {  comboIdByMarketPosition(it)?.let { position ->
+                    mBeforePosition = position
+                    liveBetOnAdapter.notifyItemChanged(position) }  }
+            } else {
+                liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
+                liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
+                liveBetOnAdapter.notifyItemChanged(mBeforePosition!!)
+            }
         }
     }
+
+    fun comboIdByMarketPosition(id: Long): Int? {
+        var position: Int? = null
+        mViewModel.liveMarketListBean.value?.forEachIndexed{index,it->
+            it.list.forEach{selection->
+                if (id==selection.selectionId){
+                    position = index
+                }
+            }
+        }
+        return position
+    }
+
 
     // 动态添加Tab的方法
     private fun addNewTab() {
@@ -258,6 +278,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
         mBinding.tabLayout.getTabAt(0)?.select()
         mBinding.tabLayout.reflexMargin(8.dp2px, 8.dp2px, 4.dp2px)
+        mBinding.tabLayout.removeAllTips()
     }
 
     override fun onDestroyView() {
