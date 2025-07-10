@@ -16,11 +16,21 @@ class LanguageViewModel(private val repo: LanguageRepository): BaseViewModel() {
 
     private lateinit var firstLanguageType: LanguageType
 
+    var forceUpdate = false
+        private set
+
     init {
         viewModelScope.launch {
-            val lang = repo.getLanguageType()
-            _languageType.value = lang
-            firstLanguageType = lang
+            launch {
+                val lang = repo.getLanguageType()
+                _languageType.value = lang
+                firstLanguageType = lang
+            }
+            launch {
+                repo.observeComboBetCount().collect {
+                    forceUpdate = it > 0
+                }
+            }
         }
     }
 
@@ -28,12 +38,15 @@ class LanguageViewModel(private val repo: LanguageRepository): BaseViewModel() {
     fun setLanguageType(type: LanguageType) {
         _languageType.value = type
         repo.setLanguageType(type)
+        if (forceUpdate) {
+            saveLanguageType()
+        }
     }
 
     fun saveLanguageType() {
-        _languageType.value?.let {
+        _languageType.value?.let { type ->
             callApi({
-                repo.saveLanguageType(it)
+                repo.saveLanguageType(type)
             }, {
                 if (it is ApiFailedState) {
                     setLanguageType(firstLanguageType)

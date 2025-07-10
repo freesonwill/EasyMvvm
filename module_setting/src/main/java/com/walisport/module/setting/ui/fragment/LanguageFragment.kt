@@ -53,4 +53,11 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
             changeLanguageType(it)
         }
     }
+
+    override fun onDestroy() {
+        if (!mViewModel.forceUpdate) {
+            mViewModel.saveLanguageType()
+        }
+        super.onDestroy()
+    }
 }
