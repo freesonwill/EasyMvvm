@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.activity.ComponentDialog
 import androidx.core.animation.doOnEnd
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -155,17 +156,17 @@ class LiveVideoSourcePortraitFragment :
     }
 
     private fun playEnterAnimations() {
-        mBinding.llRoot.startSafeAnimateSet({
+        mBinding.ctSource.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(
                     R.dimen.video_source_portrait_margin_top.getDimensionPixelSize(),
                     0
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.llRoot.layoutParams as FrameLayout.LayoutParams
+                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.llRoot.layoutParams = lp
+                        mBinding.ctSource.layoutParams = lp
                     }
                 },
             )
@@ -178,17 +179,17 @@ class LiveVideoSourcePortraitFragment :
         if (isDismissing) return
         isDismissing = true
 
-        mBinding.llRoot.startSafeAnimateSet({
+        mBinding.ctSource.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(
                     0,
                     R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
                 ).apply {
                     addUpdateListener {
-                        val lp = mBinding.llRoot.layoutParams as FrameLayout.LayoutParams
+                        val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
                         lp.topMargin = it.animatedValue as Int
 
-                        mBinding.llRoot.layoutParams = lp
+                        mBinding.ctSource.layoutParams = lp
                     }
                 },
             )
