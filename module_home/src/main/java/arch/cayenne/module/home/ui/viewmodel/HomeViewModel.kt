@@ -2,7 +2,9 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -29,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -45,6 +48,14 @@ class HomeViewModel : BaseViewModel() {
     private val _currentPlayTypeId: MutableStateFlow<Int> = MutableStateFlow(PlayType.TODAY.id)
     val currentPlayTypeId: Int
         get() = _currentPlayTypeId.value
+    val playTypeIndexChange: LiveData<Event<Int>> = _currentPlayTypeId.transform {
+        when(it) {
+            PlayType.TODAY.id -> emit(Event(0))
+            PlayType.EARLY.id -> emit(Event(1))
+            PlayType.CHAMPION.id -> emit(Event(2))
+            else -> Unit
+        }
+    }.asLiveData(Dispatchers.Main)
 
     private val _currentSportId: MutableStateFlow<Int> = MutableStateFlow(SportEnum.Default.id)
     val currentSportId: Int
@@ -146,6 +157,11 @@ class HomeViewModel : BaseViewModel() {
                     }
             }
         }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeLanguageChange().collect {
+                resetAll()
+            }
+        }
     }
 
     fun setIsHomeLoading(isLoading: Boolean) {
@@ -211,6 +227,14 @@ class HomeViewModel : BaseViewModel() {
 
     fun refreshAll() {
         setCurrentPlayType(currentPlayTypeId)
+    }
+
+    @Transaction
+    private suspend fun resetAll() {
+        repository.clearAllCache()
+        withContext(Dispatchers.Main) {
+            setCurrentPlayType(PlayType.TODAY.id)
+        }
     }
 
     //切換當前的一級選項(今日、早盤、冠軍)

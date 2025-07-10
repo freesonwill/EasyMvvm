@@ -50,7 +50,7 @@ class HomeModuleInitializer: DefaultInitializer<Unit> {
         factory {
             CoroutineScope(Dispatchers.IO)
         }
-        factory { HomeRepository(get(), get(), get()) }
+        factory { HomeRepository(get(), get(), get(), get()) }
         factory { ChampionRepository(get(), get(), get<GameDatabase>().matchDao(), get<GameDatabase>().betDao()) }
         factory { TournamentListRepository(get(), get(), get<GameDatabase>().tournamentDao()) }
         factory { CollectListRepository(get(), get(), get<GameDatabase>().betDao(), get<GameDatabase>().matchDao()) }

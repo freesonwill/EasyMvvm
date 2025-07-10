@@ -4,6 +4,8 @@ import androidx.room.Transaction
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
+import arch.cayenne.lib.common.data.constants.UserDataKey
+import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.HomeSelectedBean
 import arch.cayenne.lib.database.entity.ShowType
@@ -24,6 +26,7 @@ import kotlinx.coroutines.withContext
 class HomeRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
+    private val userDataManager: UserDataManager,
     private val database: GameDatabase
 ) : BaseRepository() {
     private val sportDao = database.sportDao()
@@ -33,6 +36,8 @@ class HomeRepository(
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
+
+    fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
 
@@ -152,6 +157,14 @@ class HomeRepository(
         tournamentDao.insertSportTournamentCrossRefs(refs)
         tournamentDao.deleteMissing(sportId, playType, refs.map { it.tournamentId })
         return ApiResponseState.Succeeded(tournamentList)
+    }
+
+    suspend fun clearAllCache() {
+        homeSelectedDao.clearAllHomeSelectedData()
+        matchDao.clearAllMatch()
+        tournamentDao.clearAllTournaments()
+        tournamentDao.clearAllSportTournamentCrossRef()
+        sportDao.clearSportBean()
     }
 
     private fun clearMatchCache() {
