@@ -2,8 +2,10 @@ package com.walisport.module.setting
 
 import android.content.Context
 import arch.cayenne.lib.base.data.DefaultInitializer
+import com.walisport.module.setting.data.LanguageRepository
 import com.walisport.module.setting.data.OddsDisplayRepository
 import com.walisport.module.setting.data.SettingRepository
+import com.walisport.module.setting.ui.viewmodel.LanguageViewModel
 import com.walisport.module.setting.ui.viewmodel.OddsDisplayViewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -22,10 +24,12 @@ class SettingModuleInitializer : DefaultInitializer<String> {
     private val viewModules = module {
         includes(defaultModule)
         factoryOf(::OddsDisplayViewModel)
+        factoryOf(::LanguageViewModel)
     }
     private val repoModules = module {
         factoryOf(::SettingRepository)
         factoryOf(::OddsDisplayRepository)
+        factoryOf(::LanguageRepository)
     }
     private val moduleList: List<Module> = listOf(viewModules, repoModules)
 }

@@ -7,57 +7,56 @@ import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
-import com.walisport.module.setting.ui.viewmodel.SettingViewModel
+import com.walisport.module.setting.ui.viewmodel.LanguageViewModel
 import kotlin.reflect.KClass
 
 /**
  * 语言设置
  */
 
-class LanguageFragment : BaseFragment<SettingViewModel, FragmentLanguageBinding>() {
+class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding>() {
 
     override val vbClass: KClass<FragmentLanguageBinding> = FragmentLanguageBinding::class
-    override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
+    override val vmClass: KClass<LanguageViewModel> = LanguageViewModel::class
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.menu_language_set, {
             findNavController().navigateUp()
         })
-        val languageType = mViewModel.getLanguageType()
-        changeLanguageType(languageType)
     }
 
     override fun initListener() {
         mBinding.languageSimple.clickNoRepeat {
-            mViewModel.setLanguageType(LanguageType.LANGUAGE_SIMPLE.value)
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_SIMPLE)
         }
         mBinding.languageEnglish.clickNoRepeat {
-            mViewModel.setLanguageType(LanguageType.LANGUAGE_ENGLISH.value)
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_ENGLISH)
         }
         mBinding.languageIndonesian.clickNoRepeat {
-            mViewModel.setLanguageType(LanguageType.LANGUAGE_ID.value)
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_ID)
         }
         mBinding.languagePortuguese.clickNoRepeat {
-            mViewModel.setLanguageType(LanguageType.LANGUAGE_PT.value)
+            mViewModel.setLanguageType(LanguageType.LANGUAGE_PT)
         }
     }
 
-    private fun changeLanguageType(type: String) {
-        mBinding.radioSimple.isSelected = false
-        mBinding.radioEnglish.isSelected = false
-        mBinding.radioIndonesian.isSelected = false
-        mBinding.radioPortuguese.isSelected = false
-        when (type) {
-            LanguageType.LANGUAGE_ENGLISH.value -> mBinding.radioEnglish.isSelected = true
-            LanguageType.LANGUAGE_ID.value -> mBinding.radioIndonesian.isSelected = true
-            LanguageType.LANGUAGE_PT.value -> mBinding.radioPortuguese.isSelected = true
-            else -> mBinding.radioSimple.isSelected = true
-        }
+    private fun changeLanguageType(type: LanguageType) {
+        mBinding.radioSimple.isSelected = type == LanguageType.LANGUAGE_SIMPLE
+        mBinding.radioEnglish.isSelected = type == LanguageType.LANGUAGE_ENGLISH
+        mBinding.radioIndonesian.isSelected = type == LanguageType.LANGUAGE_ID
+        mBinding.radioPortuguese.isSelected = type == LanguageType.LANGUAGE_PT
     }
 
     override fun createObserver() {
-        mViewModel.language.observe(viewLifecycleOwner) {
+        mViewModel.languageType.observe(viewLifecycleOwner) {
             changeLanguageType(it)
         }
+    }
+
+    override fun onPause() {
+        if (!mViewModel.forceUpdate) {
+            mViewModel.saveLanguageType()
+        }
+        super.onPause()
     }
 }

@@ -1,9 +1,9 @@
 package com.walisport.module.setting.ui.fragment
 
-import android.content.Context
 import android.os.Bundle
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -32,9 +32,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         //设置皮肤
         skinType = mViewModel.getSkinType()
         mViewModel.setSkinType(skinType)
-        //设置语言
-        val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
-        mBinding.tvLanguageType.text = lang
     }
 
     override fun initListener() {
@@ -56,15 +53,14 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         mViewModel.displayType.observe(viewLifecycleOwner) { value ->
             mBinding.tvDisplay.text = getSkinnableOddsString(value)
         }
+        mViewModel.language.observe(viewLifecycleOwner) { value ->
+            mBinding.tvLanguageType.text = getSkinnableLanguageString(value)
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            //语言类型
-            val lang = mViewModel.getSkinnableLanguage(mBinding.root.context)
-            mBinding.tvLanguageType.text = lang
-            mBinding.tvDisplay.text = getSkinnableOddsString(mViewModel.displayType.value ?: OddsDisplayEnum.EU)
             //皮肤设置
             skinType = mViewModel.getSkinType()
             mViewModel.setSkinType(skinType)
@@ -86,6 +82,34 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             SkinnableResourceManager.getString(
                 requireContext(),
                 R.string.menu_hk,
+                mViewModel.getLanguage()
+            )
+        }
+    }
+
+    private fun getSkinnableLanguageString(type: LanguageType): String {
+        return when (type) {
+            LanguageType.LANGUAGE_ENGLISH -> SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_language_english,
+                mViewModel.getLanguage()
+            )
+
+            LanguageType.LANGUAGE_PT -> SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_language_portugal,
+                mViewModel.getLanguage()
+            )
+
+            LanguageType.LANGUAGE_ID -> SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_language_indonesia,
+                mViewModel.getLanguage()
+            )
+
+            else -> SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.menu_language_simple,
                 mViewModel.getLanguage()
             )
         }

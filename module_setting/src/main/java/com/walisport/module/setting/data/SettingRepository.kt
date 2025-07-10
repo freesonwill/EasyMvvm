@@ -21,6 +21,7 @@ class SettingRepository(
 ) : BaseRepository() {
 
     val observerOddsDisplay = manager.observe<Int>(UserDataKey.KEY_ODDS)
+    val observerLanguage = manager.observe<String>(UserDataKey.KEY_LANGUAGE)
 
     //设置皮肤背景
     fun setSkinType(type: String) {
@@ -30,16 +31,6 @@ class SettingRepository(
     //获取皮肤背景
     fun getSkinType(): String {
         return manager.getValue(UserDataKey.KEY_SKIN, SkinType.DEFAULT)
-    }
-
-    //设置语言类型
-    fun setLanguageType(type: String) {
-        manager.setKeyValue(UserDataKey.KEY_LANGUAGE, type)
-    }
-
-    //获取语言类型
-    fun getLanguageType(): String {
-        return manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
     }
 
     //设置系统通知-进球
@@ -99,22 +90,14 @@ class SettingRepository(
         return manager.getValue(UserDataKey.KEY_APP_ALL, false)
     }
 
-    fun updateSettingReq(setting: Common.Setting) {
-        scope.launch(Dispatchers.IO) {
-            socketManager.sendAndWaitProtoMessageResponse<Client.UpdateSettingResp>(
-                scope = scope,
-                dispatcher = Dispatchers.IO,
-                apiCode = ApiCode.UPDATE_SYSTEM_SETTING,
-            ) {
-                Client.UpdateSettingReq.newBuilder().apply {
-                    this.setting = setting
-                }.build()
-            }
-        }
-    }
-
     fun getOddsType(): OddsDisplayEnum {
         val value = manager.getValue(UserDataKey.KEY_ODDS, OddsDisplayEnum.EU.value)
         return OddsDisplayEnum.entries[value]
+    }
+
+    //获取语言类型
+    fun getLanguageType(): LanguageType {
+        val lang = manager.getValue(UserDataKey.KEY_LANGUAGE, LanguageType.LANGUAGE_SIMPLE.value)
+        return LanguageType.findLanguage(lang)
     }
 }

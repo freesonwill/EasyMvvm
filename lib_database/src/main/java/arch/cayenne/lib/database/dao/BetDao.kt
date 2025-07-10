@@ -156,4 +156,9 @@ abstract class BetDao : BaseDao<BetBean>() {
                 "    )"
     )
     abstract fun observeCurrentBetType(status: BetStatusEnum = BetStatusEnum.PENDING): Flow<BetTypeEnum?>
+
+    @Query(
+        "UPDATE BetSelectionBean SET marketName = :marketName, name = :name, leagueName = :leagueName, matchName = :matchName WHERE betId = :betId AND selectionId = :selectionId"
+    )
+    abstract suspend fun updateLanguage(betId: Long, selectionId: Long, marketName: String, name: String, leagueName: String, matchName: String)
 }
