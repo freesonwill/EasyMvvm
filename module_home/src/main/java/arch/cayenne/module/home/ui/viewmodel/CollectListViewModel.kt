@@ -62,7 +62,9 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
             repository.observeMatchChange().collect { ref ->
                 if (ref.isEmpty()) {
                     if (_state.value?.peekContent() == MatchListState.INIT) {
-                        _state.value = Event(MatchListState.FIRST_LOADING_API)
+                        withContext(Dispatchers.Main) {
+                            _state.value = Event(MatchListState.FIRST_LOADING_API)
+                        }
                     }
                     getMatchListData()
                     return@collect

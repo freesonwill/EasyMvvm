@@ -117,10 +117,15 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     endTime = endTime,
                 )
                 withContext(Dispatchers.Main) {
-                    if (isPageEnd && page == 1) {
+                    if (isPageEnd) {
                         //沒有資料
-                        _state.value = Event(MatchListState.FAILED)
-                        matchListChange.value = arrayListOf()
+                        if (page != 1) {
+                            _state.value = Event(MatchListState.NO_MORE_DATA)
+                        } else {
+                            _state.value = Event(MatchListState.FAILED)
+                            matchListChange.value = arrayListOf()
+                        }
+
                     } else {
                         _state.value = Event(MatchListState.IDLE)
                     }

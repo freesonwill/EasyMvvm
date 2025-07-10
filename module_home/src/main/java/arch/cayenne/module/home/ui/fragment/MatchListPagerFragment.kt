@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -182,16 +181,17 @@ class MatchListPagerFragment :
         mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
 
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
-            "KC_ state $state".logi()
             with(mBinding) {
                 when(state) {
                     MatchListState.FIRST_LOADING_API -> {
                         lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     MatchListState.REFRESHING -> {
                         clDynamics.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(true)
                     }
                     MatchListState.IDLE -> {
                         lvMatchLoading.visibility = View.GONE
@@ -203,6 +203,7 @@ class MatchListPagerFragment :
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -215,6 +216,7 @@ class MatchListPagerFragment :
                     }
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
                     }
                     else -> Unit
                 }
