@@ -44,6 +44,11 @@ class LiveVideoRepository(
 
     fun queryLiveStream() {
         scope.launch {
+            //已经有比赛对应的视频列表， 不需要再次拉取
+            val liveVideoBean = liveVideoDao.queryLiveVideoBean(matchId)
+            if (liveVideoBean?.source?.isNotEmpty() == true) {
+                return@launch
+            }
             val resp = remoteManager.queryLiveStream(scope, matchId)
             
             val data = resp?.mapIndexed { index, matchLiveStream ->
