@@ -8,7 +8,6 @@ import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
 import com.walisport.module.setting.ui.viewmodel.LanguageViewModel
-import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import kotlin.reflect.KClass
 
 /**
@@ -54,10 +53,10 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         }
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
         if (!mViewModel.forceUpdate) {
             mViewModel.saveLanguageType()
         }
-        super.onDestroy()
+        super.onPause()
     }
 }
