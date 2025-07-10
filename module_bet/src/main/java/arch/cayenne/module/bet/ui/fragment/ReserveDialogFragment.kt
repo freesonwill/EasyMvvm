@@ -99,25 +99,30 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
                 it.attributes = layoutParams
 
-                // 設置初始位置在螢幕右側
-                mBinding.root.translationX = pop.measuredWidth.toFloat()
+                mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                        // 動畫初始狀態
+                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                        mBinding.root.pivotY = 0f
+                        mBinding.root.scaleX = 0f
+                        mBinding.root.scaleY = 0f
+                        mBinding.root.alpha = 0f
 
-                mBinding.root.post {
-                    mBinding.root.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-                        override fun onGlobalLayout() {
-                            mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                            // 執行滑入動畫
-                            mBinding.root.animate()
-                                .translationX(0f)
-                                .setDuration(300)
-                                .setInterpolator(android.view.animation.DecelerateInterpolator())
-                                .withStartAction {
-                                    mBinding.root.visibility = View.VISIBLE
-                                }
-                                .start()
-                        }
-                    })
-                }
+                        // 開始動畫
+                        mBinding.root.animate()
+                            .scaleX(1f)
+                            .scaleY(1f)
+                            .alpha(1f)
+                            .setDuration(200)
+                            .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .withStartAction {
+                                mBinding.root.visibility = View.VISIBLE
+                            }
+                            .start()
+                    }
+                })
+
             }
         }
     }
@@ -181,8 +186,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     private fun doExitAnim() {
         mBinding.root.animate()
-            .translationX(mBinding.root.width.toFloat())
-            .setDuration(300)
+            .scaleX(0f)
+            .scaleY(0f)
+            .alpha(0f)
+            .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
             .withEndAction {
                 super.dismiss()
