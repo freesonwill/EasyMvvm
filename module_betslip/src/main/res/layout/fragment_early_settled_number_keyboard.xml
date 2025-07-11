@@ -117,7 +117,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_100"
                 style="@style/KeyboardSideTextView"
-                android:foreground="@drawable/bg_click_mask_top_6dp"
+                android:foreground="@drawable/bg_click_mask_top_6dp_white_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -189,7 +189,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_5000"
                 style="@style/KeyboardSideTextView"
-                android:foreground="@drawable/bg_click_mask_bottom_6dp"
+                android:foreground="@drawable/bg_click_mask_bottom_6dp_white_blue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
