@@ -7,6 +7,8 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import androidx.core.view.isVisible
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.walisport.module.live.data.LiveOddsStatusEnum
@@ -292,7 +294,7 @@ class LiveBetListLayout @JvmOverloads constructor(
     }
 
     private fun delayExample(delayCallback: () -> Unit) {
-        CoroutineScope(Dispatchers.Main).launch {
+        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
             delay(2000)
             delayCallback()
         }

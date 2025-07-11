@@ -6,28 +6,29 @@ import android.view.ViewTreeObserver
 import android.widget.ImageView
 import androidx.core.view.drawToBitmap
 import androidx.core.view.isVisible
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ViewPagerAnimHelper {
-
     private var job: Job? = null
+    private var viewPagerAnimJob: Job? = null
 
     fun doDirectViewPagerAnim(
         targetPosition: Int,
         viewPager: ViewPager2,
-        fakeViewPager: ImageView
+        fakeViewPager: ImageView,
     ) {
         job?.cancel()
         val prevPosition = viewPager.currentItem
         if (prevPosition == targetPosition) return
-
-        job = CoroutineScope(Dispatchers.Main).launch {
+        val scope: CoroutineScope = viewPager.findViewTreeLifecycleOwner()!!.lifecycleScope
+        job = scope.launch {
             val isPrev = prevPosition < targetPosition
             val width = viewPager.width
 
@@ -88,12 +89,13 @@ class ViewPagerAnimHelper {
     fun doViewPagerAnim(
         targetPosition: Int,
         viewPager: ViewPager2,
-        fakeViewPager: ImageView
+        fakeViewPager: ImageView,
     ): Job? {
         val prevPosition = viewPager.currentItem
         if(prevPosition == targetPosition) return null
-
-        return CoroutineScope(Dispatchers.Main).launch {
+        val scope: CoroutineScope = viewPager.findViewTreeLifecycleOwner()!!.lifecycleScope
+        viewPagerAnimJob?.cancel()
+        viewPagerAnimJob = scope.launch {
             val isPrev = prevPosition < targetPosition
             val width = viewPager.width
 
@@ -152,6 +154,7 @@ class ViewPagerAnimHelper {
                 })
             }, start = true)
         }
+        return viewPagerAnimJob
     }
 
 }
