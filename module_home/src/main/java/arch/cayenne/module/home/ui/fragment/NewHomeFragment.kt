@@ -28,8 +28,6 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.ext.extractDate
-import arch.cayenne.lib.common.utils.ext.toChineseMonth
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -49,11 +47,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.google.android.material.tabs.TabLayoutMediator
-import com.haibin.calendarview.Calendar
-import com.haibin.calendarview.CalendarView
-import galaxy.common.proto.Common
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.reflect.KClass
 
@@ -167,7 +161,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             // 其他日期 Tab 設定
             llOtherDate.clickNoRepeat {
                 //呼叫日曆popup元件
-                var tabSelectedDate = "0"
+                var tabSelectedDate: String
                 val index = tlDateList.selectedTabPosition
                 if (index >= 0) {
                     val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index)
@@ -290,111 +284,25 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun showHomeCalendar(tabSelectedDate: String) {
-
-        fun setCurrentDate(vb: HomeTourPopupCalendarViewBinding, tabSelectedDate: String) {
-            val currentYear = vb.calendarView.curYear
-            val currentMonth = vb.calendarView.curMonth
-            //日期tab為全部時標記為今日
-            if (tabSelectedDate == "0") {
-                vb.calendarView.scrollToCurrent(true)
-                vb.tvCurrentMonth.text = "${currentMonth.toChineseMonth()} $currentYear"
-            }else{
-                val result = tabSelectedDate.extractDate()
-                result?.let {
-                    val (year, month, day) = it
-                    with (vb) {
-                        calendarView.scrollToCalendar(year, month, day)
-                        tvCurrentMonth.text = "${month.toChineseMonth()} $year"
-                    }
-                } ?: run {
-                    val curYear = vb.calendarView.curYear
-                    val curMonth = vb.calendarView.curMonth
-                    vb.calendarView.scrollToCurrent(true)
-                    vb.tvCurrentMonth.text = "${curMonth.toChineseMonth()} $curYear"
-                }
-            }
-
-        }
         // 使用 Builder 創建 Popup
         setCalendarPopup()
-        updateCalendarSkin()
-        with(customPopup?.binding) {
-            // 獲取當前日期
-            var selectedDate = if (tabSelectedDate == "0") {
-                "${this?.calendarView?.selectedCalendar}"
-            } else {
-                tabSelectedDate
-            }
-            // 透過 binding 操作 Popup 內部的 View
-            this?.ivRightClick?.clickNoRepeat {
-                this.calendarView.scrollToNext(true)
-            }
-            this?.ivLeftClick?.clickNoRepeat {
-                this.calendarView.scrollToPre(true)
-            }
-            this?.calendarBtnCancel?.clickNoRepeat {
-                this.calendarView.scrollToCurrent()
-                val index = getFutureThirtyOneDays().indexOfFirst{ it.first == selectedDate }
-                setSelectedDateTab(index)
-                customPopup?.dismiss() // 關閉 Popup
-            }
-            this?.calendarBtnOk?.clickNoRepeat {
-                val index = getFutureThirtyOneDays().indexOfFirst{ it.first == selectedDate }
-                setSelectedDateTab(index)
-                customPopup?.dismiss()
-            }
-            setCurrentDate(customPopup!!.binding,tabSelectedDate)
-            this?.calendarView?.setOnCalendarSelectListener(object :
-                CalendarView.OnCalendarSelectListener {
-                override fun onCalendarOutOfRange(calendar: Calendar?) {
-
-                }
-
-                override fun onCalendarSelect(calendar: Calendar?, isClick: Boolean) {
-                    if (calendar == null) return
-                    val dateFormat = SimpleDateFormat("M.dd", Locale.getDefault())
-                    selectedDate = dateFormat.format(calendar.toCalendar().time)
-                    tvCurrentMonth.text =
-                        "${calendar.month.toChineseMonth()} ${calendar.year}"
-                    //控制左右按鈕的enabled
-                    if(calendar.month > calendarView.curMonth) {
-                        ivRightClick.isEnabled = false
-                        ivLeftClick.isEnabled = true
-                    }else{
-                        ivRightClick.isEnabled = true
-                        ivLeftClick.isEnabled = false
-                    }
-                }
-            })
-        }
+        customPopup?.updateCalendarSkin()
+        customPopup?.setUIListener(tabSelectedDate)
         // 顯示 Popup
         customPopup!!.showAsDropDown(mBinding.layoutContainer.tlDateList)
     }
-    //設定標記紅色日期及可選取日期範圍
-    private fun setSchemeDate(calendarView: CalendarView,list:List<Common.DailyMatchCount>) {
-        val map: MutableMap<String, Calendar> = HashMap()
-//        val noMatchMap : MutableMap<String, Calendar> = HashMap()
-        for (date in list) {
-            //API回傳資料，有比賽的日期才需要標記紅字
-            val dateArray = date.day.split("-")
-            if (date.count > 0) {
-                val schemeCalendar =  getSchemeCalendar(dateArray[0].toInt(), dateArray[1].toInt(), dateArray[2].toInt())
-                map[schemeCalendar.toString()] = schemeCalendar
-            }
-        }
-        //可選取日期區間為未來第31天
-        val endDateTriple = list.last()
-        val endDateArray = endDateTriple?.day!!.split("-")
-        //設定可以選取的日期區間，目前設定為31天
-        calendarView.setRange(calendarView.curYear,calendarView.curMonth,calendarView.curDay,endDateArray[0].toInt(),endDateArray[1].toInt(),endDateArray[2].toInt())
-        calendarView.setSchemeDate(map)
-    }
+
     private fun setCalendarPopup() {
         if (customPopup == null) {
             customPopup = HomeCalendarPopupWindow.Builder(
-                requireContext(),
+                this,
                 HomeTourPopupCalendarViewBinding::inflate
-            ).build()
+            ).setOnDateSelectedListener {selectedDate ->
+                val index = getFutureThirtyOneDays().indexOfFirst{
+                    it.first == selectedDate
+                }
+                setSelectedDateTab(index)
+            }.build()
         }
     }
 
@@ -411,18 +319,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun getFutureThirtyOneDays() = DateUtils.getFutureDays(31, Locale.getDefault())
-    private fun getSchemeCalendar(
-        year: Int,
-        month: Int,
-        day: Int
-    ): Calendar {
-        val calendar = Calendar()
-        calendar.year = year
-        calendar.month = month
-        calendar.day = day
-        calendar.drawIndex = 0
-        return calendar
-    }
+
     //init DrawerLayout Content
     private fun initDrawerContent() {
         //蒙層顏色依照版型作變化
@@ -630,9 +527,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         mViewModel.recently31MatchScheduleCount.observeEvent(viewLifecycleOwner, this) {list->
             setCalendarPopup()
-            with (customPopup?.binding) {
-                setSchemeDate(this!!.calendarView,list)
-            }
+            customPopup?.setSchemeDate(list)
         }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
@@ -657,7 +552,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
             mBinding.apply {
-                updateCalendarSkin()
+                customPopup?.updateCalendarSkin()
             }
         }
 
@@ -670,75 +565,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
     }
-    private fun updateCalendarSkin() {
-        if (customPopup == null) return
-        customPopup?.binding?.apply {
-            val rootContext = mBinding.root.context
-            //update calendarView skin root
-            clCalendarPopupRoot.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_background))
-            //update weekview color
-            val backgroundColor = SkinnableResourceManager.getColor(
-                mBinding.root.context,
-                R.color.home_calendar_background
-            )
-            val textColor = SkinnableResourceManager.getColor(
-                mBinding.root.context,
-                arch.cayenne.lib.common.R.color.secondary_text
-            )
-            calendarView.setWeeColor(backgroundColor,textColor)
-            //update current month title text color
-            tvCurrentMonth.setTextColor(
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.secondary_text
-                )
-            )
-            //update previous and next month button drawable
-            ivLeftClick.setImageResource(
-                SkinnableResourceManager.getTargetResourceId(
-                    rootContext,
-                    R.drawable.ic_calendar_arrow_left
-                )
-            )
-            ivRightClick.setImageResource(
-                SkinnableResourceManager.getTargetResourceId(
-                    rootContext,
-                    R.drawable.ic_calendar_arrow_right
-                )
-            )
-            //update calendarView textColor
-            calendarView.setTextColor(
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.main_text
-                ),
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.explanation_text
-                ),
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.explanation_text
-                ),
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.main_text
-                ),
-                SkinnableResourceManager.getColor(
-                    rootContext,
-                    arch.cayenne.lib.common.R.color.main_text
-                )
-            )
-            calendarView.setSelectedColor(resources.getColor(R.color.home_calendar_selected_theme_color,null),
-                resources.getColor(arch.cayenne.lib.common.R.color.white, null),
-                resources.getColor(arch.cayenne.lib.common.R.color.white, null))
-            //update calendarView button
-            calendarBtnCancel.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_cancel))
-            calendarBtnCancel.setTextColor(SkinnableResourceManager.getColor(rootContext,
-                arch.cayenne.lib.common.R.color.title_bar))
-            calendarBtnOk.setBackgroundResource(SkinnableResourceManager.getTargetResourceId(rootContext,R.drawable.shape_home_calendar_ok))
-        }
-    }
+
     private fun createTournamentTabView(
         tournament: TournamentDataModel
     ): View {
