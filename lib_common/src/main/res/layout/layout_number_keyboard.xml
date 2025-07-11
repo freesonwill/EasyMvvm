@@ -8,7 +8,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_one"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
         android:backgroundTint="@color/keyboard_2"
@@ -17,7 +17,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_two"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
@@ -27,7 +27,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_three"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginBottom="2dp"
         android:backgroundTint="@color/keyboard_2"
@@ -36,7 +36,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_four"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
@@ -46,7 +46,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_five"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_margin="2dp"
         android:backgroundTint="@color/keyboard_2"
         android:text="5" />
@@ -54,7 +54,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_six"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
@@ -64,7 +64,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_seven"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="2dp"
@@ -74,7 +74,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_eight"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_margin="2dp"
         android:backgroundTint="@color/keyboard_2"
         android:text="8" />
@@ -82,7 +82,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_nine"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginBottom="2dp"
@@ -92,7 +92,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_other"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:textSize="14sp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
@@ -101,7 +101,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_zero"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="2dp"
@@ -111,7 +111,7 @@
     <arch.cayenne.lib.skin.widget.SkinnableTextView
         android:id="@+id/btn_dot"
         style="@style/NumberKeyboardButton"
-        android:foreground="@drawable/bg_click_mask_6dp"
+        android:foreground="@drawable/bg_click_mask_6dp_white_blue"
         android:layout_marginStart="2dp"
         android:layout_marginTop="2dp"
         android:backgroundTint="@color/keyboard_2"

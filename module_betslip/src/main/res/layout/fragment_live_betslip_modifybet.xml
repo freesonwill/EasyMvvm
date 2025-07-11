@@ -97,7 +97,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableImageButton
             android:id="@+id/btn_back"
             style="@style/NumberKeyboardButton"
-            android:foreground="@drawable/bg_click_mask_6dp"
+            android:foreground="@drawable/bg_click_mask_6dp_white_blue"
             android:layout_marginBottom="@dimen/dp_2"
             android:backgroundTint="@color/keyboard_1"
             android:scaleType="center"
@@ -106,7 +106,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/btn_clear"
             style="@style/NumberKeyboardButton"
-            android:foreground="@drawable/bg_click_mask_6dp"
+            android:foreground="@drawable/bg_click_mask_6dp_white_blue"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="@dimen/dp_2"
             android:backgroundTint="@color/keyboard_1"
@@ -116,7 +116,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/btn_confirm"
             style="@style/NumberKeyboardButton"
-            android:foreground="@drawable/bg_click_mask_6dp"
+            android:foreground="@drawable/bg_click_mask_6dp_white_blue"
             android:layout_rowWeight="2"
             android:layout_marginTop="2dp"
             android:layout_marginBottom="@dimen/dp_2"
