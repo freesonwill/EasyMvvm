@@ -8,6 +8,7 @@ import java.util.Locale
 
 class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
     private var backgroundTintId:Int = INVALID_ID
+    private var foregroundId:Int = INVALID_ID
 
     override fun loadFromAttributes(attrs: AttributeSet?, defStyleAttr: Int) {
         val a = mView.context.obtainStyledAttributes(
@@ -23,6 +24,9 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
             if(a.hasValue(R.styleable.SportBackgroundHelper_android_backgroundTint)){
                 backgroundTintId = a.getResourceId(R.styleable.SportBackgroundHelper_android_backgroundTint, INVALID_ID)
             }
+            if(a.hasValue(R.styleable.SportBackgroundHelper_android_foreground)){
+                foregroundId = a.getResourceId(R.styleable.SportBackgroundHelper_android_foreground, INVALID_ID)
+            }
         } finally {
             a.recycle()
         }
@@ -30,6 +34,9 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
     }
 
     override fun updateSkin(msgType: SkinMsgType) {
+        if(checkSkinName(msgType)){
+            return
+        }
         if (checkResourceIdValid(mSrcId)) {
             val drawable = resourcesManager.getDrawable(context = mView.context,mSrcId)
             if (drawable != null) {
@@ -45,6 +52,10 @@ class SkinnableBackGroundHelper(mView: View) : SkinnableHelper(mView) {
         if(checkResourceIdValid(backgroundTintId)){
             val backgroundTint = resourcesManager.getColorStateList(mView.context,backgroundTintId)
             mView.backgroundTintList = backgroundTint
+        }
+        if(checkResourceIdValid(foregroundId)){
+            val drawable = resourcesManager.getDrawable(context = mView.context,foregroundId)
+            mView.foreground = drawable
         }
     }
 }
