@@ -231,6 +231,9 @@ class MatchListPagerFragment :
         }
 
         homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
+            if (homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+                || homeViewModel.currentSportId != mViewModel.getSportId())
+                return@observeEvent
             refreshListByDate(date)
         }
     }

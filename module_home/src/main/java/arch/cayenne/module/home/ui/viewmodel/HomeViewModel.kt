@@ -30,7 +30,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -125,11 +127,23 @@ class HomeViewModel : BaseViewModel() {
                 }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeTenTournaments()
-                .combine(_currentPlayTypeId) { list, playTypeId ->
-                    list.filter { it.playTypeId == playTypeId }
-                }.combine(_currentSportId.filter { it != SportEnum.Default.id }) { list, sportId ->
-                    list.filter { it.sportId == sportId }
+            //當PlayType被觸發時，會等待Sport也被觸發再一起往下傳
+            val playTypeTrigger = _currentPlayTypeId.flatMapLatest { playTypeId ->
+                _currentSportId
+                    .filter { it != SportEnum.Default.id }
+                    .map { sportId -> Pair(playTypeId, sportId) }
+            }
+            //當Sport被觸發時，會直接往下傳送
+            val sportTrigger = _currentSportId
+                .filter { it != SportEnum.Default.id }
+                .map { sportId -> Pair(_currentPlayTypeId.value, sportId) }
+            //把上面兩個trigger merge起來，兩個觸發時可以重新拉取聯賽資料
+            merge(playTypeTrigger, sportTrigger)
+                .distinctUntilChanged()
+                .flatMapLatest { (playTypeId, sportId) ->
+                    repository.observeTenTournaments().map { list ->
+                        list.filter { it.playTypeId == playTypeId && it.sportId == sportId }
+                    }
                 }.map {
                     it.take(10)  //limit
                 }.distinctUntilChanged()
@@ -155,7 +169,7 @@ class HomeViewModel : BaseViewModel() {
                             setCurrentTournamentId(selectedTournament.id)
                         }
                     }
-            }
+                }
         }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeLanguageChange().collect {
