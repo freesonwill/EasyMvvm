@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableTabLayout : TabLayout {
-
     private val backgroundTintHelper = SkinnableBackGroundHelper(this)
     private val tabLayoutHelper = SkinnableTabLayoutHelper(this)
     private val TAG = SkinnableTabLayout::class.java.simpleName

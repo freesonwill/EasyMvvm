@@ -14,8 +14,6 @@ import org.koin.java.KoinJavaComponent.inject
 
 class SkinnableRecyclerView : RecyclerView {
     private val flowHelper = SkinnableViewFlowHelper()
-
-
     private val backgroundHelper = SkinnableBackGroundHelper(this)
 
     constructor(context: Context) : super(context){

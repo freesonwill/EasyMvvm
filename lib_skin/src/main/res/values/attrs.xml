@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SportBackgroundHelper">
+        <attr name="android:foreground"/>
         <attr name="android:background"/>
         <attr name="android:progressDrawable"/>
         <attr name="android:backgroundTint" format="color" />
-
     </declare-styleable>
 
     <declare-styleable name="SportImageView">
