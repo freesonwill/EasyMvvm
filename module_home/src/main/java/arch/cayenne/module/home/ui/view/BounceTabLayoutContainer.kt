@@ -18,13 +18,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     private val maxOverScroll by lazy { 60 * resources.displayMetrics.density } // 增加最大拉動距離到 80dp
     private val overScrollThreshold = 5f // 降低觸發回彈的閾值到 5dp，提高響應性
 
-    /**
-     * 是否啟用回彈效果，預設 true。外部可動態設置。
-     */
-    var enableBounce: Boolean = true
-
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (!enableBounce) return false
         val tabLayout = getChildAt(0) ?: return super.onInterceptTouchEvent(ev)
         when (ev.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
@@ -59,7 +53,6 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!enableBounce) return super.onTouchEvent(event)
         val tabLayout = getChildAt(0) ?: return super.onTouchEvent(event)
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
