@@ -97,10 +97,10 @@ class SocketClientService(
             override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                 super.onClosed(webSocket, code, reason)
                 "Socket Client -> ConnectClosed,code:$code,reason:$reason".loge(TAG)
+                workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
                 currentState = if (reason == SocketConnectState.None.name) {
                     SocketConnectState.None
                 } else {
-                    workingScope.launch { connectStateFlow.emit(ConnectState.ConnectClosed) }
                     SocketConnectState.Closed
                 }
 
