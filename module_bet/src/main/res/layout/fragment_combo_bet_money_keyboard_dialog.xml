@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_top_6dp"
                 android:gravity="center"
                 android:paddingVertical="12dp"
                 android:text="100"
@@ -149,7 +149,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_bottom_6dp"
                 android:gravity="center"
                 android:paddingVertical="12dp"
                 android:text="5000"
@@ -180,25 +180,26 @@
             <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
+                android:scaleType="center"
                 android:src="@drawable/icon_keyboard_back" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/btn_clear"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
                 android:text="@string/btn_clear"
                 android:textSize="12sp" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/btn_double"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
@@ -208,7 +209,7 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btn_confirm"
                 style="@style/ButtonStyle"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_rowWeight="1"

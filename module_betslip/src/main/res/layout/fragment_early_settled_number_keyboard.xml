@@ -117,7 +117,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_100"
                 style="@style/KeyboardSideTextView"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_top_6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -189,7 +189,7 @@
             <arch.cayenne.lib.skin.widget.SkinnableButton
                 android:id="@+id/btn_5000"
                 style="@style/KeyboardSideTextView"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_bottom_6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -227,25 +227,26 @@
             <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_back"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
+                android:scaleType="center"
                 android:src="@drawable/icon_keyboard_back" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/btn_clear"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
                 android:text="@string/keyboard_clear"
                 android:textSize="12sp" />
 
-            <arch.cayenne.lib.skin.widget.SkinnableButton
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/btn_double"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
@@ -255,11 +256,12 @@
             <arch.cayenne.lib.skin.widget.SkinnableImageButton
                 android:id="@+id/btn_collapse"
                 style="@style/NumberKeyboardButton"
-                android:foreground="@drawable/bg_click_mask"
+                android:foreground="@drawable/bg_click_mask_6dp"
                 android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:backgroundTint="@color/keyboard_1"
                 android:padding="10dp"
+                android:scaleType="center"
                 android:src="@drawable/icon_keyboard" />
 
         </GridLayout>
@@ -283,7 +285,7 @@
             android:layout_width="90dp"
             android:layout_height="48dp"
             android:background="@drawable/shape_green_stroke_8"
-            android:foreground="@drawable/bg_click_mask"
+            android:foreground="@drawable/bg_click_mask_8dp"
             android:gravity="center"
             android:paddingHorizontal="21dp"
             android:text="@string/cancel"
@@ -299,7 +301,7 @@
             android:layout_height="0dp"
             android:layout_marginStart="4dp"
             android:background="@drawable/selector_send_button"
-            android:foreground="@drawable/bg_click_mask"
+            android:foreground="@drawable/bg_click_mask_8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/btn_cancel"
