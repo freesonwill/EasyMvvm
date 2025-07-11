@@ -122,7 +122,7 @@ class LiveBetOnViewModel : BaseViewModel() {
     suspend fun setSelection(matchId: Long, selectionId: Long): AddSelectionStatus {
         val bean = repository.getSelectionInsertBean(matchId, selectionId)
         return if (bean == null) {
-            AddSelectionStatus.FAIL
+            AddSelectionStatus.Failure.Fail
         } else {
             betRepository.setSelection(bean)
         }

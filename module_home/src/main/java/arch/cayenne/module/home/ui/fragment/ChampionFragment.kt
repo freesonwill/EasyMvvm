@@ -65,11 +65,11 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
                         lifecycleScope.launch {
                             val status = mViewModel.setSelection(selection.selectionId)
-                            if (status == AddSelectionStatus.SINGLE) {
+                            if (status is AddSelectionStatus.Success.Single) {
                                 BetSheetFragment.newInstance().show(parentFragmentManager)
-                            } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY) {
+                            } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                                 showToast(getString(R.string.disabled_to_combo))
-                            } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER) {
+                            } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
                                 showToast(getString(R.string.disabled_to_combo_for_provider))
                             }
                         }

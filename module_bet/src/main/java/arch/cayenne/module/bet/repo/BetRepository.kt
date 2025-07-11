@@ -37,39 +37,54 @@ class BetRepository(
             val selections = betDao.getSelections(betId)
             val existing = selections.find { it.matchId == insertBean.matchId }
 
+            val liteBean = BetSelectionLiteBean(
+                matchId = insertBean.matchId,
+                selectionId = insertBean.selectionId
+            )
+
             if (existing?.selectionId == insertBean.selectionId) {
                 betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
                 checkBetBeanType(betId)
-                return@withContext AddSelectionStatus.REMOVE
+                return@withContext AddSelectionStatus.Failure.Remove(liteBean)
             }
 
             if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
-                return@withContext AddSelectionStatus.MAX_LIMIT
+                return@withContext AddSelectionStatus.Failure.MaxLimit
             }
 
 
             if (existing == null) {
                 if (!insertBean.isParlay && selections.isNotEmpty()) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
                 } else if (selections.isNotEmpty() && insertBean.provider != selections.first().provider) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
+                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
                 }
 
                 val newBean = insertBean.toBetSelectionBean(betId)
                 betDao.insertSelection(newBean)
                 checkBetBeanType(betId)
-                return@withContext if (selections.isEmpty()) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
+                return@withContext if (selections.isEmpty()) {
+                    AddSelectionStatus.Success.Single(liteBean)
+                } else {
+                    AddSelectionStatus.Success.Combo(liteBean)
+                }
             } else {
                 if (!insertBean.isParlay) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
                 } else if (insertBean.provider != existing.provider) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
+                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
                 }
                 val newBean = insertBean.toBetSelectionBean(betId)
                 betDao.updateSelection(newBean)
 
                 checkBetBeanType(betId)
-                return@withContext AddSelectionStatus.UPDATE
+                return@withContext AddSelectionStatus.Success.Update(
+                    lastSelectBean = BetSelectionLiteBean(
+                        matchId = existing.matchId,
+                        selectionId = existing.selectionId
+                    ),
+                    liteBean
+                )
             }
         }
 
