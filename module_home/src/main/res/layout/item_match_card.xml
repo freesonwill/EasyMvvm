@@ -240,10 +240,16 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_live"
+            android:id="@+id/iv_live_animation"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:src="@drawable/ic_live_video" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="@dimen/dp_16" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_live_video"
+            android:layout_width="20dp"
+            android:layout_height="20dp" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_watch_count"

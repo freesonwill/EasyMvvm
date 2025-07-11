@@ -71,6 +71,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                     clockModified = match.basicInfo.liveInfo.clockModified,
                     homeScore = match.basicInfo.liveInfo.homeScore,
                     awayScore = match.basicInfo.liveInfo.awayScore,
+                    liveAnimation = match.basicInfo.liveInfo.animationLiveUrl
                 )
             )
         )
@@ -154,6 +155,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                     clockModified = matchNotify.basicUpdate.liveInfo.clockModified,
                     homeScore = matchNotify.basicUpdate.liveInfo.homeScore,
                     awayScore = matchNotify.basicUpdate.liveInfo.awayScore,
+                    liveAnimation = matchNotify.basicUpdate.liveInfo.animationLiveUrl
                 )
             } else { null }
             matchLites.add(
@@ -242,6 +244,7 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
                 clockModified = this.basicUpdate.liveInfo.clockModified,
                 homeScore = this.basicUpdate.liveInfo.homeScore,
                 awayScore = this.basicUpdate.liveInfo.awayScore,
+                liveAnimation = this.basicUpdate.liveInfo.animationLiveUrl
             )
         )
     )
@@ -365,6 +368,7 @@ fun List<Common.Match>.toMatchWithMarket(): List<MatchWithMarkets> {
                         clockModified = originMatch.basicInfo.liveInfo.clockModified,
                         homeScore = originMatch.basicInfo.liveInfo.homeScore,
                         awayScore = originMatch.basicInfo.liveInfo.awayScore,
+                        liveAnimation = originMatch.basicInfo.liveInfo.animationLiveUrl
                     )
                 ),
                 markets = markets

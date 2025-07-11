@@ -107,6 +107,7 @@ data class MatchLiveInfoBean(
     val clockModified: Long,//走表修改时间
     val homeScore: Int,
     val awayScore: Int,
+    val liveAnimation: String //動畫源, 會回傳url
 )
 
 data class MarketDetailBean(

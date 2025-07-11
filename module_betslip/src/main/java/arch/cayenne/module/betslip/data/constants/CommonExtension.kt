@@ -121,7 +121,8 @@ object CommonExtension {
             viewerCount = viewerCount,
             clockModified = clockModified,
             homeScore = homeScore,
-            awayScore = awayScore
+            awayScore = awayScore,
+            liveAnimation = animationLiveUrl
         )
     }
 }
