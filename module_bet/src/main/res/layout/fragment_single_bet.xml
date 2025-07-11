@@ -348,7 +348,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageButton
                     android:id="@+id/btn_back"
                     style="@style/NumberKeyboardButton"
-                    android:foreground="@drawable/bg_click_mask_6dp"
+                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:layout_marginBottom="2dp"
                     android:backgroundTint="@color/keyboard_1"
                     android:scaleType="center"
@@ -357,7 +357,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/btn_clear"
                     style="@style/NumberKeyboardButton"
-                    android:foreground="@drawable/bg_click_mask_6dp"
+                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:backgroundTint="@color/keyboard_1"
@@ -367,7 +367,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableTextView
                     android:id="@+id/btn_double"
                     style="@style/NumberKeyboardButton"
-                    android:foreground="@drawable/bg_click_mask_6dp"
+                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:backgroundTint="@color/keyboard_1"
@@ -377,7 +377,7 @@
                 <arch.cayenne.lib.skin.widget.SkinnableImageButton
                     android:id="@+id/btn_collapse"
                     style="@style/NumberKeyboardButton"
-                    android:foreground="@drawable/bg_click_mask_6dp"
+                    android:foreground="@drawable/bg_click_mask_6dp_white_blue"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="2dp"
                     android:backgroundTint="@color/keyboard_1"
