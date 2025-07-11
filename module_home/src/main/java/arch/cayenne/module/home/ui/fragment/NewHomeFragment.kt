@@ -524,9 +524,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    // 換頁前禁用回彈
-                    (tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer)?.enableBounce =
-                        false
                     viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab?.position ?: 0,
                         viewPager = mBinding.layoutContainer.vpGameList,
@@ -539,47 +536,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tournaments.getOrNull(selectedIndex)?.id?.apply {
                         mViewModel.setCurrentTournamentId(this)
                     }
-
-                    // 延遲重新啟用回彈效果，確保 ViewPager 動畫完成
-                    tlLeagueList.postDelayed({
-                        (tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer)?.enableBounce =
-                            true
-                    }, 300) // 300ms 後重新啟用回彈
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
-            // 註冊 ViewPager2 換頁狀態監聽，換頁期間禁用回彈，換頁完成後啟用回彈
-            vpGameList.registerOnPageChangeCallback(object :
-                androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback() {
-                override fun onPageScrollStateChanged(state: Int) {
-                    val bounceContainer =
-                        tlLeagueList.parent as? arch.cayenne.module.home.ui.view.BounceTabLayoutContainer
-                    when (state) {
-                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_DRAGGING -> {
-                            // 只在用戶拖拽時禁用回彈
-                            bounceContainer?.enableBounce = false
-                        }
-                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_SETTLING -> {
-                            // 在設置過程中保持禁用
-                            bounceContainer?.enableBounce = false
-                        }
-                        androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE -> {
-                            // 延遲重新啟用回彈，確保動畫完全結束
-                            vpGameList.postDelayed({
-                                bounceContainer?.enableBounce = true
-                            }, 100)
-                        }
-                    }
-                }
-            })
-            // 註冊 TabLayout scroll end more監聽與初始化動畫
-            tlLeagueList.setupEndTabMoreAnimation(
-                mBinding.ivTournamentMore,
-                mBinding.llHomeTournamentMore,
-                triggerRatio = 0.8f
-            )
+
         }
     }
 
