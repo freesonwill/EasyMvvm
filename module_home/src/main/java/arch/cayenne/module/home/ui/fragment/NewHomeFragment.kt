@@ -24,6 +24,8 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
@@ -175,9 +177,19 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 showHomeCalendar(tabSelectedDate)
             }
+
+            // 初始化 TabLayout end more跟手動畫
+            tlLeagueList.setupEndTabMoreAnimation(
+                mBinding.ivTournamentMore,
+                mBinding.llHomeTournamentMore,
+                triggerRatio = 0.8f
+            )
         }
 
-        mBinding.ivHomeLeagueMore.clickNoRepeat {
+        mBinding.ivTournamentMore.clickNoRepeat {
+            toggleTournamentMoreSection(true, TournamentListType.MORE)
+        }
+        mBinding.llHomeTournamentMore.clickNoRepeat {
             toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
     }
@@ -267,7 +279,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             //TODO 把進出的anim優化
             container.postDelayed({
-                mBinding.ivHomeLeagueMore.visibility = View.VISIBLE
+                mBinding.ivTournamentMore.visibility = View.VISIBLE
                 container.visibility = View.GONE
             }, delay)
         }
@@ -457,10 +469,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
-                        layoutParams = LinearLayout.LayoutParams(56.dp2px, 50.dp2px).apply {
-                            setMargins(4.dp2px, 0, 0, 0)
-                        }
-                        setPadding(0, 0, 0, 0)
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
                         isSelected = false
                     }
@@ -507,6 +515,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { it.attach() }
+
+            // 使用 reflexMargin 擴展方法設置更小的 tab 間距
+            tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
+            
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
@@ -529,6 +541,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 override fun onTabUnselected(tab: TabLayout.Tab?) {}
                 override fun onTabReselected(tab: TabLayout.Tab?) {}
             })
+
         }
     }
 
