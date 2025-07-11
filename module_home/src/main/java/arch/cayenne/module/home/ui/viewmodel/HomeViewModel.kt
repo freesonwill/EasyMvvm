@@ -89,8 +89,6 @@ class HomeViewModel : BaseViewModel() {
     private val _timer = MutableLiveData<Event<Long>>()
     val timer: LiveData<Event<Long>> = _timer
 
-    private val _isHomeLoading = MutableLiveData(false)
-    val isHomeLoading: MutableLiveData<Boolean> get() = _isHomeLoading
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
@@ -162,10 +160,6 @@ class HomeViewModel : BaseViewModel() {
                 resetAll()
             }
         }
-    }
-
-    fun setIsHomeLoading(isLoading: Boolean) {
-        _isHomeLoading.value = isLoading
     }
 
     fun requestCollapseTournamentDropdown() {

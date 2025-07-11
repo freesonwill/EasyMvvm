@@ -52,7 +52,6 @@ class MatchListPagerFragment :
             refreshLayout.setEnableLoadMore(true)
             refreshLayout.setEnableScrollContentWhenLoaded(true)
             refreshLayout.setOnRefreshListener {
-                mViewModel.setHomeOrPullLoadingState(true)
                 mViewModel.reload()
             }
             refreshLayout.setOnLoadMoreListener {
@@ -181,51 +180,45 @@ class MatchListPagerFragment :
         }
         mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)
 
-        homeViewModel.isHomeLoading.observe(viewLifecycleOwner) {
-            mViewModel.setHomeOrPullLoadingState(it)
-        }
-
         mViewModel.state.observeEvent(viewLifecycleOwner, this) {state ->
             with(mBinding) {
                 when(state) {
-                    MatchListState.FIRST_LOADING -> {
+                    MatchListState.FIRST_LOADING_API -> {
+                        lvMatchLoading.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(true)
                         homeViewModel.changeState(HomeState.Match.Loading)
                     }
                     MatchListState.REFRESHING -> {
-                        mViewModel.showLoading()
                         clDynamics.visibility = View.GONE
-                        mViewModel.setHomeOrPullLoadingState(false)
+                        refreshLayout.setEnableLoadMore(true)
                     }
                     MatchListState.IDLE -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
                         clDynamics.visibility = View.GONE
-                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.FAILED -> {
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
                         homeViewModel.changeState(HomeState.Match.LoadSuccess)
-                        homeViewModel.setIsHomeLoading(false)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE
                     }
                     MatchListState.NO_MORE_DATA -> {
                         refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
                     }
-
-                    MatchListState.SHOW_LOADING -> {
-                        lvMatchLoading.visibility = View.VISIBLE
-                    }
+                    else -> Unit
                 }
             }
         }
