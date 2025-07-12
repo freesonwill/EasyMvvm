@@ -30,7 +30,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -123,11 +125,23 @@ class HomeViewModel : BaseViewModel() {
                 }
         }
         viewModelScope.launch(Dispatchers.IO) {
-            repository.observeTenTournaments()
-                .combine(_currentPlayTypeId) { list, playTypeId ->
-                    list.filter { it.playTypeId == playTypeId }
-                }.combine(_currentSportId.filter { it != SportEnum.Default.id }) { list, sportId ->
-                    list.filter { it.sportId == sportId }
+            //當PlayType被觸發時，會等待Sport也被觸發再一起往下傳
+            val playTypeTrigger = _currentPlayTypeId.flatMapLatest { playTypeId ->
+                _currentSportId
+                    .filter { it != SportEnum.Default.id }
+                    .map { sportId -> Pair(playTypeId, sportId) }
+            }
+            //當Sport被觸發時，會直接往下傳送
+            val sportTrigger = _currentSportId
+                .filter { it != SportEnum.Default.id }
+                .map { sportId -> Pair(_currentPlayTypeId.value, sportId) }
+            //把上面兩個trigger merge起來，兩個觸發時可以重新拉取聯賽資料
+            merge(playTypeTrigger, sportTrigger)
+                .distinctUntilChanged()
+                .flatMapLatest { (playTypeId, sportId) ->
+                    repository.observeTenTournaments().map { list ->
+                        list.filter { it.playTypeId == playTypeId && it.sportId == sportId }
+                    }
                 }.map {
                     it.take(10)  //limit
                 }.distinctUntilChanged()
@@ -153,7 +167,7 @@ class HomeViewModel : BaseViewModel() {
                             setCurrentTournamentId(selectedTournament.id)
                         }
                     }
-            }
+                }
         }
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeLanguageChange().collect {
@@ -255,6 +269,7 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
+        setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
         getCurrentTournament()
     }
 
@@ -263,13 +278,6 @@ class HomeViewModel : BaseViewModel() {
         _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedTournamentId(currentPlayTypeId, tournamentId)
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
-            launch(Dispatchers.Main) {
-                setSelectedDate(date)
-            }
         }
     }
 
@@ -284,8 +292,16 @@ class HomeViewModel : BaseViewModel() {
         })
     }
 
-    suspend fun setSelectedDate(date: Long) {
+    private fun setCurrentSelectedDate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val date = repository.getCurrentSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId) ?: 0L
+            launch(Dispatchers.Main) {
+                selectedDate(date)
+            }
+        }
+    }
 
+    suspend fun selectedDate(date: Long) {
         if (_selectedDate.value?.peekContent() == date) return
         withContext(Dispatchers.IO) {
             repository.updateSelectedDate(currentPlayTypeId.playTypeToShowType(), currentSportId, date)
