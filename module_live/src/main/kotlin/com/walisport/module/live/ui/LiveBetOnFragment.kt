@@ -1,9 +1,12 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -27,6 +30,7 @@ import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 //投注
@@ -42,7 +46,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var mBeforePosition: Int? = null
     private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
-
+    private lateinit var viewPager2: ViewPager2
+    private var startX = 0f
+    private var startY = 0f
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
         mBinding.clDynamics.setState(States.LOADING, "")
@@ -86,7 +92,54 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+        // 获取 ViewPager2
+        viewPager2 = requireActivity().findViewById(R.id.vp_page)
+
+        // 设置 ViewPager2 的触摸监听
+        viewPager2.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val endX = event.x
+                    val endY = event.y
+                    val distanceX = abs(endX - startX)
+                    val distanceY = abs(endY - startY)
+                    // 如果垂直滑动距离大于水平滑动距离，禁用 ViewPager2 滑动
+                    if (distanceY > distanceX) {
+                        viewPager2.isUserInputEnabled = false
+                    } else {
+                        viewPager2.isUserInputEnabled = true
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    // 恢复 ViewPager2 的滑动
+                    viewPager2.isUserInputEnabled = true
+                }
+            }
+            false // 让事件继续传递给 RecyclerView
+        }
+
+        // 监听 RecyclerView 滑动状态
+        mBinding.rvBetList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 当 RecyclerView 滑动时禁用 ViewPager2，停止时启用
+                viewPager2.isUserInputEnabled = newState == RecyclerView.SCROLL_STATE_IDLE
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 滑动到底部时禁用 ViewPager2
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewPager2.isUserInputEnabled = false
+                }
+            }
+        })
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 isTabClicked = true
