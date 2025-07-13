@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -33,7 +32,6 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
-import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
@@ -215,6 +213,7 @@ class LiveVideoPlayerFragment :
                         onDataSourceEmpty()
                     } else {
                         mBinding.ivChooseSource.isEnabled = true
+                        mBinding.ivToFullscreen.isEnabled = true
                         val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
@@ -291,7 +290,6 @@ class LiveVideoPlayerFragment :
 
         mViewModel.createObserver()
     }
-
 
 
     override fun onPause() {
@@ -456,6 +454,7 @@ class LiveVideoPlayerFragment :
         mBinding.ctError.visibility = VISIBLE
         mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
         mBinding.ivChooseSource.isEnabled = false
+        mBinding.ivToFullscreen.isEnabled = false
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
