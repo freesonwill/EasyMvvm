@@ -33,6 +33,9 @@ class LiveVideoRepository(
     fun observeMatchBean(observeMatchId: Long) =
         liveMatchDao.observeMatchById(observeMatchId).flowOn(Dispatchers.IO)
 
+    fun observeAnimationLiveUrl(observeMatchId: Long) =
+        liveMatchDao.observeAnimationLiveUrl(observeMatchId).flowOn(Dispatchers.IO)
+
     fun setPlayingVideoId(id: Int) {
         scope.launch {
 

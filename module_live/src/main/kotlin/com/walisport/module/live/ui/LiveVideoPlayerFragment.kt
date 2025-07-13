@@ -282,6 +282,10 @@ class LiveVideoPlayerFragment :
                 onPlayerStateReceived(it)
             }
 
+            animationLiveUrl.observe(viewLifecycleOwner) {
+                mBinding.ivAnimationEntry.isEnabled = !it.isNullOrBlank()
+            }
+
         }
 
 
