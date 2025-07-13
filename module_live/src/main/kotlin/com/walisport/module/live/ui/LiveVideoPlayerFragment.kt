@@ -214,6 +214,7 @@ class LiveVideoPlayerFragment :
                     if (it.source.isEmpty()) {
                         onDataSourceEmpty()
                     } else {
+                        mBinding.ivChooseSource.isEnabled = true
                         val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
@@ -454,6 +455,7 @@ class LiveVideoPlayerFragment :
         mBinding.ctLoading.visibility = GONE
         mBinding.ctError.visibility = VISIBLE
         mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
+        mBinding.ivChooseSource.isEnabled = false
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
