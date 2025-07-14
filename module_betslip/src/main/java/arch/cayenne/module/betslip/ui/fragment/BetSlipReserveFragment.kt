@@ -27,7 +27,21 @@ class BetSlipReserveFragment :
         FragmentLiveBetslipReserveBinding::class
     override val vmClass: KClass<ReserveSlipViewModel> = ReserveSlipViewModel::class
     override val betSlipAdapter: BetSlipReserveAdapter by lazy {
-        BetSlipReserveAdapter()
+        BetSlipReserveAdapter(object : RecyclerItemListener<BetSlipReserveBean> {
+            override fun onItemClick(item: BetSlipReserveBean?, position: Int) {
+                item?.let { cancelReserve(it) }
+            }
+        }, object : BetSlipReserveAdapter.BetSlipReserveListener {
+            override fun onModifyReserveClick(
+                locationX: Int,
+                locationY: Int,
+                viewHeight: Int,
+                position: Int
+            ) {
+                val bean = betSlipAdapter.currentList[position] as BetSlipReserveBean
+                modifyReserve(bean)
+            }
+        })
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -36,20 +50,11 @@ class BetSlipReserveFragment :
     }
 
     private fun initRecycler() {
-        betSlipAdapter.setCancelReserveListener(object : RecyclerItemListener<BetSlipReserveBean> {
-            override fun onItemClick(item: BetSlipReserveBean?, position: Int) {
-                item?.let { cancelReserve(it) }
-            }
-        })
-        betSlipAdapter.setModifyReserveListener(object : RecyclerItemListener<BetSlipReserveBean> {
-            override fun onItemClick(item: BetSlipReserveBean?, position: Int) {
-                item?.let { modifyReserve(it) }
-            }
-        })
         betSlipAdapter.setLiveListener(object : BetSlipAdapter.BetSlipLiveListener {
             override fun isShowLiveButton(): Boolean {
                 return settingViewModel.isBetSlipDetail
             }
+
             override fun onLiveButtonClick(data: BetSlipSelectionData) {
                 if (data is ReserveOrderSelectionBean) {
                     val matchId = data.matchBasic.matchId
@@ -65,6 +70,7 @@ class BetSlipReserveFragment :
             it.betSlipInit()
         }
     }
+
     private fun initLoadRefresh() {
         mBinding.refreshLayout.also {
             it.setOnRefreshListener {
@@ -75,7 +81,6 @@ class BetSlipReserveFragment :
             }
         }
     }
-
 
 
     override fun initListener() {

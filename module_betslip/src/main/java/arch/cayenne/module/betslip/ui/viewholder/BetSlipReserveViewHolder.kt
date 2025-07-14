@@ -9,20 +9,31 @@ import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipReserveBinding
+import arch.cayenne.module.betslip.ui.adapter.BetSlipReserveAdapter
 import arch.cayenne.module.betslip.utisl.BetSlipUtils
 
 class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
     BaseBetSlipViewHolder<AdapterLiveBetSlipReserveBinding>(binding, betSlipType) {
     private var cancelReserveSubmitListener: RecyclerItemListener<String>? = null
-    private var reserveModifySubmitListener: RecyclerItemListener<String>? = null
+    private var reserveModifySubmitListener: BetSlipReserveAdapter.BetSlipReserveListener? = null
 
     override fun createViewHolder() {
         initItemView(mBinding.recyclerSelection)
         mBinding.betReserveBtCancel.clickNoRepeat {
             cancelReserveSubmitListener?.onItemClick("", adapterPosition)
         }
-        mBinding.betReserveBtModify.clickNoRepeat {
-            reserveModifySubmitListener?.onItemClick("", adapterPosition)
+        mBinding.betReserveBtModify.clickNoRepeat { view ->
+            reserveModifySubmitListener?.let {
+                val location = IntArray(2)
+                view.getLocationInWindow(location)
+                reserveModifySubmitListener?.onModifyReserveClick(
+                    location.first() + view.width / 2,
+                    location.last(),
+                    view.height,
+                    adapterPosition
+                )
+            }
+
         }
     }
 
@@ -37,7 +48,7 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         cancelReserveSubmitListener = listener
     }
 
-    fun setReserveModifySubmitListener(listener: RecyclerItemListener<String>) {
+    fun setReserveModifySubmitListener(listener: BetSlipReserveAdapter.BetSlipReserveListener) {
         reserveModifySubmitListener = listener
     }
 

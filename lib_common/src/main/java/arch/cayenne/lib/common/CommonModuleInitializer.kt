@@ -8,6 +8,7 @@ import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
+import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -31,6 +32,8 @@ class CommonModuleInitializer : DefaultInitializer<String> {
         factoryOf(::BalanceRepository)
         single { UserDataManager() }
         viewModel { ConnectFailedViewModel() }
+        factoryOf(::ReserveDialogViewModel)
+
     })
 
     /**

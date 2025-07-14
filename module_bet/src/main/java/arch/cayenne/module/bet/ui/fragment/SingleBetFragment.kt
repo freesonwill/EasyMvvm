@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -100,12 +101,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
                 childFragmentManager.setFragmentResultListener(
-                    KEY_RESULT,
+                    ReserveDialogFragment.KEY_RESULT,
                     viewLifecycleOwner
                 ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                    if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        val odds = bundle.getInt(KEY_ODDS_RESULT)
+                    childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
+                    if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
+                        val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
                         mViewModel.saveToReserve(odds)
                     }
                 }

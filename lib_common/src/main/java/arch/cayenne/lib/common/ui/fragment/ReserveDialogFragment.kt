@@ -1,4 +1,4 @@
-package arch.cayenne.module.bet.ui.fragment
+package arch.cayenne.lib.common.ui.fragment
 
 import android.app.Dialog
 import android.graphics.Color
@@ -11,16 +11,13 @@ import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
-import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
-import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
-import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
+import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -29,6 +26,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         private const val LOCATION_Y = "locationY"
         private const val VIEW_HEIGHT = "viewHeight"
         private const val ODDS_NUMBER = "oddsNumber"
+        const val KEY_RESULT = "key_result"
+        const val VALUE_RESERVE_COMPLETE = "value_reserve_complete"
+        const val KEY_ODDS_RESULT = "key_odds_result"
 
         fun newInstance(positionX: Int, positionY: Int, viewHeight: Int, odds: Int): ReserveDialogFragment {
             val b = Bundle()
