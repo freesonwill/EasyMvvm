@@ -1,6 +1,5 @@
 package com.walisport.module.setting.ui.viewmodel
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,7 +8,7 @@ import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.data.constants.SkinType
 import arch.cayenne.lib.skin.LanguageManager
 import arch.cayenne.lib.skin.SkinnableManager
-import com.walisport.module.setting.data.OddsDisplayEnum
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import com.walisport.module.setting.data.SettingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.onStart

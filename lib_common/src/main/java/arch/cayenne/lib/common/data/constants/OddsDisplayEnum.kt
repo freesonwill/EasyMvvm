@@ -1,4 +1,4 @@
-package com.walisport.module.setting.data
+package arch.cayenne.lib.common.data.constants
 
 enum class OddsDisplayEnum(val value: Int) {
     EU(0),

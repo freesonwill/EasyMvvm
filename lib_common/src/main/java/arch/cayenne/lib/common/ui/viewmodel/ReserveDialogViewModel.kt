@@ -4,6 +4,10 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 
 class ReserveDialogViewModel : NumberCalculatorViewModel() {
 
+    init {
+
+    }
+
     val minOdds = 1
 
     fun init(odds: Int) {
