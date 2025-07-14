@@ -47,16 +47,10 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
     responseCode: ChatResponseCode
 ): Flow<ChatResponseData<T>> = getSocketFlow()
     .filterIsInstance<SocketOriginResponseData>()
-    .filter {
-//        "it mid ${it.mid} ${responseCode.mid}  sid ${it.sid} ${responseCode.sid}  ${String(it.originProto ?: byteArrayOf())}".logd(ChatWebSocketManager::class.java.simpleName)
-        it.mid == responseCode.mid && it.sid == responseCode.sid }
+    .filter { it.mid == responseCode.mid && it.sid == responseCode.sid }
     .map {
-//        "chat map".logi(ChatWebSocketManager::class.java.simpleName)
         try {
-            val bean = it.originProto?.let { byteArray ->
-                Gson().fromJson(String(byteArray), T::class.java)
-            }
-//            "string to json bean success sid -> ${it.sid}".logi(ChatWebSocketManager::class.java.simpleName)
+            val bean = it.originProto?.let { byteArray -> Gson().fromJson(String(byteArray), T::class.java) }
             return@map ChatResponseData(
                 mid = it.mid,
                 sid = it.sid,
@@ -74,6 +68,35 @@ inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveProtoMessage(
             )
         }
     }
+
+/**
+ * 单独处理消息监听
+ * */
+inline fun <reified T : IResponse> ChatWebSocketManager.chatObserveMessage(): Flow<ChatResponseData<T>> = getMessageFlow()
+    .filterIsInstance<SocketOriginResponseData>()
+    .filter { it.mid == ChatResponseCode.MSG_NOTIFY.mid && it.sid == ChatResponseCode.MSG_NOTIFY.sid }
+    .map {
+        try {
+            val bean = it.originProto?.let { byteArray -> Gson().fromJson(String(byteArray), T::class.java) }
+            return@map ChatResponseData(
+                mid = it.mid,
+                sid = it.sid,
+                rid = it.rid,
+                data = bean,
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return@map ChatResponseData(
+                mid = it.mid,
+                sid = it.sid,
+                rid = it.rid,
+                data = null,
+                error = InvalidProtoTypeResponseError()
+            )
+        }
+    }
+
+
 
 suspend inline fun <reified T : IResponse> ChatWebSocketManager.chatSendAndWaitProtoMessageResponse(
     apiCode: ApiCode,

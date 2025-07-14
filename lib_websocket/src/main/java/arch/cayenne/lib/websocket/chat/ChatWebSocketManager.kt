@@ -161,4 +161,5 @@ class ChatWebSocketManager(
     fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
     fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
     fun getSocketConnectStateFlow(): StateFlow<SocketConnectState> = socket.socketConnectStateFlow()
+    fun getMessageFlow():Flow<IResponse> = socket.messageFlow()
 }

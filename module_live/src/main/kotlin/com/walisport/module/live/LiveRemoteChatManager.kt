@@ -17,16 +17,19 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryRequest
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
-import arch.cayenne.lib.websocket.chat.extension.chatObserveProtoMessage
+import arch.cayenne.lib.websocket.chat.extension.chatObserveMessage
 import arch.cayenne.lib.websocket.chat.extension.chatSendAndWaitProtoMessageResponse
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.transform
 
 class LiveRemoteChatManager(
@@ -54,14 +57,14 @@ class LiveRemoteChatManager(
      * 聊天登陆
      * */
     suspend fun login(): ChatLoginResponseData? {
-        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
-        val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
+//        val uid = userDataManager.getValue(UserDataKey.KEY_UID, -1)
+//        val token = userDataManager.getValue(UserDataKey.KEY_TOKEN, "")
         
 //        val uid = 55469011
 //        val token = "NTU0NjkwMTFfMTc0OTI4MDM1NTA0OTpTakJVNGZXSGlOMWx0dTNL" //虚拟机
 
-//        val uid = 55469012
-//        val token = "NTU0NjkwMTJfMTc0OTI4MDMzNDY2ODpJeXE5NkJDaUl5OW9XWEVv" //真机
+        val uid = 55469012
+        val token = "NTU0NjkwMTJfMTc0OTI4MDMzNDY2ODpJeXE5NkJDaUl5OW9XWEVv" //真机
 
         val logResp = socketManager.chatSendAndWaitProtoMessageResponse<ChatLoginResponseData>(
             ApiCode.CHAT_LOGIN,
@@ -138,8 +141,10 @@ class LiveRemoteChatManager(
     /**
      * 监听消息
      * */
+    @OptIn(FlowPreview::class)
     suspend fun msgNotify(): Flow<MsgNotify> {
-        return socketManager.chatObserveProtoMessage<MsgNotify>(ChatResponseCode.MSG_NOTIFY)
+        return socketManager.chatObserveMessage<MsgNotify>()
+            .debounce(100L)//100ms内只处理最后一条消息
             .transform {
                 if (it.error == null && it.data != null) {
                     "msgNotify  result ${Gson().toJson(it.data)}".logd(TAG)
