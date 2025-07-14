@@ -90,11 +90,11 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1MTM1NTAxMDI3MDppUjNheWVyczZ4S3dyVEFX"),
-            Pair(55468823, "NTU0Njg4MjNfMTc1MTM1NDk3MzM3MTpsMEZTMTNoUzNONTJDRTIz"),
-            Pair(55468824, "NTU0Njg4MjRfMTc1MTM1NDkzNzg0NTpUZ3BsZGF6dXhHSGJYQUZo"),
-            Pair(55468825, "NTU0Njg4MjVfMTc1MTM1NDg2NjEyMDoyZzh0Tk52eXF4VGxMZlA5"),
-            Pair(55468826, "NTU0Njg4MjZfMTc1MTM1NDgxMzUwMjoyNVJHMnVObXVhNnk5NnpC")
+            Pair(55468822, "NTU0Njg4MjJfMTc1MjQ4MDA0NzA1OTphTGltSDFDNTlQd0pXWVhv"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1MjQ4MDA4NDAxNDp0dmRDSjRMS3g5U1NONlE0"),
+            Pair(55468824, "NTU0Njg4MjRfMTc1MjQ4MDExMzYzOToyQVpMdXNmS093SmpoRlU3"),
+            Pair(55468825, "NTU0Njg4MjVfMTc1MjQ4MDE1MDQ3MjpCYkVSbGx0RDNZSkU5a3Rh"),
+            Pair(55468826, "NTU0Njg4MjZfMTc1MjQ4MDE3NjM0ODpZdUxHa050cjZESllQNloy")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")
