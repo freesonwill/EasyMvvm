@@ -121,7 +121,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
         val bean = repository.getSelectionInsertBean(selectionId)
         return if (bean == null) {
-            AddSelectionStatus.FAIL
+            AddSelectionStatus.Failure.Fail
         } else {
             betRepository.setSelection(bean)
         }
