@@ -21,6 +21,7 @@ import kotlin.reflect.KClass
 import android.content.DialogInterface
 import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
@@ -29,14 +30,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         private const val POSITION_Y = "positionY"
         private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int?, positionY: Int?, odds: Int): ReserveDialogFragment {
+        fun newInstance(positionX: Int, positionY: Int, odds: Int): ReserveDialogFragment {
             val b = Bundle()
-            positionX?.let {
-                b.putInt(POSITION_X, it)
-            }
-            positionY?.let {
-                b.putInt(POSITION_Y, it)
-            }
+            b.putInt(POSITION_X, positionX)
+            b.putInt(POSITION_Y, positionY)
             b.putInt(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
@@ -82,8 +79,16 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
                 val popWidth = pop.measuredWidth
+                val popHeight = pop.measuredHeight
 
-                val triangle = mBinding.triangle
+                val metrics = requireContext().resources.displayMetrics
+                val usableHeight = metrics.heightPixels
+                val isFull = positionY + popHeight > usableHeight
+
+                mBinding.topTriangle.isVisible = !isFull
+                mBinding.bottomTriangle.isVisible = isFull
+
+                val triangle = if (isFull) mBinding.bottomTriangle else mBinding.topTriangle
                 triangle.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -92,12 +97,12 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val triangleWidth = triangle.measuredWidth
                 val triangleHeight = triangle.measuredHeight
 
-                val endMargin = (mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
+                val endMargin = (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
 
                 val px = popWidth - (endMargin + triangleWidth / 2)
 
                 layoutParams.x = positionX - px
-                layoutParams.y = positionY - triangleHeight
+                layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight
 
                 it.attributes = layoutParams
 
@@ -105,7 +110,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     override fun onGlobalLayout() {
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         // 動畫初始狀態
-                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
+                        mBinding.root.pivotX = triangle.x + triangle.width / 2
                         mBinding.root.pivotY = 0f
                         mBinding.root.scaleX = 0f
                         mBinding.root.scaleY = 0f
@@ -179,6 +184,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     override fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
+            mBinding.btnConfirm.isEnabled = it.toOdds() > 0
             val text = "@$it"
             mBinding.etRate.setText(text)
             val length = text.length

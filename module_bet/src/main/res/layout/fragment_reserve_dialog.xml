@@ -6,7 +6,7 @@
     android:background="@android:color/transparent">
 
     <arch.cayenne.lib.skin.widget.SkinnableView
-        android:id="@+id/triangle"
+        android:id="@+id/top_triangle"
         android:layout_width="32dp"
         android:layout_height="10dp"
         android:layout_marginEnd="14dp"
@@ -22,10 +22,10 @@
         android:background="@drawable/shape_12dp"
         android:backgroundTint="@color/keyboard_3"
         android:padding="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/bottom_triangle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/triangle">
+        app:layout_constraintTop_toBottomOf="@id/top_triangle">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:layout_width="0dp"
@@ -111,5 +111,16 @@
         </GridLayout>
 
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+    <arch.cayenne.lib.skin.widget.SkinnableView
+        android:id="@+id/bottom_triangle"
+        android:layout_width="32dp"
+        android:layout_height="10dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        android:background="@drawable/bg_triangle_down"
+        app:layout_constraintTop_toBottomOf="@id/cl_calculator"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
