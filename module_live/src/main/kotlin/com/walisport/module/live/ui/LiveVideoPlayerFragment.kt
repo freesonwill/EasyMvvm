@@ -17,7 +17,6 @@ import androidx.constraintlayout.widget.ConstraintLayout.VISIBLE
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.ViewUtils.getStatusBarHeight
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -33,7 +32,6 @@ import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion
 import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveVideoPlayerBinding
 import com.walisport.module.live.ui.video.PlayerViewCache
-import com.walisport.module.live.ui.viewmodel.LiveBetOnMenuViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
@@ -125,7 +123,7 @@ class LiveVideoPlayerFragment :
             LivePlayerView(requireActivity()).apply {
                 init(PlayerMode.FLUENCY)
                 keepScreenOn = true
-                setConfig(GlobalConfig(requireContext()).also {
+                setConfig(GlobalConfig().also {
                     if (!it.inited) {
                         // 首次启动从本地播放器获取默认配置
                         it.transformFromPlayerConfig(this.getConfig())
