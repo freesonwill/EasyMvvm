@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
 import androidx.lifecycle.lifecycleScope
@@ -366,6 +365,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
                 for (i in 0 until tabStrip.childCount) {
                     tabStrip.getChildAt(i).apply {
+                        val params = layoutParams as LinearLayout.LayoutParams
+                        params.width = 56.dp2px
+                        params.height = 50.dp2px
+                        params.marginStart = 5.dp2px
+                        layoutParams = params
                         setBackgroundResource(R.drawable.selector_date_tab_bg)
                         isSelected = false
                     }
@@ -377,7 +381,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private fun createDateTab(date: String?, weekday: String?): TabLayout.Tab {
         val tab = mBinding.layoutContainer.tlDateList.newTab()
         val tabView = ItemDateTabBinding.inflate(LayoutInflater.from(context), null, false).apply {
-            root.layoutParams = ViewGroup.LayoutParams(56.dp2px, 50.dp2px)
             tvDate.text = date
             tvWeekDay.visibility = View.VISIBLE
             tvWeekDay.text = weekday
