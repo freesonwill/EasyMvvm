@@ -83,20 +83,20 @@ enum class BetStatusEnum {
 sealed class AddSelectionStatus {
 
     // 成功狀態
-    sealed class Success(open val selectBean: BetSelectionLiteBean) : AddSelectionStatus() {
-        data class Single(override val selectBean: BetSelectionLiteBean) : Success(selectBean)   // 單注成功
-        data class Combo(override val selectBean: BetSelectionLiteBean) : Success(selectBean)    // 串關成功
+    sealed class Success : AddSelectionStatus() {
+        data object Single : Success()   // 單注成功
+        data object Combo : Success()    // 串關成功
         data class Update(
-            val lastSelectBean: BetSelectionLiteBean,
-            override val selectBean: BetSelectionLiteBean
-        ) : Success(selectBean)                                                                   // 成功更新
+            val lastSelectionId: Long,
+            val currentSelectionId: Long
+        ) : Success()                                                                   // 成功更新
     }
 
     // 失敗狀態
     sealed class Failure : AddSelectionStatus() {
         data object DisableComboForParlay : Failure() // 串關限制（非串關投注）
         data object DisableComboForProvider : Failure() // 串關限制（供應商不同）
-        data class Remove(val selectBean: BetSelectionLiteBean) : Failure()     // 已選中，再次點選則移除
+        data object Remove : Failure()     // 已選中，再次點選則移除
         data object MaxLimit : Failure()   // 超過最大選擇數量
         data object Fail : Failure()       // 其他錯誤
     }
