@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewholder
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
@@ -24,11 +25,12 @@ class BetSlipReserveViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
         }
         mBinding.betReserveBtModify.clickNoRepeat { view ->
             reserveModifySubmitListener?.let {
+                val h = ViewUtils.getStatusBarHeight(view.context)
                 val location = IntArray(2)
                 view.getLocationInWindow(location)
                 reserveModifySubmitListener?.onModifyReserveClick(
                     location.first() + view.width / 2,
-                    location.last(),
+                    location.last() - h,
                     view.height,
                     adapterPosition
                 )

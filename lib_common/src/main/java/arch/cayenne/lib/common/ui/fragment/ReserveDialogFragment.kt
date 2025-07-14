@@ -74,17 +74,17 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val viewHeight = requireArguments().getInt(VIEW_HEIGHT, 0)
 
                 val layoutParams = it.attributes
-                layoutParams.gravity = Gravity.TOP or Gravity.START
+                layoutParams.gravity = Gravity.TOP or Gravity.END
 
                 val pop = mBinding.root
                 pop.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
-                val popWidth = pop.measuredWidth
                 val popHeight = pop.measuredHeight
 
                 val metrics = requireContext().resources.displayMetrics
+                val usableWidth = metrics.widthPixels
                 val usableHeight = metrics.heightPixels
                 val isFull = positionY + popHeight + viewHeight > usableHeight
 
@@ -100,11 +100,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val triangleWidth = triangle.measuredWidth
                 val triangleHeight = triangle.measuredHeight
 
-                val endMargin = (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
+                (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2
 
-                val px = popWidth - (endMargin + triangleWidth / 2)
-
-                layoutParams.x = positionX - px
+                layoutParams.x = 0
                 layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
 
                 it.attributes = layoutParams

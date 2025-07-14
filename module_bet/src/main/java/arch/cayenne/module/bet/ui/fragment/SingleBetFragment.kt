@@ -18,9 +18,6 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
-import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
