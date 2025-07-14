@@ -89,7 +89,7 @@ class LiveVideoLandscapeFragment :
                 .apply {
                     init(PlayerMode.FLUENCY)
                     keepScreenOn = true
-                    setConfig(GlobalConfig(requireContext()).also {
+                    setConfig(GlobalConfig().also {
                         if (!it.inited) {
                             // 首次启动从本地播放器获取默认配置
                             it.transformFromPlayerConfig(this.getConfig())

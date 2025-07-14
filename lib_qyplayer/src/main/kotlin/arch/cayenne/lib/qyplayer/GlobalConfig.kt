@@ -1,290 +1,81 @@
 package arch.cayenne.lib.qyplayer
 
-import android.content.Context
-import androidx.core.content.edit
 import com.xxx.qyplayer.PlayerConfig
-import java.io.File
 
 /**
  * 全局保存一份配置，以最后一次设置为准
  */
-class GlobalConfig(private val context: Context) {
-    private val kSPFileName = "player_config"
-    private val kInited = "inited"
-
-    val SNAP_SHOT_PATH: String = "snapShot" + File.separator
-
-    private val kBrightRatio = "bright_ratio"
-    private val kAutoPlay = "auto_play"
-    private val kLoop = "loop"
-    private val kReconnectTime = "reconnect_time"
-    private val kHWDecode = "hw_decode"
-    private val kFlip = "flip"
-    private val kRotation = "rotation"
-    private val kFill = "fill"
-    private val kViewportRatio = "viewport_ratio"
-    private val kColor = "color"
-    private val kClear = "clear"
-    private val kMute = "mute"
-    private val kVolume = "volume"
-    private val kAudioDecrypt = "audio_decrypt"
-    private val kVideoDecrypt = "video_decrypt"
-    private val kRender = "render"
-    private val kSubtitles = "subtitles"
-    private val kDanmaku = "danmaku"
-    private val kReconnectCount = "reconnect_count"
+class GlobalConfig {
 
     init {
         loadConfig()
     }
 
     var brightRatio = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kBrightRatio, v)
-            }
-        }
 
     var inited = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kInited, v)
-            }
-        }
 
     var isAutoPlay = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kAutoPlay, v)
-            }
-        }
 
     var isLoop = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kLoop, v)
-            }
-        }
 
     var reconnectTime = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kReconnectTime, v)
-            }
-        }
 
     var isHWDecode = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kHWDecode, v)
-            }
-        }
 
     // 镜像模式
     var flip = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kFlip, v)
-            }
-        }
 
     // 旋转模式
     var rotation = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kRotation, v)
-            }
-        }
 
     // 填充模式
     var fill = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kFill, v)
-            }
-        }
 
     // 窗口比例
     var viewportRatio = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kViewportRatio, v)
-            }
-        }
 
     var color = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kColor, v)
-            }
-        }
 
     var isClear = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kClear, v)
-            }
-        }
 
     var isMute = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kMute, v)
-            }
-        }
 
     var volume = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kVolume, v)
-            }
-        }
 
     var audioDecrypt = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kAudioDecrypt, v)
-            }
-        }
 
     var videoDecrypt = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kVideoDecrypt, v)
-            }
-        }
 
     var render = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kRender, v)
-            }
-        }
 
     var isSubtitles = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kSubtitles, v)
-            }
-        }
 
     var reconnectCount = 0
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putInt(kReconnectCount, v)
-            }
-        }
 
     var isDanmaku = false
-        set(v) {
-            if (field == v) {
-                return
-            }
-            field = v
-            context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE).edit {
-                putBoolean(kDanmaku, v)
-            }
-        }
 
     private fun loadConfig() {
-        val sp = context.getSharedPreferences(kSPFileName, Context.MODE_PRIVATE)
-
-        inited = sp.getBoolean(kInited, false)
-        brightRatio = sp.getInt(kBrightRatio, -1)
-        isAutoPlay = sp.getBoolean(kAutoPlay, false)
-        isLoop = sp.getBoolean(kLoop, false)
-        reconnectTime = sp.getInt(kReconnectTime, 0)
-        isHWDecode = sp.getBoolean(kHWDecode, false)
-        flip = sp.getInt(kFlip, 0)
-        rotation = sp.getInt(kRotation, 0)
-        fill = sp.getInt(kFill, 0)
-        viewportRatio = sp.getInt(kViewportRatio, 0)
-        color = sp.getInt(kColor, 0)
-        isClear = sp.getBoolean(kClear, false)
-        isMute = sp.getBoolean(kMute, false)
-        volume = sp.getInt(kVolume, 0)
-        audioDecrypt = sp.getInt(kAudioDecrypt, 0)
-        videoDecrypt = sp.getInt(kVideoDecrypt, 0)
-        render = sp.getInt(kRender, 0)
-        isSubtitles = sp.getBoolean(kSubtitles, false)
-        isDanmaku = sp.getBoolean(kDanmaku, false)
-        reconnectCount = sp.getInt(kReconnectCount, -1)
+        inited = false
+        brightRatio = -1
+        isAutoPlay = false
+        isLoop = false
+        reconnectTime = 0
+        isHWDecode = false
+        flip = 0
+        rotation = 0
+        fill = 0
+        viewportRatio = 0
+        color = 0
+        isClear = false
+        isMute = false
+        volume = 0
+        audioDecrypt = 0
+        videoDecrypt = 0
+        render = 0
+        isSubtitles = false
+        isDanmaku = false
+        reconnectCount = -1
     }
 }
 
