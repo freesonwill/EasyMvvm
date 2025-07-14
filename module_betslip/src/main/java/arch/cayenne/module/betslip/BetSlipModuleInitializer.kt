@@ -16,7 +16,6 @@ import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import arch.cayenne.module.betslip.data.repo.SportPickerRepository
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
-import arch.cayenne.module.betslip.ui.viewmodel.BetSlipModifyOddsViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipOtherSettingViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
 import arch.cayenne.module.betslip.ui.viewmodel.DatePickerViewModel
@@ -48,7 +47,6 @@ class BetSlipModuleInitializer: DefaultInitializer<String> {
 
     private val viewModules = module {
         includes(defaultModule)
-        viewModelOf(::BetSlipModifyOddsViewModel)
         viewModelOf(::EarlySettledKeyboardViewModel)
         viewModelOf(::DatePickerViewModel)
         viewModelOf(::HomeBetSlipViewModel)

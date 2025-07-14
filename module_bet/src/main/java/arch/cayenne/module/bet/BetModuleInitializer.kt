@@ -13,7 +13,7 @@ import arch.cayenne.module.bet.viewmodel.BetSheetViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetMoneyKeyboardDialogViewModel
 import arch.cayenne.module.bet.viewmodel.ComboBetViewModel
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
-import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
+import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
