@@ -19,7 +19,6 @@ import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
-import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 
@@ -111,7 +110,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         // 動畫初始狀態
                         mBinding.root.pivotX = triangle.x + triangle.width / 2
-                        mBinding.root.pivotY = 0f
+                        mBinding.root.pivotY = if (isFull) mBinding.root.height.toFloat() else 0f
                         mBinding.root.scaleX = 0f
                         mBinding.root.scaleY = 0f
                         mBinding.root.alpha = 0f
