@@ -113,7 +113,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 mBinding.btnReserve.getLocationInWindow(location)
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
-                    location.last() + if (mBinding.clKeyboard.isVisible) mBinding.btnReserve.height else 0,
+                    location.last(),
+                    mBinding.btnReserve.height,
                     odds = it.odds
                 ).show(childFragmentManager)
             }

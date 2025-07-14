@@ -25,14 +25,16 @@ import androidx.core.view.isVisible
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
     companion object {
-        private const val POSITION_X = "positionX"
-        private const val POSITION_Y = "positionY"
+        private const val LOCATION_X = "locationX"
+        private const val LOCATION_Y = "locationY"
+        private const val VIEW_HEIGHT = "viewHeight"
         private const val ODDS_NUMBER = "oddsNumber"
 
-        fun newInstance(positionX: Int, positionY: Int, odds: Int): ReserveDialogFragment {
+        fun newInstance(positionX: Int, positionY: Int, viewHeight: Int, odds: Int): ReserveDialogFragment {
             val b = Bundle()
-            b.putInt(POSITION_X, positionX)
-            b.putInt(POSITION_Y, positionY)
+            b.putInt(LOCATION_X, positionX)
+            b.putInt(LOCATION_Y, positionY)
+            b.putInt(VIEW_HEIGHT, viewHeight)
             b.putInt(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
@@ -65,10 +67,12 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             it.setDimAmount(0.75f)
             it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            val positionX = requireArguments().getInt(POSITION_X, -1)
-            val positionY = requireArguments().getInt(POSITION_Y, -1)
+            val positionX = requireArguments().getInt(LOCATION_X, -1)
+            val positionY = requireArguments().getInt(LOCATION_Y, -1)
 
             if (positionX != -1 && positionY != -1) {
+                val viewHeight = requireArguments().getInt(VIEW_HEIGHT, 0)
+
                 val layoutParams = it.attributes
                 layoutParams.gravity = Gravity.TOP or Gravity.START
 
@@ -82,7 +86,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
                 val metrics = requireContext().resources.displayMetrics
                 val usableHeight = metrics.heightPixels
-                val isFull = positionY + popHeight > usableHeight
+                val isFull = positionY + popHeight + viewHeight > usableHeight
 
                 mBinding.topTriangle.isVisible = !isFull
                 mBinding.bottomTriangle.isVisible = isFull
@@ -101,7 +105,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val px = popWidth - (endMargin + triangleWidth / 2)
 
                 layoutParams.x = positionX - px
-                layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight
+                layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
 
                 it.attributes = layoutParams
 
