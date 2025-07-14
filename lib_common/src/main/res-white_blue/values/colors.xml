@@ -65,4 +65,6 @@
     <color name="dividing_line_white_blue">#FFFFFF</color>
     <color name="input_box_white_blue">#F3F3F4</color>
     <color name="progress_text_white_blue">#222222</color>
+
+    <color name="color_mask_white_blue">#80F4F4F4</color>
 </resources>

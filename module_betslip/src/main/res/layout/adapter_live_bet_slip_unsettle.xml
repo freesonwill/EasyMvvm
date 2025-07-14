@@ -214,13 +214,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/bet_unsettled_tv_except" />
 
-    <LinearLayout
+    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
         android:id="@+id/bet_unsettled_bt_settle"
         android:layout_width="@dimen/dp_335"
         android:layout_height="@dimen/dp_48"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/selector_send_button"
+        android:foreground="@drawable/bg_click_mask_8dp"
         android:gravity="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -247,7 +248,7 @@
             android:scaleType="fitXY"
             android:visibility="gone"
             />
-    </LinearLayout>
+    </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
     <View
         android:layout_width="match_parent"

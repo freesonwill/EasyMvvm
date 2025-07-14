@@ -59,7 +59,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private var switchTabAnimJob: Job? = null
     private val viewPagerAnimHelper by lazy {
         ViewPagerAnimHelper()
     }
@@ -135,11 +134,10 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    switchTabAnimJob?.cancel()
-                    switchTabAnimJob = viewPagerAnimHelper.doViewPagerAnim(
+                    viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab.position,
                         viewPager = mBinding.vpPage,
-                        fakeViewPager = mBinding.fragmentFakeViewPager
+                        fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
                     mBinding.vpPage.setCurrentItem(it.position, false)
                 }
@@ -187,7 +185,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
         mViewModel.liveBetOnMenu.observe(viewLifecycleOwner) {
-            when (it) {
+            when (it!!) {
                 BetOnMenuStatus.OPEN -> {
                     drawerContent()
                 }
@@ -228,12 +226,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
             }
         }
-        viewLifecycleOwner.lifecycleScope.launch {
+        launch(Lifecycle.State.RESUMED) {
             mViewModel.matchIdSportIdObserver.collect {
                 refreshBetSlip()
             }
         }
-        launch {
+        launch(Lifecycle.State.RESUMED) {
             mViewModel.observeConnectStateFlow().collect {
                 //监听连接变化
                 when (it) {
@@ -295,18 +293,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     private fun loadFragment() {
-        var tabSelectPosition = 1
+        val tabSelectPosition = 1
         with(mBinding) {
             mBinding.tabLayout.removeAllTabs()
-            val list =
-                listOf(
+            val list = listOf(
                     PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
                     PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                     PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                     PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
-            vpPage.adapter = null
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch(Lifecycle.State.RESUMED) {
                 delay(500)
@@ -341,7 +337,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         }
     }
 
-    fun refreshBetSlip() {
+    private fun refreshBetSlip() {
         val adapter = mBinding.vpPage.adapter?.let { it as PagerAdapter }
         val tag = "f${adapter?.getItemId(0)}"
         val fragment = childFragmentManager.findFragmentByTag(tag)?.let { it as BetSlipFragment }
@@ -393,7 +389,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     }
 
     override fun onDestroyView() {
-        switchTabAnimJob = null
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(it)
         }

@@ -1,20 +1,23 @@
 package com.walisport.module.live.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.AddSelectionStatus
-import arch.cayenne.lib.database.entity.MarketMenuBean
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.google.android.material.tabs.TabLayout
@@ -25,9 +28,9 @@ import com.walisport.module.live.ui.adapter.LivBetListCallback
 import com.walisport.module.live.ui.adapter.LiveBetOnAdapter
 import com.walisport.module.live.ui.viewmodel.LiveBetOnViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import com.walisport.module.live.utils.TabMarginExt.reflexMargin
 import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 //投注
@@ -43,7 +46,9 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var mBeforePosition: Int? = null
     private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
-
+    private lateinit var viewPager2: ViewPager2
+    private var startX = 0f
+    private var startY = 0f
     override fun initView(savedInstanceState: Bundle?) {
         initAdapter()
         mBinding.clDynamics.setState(States.LOADING, "")
@@ -69,13 +74,13 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         val status = mainViewModel.matchId.value?.let {
                             mViewModel.setSelection(it, selectionId)
                         }
-                        if (status == AddSelectionStatus.SINGLE) {
+                        if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.newInstance().show(parentFragmentManager)
-                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY) {
+                        } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
-                        } else if (status == AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER) {
+                        } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
                             showToast(getString(R.string.disabled_to_combo_for_provider))
-                        } else if (status == AddSelectionStatus.COMBO || status == AddSelectionStatus.UPDATE) {
+                        } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             mCurrentItemPosition = position
                             mBeforePosition = beforePosition
                             fabViewModel.setClickAnimation(x, y)
@@ -87,7 +92,54 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+        // 获取 ViewPager2
+        viewPager2 = requireActivity().findViewById(R.id.vp_page)
+
+        // 设置 ViewPager2 的触摸监听
+        viewPager2.setOnTouchListener { _, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    startX = event.x
+                    startY = event.y
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    val endX = event.x
+                    val endY = event.y
+                    val distanceX = abs(endX - startX)
+                    val distanceY = abs(endY - startY)
+                    // 如果垂直滑动距离大于水平滑动距离，禁用 ViewPager2 滑动
+                    if (distanceY > distanceX) {
+                        viewPager2.isUserInputEnabled = false
+                    } else {
+                        viewPager2.isUserInputEnabled = true
+                    }
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    // 恢复 ViewPager2 的滑动
+                    viewPager2.isUserInputEnabled = true
+                }
+            }
+            false // 让事件继续传递给 RecyclerView
+        }
+
+        // 监听 RecyclerView 滑动状态
+        mBinding.rvBetList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                // 当 RecyclerView 滑动时禁用 ViewPager2，停止时启用
+                viewPager2.isUserInputEnabled = newState == RecyclerView.SCROLL_STATE_IDLE
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                // 滑动到底部时禁用 ViewPager2
+                if (!recyclerView.canScrollVertically(1)) {
+                    viewPager2.isUserInputEnabled = false
+                }
+            }
+        })
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 isTabClicked = true

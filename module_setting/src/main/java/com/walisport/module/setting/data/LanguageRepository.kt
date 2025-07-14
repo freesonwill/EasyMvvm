@@ -188,6 +188,7 @@ class LanguageRepository(
                     clockModified = originMatch.basicInfo.liveInfo.clockModified,
                     homeScore = originMatch.basicInfo.liveInfo.homeScore,
                     awayScore = originMatch.basicInfo.liveInfo.awayScore,
+                    liveAnimation = originMatch.basicInfo.liveInfo.animationLiveUrl
                 )
             ),
             markets = markets

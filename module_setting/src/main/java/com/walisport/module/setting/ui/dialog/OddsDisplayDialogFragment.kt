@@ -8,7 +8,7 @@ import android.text.style.ForegroundColorSpan
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.setting.R
-import com.walisport.module.setting.data.OddsDisplayEnum
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import com.walisport.module.setting.databinding.DialogOddsDisplayBinding
 import com.walisport.module.setting.ui.viewmodel.OddsDisplayViewModel
 import kotlin.reflect.KClass

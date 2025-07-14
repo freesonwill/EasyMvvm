@@ -8,7 +8,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.setting.R
-import com.walisport.module.setting.data.OddsDisplayEnum
+import arch.cayenne.lib.common.data.constants.OddsDisplayEnum
 import com.walisport.module.setting.ui.viewmodel.SettingViewModel
 import com.walisport.module.setting.databinding.FragmentSettingBinding
 import com.walisport.module.setting.ui.dialog.OddsDisplayDialogFragment

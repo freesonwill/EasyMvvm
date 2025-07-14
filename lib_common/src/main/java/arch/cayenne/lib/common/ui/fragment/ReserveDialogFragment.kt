@@ -1,4 +1,4 @@
-package arch.cayenne.module.bet.ui.fragment
+package arch.cayenne.lib.common.ui.fragment
 
 import android.app.Dialog
 import android.graphics.Color
@@ -11,31 +11,30 @@ import androidx.fragment.app.setFragmentResult
 import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
-import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
-import arch.cayenne.module.bet.databinding.FragmentReserveDialogBinding
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
-import arch.cayenne.module.bet.viewmodel.ReserveDialogViewModel
 import kotlin.reflect.KClass
 import android.content.DialogInterface
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
+import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
+import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 
 class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDialogViewModel, FragmentReserveDialogBinding>() {
 
     companion object {
-        private const val POSITION_X = "positionX"
-        private const val POSITION_Y = "positionY"
+        private const val LOCATION_X = "locationX"
+        private const val LOCATION_Y = "locationY"
+        private const val VIEW_HEIGHT = "viewHeight"
         private const val ODDS_NUMBER = "oddsNumber"
+        const val KEY_RESULT = "key_result"
+        const val VALUE_RESERVE_COMPLETE = "value_reserve_complete"
+        const val KEY_ODDS_RESULT = "key_odds_result"
 
-        fun newInstance(positionX: Int?, positionY: Int?, odds: Int): ReserveDialogFragment {
+        fun newInstance(positionX: Int, positionY: Int, viewHeight: Int, odds: Int): ReserveDialogFragment {
             val b = Bundle()
-            positionX?.let {
-                b.putInt(POSITION_X, it)
-            }
-            positionY?.let {
-                b.putInt(POSITION_Y, it)
-            }
+            b.putInt(LOCATION_X, positionX)
+            b.putInt(LOCATION_Y, positionY)
+            b.putInt(VIEW_HEIGHT, viewHeight)
             b.putInt(ODDS_NUMBER, odds)
             return ReserveDialogFragment().apply {
                 arguments = b
@@ -50,7 +49,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
-            override fun dismiss() {
+            override fun cancel() {
+                if (!mBinding.root.isEnabled) return
                 // 讓系統其他地方調用 dismiss 時也會觸發動畫
                 if (mBinding.root.translationX == 0f) {
                     doExitAnim()
@@ -67,21 +67,31 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             it.setDimAmount(0.75f)
             it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-            val positionX = requireArguments().getInt(POSITION_X, -1)
-            val positionY = requireArguments().getInt(POSITION_Y, -1)
+            val positionX = requireArguments().getInt(LOCATION_X, -1)
+            val positionY = requireArguments().getInt(LOCATION_Y, -1)
 
             if (positionX != -1 && positionY != -1) {
+                val viewHeight = requireArguments().getInt(VIEW_HEIGHT, 0)
+
                 val layoutParams = it.attributes
-                layoutParams.gravity = Gravity.TOP or Gravity.START
+                layoutParams.gravity = Gravity.TOP or Gravity.END
 
                 val pop = mBinding.root
                 pop.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
                 )
-                val popWidth = pop.measuredWidth
+                val popHeight = pop.measuredHeight
 
-                val triangle = mBinding.triangle
+                val metrics = requireContext().resources.displayMetrics
+                val usableWidth = metrics.widthPixels
+                val usableHeight = metrics.heightPixels
+                val isFull = positionY + popHeight + viewHeight > usableHeight
+
+                mBinding.topTriangle.isVisible = !isFull
+                mBinding.bottomTriangle.isVisible = isFull
+
+                val triangle = if (isFull) mBinding.bottomTriangle else mBinding.topTriangle
                 triangle.measure(
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
                     View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -90,12 +100,10 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                 val triangleWidth = triangle.measuredWidth
                 val triangleHeight = triangle.measuredHeight
 
-                val endMargin = (mBinding.triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd
+                (triangle.layoutParams as ConstraintLayout.LayoutParams).marginEnd = usableWidth - positionX - triangleWidth / 2
 
-                val px = popWidth - (endMargin + triangleWidth / 2)
-
-                layoutParams.x = positionX - px
-                layoutParams.y = positionY - triangleHeight
+                layoutParams.x = 0
+                layoutParams.y = if (isFull) positionY - popHeight + triangleHeight else positionY - triangleHeight + viewHeight
 
                 it.attributes = layoutParams
 
@@ -103,8 +111,8 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                     override fun onGlobalLayout() {
                         mBinding.root.viewTreeObserver.removeOnGlobalLayoutListener(this)
                         // 動畫初始狀態
-                        mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
-                        mBinding.root.pivotY = 0f
+                        mBinding.root.pivotX = triangle.x + triangle.width / 2
+                        mBinding.root.pivotY = if (isFull) mBinding.root.height.toFloat() else 0f
                         mBinding.root.scaleX = 0f
                         mBinding.root.scaleY = 0f
                         mBinding.root.alpha = 0f
@@ -182,9 +190,14 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             val length = text.length
             mBinding.etRate.setSelection(length)
         }
+        mViewModel.isConfirmEnable.observe(viewLifecycleOwner) {
+            mBinding.btnConfirm.isEnabled = it
+        }
     }
 
     private fun doExitAnim() {
+        if (!mBinding.root.isEnabled) return
+        mBinding.root.isEnabled = false
         mBinding.root.animate()
             .scaleX(0f)
             .scaleY(0f)

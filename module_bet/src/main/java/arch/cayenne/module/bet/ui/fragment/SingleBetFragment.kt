@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
@@ -17,9 +18,6 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
-import arch.cayenne.module.bet.data.Config.KEY_ODDS_RESULT
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_RESERVE_COMPLETE
 import arch.cayenne.module.bet.databinding.FragmentSingleBetBinding
 import arch.cayenne.module.bet.util.ViewHelper
 import arch.cayenne.module.bet.viewmodel.SingleBetViewModel
@@ -100,12 +98,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
                 childFragmentManager.setFragmentResultListener(
-                    KEY_RESULT,
+                    ReserveDialogFragment.KEY_RESULT,
                     viewLifecycleOwner
                 ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                    if (bundle.getString(KEY_RESULT) == VALUE_RESERVE_COMPLETE) {
-                        val odds = bundle.getInt(KEY_ODDS_RESULT)
+                    childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
+                    if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
+                        val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
                         mViewModel.saveToReserve(odds)
                     }
                 }
@@ -113,7 +111,8 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 mBinding.btnReserve.getLocationInWindow(location)
                 ReserveDialogFragment.newInstance(
                     location.first() + mBinding.btnReserve.width / 2,
-                    location.last() + mBinding.btnReserve.height,
+                    location.last(),
+                    mBinding.btnReserve.height,
                     odds = it.odds
                 ).show(childFragmentManager)
             }

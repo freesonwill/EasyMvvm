@@ -31,6 +31,12 @@ object DateUtils {
 
         return dateList
     }
+    fun getMonthDay(strDate: String,sourceDateFormat: String = "yyyyMMdd",targetDateFormat: String = "M.dd"): String {
+        val dateFormat = SimpleDateFormat(sourceDateFormat, Locale.getDefault())
+        val selectedTime = dateFormat.parse(strDate)?.time
+        val monthDayFormat = SimpleDateFormat(targetDateFormat, Locale.getDefault())
+        return monthDayFormat.format(selectedTime ?: System.currentTimeMillis())
+    }
     @SuppressLint("SimpleDateFormat")
     fun getMessageTime(timestamp: Long): String {
         val currentTime = System.currentTimeMillis()

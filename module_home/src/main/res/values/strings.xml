@@ -13,6 +13,7 @@
     <string name="tab_text_other_day">其他日期</string>
     <string name="home_calendar_ok">确认</string>
     <string name="home_calendar_reset">重置</string>
+    <string name="home_tournament_more">更多</string>
 
     <!--Sport name-->
     <string name="title_init">預設</string>
@@ -61,4 +62,5 @@
     <string name="tournament_section_title">选联赛</string>
     <string name="tournament_section_title_hot">热门</string>
     <string name="balance_format">%s%s</string>
+    <string name="format_month_year" translatable="false">%1$s %2$s</string>
 </resources>

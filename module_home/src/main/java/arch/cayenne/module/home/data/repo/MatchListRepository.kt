@@ -38,19 +38,6 @@ class MatchListRepository(
         startTime: Long,
         endTime: Long
     ) : Boolean {
-//        val req = Client.ListMatchReq.newBuilder().apply {
-//            this.sportId = sportId
-//            this.playType = playType
-//            this.tournamentId = tournamentId
-//            this.page = page
-//            this.size = DEFAULT_MATCH_SIZE
-//            if (startTime != 0L){
-//                this.startTime = startTime
-//                this.endTime = startTime + ONE_DAY_TIME_STAMP
-//            }
-//        }.build()
-//        socketManager.send(req.asRemoteRequest(ApiCode.LIST_MATCH))
-        //-----------------------------------------
         val last = matchDao.queryLastMatch(playType, tournamentId, date)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,

@@ -7,9 +7,9 @@ import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class BetRepository(
@@ -37,39 +37,56 @@ class BetRepository(
             val selections = betDao.getSelections(betId)
             val existing = selections.find { it.matchId == insertBean.matchId }
 
+            val liteBean = BetSelectionLiteBean(
+                matchId = insertBean.matchId,
+                selectionId = insertBean.selectionId
+            )
+
             if (existing?.selectionId == insertBean.selectionId) {
-                betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
-                checkBetBeanType(betId)
-                return@withContext AddSelectionStatus.REMOVE
+                scope.launch {
+                    betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
+                    checkBetBeanType(betId)
+                }
+                return@withContext AddSelectionStatus.Failure.Remove
             }
 
             if (existing == null && selections.size >= MAX_LIMIT_SIZE) {
-                return@withContext AddSelectionStatus.MAX_LIMIT
+                return@withContext AddSelectionStatus.Failure.MaxLimit
             }
 
 
             if (existing == null) {
                 if (!insertBean.isParlay && selections.isNotEmpty()) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
                 } else if (selections.isNotEmpty() && insertBean.provider != selections.first().provider) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
+                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
                 }
-
-                val newBean = insertBean.toBetSelectionBean(betId)
-                betDao.insertSelection(newBean)
-                checkBetBeanType(betId)
-                return@withContext if (selections.isEmpty()) AddSelectionStatus.SINGLE else AddSelectionStatus.COMBO
+                scope.launch {
+                    val newBean = insertBean.toBetSelectionBean(betId)
+                    betDao.insertSelection(newBean)
+                    checkBetBeanType(betId)
+                }
+                return@withContext if (selections.isEmpty()) {
+                    AddSelectionStatus.Success.Single
+                } else {
+                    AddSelectionStatus.Success.Combo
+                }
             } else {
                 if (!insertBean.isParlay) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PARLAY
+                    return@withContext AddSelectionStatus.Failure.DisableComboForParlay
                 } else if (insertBean.provider != existing.provider) {
-                    return@withContext AddSelectionStatus.DISABLE_COMBO_FOR_PROVIDER
+                    return@withContext AddSelectionStatus.Failure.DisableComboForProvider
                 }
-                val newBean = insertBean.toBetSelectionBean(betId)
-                betDao.updateSelection(newBean)
+                scope.launch {
+                    val newBean = insertBean.toBetSelectionBean(betId)
+                    betDao.updateSelection(newBean)
 
-                checkBetBeanType(betId)
-                return@withContext AddSelectionStatus.UPDATE
+                    checkBetBeanType(betId)
+                }
+                return@withContext AddSelectionStatus.Success.Update(
+                    existing.selectionId,
+                    liteBean.selectionId
+                )
             }
         }
 

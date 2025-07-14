@@ -69,11 +69,13 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
-            override fun dismiss() {
-                if (mBinding.root.scaleX == 0f) {
-                    super.dismiss()
-                } else {
+            override fun cancel() {
+                if (!mBinding.root.isEnabled) return
+                // 讓系統其他地方調用 dismiss 時也會觸發動畫
+                if (mBinding.root.translationX == 0f) {
                     doExitAnim()
+                } else {
+                    super.dismiss()
                 }
             }
         }
@@ -266,6 +268,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     }
 
     private fun doExitAnim() {
+        if (!mBinding.root.isEnabled) return
+        mBinding.root.isEnabled = false
+
         mBinding.root.pivotX = mBinding.triangle.x + mBinding.triangle.width / 2
         mBinding.root.pivotY = mBinding.root.height.toFloat()
 

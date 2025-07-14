@@ -90,7 +90,7 @@ class ChampionViewModel : BaseViewModel() {
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
         val bean = championRepository.getSelectionInsertBean(matchId, selectionId)
         return if (bean == null) {
-            AddSelectionStatus.FAIL
+            AddSelectionStatus.Failure.Fail
         } else {
             betRepository.setSelection(bean)
         }

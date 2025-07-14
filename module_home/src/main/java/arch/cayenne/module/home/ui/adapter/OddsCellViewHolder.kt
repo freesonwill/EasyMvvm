@@ -21,7 +21,7 @@ class OddsCellViewHolder(
             val isActive = item.active
             updateState(isActive, item.isSelected)
 
-            llOddsCell.setOnClickListener {
+            clOddsCell.setOnClickListener {
                 if (isActive) {
                     val location = IntArray(2)
                     it.getLocationOnScreen(location)
@@ -61,7 +61,7 @@ class OddsCellViewHolder(
             }
 
             if ("isSelected" in diff) {
-                llOddsCell.isSelected = item.isSelected
+                clOddsCell.isSelected = item.isSelected
             }
 
             if ("trend" in diff) {
@@ -110,11 +110,11 @@ class OddsCellViewHolder(
             tvShortName.visibility = if (active) View.VISIBLE else View.GONE
             tvOdds.visibility = if (active) View.VISIBLE else View.GONE
             ivLock.visibility = if (active) View.GONE else View.VISIBLE
-            llOddsCell.isEnabled = active
+            clOddsCell.isEnabled = active
             if (active) {
-                llOddsCell.isSelected = isSelected
+                clOddsCell.isSelected = isSelected
             } else {
-                llOddsCell.isSelected = false
+                clOddsCell.isSelected = false
             }
         }
     }
@@ -126,7 +126,7 @@ class OddsCellViewHolder(
             tvShortName.visibility = View.GONE
             tvOdds.visibility = View.GONE
             ivLock.visibility = View.VISIBLE
-            llOddsCell.isEnabled = false
+            clOddsCell.isEnabled = false
         }
     }
 

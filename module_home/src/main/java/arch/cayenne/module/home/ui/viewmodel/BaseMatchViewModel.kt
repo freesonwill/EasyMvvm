@@ -31,7 +31,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     protected var isPageEnd = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
 
-    protected val _state  = MutableLiveData<Event<MatchListState>>()
+    protected val _state  = MutableLiveData(Event(MatchListState.INIT))
     val state : LiveData<Event<MatchListState>> = _state
 
     override fun initViewModel() {
@@ -121,7 +121,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
         val bean = repository.getSelectionInsertBean(selectionId)
         return if (bean == null) {
-            AddSelectionStatus.FAIL
+            AddSelectionStatus.Failure.Fail
         } else {
             betRepository.setSelection(bean)
         }
