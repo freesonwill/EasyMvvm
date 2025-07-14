@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
+import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
 import android.widget.LinearLayout
@@ -212,6 +213,8 @@ class LiveVideoPlayerFragment :
                     if (it.source.isEmpty()) {
                         onDataSourceEmpty()
                     } else {
+                        mBinding.ivChooseSource.visibility = View.VISIBLE
+                        mBinding.ivToFullscreen.visibility = View.VISIBLE
                         val playUrl = it.source.firstOrNull { ele -> ele.isPlaying }?.playUrl()
                         playUrl?.takeIf { url -> url.isNotEmpty() }?.let { url ->
 //                        "url:${url}".logd("LiveVideoFragment")
@@ -280,6 +283,16 @@ class LiveVideoPlayerFragment :
                 onPlayerStateReceived(it)
             }
 
+            animationLiveUrl.observe(viewLifecycleOwner) {
+
+                if (it.isNullOrBlank()) {
+                    mBinding.ivAnimationEntry.visibility = View.INVISIBLE
+                } else {
+                    mBinding.ivAnimationEntry.visibility = View.VISIBLE
+                }
+
+            }
+
         }
 
 
@@ -288,7 +301,6 @@ class LiveVideoPlayerFragment :
 
         mViewModel.createObserver()
     }
-
 
 
     override fun onPause() {
@@ -452,6 +464,8 @@ class LiveVideoPlayerFragment :
         mBinding.ctLoading.visibility = GONE
         mBinding.ctError.visibility = VISIBLE
         mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
+        mBinding.ivChooseSource.visibility = View.INVISIBLE
+        mBinding.ivToFullscreen.visibility = View.INVISIBLE
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {

@@ -3,6 +3,7 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.model.UnPeekLiveData
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
@@ -65,9 +66,17 @@ class LiveVideoPlayerViewModel(
     private val _playerState = MutableLiveData(PlayerState.IDLE)
     val playerState: LiveData<PlayerState> get() = _playerState
 
+    /**
+     * 比赛动画地址
+     */
+    private val _animationLiveUrl = UnPeekLiveData<String?>()
+    val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
+
     private var liveBeanJob: Job? = null
 
     private var matchBeanJob: Job? = null
+
+    private var animationUrlJob: Job? = null
 
     /**
      * 改变静音状态
@@ -118,6 +127,15 @@ class LiveVideoPlayerViewModel(
                     _matchBeanLiveData.value = match
                 }
 
+            }
+        }
+
+        animationUrlJob?.cancel()
+        animationUrlJob = viewModelScope.launch {
+            repo.observeAnimationLiveUrl(repo.matchId).collect {
+                it?.let {
+                    _animationLiveUrl.value = it
+                }
             }
         }
 
