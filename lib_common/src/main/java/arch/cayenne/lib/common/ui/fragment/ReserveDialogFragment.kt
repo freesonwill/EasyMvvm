@@ -185,11 +185,13 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
 
     override fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
-            mBinding.btnConfirm.isEnabled = it.toOdds() > 0
             val text = "@$it"
             mBinding.etRate.setText(text)
             val length = text.length
             mBinding.etRate.setSelection(length)
+        }
+        mViewModel.isConfirmEnable.observe(viewLifecycleOwner) {
+            mBinding.btnConfirm.isEnabled = it
         }
     }
 

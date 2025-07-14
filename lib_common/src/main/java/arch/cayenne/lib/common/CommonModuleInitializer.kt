@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
+import arch.cayenne.lib.common.data.repo.ReserveDialogRepository
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import com.tencent.mmkv.MMKV
@@ -29,11 +30,13 @@ class CommonModuleInitializer : DefaultInitializer<String> {
 
     private val moduleList: List<Module> = listOf(module {
         factory { (scope: CoroutineScope) -> CommonRepository(scope, get(), get(), get(), get()) }
-        factoryOf(::BalanceRepository)
         single { UserDataManager() }
         viewModel { ConnectFailedViewModel() }
         factoryOf(::ReserveDialogViewModel)
 
+        factoryOf(::CommonRepository)
+        factoryOf(::BalanceRepository)
+        factoryOf(::ReserveDialogRepository)
     })
 
     /**
