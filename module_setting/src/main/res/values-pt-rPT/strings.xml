@@ -1,3 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setting">Configurações</string>
+    <string name="pan">Mercado</string>
+    <string name="common">Common</string>
+    <string name="menu_europe">Odds Europeias</string>
+    <string name="menu_hk">Odds Hong Kong</string>
+    <string name="menu_odds_display">Exibir odds</string>
+    <string name="menu_notice_set">Notificações</string>
+    <string name="menu_background_set">Fundo</string>
+    <string name="menu_language_set">Idioma</string>
+    <string name="menu_notice_sys">Notificação no App</string>
+    <string name="menu_notice_app">App Notice</string>
+    <string name="menu_goal_football">Golo(Futebol)</string>
+    <string name="menu_game_football">Begin(Football)</string>
+    <string name="menu_part">Part</string>
+    <string name="menu_all">All</string>
+    <string name="menu_close">Fechar</string>
+    <string name="theme_class">Class</string>
+    <string name="theme_black_blue">Black Blue</string>
+    <string name="theme_black_green">Black Green</string>
+    <string name="theme_black_red">Black Red</string>
+    <string name="theme_white_blue">White Blue</string>
+    <string name="theme_white_green">White Green</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="method_odds_display">Modo de odds</string>
+    <string name="explain">Explain</string>
+    <string name="shut_down">Fechar</string>
+    <string name="tip_dialog_notice">I will be notified of goals scored in these matches</string>
+    <string name="notice_game">Game Notice</string>
+    <string name="notice_bet">Matches Bet On</string>
+    <string name="notice_favourite">Favourite Notice On</string>
+    <string name="notice_all">All Notice On</string>
+    <string name="display_odds_ben">(odds Incluir aposta)</string>
+    <string name="display_odds_not">(odds Excluir aposta)</string>
 </resources>
