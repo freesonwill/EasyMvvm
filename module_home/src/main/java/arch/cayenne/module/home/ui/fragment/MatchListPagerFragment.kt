@@ -165,13 +165,14 @@ class MatchListPagerFragment :
         val preEmpty = matchAdapter.currentList.isEmpty()
 
         matchAdapter.submitList(matchList)
-        if (preEmpty && matchList.isNotEmpty()) {
-            mBinding.rvHomeGameList.doOnPreDraw {
+        mBinding.rvHomeGameList.doOnPreDraw {
+            subscribeVisibleMatch()
+            if (preEmpty && matchList.isNotEmpty()) {
                 homeViewModel.changeState(HomeState.Match.LoadSuccess)
-                subscribeVisibleMatch()
                 setMatchListPosition()
             }
         }
+
     }
     override fun createObserver() {
 

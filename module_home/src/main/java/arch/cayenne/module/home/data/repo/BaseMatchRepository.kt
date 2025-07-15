@@ -1,9 +1,11 @@
 package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
@@ -29,6 +31,7 @@ abstract class BaseMatchRepository(
     private val socketManager: WebSocketManager,
     private val betDao: BetDao,
     private val matchDao: MatchDao,
+    private val infoDao: InfoDao,
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
@@ -39,7 +42,7 @@ abstract class BaseMatchRepository(
     /**
      * 訂閱賽事，並且訂閱成功後會先馬上回傳一次訂閱賽事的資料
      * */
-    suspend fun subscribeMatch(ids: List<Long>): List<MatchWithMarkets> {
+    suspend fun subscribeMatch(ids: List<Long>): ApiResponseState {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.SubscribeHomeMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -52,8 +55,11 @@ abstract class BaseMatchRepository(
         if (res.error == null && res.data != null) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
             val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
-            return updateFullMath(matchUpdateData)
-        } else { return arrayListOf() }
+
+            deleteMissingMatch(ids - matchUpdateData.ids.toSet())
+
+            return ApiResponseState.Succeeded(updateFullMath(matchUpdateData))
+        } else { return ApiResponseState.Failed(res.error) }
     }
 
     suspend fun cancelSubscribeMatch(ids: List<Long>): Boolean {
@@ -67,6 +73,14 @@ abstract class BaseMatchRepository(
             }.build()
         }
         return res.error == null && res.data != null
+    }
+
+    /**
+     * 刪除賽事，通常是因為訂閱後沒有收到該賽事資料，表示該賽事已經結束
+     * */
+    private fun deleteMissingMatch(matchIds: List<Long>) {
+        if (matchIds.isEmpty()) return
+        matchDao.deleteMissingMatch(matchIds)
     }
 
     /**
@@ -212,4 +226,6 @@ abstract class BaseMatchRepository(
         }
         return null
     }
+
+    suspend fun observeLoginChange() = infoDao.observeIsLogin()
 }

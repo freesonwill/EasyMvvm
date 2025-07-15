@@ -13,6 +13,7 @@ import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.repo.ChampionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -58,6 +59,15 @@ class ChampionViewModel : BaseViewModel() {
                     matchWithMarketsChange.value = matchWithMarkets
                 }
             }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            championRepository.observeLoginChange()
+                .filter { it }
+                .collect {
+                    launch(Dispatchers.Main) {
+                        subscribeMatch()
+                    }
+                }
         }
     }
 
