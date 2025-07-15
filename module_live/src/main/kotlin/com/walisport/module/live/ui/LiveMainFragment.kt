@@ -42,6 +42,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
+import com.walisport.module.live.data.constants.MatchStatus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 
@@ -218,6 +219,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     Glide.with(this).load(logo).into(titleBarBinding.ivLandscapeLeagueIcon)
                 }
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
+                //比赛开始后开启聊天服务
+                val code = it.basicInfo.status
+                if(code in arrayOf(2,5,8)){
+                    mViewModel.startChatServer()
+                }
             }
         }
         launch(Lifecycle.State.RESUMED) {
@@ -268,13 +274,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun deleteDataAndSubscriptions(matchId: Long) {
         mViewModel.unregisterMatchInfoNotify(matchId)
         mViewModel.clearAllMatch()
-    }
-
-    override fun initData() {
-        super.initData()
-        launch(Lifecycle.State.RESUMED) {
-            mViewModel.startChatServer()
-        }
     }
 
     private fun setVideoView() {

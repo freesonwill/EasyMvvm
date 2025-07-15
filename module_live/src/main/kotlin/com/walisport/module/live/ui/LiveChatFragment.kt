@@ -45,6 +45,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         val adapter = LiveChatAdapter()
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
+        mBinding.liveChatRecycler.itemAnimator = null
     }
 
     override fun onResume() {
@@ -235,17 +236,16 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_close)
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
+                MatchStatus.IN_PROGRESS,MatchStatus.PAUSED,MatchStatus.INTERRUPTED -> {
+                    it.liveChatGroupChat.isVisible = true
+                    it.liveChatGroupStatus.isVisible = false
+                }
 
-                MatchStatus.POSTPONED, MatchStatus.NOT_STARTED, MatchStatus.DELAYED -> {
+                else -> {
                     it.liveChatGroupChat.isVisible = false
                     it.liveChatGroupStatus.isVisible = true
                     it.liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_empty)
                     it.liveChatTvStatus.setText(R.string.live_chat_empty)
-                }
-
-                else -> {
-                    it.liveChatGroupChat.isVisible = true
-                    it.liveChatGroupStatus.isVisible = false
                 }
             }
         }

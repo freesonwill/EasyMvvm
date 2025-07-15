@@ -17,16 +17,21 @@ import arch.cayenne.lib.websocket.chat.data.CheckBetAmountResponse
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryRequest
 import arch.cayenne.lib.websocket.chat.data.GetChatHistoryResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
-import arch.cayenne.lib.websocket.chat.extension.chatObserveProtoMessage
+import arch.cayenne.lib.websocket.chat.extension.chatObserveMessage
 import arch.cayenne.lib.websocket.chat.extension.chatSendAndWaitProtoMessageResponse
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.buffer
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.transform
 
 class LiveRemoteChatManager(
@@ -138,8 +143,11 @@ class LiveRemoteChatManager(
     /**
      * 监听消息
      * */
+    @OptIn(FlowPreview::class)
     suspend fun msgNotify(): Flow<MsgNotify> {
-        return socketManager.chatObserveProtoMessage<MsgNotify>(ChatResponseCode.MSG_NOTIFY)
+        return socketManager.chatObserveMessage<MsgNotify>()
+            .buffer(100)
+            .debounce(60) //60ms内只处理最后一条消息
             .transform {
                 if (it.error == null && it.data != null) {
                     "msgNotify  result ${Gson().toJson(it.data)}".logd(TAG)

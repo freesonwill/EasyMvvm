@@ -9,6 +9,7 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.NativeLib
+import arch.cayenne.lib.websocket.chat.data.ChatResponseCode
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.IRequest
 import arch.cayenne.lib.websocket.data.IResponse
@@ -55,6 +56,14 @@ class ChatSocketClientService(
         MutableSharedFlow(
             replay = 0,
             extraBufferCapacity = 10,
+            onBufferOverflow = BufferOverflow.DROP_OLDEST
+        )
+    }
+
+    private val messageFlow: MutableSharedFlow<IResponse> by lazy {
+        MutableSharedFlow(
+            replay = 0,
+            extraBufferCapacity = 50, //设置缓冲50条消息
             onBufferOverflow = BufferOverflow.DROP_OLDEST
         )
     }
@@ -135,9 +144,13 @@ class ChatSocketClientService(
                     if (bytes.size != 0) {
                         val byteArray = bytes.toByteArray()
                         val data = security.decrypt(byteArray)
-                        if ((data as SocketOriginResponseData).originProto?.isNotEmpty() == true)
-                            "result ${String((data).originProto ?: byteArrayOf())}".logi(this@ChatSocketClientService::class.java.simpleName)
-                        workingScope.launch { socketResponseFlow.emit(data) }
+                        workingScope.launch {
+                            if (data is SocketOriginResponseData && data.sid == ChatResponseCode.MSG_NOTIFY.sid) {
+                                messageFlow.emit(data)
+                            } else {
+                                socketResponseFlow.emit(data)
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -186,6 +199,8 @@ class ChatSocketClientService(
     override fun stateChangeObserve(): SharedFlow<ConnectState> = connectStateFlow
 
     fun socketConnectStateFlow(): StateFlow<SocketConnectState> = socketConnectStateFlow
+
+    fun messageFlow():SharedFlow<IResponse> = messageFlow
 
 
     private fun hasNetworkConnection(): Boolean {
