@@ -45,6 +45,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         val adapter = LiveChatAdapter()
         mBinding.liveChatRecycler.layoutManager = layoutManger
         mBinding.liveChatRecycler.adapter = adapter
+        mBinding.liveChatRecycler.itemAnimator = null
     }
 
     override fun onResume() {
