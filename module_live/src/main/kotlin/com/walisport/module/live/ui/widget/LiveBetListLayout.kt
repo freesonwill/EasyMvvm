@@ -265,10 +265,6 @@ class LiveBetListLayout @JvmOverloads constructor(
         val x = location[0] + view.width / 2
         val y = location[1] + view.height / 2
         callback(marketId,x.toFloat(),y.toFloat())
-        if (!isCombo) {
-            view.isSelected = true
-            delayExample { view.isSelected = false }
-        }
     }
 
     private fun isOddsStatus(oddStatus: Int, top: View, down: View) {
@@ -290,13 +286,6 @@ class LiveBetListLayout @JvmOverloads constructor(
                 }
                 else ->{}
             }
-        }
-    }
-
-    private fun delayExample(delayCallback: () -> Unit) {
-        findViewTreeLifecycleOwner()!!.lifecycleScope.launch {
-            delay(2000)
-            delayCallback()
         }
     }
 

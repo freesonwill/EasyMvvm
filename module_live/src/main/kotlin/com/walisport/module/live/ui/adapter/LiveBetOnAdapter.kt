@@ -28,7 +28,7 @@ class LiveBetOnAdapter(var callback: LivBetListCallback) :
     private var awayName: String? = ""
     private var awayLogo: String? = ""
     private var selectionComboId: Long? = null
-    private var beforePosition: Int = 0
+    private var beforePosition: Int = -1
     private var isNotify = false
     private var notifySelectionsId: List<SelectionsEdit>? = null
 
