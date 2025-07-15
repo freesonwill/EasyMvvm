@@ -2,6 +2,7 @@ package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -17,8 +18,9 @@ class ChampionRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
     private val matchDao: MatchDao,
-    private val betDao: BetDao
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao) {
+    private val betDao: BetDao,
+    private val infoDao: InfoDao,
+) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao) {
     @Transaction
     suspend fun getChampionDetail(matchId: Long) : MatchWithMarkets? {
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(

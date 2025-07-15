@@ -5,6 +5,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchBeanLite
 import arch.cayenne.lib.database.entity.MatchLiveInfoBean
@@ -30,6 +31,7 @@ abstract class BaseMatchRepository(
     private val socketManager: WebSocketManager,
     private val betDao: BetDao,
     private val matchDao: MatchDao,
+    private val infoDao: InfoDao,
 ) : BaseRepository() {
     companion object {
         const val ONE_DAY_TIME_STAMP = 86399000L
@@ -224,4 +226,6 @@ abstract class BaseMatchRepository(
         }
         return null
     }
+
+    suspend fun observeLoginChange() = infoDao.observeIsLogin()
 }

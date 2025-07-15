@@ -2,6 +2,7 @@ package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
 import arch.cayenne.lib.database.dao.BetDao
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.websocket.WebSocketManager
@@ -20,7 +21,8 @@ class CollectListRepository(
     private val socketManager: WebSocketManager,
     private val betDao: BetDao,
     private val matchDao: MatchDao,
-) : BaseMatchRepository(scope, socketManager, betDao, matchDao) {
+    private val infoDao: InfoDao,
+) : BaseMatchRepository(scope, socketManager, betDao, matchDao, infoDao) {
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 

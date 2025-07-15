@@ -15,6 +15,7 @@ import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -62,6 +63,15 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
                     matchListChange.value = matchWithMarkets
                 }
             }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeLoginChange()
+                .filter { it }
+                .collect {
+                    launch(Dispatchers.Main) {
+                        subscribeMatch(getCurrentSubscribeMatchSet())
+                    }
+                }
         }
     }
 

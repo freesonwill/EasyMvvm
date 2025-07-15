@@ -26,6 +26,9 @@ abstract class InfoDao: BaseDao<InfoBean>() {
     @Query("SELECT login FROM InfoBean limit 1")
     abstract suspend fun isLogin(): Boolean
 
+    @Query("SELECT login FROM InfoBean limit 1")
+    abstract fun observeIsLogin(): Flow<Boolean>
+
     @Query("UPDATE InfoBean SET login = :isLogin WHERE uid = :uid")
     abstract suspend fun setLogin(uid: Int, isLogin: Boolean)
 
