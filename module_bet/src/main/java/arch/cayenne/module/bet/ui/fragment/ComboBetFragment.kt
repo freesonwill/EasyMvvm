@@ -160,6 +160,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             comboMultiBetAdapter.submitList(data) {
                 if (lastSize == 0) {
                     initMultiLayout(data.size)
+                } else if (data.size <= 1) {
+                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
+                        this.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
+                    }
+                    restoreBetLayoutPosition()
                 }
             }
             setSumBetMoney(data)

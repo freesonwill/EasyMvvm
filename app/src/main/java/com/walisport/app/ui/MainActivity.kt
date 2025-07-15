@@ -19,6 +19,7 @@ import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
+import com.walisport.module.message.ui.view.AppNotifyToastView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
@@ -29,7 +30,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     override val vmClass: KClass<MainViewModel> = MainViewModel::class
     private val fabControlViewModel: FloatingButtonControlViewModel by viewModel()
     private val connectFailedViewModel: ConnectFailedViewModel by viewModel()
-    private var connectFailedFragment : ConnectFailedFragment? = null
+    private var connectFailedFragment: ConnectFailedFragment? = null
     private val fabFragment: FloatingButtonFragment by lazy {
         FloatingButtonFragment.newInstance()
     }
@@ -53,7 +54,12 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
             }
         }
         mViewModel.appNotifyListener.observe(this) {
-            notifyFragment.sendNotifyMsg(it)
+            //notifyFragment.sendNotifyMsg(it)
+            if (AppNotifyToastView.canShowToast(this)) {
+                val toast = AppNotifyToastView(this@MainActivity)
+                toast.sendNotifyMsg(it)
+                showToast(toast, ToastSlideAnimation())
+            }
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
             if (it) {
@@ -75,7 +81,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 }
             }
             connectFailedViewModel.changeCurrencyFailedView(
-                when(it) {
+                when (it) {
                     is ConnectState.ConnectSuccess -> CurConnectFailedType.HIDE
                     is ConnectState.ReconnectFailure -> CurConnectFailedType.SHOW_FAILED
                     else -> CurConnectFailedType.SHOW_MASK
@@ -93,7 +99,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                         exitProcess(0)
                     }
                 }.show(supportFragmentManager)
-            }else if (code == 2) {
+            } else if (code == 2) {
                 //TODO go to login page
             }
         }

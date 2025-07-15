@@ -13,7 +13,7 @@ class ToastSlideAnimation: ToastAnimation {
     override val animDuration: Long
         get() = 200L
     override val showDuration: Long
-        get() = 2_000L
+        get() = 3_000L
 
     override fun getLayoutParams(): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()

@@ -126,6 +126,9 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM MatchBean" )
     abstract fun deleteMatchBean()
 
+    @Query("DELETE FROM MatchBean WHERE matchId IN (:matchIds)")
+    abstract fun deleteMatchBean(matchIds: List<Long>)
+
     @Query("DELETE FROM MarketBean" )
     abstract fun deleteMarketBean()
 
@@ -135,11 +138,20 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("DELETE FROM TournamentMatchRef" )
     abstract fun deleteTournamentMatchRef()
 
+    @Query("DELETE FROM TournamentMatchRef WHERE matchId IN (:matchIds) " )
+    abstract fun deleteTournamentMatchRef(matchIds: List<Long>)
+
     @Query("DELETE FROM MatchMarketCrossRef" )
     abstract fun deleteMatchMarketCrossRef()
 
+    @Query("DELETE FROM MatchMarketCrossRef WHERE matchId IN (:matchIds) " )
+    abstract fun deleteMatchMarketCrossRef(matchIds: List<Long>)
+
     @Query("DELETE FROM MarketSelectCrossRef" )
     abstract fun deleteMarketSelectCrossRef()
+
+    @Query("DELETE FROM MarketSelectCrossRef WHERE matchId IN (:matchIds) " )
+    abstract fun deleteMarketSelectCrossRef(matchIds: List<Long>)
 
     //收到notify時，match不是全收到，沒收到的那些也是不會變動的，所以只更新有收到的參數
     @Query("UPDATE MatchBean " +
@@ -329,6 +341,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
             }
             MatchWithMarkets(matchBean, markets)
         }
+    }
+
+    @Transaction
+    open fun deleteMissingMatch(ids: List<Long>) {
+        deleteTournamentMatchRef(ids)
+        deleteMatchBean(ids)
+        deleteMatchMarketCrossRef(ids)
+        deleteMarketSelectCrossRef(ids)
     }
 
     @Transaction

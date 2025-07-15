@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -46,7 +47,7 @@ abstract class BaseViewModel : ViewModel(), KoinComponent {
         }
         handle?.invoke(ApiResponseState.Start)
         handle?.invoke(ApiResponseState.Processing(0, 100))
-        val jobs = viewModelScope.async {
+        val jobs = viewModelScope.async(Dispatchers.IO) {
             api()
         }
         viewModelScope.launch {

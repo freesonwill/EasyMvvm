@@ -7,6 +7,7 @@
     <string name="menu_odds_display">Odds Display</string>
     <string name="menu_notice_set">Notice Setting</string>
     <string name="menu_background_set">Background Setting</string>
+    <string name="menu_language_set">Language Setting</string>
     <string name="menu_notice_sys">System Notice</string>
     <string name="menu_notice_app">App Notice</string>
     <string name="menu_goal_football">Goal(Football)</string>

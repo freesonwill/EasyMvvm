@@ -43,7 +43,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     private var tabPosition: List<Int> = mutableListOf(0, 0)
     private lateinit var liveBetOnAdapter: LiveBetOnAdapter
     private var mCurrentItemPosition: Int = 0
-    private var mBeforePosition: Int? = null
     private var selectionComboId: Long? = null
     private var isTabClicked: Boolean = false
     private lateinit var viewPager2: ViewPager2
@@ -70,6 +69,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     position: Int,
                     beforePosition: Int
                 ) {
+                    mCurrentItemPosition = position
                     launch {
                         val status = mainViewModel.matchId.value?.let {
                             mViewModel.setSelection(it, selectionId)
@@ -81,8 +81,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
                             showToast(getString(R.string.disabled_to_combo_for_provider))
                         } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
-                            mCurrentItemPosition = position
-                            mBeforePosition = beforePosition
                             fabViewModel.setClickAnimation(x, y)
                         }
                     }
@@ -250,7 +248,6 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                     baseInfo?.awayTeamIcon.toString(), true,
                     selectionsEdit
                 )
-                liveBetOnAdapter.setSelectionComboId(selectionComboId)
                 liveBetOnAdapter.submitList(it)
             }
         }
@@ -280,14 +277,15 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         //串关数据变动
         mViewModel.observerSelectionCombo.observe(viewLifecycleOwner) {
             selectionComboId = it
-            if (mBeforePosition == null) {
+            liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
+            if (liveBetOnAdapter.getBeforePosition() == -1) {
                 it?.let {  comboIdByMarketPosition(it)?.let { position ->
-                    mBeforePosition = position
                     liveBetOnAdapter.notifyItemChanged(position) }  }
             } else {
-                liveBetOnAdapter.setSelectionComboId(selectionComboId, false)
-                liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
-                liveBetOnAdapter.notifyItemChanged(mBeforePosition!!)
+                if(liveBetOnAdapter.getBeforePosition()!=mCurrentItemPosition){
+                    liveBetOnAdapter.notifyItemChanged(mCurrentItemPosition)
+                }
+                liveBetOnAdapter.notifyItemChanged(liveBetOnAdapter.getBeforePosition())
             }
         }
     }

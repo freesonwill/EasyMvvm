@@ -1,3 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="setting">Pengaturan</string>
+    <string name="pan">Pasaran</string>
+    <string name="common">Umum</string>
+    <string name="menu_europe">Odds Eropa</string>
+    <string name="menu_hk">Odds Hongkong</string>
+    <string name="menu_odds_display">Tampilan Odds</string>
+    <string name="menu_notice_set">Pengaturan Notifikasi</string>
+    <string name="menu_background_set">Pengaturan Latar</string>
+    <string name="menu_language_set">Bahasa</string>
+    <string name="menu_notice_sys">Notifikasi Dalam Aplikasi</string>
+    <string name="menu_notice_app">App Notice</string>
+    <string name="menu_goal_football">Gol(Sepak bola)</string>
+    <string name="menu_game_football">Begin(Sepak bola)</string>
+    <string name="menu_part">Part</string>
+    <string name="menu_all">All</string>
+    <string name="menu_close">Close</string>
+    <string name="theme_class">Class</string>
+    <string name="theme_black_blue">Black Blue</string>
+    <string name="theme_black_green">Hijau gelp</string>
+    <string name="theme_black_red">Black Red</string>
+    <string name="theme_white_blue">White Blue</string>
+    <string name="theme_white_green">Hijau putih</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="method_odds_display">Cara Tampilkan Odds</string>
+    <string name="explain">Explain</string>
+    <string name="shut_down">Shut Down</string>
+    <string name="tip_dialog_notice">Saya akan menerima pertandingan ini</string>
+    <string name="notice_game">Notifikasi Gol</string>
+    <string name="notice_bet">Pertandingan yang Dipasang</string>
+    <string name="notice_favourite">Pertandingan Favorit</string>
+    <string name="notice_all">Semua Pertandingan Langsung</string>
+    <string name="display_odds_ben">(Tampilkan odds Termasuk modal)</string>
+    <string name="display_odds_not">(Tampilkan odds Tidaktermasuk modal)</string>
 </resources>
