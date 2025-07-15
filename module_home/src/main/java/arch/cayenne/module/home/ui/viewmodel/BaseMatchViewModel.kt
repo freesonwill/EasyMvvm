@@ -3,6 +3,8 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
@@ -85,29 +87,35 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         subscribeMatch(subscribe)
     }
     fun subscribeMatch(subscribe: Set<Long>) {
-        viewModelScope.launch(Dispatchers.IO) {
+        if (matchListChange.value != null && subscribe.isNotEmpty()) {
             "訂閱比賽  $subscribe".logi(this::class.java.name)
-            if (matchListChange.value != null && subscribe.isNotEmpty()) {
-                val matchWithMarkets = repository.subscribeMatch(subscribe.toList())
-                val old = matchListChange.value!!.toMutableList()
-                matchWithMarkets.forEach { matchWithMarket ->
-                    val index =
-                        old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                    if (index != -1) {
-                        old[index] = matchWithMarket
+            callApi({
+                repository.subscribeMatch(subscribe.toList())
+            }, { state ->
+                if (state is ApiResponseState.Succeeded<*>) {
+                    val matchWithMarkets = state.dataAs<List<MatchWithMarkets>>() ?: return@callApi
+                    val old = matchListChange.value!!.toMutableList()
+
+                    val missing = subscribe - matchWithMarkets.map { it.match.matchId }.toSet()
+                    old.removeIf { missing.contains(it.match.matchId) }
+
+                    matchWithMarkets.forEach { matchWithMarket ->
+                        val index =
+                            old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                        if (index != -1) {
+                            old[index] = matchWithMarket
+                        }
                     }
-                }
-                withContext(Dispatchers.Main) {
                     matchListChange.value = old
                 }
-            }
+            })
         }
     }
 
     fun cancelSubscribeMatch(cancel: Set<Long>) {
         viewModelScope.launch(Dispatchers.IO) {
-            "取消訂閱比賽  $cancel".logi(this::class.java.name)
             if (cancel.isNotEmpty()) {
+                "取消訂閱比賽  $cancel".logi(this::class.java.name)
                 repository.cancelSubscribeMatch(cancel.toList())
             }
         }
