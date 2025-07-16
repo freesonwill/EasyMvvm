@@ -24,7 +24,7 @@ class ToastDefaultAnimation: ToastAnimation {
 
     }
 
-    override fun getLayoutParams(): WindowManager.LayoutParams {
+    override fun getLayoutParams(view: View): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT

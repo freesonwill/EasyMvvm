@@ -11,6 +11,7 @@ import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
 import arch.cayenne.lib.websocket.data.ConnectState
@@ -49,16 +50,18 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         mViewModel.betResultListener.observe(this) {
             if (BetResultToastView.canShowToast(this)) {
                 val toast = BetResultToastView(this@MainActivity)
+                val statusHeight = ViewUtils.getStatusBarHeight(this)
                 toast.setResult(it)
-                showToast(toast, ToastSlideAnimation())
+                showToast(toast, ToastSlideAnimation(statusHeight))
             }
         }
         mViewModel.appNotifyListener.observe(this) {
             //notifyFragment.sendNotifyMsg(it)
             if (AppNotifyToastView.canShowToast(this)) {
                 val toast = AppNotifyToastView(this@MainActivity)
+                val statusHeight = ViewUtils.getStatusBarHeight(this)
                 toast.sendNotifyMsg(it)
-                showToast(toast, ToastSlideAnimation())
+                showToast(toast, ToastSlideAnimation(statusHeight))
             }
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
