@@ -26,9 +26,4 @@ class BlockCanaryModuleInitializer : DefaultInitializer<String> {
         "BlockCanary install....".logd(TAG)
         return TAG
     }
-
-    override fun dependencies(): List<Class<out Initializer<*>>> {
-        super.dependencies()
-        return emptyList()
-    }
 }
