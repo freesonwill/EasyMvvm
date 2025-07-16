@@ -1,14 +1,12 @@
 package arch.cayenne.module.betslip.ui.dialog
 
 import android.animation.ObjectAnimator
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.LinearLayout
 import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
-import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -16,7 +14,6 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoneyForScale
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTabLayout
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.databinding.FragmentEarlySettledNumberKeyboardBinding
@@ -60,7 +57,6 @@ class BetSlipEarlySettledFragment private constructor() :
     override fun initView(savedInstanceState: Bundle?) {
 
         with(mBinding) {
-            setCurrency()
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
                 if (mBinding.groupKeyboard.isInvisible) {
@@ -92,9 +88,8 @@ class BetSlipEarlySettledFragment private constructor() :
     }
 
     private fun setCurrency() {
-        val currency = arguments?.getString(BET_AMOUNT_CURRENCY) ?: ""
+        val currency = requireArguments().getString(BET_AMOUNT_CURRENCY) ?: ""
         mViewModel.setMoneyCurrency(currency)
-        mBinding.tvMoney.text = mViewModel.curencySymbol
     }
 
     private fun initTab(tabLayout: SkinnableTabLayout) {
@@ -147,6 +142,7 @@ class BetSlipEarlySettledFragment private constructor() :
 
     override fun initData() {
         super.initData()
+        setCurrency()
         val betAmount = arguments?.getString(BET_AMOUNT_MONEY) ?: "0"
         val minAmount = arguments?.getString(BET_AMOUNT_MIN) ?: "0"
         val decimalDigitsCount = getDecimalDigitsCount(betAmount)
@@ -161,6 +157,7 @@ class BetSlipEarlySettledFragment private constructor() :
         mBinding.apply {
             btn100.setOnClickListener { mViewModel.setNumber(10000) }
             btn500.setOnClickListener { mViewModel.setNumber(50000) }
+            btn1000.setOnClickListener { mViewModel.setNumber(100000) }
             btn2000.setOnClickListener { mViewModel.setNumber(200000) }
             btn5000.setOnClickListener { mViewModel.setNumber(500000) }
             btnBack.setOnClickListener { mViewModel.backNumber() }
@@ -213,7 +210,6 @@ class BetSlipEarlySettledFragment private constructor() :
         this.onEarlySettleClick = listener
     }
 
-    @SuppressLint("SetTextI18n")
     override fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
@@ -222,7 +218,15 @@ class BetSlipEarlySettledFragment private constructor() :
             val money = it.ifEmpty {
                 "0.00"
             }
-            mBinding.tvBetMoney.text = getString(R.string.refund_amount).format(mViewModel.curencySymbol,money)
+            mBinding.tvBetMoney.text = getString(R.string.refund_amount).format(mViewModel.currencySymbol,money)
+        }
+        mViewModel.currencySymbolListener.observe(viewLifecycleOwner) {
+            mBinding.tvMoney.text = it
+        }
+        mViewModel.onOverNumberListener.observe(viewLifecycleOwner) { overNumber ->
+            overNumber.msg?.let {
+                showToast(it)
+            }
         }
     }
 

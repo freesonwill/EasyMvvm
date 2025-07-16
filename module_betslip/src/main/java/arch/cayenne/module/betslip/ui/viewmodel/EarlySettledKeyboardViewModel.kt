@@ -1,19 +1,23 @@
 package arch.cayenne.module.betslip.ui.viewmodel
 
-import android.icu.util.Currency
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportIntExt.percent
 
 class EarlySettledKeyboardViewModel : NumberCalculatorViewModel() {
 
-    var curencySymbol:String = ""
+    private val _currencySymbolListener = MutableLiveData<String>()
+    val currencySymbolListener: LiveData<String> get() = _currencySymbolListener
+    val currencySymbol:String
+        get() = currencySymbolListener.value?: ""
 
     /*
     *设置钱标志
     * */
     fun setMoneyCurrency(currency: String){
-       curencySymbol = CurrencySymbols.getSymbol(currency)
+        _currencySymbolListener.value = CurrencySymbols.getSymbol(currency)
     }
 
     fun setAmountMoney(betAmount: Long, minAmount: Long) {
