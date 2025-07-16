@@ -1,0 +1,3 @@
+<resources>
+    <item name="block_canary_auto_install" type="bool">false</item>
+</resources>
