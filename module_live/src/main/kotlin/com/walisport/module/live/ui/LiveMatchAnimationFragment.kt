@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
+import android.view.View
 import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -104,6 +105,16 @@ class LiveMatchAnimationFragment :
                 }
             }
 
+            liveVideoBean.observe(viewLifecycleOwner) {
+                it?.let {
+                    if (it.source.isEmpty()) {
+                        mBinding.ivChooseSource.visibility = View.INVISIBLE
+                    } else {
+                        mBinding.ivChooseSource.visibility = View.VISIBLE
+
+                    }
+                }
+            }
         }
 
 
@@ -113,7 +124,7 @@ class LiveMatchAnimationFragment :
         mViewModel.createObserver()
     }
 
-    private fun initWebView(){
+    private fun initWebView() {
         val webSettings = mBinding.animationView.settings
 
         with(webSettings) {
@@ -124,7 +135,10 @@ class LiveMatchAnimationFragment :
             blockNetworkImage = false
             setGeolocationEnabled(true)
             setGeolocationDatabasePath(
-                requireActivity().applicationContext.getDir("database", android.content.Context.MODE_PRIVATE).path
+                requireActivity().applicationContext.getDir(
+                    "database",
+                    android.content.Context.MODE_PRIVATE
+                ).path
             )
             useWideViewPort = true
             loadWithOverviewMode = true
@@ -177,7 +191,7 @@ class LiveMatchAnimationFragment :
 
                 override fun onProgressChanged(view: WebView, newProgress: Int) {
                     super.onProgressChanged(view, newProgress)
-    //                showProgress(newProgress)
+                    //                showProgress(newProgress)
                 }
             })
         }
