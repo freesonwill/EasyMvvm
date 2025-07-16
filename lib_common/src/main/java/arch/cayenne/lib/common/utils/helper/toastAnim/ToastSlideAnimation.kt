@@ -15,6 +15,14 @@ class ToastSlideAnimation: ToastAnimation {
     override val showDuration: Long
         get() = 3_000L
 
+    override fun onBeforeAddView(view: View) {
+        view.isVisible = false
+    }
+
+    override fun onAfterAddView(view: View) {
+        view.isVisible = false
+    }
+
     override fun getLayoutParams(): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
 
@@ -50,6 +58,9 @@ class ToastSlideAnimation: ToastAnimation {
                     var isCanceled = false
                     addListener(
                         onStart = {
+                            if (show) {
+                                view.isVisible = true
+                            }
                             translationY = start
                         },
                         onCancel = {

@@ -16,6 +16,14 @@ class ToastDefaultAnimation: ToastAnimation {
     override val showDuration: Long
         get() = 2_000L
 
+    override fun onBeforeAddView(view: View) {
+
+    }
+
+    override fun onAfterAddView(view: View) {
+
+    }
+
     override fun getLayoutParams(): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT

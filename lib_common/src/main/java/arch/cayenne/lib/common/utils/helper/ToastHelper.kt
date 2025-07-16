@@ -52,7 +52,9 @@ class ToastHelper private constructor() {
         this.view = view
         val wm = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = animInterface.getLayoutParams()
+        animInterface.onBeforeAddView(view)
         wm.addView(view, layoutParams)
+        animInterface.onAfterAddView(view)
 
         toastJob = CoroutineScope(Dispatchers.Main).launch {
             animInterface.playShowAnim(view)
