@@ -8,7 +8,10 @@ interface ToastAnimation {
     val animDuration: Long
     val showDuration: Long
 
-    fun getLayoutParams(): WindowManager.LayoutParams
+    fun onBeforeAddView(view: View)
+    fun onAfterAddView(view: View)
+
+    fun getLayoutParams(view: View): WindowManager.LayoutParams
     suspend fun playShowAnim(view: View)
     suspend fun playDismissAnim(view: View)
 }
