@@ -22,48 +22,79 @@ class ToastHelper private constructor() {
         val instance: ToastHelper by lazy { ToastHelper() }
     }
 
-    private var toastJob: Job? = null
-    //方便cancelToast
-    private var viewHolder:WeakReference<View>? = null
-    private var view:View?
-        get() = viewHolder?.get()
-        set(value) { viewHolder = if(value == null) null else WeakReference(value) }
-
-    /**
-     * 取消Toast
-     */
-    fun cancelToast(context: Context){
-        toastJob?.cancel().let { toastJob = null }
-        view?.let {
-            val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-            if(it.isAttachedToWindow){
-                wm.removeView(it)
-            }
-            view = null
-        }
-    }
+    private val queueMap = mutableMapOf<String, ToastQueueItem>()
 
     fun showToast(view: View, animInterface: ToastAnimation) {
-        cancelToast(view.context)
-        if (toastJob != null) {
+        val tag = animInterface.getQueueTag() ?: animInterface.hashCode().toString()
+        val context = view.context
+
+        // 如果同 tag 已有 toast，先 dismiss
+        queueMap[tag]?.let { item ->
+            CoroutineScope(Dispatchers.Main).launch {
+                item.view?.let {
+                    item.animInterface.playDismissAnim(it)
+                    cancelToast(context, tag)
+                }
+                // 等 dismiss 結束後再顯示新 toast
+                showToastInternal(view, animInterface, tag)
+            }
             return
         }
+        showToastInternal(view, animInterface, tag)
+    }
 
-        this.view = view
-        val wm = view.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+    private fun showToastInternal(view: View, animInterface: ToastAnimation, tag: String) {
+        val context = view.context
+        cancelToast(context, tag) // 保險起見
+        val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = animInterface.getLayoutParams(view)
         animInterface.onBeforeAddView(view)
         wm.addView(view, layoutParams)
         animInterface.onAfterAddView(view)
 
-        toastJob = CoroutineScope(Dispatchers.Main).launch {
+        val job = CoroutineScope(Dispatchers.Main).launch {
             animInterface.playShowAnim(view)
             delay(animInterface.showDuration)
             animInterface.playDismissAnim(view)
-            cancelToast(view.context)
+            cancelToast(context, tag)
+        }
+        queueMap[tag] = ToastQueueItem(WeakReference(view), job, animInterface)
+    }
+
+    private fun cancelToast(context: Context, tag: String) {
+        queueMap[tag]?.let { item ->
+            item.job.cancel()
+            item.view?.let {
+                val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                if (it.isAttachedToWindow) {
+                    wm.removeView(it)
+                }
+            }
+            queueMap.remove(tag)
         }
     }
 
+    fun forceCancel() {
+        queueMap.forEach { (_, item) ->
+            item.job.cancel()
+            item.view?.let {
+                val wm = it.context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+                if (it.isAttachedToWindow) {
+                    wm.removeView(it)
+                }
+            }
+        }
+        queueMap.clear()
+    }
+
+}
+
+private data class ToastQueueItem(
+    val viewHolder: WeakReference<View>,
+    val job: Job,
+    val animInterface: ToastAnimation
+) {
+    val view: View? = viewHolder.get()
 }
 
 fun Fragment.showToast(msg: String?) {
