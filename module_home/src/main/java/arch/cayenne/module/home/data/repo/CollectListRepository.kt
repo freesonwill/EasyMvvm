@@ -76,4 +76,9 @@ class CollectListRepository(
     }
 
     fun observeMatchChange() : Flow<Map<Long, CollectMatchRef>> = collectMatchChange
+
+    override fun deleteMissingMatch(matchIds: List<Long>) {
+        super.deleteMissingMatch(matchIds)
+        matchIds.forEach { collectMatchChange.value = collectMatchChange.value - it }
+    }
 }
