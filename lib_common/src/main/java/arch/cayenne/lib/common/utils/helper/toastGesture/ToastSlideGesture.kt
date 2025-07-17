@@ -54,9 +54,11 @@ class ToastSlideGesture: ToastGesture() {
                     }
                     isDragging = false
                     return true
+                } else {
+                    // 沒有拖曳時，視為點擊，執行收起動畫
+                    removeAnimation(view)
+                    return false
                 }
-                // 沒有拖曳時，讓 onClick 能生效
-                return false
             }
         }
         return false
