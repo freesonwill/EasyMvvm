@@ -15,9 +15,11 @@ import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
 import arch.cayenne.lib.common.utils.helper.toastGesture.ToastSlideGesture
+import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
+import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
 import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
@@ -50,10 +52,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         super.createObserver()
         mViewModel.betResultListener.observe(this) {
             if (BetResultToastView.canShowToast(this)) {
-                val toast = BetResultToastView(this@MainActivity)
-                val statusHeight = ViewUtils.getStatusBarHeight(this)
-                toast.setResult(it)
-                showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
+                showBetResultToast(it)
             }
         }
         mViewModel.appNotifyListener.observe(this) {
@@ -115,4 +114,46 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         return StatusBarConfig
     }
+
+    private fun showBetResultToast(data: List<BetResultLiteBean>) {
+        val toast = BetResultToastView(this@MainActivity)
+        toast.setOnClickListener {
+            showBetSlipPage()
+        }
+        val statusHeight = ViewUtils.getStatusBarHeight(this)
+        toast.setResult(data)
+        showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
+    }
+
+    private fun showBetSlipPage() {
+        val tag = HomeBetSlipFragment.TAG
+        val fragmentManager = supportFragmentManager
+
+        val navHostFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
+        val curFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
+        if (curFragment is HomeBetSlipFragment) {
+            return
+        }
+
+        val betSlipFragment = fragmentManager.findFragmentByTag(tag)
+        if (betSlipFragment != null) {
+            return
+        }
+        val transaction = fragmentManager.beginTransaction()
+            .setCustomAnimations(
+                arch.cayenne.lib.common.R.anim.slide_in_right,
+                arch.cayenne.lib.common.R.anim.no_anim,
+                arch.cayenne.lib.common.R.anim.no_anim,
+                arch.cayenne.lib.common.R.anim.slide_out_right
+            )
+
+        val currentFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
+        if (currentFragment != null) {
+            transaction.hide(currentFragment)
+        }
+        transaction.add(mBinding.navHost.id, HomeBetSlipFragment(), tag)
+        transaction.addToBackStack(tag)
+        transaction.commit()
+    }
+
 }
