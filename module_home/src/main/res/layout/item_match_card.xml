@@ -285,7 +285,7 @@
         android:paddingBottom="@dimen/dp_10"
         android:paddingTop="@dimen/dp_2"
         android:paddingEnd="@dimen/dp_12"
-        android:src="@drawable/selector_favorite_icon"
+        android:src="@drawable/layer_favorite_crossfade"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
