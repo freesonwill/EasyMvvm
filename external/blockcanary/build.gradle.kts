@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
-
+apply(from = rootProject.file("gradle/_sign.gradle"))
 android {
     namespace = "plugin.cayenne.blockcanary"
     compileSdk = 34
