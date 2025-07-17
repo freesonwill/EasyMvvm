@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.helper
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import arch.cayenne.lib.common.databinding.ToastLayoutBinding
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastAnimation
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastDefaultAnimation
+import arch.cayenne.lib.common.utils.helper.toastGesture.ToastGesture
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,28 +26,33 @@ class ToastHelper private constructor() {
 
     private val queueMap = mutableMapOf<String, ToastQueueItem>()
 
-    fun showToast(view: View, animInterface: ToastAnimation) {
+    fun showToast(view: View, animInterface: ToastAnimation, toastGesture: ToastGesture?) {
         val tag = animInterface.getQueueTag() ?: animInterface.hashCode().toString()
         val context = view.context
+
+        toastGesture?.let {
+            initGesture(view, tag, it)
+        }
 
         // 如果同 tag 已有 toast，先 dismiss
         queueMap[tag]?.let { item ->
             CoroutineScope(Dispatchers.Main).launch {
                 item.view?.let {
+                    it.setOnTouchListener(null)
                     item.animInterface.playDismissAnim(it)
-                    cancelToast(context, tag)
+                    removeToast(context, tag)
                 }
                 // 等 dismiss 結束後再顯示新 toast
-                showToastInternal(view, animInterface, tag)
+                showToastInternal(view, animInterface, tag, toastGesture)
             }
             return
         }
-        showToastInternal(view, animInterface, tag)
+        showToastInternal(view, animInterface, tag, toastGesture)
     }
 
-    private fun showToastInternal(view: View, animInterface: ToastAnimation, tag: String) {
+    private fun showToastInternal(view: View, animInterface: ToastAnimation, tag: String, toastGesture: ToastGesture?) {
         val context = view.context
-        cancelToast(context, tag) // 保險起見
+        removeToast(context, tag) // 保險起見
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = animInterface.getLayoutParams(view)
         animInterface.onBeforeAddView(view)
@@ -55,13 +62,15 @@ class ToastHelper private constructor() {
         val job = CoroutineScope(Dispatchers.Main).launch {
             animInterface.playShowAnim(view)
             delay(animInterface.showDuration)
-            animInterface.playDismissAnim(view)
-            cancelToast(context, tag)
+            if (toastGesture == null || toastGesture.canAutoRemove()) {
+                animInterface.playDismissAnim(view)
+                removeToast(context, tag)
+            }
         }
         queueMap[tag] = ToastQueueItem(WeakReference(view), job, animInterface)
     }
 
-    private fun cancelToast(context: Context, tag: String) {
+    private fun removeToast(context: Context, tag: String) {
         queueMap[tag]?.let { item ->
             item.job.cancel()
             item.view?.let {
@@ -71,6 +80,16 @@ class ToastHelper private constructor() {
                 }
             }
             queueMap.remove(tag)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initGesture(view: View, tag: String, gesture: ToastGesture) {
+        view.setOnTouchListener { v, event ->
+            gesture.onTouch(v, event)
+        }
+        gesture.setForceRemoveListener {
+            removeToast(view.context, tag)
         }
     }
 
@@ -105,8 +124,8 @@ fun Fragment.showToast(msg: String?) {
     showToast(layout.root, ToastDefaultAnimation())
 }
 
-fun Fragment.showToast(view: View, toastAnimation: ToastAnimation) {
-    ToastHelper.instance.showToast(view, toastAnimation)
+fun Fragment.showToast(view: View, toastAnimation: ToastAnimation, toastGesture: ToastGesture? = null) {
+    ToastHelper.instance.showToast(view, toastAnimation, toastGesture)
 }
 
 fun Activity.showToast(msg: String) {
@@ -117,6 +136,6 @@ fun Activity.showToast(msg: String) {
     showToast(layout.root, ToastDefaultAnimation())
 }
 
-fun Activity.showToast(view: View, toastAnimation: ToastAnimation) {
-    ToastHelper.instance.showToast(view, toastAnimation)
+fun Activity.showToast(view: View, toastAnimation: ToastAnimation, toastGesture: ToastGesture? = null) {
+    ToastHelper.instance.showToast(view, toastAnimation, toastGesture)
 }

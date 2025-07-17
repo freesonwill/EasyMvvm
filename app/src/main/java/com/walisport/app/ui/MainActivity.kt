@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
+import arch.cayenne.lib.common.utils.helper.toastGesture.ToastSlideGesture
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
@@ -52,7 +53,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 val toast = BetResultToastView(this@MainActivity)
                 val statusHeight = ViewUtils.getStatusBarHeight(this)
                 toast.setResult(it)
-                showToast(toast, ToastSlideAnimation(statusHeight))
+                showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
             }
         }
         mViewModel.appNotifyListener.observe(this) {
