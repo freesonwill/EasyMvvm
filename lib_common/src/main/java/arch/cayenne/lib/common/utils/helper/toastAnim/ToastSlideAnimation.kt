@@ -16,6 +16,10 @@ class ToastSlideAnimation(private val statusHeight: Int): ToastAnimation {
     override val showDuration: Long
         get() = 3_000L
 
+    override fun getQueueTag(): String? {
+        return this.javaClass.simpleName
+    }
+
     override fun onBeforeAddView(view: View) {
         view.visibility = View.INVISIBLE
     }

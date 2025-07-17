@@ -16,6 +16,10 @@ class ToastDefaultAnimation: ToastAnimation {
     override val showDuration: Long
         get() = 2_000L
 
+    override fun getQueueTag(): String? {
+        return this.javaClass.simpleName
+    }
+
     override fun onBeforeAddView(view: View) {
 
     }
