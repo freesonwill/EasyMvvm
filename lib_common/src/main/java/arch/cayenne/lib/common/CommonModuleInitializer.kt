@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.os.StrictMode
 import arch.cayenne.lib.base.data.DefaultInitializer
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.manager.UserDataManager
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.data.repo.CommonRepository
@@ -12,6 +13,9 @@ import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.ui.viewmodel.ReserveDialogViewModel
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
 import org.koin.core.module.Module
@@ -44,11 +48,12 @@ class CommonModuleInitializer : DefaultInitializer<String> {
      */
     private fun enableStrictMode() {
         if (!BuildConfig.DEBUG) return // 只在调试模式开启严格模式
+        "enableStrictMode MANUFACTURER:${Build.MANUFACTURER}".logd(TAG)
         StrictMode.setThreadPolicy(
             StrictMode.ThreadPolicy.Builder()
                 .detectNetwork()   // 检测网络操作
                 //.detectDiskReads() // 检测磁盘读取，File.exists()这个会触发警告，暂时关闭
-                .apply { if(!arrayOf("OPPO").contains(Build.MANUFACTURER)) detectDiskWrites() } // 检测磁盘写入
+                .apply { if(!arrayOf("OPPO","vivo").contains(Build.MANUFACTURER)) detectDiskWrites() } // 检测磁盘写入
                 .detectCustomSlowCalls()
                 .penaltyLog() // 日志输出
                 .penaltyDeath() // 崩溃
