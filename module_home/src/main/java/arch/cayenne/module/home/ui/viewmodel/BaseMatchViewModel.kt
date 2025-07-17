@@ -14,6 +14,7 @@ import arch.cayenne.module.bet.repo.BetRepository
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -37,20 +38,11 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     protected val _state  = MutableLiveData(Event(MatchListState.INIT))
     val state : LiveData<Event<MatchListState>> = _state
 
+    private var matchNotifyJob: Job? = null
+
     override fun initViewModel() {
         super.initViewModel()
-        // 觀察賽事訂閱後，後端主動送出的變化
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.observeMatchNotify().collect { matchWithMarket ->
-                if (matchListChange.value == null) return@collect
-                val old = matchListChange.value!!.toMutableList()
-                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                if (index != -1) { old[index] = matchWithMarket }
-                withContext(Dispatchers.Main) {
-                    matchListChange.value = old
-                }
-            }
-        }
+        startMatchSubscribeNotify()
         //觀察投注單的變化，主要用來做selection變更
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
@@ -129,6 +121,28 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
                 repository.cancelSubscribeMatch(cancel.toList())
             }
         }
+    }
+
+    // 觀察賽事訂閱後，後端主動送出的變化
+    fun startMatchSubscribeNotify() {
+        matchNotifyJob?.cancel()
+        matchNotifyJob = viewModelScope.launch(Dispatchers.IO) {
+            repository.observeMatchNotify().collect { matchWithMarket ->
+                if (matchListChange.value == null) return@collect
+                val old = matchListChange.value!!.toMutableList()
+
+                val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
+                if (index != -1) { old[index] = matchWithMarket }
+                withContext(Dispatchers.Main) {
+                    matchListChange.value = old
+                }
+            }
+        }
+    }
+
+    fun stopMatchSubscribeNotify() {
+        matchNotifyJob?.cancel()
+        matchNotifyJob = null
     }
 
     fun getCurrentSubscribeMatchSet() = subscribeMatchSet
