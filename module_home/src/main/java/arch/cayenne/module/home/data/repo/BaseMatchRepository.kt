@@ -129,7 +129,7 @@ abstract class BaseMatchRepository(
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
         return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
-                "收到比賽推播  ${it.data!!}".logi(this::class.java.name)
+                "收到比賽推播  ${it.data!!}".logi(this@BaseMatchRepository::class.java.simpleName)
                 if (it.data!!.hasBasicUpdate() && it.data!!.basicUpdate.status == 0) {
                     deleteMissingMatch(arrayListOf(it.data!!.matchId))
                 } else {
