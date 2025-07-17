@@ -63,6 +63,7 @@ class ToastHelper private constructor() {
             animInterface.playShowAnim(view)
             delay(animInterface.showDuration)
             if (toastGesture == null || toastGesture.canAutoRemove()) {
+                view.setOnTouchListener(null)
                 animInterface.playDismissAnim(view)
                 removeToast(context, tag)
             }

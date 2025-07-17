@@ -51,6 +51,7 @@ class ToastSlideGesture: ToastGesture() {
                         // 距離不夠，自動回彈
                         resetPosition(view)
                     }
+                    isDragging = false
                 }
                 return true
             }
