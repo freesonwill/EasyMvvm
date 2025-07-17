@@ -62,7 +62,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
                 val toast = AppNotifyToastView(this@MainActivity)
                 val statusHeight = ViewUtils.getStatusBarHeight(this)
                 toast.sendNotifyMsg(it)
-                showToast(toast, ToastSlideAnimation(statusHeight))
+                showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
             }
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
