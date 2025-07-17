@@ -118,12 +118,13 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
 
     private fun showBetResultToast(data: List<BetResultLiteBean>) {
         val toast = BetResultToastView(this@MainActivity)
-        toast.setOnClickListener {
-            showBetSlipPage()
-        }
         val statusHeight = ViewUtils.getStatusBarHeight(this)
         toast.setResult(data)
-        showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
+        showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture().apply {
+            setOnClickListener {
+                showBetSlipPage()
+            }
+        })
     }
 
     private fun showBetSlipPage() {
