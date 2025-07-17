@@ -2,6 +2,7 @@ package arch.cayenne.lib.common.utils.helper.toastGesture
 
 import android.view.MotionEvent
 import android.view.View
+import arch.cayenne.lib.common.utils.ViewUtils
 
 class ToastSlideGesture: ToastGesture() {
 
@@ -48,7 +49,7 @@ class ToastSlideGesture: ToastGesture() {
                         removeAnimation(view)
                     } else {
                         // 距離不夠，自動回彈
-                        view.animate().translationY(0f).setDuration(200).start()
+                        resetPosition(view)
                     }
                 }
                 return true
@@ -67,12 +68,22 @@ class ToastSlideGesture: ToastGesture() {
     }
 
     private fun removeAnimation(view: View) {
+        val statusBar = ViewUtils.getStatusBarHeight(view.context)
+        val height = view.height + statusBar
         view.animate()
-            .translationY(-view.height.toFloat())
+            .translationY(-height.toFloat())
             .setDuration(200)
             .withEndAction {
                 forceRemove()
             }
+            .start()
+    }
+
+    private fun resetPosition(view: View) {
+        val statusBar = ViewUtils.getStatusBarHeight(view.context)
+        view.animate()
+            .translationY(statusBar.toFloat())
+            .setDuration(200)
             .start()
     }
 }
