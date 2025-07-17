@@ -52,7 +52,7 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
                         }
                     }
                 }
-                BetSheetFragment.newInstance().show(parentFragmentManager)
+                BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                 mBinding.root.visibility = View.GONE
             }
         }

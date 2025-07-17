@@ -1,6 +1,7 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.common.data.constants.CurConnectFailedType
@@ -129,15 +130,22 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         val tag = HomeBetSlipFragment.TAG
         val fragmentManager = supportFragmentManager
 
+        val betSlipFragment = fragmentManager.findFragmentByTag(tag)
+        if (betSlipFragment != null) {
+            return
+        }
+
         val navHostFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
         val curFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
         if (curFragment is HomeBetSlipFragment) {
             return
         }
 
-        val betSlipFragment = fragmentManager.findFragmentByTag(tag)
-        if (betSlipFragment != null) {
-            return
+        val dialogFragment = fragmentManager.fragments.filterIsInstance<DialogFragment>()
+        if (dialogFragment.isNotEmpty()) {
+            dialogFragment.forEach {
+                it.dismiss()
+            }
         }
         val transaction = fragmentManager.beginTransaction()
             .setCustomAnimations(
