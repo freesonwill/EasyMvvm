@@ -147,11 +147,13 @@ class MatchListPagerFragment :
         if (hidden) {
             //暫時移除訂閱
             mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+            mViewModel.stopMatchSubscribeNotify()
             if (mViewModel.matchListChange.hasObservers()) {
                 mViewModel.matchListChange.removeObserver(matchListObserver)
             }
         } else {
             //把暫時移除的訂閱加回來
+            mViewModel.startMatchSubscribeNotify()
             mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
             if (!mViewModel.matchListChange.hasObservers()) {
                 mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)

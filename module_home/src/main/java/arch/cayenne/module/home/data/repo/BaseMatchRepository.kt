@@ -54,7 +54,7 @@ abstract class BaseMatchRepository(
         }
         if (res.error == null && res.data != null) {
             "訂閱比賽成功  ${res.data!!.matchNotifyList.map { it.matchId }}".logi(this::class.java.name)
-            val matchUpdateData = res.data!!.matchNotifyList.toRoomData()
+            val matchUpdateData = res.data!!.matchNotifyList.filter { it.basicUpdate.status != 0 }.toRoomData()
 
             deleteMissingMatch(ids - matchUpdateData.ids.toSet())
 
@@ -78,7 +78,7 @@ abstract class BaseMatchRepository(
     /**
      * 刪除賽事，通常是因為訂閱後沒有收到該賽事資料，表示該賽事已經結束
      * */
-    private fun deleteMissingMatch(matchIds: List<Long>) {
+    protected open fun deleteMissingMatch(matchIds: List<Long>) {
         if (matchIds.isEmpty()) return
         matchDao.deleteMissingMatch(matchIds)
     }
@@ -129,10 +129,14 @@ abstract class BaseMatchRepository(
     suspend fun observeMatchNotify(): Flow<MatchWithMarkets> {
         return socketManager.observeProtoMessage<Client.MatchNotify>(ApiCode.MATCH_NOTIFY).transform {
             if (it.error == null && it.data != null) {
-                "收到比賽推播  ${it.data!!}".logi(this::class.java.name)
-                val matchUpdateData = arrayListOf(it.data!!).toRoomData()
-                val list = updateFullMath(matchUpdateData)
-                list.forEach { matchWithMarket -> emit(matchWithMarket) }
+                "收到比賽推播  ${it.data!!}".logi(this@BaseMatchRepository::class.java.simpleName)
+                if (it.data!!.hasBasicUpdate() && it.data!!.basicUpdate.status == 0) {
+                    deleteMissingMatch(arrayListOf(it.data!!.matchId))
+                } else {
+                    val matchUpdateData = arrayListOf(it.data!!).toRoomData()
+                    val list = updateFullMath(matchUpdateData)
+                    list.forEach { matchWithMarket -> emit(matchWithMarket) }
+                }
             }
         }
     }

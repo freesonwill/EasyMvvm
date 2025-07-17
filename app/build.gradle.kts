@@ -88,4 +88,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
+    debugImplementation(project(":external:blockcanary"))
 }

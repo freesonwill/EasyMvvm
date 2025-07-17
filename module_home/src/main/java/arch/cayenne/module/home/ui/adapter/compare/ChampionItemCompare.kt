@@ -25,7 +25,7 @@ class ChampionItemCompare : DiffUtil.ItemCallback<MarketWithSelections>() {
                     oldSel.odds == newSel.odds &&
                     oldSel.active == newSel.active &&
                     oldSel.parlay == newSel.parlay &&
-                    oldSel.trend == newSel.trend &&
+                    newSel.trend != 0 &&
                     oldSel.isSelected == newSel.isSelected
         }
     }
@@ -46,7 +46,7 @@ class ChampionItemCompare : DiffUtil.ItemCallback<MarketWithSelections>() {
                 old.shortName != new.shortName ||
                 old.parlay != new.parlay ||
                 old.isSelected != new.isSelected ||
-                old.trend != new.trend
+                new.trend != 0
             ) {
                 diff.add("odds") // 如果有其中任何一個不同就記錄 odds
                 return@forEach
