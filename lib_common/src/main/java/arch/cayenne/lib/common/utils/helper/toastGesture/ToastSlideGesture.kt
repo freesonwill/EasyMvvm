@@ -22,7 +22,7 @@ class ToastSlideGesture: ToastGesture() {
                 lastMoveTime = event.eventTime
                 lastMoveY = event.rawY
                 pendingRemove = false
-                return true
+                return false // 讓點擊事件有機會被觸發
             }
             MotionEvent.ACTION_MOVE -> {
                 val deltaY = event.rawY - downY
@@ -32,13 +32,14 @@ class ToastSlideGesture: ToastGesture() {
                 }
                 lastMoveTime = event.eventTime
                 lastMoveY = event.rawY
-                return true
+                return isDragging // 只有拖曳時才攔截事件
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (isDragging) {
                     if (pendingRemove) {
                         removeAnimation(view)
                         pendingRemove = false
+                        isDragging = false
                         return true
                     }
                     val timeDiff = event.eventTime - lastMoveTime
@@ -52,8 +53,10 @@ class ToastSlideGesture: ToastGesture() {
                         resetPosition(view)
                     }
                     isDragging = false
+                    return true
                 }
-                return true
+                // 沒有拖曳時，讓 onClick 能生效
+                return false
             }
         }
         return false
