@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 當 View 被禁用 (state_enabled="false") -->
+    <!-- 這個 item 的優先級最高，應該放在最前面 -->
+    <item android:state_enabled="false">
+        <set>
+            <objectAnimator
+                android:propertyName="alpha"
+                android:duration="100"
+                android:valueTo="1.0"
+                android:valueType="floatType"/>
+        </set>
+    </item>
+    <!-- 狀態：當 View 被按下 (state_pressed="true") -->
+    <item android:state_pressed="true">
+        <set>
+            <!-- 定義一個物件動畫，目標屬性是 "alpha" -->
+            <objectAnimator
+                android:propertyName="alpha"
+                android:duration="100"
+                android:valueTo="0.5"
+                android:valueType="floatType"/>
+        </set>
+    </item>
+    <!-- 預設狀態 (未被按下) -->
+    <!-- 注意：這個 item 必須放在最後，作為預設值 -->
+    <item>
+        <set>
+            <objectAnimator
+                android:propertyName="alpha"
+                android:duration="100"
+                android:valueTo="1.0"
+                android:valueType="floatType"/>
+        </set>
+    </item>
+</selector>
