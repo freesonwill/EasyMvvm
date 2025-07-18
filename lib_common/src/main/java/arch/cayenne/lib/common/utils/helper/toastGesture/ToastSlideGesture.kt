@@ -44,8 +44,8 @@ class ToastSlideGesture: ToastGesture() {
                     }
                     val timeDiff = event.eventTime - lastMoveTime
                     val yDiff = event.rawY - lastMoveY
-                    val velocity = if (timeDiff > 0) yDiff / timeDiff * 1000 else 0f // px/s
-                    val threshold = -view.height / 3f
+                    val velocity = if (timeDiff > 0) yDiff / timeDiff * 2000 else 0f // px/s
+                    val threshold = -100f
                     if (view.translationY < threshold || velocity < -1000) {
                         removeAnimation(view)
                     } else {
