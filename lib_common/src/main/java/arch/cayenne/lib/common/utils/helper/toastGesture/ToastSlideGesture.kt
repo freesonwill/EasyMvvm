@@ -55,8 +55,7 @@ class ToastSlideGesture: ToastGesture() {
                     isDragging = false
                     return true
                 } else {
-                    // 沒有拖曳時，視為點擊，執行收起動畫
-                    onClick(view)
+                    removeAnimation(view)
                     return false
                 }
             }
@@ -91,10 +90,5 @@ class ToastSlideGesture: ToastGesture() {
             .translationY(statusBar.toFloat())
             .setDuration(200)
             .start()
-    }
-
-    override fun onClick(view: View) {
-        removeAnimation(view)
-        super.onClick(view)
     }
 }

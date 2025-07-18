@@ -37,9 +37,9 @@ class ToastHelper private constructor() {
         // 如果同 tag 已有 toast，先 dismiss
         queueMap[tag]?.let { item ->
             CoroutineScope(Dispatchers.Main).launch {
-                item.view?.let {
-                    it.setOnTouchListener(null)
-                    item.animInterface.playDismissAnim(it)
+                item.view?.let { v ->
+                    item.gesture?.clearGesture(v)
+                    item.animInterface.playDismissAnim(v)
                     removeToast(context, tag)
                 }
                 // 等 dismiss 結束後再顯示新 toast
@@ -63,12 +63,12 @@ class ToastHelper private constructor() {
             animInterface.playShowAnim(view)
             delay(animInterface.showDuration)
             if (toastGesture == null || toastGesture.canAutoRemove()) {
-                view.setOnTouchListener(null)
+                toastGesture?.clearGesture(view)
                 animInterface.playDismissAnim(view)
                 removeToast(context, tag)
             }
         }
-        queueMap[tag] = ToastQueueItem(WeakReference(view), job, animInterface)
+        queueMap[tag] = ToastQueueItem(WeakReference(view), job, animInterface, toastGesture)
     }
 
     private fun removeToast(context: Context, tag: String) {
@@ -86,9 +86,7 @@ class ToastHelper private constructor() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initGesture(view: View, tag: String, gesture: ToastGesture) {
-        view.setOnTouchListener { v, event ->
-            gesture.onTouch(v, event)
-        }
+        gesture.setGesture(view)
         gesture.setForceRemoveListener {
             removeToast(view.context, tag)
         }
@@ -112,7 +110,8 @@ class ToastHelper private constructor() {
 private data class ToastQueueItem(
     val viewHolder: WeakReference<View>,
     val job: Job,
-    val animInterface: ToastAnimation
+    val animInterface: ToastAnimation,
+    val gesture: ToastGesture?
 ) {
     val view: View? = viewHolder.get()
 }
