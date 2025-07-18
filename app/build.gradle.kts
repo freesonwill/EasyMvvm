@@ -58,6 +58,9 @@ android {
         resources {
             excludes += "**/*.proto"
         }
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 }
 
