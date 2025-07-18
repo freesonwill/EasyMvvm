@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -31,8 +32,10 @@ import com.walisport.module.search.databinding.FragmentSearchDatePickerBinding
 import com.walisport.module.search.ui.view.SearchCustomWeekBar
 import com.walisport.module.search.ui.viewmodel.SearchDatePickerViewModel
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
@@ -70,6 +73,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            ivPrevMonth.apply {
+                checkMonthSwitchEnabled(true)
+                enableScaleIcon()
+            }
+            ivNextMonth.apply {
+                checkMonthSwitchEnabled(false)
+                enableScaleIcon()
+            }
             calendarView.apply {
                 setSelectSingleMode()
                 updateWeekBarLocale()
@@ -118,9 +129,6 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     ),
                     Color.TRANSPARENT
                 )
-                setOnMonthChangeListener { year, month ->
-                    setCalendarTitle(year, month)
-                }
                 scrollToSelectedDate()
                 addSchemeDate(schemeDates)
                 setRange(
@@ -141,6 +149,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     override fun initListener() {
         with(mBinding) {
+            calendarView.setOnMonthChangeListener { year, month ->
+                setCalendarTitle(year, month)
+                ivPrevMonth.checkMonthSwitchEnabled(true, year, month)
+                ivNextMonth.checkMonthSwitchEnabled(false, year, month)
+            }
             ivPrevMonth.clickNoRepeat {
                 calendarView.scrollToPre(true)
             }
@@ -178,6 +191,33 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 updateWeekBarLocale()
             }
         }
+    }
+
+    private fun ImageView.checkMonthSwitchEnabled(
+        isPrev: Boolean,
+        year: Int = mBinding.calendarView.curYear,
+        month: Int = mBinding.calendarView.curMonth
+    ) {
+        fun Calendar.isSameDay(other: Calendar): Boolean {
+            return get(Calendar.YEAR) == other.get(Calendar.YEAR) &&
+                    get(Calendar.MONTH) == other.get(Calendar.MONTH) &&
+                    get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
+        }
+
+        isEnabled = Calendar.getInstance()
+            .apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month - 1)
+                set(Calendar.DAY_OF_MONTH, 1)
+                add(Calendar.MONTH, if (isPrev) -1 else 1)
+            }.run {
+                if(isPrev) (rangeStartDate.clone() as Calendar)
+                    .apply { set(Calendar.DAY_OF_MONTH, 1) }
+                    .let { prev -> !before(prev) || isSameDay(prev) }
+                else (rangeEndDate.clone() as Calendar)
+                    .apply { set(Calendar.DAY_OF_MONTH, 1) }
+                    .let { next -> !after(next) || isSameDay(next) }
+            }
     }
 
     @SuppressLint("DiscouragedApi")
