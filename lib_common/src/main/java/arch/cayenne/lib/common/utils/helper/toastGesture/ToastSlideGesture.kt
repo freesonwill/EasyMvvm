@@ -44,8 +44,8 @@ class ToastSlideGesture: ToastGesture() {
                     }
                     val timeDiff = event.eventTime - lastMoveTime
                     val yDiff = event.rawY - lastMoveY
-                    val velocity = if (timeDiff > 0) yDiff / timeDiff * 1000 else 0f // px/s
-                    val threshold = -view.height / 3f
+                    val velocity = if (timeDiff > 0) yDiff / timeDiff * 2000 else 0f // px/s
+                    val threshold = -100f
                     if (view.translationY < threshold || velocity < -1000) {
                         removeAnimation(view)
                     } else {
@@ -55,8 +55,7 @@ class ToastSlideGesture: ToastGesture() {
                     isDragging = false
                     return true
                 } else {
-                    // 沒有拖曳時，視為點擊，執行收起動畫
-                    onClick(view)
+                    removeAnimation(view)
                     return false
                 }
             }
@@ -91,10 +90,5 @@ class ToastSlideGesture: ToastGesture() {
             .translationY(statusBar.toFloat())
             .setDuration(200)
             .start()
-    }
-
-    override fun onClick(view: View) {
-        removeAnimation(view)
-        super.onClick(view)
     }
 }
