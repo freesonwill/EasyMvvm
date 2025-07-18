@@ -25,14 +25,15 @@
 
         <LinearLayout
             android:id="@+id/operate_share"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/dp_100"
+            android:layout_height="@dimen/dp_100"
             android:layout_marginTop="@dimen/dp_54"
             android:orientation="vertical"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_share"
                 android:layout_width="@dimen/dp_48"
                 android:layout_height="@dimen/dp_48"
                 android:src="@drawable/shape_copy_link" />
