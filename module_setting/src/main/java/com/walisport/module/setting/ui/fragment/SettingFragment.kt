@@ -23,15 +23,11 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     override val vbClass: KClass<FragmentSettingBinding> = FragmentSettingBinding::class
     override val vmClass: KClass<SettingViewModel> = SettingViewModel::class
 
-    private var skinType: String = ""
-
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
             findNavController().navigateUp()
         })
-        //设置皮肤
-        skinType = mViewModel.getSkinType()
-        mViewModel.setSkinType(skinType)
+        updateSelectItem()
     }
 
     override fun initListener() {
@@ -50,21 +46,23 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun createObserver() {
-        mViewModel.displayType.observe(viewLifecycleOwner) { value ->
-            mBinding.tvDisplay.text = getSkinnableOddsString(value)
-        }
-        mViewModel.language.observe(viewLifecycleOwner) { value ->
-            mBinding.tvLanguageType.text = getSkinnableLanguageString(value)
-        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            //皮肤设置
-            skinType = mViewModel.getSkinType()
-            mViewModel.setSkinType(skinType)
+            //更新UI界面
+            updateSelectItem()
         }
+    }
+
+    private fun updateSelectItem() {
+        val skinType = mViewModel.getSkinType()
+        mViewModel.setSkinType(skinType)
+        val oddsType = mViewModel.getOddsType()
+        mBinding.tvDisplay.text = getSkinnableOddsString(oddsType)
+        val langType = mViewModel.getLanguageType()
+        mBinding.tvLanguageType.text = getSkinnableLanguageString(langType)
     }
 
     private fun showOddsDisplayDialog() {
