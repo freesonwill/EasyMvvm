@@ -42,8 +42,38 @@ class ComboBetRepository(
                 launch {
                     val selection = betDao.getSelections(bet.betId)
                     if (selection.isNotEmpty()) {
+                        val emptyRisk = getEmptyRiskList(selection.size)
+                        if (emptyRisk.isNotEmpty()) {
+                            comboMultiBetFlow.emit(calculateMultiBetSums(selection, emptyRisk))
+                        }
                         setComboMulti(selection)
                     }
+                }
+            }
+        }
+    }
+
+    private fun getEmptyRiskList(size: Int): List<ComboRiskDataModel> {
+        return if (size <= 1) {
+            emptyList()
+        } else if (size == 2) {
+            listOf(
+                ComboRiskDataModel(
+                    serialValue = 2,
+                    minAmount = 0L,
+                    maxAmount = 0L
+                )
+            )
+        } else{
+            mutableListOf<ComboRiskDataModel>().apply {
+                for (i in size downTo 1) {
+                    add(
+                        ComboRiskDataModel(
+                            serialValue = if (i == 1) 0 else i,
+                            minAmount = 0L,
+                            maxAmount = 0L
+                        )
+                    )
                 }
             }
         }
@@ -53,20 +83,24 @@ class ComboBetRepository(
         data: List<BetSelectionBean>
     ) = withContext(scope.coroutineContext) {
         remoteManager.getComboRisk(data)?.let { riskList ->
-            val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
-                ComboMultiBetBean(
-                    serialValue = bean.serialValue,
-                    comboK = bean.comboK,
-                    comboV = bean.comboV,
-                    sumOdds = bean.sumOdds,
-                    count = bean.count,
-                    minAmount = bean.minAmount,
-                    maxAmount = bean.maxAmount
-                )
+            if (riskList.isNotEmpty()) {
+                val multiBet = calculateMultiBetSums(data, riskList).map { bean ->
+                    ComboMultiBetBean(
+                        serialValue = bean.serialValue,
+                        comboK = bean.comboK,
+                        comboV = bean.comboV,
+                        sumOdds = bean.sumOdds,
+                        count = bean.count,
+                        minAmount = bean.minAmount,
+                        maxAmount = bean.maxAmount
+                    )
+                }
+                comboMultiBetFlow.emit(multiBet)
+            } else {
+                comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
             }
-            comboMultiBetFlow.emit(multiBet)
         } ?: run {
-            comboMultiBetFlow.emit(emptyList())
+            comboMultiBetFlow.emit(calculateMultiBetSums(data, getEmptyRiskList(data.size)))
         }
     }
 

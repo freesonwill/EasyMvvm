@@ -21,14 +21,7 @@ class ComboBetViewModel(
     private val _onComboMultiBetBeanListener = MutableLiveData<List<ComboMultiBetBean>>()
     val onComboMultiBetBeanListener: LiveData<List<ComboMultiBetBean>> get() = _onComboMultiBetBeanListener
 
-    private val _onBetListListener = MediatorLiveData<List<BetSelectionBean>>().apply {
-        addSource(_onComboMultiBetBeanListener) { bean ->
-            val failBet = bean.isEmpty() || bean.map { it.minAmount == 0L && it.maxAmount == 0L }.any { it }
-            if (failBet) {
-                value = value?.map { it.copy(isActive = false) }
-            }
-        }
-    }
+    private val _onBetListListener = MutableLiveData<List<BetSelectionBean>>()
     val onBetListListener: LiveData<List<BetSelectionBean>> get() = _onBetListListener
 
     private val _onBalanceListener = MutableLiveData<InfoBean>()
