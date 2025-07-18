@@ -2,7 +2,6 @@ package com.walisport.module.search.ui.fragment
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -15,6 +14,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
@@ -32,8 +32,10 @@ import com.walisport.module.search.databinding.FragmentSearchDatePickerBinding
 import com.walisport.module.search.ui.view.SearchCustomWeekBar
 import com.walisport.module.search.ui.viewmodel.SearchDatePickerViewModel
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {
@@ -51,6 +53,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private var marginEnd: Int = 0
     private var selectedDate: Long? = null
     private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+    private var rangeStartDate: Calendar = Calendar.getInstance()
+    private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
 
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
@@ -69,6 +73,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
+            ivPrevMonth.apply {
+                checkMonthSwitchEnabled(true)
+                enableScaleIcon()
+            }
+            ivNextMonth.apply {
+                checkMonthSwitchEnabled(false)
+                enableScaleIcon()
+            }
             calendarView.apply {
                 setSelectSingleMode()
                 updateWeekBarLocale()
@@ -117,11 +129,16 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                     ),
                     Color.TRANSPARENT
                 )
-                setOnMonthChangeListener { year, month ->
-                    setCalendarTitle(year, month)
-                }
                 scrollToSelectedDate()
                 addSchemeDate(schemeDates)
+                setRange(
+                    rangeStartDate.get(Calendar.YEAR),
+                    rangeStartDate.get(Calendar.MONTH) + 1,
+                    rangeStartDate.get(Calendar.DAY_OF_MONTH),
+                    rangeEndDate.get(Calendar.YEAR),
+                    rangeEndDate.get(Calendar.MONTH) + 1,
+                    rangeEndDate.get(Calendar.DAY_OF_MONTH)
+                )
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = createMaskGradient()
@@ -132,6 +149,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
 
     override fun initListener() {
         with(mBinding) {
+            calendarView.setOnMonthChangeListener { year, month ->
+                setCalendarTitle(year, month)
+                ivPrevMonth.checkMonthSwitchEnabled(true, year, month)
+                ivNextMonth.checkMonthSwitchEnabled(false, year, month)
+            }
             ivPrevMonth.clickNoRepeat {
                 calendarView.scrollToPre(true)
             }
@@ -169,6 +191,33 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 updateWeekBarLocale()
             }
         }
+    }
+
+    private fun ImageView.checkMonthSwitchEnabled(
+        isPrev: Boolean,
+        year: Int = mBinding.calendarView.curYear,
+        month: Int = mBinding.calendarView.curMonth
+    ) {
+        fun Calendar.isSameDay(other: Calendar): Boolean {
+            return get(Calendar.YEAR) == other.get(Calendar.YEAR) &&
+                    get(Calendar.MONTH) == other.get(Calendar.MONTH) &&
+                    get(Calendar.DAY_OF_MONTH) == other.get(Calendar.DAY_OF_MONTH)
+        }
+
+        isEnabled = Calendar.getInstance()
+            .apply {
+                set(Calendar.YEAR, year)
+                set(Calendar.MONTH, month - 1)
+                set(Calendar.DAY_OF_MONTH, 1)
+                add(Calendar.MONTH, if (isPrev) -1 else 1)
+            }.run {
+                if(isPrev) (rangeStartDate.clone() as Calendar)
+                    .apply { set(Calendar.DAY_OF_MONTH, 1) }
+                    .let { prev -> !before(prev) || isSameDay(prev) }
+                else (rangeEndDate.clone() as Calendar)
+                    .apply { set(Calendar.DAY_OF_MONTH, 1) }
+                    .let { next -> !after(next) || isSameDay(next) }
+            }
     }
 
     @SuppressLint("DiscouragedApi")
@@ -404,6 +453,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         private var marginEnd: Int = 0
         private var selectedDate: Long? = null
         private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+        private var rangeStartDate: Calendar = Calendar.getInstance()
+        private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
 
         fun setMarginTop(value: Int) {
             marginTop = value
@@ -425,6 +476,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             schemeDates = dates
         }
 
+        fun setRange(start: Calendar, end: Calendar) {
+            rangeStartDate = start
+            rangeEndDate = end
+        }
+
         fun build(): SearchDatePickerFragment {
             return SearchDatePickerFragment().apply {
                 this.marginTop = this@Builder.marginTop
@@ -432,6 +488,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 this.marginEnd = this@Builder.marginEnd
                 this.selectedDate = this@Builder.selectedDate
                 this.schemeDates = this@Builder.schemeDates
+                this.rangeStartDate = this@Builder.rangeStartDate
+                this.rangeEndDate = this@Builder.rangeEndDate
             }
         }
     }
