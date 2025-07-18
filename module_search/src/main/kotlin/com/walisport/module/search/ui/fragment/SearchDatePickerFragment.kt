@@ -2,7 +2,6 @@ package com.walisport.module.search.ui.fragment
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -51,6 +50,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private var marginEnd: Int = 0
     private var selectedDate: Long? = null
     private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+    private var rangeStartDate: Calendar = Calendar.getInstance()
+    private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
 
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
@@ -122,6 +123,14 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 }
                 scrollToSelectedDate()
                 addSchemeDate(schemeDates)
+                setRange(
+                    rangeStartDate.get(Calendar.YEAR),
+                    rangeStartDate.get(Calendar.MONTH) + 1,
+                    rangeStartDate.get(Calendar.DAY_OF_MONTH),
+                    rangeEndDate.get(Calendar.YEAR),
+                    rangeEndDate.get(Calendar.MONTH) + 1,
+                    rangeEndDate.get(Calendar.DAY_OF_MONTH)
+                )
                 setCalendarTitle(curYear, curMonth)
             }
             maskView.background = createMaskGradient()
@@ -404,6 +413,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         private var marginEnd: Int = 0
         private var selectedDate: Long? = null
         private var schemeDates: Map<String, com.haibin.calendarview.Calendar> = emptyMap()
+        private var rangeStartDate: Calendar = Calendar.getInstance()
+        private var rangeEndDate: Calendar = Calendar.getInstance().apply { add(Calendar.MONTH, 1) }
 
         fun setMarginTop(value: Int) {
             marginTop = value
@@ -425,6 +436,11 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
             schemeDates = dates
         }
 
+        fun setRange(start: Calendar, end: Calendar) {
+            rangeStartDate = start
+            rangeEndDate = end
+        }
+
         fun build(): SearchDatePickerFragment {
             return SearchDatePickerFragment().apply {
                 this.marginTop = this@Builder.marginTop
@@ -432,6 +448,8 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
                 this.marginEnd = this@Builder.marginEnd
                 this.selectedDate = this@Builder.selectedDate
                 this.schemeDates = this@Builder.schemeDates
+                this.rangeStartDate = this@Builder.rangeStartDate
+                this.rangeEndDate = this@Builder.rangeEndDate
             }
         }
     }
