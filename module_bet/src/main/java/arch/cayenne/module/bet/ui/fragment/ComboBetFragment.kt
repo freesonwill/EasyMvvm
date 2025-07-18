@@ -218,24 +218,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         if (size == 0 ) {
             restoreBetLayoutPosition()
         } else {
-            val currentHeight = mBinding.rvMultiBet.height
             val targetHeight = getMultiItemHeight() * size.coerceAtMost(1)
-            val animator = ValueAnimator.ofInt(currentHeight, targetHeight).apply {
-                duration = 200
-                interpolator = LinearInterpolator()
-
-                addUpdateListener {
-                    val height = it.animatedValue as Int
-                    mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-                        this.height = height
-                    }
-                }
-                doOnEnd {
-                    mBinding.rvMultiBet.scrollToPosition(0)
-                    restoreBetLayoutPosition()
-                }
+            mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
+                this.height = targetHeight
             }
-            animator.start()
         }
     }
 
@@ -297,7 +283,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.clMultiBet.maxHeight = maxHeight
 
         mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-            this.height = 1
+            this.height = getMultiItemHeight()
         }
     }
 
