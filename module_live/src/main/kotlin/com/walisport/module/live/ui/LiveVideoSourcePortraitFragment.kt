@@ -8,7 +8,6 @@ import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLayoutChangeListener
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.activity.ComponentDialog
 import androidx.core.animation.doOnEnd
@@ -70,7 +69,7 @@ class LiveVideoSourcePortraitFragment :
         }
 
         //进入时展示动画
-        mBinding.root.addOnLayoutChangeListener(object : OnLayoutChangeListener {
+        mBinding.ctSource.addOnLayoutChangeListener(object : OnLayoutChangeListener {
             override fun onLayoutChange(
                 v: View?,
                 left: Int,
@@ -82,9 +81,12 @@ class LiveVideoSourcePortraitFragment :
                 oldRight: Int,
                 oldBottom: Int
             ) {
-                mBinding.root.removeOnLayoutChangeListener(this)
-                mBinding.root.post {
-                    playEnterAnimations()
+                val location = IntArray(2)
+                mBinding.ctSource.getLocationOnScreen(location)
+
+                if (location[0] == 0) {
+                    mBinding.ctSource.removeOnLayoutChangeListener(this)
+                    mBinding.ctSource.postDelayed({ playEnterAnimations() }, 150)
                 }
             }
         })
