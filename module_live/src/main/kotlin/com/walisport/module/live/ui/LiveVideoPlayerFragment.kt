@@ -193,7 +193,10 @@ class LiveVideoPlayerFragment :
                         .apply { arguments.putLong("matchId", mViewModel.matchId()) })
             }
 
-            ivSoundToggle.clickNoRepeat { mViewModel.changeMuteStatus() }
+            ivSoundToggle.clickNoRepeat {
+                scheduleHideButtons()
+                mViewModel.changeMuteStatus()
+            }
 
             ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
