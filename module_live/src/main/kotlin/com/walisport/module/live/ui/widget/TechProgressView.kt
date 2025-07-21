@@ -29,19 +29,21 @@ class TechProgressView @JvmOverloads constructor(
 
     @SuppressLint("SetTextI18n")
     fun setData(item: MatchHalfTeamStats, isRate: Boolean) {
+        val total = (item.homeNum + item.awayNum).toFloat()
+        var home = 0
+        var away = 0
+        if (total > 0f) {//防止除零错误
+            home = ((item.homeNum / total) * 100).toInt()
+            away = ((item.awayNum / total) * 100).toInt()
+        }
         if (isRate) {
-            val total = (item.homeNum + item.awayNum).toFloat()
-            val home = ((item.homeNum / total) * 100).toInt()
-            val away = ((item.awayNum / total) * 100).toInt()
             mBinding.tvProgressLeft.text = "$home%"
             mBinding.tvProgressRight.text = "$away%"
-            mBinding.proLeft.progress = home
-            mBinding.proRight.progress = away
         } else {
-            mBinding.tvProgressLeft.text = String.format("%s", item.homeNum)
-            mBinding.tvProgressRight.text = String.format("%s", item.awayNum)
-            mBinding.proLeft.progress = item.homeNum
-            mBinding.proRight.progress = item.awayNum
+            mBinding.tvProgressLeft.text = "${item.homeNum}"
+            mBinding.tvProgressRight.text = "${item.awayNum}"
         }
+        mBinding.proLeft.progress = home
+        mBinding.proRight.progress = away
     }
 }
