@@ -2,16 +2,16 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/bottom_sheet_main_background"
+    android:background="@drawable/bg_base_bottom_sheet_dialog">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/cl_calculator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_10"
-        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button"
-        android:background="@drawable/bg_bottom_sheet_dialog"
-        >
+        app:layout_constraintBottom_toTopOf="@id/cl_bottom_button">
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
             android:id="@+id/tv_title"
@@ -274,7 +274,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="@dimen/dp_5"
-        android:background="@color/bottom_sheet_main_background"
         app:layout_constraintBottom_toBottomOf="parent"
         android:paddingBottom="@dimen/dp_10"
         android:paddingTop="@dimen/dp_30"
