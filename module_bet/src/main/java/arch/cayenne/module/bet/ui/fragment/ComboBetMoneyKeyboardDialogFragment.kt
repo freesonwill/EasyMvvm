@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -66,6 +67,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     private val resultBundle: Bundle by lazy {
         Bundle()
     }
+
+    override val dialogBackground: Drawable?
+        get() = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {

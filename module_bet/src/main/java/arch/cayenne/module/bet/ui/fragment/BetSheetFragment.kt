@@ -1,12 +1,10 @@
 package arch.cayenne.module.bet.ui.fragment
 
 import android.content.DialogInterface
-import android.graphics.Color
 import android.os.Bundle
 import android.view.ContextThemeWrapper
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -74,7 +72,6 @@ class BetSheetFragment private constructor() :
     }
 
     private var lastLiveData: LiveData<String>? = null
-    private var dimView: View? = null
 
     override fun onGetLayoutInflater(savedInstanceState: Bundle?): LayoutInflater {
         val contextThemeWrapper = ContextThemeWrapper(requireContext(), R.style.BetModuleTheme)
@@ -96,38 +93,6 @@ class BetSheetFragment private constructor() :
     }
 
     override fun initListener() {
-    }
-
-    override fun onStart() {
-        super.onStart()
-        setBackground()
-    }
-
-    private fun setBackground() {
-        dialog?.window?.let { window ->
-            val decorView = window.decorView as ViewGroup
-
-            dimView = View(window.context).apply {
-                layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-                )
-                setBackgroundColor(Color.BLACK) // 半透明黑
-                this.alpha = 0.75f // 設定透明度
-                isClickable = false // 不要攔截事件
-                decorView.addView(this, 0)
-            }
-            // 加在最底層
-        }
-        removeDim()
-    }
-
-    private fun removeBackground() {
-        dimView?.let { view ->
-            val decorView = dialog?.window?.decorView as? ViewGroup
-            decorView?.removeView(view)
-            dimView = null
-        }
     }
 
     private fun setFitToContents() {
@@ -193,11 +158,6 @@ class BetSheetFragment private constructor() :
         val v = mBinding.root
         val h = v.height.toFloat()
         ViewHelper.expandView(v, h)
-    }
-
-    override fun dismiss() {
-        removeBackground()
-        super.dismiss()
     }
 
     override fun superDismiss() {
