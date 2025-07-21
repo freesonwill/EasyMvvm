@@ -17,7 +17,7 @@
             android:id="@+id/group_home_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container,iv_home_league_more,ll_tournaments_dropdown" />
+            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container,iv_tournament_more,ll_tournaments_dropdown" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_first_navbar"
@@ -264,6 +264,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:background="@drawable/shape_tournament_more_bg"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
