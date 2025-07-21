@@ -209,7 +209,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
 
     override fun dismiss() {
-        if (isDismissing || sheetContainer == null) return
+        if (isDismissing || sheetContainer == null) {
+            superDismiss()
+            return
+        }
         isDismissing = true
 
         val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
