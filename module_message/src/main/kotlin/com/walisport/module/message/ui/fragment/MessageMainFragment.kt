@@ -2,7 +2,6 @@ package com.walisport.module.message.ui.fragment
 
 import android.graphics.Rect
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -12,7 +11,6 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
-import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -76,7 +74,6 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 mViewModel.getMoreMessageList()
             }
             recyclerMessage.apply {
-                itemAnimator = null
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
                 for (i in 0 until itemDecorationCount) {
