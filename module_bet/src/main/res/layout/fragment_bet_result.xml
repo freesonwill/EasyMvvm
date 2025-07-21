@@ -145,6 +145,7 @@
         android:text="@string/btn_confirm"
         android:textSize="15sp"
         android:textStyle="bold"
+        android:textColor="@color/main_text"
         app:layout_constraintBottom_toBottomOf="@id/btn_continue_bet"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_continue_bet"
