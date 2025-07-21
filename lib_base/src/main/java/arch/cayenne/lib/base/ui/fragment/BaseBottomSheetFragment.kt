@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -86,6 +87,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             backgroundView.visibility = View.INVISIBLE
             sheetContainer.visibility = View.INVISIBLE
 
+            backgroundView.setBackgroundColor(Color.BLACK)
+            backgroundView.alpha = 0.75f
             backgroundView.setOnClickListener {
                 if (isCancelable) {
                     dismiss()
@@ -116,7 +119,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-        backgroundView.startAnimation(sheetAnim)
         sheetContainer.startAnimation(sheetAnim)
     }
 
@@ -142,7 +144,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onStart() {
         super.onStart()
-        setDim(0.75f)
+        removeDim()
         uiBind.onStart()
     }
 
@@ -208,11 +210,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         if (isDismissing) return
         isDismissing = true
 
-        val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
-        sheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
+        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                backgroundView.visibility = View.INVISIBLE
+            }
             override fun onAnimationEnd(animation: Animation?) {
-                removeDim()
                 try {
                     superDismiss()
                 } catch (e: Exception) {
@@ -223,8 +226,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onAnimationRepeat(animation: Animation?) {}
         })
 
-        backgroundView.startAnimation(sheetAnim)
-        sheetContainer.startAnimation(sheetAnim)
+        sheetContainer.startAnimation(sheetContainerSheetAnim)
     }
 
     protected open fun superDismiss() {
