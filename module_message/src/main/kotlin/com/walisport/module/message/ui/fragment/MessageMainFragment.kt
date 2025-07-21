@@ -15,6 +15,8 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.message.R
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
@@ -115,19 +117,24 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     }
 
     override fun initListener() {
-        mBinding.layMsgAll.setOnClickListener {
+        mBinding.layMsgAll.addScaleOnTouchAnimation(mBinding.ivMsgAll)
+        mBinding.layMsgAll.clickNoRepeat {
             selectMessageType(MSG_ALL)
         }
-        mBinding.layMsgSys.setOnClickListener {
+        mBinding.layMsgSys.addScaleOnTouchAnimation(mBinding.ivMsgSys)
+        mBinding.layMsgSys.clickNoRepeat {
             selectMessageType(MSG_SYS)
         }
-        mBinding.layMsgAct.setOnClickListener {
+        mBinding.layMsgAct.addScaleOnTouchAnimation(mBinding.ivMsgAct)
+        mBinding.layMsgAct.clickNoRepeat {
             selectMessageType(MSG_ACT)
         }
-        mBinding.layMsgMatch.setOnClickListener {
+        mBinding.layMsgMatch.addScaleOnTouchAnimation(mBinding.ivMsgMat)
+        mBinding.layMsgMatch.clickNoRepeat {
             selectMessageType(MSG_MAT)
         }
-        mBinding.layMsgPay.setOnClickListener {
+        mBinding.layMsgPay.addScaleOnTouchAnimation(mBinding.ivMsgPay)
+        mBinding.layMsgPay.clickNoRepeat {
             selectMessageType(MSG_PAY)
         }
         selectMessageType(MSG_ALL)
