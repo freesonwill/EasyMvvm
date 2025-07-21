@@ -1,6 +1,5 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.animation.Animator
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -118,7 +117,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
-        mBinding.llTournamentsDropdown.visibility = View.GONE
         toggleTournamentMoreSection(
             false,
             TournamentListType.NONE
@@ -260,7 +258,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
-
             fm.beginTransaction().apply {
                 if (type == TournamentListType.MORE) {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
@@ -268,18 +265,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 remove(fragment)
                 commitAllowingStateLoss()
             }
-            val delay = if (type == TournamentListType.MORE) { 200L } else { 0L }
-
-            //TODO 把進出的anim優化
-            container.postDelayed({
-                mBinding.ivTournamentMore.visibility = View.VISIBLE
-                container.visibility = View.GONE
-            }, delay)
         }
-    }
-
-    override fun onCreateAnimator(transit: Int, enter: Boolean, nextAnim: Int): Animator? {
-        return super.onCreateAnimator(transit, enter, nextAnim)
     }
 
     private fun showHomeCalendar(tabSelectedDate: String) {
@@ -359,7 +345,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val tab = createDateTab(date, weekday)
                 addTab(tab)
             }
-
             post {
                 selectTab(null)
                 val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
@@ -418,7 +403,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
-            
+
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
@@ -566,7 +551,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()
         }
-
+        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
+            mBinding.llTournamentsDropdown.visibility = View.GONE
+        }
     }
 
     private fun createTournamentTabView(
@@ -602,4 +590,5 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         return super.onBackPressed()
     }
+
 }

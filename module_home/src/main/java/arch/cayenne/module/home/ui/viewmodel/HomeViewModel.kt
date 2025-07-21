@@ -94,6 +94,14 @@ class HomeViewModel : BaseViewModel() {
     private val _selectedSkinType = MutableLiveData<Event<String>>()
     val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
+    //聯賽收回上滑動畫結束事件
+    private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
+    val tournamentSlideOutEnd: LiveData<Event<Unit>> = _tournamentSlideOutEnd
+
+    fun notifyTournamentSlideOutEnd() {
+        _tournamentSlideOutEnd.value = Event(Unit)
+    }
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeSportsMatchCount()
