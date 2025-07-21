@@ -64,8 +64,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
-            it.setDimAmount(0.75f)
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             val positionX = requireArguments().getInt(LOCATION_X, -1)
             val positionY = requireArguments().getInt(LOCATION_Y, -1)
@@ -124,6 +122,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                             .alpha(1f)
                             .setDuration(200)
                             .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .withStartAction {
+                                removeDim()
+                            }
                             .withStartAction {
                                 mBinding.root.visibility = View.VISIBLE
                             }

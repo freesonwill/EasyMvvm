@@ -185,7 +185,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private fun setDialogPosition() {
         dialog?.window?.let { window ->
-            window.setDimAmount(0.75f)
             val marginInPx = 16.dp2px
             val screenWidth = Resources.getSystem().displayMetrics.widthPixels
             val maxWidth = screenWidth - marginInPx * 2
@@ -280,6 +279,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             .alpha(0f)
             .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withStartAction {
+                removeDim()
+            }
             .withEndAction {
                 super.dismiss()
             }

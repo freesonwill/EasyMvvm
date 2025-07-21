@@ -142,7 +142,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setDimAmount(0.75f)
+        setDim(0.75f)
         uiBind.onStart()
     }
 
@@ -212,7 +212,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         sheetAnim.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
             override fun onAnimationEnd(animation: Animation?) {
-                dialog?.window?.setDimAmount(0f)
+                removeDim()
                 try {
                     superDismiss()
                 } catch (e: Exception) {
@@ -230,5 +230,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun superDismiss() {
         isDismissing = false
         super.dismiss()
+    }
+
+    protected fun removeDim() {
+        dialog?.window?.setDimAmount(0f)
+    }
+
+    private fun setDim(amount: Float) {
+        dialog?.window?.setDimAmount(amount)
     }
 }

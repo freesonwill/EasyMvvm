@@ -119,7 +119,7 @@ class BetSheetFragment private constructor() :
             }
             // 加在最底層
         }
-        dialog?.window?.setDimAmount(0f)
+        removeDim()
     }
 
     private fun removeBackground() {

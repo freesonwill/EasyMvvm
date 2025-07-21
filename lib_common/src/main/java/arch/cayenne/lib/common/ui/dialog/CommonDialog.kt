@@ -90,7 +90,6 @@ class CommonDialog : BaseDialogFragment<EmptyViewModel, DialogCommonBinding>() {
         super.onStart()
         dialog?.window?.apply {
             setLayout(280f.dp2px, ViewGroup.LayoutParams.WRAP_CONTENT)
-            setDimAmount(0.75f)
         }
     }
 
