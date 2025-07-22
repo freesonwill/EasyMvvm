@@ -9,7 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_46"
         app:layout_constraintTop_toTopOf="parent">
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -41,14 +41,14 @@
     <arch.cayenne.lib.skin.widget.SkinnableTabLayout
         android:id="@+id/tab_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toBottomOf="@id/cl_title"
         app:tabIndicator="@drawable/bg_indicator"
         app:tabIndicatorAnimationMode="elastic"
         app:tabIndicatorColor="@color/green_for_white_bg"
         app:tabIndicatorFullWidth="false"
-        app:tabIndicatorHeight="12dp"
+        app:tabIndicatorHeight="8dp"
         app:tabPaddingBottom="0dp"
         app:tabPaddingEnd="0dp"
         app:tabPaddingStart="0dp"
@@ -73,9 +73,9 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_filter"
-            android:foreground="@drawable/bg_filter_mask"
             android:drawablePadding="4dp"
             android:ellipsize="end"
+            android:foreground="@drawable/bg_filter_mask"
             android:maxLines="1"
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
@@ -94,8 +94,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_filter"
-            android:foreground="@drawable/bg_filter_mask"
             android:drawablePadding="4dp"
+            android:foreground="@drawable/bg_filter_mask"
             android:paddingVertical="6dp"
             android:paddingStart="14dp"
             android:paddingEnd="11dp"
