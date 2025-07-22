@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
@@ -101,6 +102,9 @@ class ComboBetViewModel(
     val moneySymbol: String
         get() = CurrencySymbols.getSymbol(_onBalanceListener.value?.currency ?: "")
 
+    private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
+    val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
+
     init {
         viewModelScope.launch {
             launch {
@@ -165,8 +169,7 @@ class ComboBetViewModel(
     }
 
     fun sendBet(): Boolean {
-        if (!repo.isConnected) {
-            setState(DataState.NetworkUnavailable)
+        if (!checkNetwork()) {
             return false
         }
         return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
@@ -200,4 +203,12 @@ class ComboBetViewModel(
     }
 
     suspend fun getBetSize(): Int = repo.getBetSize()
+
+    private fun checkNetwork(): Boolean {
+        if (!repo.isConnected) {
+            _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
+    }
 }

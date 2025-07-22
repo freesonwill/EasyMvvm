@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
@@ -115,6 +116,9 @@ class SingleBetViewModel(
     val onBetWinMoney: LiveData<String> get() = _onBetWinMoney
     private var originData: BetSelectionBean? = null
 
+    private val _networkConnectedEvent = MutableLiveData<Event<DataState>>()
+    val networkConnectedEvent: LiveData<Event<DataState>> get() = _networkConnectedEvent
+
     init {
         setNumberLimit(0L, 0L)
         viewModelScope.launch {
@@ -144,8 +148,7 @@ class SingleBetViewModel(
     }
 
     fun sendBet(): Boolean {
-        if (!betRepo.isConnected) {
-            setState(DataState.NetworkUnavailable)
+        if (!checkNetwork()) {
             return false
         }
         val money = onEditNumber.value?.toMoney() ?: return false
@@ -211,5 +214,13 @@ class SingleBetViewModel(
             bet.isActive = max != 0L && min != 0L && bet.isActive
             _onBetSheetListener.value = bet
         }
+    }
+
+    private fun checkNetwork(): Boolean {
+        if (!betRepo.isConnected) {
+            _networkConnectedEvent.value = Event(DataState.NetworkUnavailable)
+            return false
+        }
+        return true
     }
 }
