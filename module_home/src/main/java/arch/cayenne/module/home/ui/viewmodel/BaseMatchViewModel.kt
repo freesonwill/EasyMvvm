@@ -165,6 +165,9 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
      * selection點擊行為，投注或取消投注
      * */
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+        if (!betRepository.isConnected) {
+            return AddSelectionStatus.Failure.NetworkDisconnected
+        }
         val bean = repository.getSelectionInsertBean(selectionId)
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail

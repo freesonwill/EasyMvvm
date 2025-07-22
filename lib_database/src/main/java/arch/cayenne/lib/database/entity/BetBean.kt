@@ -94,6 +94,7 @@ sealed class AddSelectionStatus {
 
     // 失敗狀態
     sealed class Failure : AddSelectionStatus() {
+        data object NetworkDisconnected : Failure() // 網路斷線
         data object DisableComboForParlay : Failure() // 串關限制（非串關投注）
         data object DisableComboForProvider : Failure() // 串關限制（供應商不同）
 

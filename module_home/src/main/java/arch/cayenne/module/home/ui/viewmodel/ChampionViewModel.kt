@@ -112,6 +112,9 @@ class ChampionViewModel : BaseViewModel() {
     }
 
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+        if (!betRepository.isConnected) {
+            return AddSelectionStatus.Failure.NetworkDisconnected
+        }
         val bean = championRepository.getSelectionInsertBean(matchId, selectionId)
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail

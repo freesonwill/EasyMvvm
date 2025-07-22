@@ -5,6 +5,7 @@ import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.BetBean
 import arch.cayenne.lib.database.entity.BetSelectionLiteBean
+import arch.cayenne.module.bet.BettingRemoteManager
 import arch.cayenne.module.bet.data.BetInsertBean
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +15,8 @@ import kotlinx.coroutines.withContext
 
 class BetRepository(
     override val scope: CoroutineScope,
-    private val betDao: BetDao
+    private val betDao: BetDao,
+    private val remoteManager: BettingRemoteManager
 ) : BaseRepository() {
 
     companion object {
@@ -24,6 +26,9 @@ class BetRepository(
     val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
+
+    val isConnected: Boolean
+        get() = remoteManager.isConnected
 
     /***
      * 新增投注資料
