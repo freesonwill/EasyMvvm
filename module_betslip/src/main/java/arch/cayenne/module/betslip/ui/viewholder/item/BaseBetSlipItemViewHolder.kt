@@ -21,13 +21,21 @@ abstract class BaseBetSlipItemViewHolder<VB: ViewBinding>(binding: ViewBinding):
         liveListener = listener
     }
 
-    protected fun showLiveArrow(data: BetSlipSelectionData, ivArrow: ImageView) {
+    protected fun showLiveArrow(status: Int, data: BetSlipSelectionData, ivArrow: ImageView) {
         liveListener?.let {
-            ivArrow.isVisible = it.isShowLiveButton()
+            ivArrow.isVisible = it.isShowLiveButton() && isShowLiveButton(status)
             ivArrow.setOnClickListener { _ ->
                 it.onLiveButtonClick(data)
             }
         }
+    }
+
+    private fun isShowLiveButton(status: Int): Boolean {
+        return status == 1 ||
+                status == 4 ||
+                status == 5 ||
+                status == 6 ||
+                status == 8
     }
 
     abstract fun hideLastLine(isLast:Boolean)
