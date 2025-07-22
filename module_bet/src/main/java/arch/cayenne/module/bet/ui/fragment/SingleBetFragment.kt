@@ -3,6 +3,7 @@ package arch.cayenne.module.bet.ui.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.isVisible
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.fragment.ReserveDialogFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
@@ -194,6 +195,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         mViewModel.onCanBetListener.observe(viewLifecycleOwner) {
             mBinding.clBet.isEnabled = it
         }
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it is DataState.NetworkUnavailable) {
+                showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+            }
+        }
     }
 
     private fun setBetData(data: BetSelectionBean) {
@@ -233,9 +239,11 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         if (curAmount < minAmount) {
             showToast(getString(R.string.hint_less_min_amount))
         } else {
-            mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
-            mViewModel.sendBet()
-            showExitAnim(value = Config.VALUE_SINGLE_TO_RESULT)
+            val isSuccess = mViewModel.sendBet()
+            if (isSuccess) {
+                mViewModel.onBetSheetListener.removeObservers(viewLifecycleOwner)
+                showExitAnim(value = Config.VALUE_SINGLE_TO_RESULT)
+            }
         }
     }
 }

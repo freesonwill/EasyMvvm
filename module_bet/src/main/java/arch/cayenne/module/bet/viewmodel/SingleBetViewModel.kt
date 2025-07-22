@@ -4,21 +4,24 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
+import arch.cayenne.lib.common.data.repo.BalanceRepository
+import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
-import arch.cayenne.lib.common.data.repo.BalanceRepository
-import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
 import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.repo.SingleBetRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
-class SingleBetViewModel(private val betRepo: SingleBetRepository, private val balanceRepo: BalanceRepository) : NumberCalculatorViewModel() {
+class SingleBetViewModel(
+    private val betRepo: SingleBetRepository,
+    private val balanceRepo: BalanceRepository
+) : NumberCalculatorViewModel() {
 
     private val _onBetSheetListener = MediatorLiveData<BetSelectionBean>().apply {
         addSource(onNumberLimit) { number ->
@@ -32,7 +35,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             }
         }
     }
-    val onBetSheetListener: LiveData<BetSelectionBean> get() =  _onBetSheetListener
+    val onBetSheetListener: LiveData<BetSelectionBean> get() = _onBetSheetListener
 
     private val _onComboMultiBetBeanListener = MutableLiveData<ComboMultiBetBean>()
     val onComboMultiBetBeanListener: LiveData<ComboMultiBetBean> get() = _onComboMultiBetBeanListener
@@ -105,7 +108,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-               money.toMoney().getMoney(odds)
+                money.toMoney().getMoney(odds)
             }
         }
     }
@@ -140,10 +143,15 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
         }
     }
 
-    fun sendBet() {
-        val money = onEditNumber.value?.toMoney() ?: return
+    fun sendBet(): Boolean {
+        if (!betRepo.isConnected) {
+            setState(DataState.NetworkUnavailable)
+            return false
+        }
+        val money = onEditNumber.value?.toMoney() ?: return false
         val reserveOdds = _onReserveOddsListener.value
-        viewModelScope.launch(Dispatchers.IO) {
+
+        viewModelScope.launch {
             if (reserveOdds == null) {
                 val isSuccess = async {
                     betRepo.saveToSingle()
@@ -160,6 +168,7 @@ class SingleBetViewModel(private val betRepo: SingleBetRepository, private val b
                 }
             }
         }
+        return true
     }
 
     fun removeBet() {

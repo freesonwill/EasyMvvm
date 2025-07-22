@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.bet.data.BetNotifySelectionBean
@@ -34,15 +35,26 @@ class BettingRemoteManager(
         MutableSharedFlow(replay = 1, extraBufferCapacity = 1)
     val matchMarketNotifyFlow: Flow<List<BetNotifySelectionBean>> = _matchMarketNotifyFlow
 
+    private var socketConnectState: ConnectState? = null
+    val isConnected: Boolean
+        get() = socketConnectState == ConnectState.ConnectSuccess
+
     init {
         scope.launch {
-            socketManager.observeProtoMessage<Client.MatchMarketNotify>(ApiCode.MATCH_MARKET_NOTIFY)
-                .collect { res ->
-                    if (res.error == null && res.data != null) {
-                        val data = res.data!!
-                        setMatchMarketNotifyData(data)
+            launch {
+                socketManager.observeProtoMessage<Client.MatchMarketNotify>(ApiCode.MATCH_MARKET_NOTIFY)
+                    .collect { res ->
+                        if (res.error == null && res.data != null) {
+                            val data = res.data!!
+                            setMatchMarketNotifyData(data)
+                        }
                     }
+            }
+            launch {
+                socketManager.getConnectStateFlow().collect {
+                    socketConnectState = it
                 }
+            }
         }
     }
 
