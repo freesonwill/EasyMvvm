@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.DefaultInitializer
 import arch.cayenne.lib.base.data.repository.EmptyRepository
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.base.utils.monitor.FPSMonitor
 import arch.cayenne.lib.base.utils.log.FrameDropLogger
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -42,6 +43,7 @@ class ApplicationModuleInitializer : DefaultInitializer<String> {
             modules(moduleList)
         }
         detectFrameDrop()
+        enablePerfMonitor()
         "$TAG init....".logd(TAG)
         return TAG
     }
@@ -51,6 +53,18 @@ class ApplicationModuleInitializer : DefaultInitializer<String> {
             val frameDropLogger = FrameDropLogger()
             frameDropLogger.start()
             Looper.getMainLooper().setMessageLogging(FrameDropLogger.LooperMonitor())
+        }
+    }
+
+    /**
+     * 启动性能监控
+     */
+    private fun enablePerfMonitor(){
+        if(BuildConfig.DEBUG) {
+            val fpsMonitor = FPSMonitor()
+            fpsMonitor.start()
+            /*val memoryMonitor = MemoryMonitor(1000)
+            memoryMonitor.start()*/
         }
     }
 
