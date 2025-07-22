@@ -10,7 +10,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
 import kotlinx.coroutines.launch
 
-open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel() {
+open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSlipViewModel(repo) {
 
     //普通注单
     private val _orderLiveData = MutableLiveData<List<BetSlipOrderBean>>()

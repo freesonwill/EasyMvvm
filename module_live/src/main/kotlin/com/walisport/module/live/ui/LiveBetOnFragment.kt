@@ -80,6 +80,8 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
                             showToast(getString(R.string.disabled_to_combo_for_provider))
+                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
+                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
                         } else if (status is AddSelectionStatus.Success.Combo || status is AddSelectionStatus.Success.Update) {
                             fabViewModel.setClickAnimation(x, y)
                         }

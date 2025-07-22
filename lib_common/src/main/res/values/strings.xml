@@ -23,4 +23,6 @@
     <string name="btn_clear">清空</string>
     <string name="btn_confirm">确定</string>
     <string name="title_rate">达到此赔率时自动投注</string>
+
+    <string name="toast_server_disconnected">服务器已断开连接</string>
 </resources>

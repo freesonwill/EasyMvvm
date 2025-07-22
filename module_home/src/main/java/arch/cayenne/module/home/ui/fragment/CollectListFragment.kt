@@ -92,6 +92,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
                             showToast(getString(R.string.disabled_to_combo_for_provider))
+                        } else if (status is AddSelectionStatus.Failure.NetworkDisconnected) {
+                            showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
                         }
                     }
                 }
