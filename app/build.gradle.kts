@@ -58,6 +58,9 @@ android {
         resources {
             excludes += "**/*.proto"
         }
+        jniLibs {
+            useLegacyPackaging = true
+        }
     }
 }
 
@@ -67,6 +70,7 @@ dependencies {
     implementation(project(":lib_base"))
     implementation(project(":module_home"))
     implementation(project(":module_bet"))
+    implementation(project(":module_betslip"))
     implementation(project(":module_login"))
     implementation(project(":module_setting"))
     implementation(project(":module_live"))
@@ -87,4 +91,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
+    debugImplementation(project(":external:blockcanary"))
 }

@@ -121,6 +121,7 @@
     <string name="no_live_stream">当前比赛无直播源</string>
     <string name="insufficient_bet_amount">有效投注额不足</string>
     <string name="insufficient_balance">余额不足</string>
+    <string name="not_implemented">暂未实现</string>
 
     <string name="event_jq">进球</string>
     <string name="event_sz">射正</string>

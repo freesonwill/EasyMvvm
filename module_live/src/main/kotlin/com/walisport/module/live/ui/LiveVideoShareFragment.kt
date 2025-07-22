@@ -3,7 +3,10 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.showToast
+import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveShareBinding
 import com.walisport.module.live.ui.viewmodel.LiveVideoPlayerViewModel
 import me.jessyan.autosize.internal.CancelAdapt
@@ -21,8 +24,9 @@ class LiveVideoShareFragment : BaseFragment<LiveVideoPlayerViewModel, FragmentLi
     }
 
     override fun initListener() {
+        mBinding.operateShare.addScaleOnTouchAnimation(mBinding.ivShare)
         mBinding.operateShare.clickNoRepeat {
-            "operateShare clicked".logd(TAG)
+            showToast(getString(R.string.not_implemented))
         }
     }
 

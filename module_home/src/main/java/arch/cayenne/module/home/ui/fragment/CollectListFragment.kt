@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -82,8 +83,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
+                        if (status is AddSelectionStatus.Failure) {
+                            mViewModel.triggerAllBetRefresh()
+                        }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -99,7 +103,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-
+            (rvCollectList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
             rvCollectList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -113,8 +117,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
     }
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {
-        val animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
-        if (enter) {
+        return if (enter && nextAnim != 0) {
+            val animation = AnimationUtils.loadAnimation(requireContext(), nextAnim)
             animation.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {}
                 override fun onAnimationEnd(animation: Animation?) {
@@ -122,14 +126,10 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
                 override fun onAnimationRepeat(animation: Animation?) {}
             })
+            animation
+        } else {
+            super.onCreateAnimation(transit, enter, nextAnim)
         }
-
-        return animation
-    }
-
-    override fun initData() {
-        super.initData()
-
     }
 
     override fun initListener() {

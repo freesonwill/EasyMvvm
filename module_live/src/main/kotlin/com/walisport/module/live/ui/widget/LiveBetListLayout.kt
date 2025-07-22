@@ -9,6 +9,7 @@ import android.view.View
 import androidx.core.view.isVisible
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
+import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.skin.widget.SkinnableLinearLayout
 import com.walisport.module.live.data.LiveOddsStatusEnum
@@ -230,7 +231,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclOne.isSelected = isCombo
-                    sclOne.clickNoRepeatSingle {
+                    sclOne.clickNoRepeat {
                         handleClick(marketId, isCombo, callback, sclOne) }
                 }
                 is LiveBetContentItemLayoutTowBinding -> {
@@ -238,7 +239,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclTow.isSelected = isCombo
-                    sclTow.clickNoRepeatSingle {
+                    sclTow.clickNoRepeat {
                         handleClick(marketId, isCombo, callback, sclTow) }
                 }
                 is LiveBetContentItemLayoutThreeBinding -> {
@@ -246,7 +247,7 @@ class LiveBetListLayout @JvmOverloads constructor(
                     tvBetDuelLeft.text = name
                     tvBetDuelRight.text = odds
                     sclThree.isSelected = isCombo
-                    sclThree.clickNoRepeatSingle {
+                    sclThree.clickNoRepeat {
                         handleClick(marketId, isCombo, callback, sclThree) }
                 }
                 else ->{}

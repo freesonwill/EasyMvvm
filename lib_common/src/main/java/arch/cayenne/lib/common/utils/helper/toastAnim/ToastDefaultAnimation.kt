@@ -16,7 +16,19 @@ class ToastDefaultAnimation: ToastAnimation {
     override val showDuration: Long
         get() = 2_000L
 
-    override fun getLayoutParams(): WindowManager.LayoutParams {
+    override fun getQueueTag(): String? {
+        return this.javaClass.simpleName
+    }
+
+    override fun onBeforeAddView(view: View) {
+
+    }
+
+    override fun onAfterAddView(view: View) {
+
+    }
+
+    override fun getLayoutParams(view: View): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
         layoutParams.width = WindowManager.LayoutParams.WRAP_CONTENT

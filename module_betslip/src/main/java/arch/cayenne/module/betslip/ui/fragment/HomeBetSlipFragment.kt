@@ -7,6 +7,7 @@ import android.text.TextPaint
 import android.util.TypedValue
 import android.view.Gravity
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -27,6 +28,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.reflect.KClass
 
 class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetslipBinding>() {
+
+    companion object {
+        const val TAG = "HomeBetSlipFragment"
+    }
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
@@ -53,7 +58,13 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
     override fun initListener() {
         mBinding.ivBack.setOnClickListener {
-            findNavController().navigateUp()
+            // 有tag代表是透過fragment manager添加而來，而非navigation
+            if (tag == HomeBetSlipFragment.TAG) {
+                
+                parentFragmentManager.popBackStack(HomeBetSlipFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+            } else {
+                findNavController().navigateUp()
+            }
         }
         mBinding.tvDateFilter.setOnClickListener {
             showDateFilter()

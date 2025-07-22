@@ -47,7 +47,7 @@ class BetRepository(
                     betDao.removeBetSelectionByMatchId(betId, insertBean.matchId)
                     checkBetBeanType(betId)
                 }
-                return@withContext AddSelectionStatus.Failure.Remove
+                return@withContext AddSelectionStatus.Others.Remove
             }
 
             if (existing == null && selections.size >= MAX_LIMIT_SIZE) {

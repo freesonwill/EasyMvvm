@@ -65,15 +65,14 @@ class SearchCustomMonthView(context: Context?) : MonthView(context) {
         }
 
         when {
+            // 被選中的日期
             isSelected -> mSelectTextPaint
-            hasScheme -> when {
-                calendar.isCurrentMonth -> mSchemeTextPaint
-                else -> mOtherMonthTextPaint
-            }
-            else -> when {
-                calendar.isCurrentMonth -> mCurMonthTextPaint
-                else -> mOtherMonthTextPaint
-            }
+            // 有比賽的日期
+            hasScheme && isInRange(calendar) -> mSchemeTextPaint
+            // 在可選擇範圍內日期
+            isInRange(calendar) -> mCurMonthTextPaint
+            // 其他不可選擇的日期
+            else -> mOtherMonthTextPaint
         }.let { textPaint ->
             canvas.drawText(dayText, cx.toFloat(), baselineY, textPaint)
         }

@@ -65,11 +65,9 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             llDrawerSetting.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
-            llDrawerSetting.addScaleOnTouchAnimation(ivDrawerSetting)
             llDrawerFeedback.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_feedback_fragment.deeplink())
             }
-            llDrawerFeedback.addScaleOnTouchAnimation(ivDrawerFeedback)
             llBetSlip.clickNoRepeat {
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())

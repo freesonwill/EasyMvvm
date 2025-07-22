@@ -40,7 +40,7 @@ class TimesExitOnBackPressedHelper(
             lastPressedTime = now
             remain--
             if (remain == 0) {
-                ToastHelper.instance.cancelToast(activity)
+                ToastHelper.instance.forceCancel()
                 activity.finish()
                 remain = times
             } else {

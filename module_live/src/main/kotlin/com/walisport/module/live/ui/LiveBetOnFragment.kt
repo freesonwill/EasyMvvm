@@ -75,7 +75,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             mViewModel.setSelection(it, selectionId)
                         }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {

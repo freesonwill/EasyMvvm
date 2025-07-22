@@ -14,10 +14,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 
-class LiveBetOnRepository (private val database: GameDatabase, private val remoteManager: LiveRemoteManager
-) : BaseRepository(){
-    fun observeMarketTypeBean() = database.marketTypeDao().observeMarketTypeBean().flowOn(Dispatchers.IO)
-    fun observeSelection(marketIds: List<Long>) = database.liveMatchDao().observeSelectionByIds(marketIds).flowOn(Dispatchers.IO)
+class LiveBetOnRepository(
+    private val database: GameDatabase, private val remoteManager: LiveRemoteManager
+) : BaseRepository() {
+    fun observeMarketTypeBean() =
+        database.marketTypeDao().observeMarketTypeBean().flowOn(Dispatchers.IO)
+
+    fun observeSelection(marketIds: List<Long>) =
+        database.liveMatchDao().observeSelectionByIds(marketIds).flowOn(Dispatchers.IO)
 
     /**
      * 获取盘口列表
@@ -48,7 +52,7 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
 
     private suspend fun insertWithAutoIncrement(data: List<MarketMenuBean>): List<Long> {
         // 获取当前最大 number，默认为 0 如果表为空
-        val maxOrderNumber =  database.marketTypeMenuDao().getMaxOrderNumber() ?: 0
+        val maxOrderNumber = database.marketTypeMenuDao().getMaxOrderNumber() ?: 0
         // 为每条记录设置递增的 number
         val updatedData = data.mapIndexed { index, bean ->
             bean.copy(number = maxOrderNumber + index + 1)
@@ -58,28 +62,39 @@ class LiveBetOnRepository (private val database: GameDatabase, private val remot
     }
 
 
-    private fun getMarketMenuBean(common: List<Common.MarketBase>,code:String): List<MarketMenuBean>{
+    private fun getMarketMenuBean(
+        common: List<Common.MarketBase>,
+        code: String
+    ): List<MarketMenuBean> {
         val marketBean = mutableListOf<MarketMenuBean>()
         common.forEach {
-            marketBean.add(MarketMenuBean(marketId =it.marketId, marketName = it.marketName ,code =  code))
+            marketBean.add(
+                MarketMenuBean(
+                    marketId = it.marketId,
+                    marketName = it.marketName,
+                    code = code
+                )
+            )
         }
         return marketBean
     }
 
-    suspend fun queryLiveSelectionBean(matchId: Long) : List<LiveSelectionBean> {
+    suspend fun queryLiveSelectionBean(matchId: Long): List<LiveSelectionBean> {
         return database.liveMatchDao().getSelectionsByIds(matchId)
     }
 
-    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean = withContext(Dispatchers.IO) {
-        val match = database.liveMatchDao().getMatchById(matchId)
-        val selectionBean = database.liveMatchDao().getSelectionBySelectionId(selectionId)
-        matchSelectionInsertBean(match, selectionBean)
-    }
+    suspend fun getSelectionInsertBean(matchId: Long, selectionId: Long): BetInsertBean? =
+        withContext(Dispatchers.IO) {
+            val match = database.liveMatchDao().getMatchById(matchId)
+            val selectionBean = database.liveMatchDao().getSelectionBySelectionId(selectionId)
+            matchSelectionInsertBean(match, selectionBean)
+        }
 
-private fun matchSelectionInsertBean(
+    private fun matchSelectionInsertBean(
         match: LiveMatchBean,
         selectionBean: LiveSelectionBean
-    ): BetInsertBean {
+    ): BetInsertBean? {
+        match.let {
             return BetInsertBean(
                 sportId = match.basicInfo.sportId,
                 matchId = match.matchId,
@@ -95,5 +110,7 @@ private fun matchSelectionInsertBean(
                 isParlay = selectionBean.parlay,
                 provider = match.basicInfo.provider
             )
+        }
+        return null
     }
 }

@@ -21,10 +21,14 @@ class LiveMatchAnimationRepository(
 ) : BaseRepository() {
 
     private val liveMatchDao = database.liveMatchDao()
+    private val liveVideoDao = database.liveVideoDao()
 
     var matchId: Long = 0
 
     fun observeAnimationLiveUrl(observeMatchId: Long) =
         liveMatchDao.observeAnimationLiveUrl(observeMatchId).flowOn(Dispatchers.IO)
+
+    fun observeLiveVideoBean(observeMatchId: Long) =
+        liveVideoDao.observeLiveVideoBean(observeMatchId).flowOn(Dispatchers.IO)
 
 }

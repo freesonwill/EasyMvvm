@@ -70,8 +70,11 @@ class MatchListPagerFragment :
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
+                        if (status !is AddSelectionStatus.Success) {
+                            mViewModel.triggerAllBetRefresh()
+                        }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(parentFragmentManager)
+                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -147,11 +150,13 @@ class MatchListPagerFragment :
         if (hidden) {
             //暫時移除訂閱
             mViewModel.cancelSubscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
+            mViewModel.stopMatchSubscribeNotify()
             if (mViewModel.matchListChange.hasObservers()) {
                 mViewModel.matchListChange.removeObserver(matchListObserver)
             }
         } else {
             //把暫時移除的訂閱加回來
+            mViewModel.startMatchSubscribeNotify()
             mViewModel.subscribeMatch(mViewModel.getCurrentSubscribeMatchSet())
             if (!mViewModel.matchListChange.hasObservers()) {
                 mViewModel.matchListChange.observe(viewLifecycleOwner, matchListObserver)

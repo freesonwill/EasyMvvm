@@ -62,6 +62,14 @@ class SettingViewModel : BaseViewModel() {
         return repository.getSkinType()
     }
 
+    fun getOddsType(): OddsDisplayEnum {
+        return repository.getOddsType()
+    }
+
+    fun getLanguageType(): LanguageType {
+        return repository.getLanguageType()
+    }
+
     //设置皮肤背景，只换肤不写入记录，写入记录得调用setSkinRecord
     fun setSkinType(type: String) {
         viewModelScope.launch {

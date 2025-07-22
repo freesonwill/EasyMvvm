@@ -1,8 +1,6 @@
 package arch.cayenne.lib.common.ui.fragment
 
 import android.app.Dialog
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -14,6 +12,7 @@ import arch.cayenne.lib.common.utils.ext.SportStringExt.toOdds
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import kotlin.reflect.KClass
 import android.content.DialogInterface
+import android.graphics.drawable.Drawable
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import arch.cayenne.lib.common.databinding.FragmentReserveDialogBinding
@@ -47,6 +46,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override val vmClass: KClass<ReserveDialogViewModel>
         get() = ReserveDialogViewModel::class
 
+    override val dialogBackground: Drawable?
+        get() = null
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
             override fun cancel() {
@@ -64,8 +66,6 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
     override fun onStart() {
         super.onStart()
         dialog?.window?.let {
-            it.setDimAmount(0.75f)
-            it.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
             val positionX = requireArguments().getInt(LOCATION_X, -1)
             val positionY = requireArguments().getInt(LOCATION_Y, -1)
@@ -124,6 +124,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
                             .alpha(1f)
                             .setDuration(200)
                             .setInterpolator(android.view.animation.DecelerateInterpolator())
+                            .withStartAction {
+                                removeDim()
+                            }
                             .withStartAction {
                                 mBinding.root.visibility = View.VISIBLE
                             }
@@ -204,6 +207,9 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
             .alpha(0f)
             .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withStartAction {
+                removeDim()
+            }
             .withEndAction {
                 super.dismiss()
             }

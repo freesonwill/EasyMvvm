@@ -83,6 +83,7 @@
             app:tabIndicatorHeight="0dp"
             app:tabMode="scrollable"
             app:tabPaddingStart="0dp"
+            app:tabPaddingEnd="0dp"
             app:tabRippleColor="@null"
             app:tabSelectedTextColor="@color/date_text_select"
             app:tabTextColor="@color/date_text_unselect" />

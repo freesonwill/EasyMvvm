@@ -1,6 +1,7 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.common.data.constants.CurConnectFailedType
@@ -11,11 +12,15 @@ import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
+import arch.cayenne.lib.common.utils.helper.toastGesture.ToastSlideGesture
+import arch.cayenne.lib.database.entity.BetResultLiteBean
 import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
+import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
 import com.walisport.app.R
 import com.walisport.app.ui.viewmodel.MainViewModel
 import com.walisport.module.message.ui.fragment.AppNotifyFragment
@@ -48,17 +53,16 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         super.createObserver()
         mViewModel.betResultListener.observe(this) {
             if (BetResultToastView.canShowToast(this)) {
-                val toast = BetResultToastView(this@MainActivity)
-                toast.setResult(it)
-                showToast(toast, ToastSlideAnimation())
+                showBetResultToast(it)
             }
         }
         mViewModel.appNotifyListener.observe(this) {
             //notifyFragment.sendNotifyMsg(it)
             if (AppNotifyToastView.canShowToast(this)) {
                 val toast = AppNotifyToastView(this@MainActivity)
+                val statusHeight = ViewUtils.getStatusBarHeight(this)
                 toast.sendNotifyMsg(it)
-                showToast(toast, ToastSlideAnimation())
+                showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture())
             }
         }
         fabControlViewModel.isShowButtonListener.observe(this) {
@@ -111,4 +115,54 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(mViewModel.getSkinType())
         return StatusBarConfig
     }
+
+    private fun showBetResultToast(data: List<BetResultLiteBean>) {
+        val toast = BetResultToastView(this@MainActivity)
+        val statusHeight = ViewUtils.getStatusBarHeight(this)
+        toast.setResult(data)
+        showToast(toast, ToastSlideAnimation(statusHeight), ToastSlideGesture().apply {
+            setOnClickListener {
+                showBetSlipPage()
+            }
+        })
+    }
+
+    private fun showBetSlipPage() {
+        val tag = HomeBetSlipFragment.TAG
+        val fragmentManager = supportFragmentManager
+
+        val betSlipFragment = fragmentManager.findFragmentByTag(tag)
+        if (betSlipFragment != null) {
+            return
+        }
+
+        val navHostFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
+        val curFragment = navHostFragment?.childFragmentManager?.fragments?.firstOrNull { it.isVisible }
+        if (curFragment is HomeBetSlipFragment) {
+            return
+        }
+
+        val dialogFragment = fragmentManager.fragments.filterIsInstance<DialogFragment>()
+        if (dialogFragment.isNotEmpty()) {
+            dialogFragment.forEach {
+                it.dismiss()
+            }
+        }
+        val transaction = fragmentManager.beginTransaction()
+            .setCustomAnimations(
+                arch.cayenne.lib.common.R.anim.slide_in_right,
+                arch.cayenne.lib.common.R.anim.no_anim,
+                arch.cayenne.lib.common.R.anim.no_anim,
+                arch.cayenne.lib.common.R.anim.slide_out_right
+            )
+
+        val currentFragment = fragmentManager.findFragmentById(mBinding.navHost.id)
+        if (currentFragment != null) {
+            transaction.hide(currentFragment)
+        }
+        transaction.add(mBinding.navHost.id, HomeBetSlipFragment(), tag)
+        transaction.addToBackStack(tag)
+        transaction.commit()
+    }
+
 }

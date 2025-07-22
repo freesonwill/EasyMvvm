@@ -6,26 +6,45 @@ import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import androidx.core.animation.addListener
+import androidx.core.view.isVisible
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-class ToastSlideAnimation: ToastAnimation {
+class ToastSlideAnimation(private val statusHeight: Int): ToastAnimation {
     override val animDuration: Long
         get() = 200L
     override val showDuration: Long
         get() = 3_000L
 
-    override fun getLayoutParams(): WindowManager.LayoutParams {
+    override fun getQueueTag(): String? {
+        return this.javaClass.simpleName
+    }
+
+    override fun onBeforeAddView(view: View) {
+        view.visibility = View.INVISIBLE
+    }
+
+    override fun onAfterAddView(view: View) {
+        view.visibility = View.INVISIBLE
+    }
+
+    override fun getLayoutParams(view: View): WindowManager.LayoutParams {
         val layoutParams = WindowManager.LayoutParams()
 
-        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT
+        view.measure(
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+        )
+
+        layoutParams.height = view.measuredHeight + statusHeight
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT
-        layoutParams.format = PixelFormat.TRANSLUCENT
-        layoutParams.flags = (WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
-                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         layoutParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        layoutParams.y = 0 // 貼齊頂部
+        layoutParams.y = -statusHeight
+        layoutParams.format = PixelFormat.TRANSLUCENT
+        layoutParams.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+                or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+
         return layoutParams
     }
 
@@ -40,8 +59,9 @@ class ToastSlideAnimation: ToastAnimation {
     private suspend fun playSlideAnim(view: View, show: Boolean): Int {
         return suspendCancellableCoroutine { continuation ->
             view.apply {
-                val start = if (show) -height.toFloat() else 0f
-                val end = if (show) 0f else -height.toFloat()
+                val h = height
+                val start = if (show) -(statusHeight + h).toFloat() else statusHeight.toFloat()
+                val end = if (show) statusHeight.toFloat() else -(statusHeight + h).toFloat()
                 val anim = ValueAnimator.ofFloat(start, end).apply {
                     duration = animDuration
                     addUpdateListener { animation ->
@@ -50,6 +70,7 @@ class ToastSlideAnimation: ToastAnimation {
                     var isCanceled = false
                     addListener(
                         onStart = {
+                            if (show) view.isVisible = true
                             translationY = start
                         },
                         onCancel = {

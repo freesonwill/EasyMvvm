@@ -1,13 +1,16 @@
 package arch.cayenne.module.home.ui.adapter
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.graphics.Rect
+import android.graphics.drawable.LayerDrawable
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
@@ -77,6 +80,9 @@ class MatchItemViewHolder(
                     }
                 })
             }
+
+            val drawable = ContextCompat.getDrawable(root.context, R.drawable.layer_favorite_crossfade)?.mutate()
+            ivFavorite.setImageDrawable(drawable)
         }
     }
 
@@ -122,7 +128,8 @@ class MatchItemViewHolder(
             ivLiveVideo.setImageResource(
                 if (liveInfo.liveVideo) R.drawable.ic_live_video else R.drawable.ic_live_video_disabled
             )
-            ivFavorite.isSelected = data.match.collect
+
+            setFavoriteIcon(data.match.collect, true)
 
             if (basicInfo.status == 5) {
                 tvAwayScore.text = liveInfo.homeScore.toString()
@@ -195,9 +202,24 @@ class MatchItemViewHolder(
                 oddsColumnAdapter.submitList(selectionsGrouped)
             }
             if ("collect" in changes) {
-                ivFavorite.isSelected = item.match.collect
+                setFavoriteIcon(item.match.collect, false)
             }
         }
+    }
+
+    private fun setFavoriteIcon(selected: Boolean, force: Boolean) {
+        val layers = mBinding.ivFavorite.drawable as LayerDrawable
+        val unselected = layers.findDrawableByLayerId(R.id.background)
+        val selectedDrawable = layers.findDrawableByLayerId(R.id.foreground)
+        // 做 alpha 淡入淡出動畫
+        val fadeIn = ObjectAnimator.ofInt(selectedDrawable, "alpha", if (selected) 0 else 255, if (selected) 255 else 0)
+        val fadeOut = ObjectAnimator.ofInt(unselected, "alpha", if (selected) 255 else 0, if (selected) 0 else 255)
+
+        fadeIn.duration = if (force) 0 else 200
+        fadeOut.duration = if (force) 0 else 200
+
+        fadeIn.start()
+        fadeOut.start()
     }
 
     private fun liveClock(clock: Int, modified: Long) : String =
