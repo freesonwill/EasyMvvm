@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import arch.cayenne.lib.common.R
-import arch.cayenne.lib.common.databinding.ViewSportHeaderBinding
+import arch.cayenne.lib.common.databinding.ViewSportFooterBinding
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import com.scwang.smart.refresh.layout.api.RefreshFooter
 import com.scwang.smart.refresh.layout.api.RefreshKernel
@@ -23,7 +23,7 @@ import com.scwang.smart.refresh.layout.simple.SimpleComponent
  */
 class PullRefreshFooter : SimpleComponent, RefreshFooter {
 
-    private lateinit var binding: ViewSportHeaderBinding
+    private lateinit var binding: ViewSportFooterBinding
     private var loadingAnim: ObjectAnimator? = null
 
     constructor(context: Context) : super(context, null, 0)
@@ -41,7 +41,7 @@ class PullRefreshFooter : SimpleComponent, RefreshFooter {
             removeAllViews()
         }
         val inflater = LayoutInflater.from(context)
-        binding = ViewSportHeaderBinding.inflate(inflater, this, true)
+        binding = ViewSportFooterBinding.inflate(inflater, this, true)
     }
 
     fun setLeagueMode() {
@@ -55,7 +55,7 @@ class PullRefreshFooter : SimpleComponent, RefreshFooter {
     ) {
         when (newState) {
             RefreshState.PullUpToLoad -> {
-                binding.tvTitle.text = ContextCompat.getString(context, R.string.pull_load)
+                binding.tvTitle.text = ContextCompat.getString(context, R.string.load_more_up)
                 loadingAnim?.cancel()
                 loadingAnim = binding.ivProgress.startSafeObjectAnimator(
                     "rotation",  // 属性名称
@@ -67,7 +67,7 @@ class PullRefreshFooter : SimpleComponent, RefreshFooter {
                 )
             }
             RefreshState.Loading, RefreshState.RefreshReleased -> {
-                binding.tvTitle.text = ContextCompat.getString(context, R.string.loading)
+                binding.tvTitle.text = ContextCompat.getString(context, R.string.load_more_up)
             }
             RefreshState.None -> {
                 loadingAnim?.cancel()

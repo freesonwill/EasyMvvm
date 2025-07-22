@@ -7,6 +7,7 @@
     <string name="loading">Memuat…</string>
     <string name="on_loading">Memuat</string>
     <string name="pull_load">Tarik ke atas untuk memuat lebih…</string>
+    <string name="load_more_up">Tarik ke atas untuk memuat lebih…</string>
     <string name="error_net">Kesalahan jaringan, periksa pengaturan jaringan</string>
     <string name="toast_over_remaining">Saldo tidak mencukupi</string>
     <string name="toast_over_max">Melebihi batas taruhan</string>
