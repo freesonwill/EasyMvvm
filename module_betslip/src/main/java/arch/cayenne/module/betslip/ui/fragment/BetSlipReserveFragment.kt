@@ -31,7 +31,9 @@ class BetSlipReserveFragment :
     override val betSlipAdapter: BetSlipReserveAdapter by lazy {
         BetSlipReserveAdapter(object : RecyclerItemListener<BetSlipReserveBean> {
             override fun onItemClick(item: BetSlipReserveBean?, position: Int) {
-                item?.let { cancelReserve(it) }
+                if (mViewModel.checkNetwork()) {
+                    item?.let { cancelReserve(it) }
+                }
             }
         }, object : BetSlipReserveAdapter.BetSlipReserveListener {
             override fun onModifyReserveClick(
@@ -40,23 +42,25 @@ class BetSlipReserveFragment :
                 viewHeight: Int,
                 position: Int
             ) {
-                val bean = betSlipAdapter.currentList[position] as BetSlipReserveBean
-                childFragmentManager.setFragmentResultListener(
-                    ReserveDialogFragment.KEY_RESULT,
-                    viewLifecycleOwner
-                ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
-                    if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
-                        val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                        mViewModel.modifyReserve(bean, odds.getOdds())
+                if (mViewModel.checkNetwork()) {
+                    val bean = betSlipAdapter.currentList[position] as BetSlipReserveBean
+                    childFragmentManager.setFragmentResultListener(
+                        ReserveDialogFragment.KEY_RESULT,
+                        viewLifecycleOwner
+                    ) { _, bundle ->
+                        childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
+                        if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
+                            val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
+                            mViewModel.modifyReserve(bean, odds.getOdds())
+                        }
                     }
+                    ReserveDialogFragment.newInstance(
+                        locationX,
+                        locationY,
+                        viewHeight,
+                        odds = bean.selection.odds.toOdds()
+                    ).show(childFragmentManager)
                 }
-                ReserveDialogFragment.newInstance(
-                    locationX,
-                    locationY,
-                    viewHeight,
-                    odds = bean.selection.odds.toOdds()
-                ).show(childFragmentManager)
             }
         })
     }

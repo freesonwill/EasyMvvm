@@ -7,4 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 abstract class BaseBetSlipRepository(
     override val scope: CoroutineScope,
     protected val remoteManager: BetSlipRemoteManager
-) : BaseRepository()
+) : BaseRepository() {
+
+    val isConnected: Boolean
+        get() = remoteManager.isConnected
+
+}

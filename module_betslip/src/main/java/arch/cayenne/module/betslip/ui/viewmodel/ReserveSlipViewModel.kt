@@ -11,7 +11,7 @@ import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import kotlinx.coroutines.launch
 
-class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSlipViewModel() {
+class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSlipViewModel(repo) {
 
     //预约注单
     private val _reserveLiveData = MutableLiveData<List<BetSlipReserveBean>>()

@@ -5,6 +5,7 @@ import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
+import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketResponseData
 import arch.cayenne.lib.websocket.extension.observeProtoMessage
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
@@ -25,12 +26,25 @@ import galaxy.client.proto.Client.ReserveUpdateResp
 import galaxy.common.proto.Common
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class BetSlipRemoteManager(
     private val scope: CoroutineScope,
     private val socketManager: WebSocketManager
 ) {
     private val TAG = this.javaClass.simpleName
+
+    private var socketConnectState: ConnectState? = null
+    val isConnected: Boolean
+        get() = socketConnectState == ConnectState.ConnectSuccess
+
+    init {
+        scope.launch {
+            socketManager.getConnectStateFlow().collect {
+                socketConnectState = it
+            }
+        }
+    }
 
     suspend fun getOrderReq(
         type: Int,
