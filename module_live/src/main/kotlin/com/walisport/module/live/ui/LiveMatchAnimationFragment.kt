@@ -63,6 +63,7 @@ class LiveMatchAnimationFragment :
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         mBinding.ivChooseSource.setOnClickListener {
+            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
         }
 
