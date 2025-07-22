@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
@@ -163,11 +164,20 @@ class ComboBetViewModel(
         }
     }
 
-    fun sendBet() {
-        _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
+    fun sendBet(): Boolean {
+        if (!repo.isConnected) {
+            setState(DataState.NetworkUnavailable)
+            return false
+        }
+        return _onComboMultiBetBeanListener.value?.filter { it.inputMoney != 0L }?.let {
             if (it.isNotEmpty()) {
                 repo.sendBet(it)
+                true
+            } else {
+                false
             }
+        } ?: run {
+            false
         }
     }
 

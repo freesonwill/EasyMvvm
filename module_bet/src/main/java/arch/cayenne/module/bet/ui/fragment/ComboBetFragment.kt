@@ -134,9 +134,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             mViewModel.toggleMultiLayoutExpend()
         }
         mBinding.clBet.setOnClickListener {
-            mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
-            mViewModel.sendBet()
-            showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
+            val isSuccess = mViewModel.sendBet()
+            if (isSuccess) {
+                mViewModel.onBetListListener.removeObservers(viewLifecycleOwner)
+                showExitAnim(value = Config.VALUE_COMBO_TO_RESULT)
+            }
         }
     }
 
