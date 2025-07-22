@@ -12,6 +12,7 @@ import androidx.core.animation.doOnStart
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -19,6 +20,7 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
@@ -197,6 +199,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
             if (mViewModel.onBetListListener.value != null && mViewModel.onComboMultiBetBeanListener.value != null) {
                 setMultiLayoutExpandedHeight(it)
+            }
+        }
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it is DataState.NetworkUnavailable) {
+                showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
         }
     }
