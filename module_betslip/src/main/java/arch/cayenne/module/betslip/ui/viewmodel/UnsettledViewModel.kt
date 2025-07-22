@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.repo.UnsettleRepository
@@ -37,11 +38,13 @@ class UnsettledViewModel(private val repo: UnsettleRepository): OrderSlipViewMod
      * 检查是否支持提前结算
      * */
     fun isSupportEarlySettled(order: BetSlipOrderBean) {
-        selectOrder = order
-        viewModelScope.launch {
-            val result = repo.earlySettledPrice(order.betId)
-            if (!result.isNullOrEmpty()) {
-                _isSupportEarlySettleLiveData.value = result.first()
+        if (checkNetwork()) {
+            selectOrder = order
+            viewModelScope.launch {
+                val result = repo.earlySettledPrice(order.betId)
+                if (!result.isNullOrEmpty()) {
+                    _isSupportEarlySettleLiveData.value = result.first()
+                }
             }
         }
     }

@@ -120,6 +120,9 @@ class LiveBetOnViewModel : BaseViewModel() {
 
 
     suspend fun setSelection(matchId: Long, selectionId: Long): AddSelectionStatus {
+        if (!betRepository.isConnected) {
+            return AddSelectionStatus.Failure.NetworkDisconnected
+        }
         val bean = repository.getSelectionInsertBean(matchId, selectionId)
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail
