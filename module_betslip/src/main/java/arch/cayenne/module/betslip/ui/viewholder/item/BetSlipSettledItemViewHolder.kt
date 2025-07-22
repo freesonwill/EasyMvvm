@@ -25,7 +25,7 @@ class BetSlipSettledItemViewHolder(binding: ViewBinding) :
         if (item is OrderSelectionBean) {
             updateData(item)
             settledStatus(item)
-            showLiveArrow(item, mBinding.ivCircleArrow)
+//            showLiveArrow(item, mBinding.ivCircleArrow)
         }
     }
 
