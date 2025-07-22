@@ -20,6 +20,8 @@ class OddsDisplayDialogFragment :
     override val vmClass: KClass<OddsDisplayViewModel>
         get() = OddsDisplayViewModel::class
 
+    private var clicklistener: OnClickListener? = null
+
     val lang: String = "Language"
     val epTip: String = "EPTip"
     val hkTip: String = "HKTip"
@@ -79,10 +81,12 @@ class OddsDisplayDialogFragment :
     override fun initListener() {
         mBinding.itemHk.clickNoRepeat {
             mViewModel.setOddsType(OddsDisplayEnum.HK)
+            clicklistener?.onClickHK()
             dialogDismiss()
         }
         mBinding.itemEp.clickNoRepeat {
             mViewModel.setOddsType(OddsDisplayEnum.EU)
+            clicklistener?.onClickEP()
             dialogDismiss()
         }
         mBinding.tvClose.clickNoRepeat {
@@ -94,5 +98,14 @@ class OddsDisplayDialogFragment :
         mBinding.root.postDelayed({
             super.dismiss()
         }, 300)
+    }
+
+    fun setOnItemClickListener(listener: OnClickListener) {
+        this.clicklistener = listener
+    }
+
+    interface OnClickListener {
+        fun onClickHK()
+        fun onClickEP()
     }
 }
