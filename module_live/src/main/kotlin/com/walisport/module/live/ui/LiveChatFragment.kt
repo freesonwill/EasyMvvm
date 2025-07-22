@@ -1,14 +1,17 @@
 package com.walisport.module.live.ui
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.activity.addCallback
+import androidx.core.animation.addListener
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -16,6 +19,7 @@ import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.data.SocketConnectState
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.CheckBetResultEnum
+import com.walisport.module.live.data.constants.KeyBoardType
 import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveChatBinding
 import com.walisport.module.live.ui.adapter.LiveChatAdapter
@@ -58,7 +62,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 
         mBinding.liveChatRecycler.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
-                if (e.action == MotionEvent.ACTION_UP && mViewModel.softKeyBoardListener.value == true) {
+                if (e.action == MotionEvent.ACTION_UP && mViewModel.currentSoftKeyboard.value != KeyBoardType.NONE) {
                     showChat()
                 }
                 return false
@@ -72,7 +76,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         })
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (mViewModel.softKeyBoardListener.value == true) {
+            if (mViewModel.currentSoftKeyboard.value != KeyBoardType.NONE) {
                 showChat()
             } else {
                 if (activity == null) {
@@ -147,13 +151,28 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
             launch {
                 mViewModel.getConnectStateFlow().collect {
-//                    "startChatserver flow $it shoulderLogin:${mViewModel.loginLiveData.value == null}".logd("chat")
                     if (it == SocketConnectState.Connecting && mViewModel.loginLiveData.value == null) {
                         mViewModel.chatLogin()
                     }
                 }
             }
-
+            launch {
+                mViewModel.softKeyBoardListener.collect {
+                    when(it){
+                        KeyBoardType.EMOJI -> {
+                            showChatAnimation(true, true)
+                        }
+                        else -> {
+                            if(mViewModel.currentSoftKeyboard.value == KeyBoardType.EMOJI){
+                                showChatAnimation(false,true)
+                            }else{
+                                mViewModel.updateSoftKeyBoard(it)
+                                showChatAnimation(false, isEmoji = false)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -161,43 +180,53 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 显示聊天界面时隐藏键盘界面
      * */
     private fun showChat() {
-        getSoftKeyBoardFragment()?.showChat()
+        mViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
     }
 
-    private fun getSoftKeyBoardFragment(): LiveSoftKeyboardFragment? {
-        return childFragmentManager.findFragmentByTag(LiveSoftKeyboardFragment.TAG)?.let {
-            val keyboardFragment = it as LiveSoftKeyboardFragment
-            keyboardFragment
-        }
-
-    }
-
+    /**
+     * 如果要隐藏和显示表情键盘时使用动画
+     * */
     private fun showChatAnimation(isKeyBoardVisible: Boolean, isEmoji: Boolean) {
-        mBinding.liveChatKeyboard.layoutParams.height =
-            if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+        val height = if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+        if (isEmoji) {
+            val params = if (isKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(0f, (keyBoardHeight - 62.dp2px).toFloat())
+            val animator = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
+            animator.addListener(onStart = {
+                if (isKeyBoardVisible) {
+                    mBinding.liveChatKeyboard.layoutParams.height = height
+                    mViewModel.updateSoftKeyBoard(KeyBoardType.EMOJI)
+                }
+            }, onEnd = {
+                if (!isKeyBoardVisible) {
+                    mBinding.liveChatKeyboard.layoutParams.height = height
+                    mBinding.liveChatKeyboard.translationY = 0f
+                    mViewModel.updateSoftKeyBoard(mViewModel.softKeyBoardListener.value)
+                }
+            })
+            animator.duration = 300
+            animator.start()
+        } else {
+            mBinding.liveChatKeyboard.layoutParams.height = height
+        }
     }
 
     /**
      * 显示键盘时调用
      * */
     override fun showKeyBoard(isEmoji: Boolean) {
-        showChatAnimation(true, isEmoji)
-        mViewModel.updateSoftKeyBoard(true)
     }
 
     /**
      * 隐藏键盘时调用
      * */
     override fun hideKeyboard() {
-        showChatAnimation(false, isEmoji = false)
-        mViewModel.updateSoftKeyBoard(false)
     }
 
     /**
      * 判断键盘是否在显示中
      * */
     fun isSoftKeyboardVisible(): Boolean {
-        val flag = mViewModel.softKeyBoardListener.value ?: false
+        val flag = mViewModel.currentSoftKeyboard.value != KeyBoardType.NONE
         if (flag) {
             showChat()
         }
@@ -237,8 +266,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
                 MatchStatus.IN_PROGRESS,MatchStatus.PAUSED,MatchStatus.INTERRUPTED -> {
-                    it.liveChatGroupChat.isVisible = true
-                    it.liveChatGroupStatus.isVisible = false
+            it.liveChatGroupChat.isVisible = true
+            it.liveChatGroupStatus.isVisible = false
                 }
 
                 else -> {

@@ -10,26 +10,27 @@ import arch.cayenne.lib.websocket.chat.data.ChatMsg
 import arch.cayenne.lib.websocket.chat.data.ChatRequestCodeEnum
 import arch.cayenne.lib.websocket.chat.data.ChatSendMsgResponse
 import arch.cayenne.lib.websocket.chat.data.MsgNotify
-import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.SocketConnectState
-import com.google.gson.Gson
 import com.walisport.module.live.data.constants.CheckBetResultEnum
+import com.walisport.module.live.data.constants.KeyBoardType
 import com.walisport.module.live.data.repository.LiveChatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 
 class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewModel() {
     private var matchId: Long? = null
-    private val _softKeyBoardListener = MutableLiveData<Boolean>()
+    private val _currentSoftKeyboard = MutableLiveData<KeyBoardType>()
     private val _loginLiveData = MutableLiveData<ChatLoginResponseData?>()
     private val _sendMsgResultLiveData = MutableLiveData<ChatSendMsgResponse?>()
     private val _sendMsgLiveData = MutableLiveData<String>()
     private val _historyLiveData = MutableLiveData<Boolean>()
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
+    private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.NONE)
 
     //检查是否可以发送消息
     var checkBetAmountLiveData: LiveData<CheckBetResultEnum> = _checkBetAmountLiveData
@@ -37,8 +38,8 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     //消息列表
     val msgLists: MutableList<ChatMsg> = mutableListOf()
 
-    //键盘是否显示中
-    val softKeyBoardListener: LiveData<Boolean> = _softKeyBoardListener
+    //当前显示的键盘类型
+    val currentSoftKeyboard: LiveData<KeyBoardType> = _currentSoftKeyboard
 
     //监听新消息
     val newMsgFlow: Flow<MsgNotify?> = _newMsgFLow
@@ -61,6 +62,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     //查询历史消息返回结果
     val historyLiveData: LiveData<Boolean> = _historyLiveData
 
+    //监听LiveSoftKeyBoardFragment点击事件
+    val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
+
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
@@ -79,7 +83,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     /**
      * 聊天登陆
      * */
-     fun chatLogin() {
+    fun chatLogin() {
         viewModelScope.launch {
             _loginLiveData.value = chatRepo.login()
         }
@@ -174,8 +178,8 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     /**
      *更新软件盘显示
      * */
-    fun updateSoftKeyBoard(isVisible: Boolean) {
-        _softKeyBoardListener.value = isVisible
+    fun updateSoftKeyBoard(keyBoardType: KeyBoardType) {
+        _currentSoftKeyboard.value = keyBoardType
     }
 
     /**
@@ -209,7 +213,11 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
         msgLists.add(msgLists.size, msg)
     }
 
-    fun getConnectStateFlow():StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
+    fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType) {
+        _softKeyBoardListener.tryEmit(keyBoardType)
+    }
+
+    fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
 
 
 }

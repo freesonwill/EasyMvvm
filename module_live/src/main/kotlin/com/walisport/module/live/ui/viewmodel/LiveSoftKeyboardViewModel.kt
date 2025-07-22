@@ -1,7 +1,9 @@
 package com.walisport.module.live.ui.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.data.constants.SportEnum
+import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.module.live.R
 import com.walisport.module.live.data.constants.BidEmojiEnum
 import com.walisport.module.live.data.constants.EmojiEnum
@@ -9,8 +11,12 @@ import com.walisport.module.live.data.constants.EmojiTypeEnum
 import com.walisport.module.live.data.model.EmojiData
 import com.walisport.module.live.data.model.KeyBoardTabData
 import com.walisport.module.live.data.model.SoftData
+import org.koin.core.component.inject
+import org.koin.core.parameter.parametersOf
 
 class LiveSoftKeyboardViewModel : BaseViewModel() {
+
+    val languageManager:LanguageManager by inject { parametersOf(viewModelScope) }
 
     fun tabMenus() =
         arrayListOf(

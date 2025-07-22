@@ -29,6 +29,8 @@
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
     <string name="live_chat_talk">和大家聊聊...</string>
+    <string name="live_chat_speak">说点什么...</string>
+    <string name="live_chat_send">发送</string>
     <string name="live_match_trend">进攻趋势</string>
     <string name="share">分享给朋友</string>
     <string name="share_link">复制链接</string>
