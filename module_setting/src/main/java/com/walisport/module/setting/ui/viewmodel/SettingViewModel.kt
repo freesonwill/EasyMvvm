@@ -39,19 +39,15 @@ class SettingViewModel : BaseViewModel() {
                 repository.observerOddsDisplay.onStart {
                     _displayType.postValue(repository.getOddsType())
                 }.collect {
-                    repository.observerOddsDisplay.collect {
-                        val type = OddsDisplayEnum.entries[it]
-                        _displayType.postValue(type)
-                    }
+                    val type = OddsDisplayEnum.entries[it]
+                    _displayType.postValue(type)
                 }
             }
             launch(Dispatchers.IO) {
                 repository.observerLanguage.onStart {
                     _language.postValue(repository.getLanguageType())
                 }.collect {
-                    repository.observerLanguage.collect { lang ->
-                        _language.postValue(LanguageType.findLanguage(lang))
-                    }
+                    _language.postValue(LanguageType.findLanguage(it))
                 }
             }
         }
