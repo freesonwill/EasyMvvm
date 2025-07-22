@@ -75,6 +75,15 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
                 putString(epTip, epTips)
                 putString(hkTip, hkTips)
             }
+            setOnItemClickListener(object : OddsDisplayDialogFragment.OnClickListener {
+                override fun onClickEP() {
+                    mBinding.tvDisplay.text = getSkinnableOddsString(OddsDisplayEnum.EU)
+                }
+
+                override fun onClickHK() {
+                    mBinding.tvDisplay.text = getSkinnableOddsString(OddsDisplayEnum.HK)
+                }
+            })
         }.show(childFragmentManager)
     }
 
