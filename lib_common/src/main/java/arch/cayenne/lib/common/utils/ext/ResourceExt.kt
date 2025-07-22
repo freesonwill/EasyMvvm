@@ -8,6 +8,7 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import org.koin.java.KoinJavaComponent.getKoin
 
 /**
@@ -22,7 +23,7 @@ object ResourceExt {
      *  無Context狀態下取得String
      */
     fun @receiver:StringRes Int.getString(vararg formatArgs: Any): String {
-        return application.getString(this, *formatArgs)
+        return SkinnableResourceManager.getString(application.applicationContext,this,formatArgs = *formatArgs)
     }
 
     /***
