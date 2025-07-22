@@ -183,6 +183,7 @@ class LiveVideoPlayerFragment :
 
         with(mBinding) {
             ivChooseSource.setOnClickListener {
+                scheduleHideButtons()
                 mediaViewModel.chooseSourceView()
             }
 
