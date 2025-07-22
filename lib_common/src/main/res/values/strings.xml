@@ -6,7 +6,7 @@
     <string name="loading">加载中…</string>
     <string name="on_loading">加载中</string>
     <string name="pull_load">上拉加载…</string>
-
+    <string name="load_more_up">正在加载更多的数据…</string>
     <string name="error_net">网络异常，请检查网络设置</string>
 
     <string name="toast_over_remaining">余额不足</string>
