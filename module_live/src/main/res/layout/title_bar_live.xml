@@ -67,6 +67,7 @@
         android:paddingStart="@dimen/dp_5"
         android:paddingEnd="@dimen/dp_9"
         android:textColor="@color/title_money_text"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
