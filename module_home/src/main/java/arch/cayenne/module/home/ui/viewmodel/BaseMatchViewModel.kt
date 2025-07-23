@@ -67,9 +67,14 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    launch(Dispatchers.Main) {
-                        subscribeMatch(getCurrentSubscribeMatchSet())
+                    if (_state.value?.peekContent() == MatchListState.FAILED) {
+                        getMatchListData()
+                    } else {
+                        launch(Dispatchers.Main) {
+                            subscribeMatch(getCurrentSubscribeMatchSet())
+                        }
                     }
+
                 }
         }
     }

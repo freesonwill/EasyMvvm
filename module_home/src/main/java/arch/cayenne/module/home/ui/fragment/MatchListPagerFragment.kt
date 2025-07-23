@@ -10,6 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -217,7 +218,7 @@ class MatchListPagerFragment :
                             DynamicStateLayout.States.DATA_EMPTY,
                             R.string.lineup_empty.getString()
                         )
-                        homeViewModel.changeState(HomeState.Match.LoadSuccess)
+                        homeViewModel.changeState(DataState.NetworkUnavailable)
                     }
                     MatchListState.LOADING_NEXT -> {
                         clDynamics.visibility = View.GONE

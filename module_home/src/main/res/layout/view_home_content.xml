@@ -25,7 +25,7 @@
             android:paddingVertical="@dimen/dp_9"
             android:paddingStart="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_65"
-            app:tabGravity="center"
+            app:tabGravity="start"
             app:tabIndicator="@null"
             app:tabIndicatorColor="@null"
             app:tabIndicatorHeight="0dp"

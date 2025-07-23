@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -161,6 +162,7 @@ class HomeViewModel : BaseViewModel() {
                     withContext(Dispatchers.Main) {
                         val list = mutableListOf<TournamentDataModel>()
                         if (it.isEmpty()) {
+                            tournaments.value = Event(arrayListOf(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId)))
                             return@withContext
                         }
                         list.add(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId))
@@ -181,6 +183,16 @@ class HomeViewModel : BaseViewModel() {
             repository.observeLanguageChange().collect {
                 resetAll()
             }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeLoginChange()
+                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    launch(Dispatchers.Main) {
+                        setCurrentPlayType(currentPlayTypeId)
+                        setCurrentSport(currentSportId)
+                    }
+                }
         }
     }
 
@@ -239,10 +251,6 @@ class HomeViewModel : BaseViewModel() {
             }
         }
         startTimer()
-    }
-
-    fun refreshAll() {
-        setCurrentPlayType(currentPlayTypeId)
     }
 
     @Transaction
@@ -348,7 +356,7 @@ class HomeViewModel : BaseViewModel() {
     }
 
     //提供子fragment透過shared HomeViewModel來告知HomeFragment該fragment的狀態
-    fun changeState(state: HomeState) {
+    fun changeState(state: DataState) {
         setState(state)
     }
     

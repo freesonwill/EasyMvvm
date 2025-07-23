@@ -55,6 +55,7 @@ class WebSocketManager(
     }
 
     fun connect(host: String) : Flow<ConnectState> {
+        setNetWorkCallback()
         return socket.connect(host)
     }
 
