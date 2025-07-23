@@ -3,6 +3,7 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -11,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
@@ -96,6 +98,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         }
         page++
         _state.value = Event(MatchListState.LOADING_NEXT)
+        setState(HomeState.Match.LoadingNext)
         getMatchListData()
     }
 
@@ -204,11 +207,11 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     fun reload() {
         isPageEnd = false
         page = 1
-        val preState = _state.value?.peekContent()
-        _state.value = Event(MatchListState.REFRESHING)
+        val preState = apiStateListener.value
+        setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
             clearCurrentMatch()
-            if (preState == MatchListState.FAILED) {
+            if (preState == HomeState.Match.DataEmpty || preState == DataState.NetworkUnavailable) {
                 getMatchListData()
             }
         }

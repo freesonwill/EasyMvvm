@@ -1,15 +1,19 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.MatchWithMarkets
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import arch.cayenne.module.home.data.repo.MatchListRepository
 import arch.cayenne.module.home.utils.DateUtils
+import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -72,6 +76,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     if (_state.value?.peekContent() == MatchListState.INIT) {
                         _state.value = Event(MatchListState.FIRST_LOADING_API)
                     }
+                    if (apiStateListener.value == null) {
+                        setState(HomeState.Match.Loading)
+                    }
                     getMatchListData()
                     return@collect
                 }
@@ -90,10 +97,14 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         }
     }
 
+    fun changePageEnd(b: Boolean) {
+        isPageEnd = b
+    }
+
     //取得分頁的比賽列表
     override fun getMatchListData() {
         viewModelScope.launch {
-            withContext(Dispatchers.IO) {
+            withContext(Dispatchers.Main) {
 
                 val (startTime, endTime) = if (_selectedDate.value == 0L) { //ALL
                     if (_playType == PlayType.EARLY.id) {
@@ -107,29 +118,30 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                     Pair(_selectedDate.value, _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP)
                 }
                 "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(TAG)
-                isPageEnd = !repository.getAllMatch(
-                    playType = _playType,
-                    sportId = _sportId,
-                    tournamentId = _tournamentId,
-                    page = page,
-                    date = _selectedDate.value,
-                    startTime = startTime,
-                    endTime = endTime,
-                )
-                withContext(Dispatchers.Main) {
-                    if (isPageEnd) {
-                        //沒有資料
-                        if (page != 1) {
-                            _state.value = Event(MatchListState.NO_MORE_DATA)
-                        } else {
-                            _state.value = Event(MatchListState.FAILED)
+                callApi(
+                    {
+                        repository.getAllMatch(
+                            playType = _playType,
+                            sportId = _sportId,
+                            tournamentId = _tournamentId,
+                            page = page,
+                            date = _selectedDate.value,
+                            startTime = startTime,
+                            endTime = endTime,
+                        )
+                    },
+                    {
+                        if (it is ApiResponseState.Failed) {
                             matchListChange.value = arrayListOf()
+                        } else if (it is ApiResponseState.Succeeded<*>) {
+                            val isEmpty = (it.dataAs<List<Common.Match>>()?.size ?: 0) == 0
+                            if (page == 1 && isEmpty) {
+                                matchListChange.value = arrayListOf()
+                                setState(HomeState.Match.DataEmpty)
+                            }
                         }
-
-                    } else {
-                        _state.value = Event(MatchListState.IDLE)
                     }
-                }
+                )
             }
         }
     }
