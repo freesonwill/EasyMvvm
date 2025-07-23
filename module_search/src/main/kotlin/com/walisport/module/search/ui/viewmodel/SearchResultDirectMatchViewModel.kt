@@ -1,6 +1,8 @@
 package com.walisport.module.search.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.utils.ext.getFormatDate
 import com.haibin.calendarview.Calendar
@@ -14,6 +16,8 @@ import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
+import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
+import galaxy.client.proto.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -64,26 +68,11 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     val racedDateMap: Map<String, Calendar>
         get() = _raceDateMap
 
-    /** 是否為第一次載入 */
-    private var isFirst = true
-
-    /** 重置搜尋結果 */
-    private fun resetResult() {
-        if(isFirst) {
-            _directData.value = null
-        }
-        _combineResult.value = null
-    }
-
     /** 取得精準搜尋結果 */
     fun getSearchResult(data: SearchResultBean) {
         viewModelScope.launch {
-            resetResult()
             setResult(data)
             setRaceDate(data)
-            if(isFirst) {
-                isFirst = false
-            }
         }
     }
 
@@ -95,14 +84,24 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
         endTime: Long? = null,
     ) {
         viewModelScope.launch {
-            repository.getSearchResult(
-                word = id,
-                type = type,
-                startTime = startTime,
-                endTime = endTime
-            ).let { data ->
-                getSearchResult(data)
-            }
+            callApi(
+                {
+                    repository.getSearchResult(
+                        word = id,
+                        type = type,
+                        startTime = startTime,
+                        endTime = endTime
+                    )
+                },
+                { state ->
+                    when (state) {
+                        is ApiResponseState.Succeeded<*> -> {
+                            getSearchResult(state.data as SearchResultBean)
+                        }
+                        else -> Unit
+                    }
+                }
+            )
         }
     }
 
@@ -120,9 +119,10 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
                 }
                 _directMatchId = result.directData?.id
                 _directData.value = result.directData
-                _combineResult.value = groupMatchesByDailyCount(
-                    matches = result.matches ?: emptyList()
-                )
+                result.matches
+                    ?.takeIf { it.isNotEmpty() }
+                    ?.let { _combineResult.value = groupMatchesByDailyCount(it) }
+                    ?: setState(DataState.DataEmpty)
             }
             else -> Unit
         }
@@ -142,12 +142,12 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
 
     /** 處理賽事日期 */
     private fun setRaceDate(result: SearchResultBean) {
+        if(racedDateMap.isNotEmpty()) return
+
         when (result.type) {
             SearchResultTypeEnum.TOURNAMENT,
             SearchResultTypeEnum.TEAM,
             SearchResultTypeEnum.PLAYER -> {
-                if(!isFirst) return
-
                 _raceDateMap = result.matches
                     ?.asSequence()
                     ?.mapNotNull { match ->
@@ -173,13 +173,13 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     }
 
     /** 新增收藏賽事 */
-    suspend fun addCollect(matchId: Long): Boolean {
-        return repository.addCollect(matchId)
+    fun addCollect(matchId: Long, handle: ((ApiResponseState) -> Unit)) {
+        return callApi({ repository.addCollect(matchId) }, handle, false)
     }
 
     /** 移除收藏賽事 */
-    suspend fun removeCollect(matchId: Long): Boolean {
-        return repository.removeCollect(matchId)
+    fun removeCollect(matchId: Long, handle: ((ApiResponseState) -> Unit)) {
+        return callApi({ repository.removeCollect(matchId) }, handle, false)
     }
 
     /** 設定選擇的日期 */
