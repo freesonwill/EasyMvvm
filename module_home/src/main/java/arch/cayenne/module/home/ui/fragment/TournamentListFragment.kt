@@ -43,8 +43,7 @@ class TournamentListFragment :
 
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var adapter: TournamentSectionAdapter
-    private var isJumpingByIndex = false
-    private var pendingJumpIndex: Int? = null
+    private var pendingJumpIndex: Int? = null // 用來判斷是否為點擊字母列表來跳選列表分類，null代表非自動跳轉狀態
     private var stickyHeaderDecoration: StickyHeaderItemDecoration? = null
     override fun initData() {
         arguments?.apply {
@@ -160,7 +159,7 @@ class TournamentListFragment :
 
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (isJumpingByIndex) return
+                    if (pendingJumpIndex != null) return
 
                     val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
                     val firstVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
@@ -179,13 +178,10 @@ class TournamentListFragment :
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        if (isJumpingByIndex) {
-                            pendingJumpIndex?.let {
-                                mViewModel.setActiveHeaderIndex(it)
-                            }
-                            isJumpingByIndex = false
-                            pendingJumpIndex = null
+                        pendingJumpIndex?.let {
+                            mViewModel.setActiveHeaderIndex(it)
                         }
+                        pendingJumpIndex = null
                     }
                 }
             })
@@ -250,7 +246,6 @@ class TournamentListFragment :
         val index = mViewModel.getHeaderIndex(letter) ?: return
         val layoutManager =
             mBinding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
-        isJumpingByIndex = true
         pendingJumpIndex = index
 
         updateAZIndexHighlight()
@@ -327,6 +322,10 @@ class TournamentListFragment :
             mBinding.rvTournamentList.removeItemDecoration(it)
         }
         stickyHeaderDecoration = null
+        // 通知聯賽收回上滑動畫已結束
+        if (mViewModel.getType() == TournamentListType.MORE) {
+            homeViewModel.notifyTournamentSlideOutEnd()
+        }
     }
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"

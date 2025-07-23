@@ -26,6 +26,9 @@ class SingleBetRepository(
     private val comboFlow =
         MutableSharedFlow<ComboMultiBetBean>(replay = 1, extraBufferCapacity = 1)
 
+    val isConnected: Boolean
+        get() = remoteManager.isConnected
+
     init {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->

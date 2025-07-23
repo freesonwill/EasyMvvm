@@ -86,6 +86,7 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     @CallSuper
     override fun onStart() {
         super.onStart()
+        setDim(0.75f)
         uiBind.onStart()
     }
     @CallSuper
@@ -135,6 +136,11 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
         statusBar.setStatusBar(config,view)
     }
 
+    override fun dismiss() {
+        removeDim()
+        super.dismiss()
+    }
+
     /**
      * 获取activity的NavController
      *
@@ -143,5 +149,13 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
      */
     private fun findActivityNavController(@IdRes id: Int = R.id.nav_host): NavController {
         return requireActivity().findNavController(id)
+    }
+
+    protected fun removeDim() {
+        dialog?.window?.setDimAmount(0f)
+    }
+
+    private fun setDim(amount: Float) {
+        dialog?.window?.setDimAmount(amount)
     }
 }

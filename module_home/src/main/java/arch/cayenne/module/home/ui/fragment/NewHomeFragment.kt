@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -260,18 +258,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         } else {
             val fragment = fm.findFragmentByTag(tag) ?: return
-            // 註冊callback，等fragment view收回動畫結束,且真正被移除時,再隱藏container
-            childFragmentManager.registerFragmentLifecycleCallbacks(object :
-                FragmentManager.FragmentLifecycleCallbacks() {
-                override fun onFragmentViewDestroyed(fm: FragmentManager, f: Fragment) {
-                    if (f is TournamentListFragment && f.tag == tag) {
-                        container.visibility = View.GONE
-                        mBinding.ivTournamentMore.visibility = View.VISIBLE
-                        mBinding.llTournamentsDropdown.visibility = View.GONE
-                        childFragmentManager.unregisterFragmentLifecycleCallbacks(this)
-                    }
-                }
-            }, false)
             fm.beginTransaction().apply {
                 if (type == TournamentListType.MORE) {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
@@ -279,7 +265,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 remove(fragment)
                 commitAllowingStateLoss()
             }
-
         }
     }
 
@@ -565,6 +550,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()
+        }
+        mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
+            mBinding.ivTournamentMore.visibility = View.VISIBLE
+            mBinding.llTournamentsDropdown.visibility = View.GONE
         }
     }
 

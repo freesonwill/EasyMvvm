@@ -6,7 +6,7 @@
     <string name="loading">加载中…</string>
     <string name="on_loading">加载中</string>
     <string name="pull_load">上拉加载…</string>
-
+    <string name="load_more_up">正在加载更多的数据…</string>
     <string name="error_net">网络异常，请检查网络设置</string>
 
     <string name="toast_over_remaining">余额不足</string>
@@ -23,4 +23,6 @@
     <string name="btn_clear">清空</string>
     <string name="btn_confirm">确定</string>
     <string name="title_rate">达到此赔率时自动投注</string>
+
+    <string name="toast_server_disconnected">服务器已断开连接</string>
 </resources>

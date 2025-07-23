@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -29,8 +30,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     BottomSheetDialogFragment(), IView {
 
     private var mScrollY: Int? = null
-    private lateinit var backgroundView: View
-    private lateinit var sheetContainer: View
+    private var backgroundView: View? = null
+    private var sheetContainer: View? = null
     private var isDismissing = false
 
     //#region VB,VM
@@ -80,18 +81,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             val d = it as BottomSheetDialog
             val root = d.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)?.parent as ViewGroup
 
-            backgroundView = root.getChildAt(0) // 通常是背景 View（透明灰）
-            sheetContainer = root.findViewById(com.google.android.material.R.id.design_bottom_sheet) // sheet 本體
-
-            backgroundView.visibility = View.INVISIBLE
-            sheetContainer.visibility = View.INVISIBLE
-
-            backgroundView.setOnClickListener {
-                if (isCancelable) {
-                    dismiss()
+            backgroundView = root.getChildAt(0).apply {
+                visibility = View.INVISIBLE
+                setBackgroundColor(Color.BLACK)
+                alpha = 0.75f
+                setOnClickListener {
+                    if (isCancelable) {
+                        dismiss()
+                    }
                 }
             }
-
+            sheetContainer = root.findViewById<View?>(com.google.android.material.R.id.design_bottom_sheet).apply {
+                visibility = View.INVISIBLE
+            }
             // 彈出動畫
             playEnterAnimations()
 
@@ -101,23 +103,25 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     private fun playEnterAnimations() {
-        // bottom sheet 上滑動畫
-        val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_up)
+        sheetContainer?.let {  scv ->
+            // bottom sheet 上滑動畫
+            val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_up)
 
-        sheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {
-                backgroundView.visibility = View.VISIBLE
-                sheetContainer.visibility = View.VISIBLE
-                mBinding.root.visibility = View.VISIBLE
-            }
+            sheetAnim.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart(animation: Animation?) {
+                    backgroundView?.visibility = View.VISIBLE
+                    scv.visibility = View.VISIBLE
+                    mBinding.root.visibility = View.VISIBLE
+                }
 
-            override fun onAnimationEnd(animation: Animation?) {
-            }
+                override fun onAnimationEnd(animation: Animation?) {
+                }
 
-            override fun onAnimationRepeat(animation: Animation?) {}
-        })
-        backgroundView.startAnimation(sheetAnim)
-        sheetContainer.startAnimation(sheetAnim)
+                override fun onAnimationRepeat(animation: Animation?) {}
+            })
+            scv.startAnimation(sheetAnim)
+        }
+
     }
 
     @CallSuper
@@ -142,7 +146,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     override fun onStart() {
         super.onStart()
-        dialog?.window?.setDimAmount(0.75f)
+        removeDim()
         uiBind.onStart()
     }
 
@@ -205,14 +209,18 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
 
     override fun dismiss() {
-        if (isDismissing) return
+        if (isDismissing || sheetContainer == null) {
+            superDismiss()
+            return
+        }
         isDismissing = true
 
-        val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
-        sheetAnim.setAnimationListener(object : Animation.AnimationListener {
-            override fun onAnimationStart(animation: Animation?) {}
+        val sheetContainerSheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_down)
+        sheetContainerSheetAnim.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {
+                backgroundView?.visibility = View.INVISIBLE
+            }
             override fun onAnimationEnd(animation: Animation?) {
-                dialog?.window?.setDimAmount(0f)
                 try {
                     superDismiss()
                 } catch (e: Exception) {
@@ -223,12 +231,19 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onAnimationRepeat(animation: Animation?) {}
         })
 
-        backgroundView.startAnimation(sheetAnim)
-        sheetContainer.startAnimation(sheetAnim)
+        sheetContainer?.startAnimation(sheetContainerSheetAnim)
     }
 
     protected open fun superDismiss() {
         isDismissing = false
         super.dismiss()
+    }
+
+    protected fun removeDim() {
+        dialog?.window?.setDimAmount(0f)
+    }
+
+    private fun setDim(amount: Float) {
+        dialog?.window?.setDimAmount(amount)
     }
 }

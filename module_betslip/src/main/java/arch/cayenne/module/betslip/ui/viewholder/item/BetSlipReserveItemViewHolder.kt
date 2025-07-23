@@ -23,7 +23,7 @@ class BetSlipReserveItemViewHolder(binding: ViewBinding) :
     ) {
         if (item is ReserveOrderSelectionBean) {
             updateReserveData(item)
-            showLiveArrow(item, mBinding.ivCircleArrow)
+            showLiveArrow(item.matchBasic.status, item, mBinding.ivCircleArrow)
         }
     }
 

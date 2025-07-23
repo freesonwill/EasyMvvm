@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
@@ -66,6 +67,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
     private val resultBundle: Bundle by lazy {
         Bundle()
     }
+
+    override val dialogBackground: Drawable?
+        get() = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : Dialog(requireContext(), theme) {
@@ -185,7 +189,6 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
 
     private fun setDialogPosition() {
         dialog?.window?.let { window ->
-            window.setDimAmount(0.75f)
             val marginInPx = 16.dp2px
             val screenWidth = Resources.getSystem().displayMetrics.widthPixels
             val maxWidth = screenWidth - marginInPx * 2
@@ -280,6 +283,9 @@ class ComboBetMoneyKeyboardDialogFragment private constructor():
             .alpha(0f)
             .setDuration(200)
             .setInterpolator(android.view.animation.DecelerateInterpolator())
+            .withStartAction {
+                removeDim()
+            }
             .withEndAction {
                 super.dismiss()
             }

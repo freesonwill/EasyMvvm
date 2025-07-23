@@ -66,7 +66,25 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     private fun showOddsDisplayDialog() {
-        OddsDisplayDialogFragment().show(childFragmentManager)
+        OddsDisplayDialogFragment().apply {
+            val language = mViewModel.getLanguageType()
+            val epTips = getSkinnableTipString(OddsDisplayEnum.EU)
+            val hkTips = getSkinnableTipString(OddsDisplayEnum.HK)
+            arguments = Bundle().apply {
+                putString(lang, language.value)
+                putString(epTip, epTips)
+                putString(hkTip, hkTips)
+            }
+            setOnItemClickListener(object : OddsDisplayDialogFragment.OnClickListener {
+                override fun onClickEP() {
+                    mBinding.tvDisplay.text = getSkinnableOddsString(OddsDisplayEnum.EU)
+                }
+
+                override fun onClickHK() {
+                    mBinding.tvDisplay.text = getSkinnableOddsString(OddsDisplayEnum.HK)
+                }
+            })
+        }.show(childFragmentManager)
     }
 
     private fun getSkinnableOddsString(oddsType: OddsDisplayEnum): String {
@@ -80,6 +98,22 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             SkinnableResourceManager.getString(
                 requireContext(),
                 R.string.menu_hk,
+                mViewModel.getLanguage()
+            )
+        }
+    }
+
+    private fun getSkinnableTipString(oddsType: OddsDisplayEnum): String {
+        return if (oddsType == OddsDisplayEnum.EU) {
+            SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.display_odds_ben,
+                mViewModel.getLanguage()
+            )
+        } else {
+            SkinnableResourceManager.getString(
+                requireContext(),
+                R.string.display_odds_not,
                 mViewModel.getLanguage()
             )
         }

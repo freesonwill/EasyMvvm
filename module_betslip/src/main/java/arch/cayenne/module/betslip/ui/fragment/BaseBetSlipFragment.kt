@@ -8,6 +8,8 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
 import arch.cayenne.module.betslip.R
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.BetSlipFilterViewModel
@@ -42,6 +44,11 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
         }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             updateState(it)
+        }
+        mViewModel.networkConnectedEvent.observeEvent(viewLifecycleOwner, this) {
+            if (it is DataState.NetworkUnavailable) {
+                showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
+            }
         }
     }
 

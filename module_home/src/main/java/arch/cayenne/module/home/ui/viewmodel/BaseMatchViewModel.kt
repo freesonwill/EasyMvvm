@@ -15,6 +15,8 @@ import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -40,20 +42,25 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
     private var matchNotifyJob: Job? = null
 
+    private val refreshAllBet = MutableStateFlow(Unit)
+
     override fun initViewModel() {
         super.initViewModel()
         startMatchSubscribeNotify()
         //觀察投注單的變化，主要用來做selection變更
         viewModelScope.launch(Dispatchers.IO) {
-            betRepository.observerAllBet.distinctUntilChanged().collect { betSelectionBeans ->
-                if (matchListChange.value == null) return@collect
-                val matchWithMarkets = repository.queryFullMatches(
-                    matchListChange.value!!.map { it.match.matchId },
-                    betSelectionBeans.map { it.selectionId }
-                )
-                withContext(Dispatchers.Main) {
-                    matchListChange.value = matchWithMarkets
-                }
+            betRepository.observerAllBet
+                .distinctUntilChanged()
+                .combine(refreshAllBet){ beans, _ -> beans }
+                .collect { betSelectionBeans ->
+                    if (matchListChange.value == null) return@collect
+                    val matchWithMarkets = repository.queryFullMatches(
+                        matchListChange.value!!.map { it.match.matchId },
+                        betSelectionBeans.map { it.selectionId }
+                    )
+                    withContext(Dispatchers.Main) {
+                        matchListChange.value = matchWithMarkets
+                    }
             }
         }
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,6 +72,13 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
                     }
                 }
         }
+    }
+
+    /**
+     * 因為一點擊下去就會先高亮投注選項，所以如果遇到失敗等等問題，要再強迫observerAllBet重來一次，把目前有點擊的選項更新一次
+     * */
+    fun triggerAllBetRefresh() {
+        refreshAllBet.value = Unit
     }
 
     fun loadNextPage() {
@@ -151,6 +165,9 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
      * selection點擊行為，投注或取消投注
      * */
     suspend fun setSelection(selectionId: Long) : AddSelectionStatus {
+        if (!betRepository.isConnected) {
+            return AddSelectionStatus.Failure.NetworkDisconnected
+        }
         val bean = repository.getSelectionInsertBean(selectionId)
         return if (bean == null) {
             AddSelectionStatus.Failure.Fail

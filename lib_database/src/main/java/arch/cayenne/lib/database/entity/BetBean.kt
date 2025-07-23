@@ -94,11 +94,16 @@ sealed class AddSelectionStatus {
 
     // 失敗狀態
     sealed class Failure : AddSelectionStatus() {
+        data object NetworkDisconnected : Failure() // 網路斷線
         data object DisableComboForParlay : Failure() // 串關限制（非串關投注）
         data object DisableComboForProvider : Failure() // 串關限制（供應商不同）
-        data object Remove : Failure()     // 已選中，再次點選則移除
+
         data object MaxLimit : Failure()   // 超過最大選擇數量
         data object Fail : Failure()       // 其他錯誤
+    }
+
+    sealed class Others : AddSelectionStatus() {
+        data object Remove : Failure()     // 已選中，再次點選則移除
     }
 }
 

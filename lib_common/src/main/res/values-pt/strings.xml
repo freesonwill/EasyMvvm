@@ -7,6 +7,7 @@
     <string name="loading">Carregando…</string>
     <string name="on_loading">Carregando</string>
     <string name="pull_load">Puxe para cima para carregar mais…</string>
+    <string name="load_more_up">Puxe para cima para carregar mais…</string>
     <string name="error_net">Erro de rede, verifique as configurações de rede</string>
     <string name="toast_over_remaining">Saldo insuficiente</string>
     <string name="toast_over_max">Limite de aposta excedido</string>

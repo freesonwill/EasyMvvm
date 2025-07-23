@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlin.reflect.KClass
@@ -54,7 +55,7 @@ class BetSlipFragment :
 
     private fun initMenu() {
         with(mBinding) {
-            val array = resources.getStringArray(R.array.bet_slip_menus)
+            val array = SkinnableResourceManager.getStringArray(requireContext(),R.array.bet_slip_menus)
             val list = listOf(
                 PagerBean(array[0]) {
                     BetSlipUnsettledFragment()

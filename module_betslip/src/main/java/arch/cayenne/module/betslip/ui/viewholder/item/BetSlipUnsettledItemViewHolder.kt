@@ -22,7 +22,7 @@ class BetSlipUnsettledItemViewHolder(binding: ViewBinding):
     ) {
         if (item is OrderSelectionBean) {
             updateData(item)
-            showLiveArrow(item, mBinding.ivCircleArrow)
+            showLiveArrow(item.matchBasic.status, item, mBinding.ivCircleArrow)
         }
     }
 

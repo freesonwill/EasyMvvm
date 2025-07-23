@@ -2,12 +2,16 @@ package arch.cayenne.lib.common.data.manager
 
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import com.tencent.mmkv.MMKV
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 
 class UserDataManager {
     val mmkv = MMKV.defaultMMKV()
     private val flows = mutableMapOf<UserDataKey, MutableSharedFlow<Any?>>()
+
+    private fun getFlow(key: UserDataKey) = flows.getOrPut(key) { MutableSharedFlow(replay = 1,
+        onBufferOverflow = BufferOverflow.DROP_OLDEST) }
 
     fun <T> setKeyValue(key: UserDataKey, value: T) {
         when (value) {
@@ -33,12 +37,13 @@ class UserDataManager {
     }
 
     private fun notifyChanged(key: UserDataKey, value: Any?) {
-        val flow = flows.getOrPut(key) { MutableSharedFlow(replay = 1) }
-        flow.tryEmit(value)
+        val flow = getFlow(key)
+        val b = flow.tryEmit(value)
+        if(!b) throw IllegalStateException("❌ notifyChanged--tryEmit failed for key: $key, value: $value")
     }
 
     fun <T> observe(key: UserDataKey): Flow<T> {
-        val flow = flows.getOrPut(key) { MutableSharedFlow(replay = 1) }
+        val flow = getFlow(key)
         @Suppress("UNCHECKED_CAST")
         return flow as Flow<T>
     }
