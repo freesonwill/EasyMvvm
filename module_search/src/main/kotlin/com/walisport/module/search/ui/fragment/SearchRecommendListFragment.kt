@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.addCallback
 import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
