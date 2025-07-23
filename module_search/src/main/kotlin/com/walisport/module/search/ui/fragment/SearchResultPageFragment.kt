@@ -3,7 +3,6 @@ package com.walisport.module.search.ui.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -163,6 +162,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                                 }
                             })
                         }
+                        itemAnimator = null
                     }
                     gridAdapter.submitList(getLimitGroupSearResults(groupData.value))
                 } else {
@@ -191,6 +191,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                             layoutManager =
                                 LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                             adapter = linearAdapter
+                            itemAnimator = null
                         }
                         linearAdapter.submitList(list)
                     }

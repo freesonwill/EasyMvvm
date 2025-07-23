@@ -176,6 +176,7 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
                         })
                     }
                 }
+                itemAnimator = null
             }
         }
     }

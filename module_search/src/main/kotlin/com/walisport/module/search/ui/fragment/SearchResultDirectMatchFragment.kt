@@ -296,6 +296,7 @@ class SearchResultDirectMatchFragment :
                         })
                     }
                 }
+                itemAnimator = null
             }
         }
     }

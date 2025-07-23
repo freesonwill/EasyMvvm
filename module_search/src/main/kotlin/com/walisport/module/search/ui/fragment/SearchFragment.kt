@@ -47,6 +47,7 @@ import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
+import androidx.core.view.isVisible
 
 /**
  * @author: caomei
@@ -109,7 +110,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 }
                 launch {
                     searchRecommendList.collect { list ->
-                        recommendAdapter.submitList(list)
+                        recommendAdapter.submitList(list) {
+                            mBinding.clSearchRecommend.visibility =
+                                if (list.isNotEmpty()) View.VISIBLE else View.GONE
+                        }
                     }
                 }
                 launch {
@@ -158,8 +162,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         }
 
                         // 搜索自动补充词汇
-                        if (count > 0 && binding.ceSearch.hasFocus())
-                            clSearchRecommend.visibility = View.VISIBLE
                         if (recommendAdapter.onClick == null) {
                             recommendAdapter.setOnClickListener { recommendWord ->
                                 updateSearchText(recommendWord) {
@@ -205,14 +207,12 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         updateSearchBtnColor()
                         if (isFocused) {
                             closeDatePicker()
-                            clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
                                 getSearchRecommendList(text.toString(), apiFailedHandler)
                             }
                         }
                     }
                     setOnClickListener {
-                        clSearchRecommend.visibility = View.VISIBLE
                         if (text?.isNotEmpty() == true) {
                             getSearchRecommendList(text?.toString(), apiFailedHandler)
                         }
@@ -272,6 +272,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         })
                     }
                 }
+                itemAnimator = null
             }
 
             clSearchRecommend.setOnClickListener {
