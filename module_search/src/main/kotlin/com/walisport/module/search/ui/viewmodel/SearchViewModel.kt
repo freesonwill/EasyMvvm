@@ -1,6 +1,8 @@
 package com.walisport.module.search.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiFailedState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.LanguageManager
 import com.walisport.module.search.data.constants.SearchNavigationEvent
@@ -83,10 +85,28 @@ class SearchViewModel : BaseViewModel() {
     }
 
     /** 取得推薦關鍵字結果 */
-    fun getSearchRecommendList(keyword: String? = "") {
-        viewModelScope.launch {
-            _searchRecommendList.emit(repository.getSearchRecommend(keyword))
-        }
+    fun getSearchRecommendList(keyword: String? = "", failedHandler: ((error: ApiFailedState?) -> Unit)? = null) {
+        callApi(
+            { repository.getSearchRecommend(keyword) },
+            { state ->
+                when (state) {
+                    is ApiResponseState.Succeeded<*> -> {
+                        viewModelScope.launch {
+                            if (state.data is List<*>) {
+                                _searchRecommendList.emit(
+                                    (state.data as List<*>).filterIsInstance<String>()
+                                )
+                            }
+                        }
+                    }
+                    is ApiResponseState.Failed -> {
+                        failedHandler?.invoke(state.error)
+                    }
+                    else -> Unit
+                }
+            },
+            false
+        )
     }
 
     /** 清除推薦關鍵字結果 */

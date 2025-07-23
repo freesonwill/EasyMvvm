@@ -155,26 +155,40 @@ class HomeViewModel : BaseViewModel() {
                     it.take(10)  //limit
                 }.distinctUntilChanged()
                 .collect {
-                    val selectedTournament = repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
-                        repository.getTournament(currentPlayTypeId, currentSportId, it)
-                    }
+                    if (currentPlayTypeId != PlayType.CHAMPION.id) {
+                        val selectedTournament =
+                            repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
+                                repository.getTournament(currentPlayTypeId, currentSportId, it)
+                            }
+                        withContext(Dispatchers.Main) {
+                            val list = mutableListOf<TournamentDataModel>()
+                            if (it.isEmpty()) {
+                                tournaments.value = Event(
+                                    arrayListOf(
+                                        TournamentDataModel.createAllItem(
+                                            currentPlayTypeId,
+                                            currentSportId
+                                        )
+                                    )
+                                )
+                                return@withContext
+                            }
+                            list.add(
+                                TournamentDataModel.createAllItem(
+                                    currentPlayTypeId,
+                                    currentSportId
+                                )
+                            )
+                            list.addAll(it)
 
-                    withContext(Dispatchers.Main) {
-                        val list = mutableListOf<TournamentDataModel>()
-                        if (it.isEmpty()) {
-                            tournaments.value = Event(arrayListOf(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId)))
-                            return@withContext
-                        }
-                        list.add(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId))
-                        list.addAll(it)
-
-                        tournaments.value = Event(list)
-                        if (selectedTournament == null) {
-                            setCurrentTournamentId(0)
-                        } else if (!it.any {data -> data.id == selectedTournament.id}) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
-                            addNewTournament(selectedTournament)
-                        } else {
-                            setCurrentTournamentId(selectedTournament.id)
+                            tournaments.value = Event(list)
+                            if (selectedTournament == null) {
+                                setCurrentTournamentId(0)
+                            } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
+                                addNewTournament(selectedTournament)
+                            } else {
+                                setCurrentTournamentId(selectedTournament.id)
+                            }
                         }
                     }
                 }

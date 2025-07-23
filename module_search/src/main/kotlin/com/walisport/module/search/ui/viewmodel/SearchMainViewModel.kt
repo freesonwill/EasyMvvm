@@ -3,6 +3,8 @@ package com.walisport.module.search.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiFailedState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.data.repo.SearchRepository
 import kotlinx.coroutines.launch
@@ -44,9 +46,24 @@ class SearchMainViewModel: BaseViewModel() {
     }
 
     /** 取得熱門搜尋關鍵字 */
-    fun getSearchHotWord() {
-        viewModelScope.launch {
-            _searchHotWord.value = repository.getSearchHotWord()
-        }
+    fun getSearchHotWord(failedHandler: ((error: ApiFailedState?) -> Unit)? = null) {
+        callApi(
+            { repository.getSearchHotWord() },
+            { state ->
+                when (state) {
+                    is ApiResponseState.Succeeded<*> -> {
+                        if (state.data is List<*>) {
+                            _searchHotWord.value =
+                                (state.data as List<*>).filterIsInstance<String>()
+                        }
+                    }
+                    is ApiResponseState.Failed -> {
+                        failedHandler?.invoke(state.error)
+                    }
+                    else -> Unit
+                }
+            },
+            false
+        )
     }
 }

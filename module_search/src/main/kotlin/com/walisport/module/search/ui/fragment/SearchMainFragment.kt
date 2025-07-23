@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
@@ -51,7 +52,9 @@ class SearchMainFragment: BaseFragment<SearchMainViewModel, FragmentSearchMainBi
         mViewModel.getRecordByUID()
 
         //获取热门搜索
-        mViewModel.getSearchHotWord()
+        mViewModel.getSearchHotWord { error ->
+            error?.let { showToast(it.msg) }
+        }
     }
 
     override fun initListener() = Unit

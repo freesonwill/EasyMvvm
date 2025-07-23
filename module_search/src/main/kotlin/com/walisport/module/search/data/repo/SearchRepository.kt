@@ -1,5 +1,6 @@
 package com.walisport.module.search.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.common.data.constants.UserDataKey
 import arch.cayenne.lib.common.data.manager.UserDataManager
@@ -17,9 +18,11 @@ import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
+import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 
 class SearchRepository(
@@ -141,7 +144,11 @@ class SearchRepository(
         return Gson().fromJson(value, type)
     }
 
-    suspend fun addCollect(matchId: Long): Boolean {
+    /**
+     * 新增收藏
+     * @param matchId 比赛ID
+     */
+    suspend fun addCollect(matchId: Long) = withContext(scope.coroutineContext) {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.AddCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -151,10 +158,19 @@ class SearchRepository(
                 addMatchId(matchId)
             }.build()
         }
-        return result.data?.success ?: false
+
+        if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data)
+        } else {
+            ApiResponseState.Failed(error = result.error)
+        }
     }
 
-    suspend fun removeCollect(matchId: Long): Boolean {
+    /**
+     * 删除收藏
+     * @param matchId 比赛ID
+     */
+    suspend fun removeCollect(matchId: Long) = withContext(scope.coroutineContext) {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.RemoveCollectResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -164,7 +180,12 @@ class SearchRepository(
                 addMatchId(matchId)
             }.build()
         }
-        return result.data?.success ?: false
+
+        if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data)
+        } else {
+            ApiResponseState.Failed(error = result.error)
+        }
     }
 
     /** * 获取搜索结果
@@ -184,7 +205,7 @@ class SearchRepository(
         page: Int = 1,
         size: Int = 10,
         timeZone: Int = 8
-    ): SearchResultBean {
+    ) = withContext(scope.coroutineContext) {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.SearchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -201,52 +222,10 @@ class SearchRepository(
             }.build()
         }
 
-        when(SearchResultTypeEnum.fromCode(result.data?.type ?: 0)) {
-            SearchResultTypeEnum.LIST -> {
-                return SearchResultBean(
-                    type = SearchResultTypeEnum.LIST,
-                    dataList = listOfNotNull(
-                        result.data?.dataList?.tournamentList?.let { SearchResultTournamentBean.fromList(it) },
-                        result.data?.dataList?.teamList?.let { SearchResultTeamBean.fromList(it) },
-                        result.data?.dataList?.playerList?.let { SearchResultPlayerBean.fromList(it) }
-                    ).flatten()
-
-                )
-            }
-            SearchResultTypeEnum.PLAYER -> {
-                return SearchResultBean(
-                    type = SearchResultTypeEnum.PLAYER,
-                    directData = result.data?.player?.let { SearchResultPlayerBean.from(it) },
-                    matchTotal = result.data?.matchTotal ?: 0,
-                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
-                    dailyCount = result.data?.dailyCountList?.let { list ->
-                        SearchDailyMatchBean.fromList(list)
-                    }
-                )
-            }
-            SearchResultTypeEnum.TEAM -> {
-                return SearchResultBean(
-                    type = SearchResultTypeEnum.TEAM,
-                    directData = result.data?.team?.let { SearchResultTeamBean.from(it) },
-                    matchTotal = result.data?.matchTotal ?: 0,
-                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
-                    dailyCount = result.data?.dailyCountList?.let { list ->
-                        SearchDailyMatchBean.fromList(list)
-                    }
-                )
-            }
-            SearchResultTypeEnum.TOURNAMENT -> {
-                return SearchResultBean(
-                    type = SearchResultTypeEnum.TOURNAMENT,
-                    directData = result.data?.tournament?.let { SearchResultTournamentBean.from(it) },
-                    matchTotal = result.data?.matchTotal ?: 0,
-                    matches = result.data?.matchesList?.let { SearchMatchBean.fromList(it) },
-                    dailyCount = result.data?.dailyCountList?.let { list ->
-                        SearchDailyMatchBean.fromList(list)
-                    }
-                )
-            }
-            else -> { return SearchResultBean(type = SearchResultTypeEnum.NONE) }
+        if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data?.toSearchResultBean())
+        } else {
+            ApiResponseState.Failed(error = result.error)
         }
     }
 
@@ -254,8 +233,8 @@ class SearchRepository(
      * 获取搜索推荐词
      * @param keyword 搜索关键词
      */
-    suspend fun getSearchRecommend(keyword: String? = ""): List<String> {
-        val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchRecommendResp>(
+    suspend fun getSearchRecommend(keyword: String? = "") = withContext(scope.coroutineContext) {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.SearchRecommendResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SEARCH_RECOMMEND,
@@ -264,21 +243,31 @@ class SearchRepository(
                 word = keyword
             }.build()
         }
-        return resp.data?.recommendList?.toList() ?: listOf()
+
+        if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data?.recommendList?.toList())
+        } else {
+            ApiResponseState.Failed(error = result.error)
+        }
     }
 
     /**
      * 获取搜索热词
      * @return 返回热词列表
      */
-    suspend fun getSearchHotWord(): List<String> {
-        val resp = socketManager.sendAndWaitProtoMessageResponse<Client.SearchHotWordResp>(
+    suspend fun getSearchHotWord() = withContext(scope.coroutineContext) {
+        val result = socketManager.sendAndWaitProtoMessageResponse<Client.SearchHotWordResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
             apiCode = ApiCode.SEARCH_HOT_WORD,
         ) {
             Client.SearchHotWordReq.newBuilder().build()
         }
-        return resp.data?.wordList?.toList() ?: listOf()
+
+        if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data?.wordList?.toList())
+        } else {
+            ApiResponseState.Failed(error = result.error)
+        }
     }
 }

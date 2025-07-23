@@ -97,7 +97,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                 setOverNumberListener(NumberOverEnum.OVER_REMAINING)
                 remainingNumber.getMoneyForScale(decimalNumber)
             } else {
-                setOverNumberListener(NumberOverEnum.OVER_MAX)
+                setOverNumberListener(getMaxToast())
                 maxMoney.getMoneyForScale(decimalNumber)
             }
         } else if (value > remainingNumber) {
@@ -105,7 +105,7 @@ open class NumberCalculatorViewModel : BaseViewModel() {
                 setOverNumberListener(NumberOverEnum.OVER_REMAINING)
                 remainingNumber.getMoneyForScale(decimalNumber)
             } else {
-                setOverNumberListener(NumberOverEnum.OVER_MAX)
+                setOverNumberListener(getMaxToast())
                 maxMoney.getMoneyForScale(decimalNumber)
             }
         } else if (value == 0L) {
@@ -146,12 +146,18 @@ open class NumberCalculatorViewModel : BaseViewModel() {
         remainingNumber = number
     }
 
-    protected fun setOverNumberListener(value: NumberOverEnum) {
-        _onOverNumberListener.value = value
-        _onOverNumberListener.value = NumberOverEnum.DEFAULT
+    protected fun setOverNumberListener(value: NumberOverEnum?) {
+        value?.let {
+            _onOverNumberListener.value = value
+            _onOverNumberListener.value = NumberOverEnum.DEFAULT
+        }
     }
 
     fun setDecimalNumber(decimal: Int) {
         _decimalNumber = decimal
+    }
+
+    open fun getMaxToast():NumberOverEnum?{
+        return NumberOverEnum.OVER_MAX
     }
 }
