@@ -35,7 +35,6 @@ import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePickerViewModel, FragmentSearchDatePickerBinding>() {

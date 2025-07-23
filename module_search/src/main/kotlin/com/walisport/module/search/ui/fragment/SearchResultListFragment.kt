@@ -1,5 +1,6 @@
 package com.walisport.module.search.ui.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -80,7 +81,9 @@ class SearchResultListFragment :
                     .children.forEach { tabView ->
                         tabView.apply {
                             setOnLongClickListener { true }
-                            tooltipText = null
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                tooltipText = null
+                            }
                         }
                     }
 

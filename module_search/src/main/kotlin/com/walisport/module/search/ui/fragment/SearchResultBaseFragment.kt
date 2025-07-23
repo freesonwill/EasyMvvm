@@ -4,18 +4,17 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
+import arch.cayenne.lib.common.R as RC
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
-import com.walisport.module.search.data.constants.SearchResultUiState
 import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
-import com.walisport.module.search.data.constants.SearchResultUiState.Empty
-import com.walisport.module.search.data.constants.SearchResultUiState.Loading
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
@@ -33,12 +32,42 @@ class SearchResultBaseFragment :
 
     private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
 
-    override fun initView(savedInstanceState: Bundle?) {
-        setEmptyView()
-    }
+    override fun initView(savedInstanceState: Bundle?) = Unit
 
     override fun initData() {
         super.initData()
+        doSearch()
+    }
+
+    override fun initListener() = Unit
+
+    override fun createObserver() {
+        with(mViewModel) {
+            launch(Lifecycle.State.STARTED) {
+                launch {
+                    apiStateListener.observe(viewLifecycleOwner) { state ->
+                        when (state) {
+                            is DataState.Loading,
+                            is DataState.DataEmpty,
+                            is DataState.NetworkUnavailable,
+                            is DataState.None -> switchUi(state)
+                        }
+                    }
+                }
+
+                launch {
+                    uiState.collect {
+                        when (it) {
+                            is ResultList -> goToListResult(it.data)
+                            is DirectMatch -> goToDirectMatch(it.data)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun doSearch() {
         findNavController().also { nav ->
             nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
                 observeResultOnce<String>(
@@ -52,51 +81,46 @@ class SearchResultBaseFragment :
         }
     }
 
-    override fun initListener() = Unit
-
-    override fun createObserver() {
-        with(mViewModel) {
-            launch(Lifecycle.State.STARTED) {
-                launch {
-                    uiState.collect {
-                        when (it) {
-                            is ResultList -> goToListResult(it.data)
-                            is DirectMatch -> goToDirectMatch(it.data)
-                            is Loading -> switchUi(it)
-                            is Empty -> switchUi(it)
-                        }
-                    }
+    private fun setEmptyView(state: DataState) {
+        with(mBinding) {
+            val layoutState =
+                if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY
+                else DynamicStateLayout.States.DATA_EMPTY
+            val errorStr =
+                if(state == DataState.NetworkUnavailable) {
+                    SkinnableResourceManager.getString(
+                        requireContext(),
+                        RC.string.error_net,
+                        sharedViewModel.getCurrentLanguage()
+                    )
+                } else {
+                    SkinnableResourceManager.getString(
+                        requireContext(),
+                        R.string.no_search_result,
+                        sharedViewModel.getCurrentLanguage()
+                    )
                 }
+            val onRefresh: (() -> Unit)? =
+                if(state == DataState.NetworkUnavailable) { ::doSearch }
+                else null
 
-                launch {
-                    sharedViewModel.currentLanguage.collect {
-                        setEmptyView()
-                    }
-                }
+            dynamicState.setState(layoutState, errorStr, onRefresh)
+        }
+    }
+
+    private fun switchUi(state: DataState) {
+        with(mBinding) {
+            val isLoading = state == DataState.Loading
+
+            if(!isLoading) {
+                setEmptyView(state)
             }
-        }
-    }
 
-    private fun setEmptyView() {
-        with(mBinding) {
-            dynamicState.setState(
-                DynamicStateLayout.States.DATA_EMPTY,
-                SkinnableResourceManager.getString(
-                    requireContext(),
-                    R.string.no_search_result,
-                    sharedViewModel.getCurrentLanguage()
-                )
-            )
-        }
-    }
-
-    private fun switchUi(state: SearchResultUiState) {
-        with(mBinding) {
             loadingView.visibility =
-                if (state is Loading) View.VISIBLE
+                if (isLoading) View.VISIBLE
                 else View.GONE
             dynamicState.visibility =
-                if (state is Empty) View.VISIBLE
+                if (!isLoading) View.VISIBLE
                 else View.GONE
         }
     }

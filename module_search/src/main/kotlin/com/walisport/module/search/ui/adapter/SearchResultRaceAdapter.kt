@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.updatePadding
 import androidx.core.widget.TextViewCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -39,6 +41,17 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
     var onFavoriteClick: ((SearchMatchBean) -> Unit)? = null
 
     private var locale: Locale = Locale.getDefault()
+    private var recyclerView: RecyclerView? = null
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
+        this.recyclerView = recyclerView
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        this.recyclerView = null
+    }
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -233,6 +246,14 @@ class SearchResultRaceAdapter: BaseAdapter<SearchResultRaceItemType, BaseViewHol
         val newList = currentList.toMutableList().apply {
             this[index] = updatedItem
         }
-        submitList(newList)
+
+        recyclerView?.apply {
+            // 避免更新時觸發動畫造成畫面閃爍
+            val oriAnimator = itemAnimator
+            itemAnimator = null
+            submitList(newList) {
+                post { itemAnimator = oriAnimator }
+            }
+        }
     }
 }
