@@ -1,10 +1,10 @@
 package com.walisport.module.search.ui.fragment
 
 import android.annotation.SuppressLint
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -13,14 +13,18 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.bumptech.glide.Glide
+import arch.cayenne.lib.common.R as RC
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.model.SearchResultBaseBean
@@ -67,16 +71,23 @@ class SearchResultDirectMatchFragment :
             }
             onFavoriteClick = { match ->
                 lifecycleScope.launch {
-                    val success = if (match.collect) {
-                        mViewModel.removeCollect(match.matchId)
-                    } else {
-                        mViewModel.addCollect(match.matchId)
+                    fun apiHandle(state: ApiResponseState) {
+                        when(state) {
+                            is ApiResponseState.Succeeded<*> -> {
+                                this@apply.updateFavoriteStatus(
+                                    match.matchId, !match.collect
+                                )
+                            }
+                            is ApiResponseState.Failed -> {
+                                state.error?.let { showToast(it.msg) }
+                            }
+                            else -> Unit
+                        }
                     }
-
-                    if (success) {
-                        this@apply.updateFavoriteStatus(
-                            match.matchId, !match.collect
-                        )
+                    if (match.collect) {
+                        mViewModel.removeCollect(match.matchId) { apiHandle(it) }
+                    } else {
+                        mViewModel.addCollect(match.matchId) { apiHandle(it) }
                     }
                 }
             }
@@ -85,12 +96,7 @@ class SearchResultDirectMatchFragment :
 
     private var datePicker: SearchDatePickerFragment? = null
 
-    enum class RaceViewState {
-        Loading, Empty, Success
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
-        setEmptyView()
         setRaceView()
 
         with(mBinding) {
@@ -103,14 +109,7 @@ class SearchResultDirectMatchFragment :
 
     override fun initData() {
         super.initData()
-        args.data?.let { data ->
-            mViewModel.getSearchResult(data)
-        }
-        args.id?.let { id ->
-            args.type.let { type ->
-                mViewModel.getSearchResult(id, type)
-            }
-        }
+        doSearch()
         args.keyword?.let { keyword ->
             mViewModel.setCurrentTitle(keyword)
         }
@@ -124,7 +123,6 @@ class SearchResultDirectMatchFragment :
                 // 語系
                 launch(Lifecycle.State.STARTED) {
                     sharedViewModel.currentLanguage.collect {
-                        setEmptyView()
                         linearAdapter.updateLanguage(it)
                     }
                 }
@@ -143,15 +141,16 @@ class SearchResultDirectMatchFragment :
                 }
 
                 launch {
+                    apiStateListener.observe(viewLifecycleOwner) { state ->
+                        switchUI(state)
+                    }
+                }
+
+                launch {
                     combineResult.collect { combineResult ->
-                        when {
-                            combineResult == null -> switchUI(RaceViewState.Loading)
-                            combineResult.isEmpty() -> switchUI(RaceViewState.Empty)
-                            else -> {
-                                linearAdapter.submitList(combineResult) {
-                                    switchUI(RaceViewState.Success)
-                                    mBinding.recyclerView.smoothScrollToPosition(0)
-                                }
+                        linearAdapter.submitList(combineResult) {
+                            mBinding.recyclerView.apply {
+                                smoothScrollToPosition(0)
                             }
                         }
                     }
@@ -223,13 +222,40 @@ class SearchResultDirectMatchFragment :
         super.onHiddenChanged(hidden)
     }
 
-    private fun setEmptyView() {
-        with(mBinding) {
-            dynamicState.setState(
-                DynamicStateLayout.States.DATA_EMPTY,
-                R.string.no_search_result.toTranslatedStr()
-            )
+    private fun doSearch() {
+        args.data?.let { data ->
+            mViewModel.getSearchResult(data)
         }
+        args.id?.let { id ->
+            args.type.let { type ->
+                mViewModel.getSearchResult(id, type)
+            }
+        }
+    }
+
+    private fun setEmptyView(state: DataState) {
+        val layoutState =
+            if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY
+            else DynamicStateLayout.States.DATA_EMPTY
+        val errorStr =
+            if(state == DataState.NetworkUnavailable) {
+                SkinnableResourceManager.getString(
+                    requireContext(),
+                    RC.string.error_net,
+                    sharedViewModel.getCurrentLanguage()
+                )
+            } else {
+                SkinnableResourceManager.getString(
+                    requireContext(),
+                    R.string.no_search_result,
+                    sharedViewModel.getCurrentLanguage()
+                )
+            }
+        val onRefresh: (() -> Unit)? =
+            if(state == DataState.NetworkUnavailable) { ::doSearch }
+            else null
+
+        mBinding.dynamicState.setState(layoutState, errorStr, onRefresh)
     }
 
     private fun setRaceView() {
@@ -330,12 +356,22 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    private fun switchUI(state: RaceViewState) {
+    private fun switchUI(state: DataState) {
         with(mBinding) {
-            loadingView.visibility = if (state == RaceViewState.Loading) View.VISIBLE else View.GONE
-            dynamicState.visibility = if (state == RaceViewState.Empty) View.VISIBLE else View.GONE
-            recyclerView.visibility =
-                if (state == RaceViewState.Success) View.VISIBLE else View.GONE
+            loadingView.visibility = if (state is DataState.Loading) View.VISIBLE else View.GONE
+            recyclerView.visibility = if (state is DataState.LoadSuccess) View.VISIBLE else View.GONE
+
+            when (state) {
+                is DataState.NetworkUnavailable,
+                is DataState.DataEmpty,
+                is DataState.None -> {
+                    setEmptyView(state)
+                    dynamicState.visibility = View.VISIBLE
+                }
+                else -> {
+                    dynamicState.visibility = View.GONE
+                }
+            }
         }
     }
 
@@ -415,7 +451,7 @@ class SearchResultDirectMatchFragment :
 
     private fun updateBackgroundColor(color: String? = null) {
         updateResultBackground(
-            if (color?.isNotEmpty() == true) Color.parseColor(color)
+            if (color?.isNotEmpty() == true) color.toColorInt()
             else ContextCompat.getColor(
                 requireContext(),
                 R.color.search_result_default_gradient_start

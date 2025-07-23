@@ -1,11 +1,15 @@
 package com.walisport.module.search.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchResultUiState
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.data.repo.SearchRepository
+import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
+import galaxy.client.proto.Client
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,18 +29,26 @@ class SearchResultBaseViewModel: BaseViewModel() {
     /** 取得搜尋結果 */
     fun getSearchResult(keyword: String) {
         viewModelScope.launch {
-            setUiState(SearchResultUiState.Loading)
-            setResult(repository.getSearchResult(keyword))
+            callApi(
+                { repository.getSearchResult(keyword) },
+                { state ->
+                    when (state) {
+                        is ApiResponseState.Succeeded<*> -> {
+                            (state.data as SearchResultBean)
+                                .takeIf { it.type != SearchResultTypeEnum.NONE }
+                                ?.let { setResult(it) }
+                                ?: setState(DataState.DataEmpty)
+                        }
+                        else -> Unit
+                    }
+                }
+            )
         }
     }
 
     /** 處理搜尋結果 */
     private fun setResult(result: SearchResultBean) {
         when (result.type) {
-            SearchResultTypeEnum.NONE -> {
-                setUiState(SearchResultUiState.Empty)
-            }
-
             SearchResultTypeEnum.LIST -> {
                 setUiState(SearchResultUiState.ResultList(result))
             }
@@ -46,6 +58,7 @@ class SearchResultBaseViewModel: BaseViewModel() {
             SearchResultTypeEnum.PLAYER -> {
                 setUiState(SearchResultUiState.DirectMatch(result.type, result))
             }
+            else -> Unit
         }
     }
 

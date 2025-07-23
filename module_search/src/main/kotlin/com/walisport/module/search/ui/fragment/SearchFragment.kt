@@ -4,10 +4,8 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.TransitionDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.TypedValue
@@ -18,6 +16,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
@@ -26,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.ClearableEditText
@@ -75,6 +77,10 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
         }
     }
     private var canSearch: Boolean = true
+
+    private val apiFailedHandler: (ApiFailedState?) -> Unit = { error ->
+        error?.let{ showToast(error.msg) }
+    }
 
     companion object {
         const val SEARCH_KEY = "searchKey"
@@ -165,7 +171,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         }
                         with(text?.toString()) {
                             recommendAdapter.updateMatchKeyword(this)
-                            getSearchRecommendList(this)
+                            getSearchRecommendList(this, apiFailedHandler)
                         }
                         updateSearchBtnColor()
                     },
@@ -201,14 +207,14 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             closeDatePicker()
                             clSearchRecommend.visibility = View.VISIBLE
                             if (text?.isNotEmpty() == true) {
-                                getSearchRecommendList(text.toString())
+                                getSearchRecommendList(text.toString(), apiFailedHandler)
                             }
                         }
                     }
                     setOnClickListener {
                         clSearchRecommend.visibility = View.VISIBLE
                         if (text?.isNotEmpty() == true) {
-                            getSearchRecommendList(text?.toString())
+                            getSearchRecommendList(text?.toString(), apiFailedHandler)
                         }
                     }
                 }
@@ -284,7 +290,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun setBackPressHandler() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (mBinding.clSearchRecommend.visibility == View.VISIBLE) {
+            if (mBinding.clSearchRecommend.isVisible) {
                 hideKeyboard(requireContext(), getSearchEditText())
                 mBinding.clSearchRecommend.visibility = View.GONE
             }
@@ -364,15 +370,16 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                     }
                 }
             } else {
-                ColorDrawable(
-                    SkinnableResourceManager.getColor(context, R.color.search_main_bg)
-                ).let { newDrawable ->
-                    background = TransitionDrawable(
-                        arrayOf(background, newDrawable)
-                    ).apply {
-                        startTransition(duration)
+                SkinnableResourceManager
+                    .getColor(context, R.color.search_main_bg)
+                    .toDrawable()
+                    .let { newDrawable ->
+                        background = TransitionDrawable(
+                            arrayOf(background, newDrawable)
+                        ).apply {
+                            startTransition(duration)
+                        }
                     }
-                }
             }
         }
     }
@@ -515,7 +522,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
             }
 
             is SearchNavigationEvent.ToLiveFragment -> {
-                navigate(Uri.parse(event.deepLink))
+                navigate(event.deepLink.toUri())
             }
         }
     }
