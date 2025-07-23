@@ -25,28 +25,13 @@
         android:layout_height="wrap_content"
         tools:layout_height="46dp" />
 
-    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/cl_search_recommend"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_recommend"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/search_main_bg"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title_bar"
-        tools:visibility="visible">
-
-        <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
-            android:id="@+id/rv_search_recommend"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_12"
-            android:layout_marginTop="@dimen/dp_20"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:overScrollMode="never"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
 
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

@@ -1,15 +1,12 @@
 package com.walisport.module.search.ui.fragment
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.TypedValue
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -18,20 +15,15 @@ import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.ClearableEditText
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -42,12 +34,10 @@ import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.databinding.FragmentSearchBinding
-import com.walisport.module.search.ui.adapter.RecommendAdapter
 import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
-import androidx.core.view.isVisible
 
 /**
  * @author: caomei
@@ -60,6 +50,21 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     override val vmClass: KClass<SearchViewModel>
         get() = SearchViewModel::class
 
+    private val recommendListFragment by lazy {
+        SearchRecommendListFragment().apply {
+            onClickListener = { word ->
+                dismiss()
+                mViewModel.setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(word))
+                mViewModel.setSearchKeyWord(word)
+                addSearchRecord(word)
+
+            }
+            onDismissListener = {
+                hideKeyboard(requireContext(), getSearchEditText())
+            }
+        }
+    }
+
     private val titleBarHintStr: String
         get() =
             SkinnableResourceManager.getString(
@@ -68,15 +73,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 mViewModel.getCurrentLanguage()
             )
 
-    private val recommendAdapter by lazy {
-        RecommendAdapter { word ->
-            resetSearchRecommend()
-            mViewModel.setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(word))
-            mViewModel.setSearchKeyWord(word)
-            addSearchRecord(word)
-            hideKeyboard(requireContext(), getSearchEditText())
-        }
-    }
     private var canSearch: Boolean = true
 
     private val apiFailedHandler: (ApiFailedState?) -> Unit = { error ->
@@ -106,14 +102,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 launch {
                     currentLanguage.collect {
                         setTitleBar()
-                    }
-                }
-                launch {
-                    searchRecommendList.collect { list ->
-                        recommendAdapter.submitList(list) {
-                            mBinding.clSearchRecommend.visibility =
-                                if (list.isNotEmpty()) View.VISIBLE else View.GONE
-                        }
                     }
                 }
                 launch {
@@ -162,17 +150,17 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                         }
 
                         // 搜索自动补充词汇
-                        if (recommendAdapter.onClick == null) {
-                            recommendAdapter.setOnClickListener { recommendWord ->
+                        if(recommendListFragment.onClickListener == null) {
+                            recommendListFragment.onClickListener = { recommendWord ->
                                 updateSearchText(recommendWord) {
                                     backToSearchMainFragment()
                                     setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
-                                    resetSearchRecommend()
+                                    recommendListFragment.dismiss()
                                 }
                             }
                         }
                         with(text?.toString()) {
-                            recommendAdapter.updateMatchKeyword(this)
+                            recommendListFragment.updateKeyword(this)
                             getSearchRecommendList(this, apiFailedHandler)
                         }
                         updateSearchBtnColor()
@@ -183,7 +171,7 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                             showToast(titleBarHintStr)
                             return@loadSearchTitleBar
                         }
-                        resetSearchRecommend()
+                        recommendListFragment.dismiss()
                         addSearchRecord(content)
                         backToSearchMainFragment()
                         setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
@@ -233,53 +221,13 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
     }
 
     private fun setRecommend() {
-        with(mBinding) {
-            // 搜索自动补充词汇
-            rvSearchRecommend.apply {
-                layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-                adapter = recommendAdapter.apply {
-                    if (itemDecorationCount == 0) {
-                        addItemDecoration(object : ItemDecoration() {
-                            private val dividerHeight = 0.5f.dp2px
-                            private val paint = Paint().apply {
-                                color = SkinnableResourceManager.getColor(
-                                    context,
-                                    R.color.search_divider
-                                )
-                                strokeWidth = dividerHeight.toFloat()
-                            }
-
-                            override fun onDraw(
-                                canvas: Canvas,
-                                parent: RecyclerView,
-                                state: RecyclerView.State
-                            ) {
-                                val itemCount = parent.adapter?.itemCount ?: 0
-
-                                for (i in 0 until parent.childCount) {
-                                    val child = parent.getChildAt(i)
-                                    val position = parent.getChildAdapterPosition(child)
-
-                                    // 如果不是最後一個 item，就畫底部分隔線
-                                    if (position < itemCount - 1) {
-                                        val left = child.left.toFloat()
-                                        val right = child.right.toFloat()
-                                        val y = child.bottom.toFloat()
-                                        canvas.drawLine(left, y, right, y, paint)
-                                    }
-                                }
-                            }
-                        })
-                    }
-                }
-                itemAnimator = null
-            }
-
-            clSearchRecommend.setOnClickListener {
-                hideKeyboard(requireContext(), getSearchEditText())
-                resetSearchRecommend()
-            }
-        }
+        childFragmentManager.beginTransaction()
+            .replace(
+                R.id.fragment_container_recommend,
+                recommendListFragment,
+                SearchRecommendListFragment.TAG
+            )
+            .commit()
     }
 
     fun addSearchRecord(word: String) {
@@ -291,11 +239,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
 
     private fun setBackPressHandler() {
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            if (mBinding.clSearchRecommend.isVisible) {
-                hideKeyboard(requireContext(), getSearchEditText())
-                mBinding.clSearchRecommend.visibility = View.GONE
-            }
-
             closeDatePicker()
 
             val navController = mBinding.fragmentContainer.findNavController()
@@ -313,11 +256,6 @@ class SearchFragment : BaseFragment<SearchViewModel, FragmentSearchBinding>() {
                 }
             }
         }
-    }
-
-    private fun resetSearchRecommend() {
-        mBinding.clSearchRecommend.visibility = View.GONE
-        mViewModel.clearSearchRecommendList()
     }
 
     private fun closeDatePicker() {
