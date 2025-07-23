@@ -346,15 +346,6 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    //
-    fun isLoadingMatch(b: Boolean) {
-        if (b) {
-            setState(HomeState.Match.Loading)
-        } else {
-            setState(HomeState.Match.LoadSuccess)
-        }
-    }
-
     //提供子fragment透過shared HomeViewModel來告知HomeFragment該fragment的狀態
     fun changeState(state: DataState) {
         setState(state)

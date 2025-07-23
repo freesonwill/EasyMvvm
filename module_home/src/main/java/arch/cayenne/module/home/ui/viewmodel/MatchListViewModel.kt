@@ -4,10 +4,8 @@ import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.home.data.constants.HomeState
-import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.SportType
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
@@ -73,9 +71,6 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             }.collect { (selectedDate, refs) ->
                 val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
-                    if (_state.value?.peekContent() == MatchListState.INIT) {
-                        _state.value = Event(MatchListState.FIRST_LOADING_API)
-                    }
                     if (apiStateListener.value == null) {
                         setState(HomeState.Match.Loading)
                     }
@@ -90,15 +85,11 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 )
 
                 withContext(Dispatchers.Main) {
-                    _state.value = Event(MatchListState.IDLE)
+                    setState(HomeState.Match.LoadSuccess)
                     matchListChange.value = list
                 }
             }
         }
-    }
-
-    fun changePageEnd(b: Boolean) {
-        isPageEnd = b
     }
 
     //取得分頁的比賽列表
