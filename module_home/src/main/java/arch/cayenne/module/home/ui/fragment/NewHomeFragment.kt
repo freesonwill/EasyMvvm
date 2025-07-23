@@ -522,11 +522,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 when(state) {
                     HomeState.PlayTypeClick -> {
                         resetHomeView()
-                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                            groupHideOnChampion.visibility = View.GONE
-                        } else {
-                            groupHomeMain.visibility = View.VISIBLE
-                        }
+                        groupHomeMain.visibility = View.VISIBLE
                         dslFailed.visibility = View.GONE
                     }
                     HomeState.Sport.LoadSuccess -> {
