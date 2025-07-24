@@ -33,7 +33,12 @@ class LiveMatchMediaViewModel(
     private val _switchToVideo: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
     val switchToVideo: UnPeekLiveData<Boolean> = _switchToVideo
 
+    private val _animationLiveUrl = UnPeekLiveData<String?>()
+    val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
+
     private var job: Job? = null
+
+    private var animationUrlJob: Job? = null
 
     fun matchId() = repo.matchId
 
@@ -47,6 +52,15 @@ class LiveMatchMediaViewModel(
             repo.observeMatchBean(repo.matchId).collect {
                 it?.let {
                     _matchBeanLiveData.value = it
+                }
+            }
+        }
+
+        animationUrlJob?.cancel()
+        animationUrlJob = viewModelScope.launch {
+            repo.observeAnimationLiveUrl(repo.matchId).collect {
+                it?.let {
+                    _animationLiveUrl.value = it
                 }
             }
         }
