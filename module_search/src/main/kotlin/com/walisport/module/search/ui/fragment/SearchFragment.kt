@@ -38,19 +38,12 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
     private val hotWordAdapter by lazy {
         HotWordAdapter { hotWord ->
             toSearchResult(hotWord)
-            updateSearchKey(hotWord)
-            addSearchRecord(hotWord)
-        }
-    }
-
-    override fun addSearchRecord(word: String) {
-        super.addSearchRecord(word)
-        if (word.isNotEmpty()) {
-            notifyUpdateRecordList(word)
         }
     }
 
     override fun toSearchResult(word: String) {
+        updateSearchText(word)
+
         super.toSearchResult(word)
         sendResult(
             key = SEARCH_KEY,
@@ -95,6 +88,11 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        mViewModel.getRecordByUID()
+    }
+
     override fun onDestroyView() {
         historyAdapter?.setOnDataChangedListener(null)
         historyAdapter = null
@@ -114,11 +112,6 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                     },
                     onSearch = { content ->
                         content?.let {
-                            sharedViewModel.addOneRecord(content)
-                            mViewModel.getRecordByUID()
-                            notifyUpdateRecordList(content)
-                            updateSearchKey(content)
-                            clearSearchRecommend()
                             toSearchResult(content)
                         }
                     }
@@ -216,18 +209,5 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                 llShowCompleted.visibility = View.GONE
             }
         }
-    }
-
-    private fun updateSearchKey(key: String) {
-        sharedViewModel.setSearchKeyWord(key)
-    }
-
-    private fun clearSearchRecommend() {
-        sharedViewModel.clearSearchRecommendList()
-    }
-
-    private fun notifyUpdateRecordList(word: String) {
-        historyAdapter?.addData(word)
-        mViewModel.getRecordByUID()
     }
 }

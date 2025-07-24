@@ -9,7 +9,6 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
@@ -68,6 +67,7 @@ class SearchResultBaseFragment :
                     fromId = fromId,
                     navController = nav
                 ) { key ->
+                    addSearchRecord(key)
                     mViewModel.getSearchResult(key)
                 }
             }

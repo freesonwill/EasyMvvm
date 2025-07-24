@@ -5,18 +5,16 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
 import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
+import java.util.Locale
 import kotlin.reflect.KClass
 
 class SearchResultListFragment :
@@ -45,14 +43,10 @@ class SearchResultListFragment :
         setViewPager()
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        launch(Lifecycle.State.STARTED) {
-            sharedViewModel.currentLanguage.collect {
-                // 更新Tab標籤文字
-                updateTabTitles()
-            }
-        }
+    override fun onLanguageChanged(locale: Locale) {
+        super.onLanguageChanged(locale)
+        // 更新Tab標籤文字
+        updateTabTitles()
     }
 
     override fun onDestroyView() {

@@ -117,13 +117,6 @@ class SearchResultDirectMatchFragment :
         super.createObserver()
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
-                // 語系
-                launch(Lifecycle.State.STARTED) {
-                    sharedViewModel.currentLanguage.collect {
-                        linearAdapter.updateLanguage(it)
-                    }
-                }
-
                 // 搜尋結果
                 launch {
                     directData.collect { data ->
@@ -186,15 +179,6 @@ class SearchResultDirectMatchFragment :
                     }
                 }
 
-                launch {
-                    sharedViewModel.isDatePickerOpen.collect {
-                        // 僅用來處理點擊返回鍵時關閉DatePicker
-                        if (!it && datePicker?.isVisible == true) {
-                            datePicker?.close()
-                        }
-                    }
-                }
-
                 viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
                     override fun onStart(owner: LifecycleOwner) {
                         updateStatusSearchBar()
@@ -205,6 +189,18 @@ class SearchResultDirectMatchFragment :
                     }
                 })
             }
+        }
+    }
+
+    override fun onLanguageChanged(locale: Locale) {
+        super.onLanguageChanged(locale)
+        linearAdapter.updateLanguage(locale)
+    }
+
+    override fun closeDatePicker() {
+        super.closeDatePicker()
+        if (datePicker?.isVisible == true) {
+            datePicker?.close()
         }
     }
 
@@ -308,7 +304,6 @@ class SearchResultDirectMatchFragment :
             childFragmentManager.clearFragmentResultListener(DATE_PICKER_RESULT_KEY)
 
             setDateBarStatus(false)
-            setIsDatePickerOpen(false)
             datePicker = null
 
             val newDate =
@@ -340,7 +335,6 @@ class SearchResultDirectMatchFragment :
             }.build()
 
         datePicker?.show(childFragmentManager, contentBinding.clRoot.id)
-        setIsDatePickerOpen(true)
         setDateBarStatus(true)
     }
 
@@ -472,9 +466,5 @@ class SearchResultDirectMatchFragment :
                 }
             }
         }
-    }
-
-    private fun setIsDatePickerOpen(isOpen: Boolean) {
-        sharedViewModel.setIsDatePickerOpen(isOpen)
     }
 }

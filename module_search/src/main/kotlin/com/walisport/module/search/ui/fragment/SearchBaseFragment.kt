@@ -36,6 +36,7 @@ import com.walisport.module.search.databinding.FragmentSearchBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import arch.cayenne.lib.common.R as RC
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.reflect.KClass
 
 abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFragment<VM, FragmentSearchBaseBinding>() {
@@ -46,7 +47,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     private var _contentBinding: CVB? = null
     protected val contentBinding get() = _contentBinding!!
 
-    val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
+    private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
 
     protected val navOptions = NavOptions.Builder()
         .setEnterAnim(RC.anim.slide_in_right)
@@ -62,10 +63,9 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     private val recommendListFragment by lazy {
         SearchRecommendListFragment().apply {
             onClickListener = { word ->
-                dismiss()
                 toSearchResult(word)
-                sharedViewModel.setSearchKeyWord(word)
                 addSearchRecord(word)
+                dismiss()
             }
             onDismissListener = {
                 hideKeyboard(requireContext(), getSearchEditText())
@@ -94,14 +94,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             launch(Lifecycle.State.STARTED) {
                 launch {
                     currentLanguage.collect {
-                        setTitleBar()
-                    }
-                }
-                launch {
-                    searchKeyWord.collect { key ->
-                        if (key.isNotEmpty()) {
-                            updateSearchText(key)
-                        }
+                        onLanguageChanged(it)
                     }
                 }
             }
@@ -111,6 +104,11 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     override fun onDestroyView() {
         super.onDestroyView()
         _contentBinding = null
+    }
+
+    @CallSuper
+    open fun onLanguageChanged(locale: Locale) {
+        setTitleBar()
     }
 
     @CallSuper
@@ -125,7 +123,9 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     @CallSuper
     open fun toSearchResult(word: String) {
-        findNavController().popBackStack(R.id.searchFragment, false)
+        if (findNavController().currentDestination?.id != R.id.searchFragment) {
+            findNavController().popBackStack(R.id.searchFragment, false)
+        }
     }
 
     @CallSuper
@@ -141,6 +141,17 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             this,
             sharedViewModel.getCurrentLanguage()
         )
+    }
+
+    protected fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
+        canSearch = false
+        getSearchEditText()
+            .apply {
+                setText(word)
+                setSelection(word.length)
+            }
+        afterChange?.invoke()
+        canSearch = true
     }
 
     private fun inflateContentLayout() {
@@ -167,28 +178,25 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         if(recommendListFragment.onClickListener == null) {
                             recommendListFragment.onClickListener = { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    backToSearchFragment()
                                     toSearchResult(recommendWord)
                                     recommendListFragment.dismiss()
                                 }
                             }
                         }
                         with(text?.toString()) {
-                            recommendListFragment.updateKeyword(this)
-                            getSearchRecommendList(this, apiFailedHandler)
+                            recommendListFragment.updateKeyword(this, apiFailedHandler)
                         }
                         updateSearchBtnColor()
                     },
                     onSearch = { content, _ ->
-                        closeDatePicker()
                         if (TextUtils.isEmpty(content)) {
                             showToast(titleBarHintStr)
                             return@loadSearchTitleBar
                         }
+                        toSearchResult(content)
+                        closeDatePicker()
                         recommendListFragment.dismiss()
                         addSearchRecord(content)
-                        backToSearchFragment()
-                        toSearchResult(content)
                         hideKeyboard(requireContext(), getSearchEditText())
                     },
                     onBack = {
@@ -210,13 +218,13 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         if (isFocused) {
                             closeDatePicker()
                             if (text?.isNotEmpty() == true) {
-                                getSearchRecommendList(text.toString(), apiFailedHandler)
+                                recommendListFragment.updateKeyword(text.toString(), apiFailedHandler)
                             }
                         }
                     }
                     setOnClickListener {
                         if (text?.isNotEmpty() == true) {
-                            getSearchRecommendList(text?.toString(), apiFailedHandler)
+                            recommendListFragment.updateKeyword(text?.toString(), apiFailedHandler)
                         }
                     }
                 }
@@ -242,17 +250,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                 SearchRecommendListFragment.TAG
             )
             .commit()
-    }
-
-    private fun updateSearchText(word: String, afterChange: (() -> Unit)? = null) {
-        canSearch = false
-        getSearchEditText()
-            .apply {
-                setText(word)
-                setSelection(word.length)
-            }
-        afterChange?.invoke()
-        canSearch = true
     }
 
     private fun updateSearchBtnColor() {
@@ -329,11 +326,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         )
     }
 
-    private fun closeDatePicker() {
-        if (sharedViewModel.isDatePickerOpen()) {
-            sharedViewModel.setIsDatePickerOpen(false)
-        }
-    }
+    @CallSuper
+    open fun closeDatePicker() = Unit
 
     private fun getSearchBar(): LinearLayout {
         return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ll_search_bar)
@@ -361,10 +355,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         editText.requestFocus()
         val im = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         im.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
-    }
-
-    private fun backToSearchFragment() {
-        findNavController().popBackStack(R.id.searchFragment, false)
     }
 
     companion object {

@@ -10,15 +10,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchRecommendListBinding
 import com.walisport.module.search.ui.adapter.RecommendAdapter
-import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import com.walisport.module.search.ui.viewmodel.SearchRecommendListViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
@@ -29,7 +28,6 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     override val vmClass: KClass<SearchRecommendListViewModel>
         get() = SearchRecommendListViewModel::class
 
-    private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
     private val recommendAdapter by lazy { RecommendAdapter() }
 
     var onClickListener: ((String) -> Unit?)?
@@ -47,7 +45,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     override fun initListener() =  Unit
 
     override fun createObserver() {
-        with(sharedViewModel) {
+        with(mViewModel) {
             launch(Lifecycle.State.RESUMED) {
                 launch {
                     searchRecommendList.collect { list ->
@@ -61,7 +59,8 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
         }
     }
 
-    fun updateKeyword(keyword: String?) {
+    fun updateKeyword(keyword: String?, failedHandler: ((error: ApiFailedState?) -> Unit)? = null) {
+        mViewModel.getSearchRecommendList(keyword, failedHandler)
         recommendAdapter.updateMatchKeyword(keyword)
     }
 
@@ -121,7 +120,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     private fun resetSearchRecommend() {
         onDismissListener?.invoke()
         mBinding.clSearchRecommend.visibility = View.GONE
-        sharedViewModel.clearSearchRecommendList()
+        mViewModel.clearSearchRecommendList()
     }
 
     private fun setBackPressHandler() {
