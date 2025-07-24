@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
@@ -185,7 +186,7 @@ class TournamentListFragment :
 
     override fun createObserver() {
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            if (!mViewModel.isSearchMode) homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
+            "KC_ state ${it::class.java.name}".logd()
             with(mBinding) {
                 when(it) {
                     is DataState.NetworkUnavailable -> {
@@ -197,11 +198,15 @@ class TournamentListFragment :
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
                     }
-                    HomeState.TournamentListState.InitList -> {
-                        setupAZIndex()
+                    is DataState.LoadSuccess -> {
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
+                        ivHomeLeagueCollapse.isVisible = mViewModel.getType() == TournamentListType.MORE
                         llIndexContainer.visibility = View.VISIBLE
+                    }
+                    HomeState.TournamentListState.InitList -> {
+                        setupAZIndex()
+
                     }
 
                     HomeState.TournamentListState.RestoreList -> {
