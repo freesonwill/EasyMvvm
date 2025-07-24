@@ -28,7 +28,6 @@ import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
-import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
@@ -103,10 +102,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
-        toggleTournamentMoreSection(
-            false,
-            TournamentListType.NONE
-        )
+        toggleTournamentMoreSection(false, TournamentListType.NONE)
     }
 
     //init 二級導航欄位
@@ -498,22 +494,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             setCalendarPopup()
             customPopup?.setSchemeDate(list)
         }
-        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
-            with(mBinding) {
-                when(state) {
-                    HomeState.PlayTypeClick -> {
-                        resetHomeView()
-                        groupHomeMain.visibility = View.VISIBLE
-                    }
-                    HomeState.Sport.LoadSuccess -> {
-                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                        }
-                    }
-                    else -> Unit
-                }
-            }
-        }
+
         mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
             mBinding.apply {
                 customPopup?.updateCalendarSkin()
@@ -526,6 +507,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()
+            resetHomeView()
+            mBinding.groupHomeMain.visibility = View.VISIBLE
+        }
+        mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
+            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
         }
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.ivTournamentMore.visibility = View.VISIBLE

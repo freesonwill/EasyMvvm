@@ -30,4 +30,14 @@ sealed class HomeState: DataState {
         data object Loading : Schedule()
         data object LoadSuccess : Schedule()
     }
+
+    sealed class TournamentListState: HomeState() {
+        data object InitList : TournamentListState()
+        data object RestoreList : TournamentListState()
+        data object ListDataEmpty : TournamentListState()
+        data object SearcgInit : TournamentListState()
+        data object SearchMatch : TournamentListState()
+        data object SearchDataEmpty : TournamentListState()
+
+    }
 }

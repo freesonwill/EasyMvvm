@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
@@ -162,7 +161,6 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
-            "KC_ collect state = ${state::class.java.name}".logd()
             with(mBinding) {
                 when (state) {
                     DataState.NetworkUnavailable -> {

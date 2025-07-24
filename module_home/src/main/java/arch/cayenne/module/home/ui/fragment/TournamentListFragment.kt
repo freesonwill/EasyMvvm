@@ -17,6 +17,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
@@ -25,7 +26,6 @@ import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
-import arch.cayenne.module.home.data.constants.TournamentListState
 import arch.cayenne.module.home.databinding.FragmentTournamentListBinding
 import arch.cayenne.module.home.databinding.ItemTournamentHeaderBinding
 import arch.cayenne.module.home.ui.adapter.TournamentSectionAdapter
@@ -64,11 +64,6 @@ class TournamentListFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
-            clDynamics.setState(
-                DynamicStateLayout.States.DATA_EMPTY,
-                R.string.lineup_empty.getString()
-            )
-
             ceSearch.hint = getString(R.string.tournament_section_title)
             ceSearch.imeOptions = EditorInfo.IME_ACTION_SEARCH
             adapter = TournamentSectionAdapter(
@@ -189,41 +184,63 @@ class TournamentListFragment :
     }
 
     override fun createObserver() {
-        mViewModel.uiState.observe(viewLifecycleOwner) { model ->
-            adapter.submitList(model.displayList)
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             if (!mViewModel.isSearchMode) homeViewModel.changeState(HomeState.Tournament.LoadListSuccess)
             with(mBinding) {
-                when (model.state) {
-                    TournamentListState.INIT_LIST -> {
-                        setupAZIndex()
+                when(it) {
+                    is DataState.NetworkUnavailable -> {
+                        clDynamics.setState(
+                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                        clDynamics.visibility = View.VISIBLE
+                        groupTop.visibility = View.GONE
+                        llIndexContainer.visibility = View.GONE
                     }
-
-                    TournamentListState.RESTORE_LIST -> {
+                    HomeState.TournamentListState.InitList -> {
+                        setupAZIndex()
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
                         llIndexContainer.visibility = View.VISIBLE
                     }
 
-                    TournamentListState.LIST_DATA_EMPTY -> {
+                    HomeState.TournamentListState.RestoreList -> {
+                        clDynamics.visibility = View.GONE
+                        groupTop.visibility = View.VISIBLE
+                        llIndexContainer.visibility = View.VISIBLE
+                    }
+
+                    HomeState.TournamentListState.ListDataEmpty -> {
+                        clDynamics.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
                         clDynamics.visibility = View.VISIBLE
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
                     }
 
-                    TournamentListState.SEARCH_MATCH -> {
+                    HomeState.TournamentListState.SearchMatch -> {
                         clDynamics.visibility = View.GONE
                     }
 
-                    TournamentListState.SEARCH_INIT -> {
+                    HomeState.TournamentListState.SearcgInit -> {
                         clDynamics.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
                     }
 
-                    TournamentListState.SEARCH_DATA_EMPTY -> {
+                    HomeState.TournamentListState.SearchDataEmpty -> {
+                        clDynamics.setState(
+                            DynamicStateLayout.States.DATA_EMPTY,
+                            R.string.lineup_empty.getString()
+                        )
                         clDynamics.visibility = View.VISIBLE
                     }
                 }
             }
+        }
+        mViewModel.tournamentsChange.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
 
         mViewModel.activeHeaderIndex.observe(viewLifecycleOwner) { index ->

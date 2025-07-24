@@ -99,6 +99,9 @@ class HomeViewModel : BaseViewModel() {
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
     val tournamentSlideOutEnd: LiveData<Event<Unit>> = _tournamentSlideOutEnd
 
+    private val _notifyToChampion = MutableLiveData<Event<Unit>>()
+    val notifyToChampion: LiveData<Event<Unit>> = _notifyToChampion
+
     fun notifyTournamentSlideOutEnd() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }
@@ -299,8 +302,12 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
-        setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
-        getCurrentTournament()
+        if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
+            getCurrentTournament()
+        } else {
+            _notifyToChampion.value = Event(Unit)
+        }
     }
 
     //切換當前的三級選項(聯賽)
