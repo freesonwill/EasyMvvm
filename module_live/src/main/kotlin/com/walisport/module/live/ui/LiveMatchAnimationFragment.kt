@@ -13,6 +13,7 @@ import android.webkit.WebView
 import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
@@ -195,6 +196,8 @@ class LiveMatchAnimationFragment :
                     //                showProgress(newProgress)
                 }
             })
+
+            setBackgroundColor(arch.cayenne.lib.common.R.color.color_80000000.getColor())
         }
     }
 
