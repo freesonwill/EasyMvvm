@@ -18,8 +18,8 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchRecommendListBinding
 import com.walisport.module.search.ui.adapter.RecommendAdapter
+import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import com.walisport.module.search.ui.viewmodel.SearchRecommendListViewModel
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -29,7 +29,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
     override val vmClass: KClass<SearchRecommendListViewModel>
         get() = SearchRecommendListViewModel::class
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
+    private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
     private val recommendAdapter by lazy { RecommendAdapter() }
 
     var onClickListener: ((String) -> Unit?)?

@@ -6,38 +6,47 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.children
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
 import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
 import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlin.reflect.KClass
 
 class SearchResultListFragment :
-    BaseFragment<SearchResultListViewModel, FragmentSearchResultListBinding>() {
-    override val vbClass: KClass<FragmentSearchResultListBinding>
-        get() = FragmentSearchResultListBinding::class
+    SearchBaseFragment<SearchResultListViewModel, FragmentSearchResultListBinding>() {
     override val vmClass: KClass<SearchResultListViewModel>
         get() = SearchResultListViewModel::class
+    override val contentVbClass: KClass<FragmentSearchResultListBinding>
+        get() = FragmentSearchResultListBinding::class
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
     private val args: SearchResultListFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
 
+    override fun toSearchResult(word: String) {
+        super.toSearchResult(word)
+        sendResult(
+            key = SEARCH_KEY,
+            value = word,
+            destinationId = R.id.searchResultListFragment,
+            navController = findNavController()
+        )
+        findNavController().navigate(R.id.action_searchResultListFragment_to_searchResultBaseFragment)
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
         setViewPager()
     }
 
-    override fun initListener() = Unit
-
     override fun createObserver() {
+        super.createObserver()
         launch(Lifecycle.State.STARTED) {
             sharedViewModel.currentLanguage.collect {
                 // 更新Tab標籤文字
@@ -47,7 +56,7 @@ class SearchResultListFragment :
     }
 
     override fun onDestroyView() {
-        mBinding.viewPager.adapter = null
+        contentBinding.viewPager.adapter = null
         tabMediator?.detach()
         tabMediator = null
         super.onDestroyView()
@@ -55,13 +64,20 @@ class SearchResultListFragment :
 
 
     private fun setViewPager() {
-        with(mBinding) {
+        with(contentBinding) {
             if (viewPager.adapter == null) {
                 viewPager.adapter =
                     SearchResultPagerAdapter(
                         this@SearchResultListFragment,
                         args.data
-                    )
+                    ) { id, keyword, type ->
+                        val action =
+                            SearchResultListFragmentDirections
+                                .actionSearchResultListFragmentToSearchResultDirectMatchFragment(
+                                    null, keyword, id, type
+                                )
+                        findNavController().navigate(action, navOptions)
+                    }
                 (viewPager.getChildAt(0) as? RecyclerView)?.overScrollMode = View.OVER_SCROLL_NEVER
 
                 tabMediator = TabLayoutMediator(tlSearch, viewPager) { tab, position ->
@@ -94,15 +110,14 @@ class SearchResultListFragment :
 
     /** 更新Tab標籤文字 */
     private fun updateTabTitles() {
-        val locale = sharedViewModel.getCurrentLanguage()
         val titles = listOf(
-            SkinnableResourceManager.getString(requireContext(), R.string.tab_all, locale),
-            SkinnableResourceManager.getString(requireContext(), R.string.tab_tournament, locale),
-            SkinnableResourceManager.getString(requireContext(), R.string.tab_team, locale),
-            SkinnableResourceManager.getString(requireContext(), R.string.tab_player, locale)
+            R.string.tab_all.toTranslatedStr(),
+            R.string.tab_tournament.toTranslatedStr(),
+            R.string.tab_team.toTranslatedStr(),
+            R.string.tab_player.toTranslatedStr()
         )
 
-        with(mBinding.tlSearch) {
+        with(contentBinding.tlSearch) {
             for (i in 0 until tabCount) {
                 getTabAt(i)?.text = titles.getOrNull(i) ?: ""
             }
@@ -115,6 +130,6 @@ class SearchResultListFragment :
      * @param isSmooth 是否使用平滑過渡，默認為true
      */
     fun switchTab(position: Int, isSmooth: Boolean = true) {
-        mBinding.viewPager.setCurrentItem(position, isSmooth)
+        contentBinding.viewPager.setCurrentItem(position, isSmooth)
     }
 }

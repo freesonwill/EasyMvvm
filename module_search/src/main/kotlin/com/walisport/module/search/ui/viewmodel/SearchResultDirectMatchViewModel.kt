@@ -16,8 +16,6 @@ import com.walisport.module.search.data.model.SearchResultPlayerBean
 import com.walisport.module.search.data.model.SearchResultTeamBean
 import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.data.repo.SearchRepository
-import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
-import galaxy.client.proto.Client
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -52,11 +50,6 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
     private var _directMatchId: Int? = null
     val directMatchId: Int?
         get() = _directMatchId
-
-    /** 暫存背景顏色 */
-    private var _tempBackgroundColor: Int? = null
-    val tempBackgroundColor: Int?
-        get() = _tempBackgroundColor
 
     /** 當前頁面標題 */
     private var _currentTitle: String? = null
@@ -189,11 +182,6 @@ class SearchResultDirectMatchViewModel: BaseViewModel() {
 
     /** 取得選擇的日期 */
     fun getSelectedDate(): Date? = selectedDateFlow.value
-
-    /** 設定暫存背景顏色 */
-    fun setTempBackgroundColor(color: Int?) {
-        _tempBackgroundColor = color
-    }
 
     /** 設定當前頁面標題 */
     fun setCurrentTitle(title: String?) {

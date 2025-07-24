@@ -4,5 +4,4 @@ import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import plugin.koin.KoinViewModel
 
 @KoinViewModel
-class SearchRecommendListViewModel: BaseViewModel() {
-}
+class SearchRecommendListViewModel: BaseViewModel()

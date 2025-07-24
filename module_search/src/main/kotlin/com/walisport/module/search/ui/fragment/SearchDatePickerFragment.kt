@@ -30,8 +30,8 @@ import com.haibin.calendarview.WeekBar
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchDatePickerBinding
 import com.walisport.module.search.ui.view.SearchCustomWeekBar
+import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import com.walisport.module.search.ui.viewmodel.SearchDatePickerViewModel
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import com.walisport.module.search.utils.IconScaleAnimUtil.enableScaleIcon
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -43,7 +43,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     override val vmClass: KClass<SearchDatePickerViewModel>
         get() = SearchDatePickerViewModel::class
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
+    private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
 
     private val defaultAnimDuration = 300L
 

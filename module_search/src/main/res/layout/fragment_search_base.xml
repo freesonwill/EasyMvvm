@@ -7,24 +7,23 @@
     android:layout_height="match_parent"
     android:background="@color/search_main_bg">
 
-    <ViewStub
-        android:id="@+id/view_stub_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="46dp" />
-
     <arch.cayenne.lib.common.ui.view.TitleBarView
         android:id="@+id/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_height="46dp" />
 
+    <FrameLayout
+        android:id="@+id/fl_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_bar" />
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragment_container_recommend"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title_bar" />
 

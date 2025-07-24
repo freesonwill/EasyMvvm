@@ -12,15 +12,17 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.core.widget.TextViewCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.data.remote.ApiFailedState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.getViewBind
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.ClearableEditText
@@ -30,9 +32,9 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
-import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.databinding.FragmentSearchBaseBinding
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
+import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
+import arch.cayenne.lib.common.R as RC
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -40,10 +42,18 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     override val vbClass: KClass<FragmentSearchBaseBinding>
         get() = FragmentSearchBaseBinding::class
 
-    protected lateinit var contentBinding: CVB
-    abstract val contentLayoutId: Int
+    abstract val contentVbClass: KClass<CVB>
+    private var _contentBinding: CVB? = null
+    protected val contentBinding get() = _contentBinding!!
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
+    val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
+
+    protected val navOptions = NavOptions.Builder()
+        .setEnterAnim(RC.anim.slide_in_right)
+        .setExitAnim(RC.anim.slide_out_left)
+        .setPopEnterAnim(RC.anim.slide_in_left)
+        .setPopExitAnim(RC.anim.slide_out_right)
+        .build()
 
     private val apiFailedHandler: (ApiFailedState?) -> Unit = { error ->
         error?.let{ showToast(error.msg) }
@@ -53,7 +63,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         SearchRecommendListFragment().apply {
             onClickListener = { word ->
                 dismiss()
-                sharedViewModel.setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(word))
+                toSearchResult(word)
                 sharedViewModel.setSearchKeyWord(word)
                 addSearchRecord(word)
             }
@@ -64,12 +74,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     private val titleBarHintStr: String
-        get() =
-            SkinnableResourceManager.getString(
-                requireContext(),
-                R.string.please_input_content,
-                sharedViewModel.getCurrentLanguage()
-            )
+        get() = R.string.please_input_content.toTranslatedStr()
 
     private var canSearch: Boolean = true
 
@@ -96,17 +101,16 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                     searchKeyWord.collect { key ->
                         if (key.isNotEmpty()) {
                             updateSearchText(key)
-                            setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(key))
                         }
-                    }
-                }
-                launch {
-                    statusBarUpdateEvent.collect {
-                        updateStatusSearchBar()
                     }
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _contentBinding = null
     }
 
     @CallSuper
@@ -119,22 +123,29 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         }
     }
 
-    override fun onStart() {
-        sharedViewModel.notifyStatusBarUpdate()
-        super.onStart()
+    @CallSuper
+    open fun toSearchResult(word: String) {
+        findNavController().popBackStack(R.id.searchFragment, false)
+    }
+
+    @CallSuper
+    open fun addSearchRecord(word: String) {
+        if (word.isNotEmpty()) {
+            sharedViewModel.addOneRecord(word)
+        }
+    }
+
+    protected fun Int.toTranslatedStr(): String {
+        return SkinnableResourceManager.getString(
+            requireContext(),
+            this,
+            sharedViewModel.getCurrentLanguage()
+        )
     }
 
     private fun inflateContentLayout() {
-        mBinding.viewStubContent.layoutResource = contentLayoutId
-        val inflatedView = mBinding.viewStubContent.inflate()
-        contentBinding = (DataBindingUtil.bind(inflatedView) as CVB?)!!
-    }
-
-    private fun addSearchRecord(word: String) {
-        if (word.isNotEmpty()) {
-            sharedViewModel.addOneRecord(word)
-//            notifyUpdateRecordList(word)
-        }
+        _contentBinding = getViewBind(contentVbClass, mBinding.flContentContainer, false)
+        mBinding.flContentContainer.addView(contentBinding.root)
     }
 
     private fun setTitleBar() {
@@ -156,8 +167,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         if(recommendListFragment.onClickListener == null) {
                             recommendListFragment.onClickListener = { recommendWord ->
                                 updateSearchText(recommendWord) {
-                                    backToSearchMainFragment()
-                                    setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(recommendWord))
+                                    backToSearchFragment()
+                                    toSearchResult(recommendWord)
                                     recommendListFragment.dismiss()
                                 }
                             }
@@ -176,8 +187,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                         }
                         recommendListFragment.dismiss()
                         addSearchRecord(content)
-                        backToSearchMainFragment()
-                        setNavigationEvent(SearchNavigationEvent.ToSearchResultBase(content))
+                        backToSearchFragment()
+                        toSearchResult(content)
                         hideKeyboard(requireContext(), getSearchEditText())
                     },
                     onBack = {
@@ -186,7 +197,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
                 )
 
                 getTitleBarBackIcon().apply {
-                    post {
+                    doOnLayout {
                         setImageDrawable(
                             getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
                         )
@@ -269,7 +280,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             )
     }
 
-    private fun updateStatusSearchBar() {
+    protected fun updateStatusSearchBar() {
         updateStatusTitleBar()
         updateTitleBarBackIcon()
         updateSearchTextColor()
@@ -299,7 +310,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     private fun updateTitleBarBackIcon() {
         getTitleBarBackIcon().apply {
-            post {
+            doOnLayout {
                 setImageDrawable(
                     if(isDirectMatch()) ContextCompat.getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
                     else getDrawable(requireContext(), R.drawable.ic_search_left_arrow)
@@ -352,8 +363,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         im.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
     }
 
-    private fun backToSearchMainFragment() {
-        findNavController().popBackStack(R.id.searchMainFragment, false)
+    private fun backToSearchFragment() {
+        findNavController().popBackStack(R.id.searchFragment, false)
     }
 
     companion object {
