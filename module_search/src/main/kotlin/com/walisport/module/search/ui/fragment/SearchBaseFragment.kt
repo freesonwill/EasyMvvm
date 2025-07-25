@@ -41,6 +41,7 @@ import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
 import androidx.core.graphics.createBitmap
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 
 abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFragment<VM, FragmentSearchBaseBinding>() {
     override val vbClass: KClass<FragmentSearchBaseBinding>
@@ -127,6 +128,13 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         if (findNavController().currentDestination?.id != R.id.searchFragment) {
             findNavController().popBackStack(R.id.searchFragment, false)
         }
+        sendResult(
+            key = SEARCH_KEY,
+            value = word,
+            destinationId = R.id.searchFragment,
+            navController = findNavController()
+        )
+        findNavController().navigate(R.id.action_searchFragment_to_searchResultBaseFragment, null, navOptions)
     }
 
     @CallSuper

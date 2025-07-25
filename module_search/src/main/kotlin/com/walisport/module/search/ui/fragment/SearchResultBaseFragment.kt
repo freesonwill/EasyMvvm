@@ -11,6 +11,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.doOnLayout
+import androidx.core.view.doOnNextLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
@@ -45,9 +46,13 @@ class SearchResultBaseFragment :
     override val contentVbClass: KClass<FragmentSearchResultBaseBinding>
         get() = FragmentSearchResultBaseBinding::class
 
+    private var currentKeyWord: String = ""
+
     override fun initData() {
         super.initData()
-        doSearch()
+
+        // 等待換頁動畫完成
+        view?.postDelayed({ doSearch() }, 300)
     }
 
     override fun createObserver() {
@@ -68,8 +73,8 @@ class SearchResultBaseFragment :
                 launch {
                     uiState.collect {
                         when (it) {
-                            is ResultList -> goToListResult(it.data)
-                            is DirectMatch -> goToDirectMatch(it.data)
+                            is ResultList -> goToListResult(it.data, currentKeyWord)
+                            is DirectMatch -> goToDirectMatch(it.data, currentKeyWord)
                         }
                     }
                 }
@@ -90,6 +95,8 @@ class SearchResultBaseFragment :
                     fromId = fromId,
                     navController = nav
                 ) { key ->
+                    currentKeyWord = key
+                    updateSearchText(key)
                     addSearchRecord(key)
                     mViewModel.getSearchResult(key)
                 }
@@ -133,17 +140,17 @@ class SearchResultBaseFragment :
         }
     }
 
-    private fun goToListResult(data: SearchResultBean) {
+    private fun goToListResult(data: SearchResultBean, keyWord: String) {
         val action = SearchResultBaseFragmentDirections
-            .actionSearchResultBaseFragmentToSearchResultListFragment(data)
+            .actionSearchResultBaseFragmentToSearchResultListFragment(data, keyWord)
         navigateTo(action)
     }
 
-    private fun goToDirectMatch(data: SearchResultBean) {
+    private fun goToDirectMatch(data: SearchResultBean, keyWord: String) {
         val action =
             SearchResultBaseFragmentDirections
                 .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
-                    data, null, null, SearchTypeEnum.UNKNOWN
+                    data, keyWord, null, SearchTypeEnum.UNKNOWN
                 )
         navigateTo(action)
     }

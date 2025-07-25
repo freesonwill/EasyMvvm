@@ -37,21 +37,9 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
 
     private val hotWordAdapter by lazy {
         HotWordAdapter { hotWord ->
+            updateSearchText(hotWord)
             toSearchResult(hotWord)
         }
-    }
-
-    override fun toSearchResult(word: String) {
-        updateSearchText(word)
-
-        super.toSearchResult(word)
-        sendResult(
-            key = SEARCH_KEY,
-            value = word,
-            destinationId = R.id.searchFragment,
-            navController = findNavController()
-        )
-        findNavController().navigate(R.id.action_searchFragment_to_searchResultBaseFragment, null, navOptions)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -112,6 +100,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
                     },
                     onSearch = { content ->
                         content?.let {
+                            updateSearchText(content)
                             toSearchResult(content)
                         }
                     }

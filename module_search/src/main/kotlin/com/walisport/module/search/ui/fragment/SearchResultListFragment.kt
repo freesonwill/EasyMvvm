@@ -29,20 +29,16 @@ class SearchResultListFragment :
     private val args: SearchResultListFragmentArgs by navArgs()
     private var tabMediator: TabLayoutMediator? = null
 
-    override fun toSearchResult(word: String) {
-        super.toSearchResult(word)
-        sendResult(
-            key = SEARCH_KEY,
-            value = word,
-            destinationId = R.id.searchResultListFragment,
-            navController = findNavController()
-        )
-        findNavController().navigate(R.id.action_searchResultListFragment_to_searchResultBaseFragment)
-    }
-
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
         setViewPager()
+    }
+
+    override fun initData() {
+        super.initData()
+        args.keyword?.let {
+            updateSearchText(it)
+        }
     }
 
     override fun onLanguageChanged(locale: Locale) {

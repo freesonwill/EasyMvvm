@@ -54,6 +54,11 @@
             android:name="data"
             app:argType="com.walisport.module.search.data.model.SearchResultBean" />
 
+        <argument
+            android:name="keyword"
+            app:nullable="true"
+            app:argType="string"/>
+
         <action
             android:id="@+id/action_searchResultListFragment_to_searchResultDirectMatchFragment"
             app:destination="@id/searchResultDirectMatchFragment">
@@ -63,9 +68,6 @@
                 app:nullable="true"
                 app:argType="com.walisport.module.search.data.model.SearchResultBean" />
         </action>
-        <action
-            android:id="@+id/action_searchResultListFragment_to_searchResultBaseFragment"
-            app:destination="@id/searchResultBaseFragment" />
     </fragment>
 
     <fragment
@@ -93,18 +95,5 @@
             android:name="type"
             app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
 
-        <action
-            android:id="@+id/action_searchResultDirectMatchFragment_to_searchResultBaseFragment"
-            app:destination="@id/searchResultBaseFragment">
-
-            <argument
-                android:name="id"
-                app:nullable="true"
-                app:argType="string"/>
-
-            <argument
-                android:name="type"
-                app:argType="com.walisport.module.search.data.constants.SearchTypeEnum" />
-        </action>
     </fragment>
 </navigation>

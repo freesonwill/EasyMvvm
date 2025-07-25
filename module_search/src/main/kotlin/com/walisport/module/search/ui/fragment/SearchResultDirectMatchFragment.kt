@@ -111,6 +111,7 @@ class SearchResultDirectMatchFragment :
         super.initData()
         doSearch()
         args.keyword?.let { keyword ->
+            updateSearchText(keyword)
             mViewModel.setCurrentTitle(keyword)
         }
     }
@@ -206,17 +207,6 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    override fun toSearchResult(word: String) {
-        super.toSearchResult(word)
-        sendResult(
-            key = SEARCH_KEY,
-            value = word,
-            destinationId = R.id.searchResultDirectMatchFragment,
-            navController = findNavController()
-        )
-        findNavController().navigate(R.id.action_searchResultDirectMatchFragment_to_searchResultBaseFragment)
-    }
-
     override fun onDestroyView() {
         contentBinding.recyclerView.adapter = null
         datePicker = null
@@ -224,8 +214,9 @@ class SearchResultDirectMatchFragment :
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
-        updateStatusSearchBar()
         super.onHiddenChanged(hidden)
+        if (!isAdded) return
+        updateStatusSearchBar()
     }
 
     override fun onBackPressed(): Boolean {
