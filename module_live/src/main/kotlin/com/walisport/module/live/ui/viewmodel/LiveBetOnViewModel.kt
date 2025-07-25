@@ -32,8 +32,8 @@ class LiveBetOnViewModel : BaseViewModel() {
     private val _marketType = MutableLiveData<List<MarketTypeBean>?>()
     val marketType: LiveData<List<MarketTypeBean>?> = _marketType
 
-    private val _marketMenu = MutableLiveData<List<MarketMenuBean>?>()
-    val marketMenu: LiveData<List<MarketMenuBean>?> = _marketMenu
+    private val _marketMenu = UnPeekLiveData<List<MarketMenuBean>?>()
+    val marketMenu: UnPeekLiveData<List<MarketMenuBean>?> = _marketMenu
 
     private val _getMarketList = MutableLiveData<List<MarketMenuBean>?>()
     val getMarketList: LiveData<List<MarketMenuBean>?> = _getMarketList
@@ -95,14 +95,13 @@ class LiveBetOnViewModel : BaseViewModel() {
     }
 
     fun observeSelectionGetMarketList(code: String) {
-        LogUtils.dTag("盘口推送","-${code}---name${getMarketList.value?.find { it.code==code }?.marketName}")
         val codes = if (code.isEmpty()) {
             marketMenu.value
         } else {
             getMarketMenuByCode(code)
         }
         _getMarketList.value = codes
-        val marketIds: MutableList<Long> = mutableListOf()
+        val marketIds: MutableSet<Long> = mutableSetOf()
         codes?.forEach {
             marketIds.add(it.marketId)
         }
