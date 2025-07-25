@@ -1,6 +1,8 @@
 package com.walisport.module.search.ui.fragment
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.os.Bundle
 import android.text.TextUtils
@@ -38,6 +40,7 @@ import arch.cayenne.lib.common.R as RC
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
+import androidx.core.graphics.createBitmap
 
 abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFragment<VM, FragmentSearchBaseBinding>() {
     override val vbClass: KClass<FragmentSearchBaseBinding>
@@ -83,7 +86,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         inflateContentLayout()
         setTitleBar()
         setRecommend()
-        setBackPressHandler()
+        setBackPressHandler(::onBackPressed)
     }
 
     override fun initListener() = Unit
@@ -112,13 +115,11 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     @CallSuper
-    open fun setBackPressHandler() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
-            closeDatePicker()
+    open fun onBackPress() = Unit
 
-            isEnabled = false
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
+    override fun onBackPressed(): Boolean {
+        closeDatePicker()
+        return super.onBackPressed()
     }
 
     @CallSuper
@@ -133,6 +134,23 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         if (word.isNotEmpty()) {
             sharedViewModel.addOneRecord(word)
         }
+    }
+
+    protected fun setTempScreenShot() {
+        val view = mBinding.clRoot
+        val bitmap = createBitmap(view.width, view.height)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+
+        sharedViewModel.setTempScreenShot(bitmap)
+    }
+
+    protected fun getTempScreenShot(): Bitmap? {
+        return sharedViewModel.getTempScreenShot()
+    }
+
+    protected fun clearTempScreenShot() {
+        sharedViewModel.clearTempScreenShot()
     }
 
     protected fun Int.toTranslatedStr(): String {
@@ -152,6 +170,17 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             }
         afterChange?.invoke()
         canSearch = true
+    }
+
+    private fun setBackPressHandler(onBackPress: (() -> Boolean)? = null) {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            closeDatePicker()
+
+            if(onBackPress?.invoke() == true) return@addCallback
+
+            isEnabled = false
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun inflateContentLayout() {
@@ -260,9 +289,9 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             SkinnableResourceManager.getColor(
                 requireContext(),
                 when {
-                    isHighLight -> arch.cayenne.lib.common.R.color.search_btn_highlight
-                    isDirectMatch() -> arch.cayenne.lib.common.R.color.search_btn_in_direct_match
-                    else -> arch.cayenne.lib.common.R.color.search_btn_normal
+                    isHighLight -> RC.color.search_btn_highlight
+                    isDirectMatch() -> RC.color.search_btn_in_direct_match
+                    else -> RC.color.search_btn_normal
                 }
             )
         )
@@ -272,8 +301,8 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
         getSearchBar().backgroundTintList =
             SkinnableResourceManager.getColorStateList(
                 requireContext(),
-                if (isDirectMatch()) arch.cayenne.lib.common.R.color.search_bg_in_direct_match
-                else arch.cayenne.lib.common.R.color.search_bg
+                if (isDirectMatch()) RC.color.search_bg_in_direct_match
+                else RC.color.search_bg
             )
     }
 
@@ -321,7 +350,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
             if (isDirectMatch()) Color.WHITE
             else SkinnableResourceManager.getColor(
                 requireContext(),
-                arch.cayenne.lib.common.R.color.search_text_for_search_bar
+                RC.color.search_text_for_search_bar
             )
         )
     }
@@ -330,19 +359,19 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     open fun closeDatePicker() = Unit
 
     private fun getSearchBar(): LinearLayout {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ll_search_bar)
+        return mBinding.titleBar.findViewById(RC.id.ll_search_bar)
     }
 
     private fun getSearchBtn(): TextView {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.tv_search_text)
+        return mBinding.titleBar.findViewById(RC.id.tv_search_text)
     }
 
     private fun getSearchEditText(): ClearableEditText {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.ce_search)
+        return mBinding.titleBar.findViewById(RC.id.ce_search)
     }
 
     private fun getTitleBarBackIcon(): SkinnableImageView {
-        return mBinding.titleBar.findViewById(arch.cayenne.lib.common.R.id.iv_back)
+        return mBinding.titleBar.findViewById(RC.id.iv_back)
     }
 
     private fun hideKeyboard(context: Context?, editText: EditText) {

@@ -1,11 +1,24 @@
 package com.walisport.module.search.ui.fragment
 
+import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
@@ -15,8 +28,13 @@ import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
+import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.Date
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
 
@@ -57,6 +75,11 @@ class SearchResultBaseFragment :
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        clearTempScreenShot()
     }
 
     private fun doSearch() {
@@ -126,9 +149,36 @@ class SearchResultBaseFragment :
     }
 
     private fun navigateTo(action: NavDirections) {
-        val navOptions = NavOptions.Builder()
-            .setPopUpTo(R.id.searchResultBaseFragment, true)
-            .build()
-        findNavController().navigate(action, navOptions)
+        parentFragmentManager.setFragmentResultListener(GO_BACK_TO_MAIN, viewLifecycleOwner) { _, bundle ->
+            parentFragmentManager.clearFragmentResultListener(GO_BACK_TO_MAIN)
+
+            bundle.getBoolean(GO_BACK_TO_MAIN).let {
+                if (it) {
+                    // 攔截返回時機，加入畫面截圖遮罩並延遲 popBackStack，
+                    // 避免中間頁閃爍，實現從 SearchResultListFragment / SearchResultDirectMatchFragment
+                    // 直接返回 SearchFragment 的流暢轉場效果
+                    WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
+                    requireActivity().window.statusBarColor = Color.TRANSPARENT
+                    ViewCompat.setOnApplyWindowInsetsListener(requireView()) { v, insets ->
+                        v.setPadding(0, 0, 0, 0)
+                        insets
+                    }
+                    mBinding.root.apply {
+                        ImageView(requireContext()).apply {
+                            setImageBitmap(getTempScreenShot())
+                        }.let { view -> addView(view) }
+                        doOnLayout {
+                            findNavController().popBackStack(R.id.searchFragment, false)
+                        }
+                    }
+                    ViewCompat.requestApplyInsets(requireView())
+                }
+            }
+        }
+        findNavController().navigate(action)
+    }
+
+    companion object {
+        const val GO_BACK_TO_MAIN = "GO_BACK_TO_MAIN"
     }
 }

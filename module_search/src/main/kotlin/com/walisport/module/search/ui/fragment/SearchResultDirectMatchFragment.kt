@@ -9,6 +9,7 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -39,6 +40,7 @@ import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companio
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_KEY
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_START
 import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
+import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchResultDirectMatchViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -224,6 +226,12 @@ class SearchResultDirectMatchFragment :
     override fun onHiddenChanged(hidden: Boolean) {
         updateStatusSearchBar()
         super.onHiddenChanged(hidden)
+    }
+
+    override fun onBackPressed(): Boolean {
+        setTempScreenShot()
+        parentFragmentManager.setFragmentResult(GO_BACK_TO_MAIN, bundleOf(GO_BACK_TO_MAIN to true))
+        return super.onBackPressed()
     }
 
     private fun doSearch() {

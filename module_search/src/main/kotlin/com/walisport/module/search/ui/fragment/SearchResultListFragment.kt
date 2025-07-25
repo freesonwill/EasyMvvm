@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,6 +14,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
 import com.walisport.module.search.ui.adapter.SearchResultPagerAdapter
+import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchResultListViewModel
 import java.util.Locale
 import kotlin.reflect.KClass
@@ -49,13 +51,18 @@ class SearchResultListFragment :
         updateTabTitles()
     }
 
+    override fun onBackPressed(): Boolean {
+        setTempScreenShot()
+        parentFragmentManager.setFragmentResult(GO_BACK_TO_MAIN, bundleOf(GO_BACK_TO_MAIN to true))
+        return super.onBackPressed()
+    }
+
     override fun onDestroyView() {
         contentBinding.viewPager.adapter = null
         tabMediator?.detach()
         tabMediator = null
         super.onDestroyView()
     }
-
 
     private fun setViewPager() {
         with(contentBinding) {

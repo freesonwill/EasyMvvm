@@ -1,5 +1,6 @@
 package com.walisport.module.search.ui.viewmodel
 
+import android.graphics.Bitmap
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.skin.LanguageManager
@@ -22,6 +23,9 @@ class SearchBaseViewModel: BaseViewModel() {
     /** 當前語系 */
     private val _currentLanguage = MutableSharedFlow<Locale>(replay = 1)
     val currentLanguage: SharedFlow<Locale> = _currentLanguage.asSharedFlow()
+
+    /** 暫存的螢幕截圖 */
+    private var tempScreenShot: Bitmap? = null
 
     init {
         // 初始化當前語系為預設語系
@@ -52,5 +56,21 @@ class SearchBaseViewModel: BaseViewModel() {
         viewModelScope.launch {
             repository.addOneRecord(key)
         }
+    }
+
+    /** 設置暫存的螢幕截圖 */
+    fun setTempScreenShot(bitmap: Bitmap?) {
+        tempScreenShot = bitmap
+    }
+
+    /** 取得暫存的螢幕截圖 */
+    fun getTempScreenShot(): Bitmap? {
+        return tempScreenShot
+    }
+
+    /** 清除暫存的螢幕截圖 */
+    fun clearTempScreenShot() {
+        tempScreenShot?.recycle()
+        tempScreenShot = null
     }
 }
