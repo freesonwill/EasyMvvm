@@ -2,24 +2,15 @@ package com.walisport.module.search.ui.fragment
 
 import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.doOnLayout
-import androidx.core.view.doOnNextLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.data.constants.StatusBarMode
-import arch.cayenne.lib.base.data.model.StatusBarConfig
-import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
@@ -29,13 +20,8 @@ import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
 import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
-import com.walisport.module.search.ui.fragment.SearchDatePickerFragment.Companion.DATE_PICKER_RESULT_TIME_IN_MILLIS
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.Date
 import kotlin.reflect.KClass
 import arch.cayenne.lib.common.R as RC
 
@@ -46,13 +32,39 @@ class SearchResultBaseFragment :
     override val contentVbClass: KClass<FragmentSearchResultBaseBinding>
         get() = FragmentSearchResultBaseBinding::class
 
-    private var currentKeyWord: String = ""
+    private var currentKeyword: String = ""
 
     override fun initData() {
         super.initData()
 
         // 等待換頁動畫完成
-        view?.postDelayed({ doSearch() }, 300)
+        view?.postDelayed({
+            // 處理navigate過來的（第一次搜尋的）
+            findNavController().also { nav ->
+                nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
+                    observeResultOnce<String>(
+                        key = SEARCH_KEY,
+                        fromId = fromId,
+                        navController = nav
+                    ) { key ->
+                        currentKeyword = key
+                        doSearch()
+                    }
+                }
+            }
+        }, 300)
+    }
+
+    override fun initListener() {
+        super.initListener()
+
+        // 處理popBack過來的（再次搜尋的）
+        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
+            bundle.getString(SEARCH_KEY)?.let { keyword ->
+                currentKeyword = keyword
+                doSearch()
+            }
+        }
     }
 
     override fun createObserver() {
@@ -73,8 +85,8 @@ class SearchResultBaseFragment :
                 launch {
                     uiState.collect {
                         when (it) {
-                            is ResultList -> goToListResult(it.data, currentKeyWord)
-                            is DirectMatch -> goToDirectMatch(it.data, currentKeyWord)
+                            is ResultList -> goToListResult(it.data, currentKeyword)
+                            is DirectMatch -> goToDirectMatch(it.data, currentKeyword)
                         }
                     }
                 }
@@ -88,20 +100,9 @@ class SearchResultBaseFragment :
     }
 
     private fun doSearch() {
-        findNavController().also { nav ->
-            nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
-                observeResultOnce<String>(
-                    key = SEARCH_KEY,
-                    fromId = fromId,
-                    navController = nav
-                ) { key ->
-                    currentKeyWord = key
-                    updateSearchText(key)
-                    addSearchRecord(key)
-                    mViewModel.getSearchResult(key)
-                }
-            }
-        }
+        updateSearchText(currentKeyword)
+        addSearchRecord(currentKeyword)
+        mViewModel.getSearchResult(currentKeyword)
     }
 
     private fun setEmptyView(state: DataState) {
@@ -140,17 +141,17 @@ class SearchResultBaseFragment :
         }
     }
 
-    private fun goToListResult(data: SearchResultBean, keyWord: String) {
+    private fun goToListResult(data: SearchResultBean, keyword: String) {
         val action = SearchResultBaseFragmentDirections
-            .actionSearchResultBaseFragmentToSearchResultListFragment(data, keyWord)
+            .actionSearchResultBaseFragmentToSearchResultListFragment(data, keyword)
         navigateTo(action)
     }
 
-    private fun goToDirectMatch(data: SearchResultBean, keyWord: String) {
+    private fun goToDirectMatch(data: SearchResultBean, keyword: String) {
         val action =
             SearchResultBaseFragmentDirections
                 .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
-                    data, keyWord, null, SearchTypeEnum.UNKNOWN
+                    data, keyword, null, SearchTypeEnum.UNKNOWN
                 )
         navigateTo(action)
     }
@@ -175,6 +176,7 @@ class SearchResultBaseFragment :
                             setImageBitmap(getTempScreenShot())
                         }.let { view -> addView(view) }
                         doOnLayout {
+                            parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
                             findNavController().popBackStack(R.id.searchFragment, false)
                         }
                     }

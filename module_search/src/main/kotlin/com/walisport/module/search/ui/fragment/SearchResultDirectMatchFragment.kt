@@ -24,7 +24,6 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -181,16 +180,6 @@ class SearchResultDirectMatchFragment :
                                 )
                     }
                 }
-
-                viewLifecycleOwner.lifecycle.addObserver(object : DefaultLifecycleObserver {
-                    override fun onStart(owner: LifecycleOwner) {
-                        updateStatusSearchBar()
-                    }
-
-                    override fun onStop(owner: LifecycleOwner) {
-                        updateStatusSearchBar()
-                    }
-                })
             }
         }
     }
@@ -207,21 +196,27 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    override fun onDestroyView() {
-        contentBinding.recyclerView.adapter = null
-        datePicker = null
-        super.onDestroyView()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!isAdded) return
+    override fun onResume() {
+        super.onResume()
         updateStatusSearchBar()
     }
 
+    override fun onDestroyView() {
+        contentBinding.recyclerView.adapter = null
+        datePicker = null
+        updateStatusSearchBar()
+        super.onDestroyView()
+    }
+
     override fun onBackPressed(): Boolean {
-        setTempScreenShot()
-        parentFragmentManager.setFragmentResult(GO_BACK_TO_MAIN, bundleOf(GO_BACK_TO_MAIN to true))
+        findNavController().also { nav ->
+            nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
+                if(fromId == R.id.searchResultBaseFragment) {
+                    setTempScreenShot()
+                    parentFragmentManager.setFragmentResult(GO_BACK_TO_MAIN, bundleOf(GO_BACK_TO_MAIN to true))
+                }
+            }
+        }
         return super.onBackPressed()
     }
 

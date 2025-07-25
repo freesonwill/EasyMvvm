@@ -4,13 +4,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -56,6 +54,17 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         //获取热门搜索
         mViewModel.getSearchHotWord { error ->
             error?.let { showToast(it.msg) }
+        }
+    }
+
+    override fun initListener() {
+        super.initListener()
+
+        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
+            bundle.getString(SEARCH_KEY)?.let { keyword ->
+                updateSearchText(keyword)
+                mViewModel.getRecordByUID()
+            }
         }
     }
 

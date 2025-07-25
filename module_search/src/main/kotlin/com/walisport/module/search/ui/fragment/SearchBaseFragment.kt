@@ -14,6 +14,8 @@ import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.annotation.CallSuper
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.core.widget.TextViewCompat
 import androidx.lifecycle.Lifecycle
@@ -28,6 +30,7 @@ import arch.cayenne.lib.base.ui.fragment.getViewBind
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.common.ui.view.ClearableEditText
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -36,12 +39,10 @@ import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
-import arch.cayenne.lib.common.R as RC
 import kotlinx.coroutines.launch
 import java.util.Locale
 import kotlin.reflect.KClass
-import androidx.core.graphics.createBitmap
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.R as RC
 
 abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFragment<VM, FragmentSearchBaseBinding>() {
     override val vbClass: KClass<FragmentSearchBaseBinding>
@@ -116,8 +117,6 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     }
 
     @CallSuper
-    open fun onBackPress() = Unit
-
     override fun onBackPressed(): Boolean {
         closeDatePicker()
         return super.onBackPressed()
@@ -126,15 +125,17 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     @CallSuper
     open fun toSearchResult(word: String) {
         if (findNavController().currentDestination?.id != R.id.searchFragment) {
-            findNavController().popBackStack(R.id.searchFragment, false)
+            parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to word))
+            findNavController().popBackStack(R.id.searchResultBaseFragment, false)
+        } else {
+            sendResult(
+                key = SEARCH_KEY,
+                value = word,
+                destinationId = R.id.searchFragment,
+                navController = findNavController()
+            )
+            findNavController().navigate(R.id.searchResultBaseFragment, null, navOptions)
         }
-        sendResult(
-            key = SEARCH_KEY,
-            value = word,
-            destinationId = R.id.searchFragment,
-            navController = findNavController()
-        )
-        findNavController().navigate(R.id.action_searchFragment_to_searchResultBaseFragment, null, navOptions)
     }
 
     @CallSuper

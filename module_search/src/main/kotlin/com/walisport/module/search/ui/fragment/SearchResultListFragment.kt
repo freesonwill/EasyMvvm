@@ -9,7 +9,6 @@ import androidx.core.view.children
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.RecyclerView
-import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchResultListBinding
