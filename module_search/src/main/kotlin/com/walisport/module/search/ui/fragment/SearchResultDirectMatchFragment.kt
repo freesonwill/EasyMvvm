@@ -10,9 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
-import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -206,7 +204,11 @@ class SearchResultDirectMatchFragment :
     override fun onDestroyView() {
         contentBinding.recyclerView.adapter = null
         datePicker = null
-        updateStatusSearchBar()
+
+        if (parentFragmentManager.fragments.firstOrNull { it.isVisible && it != this } !is SearchResultBaseFragment) {
+            updateStatusSearchBar()
+        }
+
         super.onDestroyView()
     }
 

@@ -178,6 +178,7 @@ class SearchResultBaseFragment :
                         doOnLayout {
                             parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
                             findNavController().popBackStack(R.id.searchFragment, false)
+                            requireView().postDelayed({ updateStatusSearchBar() }, 300)
                         }
                     }
                     ViewCompat.requestApplyInsets(requireView())
