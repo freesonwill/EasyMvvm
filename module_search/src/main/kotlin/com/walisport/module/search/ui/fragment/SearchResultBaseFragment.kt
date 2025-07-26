@@ -1,11 +1,11 @@
 package com.walisport.module.search.ui.fragment
 
-import android.graphics.Color
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
@@ -165,23 +165,33 @@ class SearchResultBaseFragment :
                     // 攔截返回時機，加入畫面截圖遮罩並延遲 popBackStack，
                     // 避免中間頁閃爍，實現從 SearchResultListFragment / SearchResultDirectMatchFragment
                     // 直接返回 SearchFragment 的流暢轉場效果
-                    WindowCompat.setDecorFitsSystemWindows(requireActivity().window, false)
-                    requireActivity().window.statusBarColor = Color.TRANSPARENT
-                    ViewCompat.setOnApplyWindowInsetsListener(requireView()) { v, insets ->
-                        v.setPadding(0, 0, 0, 0)
-                        insets
-                    }
-                    mBinding.root.apply {
+                    (requireActivity().window.decorView as ViewGroup).apply {
                         ImageView(requireContext()).apply {
+                            layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
                             setImageBitmap(getTempScreenShot())
-                        }.let { view -> addView(view) }
-                        doOnLayout {
-                            parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
-                            findNavController().popBackStack(R.id.searchFragment, false)
-                            requireView().postDelayed({ updateStatusSearchBar() }, 300)
+                        }.let { overlay ->
+                            addView(overlay, childCount)
+                            overlay.doOnLayout {
+                                parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
+                                findNavController().popBackStack(R.id.searchFragment, false)
+
+                                AnimationUtils.loadAnimation(requireContext(), RC.anim.slide_out_right).apply {
+                                    setAnimationListener(object: Animation.AnimationListener {
+                                        override fun onAnimationRepeat(p0: Animation?) = Unit
+                                        override fun onAnimationStart(p0: Animation?) = Unit
+                                        override fun onAnimationEnd(p0: Animation?) {
+                                            removeView(overlay)
+                                        }
+                                    })
+                                }.let { anim ->
+                                    overlay.startAnimation(anim)
+                                }
+                            }
                         }
                     }
-                    ViewCompat.requestApplyInsets(requireView())
                 }
             }
         }

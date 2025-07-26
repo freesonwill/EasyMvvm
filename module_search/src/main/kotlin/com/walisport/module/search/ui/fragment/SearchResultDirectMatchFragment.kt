@@ -204,11 +204,7 @@ class SearchResultDirectMatchFragment :
     override fun onDestroyView() {
         contentBinding.recyclerView.adapter = null
         datePicker = null
-
-        if (parentFragmentManager.fragments.firstOrNull { it.isVisible && it != this } !is SearchResultBaseFragment) {
-            updateStatusSearchBar()
-        }
-
+        updateStatusSearchBar()
         super.onDestroyView()
     }
 
