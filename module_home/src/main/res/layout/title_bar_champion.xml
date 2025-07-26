@@ -71,9 +71,10 @@
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="1dp"
-            android:textColor="@color/home_main_text"
             android:fontFamily="@font/sf_pro_display_regular"
+            android:textColor="@color/home_main_text"
             android:textSize="14sp"
+            android:textStyle="bold"
             tools:text="$1,100.00" />
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
