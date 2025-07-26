@@ -33,11 +33,14 @@ class HomeRepository(
     private val tournamentDao = database.tournamentDao()
     private val matchDao = database.matchDao()
     private val homeSelectedDao = database.homeSelectedDao()
+    private val infoDao = database.infoDao()
 
     fun observeSportsMatchCount() = sportDao.observeSportsMatchCount(filter = SportType.entries.map { it.id })
     fun observeTenTournaments() = tournamentDao.observeTournamentWithLimit()
 
     fun observeLanguageChange() = userDataManager.observe<String>(UserDataKey.KEY_LANGUAGE)
+
+    suspend fun observeLoginChange() = infoDao.observeIsLogin()
 
     suspend fun getTournament(playTypeId: Int, sportId: Int, tournamentId: Int): TournamentDataModel? = tournamentDao.queryTournament(playTypeId, sportId, tournamentId)
 
@@ -167,9 +170,6 @@ class HomeRepository(
         sportDao.clearSportBean()
     }
 
-    private fun clearMatchCache() {
-        matchDao.clearAllMatch()
-    }
     suspend fun getRecently31MatchScheduleCount(sportId: Int, playType: Int,tournamentId:Int, timeZone: Int = 8): ApiResponseState = withContext(scope.coroutineContext) {
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.Recently31MatchScheduleCountResp>(
             scope = scope,

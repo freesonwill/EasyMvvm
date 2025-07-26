@@ -19,10 +19,25 @@ sealed class HomeState: DataState {
     sealed class Match: HomeState() {
         data object Loading : Match()
         data object LoadSuccess : Match()
+        data object Refreshing : Match()
+        data object LoadingNext : Match()
+
+        data object DataEmpty : Match()
+
     }
 
     sealed class Schedule: HomeState() {
         data object Loading : Schedule()
         data object LoadSuccess : Schedule()
+    }
+
+    sealed class TournamentListState: HomeState() {
+        data object InitList : TournamentListState()
+        data object RestoreList : TournamentListState()
+        data object ListDataEmpty : TournamentListState()
+        data object SearcgInit : TournamentListState()
+        data object SearchMatch : TournamentListState()
+        data object SearchDataEmpty : TournamentListState()
+
     }
 }

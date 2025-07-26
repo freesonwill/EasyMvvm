@@ -1,8 +1,9 @@
 package arch.cayenne.module.home.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
+import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.TournamentDao
-import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -16,18 +17,19 @@ import kotlinx.coroutines.Dispatchers
 class TournamentListRepository(
     override val scope: CoroutineScope,
     private val socketManager: WebSocketManager,
-    private val tournamentDao: TournamentDao
+    private val tournamentDao: TournamentDao,
+    private val infoDao: InfoDao,
 ) : BaseRepository() {
 
-    suspend fun getAllTournaments(type: TournamentListType, playTypeId: Int, sportId: Int): List<BaseTournamentData> {
+    suspend fun getAllTournaments(type: TournamentListType, playTypeId: Int, sportId: Int): ApiResponseState {
         return if (type == TournamentListType.MORE) {
-            tournamentDao.queryTournaments(playTypeId, sportId)
+            ApiResponseState.Succeeded(tournamentDao.queryTournaments(playTypeId, sportId))
         } else {
             getChampionTournament(sportId)
         }
     }
 
-    private suspend fun getChampionTournament(sportId: Int): List<ChampionTournamentDataModel> { //先暫時用TournamentDataModel
+    private suspend fun getChampionTournament(sportId: Int): ApiResponseState { //先暫時用TournamentDataModel
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -38,20 +40,24 @@ class TournamentListRepository(
             }.build()
         }
         if (res.error == null && res.data != null) {
-            return res.data!!.outrightMatchOrBuilderList.map {
-                ChampionTournamentDataModel(
-                    id = it.tournamentId,
-                    championMatchId = it.matchId,
-                    sportId = it.sportId,
-                    playTypeId = PlayType.CHAMPION.id,
-                    name = it.tournamentName,
-                    simpleName = "",
-                    icon = it.tournamentIcon,
-                    weight = it.weight,
-                    hot = it.hot,
-                )
-            }
+            return ApiResponseState.Succeeded(
+                res.data!!.outrightMatchOrBuilderList.map {
+                    ChampionTournamentDataModel(
+                        id = it.tournamentId,
+                        championMatchId = it.matchId,
+                        sportId = it.sportId,
+                        playTypeId = PlayType.CHAMPION.id,
+                        name = it.tournamentName,
+                        simpleName = "",
+                        icon = it.tournamentIcon,
+                        weight = it.weight,
+                        hot = it.hot,
+                    )
+                }
+            )
         }
-        return arrayListOf()
+        return ApiResponseState.Failed(res.error)
     }
+
+    suspend fun observeLoginChange() = infoDao.observeIsLogin()
 }

@@ -172,10 +172,6 @@ class CommonRepository(
         setIsLogin(false)
     }
 
-    fun tryToReconnect() {
-        socketManager.startReconnect()
-    }
-
     fun reconnectNow() {
         socketManager.reconnect()
     }

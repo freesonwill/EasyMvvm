@@ -1,5 +1,6 @@
 package arch.cayenne.module.home.data.repo
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
@@ -39,7 +40,7 @@ class MatchListRepository(
         date: Long,
         startTime: Long,
         endTime: Long
-    ) : Boolean {
+    ) : ApiResponseState {
         val last = matchDao.queryLastMatch(playType, tournamentId, date)
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListMatchResp>(
             scope = scope,
@@ -61,9 +62,6 @@ class MatchListRepository(
         }
 
         if (resp.error == null && resp.data != null) {
-            if (resp.data!!.matchList.isNullOrEmpty()) {
-                return false
-            }
             val matchFullData = resp.data!!.matchList.toRoomData()
             "新增比賽 tournamentId = $tournamentId matchId = ${matchFullData.match.map { it.matchId }} 進入資料庫".logi(
                 HomeRepository::class.java.simpleName)
@@ -85,9 +83,9 @@ class MatchListRepository(
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
-            return true
+            return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
-        return false
+        return ApiResponseState.Failed(resp.error)
     }
 
     fun clearCurrentMatch(playType: Int, tournamentId: Int, date: Long) {

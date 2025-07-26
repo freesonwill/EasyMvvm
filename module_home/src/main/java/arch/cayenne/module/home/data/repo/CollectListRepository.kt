@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.data.repo
 
 import androidx.room.Transaction
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.dao.BetDao
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.MatchDao
@@ -26,7 +27,7 @@ class CollectListRepository(
 
     private val collectMatchChange by lazy { MutableStateFlow<Map<Long, CollectMatchRef>>(hashMapOf()) }  //CollectMatchCrossRef
 
-    suspend fun getCollectData(page: Int) : Boolean {
+    suspend fun getCollectData(page: Int) : ApiResponseState {
 
         val last = collectMatchChange.value.maxByOrNull { it.value.order }?.value
         val resp = socketManager.sendAndWaitProtoMessageResponse<Client.ListCollectResp>(
@@ -43,9 +44,6 @@ class CollectListRepository(
             }.build()
         }
         if (resp.error == null && resp.data != null) {
-            if (resp.data!!.matchList.isNullOrEmpty()) {
-                return false
-            }
             val matchFullData = resp.data!!.matchList.toRoomData()
             matchDao.insertMatch(
                 matches = matchFullData.match,
@@ -59,9 +57,9 @@ class CollectListRepository(
                 match.matchId to CollectMatchRef(match.matchId, match.basicInfo.startTime, page, page * 100 + index)
             }.toMap()
             collectMatchChange.value = collectMatchChange.value + map
-            return true
+            return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
-        return false
+        return ApiResponseState.Failed(resp.error)
     }
 
     fun clearCurrentMatch() {
