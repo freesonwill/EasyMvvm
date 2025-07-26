@@ -50,7 +50,7 @@ open class FlowLayout @JvmOverloads constructor(
     /**
      * 水平距离
      */
-    private val mHorizontalSpacing: Int
+    val mHorizontalSpacing: Int
 
     /**
      * 竖直距离
