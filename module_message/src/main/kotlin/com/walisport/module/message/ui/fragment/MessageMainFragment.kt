@@ -19,6 +19,7 @@ import com.walisport.module.message.R
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.adapter.MessageAdapter
+import com.walisport.module.message.ui.view.DeleteAnimator
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -74,6 +75,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 mViewModel.getMoreMessageList()
             }
             recyclerMessage.apply {
+                itemAnimator = DeleteAnimator()
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
                 for (i in 0 until itemDecorationCount) {
