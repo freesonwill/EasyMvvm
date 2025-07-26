@@ -186,7 +186,7 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
-                            R.string.lineup_empty.getString()
+                            R.string.collect_list_empty.getString()
                         )
                     }
                     HomeState.Match.Loading -> {
