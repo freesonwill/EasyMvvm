@@ -44,27 +44,27 @@ class LiveMatchAnimationFragment :
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
     private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
 
-
-    private var buttonsDisplaying = true
-
-    /**
-     * 隐藏操作栏的定时Job
-     */
-    private var scheduledHideButtonsJob: Job? = null
+//
+//    private var buttonsDisplaying = true
+//
+//    /**
+//     * 隐藏操作栏的定时Job
+//     */
+//    private var scheduledHideButtonsJob: Job? = null
 
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
 
         initWebView()
-        scheduleHideButtons()
+//        scheduleHideButtons()
     }
 
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
         mBinding.ivChooseSource.setOnClickListener {
-            scheduleHideButtons()
+//            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
         }
 
@@ -73,18 +73,18 @@ class LiveMatchAnimationFragment :
 
         }
 
-        mBinding.animationView.setOnTouchListener { v, event -> //单击事件
-            if (buttonsDisplaying) {
-                buttonsDisplaying = false
-
-                hideButtonsAnimated()
-            } else {
-                buttonsDisplaying = true
-
-                showButtonsAnimated()
-            }
-            true
-        }
+//        mBinding.animationView.setOnTouchListener { v, event -> //单击事件
+//            if (buttonsDisplaying) {
+//                buttonsDisplaying = false
+//
+//                hideButtonsAnimated()
+//            } else {
+//                buttonsDisplaying = true
+//
+//                showButtonsAnimated()
+//            }
+//            true
+//        }
 
 
     }
@@ -202,82 +202,82 @@ class LiveMatchAnimationFragment :
     }
 
 
-    /**
-     * 设置定时任务，隐藏操作栏
-     */
-    private fun scheduleHideButtons() {
-        scheduledHideButtonsJob?.cancel()
-        scheduledHideButtonsJob = lifecycleScope.launch {
-            delay(HIDE_BUTTONS_TIMER)
+//    /**
+//     * 设置定时任务，隐藏操作栏
+//     */
+//    private fun scheduleHideButtons() {
+//        scheduledHideButtonsJob?.cancel()
+//        scheduledHideButtonsJob = lifecycleScope.launch {
+//            delay(HIDE_BUTTONS_TIMER)
+//
+//            buttonsDisplaying = false
+//            hideButtonsAnimated()
+//        }
+//
+//    }
+//
+//    /**
+//     * 隐藏底部操作栏
+//     */
+//    private fun hideButtonsAnimated() {
+//        val operateAreaHeight =
+//            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+//
+//        mBinding.root.startSafeAnimateSet(
+//            {
+//                playTogether(
+//                    mBinding.bottomArea.startSafeObjectAnimator(
+//                        "translationY",
+//                        *floatArrayOf(0f, operateAreaHeight)
+//                    ),
+//                    mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f)
+//                )
+//            },
+//            duration = BUTTONS_ANIMATION_DURATION,
+//            interpolator = LinearInterpolator(),
+//            start = true
+//        )
+//    }
 
-            buttonsDisplaying = false
-            hideButtonsAnimated()
-        }
-
-    }
-
-    /**
-     * 隐藏底部操作栏
-     */
-    private fun hideButtonsAnimated() {
-        val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
-
-        mBinding.root.startSafeAnimateSet(
-            {
-                playTogether(
-                    mBinding.bottomArea.startSafeObjectAnimator(
-                        "translationY",
-                        *floatArrayOf(0f, operateAreaHeight)
-                    ),
-                    mBinding.bottomArea.startSafeObjectAnimator("alpha", 1f, 0.5f)
-                )
-            },
-            duration = BUTTONS_ANIMATION_DURATION,
-            interpolator = LinearInterpolator(),
-            start = true
-        )
-    }
-
-    /**
-     * 展示底部操作栏
-     */
-    private fun showButtonsAnimated() {
-        val operateAreaHeight =
-            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
-
-        mBinding.root.startSafeAnimateSet(
-            {
-                playTogether(
-                    mBinding.bottomArea.startSafeObjectAnimator(
-                        "translationY",
-                        *floatArrayOf(operateAreaHeight, 0f)
-                    ),
-                    mBinding.bottomArea.startSafeObjectAnimator(
-                        "alpha",
-                        *floatArrayOf(0.5f, 1f)
-                    ),
-
-                    )
-                addListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animation: Animator) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animator) {
-                        scheduleHideButtons()
-                    }
-
-                    override fun onAnimationCancel(animation: Animator) {
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator) {
-                    }
-                })
-            },
-            duration = BUTTONS_ANIMATION_DURATION,
-            start = true
-        )
-    }
+//    /**
+//     * 展示底部操作栏
+//     */
+//    private fun showButtonsAnimated() {
+//        val operateAreaHeight =
+//            resources.getDimensionPixelSize(R.dimen.video_operate_area_height).toFloat()
+//
+//        mBinding.root.startSafeAnimateSet(
+//            {
+//                playTogether(
+//                    mBinding.bottomArea.startSafeObjectAnimator(
+//                        "translationY",
+//                        *floatArrayOf(operateAreaHeight, 0f)
+//                    ),
+//                    mBinding.bottomArea.startSafeObjectAnimator(
+//                        "alpha",
+//                        *floatArrayOf(0.5f, 1f)
+//                    ),
+//
+//                    )
+//                addListener(object : Animator.AnimatorListener {
+//                    override fun onAnimationStart(animation: Animator) {
+//                    }
+//
+//                    override fun onAnimationEnd(animation: Animator) {
+//                        scheduleHideButtons()
+//                    }
+//
+//                    override fun onAnimationCancel(animation: Animator) {
+//                    }
+//
+//                    override fun onAnimationRepeat(animation: Animator) {
+//                    }
+//                })
+//            },
+//            duration = BUTTONS_ANIMATION_DURATION,
+//            start = true
+//        )
+//    }
 
 
     companion object {
