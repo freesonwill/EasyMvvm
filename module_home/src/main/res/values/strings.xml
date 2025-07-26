@@ -63,4 +63,5 @@
     <string name="tournament_section_title_hot">热门</string>
     <string name="balance_format">%s%s</string>
     <string name="format_month_year" translatable="false">%1$s %2$s</string>
+    <string name="collect_list_empty">暂无收藏</string>
 </resources>
