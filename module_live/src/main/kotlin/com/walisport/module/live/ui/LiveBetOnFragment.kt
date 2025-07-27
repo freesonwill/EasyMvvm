@@ -154,7 +154,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        mBinding.ivMenu.clickNoRepeat {
+        mBinding.ivMenu.clickNoRepeat (1000){
             mainViewModel.setLiveBetOnMen(BetOnMenuStatus.OPEN)
         }
     }
