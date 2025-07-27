@@ -57,11 +57,11 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             llRecharge.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
-            llRecharge.addScaleOnTouchAnimation(ivRecharge)
+            llRecharge.addScaleOnTouchAnimation()
             llDrawerTutorial.clickNoRepeat {
                 navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
             }
-            llDrawerTutorial.addScaleOnTouchAnimation(ivDrawerTutorial)
+            llDrawerTutorial.addScaleOnTouchAnimation()
             llDrawerSetting.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
@@ -72,7 +72,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetSlip.addScaleOnTouchAnimation(ivBetSlip)
+            llBetSlip.addScaleOnTouchAnimation()
         }
     }
 

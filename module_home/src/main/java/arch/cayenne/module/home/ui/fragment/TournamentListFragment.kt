@@ -22,6 +22,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
@@ -149,7 +150,7 @@ class TournamentListFragment :
                 })
             }
 
-            ivHomeLeagueCollapse.setOnClickListener {
+            ivHomeLeagueCollapse.apply{addScaleOnTouchAnimation()}.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
             }
 

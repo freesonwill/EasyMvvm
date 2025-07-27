@@ -155,7 +155,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         }
 
-        mBinding.ivTournamentMore.clickNoRepeat {
+        mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
             toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
         mBinding.llHomeTournamentMore.clickNoRepeat {
@@ -429,15 +429,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llFavoriteEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
-            llFavoriteEntry.addScaleOnTouchAnimation(tvFavoriteIcon)
+            llFavoriteEntry.addScaleOnTouchAnimation()
             llSearchEntry.setOnClickListener {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
-            llSearchEntry.addScaleOnTouchAnimation(tvSearchIcon)
+            llSearchEntry.addScaleOnTouchAnimation()
             llBetEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetEntry.addScaleOnTouchAnimation(tvBetIcon)
+            llBetEntry.addScaleOnTouchAnimation()
         }
     }
 

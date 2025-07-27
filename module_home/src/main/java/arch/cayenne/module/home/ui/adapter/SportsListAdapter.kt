@@ -33,7 +33,7 @@ class SportsListAdapter(
                 if (!tvSportIcon.isEnabled) return@setOnClickListener
                 onItemClick(sport.id)
             }
-            root.addScaleOnTouchAnimation(tvSportIcon)
+            root.addScaleOnTouchAnimation()
         }
     }
 

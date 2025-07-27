@@ -113,23 +113,23 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     }
 
     override fun initListener() {
-        mBinding.layMsgAll.addScaleOnTouchAnimation(mBinding.ivMsgAll)
+        mBinding.layMsgAll.addScaleOnTouchAnimation()
         mBinding.layMsgAll.clickNoRepeat {
             selectMessageType(MSG_ALL)
         }
-        mBinding.layMsgSys.addScaleOnTouchAnimation(mBinding.ivMsgSys)
+        mBinding.layMsgSys.addScaleOnTouchAnimation()
         mBinding.layMsgSys.clickNoRepeat {
             selectMessageType(MSG_SYS)
         }
-        mBinding.layMsgAct.addScaleOnTouchAnimation(mBinding.ivMsgAct)
+        mBinding.layMsgAct.addScaleOnTouchAnimation()
         mBinding.layMsgAct.clickNoRepeat {
             selectMessageType(MSG_ACT)
         }
-        mBinding.layMsgMatch.addScaleOnTouchAnimation(mBinding.ivMsgMat)
+        mBinding.layMsgMatch.addScaleOnTouchAnimation()
         mBinding.layMsgMatch.clickNoRepeat {
             selectMessageType(MSG_MAT)
         }
-        mBinding.layMsgPay.addScaleOnTouchAnimation(mBinding.ivMsgPay)
+        mBinding.layMsgPay.addScaleOnTouchAnimation()
         mBinding.layMsgPay.clickNoRepeat {
             selectMessageType(MSG_PAY)
         }
