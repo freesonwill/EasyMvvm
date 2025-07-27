@@ -12,8 +12,10 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.walisport.module.message.R
@@ -138,15 +140,33 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            it?.let {
-                msgAdapter.submitList(it)
+            it.let {
+                if (it.isEmpty()) {
+                    mBinding.emptyState.visibility = View.VISIBLE
+                    mBinding.emptyState.setState(
+                        States.DATA_EMPTY,
+                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                    )
+                } else {
+                    mBinding.emptyState.visibility = View.GONE
+                    msgAdapter.submitList(it)
+                }
             }
         }
         mViewModel.notificationSelect.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
-            it?.let {
-                msgAdapter.submitList(it)
+            it.let {
+                if (it.isEmpty()) {
+                    mBinding.emptyState.visibility = View.VISIBLE
+                    mBinding.emptyState.setState(
+                        States.DATA_EMPTY,
+                        arch.cayenne.lib.common.R.string.data_empty.getString()
+                    )
+                } else {
+                    mBinding.emptyState.visibility = View.GONE
+                    msgAdapter.submitList(it)
+                }
             }
         }
     }
@@ -154,6 +174,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     override fun initData() {
         super.initData()
         mViewModel.getMessageList()
+        mBinding.emptyState.setState(States.LOADING, "")
     }
 
     private fun selectMessageType(type: Int) {

@@ -12,4 +12,5 @@
     <string name="toast_over_remaining">Insufficient balance</string>
     <string name="toast_over_max">Bet limit exceeded</string>
     <string name="loading_view_text">Loading</string>
+    <string name="data_empty">No data available, please try something else</string>
 </resources>

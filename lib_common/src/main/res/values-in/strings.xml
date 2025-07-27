@@ -12,4 +12,5 @@
     <string name="toast_over_remaining">Saldo tidak mencukupi</string>
     <string name="toast_over_max">Melebihi batas taruhan</string>
     <string name="loading_view_text">Memuat</string>
+    <string name="data_empty">Tidak ada data, silakan coba yang lain</string>
 </resources>
