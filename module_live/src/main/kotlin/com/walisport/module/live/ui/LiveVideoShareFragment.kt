@@ -24,7 +24,7 @@ class LiveVideoShareFragment : BaseFragment<LiveVideoPlayerViewModel, FragmentLi
     }
 
     override fun initListener() {
-        mBinding.operateShare.addScaleOnTouchAnimation(mBinding.ivShare)
+        mBinding.operateShare.addScaleOnTouchAnimation()
         mBinding.operateShare.clickNoRepeat {
             showToast(getString(R.string.not_implemented))
         }
