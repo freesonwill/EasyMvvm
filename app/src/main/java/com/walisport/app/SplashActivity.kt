@@ -135,7 +135,13 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun createObserver() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
-            mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
+            if (seconds > 0) {
+                mBinding.splashCounterDown.text =
+                    getString(R.string.splash_counter_down_skip, seconds.toString())
+            } else {
+                mBinding.splashCounterDown.text = getString(R.string.splash_skip)
+            }
+
         }
         launch(Lifecycle.State.RESUMED) {
             mViewModel.jumpToMainOrLogin.collect {
