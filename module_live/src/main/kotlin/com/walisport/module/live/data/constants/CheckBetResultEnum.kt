@@ -7,8 +7,8 @@ package com.walisport.module.live.data.constants
  */
 enum class CheckBetResultEnum(val value:Int) {
     SUCCESS(0),
-    BET_AMOUNT(9), //投注额度不足
-    BALANCE(11);// 余额不足
+    BET_AMOUNT_INVALID(9), //投注额度不足
+    BALANCE_INVALID(11);// 余额不足
 
     companion object{
 
