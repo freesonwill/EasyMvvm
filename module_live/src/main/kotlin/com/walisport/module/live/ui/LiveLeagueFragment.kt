@@ -22,8 +22,6 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
-import com.ym521.skeleton.Skeleton
-import com.ym521.skeleton.core.RecyclerViewSkeletonScreen
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
@@ -34,7 +32,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
-    private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     class LeagueItemDecoration(
         private val spacing: Int = 12.dp2px,
@@ -93,16 +90,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 )
             )
         }
-        //列表骨架屏
-        skeleton = Skeleton.bind(mBinding.recyclerLeague)
-            .load(R.layout.skeleton_view_item)
-            .adapter(standsAdapter)
-            .angle(20)
-            .duration(1000)
-            .count(5)
-            .shimmer(true)
-            .show()
-        skeleton.show()
     }
 
     override fun initData() {
@@ -123,7 +110,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             it?.let {
                 mBinding.leagueMain.setVisibilityGone()
                 if (it.match.isEmpty() && standsAdapter.currentList.isEmpty()) {
-                    skeleton.dismiss()
                     mBinding.leagueMain.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
@@ -142,12 +128,10 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     mBinding.leagueRoot.background = gradientDrawable
                     //更新联赛数据
                     mBinding.leagueRoot.postDelayed({
-                        skeleton.dismiss()
                         standsAdapter.submitList(it.match)
                     }, 1000)
                 }
             } ?: run {
-                skeleton.dismiss()
                 if (standsAdapter.currentList.isEmpty()) {
                     mBinding.leagueMain.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
