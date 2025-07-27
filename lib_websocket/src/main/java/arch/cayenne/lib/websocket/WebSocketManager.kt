@@ -20,7 +20,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executors
 
@@ -46,8 +45,8 @@ class WebSocketManager(
 
     companion object {
         private const val heartbeatInterval: Long = 10000
-        private const val reconnectInterval: Long = 2000
-        private const val maxRetryCount: Int = 3
+        private const val reconnectInterval: Long = 5000
+        private const val maxRetryCount: Int = Int.MAX_VALUE
 
         const val responseTimeout: Long = 5000
     }
@@ -56,6 +55,7 @@ class WebSocketManager(
     }
 
     fun connect(host: String) : Flow<ConnectState> {
+        setNetWorkCallback()
         return socket.connect(host)
     }
 
@@ -90,8 +90,9 @@ class WebSocketManager(
                             startHeartbeat()
                         }
                         is ConnectState.ConnectClosed -> Unit
-                        is ConnectState.ReconnectFailure -> {
-                            stopReconnect()
+                        is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
+                            stopHeartbeat()
+                            startReconnect()
                         }
                         else -> {
                             stopHeartbeat()
@@ -121,7 +122,7 @@ class WebSocketManager(
         return socket.send(data)
     }
 
-    fun startReconnect() {
+    private fun startReconnect() {
         if (reconnectJob?.isActive == true) return
         "startReconnect!".logi(TAG)
         reconnectJob?.cancel()
@@ -165,11 +166,6 @@ class WebSocketManager(
     }
 
     fun getSocketFlow(): Flow<IResponse> = socket.responseObserve()
-    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve().transform {
-        if ((it is ConnectState.ConnectFailure || it is ConnectState.NetworkUnavailable) && retryCount >= maxRetryCount) {
-            emit(ConnectState.ReconnectFailure)
-        } else {
-            emit(it)
-        }
-    }
+    fun getConnectStateFlow(): Flow<ConnectState> = socket.stateChangeObserve()
+
 }

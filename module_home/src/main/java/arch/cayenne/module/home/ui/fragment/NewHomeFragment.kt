@@ -10,12 +10,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
@@ -30,7 +28,6 @@ import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
-import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
@@ -71,19 +68,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         initSportLayout()
         initTournamentLayout()
         initDrawerContent()
-        initFailedLayout()
         (mBinding.rvSportsList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-    }
-
-    private fun initFailedLayout() {
-        with(mBinding) {
-            dslFailed.setState(
-                DynamicStateLayout.States.NETWORK_ANOMALY,
-                getString(arch.cayenne.lib.common.R.string.error_net)
-            ) {
-                mViewModel.refreshAll()
-            }
-        }
     }
 
     override fun onStart() {
@@ -117,14 +102,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
-        toggleTournamentMoreSection(
-            false,
-            TournamentListType.NONE
-        )
-        with(mBinding.layoutContainer) {
-            llDateFilterContainer.visibility = View.GONE
-            llOtherDate.visibility = View.GONE
-        }
+        toggleTournamentMoreSection(false, TournamentListType.NONE)
     }
 
     //init 二級導航欄位
@@ -376,15 +354,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-            if (tournaments.isNotEmpty()) {
-                if (mViewModel.currentPlayTypeId == PlayType.TODAY.id) {
-                    llDateFilterContainer.visibility = View.GONE
-                    llOtherDate.visibility = View.GONE
-                } else if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-                    llDateFilterContainer.visibility = View.VISIBLE
-                    llOtherDate.visibility = View.VISIBLE
-                }
+            if (mViewModel.currentPlayTypeId == PlayType.TODAY.id) {
+                llDateFilterContainer.visibility = View.GONE
+                llOtherDate.visibility = View.GONE
+            } else if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
+                llDateFilterContainer.visibility = View.VISIBLE
+                llOtherDate.visibility = View.VISIBLE
             }
+
             vpGameList.currentItem = 0
 
             vpGameList.adapter = LeaguePagerAdapter(
@@ -517,31 +494,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             setCalendarPopup()
             customPopup?.setSchemeDate(list)
         }
-        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
-            with(mBinding) {
-                when(state) {
-                    HomeState.PlayTypeClick -> {
-                        resetHomeView()
-                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                            groupHideOnChampion.visibility = View.GONE
-                        } else {
-                            groupHomeMain.visibility = View.VISIBLE
-                        }
-                        dslFailed.visibility = View.GONE
-                    }
-                    HomeState.Sport.LoadSuccess -> {
-                        if (mViewModel.currentPlayTypeId == PlayType.CHAMPION.id) {
-                            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
-                        }
-                    }
-                    DataState.NetworkUnavailable, DataState.DataEmpty -> {
-                        groupHomeMain.visibility = View.GONE
-                        dslFailed.visibility = View.VISIBLE
-                    }
-                    else -> Unit
-                }
-            }
-        }
+
         mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
             mBinding.apply {
                 customPopup?.updateCalendarSkin()
@@ -554,6 +507,11 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()
+            resetHomeView()
+            mBinding.groupHomeMain.visibility = View.VISIBLE
+        }
+        mViewModel.notifyToChampion.observeEvent(viewLifecycleOwner, this) {
+            toggleTournamentMoreSection(true, TournamentListType.CHAMPION)
         }
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.ivTournamentMore.visibility = View.VISIBLE

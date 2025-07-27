@@ -10,17 +10,12 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.BaseActivity
 import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.data.constants.CurConnectFailedType
-import arch.cayenne.lib.common.ui.fragment.ConnectFailedFragment
-import arch.cayenne.lib.common.ui.viewmodel.ConnectFailedViewModel
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
-import arch.cayenne.lib.websocket.data.ConnectState
 import arch.cayenne.lib.websocket.data.LoginTokenFailedError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
 import com.walisport.app.databinding.ActivitySplashBinding
 import com.walisport.app.ui.MainActivity
 import com.walisport.app.ui.viewmodel.SplashViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.random.Random
 import kotlin.reflect.KClass
 
@@ -90,11 +85,11 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         Pair<Int, String>(BuildConfig.uid, BuildConfig.token)
     } else if (BuildConfig.BUILD_TYPE != "release") {
         listOf(
-            Pair(55468822, "NTU0Njg4MjJfMTc1MjQ4MDA0NzA1OTphTGltSDFDNTlQd0pXWVhv"),
-            Pair(55468823, "NTU0Njg4MjNfMTc1MjQ4MDA4NDAxNDp0dmRDSjRMS3g5U1NONlE0"),
-            Pair(55468824, "NTU0Njg4MjRfMTc1MjQ4MDExMzYzOToyQVpMdXNmS093SmpoRlU3"),
-            Pair(55468825, "NTU0Njg4MjVfMTc1MjQ4MDE1MDQ3MjpCYkVSbGx0RDNZSkU5a3Rh"),
-            Pair(55468826, "NTU0Njg4MjZfMTc1MjQ4MDE3NjM0ODpZdUxHa050cjZESllQNloy")
+            Pair(55468822, "NTU0Njg4MjJfMTc1MzUxMTIyMjkwMjpUcTRtTlVhSWNYUUlnTW1M"),
+            Pair(55468823, "NTU0Njg4MjNfMTc1MzUxMTI2MzgwNjplS3RFUmpMSXpHcDZOeWx2"),
+            Pair(55468824, "NTU0Njg4MjRfMTc1MzUxMTI5MzMzNDp2aDlwaW9WdkExd2V4Sm5u"),
+            Pair(55468825, "NTU0Njg4MjVfMTc1MzUxMTMyMzE0NzpJaHl3SHppWGkzaDAxNllq"),
+            Pair(55468826, "NTU0Njg4MjZfMTc1MzUxMTM0OTU4NzoyS3htQnpYbjU2SnZtS3lH")
         ).let { it[Random.nextInt(it.size)] }
     } else {
         Pair(0, "")
@@ -105,10 +100,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override val vbClass: KClass<ActivitySplashBinding> = ActivitySplashBinding::class
     override val vmClass: KClass<SplashViewModel> = SplashViewModel::class
-
-    private var connectFailedFragment : ConnectFailedFragment? = null
-
-    private val connectFailedViewModel: ConnectFailedViewModel by viewModel()
 
     override fun configStatusBar(): StatusBarConfig {
         StatusBarConfig.statusBarDarkFont = false
@@ -144,7 +135,13 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
 
     override fun createObserver() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
-            mBinding.splashCounterDown.text = getString(R.string.splash_counter_down_skip, seconds.toString())
+            if (seconds > 0) {
+                mBinding.splashCounterDown.text =
+                    getString(R.string.splash_counter_down_skip, seconds.toString())
+            } else {
+                mBinding.splashCounterDown.text = getString(R.string.splash_skip)
+            }
+
         }
         launch(Lifecycle.State.RESUMED) {
             mViewModel.jumpToMainOrLogin.collect {
@@ -168,24 +165,6 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
                     Toast.makeText(this, it.msg, Toast.LENGTH_LONG).show()
                 }
             }
-        }
-
-        mViewModel.connectStateChange.observe(this) {
-            if (connectFailedFragment == null) {
-                connectFailedFragment = ConnectFailedFragment.newInstance().apply {
-                    show(this@SplashActivity)
-                    setRefreshListener {
-                        mViewModel.reconnectNow()
-                    }
-                }
-            }
-            connectFailedViewModel.changeCurrencyFailedView(
-                when(it) {
-                    is ConnectState.ConnectSuccess -> CurConnectFailedType.HIDE
-                    is ConnectState.ReconnectFailure -> CurConnectFailedType.SHOW_FAILED
-                    else -> CurConnectFailedType.SHOW_MASK
-                }
-            )
         }
     }
 

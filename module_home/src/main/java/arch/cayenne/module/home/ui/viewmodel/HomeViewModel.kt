@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.room.Transaction
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
@@ -98,6 +99,9 @@ class HomeViewModel : BaseViewModel() {
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
     val tournamentSlideOutEnd: LiveData<Event<Unit>> = _tournamentSlideOutEnd
 
+    private val _notifyToChampion = MutableLiveData<Event<Unit>>()
+    val notifyToChampion: LiveData<Event<Unit>> = _notifyToChampion
+
     fun notifyTournamentSlideOutEnd() {
         _tournamentSlideOutEnd.value = Event(Unit)
     }
@@ -154,25 +158,40 @@ class HomeViewModel : BaseViewModel() {
                     it.take(10)  //limit
                 }.distinctUntilChanged()
                 .collect {
-                    val selectedTournament = repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
-                        repository.getTournament(currentPlayTypeId, currentSportId, it)
-                    }
+                    if (currentPlayTypeId != PlayType.CHAMPION.id) {
+                        val selectedTournament =
+                            repository.getCurrentSelectedTournamentId(currentPlayTypeId)?.let {
+                                repository.getTournament(currentPlayTypeId, currentSportId, it)
+                            }
+                        withContext(Dispatchers.Main) {
+                            val list = mutableListOf<TournamentDataModel>()
+                            if (it.isEmpty()) {
+                                tournaments.value = Event(
+                                    arrayListOf(
+                                        TournamentDataModel.createAllItem(
+                                            currentPlayTypeId,
+                                            currentSportId
+                                        )
+                                    )
+                                )
+                                return@withContext
+                            }
+                            list.add(
+                                TournamentDataModel.createAllItem(
+                                    currentPlayTypeId,
+                                    currentSportId
+                                )
+                            )
+                            list.addAll(it)
 
-                    withContext(Dispatchers.Main) {
-                        val list = mutableListOf<TournamentDataModel>()
-                        if (it.isEmpty()) {
-                            return@withContext
-                        }
-                        list.add(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId))
-                        list.addAll(it)
-
-                        tournaments.value = Event(list)
-                        if (selectedTournament == null) {
-                            setCurrentTournamentId(0)
-                        } else if (!it.any {data -> data.id == selectedTournament.id}) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
-                            addNewTournament(selectedTournament)
-                        } else {
-                            setCurrentTournamentId(selectedTournament.id)
+                            tournaments.value = Event(list)
+                            if (selectedTournament == null) {
+                                setCurrentTournamentId(0)
+                            } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
+                                addNewTournament(selectedTournament)
+                            } else {
+                                setCurrentTournamentId(selectedTournament.id)
+                            }
                         }
                     }
                 }
@@ -181,6 +200,16 @@ class HomeViewModel : BaseViewModel() {
             repository.observeLanguageChange().collect {
                 resetAll()
             }
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.observeLoginChange()
+                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    launch(Dispatchers.Main) {
+                        setCurrentPlayType(currentPlayTypeId)
+                        setCurrentSport(currentSportId)
+                    }
+                }
         }
     }
 
@@ -241,10 +270,6 @@ class HomeViewModel : BaseViewModel() {
         startTimer()
     }
 
-    fun refreshAll() {
-        setCurrentPlayType(currentPlayTypeId)
-    }
-
     @Transaction
     private suspend fun resetAll() {
         repository.clearAllCache()
@@ -277,8 +302,12 @@ class HomeViewModel : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
-        setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
-        getCurrentTournament()
+        if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
+            getCurrentTournament()
+        } else {
+            _notifyToChampion.value = Event(Unit)
+        }
     }
 
     //切換當前的三級選項(聯賽)
@@ -338,17 +367,8 @@ class HomeViewModel : BaseViewModel() {
         }
     }
 
-    //
-    fun isLoadingMatch(b: Boolean) {
-        if (b) {
-            setState(HomeState.Match.Loading)
-        } else {
-            setState(HomeState.Match.LoadSuccess)
-        }
-    }
-
     //提供子fragment透過shared HomeViewModel來告知HomeFragment該fragment的狀態
-    fun changeState(state: HomeState) {
+    fun changeState(state: DataState) {
         setState(state)
     }
     

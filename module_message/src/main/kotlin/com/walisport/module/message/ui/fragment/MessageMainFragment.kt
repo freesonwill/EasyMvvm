@@ -1,5 +1,6 @@
 package com.walisport.module.message.ui.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.graphics.Typeface
 import android.os.Bundle
@@ -19,7 +20,10 @@ import com.walisport.module.message.R
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.adapter.MessageAdapter
+import com.walisport.module.message.ui.view.DeleteAnimator
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.reflect.KClass
@@ -74,6 +78,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 mViewModel.getMoreMessageList()
             }
             recyclerMessage.apply {
+                itemAnimator = DeleteAnimator()
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = msgAdapter
                 for (i in 0 until itemDecorationCount) {
@@ -87,23 +92,15 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
                 }
 
                 override fun onDetail(item: NotificationBean) {
-                    var content = ""
-                    var url = ""
-                    //提取文本
-                    val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
-                    val matcher: Matcher = pattern.matcher(item.content)
-                    while (matcher.find()) {
-                        content = matcher.group(1)?.toString() ?: ""
-                    }
-                    //提取图片
-                    val patternImg = Pattern.compile("<url>(.*?)</url>")
-                    val matcherImg = patternImg.matcher(item.content)
-                    while (matcherImg.find()) {
-                        url = matcherImg.group(1)?.toString() ?: ""
-                    }
+                    val content = getText(item.content)
+                    val url = getImageUrl(item.content)
+                    val time = getTime(item.createTime)
                     navigate(
                         MessageMainFragmentDirections.actionMessageMainFragmentToMessageDetailFragment()
                             .apply {
+                                arguments.putString("title", item.title)
+                                arguments.putInt("type", item.type)
+                                arguments.putString("time", time)
                                 arguments.putString("content", content)
                                 arguments.putString("url", url)
                             })
@@ -222,5 +219,32 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         super.onStart()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
+    }
+
+    private fun getText(html: String): String {
+        var content = ""
+        val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
+        val matcher: Matcher = pattern.matcher(html)
+        while (matcher.find()) {
+            content = matcher.group(1)?.toString() ?: ""
+        }
+        return content
+    }
+
+    private fun getImageUrl(html: String): String {
+        var url = ""
+        val pattern: Pattern = Pattern.compile("<url>(.*?)</url>")
+        val matcher: Matcher = pattern.matcher(html)
+        while (matcher.find()) {
+            url = matcher.group(1)?.toString() ?: ""
+        }
+        return url
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    private fun getTime(timestamp: Long): String {
+        val date = Date(timestamp)
+        val sdf = SimpleDateFormat("MM-dd HH:mm")
+        return sdf.format(date)
     }
 }

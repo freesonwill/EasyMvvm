@@ -2,13 +2,15 @@ package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.repo.BalanceRepository
-import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.MatchWithMarkets
-import arch.cayenne.module.home.data.constants.MatchListState
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.CollectListRepository
+import galaxy.common.proto.Common
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -42,18 +44,21 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
     }
 
     override fun getMatchListData() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             "取得收藏賽事 $page".logi()
-            isPageEnd = !repository.getCollectData(page)
-            withContext(Dispatchers.Main) {
-                if (isPageEnd && page == 1) {
-                    //沒有資料
-                    _state.value = Event(MatchListState.FAILED)
+            callApi({
+                repository.getCollectData(page)
+            }, {
+                if (it is ApiResponseState.Failed) {
                     matchListChange.value = arrayListOf()
-                } else {
-                    _state.value = Event(MatchListState.IDLE)
+                } else if (it is ApiResponseState.Succeeded<*>) {
+                    val isEmpty = (it.dataAs<List<Common.Match>>()?.size ?: 0) == 0
+                    if (page == 1 && isEmpty) {
+                        matchListChange.value = arrayListOf()
+                        setState(HomeState.Match.DataEmpty)
+                    }
                 }
-            }
+            })
         }
     }
 
@@ -61,11 +66,6 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
         viewModelScope.launch(Dispatchers.IO) {
             repository.observeMatchChange().collect { ref ->
                 if (ref.isEmpty()) {
-                    if (_state.value?.peekContent() == MatchListState.INIT) {
-                        withContext(Dispatchers.Main) {
-                            _state.value = Event(MatchListState.FIRST_LOADING_API)
-                        }
-                    }
                     getMatchListData()
                     return@collect
                 }
@@ -76,6 +76,7 @@ class CollectListViewModel : BaseMatchViewModel<CollectListRepository>() {
                     currentRefs.map { it.matchId }
                 )
                 withContext(Dispatchers.Main) {
+                    setState(HomeState.Match.LoadSuccess)
                     matchListChange.value = list
                 }
             }

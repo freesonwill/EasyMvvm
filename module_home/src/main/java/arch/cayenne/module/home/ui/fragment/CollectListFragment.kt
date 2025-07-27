@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -29,7 +30,7 @@ import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.home.R
-import arch.cayenne.module.home.data.constants.MatchListState
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.databinding.FragmentCollectListBinding
 import arch.cayenne.module.home.databinding.TitleBarFavoriteBinding
 import arch.cayenne.module.home.ui.adapter.MatchItemAdapter
@@ -158,49 +159,54 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 }
             }
         }
-        mViewModel.state.observeEvent(viewLifecycleOwner, this) { state ->
+
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             with(mBinding) {
                 when (state) {
-                    MatchListState.FIRST_LOADING_API -> {
-                        clDynamics.visibility = View.GONE
-                        loadingView.visibility = View.VISIBLE
-//                        homeViewModel.changeState(HomeState.LOADING_MATCH)
-                    }
-
-                    MatchListState.REFRESHING -> {
-                        clDynamics.visibility = View.GONE
+                    DataState.NetworkUnavailable -> {
+                        mViewModel.changePageEnd(true)
                         loadingView.visibility = View.GONE
-                    }
-
-                    MatchListState.IDLE -> {
-                        if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
+                        refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
-                        clDynamics.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(false)
+                        clDynamics.visibility = View.VISIBLE
+                        clDynamics.setState(
+                            DynamicStateLayout.States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                    }
+                    DataState.DataEmpty -> {     //這個DataEmpty表示api抓不到任何資料了，有可能是頁面到底，或是從第一頁就抓不到資料
+                        mViewModel.changePageEnd(true)
+                        refreshLayout.finishLoadMore()
+                        refreshLayout.setEnableLoadMore(false)
+                    }
+                    HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         loadingView.visibility = View.GONE
-//                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
-                    }
-
-                    MatchListState.FAILED -> {
-                        mBinding.refreshLayout.finishRefresh()
-                        refreshLayout.finishLoadMore()
+                        refreshLayout.finishRefresh()
                         clDynamics.visibility = View.VISIBLE
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
-                            R.string.lineup_empty.getString()
+                            R.string.collect_list_empty.getString()
                         )
-                        loadingView.visibility = View.GONE
-//                        homeViewModel.changeState(HomeState.LOADING_MATCH_SUCCESS)
                     }
-
-                    MatchListState.LOADING_NEXT -> {
+                    HomeState.Match.Loading -> {
+                        loadingView.visibility = View.VISIBLE
                         clDynamics.visibility = View.GONE
-                        loadingView.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(true)
                     }
-                    MatchListState.NO_MORE_DATA -> {
+                    HomeState.Match.Refreshing -> {
+                        clDynamics.visibility = View.GONE
+                        refreshLayout.setEnableLoadMore(true)
+                    }
+                    HomeState.Match.LoadingNext -> {
+                        clDynamics.visibility = View.GONE
+                    }
+                    DataState.LoadSuccess -> {
+                        loadingView.visibility = View.GONE
+                        if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
-                        loadingView.visibility = View.GONE
+                        clDynamics.visibility = View.GONE
                     }
-                    else -> {}
                 }
             }
         }

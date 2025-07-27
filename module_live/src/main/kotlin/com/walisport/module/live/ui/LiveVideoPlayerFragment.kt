@@ -465,11 +465,16 @@ class LiveVideoPlayerFragment :
      * 数据源为空
      */
     private fun onDataSourceEmpty() {
-        mBinding.ctLoading.visibility = GONE
-        mBinding.ctError.visibility = VISIBLE
-        mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
-        mBinding.ivChooseSource.visibility = View.INVISIBLE
-        mBinding.ivToFullscreen.visibility = View.INVISIBLE
+        if (!mViewModel.animationLiveUrl.value.isNullOrBlank()) {
+            mediaViewModel.switchToAnimation()
+        } else {
+            mediaViewModel.switchToMatchStatus()
+//            mBinding.ctLoading.visibility = GONE
+//            mBinding.ctError.visibility = VISIBLE
+//            mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
+//            mBinding.ivChooseSource.visibility = View.INVISIBLE
+//            mBinding.ivToFullscreen.visibility = View.INVISIBLE
+        }
     }
 
     private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {

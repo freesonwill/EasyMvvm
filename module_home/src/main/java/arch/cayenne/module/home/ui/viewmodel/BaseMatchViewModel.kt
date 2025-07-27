@@ -1,17 +1,16 @@
 package arch.cayenne.module.home.ui.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
-import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.AddSelectionStatus
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.module.bet.repo.BetRepository
-import arch.cayenne.module.home.data.constants.MatchListState
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,9 +35,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     protected var page = 1
     protected var isPageEnd = false
     private val subscribeMatchSet by lazy { HashSet<Long>() }
-
-    protected val _state  = MutableLiveData(Event(MatchListState.INIT))
-    val state : LiveData<Event<MatchListState>> = _state
 
     private var matchNotifyJob: Job? = null
 
@@ -67,9 +63,14 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
             repository.observeLoginChange()
                 .filter { it }
                 .collect {
-                    launch(Dispatchers.Main) {
-                        subscribeMatch(getCurrentSubscribeMatchSet())
+                    if (apiStateListener.value == DataState.NetworkUnavailable) {
+                        getMatchListData()
+                    } else {
+                        launch(Dispatchers.Main) {
+                            subscribeMatch(getCurrentSubscribeMatchSet())
+                        }
                     }
+
                 }
         }
     }
@@ -83,14 +84,13 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
     fun loadNextPage() {
         if (isPageEnd) {
-            _state.value = Event(MatchListState.NO_MORE_DATA)
             return
         }
-        if (_state.value?.peekContent() != MatchListState.IDLE) {
+        if (apiStateListener.value != HomeState.Match.LoadSuccess) {
             return
         }
         page++
-        _state.value = Event(MatchListState.LOADING_NEXT)
+        setState(HomeState.Match.LoadingNext)
         getMatchListData()
     }
 
@@ -124,7 +124,7 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
                     }
                     matchListChange.value = old
                 }
-            })
+            }, false)
         }
     }
 
@@ -197,16 +197,20 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
     }
 
     fun reload() {
-        isPageEnd = false
+        changePageEnd(false)
         page = 1
-        val preState = _state.value?.peekContent()
-        _state.value = Event(MatchListState.REFRESHING)
+        val preState = apiStateListener.value
+        setState(HomeState.Match.Refreshing)
         viewModelScope.launch(Dispatchers.IO) {
             clearCurrentMatch()
-            if (preState == MatchListState.FAILED) {
+            if (preState == HomeState.Match.DataEmpty || preState == DataState.NetworkUnavailable) {
                 getMatchListData()
             }
         }
+    }
+
+    fun changePageEnd(b: Boolean) {
+        isPageEnd = b
     }
 
     abstract fun clearCurrentMatch()

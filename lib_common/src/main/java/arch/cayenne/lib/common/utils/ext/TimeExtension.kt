@@ -17,11 +17,11 @@ fun Long.toLocalDateTimeString(): String {
             time.get(Calendar.DAY_OF_YEAR) == curTime.get(Calendar.DAY_OF_YEAR)
     val isSameYear = time.get(Calendar.YEAR) == curTime.get(Calendar.YEAR)
     val sdf : SimpleDateFormat = if (!isSameYear) {
-        SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
     } else if (!isSameDay) {
-        SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault())
+        SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
     } else {
-        SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+        SimpleDateFormat("HH:mm", Locale.getDefault())
     }
     return sdf.format(time.time)
 }

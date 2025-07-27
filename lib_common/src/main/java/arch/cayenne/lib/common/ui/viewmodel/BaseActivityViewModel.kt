@@ -30,9 +30,6 @@ abstract class BaseActivityViewModel : BaseViewModel() {
     private val _betResultListener = MutableLiveData<List<BetResultLiteBean>>()
     val betResultListener: LiveData<List<BetResultLiteBean>> get() = _betResultListener
 
-    private val _connectStateChange = MutableLiveData<ConnectState>()
-    val connectStateChange : LiveData<ConnectState> = _connectStateChange
-
     //APP通知消息
     private val _appNotifyListener = MutableLiveData<AppNotifyBean>()
     val appNotifyListener: LiveData<AppNotifyBean> get() = _appNotifyListener
@@ -48,23 +45,11 @@ abstract class BaseActivityViewModel : BaseViewModel() {
                     when (connectState) {
                         is ConnectState.ConnectSuccess -> {
                             "Connection Success".logi(BaseActivityViewModel::class.java.simpleName)
-                            withContext(Dispatchers.Main) {
-                                _connectStateChange.value = connectState
-                            }
                             login()
                         }
                         is ConnectState.ConnectFailure, ConnectState.NetworkUnavailable -> {
                             "Connection Failure -> $connectState".loge(BaseActivityViewModel::class.java.simpleName)
                             commonRepository.setIsLogin(false)
-                            commonRepository.tryToReconnect()
-                            withContext(Dispatchers.Main) {
-                                _connectStateChange.value = connectState
-                            }
-                        }
-                        is ConnectState.ReconnectFailure -> {
-                            withContext(Dispatchers.Main) {
-                                _connectStateChange.value = connectState
-                            }
                         }
                         else -> Unit
                     }

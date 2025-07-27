@@ -59,7 +59,11 @@ class LiveMatchMediaFragment :
 
                             else -> {
                                 //其他情况
-                                showStatusView()
+                                if (animationLiveUrl.value?.isNotBlank() == true && !isAnimationViewShowing()) {
+                                    switchToAnimation()
+                                } else {
+                                    showStatusView()
+                                }
                             }
                         }
 
@@ -67,6 +71,23 @@ class LiveMatchMediaFragment :
 
                 }
 
+            }
+
+            animationLiveUrl.observe(viewLifecycleOwner) {
+                if (it != null) {
+                    val matchBean = matchBeanLiveData.value
+
+                    if (matchBean != null) {
+                        val matchStatus =
+                            MatchStatus.entries.find { status -> status.code == matchBean.basicInfo.status }
+
+                        if (matchStatus != null && matchStatus != MatchStatus.IN_PROGRESS) {
+                            if (it.isNotBlank() && !isAnimationViewShowing()) {
+                                switchToAnimation()
+                            }
+                        }
+                    }
+                }
             }
 
             animationSwitch.observe(viewLifecycleOwner) {
@@ -79,6 +100,10 @@ class LiveMatchMediaFragment :
 
             switchToVideo.observe(viewLifecycleOwner) {
                 showVideoView()
+            }
+
+            switchToMatchStatus.observe(viewLifecycleOwner) {
+                showStatusView()
             }
 
         }

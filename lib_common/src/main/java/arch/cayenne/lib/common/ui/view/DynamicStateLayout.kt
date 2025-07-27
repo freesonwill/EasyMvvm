@@ -62,8 +62,12 @@ class DynamicStateLayout @JvmOverloads constructor(
                 binding.tvMessage.visibility = VISIBLE
                 binding.tvMessage.text = msg
                 //刷新按钮
-                binding.btnRefresh.visibility = VISIBLE
-                binding.btnRefresh.clickNoRepeat { onRefresh?.invoke() }
+                onRefresh?.apply {
+                    binding.btnRefresh.visibility = VISIBLE
+                    clickNoRepeat { this.invoke() }
+                } ?: run {
+                    binding.btnRefresh.visibility = GONE
+                }
                 //加载态
                 binding.llLoading.visibility = GONE
                 loadingAnim?.cancel()

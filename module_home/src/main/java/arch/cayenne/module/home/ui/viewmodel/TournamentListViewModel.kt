@@ -3,15 +3,18 @@ package arch.cayenne.module.home.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
+import arch.cayenne.lib.base.data.remote.ApiResponseState
+import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
 import arch.cayenne.module.home.data.TournamentListItem
-import arch.cayenne.module.home.data.constants.TournamentListState
-import arch.cayenne.module.home.data.constants.TournamentListUiState
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.TournamentListRepository
 import arch.cayenne.module.home.ui.fragment.TournamentListType
 import com.ibm.icu.text.Transliterator
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.inject
@@ -25,9 +28,6 @@ class TournamentListViewModel : BaseViewModel() {
     private val repo: TournamentListRepository by inject()
     private val transliterator: Transliterator by inject()
 
-    private val _uiState = MutableLiveData<TournamentListUiState>()
-    val uiState: LiveData<TournamentListUiState> get() = _uiState
-
     private var lastGroupedList: List<TournamentListItem> = emptyList()
     private var _tournamentList: List<BaseTournamentData> = emptyList()
     private var _searchQuery: String = ""
@@ -37,6 +37,20 @@ class TournamentListViewModel : BaseViewModel() {
     private val _activeHeaderIndex = MutableLiveData<Int?>()
     val activeHeaderIndex: LiveData<Int?> get() = _activeHeaderIndex
 
+    private val _tournamentsChange = MutableLiveData<List<TournamentListItem>>()
+    val tournamentsChange: LiveData<List<TournamentListItem>> = _tournamentsChange
+
+    init {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.observeLoginChange()
+                .filter { it && apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    launch(Dispatchers.Main) {
+                        getTournaments()
+                    }
+                }
+        }
+    }
 
     fun setSearchMode(enabled: Boolean) {
         _isSearchMode = enabled
@@ -66,14 +80,22 @@ class TournamentListViewModel : BaseViewModel() {
     fun getType() = type
 
     fun getTournaments() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val list = repo.getAllTournaments(type, playTypeId, sportId)
-            val groupedList = processTournamentList(list)
-            withContext(Dispatchers.Main) {
-                _tournamentList = list
-                lastGroupedList = groupedList
-                updateUiModel(true)
-            }
+        viewModelScope.launch {
+            callApi({
+                repo.getAllTournaments(type, playTypeId, sportId)
+            }, {
+                if (it is ApiResponseState.Succeeded<*>) {
+                    val list = it.dataAs<List<BaseTournamentData>>() ?: return@callApi
+                    viewModelScope.launch(Dispatchers.IO) {
+                        val groupedList = processTournamentList(list)
+                        withContext(Dispatchers.Main) {
+                            _tournamentList = list
+                            lastGroupedList = groupedList
+                            updateUiModel(true)
+                        }
+                    }
+                }
+            })
         }
     }
 
@@ -94,28 +116,25 @@ class TournamentListViewModel : BaseViewModel() {
         val state = when {
             // 非搜尋模式的狀態
             !_isSearchMode -> when {
-                hasData -> if (isInit) TournamentListState.INIT_LIST else TournamentListState.RESTORE_LIST
-                else -> TournamentListState.LIST_DATA_EMPTY
+                hasData -> if (isInit) HomeState.TournamentListState.InitList else HomeState.TournamentListState.RestoreList
+                else -> HomeState.TournamentListState.ListDataEmpty
             }
 
             // 搜尋模式的狀態
-            query.isBlank() -> TournamentListState.SEARCH_INIT
-            searchResult.isNotEmpty() -> TournamentListState.SEARCH_MATCH
-            else -> TournamentListState.SEARCH_DATA_EMPTY
+            query.isBlank() -> HomeState.TournamentListState.SearcgInit
+            searchResult.isNotEmpty() -> HomeState.TournamentListState.SearchMatch
+            else -> HomeState.TournamentListState.SearchDataEmpty
         }
 
         val displayList = when (state) {
-            TournamentListState.INIT_LIST, TournamentListState.RESTORE_LIST -> lastGroupedList
-            TournamentListState.LIST_DATA_EMPTY -> emptyList()
-            TournamentListState.SEARCH_INIT -> emptyList()
-            TournamentListState.SEARCH_MATCH -> searchResult
-            TournamentListState.SEARCH_DATA_EMPTY -> emptyList()
+            HomeState.TournamentListState.InitList, HomeState.TournamentListState.RestoreList -> lastGroupedList
+            HomeState.TournamentListState.ListDataEmpty -> emptyList()
+            HomeState.TournamentListState.SearcgInit -> emptyList()
+            HomeState.TournamentListState.SearchMatch -> searchResult
+            HomeState.TournamentListState.SearchDataEmpty -> emptyList()
         }
-        setState(state, displayList)
-    }
-
-    private fun setState(state: TournamentListState, displayList: List<TournamentListItem>) {
-        _uiState.value = TournamentListUiState(state, displayList)
+        _tournamentsChange.value = displayList
+        setState(state)
     }
 
     private suspend fun processTournamentList(tournaments: List<BaseTournamentData>): List<TournamentListItem> {

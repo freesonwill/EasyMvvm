@@ -33,7 +33,16 @@ class LiveMatchMediaViewModel(
     private val _switchToVideo: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
     val switchToVideo: UnPeekLiveData<Boolean> = _switchToVideo
 
+    //切到比赛状态页
+    private val _switchToMatchStatus: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
+    val switchToMatchStatus: UnPeekLiveData<Boolean> = _switchToMatchStatus
+
+    private val _animationLiveUrl = UnPeekLiveData<String?>()
+    val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
+
     private var job: Job? = null
+
+    private var animationUrlJob: Job? = null
 
     fun matchId() = repo.matchId
 
@@ -51,6 +60,15 @@ class LiveMatchMediaViewModel(
             }
         }
 
+        animationUrlJob?.cancel()
+        animationUrlJob = viewModelScope.launch {
+            repo.observeAnimationLiveUrl(repo.matchId).collect {
+                it?.let {
+                    _animationLiveUrl.value = it
+                }
+            }
+        }
+
     }
 
     fun switchToAnimation() {
@@ -63,6 +81,10 @@ class LiveMatchMediaViewModel(
 
     fun switchToVideo() {
         _switchToVideo.value = true
+    }
+
+    fun switchToMatchStatus() {
+        _switchToMatchStatus.value = true
     }
 
 
