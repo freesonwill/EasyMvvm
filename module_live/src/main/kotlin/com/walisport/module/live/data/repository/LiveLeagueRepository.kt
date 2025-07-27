@@ -27,18 +27,32 @@ class LiveLeagueRepository(
         val list = ArrayList<MatchBean>()
         val stringSet = mutableSetOf<String>()
         resp?.matchList?.mapIndexed { _, item ->
+            val timeStamp = item.basicInfo.startTime
+            val isToday = isTimeStampToday(timeStamp)
             val temp = MatchBean(
                 matchId = item.matchId,
                 sportId = item.basicInfo.sportId,
                 homeLogo = item.basicInfo.homeTeamIcon,
+                isToday = isToday,
                 homeName = item.basicInfo.homeTeam,
                 awayLogo = item.basicInfo.awayTeamIcon,
                 awayName = item.basicInfo.awayTeam,
                 startTime = item.basicInfo.startTime
             )
-            val date = convertStampToDate(item.basicInfo.startTime)
+            val date = convertStampToDate(timeStamp)
             if (!stringSet.contains(date)) {
-                list.add(MatchBean(0, 0, true, date, "", "", "", "", 0L))
+                list.add(
+                    MatchBean(
+                        0, 0, true,
+                        isToday = false,
+                        weekDay = date,
+                        homeLogo = "",
+                        homeName = "",
+                        awayLogo = "",
+                        awayName = "",
+                        startTime = 0L
+                    )
+                )
                 stringSet.add(date)
             }
             list.add(temp)
@@ -59,5 +73,14 @@ class LiveLeagueRepository(
         val date = Date(timeStamp)
         val format = SimpleDateFormat("MM月dd日 EEEE", Locale.getDefault())
         return format.format(date)
+    }
+
+    private fun isTimeStampToday(timeStamp: Long): Boolean {
+        val format = SimpleDateFormat("MM-dd", Locale.getDefault())
+        val date1 = Date(timeStamp)
+        val day1 = format.format(date1)
+        val date2 = Date(System.currentTimeMillis())
+        val day2 = format.format(date2)
+        return day1 == day2
     }
 }
