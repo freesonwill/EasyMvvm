@@ -77,8 +77,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             }
             tvLeagueName.text = leagueName
         }
-        Glide.with(this).load(leagueLogo).error(R.drawable.title_league_icon)
-            .into(mBinding.ivLeagueLogo)
+        Glide.with(this).load(leagueLogo).into(mBinding.ivLeagueLogo)
         standsAdapter.setMatchID(matchID)
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId

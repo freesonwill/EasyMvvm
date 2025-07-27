@@ -16,6 +16,7 @@ data class MatchBean @JvmOverloads constructor(
     val matchId: Long = 0,
     val sportId: Int = 0,
     val isWeekHead: Boolean = false,  //true就显示日期归档Header，false则显示正常联赛Item
+    val isToday: Boolean = false,     //是否为今日比赛
     val weekDay: String = "",
     val homeLogo: String,
     val homeName: String,
