@@ -33,6 +33,10 @@ class LiveMatchMediaViewModel(
     private val _switchToVideo: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
     val switchToVideo: UnPeekLiveData<Boolean> = _switchToVideo
 
+    //切到比赛状态页
+    private val _switchToMatchStatus: UnPeekLiveData<Boolean> = UnPeekLiveData(false)
+    val switchToMatchStatus: UnPeekLiveData<Boolean> = _switchToMatchStatus
+
     private val _animationLiveUrl = UnPeekLiveData<String?>()
     val animationLiveUrl: UnPeekLiveData<String?> = _animationLiveUrl
 
@@ -77,6 +81,10 @@ class LiveMatchMediaViewModel(
 
     fun switchToVideo() {
         _switchToVideo.value = true
+    }
+
+    fun switchToMatchStatus() {
+        _switchToMatchStatus.value = true
     }
 
 
