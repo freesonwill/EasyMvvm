@@ -4,7 +4,7 @@
     <solid android:color="@color/calendar_ok_button" />
     <corners
         android:bottomLeftRadius="0dp"
-        android:bottomRightRadius="20dp"
+        android:bottomRightRadius="@dimen/dp_16"
         android:topLeftRadius="0dp"
         android:topRightRadius="0dp" />
 </shape>

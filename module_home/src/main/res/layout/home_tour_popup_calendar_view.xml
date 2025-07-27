@@ -82,7 +82,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/calendar_btn_cancel"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center"
             android:background="@drawable/shape_home_calendar_cancel"
             android:text="@string/home_calendar_reset"
@@ -98,7 +98,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/calendar_btn_ok"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center"
             android:background="@drawable/shape_home_calendar_ok_white_green"
             android:text="@string/home_calendar_ok"
