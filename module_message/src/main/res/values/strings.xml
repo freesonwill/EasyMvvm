@@ -11,6 +11,8 @@
     <string name="notification_detail">查看详情</string>
     <string name="notification_delete">消息删除后将无法恢复，确定删除消息吗？</string>
 
+    <string name="detail">详情</string>
+
     <string name="notice_sys">系统通知</string>
     <string name="notice_act">活动通知</string>
     <string name="notice_mat">赛事通知</string>
