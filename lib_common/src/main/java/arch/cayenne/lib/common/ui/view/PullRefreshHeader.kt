@@ -65,7 +65,7 @@ class PullRefreshHeader : SimpleComponent, RefreshHeader {
             }
 
             RefreshState.Refreshing, RefreshState.RefreshReleased -> {
-                binding.tvTitle.text = ContextCompat.getString(context, R.string.refreshing)
+                binding.tvTitle.text = ContextCompat.getString(context, R.string.loading)
             }
 
             RefreshState.None -> {
