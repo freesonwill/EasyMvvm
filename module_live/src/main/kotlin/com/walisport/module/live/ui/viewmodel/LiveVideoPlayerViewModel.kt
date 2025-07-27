@@ -125,6 +125,9 @@ class LiveVideoPlayerViewModel(
                 matchBean?.let { match ->
 //                    "match.${match}".logd("matchIssue")
                     _matchBeanLiveData.value = match
+                    _tournamentIcon.value = match.basicInfo.tournamentIcon
+                    _matchName.value = match.basicInfo.matchName
+
                 }
 
             }
