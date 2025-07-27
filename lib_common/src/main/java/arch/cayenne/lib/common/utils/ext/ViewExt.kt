@@ -344,79 +344,76 @@ fun RecyclerView.enableRecyclerViewBounce(
         }
         false
     }
-
-
-    /**
-     * 水波纹效果，支持自定义圆角和颜色
-     *
-     * @param cornerRadiusDp
-     * @param backgroundColor
-     * @param rippleColor
-     */
-    fun View.addRippleEffect(
-        rippleColor: String = "#ff0000",
-        backgroundColor: String = "#00ff00",
-        cornerRadiusDp: Float,
-    ) {
-        val shapeAppearanceModel = ShapeAppearanceModel.builder()
-            .setAllCornerSizes(
-                TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    cornerRadiusDp,
-                    context.resources.displayMetrics
-                )
+}
+/**
+ * 水波纹效果，支持自定义圆角和颜色
+ *
+ * @param cornerRadiusDp
+ * @param backgroundColor
+ * @param rippleColor
+ */
+fun View.addRippleEffect(
+    rippleColor: String = "#ff0000",
+    backgroundColor: String = "#00000000",
+    cornerRadiusDp: Float,
+) {
+    val shapeAppearanceModel = ShapeAppearanceModel.builder()
+        .setAllCornerSizes(
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                cornerRadiusDp,
+                context.resources.displayMetrics
             )
-            .build()
+        )
+        .build()
 
-        val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
-            fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
-        }
-
-        val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
-        val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
-        this.background = rippleDrawable
+    val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
+        fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
     }
 
-    /**
-     * 水波纹效果，支持自定义圆角和颜色
-     *
-     * @param topLeftDp
-     * @param topRightDp
-     * @param bottomRightDp
-     * @param bottomLeftDp
-     * @param backgroundColor
-     * @param rippleColor
-     */
-    fun View.addRippleEffect(
-        rippleColor: String = "#ff0000",
-        backgroundColor: String = "#00ff00",
-        bottomLeftDp: Float = 0f,
-        topLeftDp: Float = 0f,
-        topRightDp: Float = 0f,
-        bottomRightDp: Float = 0f,
-    ) {
-        val dm = context.resources.displayMetrics
-        val topLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topLeftDp, dm)
-        val topRightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topRightDp, dm)
-        val bottomRightPx =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomRightDp, dm)
-        val bottomLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomLeftDp, dm)
+    val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
+    val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
+    this.background = rippleDrawable
+}
 
-        val shapeAppearanceModel = ShapeAppearanceModel.builder()
-            .setTopLeftCorner(CornerFamily.ROUNDED, topLeftPx)
-            .setTopRightCorner(CornerFamily.ROUNDED, topRightPx)
-            .setBottomRightCorner(CornerFamily.ROUNDED, bottomRightPx)
-            .setBottomLeftCorner(CornerFamily.ROUNDED, bottomLeftPx)
-            .build()
+/**
+ * 水波纹效果，支持自定义圆角和颜色
+ *
+ * @param topLeftDp
+ * @param topRightDp
+ * @param bottomRightDp
+ * @param bottomLeftDp
+ * @param backgroundColor
+ * @param rippleColor
+ */
+fun View.addRippleEffect(
+    rippleColor: String = "#ff0000",
+    backgroundColor: String = "#00000000",
+    bottomLeftDp: Float = 0f,
+    topLeftDp: Float = 0f,
+    topRightDp: Float = 0f,
+    bottomRightDp: Float = 0f,
+) {
+    val dm = context.resources.displayMetrics
+    val topLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topLeftDp, dm)
+    val topRightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topRightDp, dm)
+    val bottomRightPx =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomRightDp, dm)
+    val bottomLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomLeftDp, dm)
 
-        val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
-            fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
-        }
+    val shapeAppearanceModel = ShapeAppearanceModel.builder()
+        .setTopLeftCorner(CornerFamily.ROUNDED, topLeftPx)
+        .setTopRightCorner(CornerFamily.ROUNDED, topRightPx)
+        .setBottomRightCorner(CornerFamily.ROUNDED, bottomRightPx)
+        .setBottomLeftCorner(CornerFamily.ROUNDED, bottomLeftPx)
+        .build()
 
-        val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
-        val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
-
-        this.background = rippleDrawable
+    val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
+        fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
     }
 
+    val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
+    val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
+
+    this.background = rippleDrawable
 }
