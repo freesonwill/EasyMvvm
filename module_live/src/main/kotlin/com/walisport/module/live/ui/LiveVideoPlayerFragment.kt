@@ -468,11 +468,12 @@ class LiveVideoPlayerFragment :
         if (!mViewModel.animationLiveUrl.value.isNullOrBlank()) {
             mediaViewModel.switchToAnimation()
         } else {
-            mBinding.ctLoading.visibility = GONE
-            mBinding.ctError.visibility = VISIBLE
-            mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
-            mBinding.ivChooseSource.visibility = View.INVISIBLE
-            mBinding.ivToFullscreen.visibility = View.INVISIBLE
+            mediaViewModel.switchToMatchStatus()
+//            mBinding.ctLoading.visibility = GONE
+//            mBinding.ctError.visibility = VISIBLE
+//            mBinding.tvErrorTips.text = getString(R.string.no_live_stream)
+//            mBinding.ivChooseSource.visibility = View.INVISIBLE
+//            mBinding.ivToFullscreen.visibility = View.INVISIBLE
         }
     }
 

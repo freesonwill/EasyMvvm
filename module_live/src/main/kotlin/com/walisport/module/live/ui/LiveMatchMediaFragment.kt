@@ -102,6 +102,10 @@ class LiveMatchMediaFragment :
                 showVideoView()
             }
 
+            switchToMatchStatus.observe(viewLifecycleOwner) {
+                showStatusView()
+            }
+
         }
 
 
