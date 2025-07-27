@@ -128,7 +128,6 @@ class LiveSoftKeyboardFragment :
         }
         mBinding.liveChatEtInput.filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
 
-
         ViewCompat.setOnApplyWindowInsetsListener(view!!) { v: View?, insets: WindowInsetsCompat ->
             if (insets.isVisible(WindowInsetsCompat.Type.ime())) {
                 // 键盘显示
@@ -261,6 +260,8 @@ class LiveSoftKeyboardFragment :
             liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
             liveChatTvSize.isVisible = false
+            liveChatIvShare.isVisible = true
+            liveChatEtInput.text?.clear()
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
                     requireContext(),
@@ -270,6 +271,7 @@ class LiveSoftKeyboardFragment :
         }
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.NONE)
+
     }
 
     /**
