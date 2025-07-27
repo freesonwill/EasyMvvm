@@ -155,13 +155,6 @@ class LiveSoftKeyboardFragment :
         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
     }
 
-    override fun onBackPressed(): Boolean {
-        if(mBinding.liveChatEtInput.hasFocus()){
-         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
-        }
-        return super.onBackPressed()
-    }
-
     /**
      * 发送消息
      * */
