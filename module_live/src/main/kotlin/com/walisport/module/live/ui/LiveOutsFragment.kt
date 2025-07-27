@@ -51,7 +51,6 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     }
 
     override fun createObserver() {
-        launch(Lifecycle.State.RESUMED) {
             mainViewModel.matchId.observe(viewLifecycleOwner) {
                 mainViewModel.registerStatisticsNotify(it)
                 mainViewModel.observeMatchStaticsNotify()
@@ -86,7 +85,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                     }
                 }
             }
-        }
+
     }
 
     private fun parseTrendData(data: MatchTrendData) {

@@ -66,7 +66,6 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun createObserver() {
-        launch(Lifecycle.State.RESUMED) {
             mViewModel.competitionTables.observe(viewLifecycleOwner) {
                 if (it.isEmpty() && standsAdapter.itemCount == 0) {
                     mBinding.mainLayout.setState(
@@ -83,7 +82,6 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                     val leagueID = it.basicInfo.tournamentId
                     mViewModel.getCompetitionData(leagueID)
                 }
-            }
         }
     }
 }
