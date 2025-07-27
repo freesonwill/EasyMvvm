@@ -196,10 +196,11 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
             return
         }
         viewModelScope.launch {
-            val resp = chatRepo.getChatHistory(matchId!!, 1, 10)
+            val resp = chatRepo.getChatHistory(matchId!!, 1, 100)
             resp?.msgs?.let {
                 msgLists.clear()
-                msgLists.addAll(it)
+
+                msgLists.addAll(it.reversed())
             }
             _historyLiveData.value = resp?.msgs == null
         }
