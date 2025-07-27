@@ -155,7 +155,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         }
 
-        mBinding.ivTournamentMore.clickNoRepeat {
+        mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation() }.clickNoRepeat {
             toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
         mBinding.llHomeTournamentMore.clickNoRepeat {
