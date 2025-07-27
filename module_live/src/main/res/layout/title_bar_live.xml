@@ -38,18 +38,19 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_32"
             android:gravity="center_vertical"
             android:layout_weight="1">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_competition_name"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_32"
                 android:drawableEnd="@drawable/title_bar_dow_icon"
                 android:drawablePadding="@dimen/dp_5"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:gravity="center_vertical"
                 android:textColor="@color/title_bar"
                 android:textSize="15sp"
                 tools:ignore="MissingConstraints" />
