@@ -8,8 +8,6 @@ import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchResultUiState
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.data.repo.SearchRepository
-import com.walisport.module.search.data.transformer.SearchTransformer.toSearchResultBean
-import galaxy.client.proto.Client
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
