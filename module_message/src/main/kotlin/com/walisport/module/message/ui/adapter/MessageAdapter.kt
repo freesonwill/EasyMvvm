@@ -1,7 +1,6 @@
 package com.walisport.module.message.ui.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
@@ -10,8 +9,6 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.fragment.inflateMethod
-import com.bumptech.glide.Glide
-import com.walisport.module.message.R
 import com.walisport.module.message.data.MessageCompare
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.ItemMessageActivityBinding
@@ -35,6 +32,9 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgContent.text = item.content
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
+                }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
                 }
             }
 
