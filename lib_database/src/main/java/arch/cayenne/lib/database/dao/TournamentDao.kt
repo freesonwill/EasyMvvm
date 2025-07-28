@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.SportTournamentCrossRef
 import arch.cayenne.lib.database.entity.TournamentBean
 import arch.cayenne.lib.database.entity.TournamentDataModel
@@ -47,7 +48,23 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "WHERE ref.playType =:playTypeId and ref.sportId =:sportId " +
             "order by weight desc, `index` asc"
     )
-    abstract fun queryTournaments(playTypeId: Int, sportId: Int): List<TournamentDataModel>
+    abstract suspend fun queryTournaments(playTypeId: Int, sportId: Int): List<TournamentDataModel>
+
+    @Query("SELECT bean.id as id, " +
+            "ref.sportId as sportId, " +
+            "ref.playType as playTypeId, " +
+            "bean.name as name, " +
+            "bean.simpleName as simpleName, " +
+            "bean.icon as icon, " +
+            "ref.weight as weight, " +
+            "ref.hot as hot, " +
+            "ref.matchId as championMatchId " +
+            "FROM TournamentBean bean " +
+            "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
+            "WHERE ref.playType =:playTypeId and ref.sportId =:sportId AND ref.matchId != null " +
+            "order by weight desc, `index` asc"
+    )
+    abstract suspend fun queryChampionTournaments(playTypeId: Int, sportId: Int): List<ChampionTournamentDataModel>
 
     @Query("SELECT bean.id as id, " +
             "ref.sportId as sportId, " +
