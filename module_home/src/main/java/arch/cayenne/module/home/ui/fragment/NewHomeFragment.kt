@@ -250,6 +250,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     private fun showHomeCalendar(tabSelectedDate: String) {
+        with(mBinding.layoutContainer) {
+            llOtherDate.isSelected = true
+        }
         // 使用 Builder 創建 Popup
         setCalendarPopup()
         customPopup?.updateCalendarSkin()
@@ -268,6 +271,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     it.first == selectedDate
                 }
                 setSelectedDateTab(index)
+            }.setOnCalendarDismissListener {
+                with(mBinding.layoutContainer) {
+                    llOtherDate.isSelected = false
+                }
             }.build()
         }
     }

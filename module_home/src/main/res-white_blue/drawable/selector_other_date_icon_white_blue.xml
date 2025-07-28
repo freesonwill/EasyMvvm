@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/ic_other_date_selected_white_blue" android:state_selected="true"/> <!-- 选中时白色 -->
+    <item android:drawable="@drawable/ic_calendar_tab"/> <!-- 未选中时灰色 -->
+</selector>
