@@ -15,8 +15,6 @@ import arch.cayenne.module.home.data.constants.MatchListState
 import arch.cayenne.module.home.data.repo.BaseMatchRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -42,8 +40,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
 
     private var matchNotifyJob: Job? = null
 
-    private val refreshAllBet = MutableStateFlow(Unit)
-
     override fun initViewModel() {
         super.initViewModel()
         startMatchSubscribeNotify()
@@ -51,7 +47,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
         viewModelScope.launch(Dispatchers.IO) {
             betRepository.observerAllBet
                 .distinctUntilChanged()
-                .combine(refreshAllBet){ beans, _ -> beans }
                 .collect { betSelectionBeans ->
                     if (matchListChange.value == null) return@collect
                     val matchWithMarkets = repository.queryFullMatches(
@@ -72,13 +67,6 @@ abstract class BaseMatchViewModel<REPO: BaseMatchRepository> : BaseViewModel() {
                     }
                 }
         }
-    }
-
-    /**
-     * 因為一點擊下去就會先高亮投注選項，所以如果遇到失敗等等問題，要再強迫observerAllBet重來一次，把目前有點擊的選項更新一次
-     * */
-    fun triggerAllBetRefresh() {
-        refreshAllBet.value = Unit
     }
 
     fun loadNextPage() {
