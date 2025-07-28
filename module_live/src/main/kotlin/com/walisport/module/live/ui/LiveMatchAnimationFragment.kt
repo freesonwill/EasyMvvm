@@ -1,7 +1,6 @@
 package com.walisport.module.live.ui
 
 import android.annotation.SuppressLint
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
@@ -11,7 +10,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
-import arch.cayenne.lib.common.utils.DensityUtil
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
@@ -50,11 +49,11 @@ class LiveMatchAnimationFragment :
         val metrics = resources.displayMetrics
 
         //density和scaledDensity被篡改，尝试恢复
-        if (metrics.density != DensityUtil.density && DensityUtil.density > 0) {
-            metrics.density = DensityUtil.density
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
         }
-        if (metrics.scaledDensity != DensityUtil.scaledDensity && DensityUtil.scaledDensity > 0) {
-            metrics.scaledDensity = DensityUtil.scaledDensity
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
         }
 
         initWebView()
