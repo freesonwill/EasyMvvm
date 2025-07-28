@@ -92,6 +92,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_multi_bet_expand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/icon_combo_bet_ham" />

@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.Config
@@ -194,8 +195,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
             if (it) {
                 mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
+                val drawable = SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_combo_bet_ham_down)
+                mBinding.ivMultiBetExpand.setImageDrawable(drawable)
             } else {
                 mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
+                val drawable = SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_combo_bet_ham)
+                mBinding.ivMultiBetExpand.setImageDrawable(drawable)
             }
             if (mViewModel.onBetListListener.value != null && mViewModel.onComboMultiBetBeanListener.value != null) {
                 setMultiLayoutExpandedHeight(it)
