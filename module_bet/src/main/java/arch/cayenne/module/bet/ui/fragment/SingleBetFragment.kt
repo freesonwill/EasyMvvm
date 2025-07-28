@@ -132,6 +132,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
             setBetData(it)
         }
         mViewModel.onBetWinMoney.observe(viewLifecycleOwner) {
+            mBinding.tvBetMoney.isVisible = it.isNotEmpty() && it != "0"
             val money = getString(R.string.btn_bet_win_money).format(mViewModel.moneySymbol, it)
             mBinding.tvBetMoney.text = money
         }
