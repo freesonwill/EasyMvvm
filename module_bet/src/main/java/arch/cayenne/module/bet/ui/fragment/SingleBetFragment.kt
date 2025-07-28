@@ -99,24 +99,12 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
         }
         mBinding.btnReserve.setOnClickListener {
             mViewModel.onBetSheetListener.value?.let {
-                childFragmentManager.setFragmentResultListener(
-                    ReserveDialogFragment.KEY_RESULT,
-                    viewLifecycleOwner
-                ) { _, bundle ->
-                    childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
-                    if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
-                        val odds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
-                        mViewModel.saveToReserve(odds)
-                    }
-                }
-                val location = IntArray(2)
-                mBinding.btnReserve.getLocationInWindow(location)
-                ReserveDialogFragment.newInstance(
-                    location.first() + mBinding.btnReserve.width / 2,
-                    location.last(),
-                    mBinding.btnReserve.height,
-                    odds = it.odds
-                ).show(childFragmentManager)
+                showReserveOddsDialog(it.odds)
+            }
+        }
+        mBinding.tvCancelReserve.setOnClickListener {
+            mViewModel.onReserveOddsListener.value?.let { odds ->
+                showReserveOddsDialog(odds)
             }
         }
         mBinding.ivCancelReserve.setOnClickListener {
@@ -246,5 +234,27 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
                 showExitAnim(value = Config.VALUE_SINGLE_TO_RESULT)
             }
         }
+    }
+
+    private fun showReserveOddsDialog(odds: Int) {
+        childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
+        childFragmentManager.setFragmentResultListener(
+            ReserveDialogFragment.KEY_RESULT,
+            viewLifecycleOwner
+        ) { _, bundle ->
+            childFragmentManager.clearFragmentResultListener(ReserveDialogFragment.KEY_RESULT)
+            if (bundle.getString(ReserveDialogFragment.KEY_RESULT) == ReserveDialogFragment.VALUE_RESERVE_COMPLETE) {
+                val newOdds = bundle.getInt(ReserveDialogFragment.KEY_ODDS_RESULT)
+                mViewModel.saveToReserve(newOdds)
+            }
+        }
+        val location = IntArray(2)
+        mBinding.btnReserve.getLocationInWindow(location)
+        ReserveDialogFragment.newInstance(
+            location.first() + mBinding.btnReserve.width / 2,
+            location.last(),
+            mBinding.btnReserve.height,
+            odds = odds
+        ).show(childFragmentManager)
     }
 }
