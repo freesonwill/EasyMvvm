@@ -53,6 +53,7 @@ data class MatchMarketCrossRef(
     val matchId: Long,
     val marketId: Long,
     val selectionCount: Int,  //這場比賽這個盤口底下的選項個數(ex: 全場讓球底下有三個選項，有可能三個都是佔位符)
+    val index: Int,
 )
 
 @Entity(primaryKeys = ["matchId", "marketId", "selectionId"],)
@@ -60,6 +61,7 @@ data class MarketSelectCrossRef(
     val matchId: Long,
     val marketId: Long,
     val selectionId: Long,
+    val order: Int,
 )
 
 @Entity(primaryKeys = ["playType", "tournamentId", "matchId", "startTime", "page"])

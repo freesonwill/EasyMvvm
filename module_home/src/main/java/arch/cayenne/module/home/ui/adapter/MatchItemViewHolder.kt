@@ -132,8 +132,8 @@ class MatchItemViewHolder(
             setFavoriteIcon(data.match.collect, true)
 
             if (basicInfo.status == 5) {
-                tvAwayScore.text = liveInfo.homeScore.toString()
-                tvHomeScore.text = liveInfo.awayScore.toString()
+                tvAwayScore.text = liveInfo.awayScore.toString()
+                tvHomeScore.text = liveInfo.homeScore.toString()
             } else {
                 tvAwayScore.text = ""
                 tvHomeScore.text = ""
@@ -174,8 +174,8 @@ class MatchItemViewHolder(
             }
             if ("score" in changes) {
                 if (basicInfo.status == 5) {
-                    tvAwayScore.text = liveInfo.homeScore.toString()
-                    tvHomeScore.text = liveInfo.awayScore.toString()
+                    tvAwayScore.text = liveInfo.awayScore.toString()
+                    tvHomeScore.text = liveInfo.homeScore.toString()
                 } else {
                     tvAwayScore.text = ""
                     tvHomeScore.text = ""
