@@ -102,8 +102,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        mBinding.rvBet.itemAnimator = null
         mBinding.rvMultiBet.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
