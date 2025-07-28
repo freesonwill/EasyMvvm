@@ -45,23 +45,19 @@ class LiveScrollDrawerLayout : DrawerLayout {
                 // 禁用内容视图的平移效果，确保内容不随侧边栏滑动
                 val contentView = getChildAt(0)
                 contentView.translationX = 0f // 固定内容位置
-                LogUtils.e("setDrawerView----------onDrawerSlide")
             }
 
             override fun onDrawerOpened(drawerView: View) {
-                LogUtils.e("setDrawerView----------onDrawerOpened")
                 mScrollDrawerEvents?.onDrawerOpened(drawerView)
                 setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.END)
             }
 
             override fun onDrawerClosed(drawerView: View) {
-                LogUtils.e("setDrawerView----------onDrawerClosed")
                 mScrollDrawerEvents?.onDrawerClosed(drawerView)
                 setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
             }
 
             override fun onDrawerStateChanged(newState: Int) {
-                LogUtils.e("setDrawerView----------onDrawerStateChanged-----${newState}")
                 // 可根据需要处理状态变化
                 if (newState == STATE_IDLE) { // 动画进行中，
                     isAnimationRunning = true
