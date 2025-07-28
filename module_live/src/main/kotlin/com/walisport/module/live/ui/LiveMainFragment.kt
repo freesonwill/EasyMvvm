@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
@@ -10,8 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -35,17 +36,14 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
-import com.walisport.module.live.data.constants.MatchStatus
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-
+import android.animation.ObjectAnimator;
 /**
  * 直播详情页
  */
@@ -72,10 +70,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
     }
 
     //init DrawerLayout Content
     private fun drawerContent() {
+        mBinding.drawerLayout.setIsAnimationRunning(false)
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(
