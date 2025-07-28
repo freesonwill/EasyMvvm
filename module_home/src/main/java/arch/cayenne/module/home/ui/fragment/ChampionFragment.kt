@@ -65,9 +65,6 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
                         lifecycleScope.launch {
                             val status = mViewModel.setSelection(selection.selectionId)
-                            if (status is AddSelectionStatus.Failure) {
-                                mViewModel.triggerAllBetRefresh()
-                            }
                             if (status is AddSelectionStatus.Success.Single) {
                                 BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                             } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
