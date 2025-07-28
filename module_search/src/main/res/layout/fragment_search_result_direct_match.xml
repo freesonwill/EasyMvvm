@@ -103,7 +103,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/shape_search_result_direct_item_bg"
-            android:backgroundTint="@color/btn_search_result_date_picker_bg_white_blue"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="8dp">
 

@@ -244,7 +244,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
     private fun createMaskGradient(): Drawable {
         val defaultColor = 0x80000000
         val defaultStartAt = 0.3f
-        val defaultStopAt = 0.8f
+        val defaultStopAt = 0.7f
         return object : Drawable() {
             private val paint = Paint()
             private lateinit var shader: LinearGradient
