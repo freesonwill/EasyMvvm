@@ -70,10 +70,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
     }
 
     //init DrawerLayout Content
     private fun drawerContent() {
+        mBinding.drawerLayout.setIsAnimationRunning(false)
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(

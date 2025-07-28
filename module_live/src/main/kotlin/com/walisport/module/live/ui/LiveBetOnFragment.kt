@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -154,7 +155,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        mBinding.ivMenu.clickNoRepeat (1000){
+        mBinding.ivMenu.clickNoRepeatSingle{
             mainViewModel.setLiveBetOnMen(BetOnMenuStatus.OPEN)
         }
     }

@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.databinding.FragmentLiveBetOnMenuBinding
 import com.walisport.module.live.databinding.LiveBetMenuFlexboxLayoutBinding
@@ -53,7 +54,7 @@ class LiveBetOnMenuFragment :
                         )
                         textBinding.apply {
                             tvContent.text = bean.marketName
-                            tvContent.clickNoRepeat {
+                            tvContent.clickNoRepeatSingle {
                                 betOnViewModel.setMarketMenuPosition((indexItems + 1), index)
                             }
                         }
