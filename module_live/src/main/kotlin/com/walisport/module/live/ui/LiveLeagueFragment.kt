@@ -104,6 +104,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     override fun createObserver() {
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             if (it == DataState.NoMoreData) {
+                mBinding.refreshLayout.setEnableLoadMore(false)
                 mBinding.refreshLayout.setNoMoreData(true)
             }
         }

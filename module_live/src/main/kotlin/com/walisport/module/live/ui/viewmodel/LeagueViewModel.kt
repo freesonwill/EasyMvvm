@@ -11,7 +11,6 @@ import com.walisport.module.live.data.repository.LiveLeagueRepository
 import kotlinx.coroutines.launch
 import org.koin.core.component.inject
 import org.koin.core.parameter.parametersOf
-import kotlin.math.max
 
 class LeagueViewModel : BaseViewModel() {
 
@@ -67,7 +66,7 @@ class LeagueViewModel : BaseViewModel() {
     fun setItemCount(count: Int) {
         "当前界面显示===$count=====$maxItemCount".loge("测试")
         if (count >= maxItemCount) {
-
+            "当前界面显示===$count=====$maxItemCount".loge("测试")
             setState(DataState.NoMoreData)
         }
     }
