@@ -21,7 +21,6 @@ import kotlin.reflect.KClass
 class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
     override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
     override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
-    private var isShowBetSheet = false
 
     private val dotViews = ConcurrentHashMap<Int, View>()
     private var dotCounter = 0
@@ -38,31 +37,15 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            mViewModel.onBettingCount.value?.let { count ->
-                isShowBetSheet = true
-                parentFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == KEY_RESULT) {
-                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                        val dismissKey = bundle.getString(VALUE_DISMISS)
-                        if (dismissKey == VALUE_DISMISS) {
-                            isShowBetSheet = false
-                            mViewModel.onBettingCount.value?.let {
-                                setVisibility(it)
-                            }
-                        }
-                    }
-                }
+            mViewModel.onBettingCount.value?.let {
                 BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
-                mBinding.root.visibility = View.GONE
             }
         }
     }
 
     override fun createObserver() {
         mViewModel.onBettingCount.observe(viewLifecycleOwner) {
-            if (!isShowBetSheet) {
-                setVisibility(it)
-            }
+            setVisibility(it)
         }
     }
 
