@@ -139,7 +139,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
-                    mBinding.vpPage.setCurrentItem(it.position, false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -264,7 +263,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, false)
+        mBinding.vpPage.setCurrentItem(1)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -295,7 +294,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         val tabSelectPosition = 1
         with(mBinding) {
-            mBinding.tabLayout.removeAllTabs()
             val list = listOf(
                     PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
                     PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
@@ -304,11 +302,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                     PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                     PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            launch(Lifecycle.State.RESUMED) {
+            launch {
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
-            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
@@ -331,8 +329,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
-            mBinding.tabLayout.getTabAt(1)?.select()
-            mBinding.vpPage.setCurrentItem(1, false)
+            tabLayout.clearOnTabSelectedListeners()
+            tabLayout.getTabAt(1)?.select()
+            vpPage.setCurrentItem(1,false)
             tabLayout.removeAllTips()
         }
     }
