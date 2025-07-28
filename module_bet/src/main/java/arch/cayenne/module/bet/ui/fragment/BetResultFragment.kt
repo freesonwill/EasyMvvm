@@ -107,6 +107,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         } else {
             getString(R.string.title_result_pending_bet)
         }
+        mBinding.btnContinueBet.isEnabled = false
+        mBinding.btnContinueBet.alpha = 0.5f
     }
 
     private fun setComplete(type: BetTypeEnum) {
@@ -119,12 +121,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                arch.cayenne.lib.common.R.color.brand_color
-            )
-        )
+        mBinding.btnContinueBet.alpha = 1.0f
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -137,12 +134,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                arch.cayenne.lib.common.R.color.brand_color
-            )
-        )
+        mBinding.btnContinueBet.alpha = 1.0f
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
