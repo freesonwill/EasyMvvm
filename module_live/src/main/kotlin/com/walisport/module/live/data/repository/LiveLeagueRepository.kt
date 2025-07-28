@@ -62,6 +62,7 @@ class LiveLeagueRepository(
                 match = list,
                 tournamentName = resp.tournamentName,
                 tournamentShortName = resp.tournamentShortName,
+                size = resp.matchCount,
                 logo = resp.icon,
                 color = resp.color
             )

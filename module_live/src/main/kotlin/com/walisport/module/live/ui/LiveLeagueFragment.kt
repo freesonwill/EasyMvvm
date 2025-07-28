@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -64,9 +65,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         leagueLogo = arguments?.getString("leagueLogo") ?: ""
         mBinding.apply {
             refreshLayout.setLeagueMode()
-            refreshLayout.setOnRefreshListener {
-                mViewModel.getMatchLeagueData(leagueID)
-            }
+            refreshLayout.setEnableRefresh(false)
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.getMoreMatchLeagueData(leagueID)
             }
@@ -103,6 +102,11 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it == DataState.NoMoreData) {
+                mBinding.refreshLayout.setNoMoreData(true)
+            }
+        }
         mViewModel.leagueData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -128,6 +132,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     //更新联赛数据
                     mBinding.leagueRoot.postDelayed({
                         standsAdapter.submitList(it.match)
+                        mViewModel.setItemCount(standsAdapter.itemCount)
                     }, 1000)
                 }
             } ?: run {
