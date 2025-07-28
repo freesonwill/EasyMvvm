@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -43,7 +42,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
     val binding: VB = bindingInflater(LayoutInflater.from(context))
 
     private val onDataSelectedListener: ((String) -> Unit)? = builder.onDateSelectedListener
-
+    private val onCalendarDismissListener: (() -> Unit)? = builder.onCalendarDismissListener
     private val popupWindow: PopupWindow = PopupWindow(
         binding.root,
         builder.width,
@@ -66,6 +65,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         builder.elevation?.let { popupWindow.elevation = it }
 
         popupWindow.inputMethodMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
+        popupWindow.setOnDismissListener {
+            onCalendarDismissListener?.invoke()
+        }
     }
 
     /**
@@ -384,6 +386,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         internal var onDismissListener: PopupWindow.OnDismissListener? = null
         internal var elevation: Float? = null
         internal var onDateSelectedListener: ((String) -> Unit)? = null
+        internal var onCalendarDismissListener: (()-> Unit)? = null
 
         /**
          * 提供一個公開的方法讓外部設定監聽器
@@ -391,7 +394,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         fun setOnDateSelectedListener(listener: (String) -> Unit) = apply {
             this.onDateSelectedListener = listener
         }
-
+        fun setOnCalendarDismissListener(listener: () -> Unit) = apply {
+            this.onCalendarDismissListener = listener
+        }
         open fun build(): HomeCalendarPopupWindow<VB> {
             return HomeCalendarPopupWindow(context, lifecycleOwner, bindingInflater, this)
         }

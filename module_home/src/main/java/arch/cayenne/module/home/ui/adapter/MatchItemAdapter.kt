@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.database.entity.MatchWithMarkets
 import arch.cayenne.lib.database.entity.SelectionBeanLite
 import arch.cayenne.module.home.databinding.ItemMatchCardBinding
@@ -25,7 +26,7 @@ class MatchItemAdapter(private val onMatchItemClickListener: OnMatchItemClickLis
 //        binding.clLeftInfoEntry.setOnClickListener {
 //            onMatchItemClickListener?.onLiveEntryClick(getItem(holder.adapterPosition))
 //        }
-        binding.ivFavorite.setOnClickListener {
+        binding.ivFavorite.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             onMatchItemClickListener?.onFavoriteClick(getItem(holder.adapterPosition))
         }
     }

@@ -8,13 +8,16 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import arch.cayenne.lib.base.utils.LogUtils
 
 class LiveScrollDrawerLayout : DrawerLayout {
+    private var isAnimationRunning = true
     private var drawerListener: DrawerListener? = null
     var mScrollDrawerEvents: ScrollDrawerEvents? = null
     private var initialX: Float = 0f // 记录触摸起始 X 坐标
     private var initialY: Float = 0f // 记录触摸起始 Y 坐标
-    private val touchSlop: Int = android.view.ViewConfiguration.get(context).scaledTouchSlop // 触摸灵敏度阈值
+    private val touchSlop: Int =
+        android.view.ViewConfiguration.get(context).scaledTouchSlop // 触摸灵敏度阈值
 
     constructor(context: Context) : this(context, null)
 
@@ -23,7 +26,15 @@ class LiveScrollDrawerLayout : DrawerLayout {
         setDrawerView()
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
+
+    public fun setIsAnimationRunning(isAnimationRunning: Boolean) {
+        this.isAnimationRunning = isAnimationRunning
+    }
 
     private fun setDrawerView() {
         if (drawerListener != null) {
@@ -38,14 +49,21 @@ class LiveScrollDrawerLayout : DrawerLayout {
 
             override fun onDrawerOpened(drawerView: View) {
                 mScrollDrawerEvents?.onDrawerOpened(drawerView)
+                setDrawerLockMode(LOCK_MODE_UNLOCKED, GravityCompat.END)
             }
 
             override fun onDrawerClosed(drawerView: View) {
                 mScrollDrawerEvents?.onDrawerClosed(drawerView)
+                setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
             }
 
             override fun onDrawerStateChanged(newState: Int) {
                 // 可根据需要处理状态变化
+                if (newState == STATE_IDLE) { // 动画进行中，
+                    isAnimationRunning = true
+                } else {
+                    isAnimationRunning = false
+                }
             }
         }
         addDrawerListener(drawerListener!!)
@@ -58,11 +76,14 @@ class LiveScrollDrawerLayout : DrawerLayout {
      * 拦截触摸事件，禁止左滑打开抽屉
      */
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+        LogUtils.e("setDrawerView----------${isAnimationRunning}")
+        if (!isAnimationRunning) return isAnimationRunning
         when (ev.action) {
             MotionEvent.ACTION_DOWN -> {
                 initialX = ev.x
                 initialY = ev.y
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val deltaX = ev.x - initialX
                 val deltaY = ev.y - initialY

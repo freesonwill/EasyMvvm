@@ -37,4 +37,5 @@
     <color name="calendar_ok_button_white_blue">#24EE8A</color>
     <color name="calendar_cancel_button_white_blue">#E9FDF3</color>
     <color name="home_calendar_background_white_blue">#F3F3F4</color>
+    <color name="other_date_text_selected_white_blue">#00D271</color>
 </resources>

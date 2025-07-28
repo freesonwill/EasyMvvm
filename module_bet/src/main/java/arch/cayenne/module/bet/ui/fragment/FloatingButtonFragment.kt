@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import java.util.concurrent.ConcurrentHashMap
@@ -21,7 +19,6 @@ import kotlin.reflect.KClass
 class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonViewModel, FragmentFloatingButtonBinding>() {
     override val vbClass: KClass<FragmentFloatingButtonBinding> = FragmentFloatingButtonBinding::class
     override val vmClass: KClass<FloatingButtonViewModel> = FloatingButtonViewModel::class
-    private var isShowBetSheet = false
 
     private val dotViews = ConcurrentHashMap<Int, View>()
     private var dotCounter = 0
@@ -38,31 +35,15 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            mViewModel.onBettingCount.value?.let { count ->
-                isShowBetSheet = true
-                parentFragmentManager.setFragmentResultListener(KEY_RESULT, viewLifecycleOwner) { resultKey, bundle ->
-                    if (resultKey == KEY_RESULT) {
-                        parentFragmentManager.clearFragmentResultListener(KEY_RESULT)
-                        val dismissKey = bundle.getString(VALUE_DISMISS)
-                        if (dismissKey == VALUE_DISMISS) {
-                            isShowBetSheet = false
-                            mViewModel.onBettingCount.value?.let {
-                                setVisibility(it)
-                            }
-                        }
-                    }
-                }
+            mViewModel.onBettingCount.value?.let {
                 BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
-                mBinding.root.visibility = View.GONE
             }
         }
     }
 
     override fun createObserver() {
         mViewModel.onBettingCount.observe(viewLifecycleOwner) {
-            if (!isShowBetSheet) {
-                setVisibility(it)
-            }
+            setVisibility(it)
         }
     }
 

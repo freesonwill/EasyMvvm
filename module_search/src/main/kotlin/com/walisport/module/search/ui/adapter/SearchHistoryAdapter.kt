@@ -41,6 +41,8 @@ class SearchHistoryAdapter(
             text =
                 if (item?.isNotEmpty() == true && item.length > 7) item.take(7) + "..."
                 else item
+        }
+        view?.findViewById<View>(R.id.item_search_history)?.apply {
             setOnClickListener {
                 onSearch(item)
             }

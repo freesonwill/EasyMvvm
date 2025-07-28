@@ -9,6 +9,7 @@ import android.view.animation.LinearInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -20,6 +21,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -116,7 +118,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun initListener() {
-        mBinding.ivClose.setOnClickListener {
+        mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             dismiss()
         }
         mBinding.btnDelete.setOnClickListener {
@@ -367,6 +369,8 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
+        mBinding.tvBetMoneyHint.isVisible = winMoney != 0L
+        mBinding.tvBetMoney.isVisible = winMoney != 0L
         val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
