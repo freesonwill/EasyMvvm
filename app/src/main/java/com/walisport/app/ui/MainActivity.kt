@@ -1,12 +1,15 @@
 package com.walisport.app.ui
 
 import android.os.Bundle
+import android.os.PersistableBundle
 import androidx.fragment.app.DialogFragment
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.BetResultToastView
+import arch.cayenne.lib.common.utils.DensityUtil
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -38,6 +41,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+
+        val metrics = resources.displayMetrics
+        DensityUtil.density = metrics.density
+        DensityUtil.scaledDensity = metrics.scaledDensity
         super.initView(savedInstanceState)
         fabFragment.show(this)
         notifyFragment.show(this)

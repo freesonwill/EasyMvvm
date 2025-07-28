@@ -1,34 +1,25 @@
 package com.walisport.module.live.ui
 
-import android.animation.Animator
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.os.Message
 import android.view.View
-import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
-import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.DensityUtil
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
-import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
-import com.walisport.module.live.R
-import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.BUTTONS_ANIMATION_DURATION
-import com.walisport.module.live.data.constants.VideoAnimatorConstants.Companion.HIDE_BUTTONS_TIMER
 import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 
@@ -55,6 +46,16 @@ class LiveMatchAnimationFragment :
 
     override fun initView(savedInstanceState: Bundle?) {
         mBinding.model = mViewModel
+
+        val metrics = resources.displayMetrics
+
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityUtil.density && DensityUtil.density > 0) {
+            metrics.density = DensityUtil.density
+        }
+        if (metrics.scaledDensity != DensityUtil.scaledDensity && DensityUtil.scaledDensity > 0) {
+            metrics.scaledDensity = DensityUtil.scaledDensity
+        }
 
         initWebView()
 //        scheduleHideButtons()
@@ -199,6 +200,11 @@ class LiveMatchAnimationFragment :
 
             setBackgroundColor(arch.cayenne.lib.common.R.color.color_80000000.getColor())
         }
+    }
+
+    override fun onDestroy() {
+        mBinding.animationView.destroy()
+        super.onDestroy()
     }
 
 
