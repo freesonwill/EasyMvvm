@@ -369,11 +369,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        val sumWinMoney =
-            getString(R.string.btn_bet_win_money).format(
-                mViewModel.moneySymbol,
-                winMoney.getFormalMoney()
-            )
+        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 
