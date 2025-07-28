@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.database.entity.BetDetailBean
 import arch.cayenne.module.bet.R
@@ -25,7 +25,7 @@ class ResultMultiBetAdapter(private val listener: OnResultMultiBetListener) :
         binding.tvCombo.text = combo
         val odds ="@${item.sumOdds.getOdds()}"
         binding.tvOdds.text = odds
-        val money = "${listener.getMoneySymbol()}${item.inputMoney.getMoney()}"
+        val money = "${listener.getMoneySymbol()}${item.inputMoney.getFormalMoney()}"
         binding.tvBetMoney.text = money
 
         val multi = "${item.count} x"

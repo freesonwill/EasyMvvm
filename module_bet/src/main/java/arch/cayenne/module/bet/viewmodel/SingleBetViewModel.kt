@@ -9,7 +9,7 @@ import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.data.repo.BalanceRepository
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.common.ui.viewmodel.NumberCalculatorViewModel
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -85,7 +85,7 @@ class SingleBetViewModel(
         addSource(_onBetSheetListener) { data ->
             if (_onReserveOddsListener.value == null) {
                 odds = data.odds
-                value = editValue.toMoney().getMoney(odds)
+                value = editValue.toMoney().getFormalMoney(odds)
             }
         }
         addSource(_onReserveOddsListener) { reserveOdds ->
@@ -96,7 +96,7 @@ class SingleBetViewModel(
             } else {
                 odds = reserveOdds
             }
-            value = editValue.toMoney().getMoney(odds)
+            value = editValue.toMoney().getFormalMoney(odds)
         }
         addSource(onEditNumber) {
             val money = if (it.isEmpty()) {
@@ -109,7 +109,7 @@ class SingleBetViewModel(
             value = if (money.isEmpty()) {
                 "0.00"
             } else {
-                money.toMoney().getMoney(odds)
+                money.toMoney().getFormalMoney(odds)
             }
         }
     }
