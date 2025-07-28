@@ -113,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
-        android:text="@string/live_bet_except_max_win"
+        android:text="@string/live_bet_reserve_win"
         android:textColor="@color/secondary_text"
         android:textSize="@dimen/sp_14"
         app:layout_constraintLeft_toLeftOf="@id/bet_reserve_tv_date"
