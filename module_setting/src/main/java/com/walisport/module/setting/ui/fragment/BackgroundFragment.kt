@@ -55,7 +55,8 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
 
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
+        mBinding.root.fitsSystemWindows = false
+        setStatusBar(StatusBarConfig, mBinding.llConttnet)
         super.onStart()
     }
 
@@ -74,10 +75,10 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
 
     private fun setImmColor(type: String) {
         immColor = immersionBarColorExt(type)
-        StatusBarConfig.statusBarColor = immColor
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
-        setStatusBar(StatusBarConfig, mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.llConttnet)
     }
 
     override fun createObserver() {

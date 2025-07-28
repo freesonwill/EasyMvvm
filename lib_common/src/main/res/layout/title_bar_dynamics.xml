@@ -2,7 +2,7 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/title_bg"
+    android:background="@color/tran_0"
     style="@style/CustomToolbarStyle">
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
