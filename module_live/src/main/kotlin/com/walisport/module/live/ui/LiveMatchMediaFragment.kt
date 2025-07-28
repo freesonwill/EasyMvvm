@@ -178,6 +178,7 @@ class LiveMatchMediaFragment :
 
         LiveSourceFragment().apply {
             arguments = Bundle().apply {
+                putLong("matchId", mViewModel.matchId())
                 putInt(
                     LiveSourceFragment.HEIGHT,
                     height
