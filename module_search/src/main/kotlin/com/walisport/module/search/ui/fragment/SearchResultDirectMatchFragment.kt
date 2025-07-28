@@ -199,7 +199,9 @@ class SearchResultDirectMatchFragment :
     override fun onResume() {
         super.onResume()
         requireView().post {
-            updateStatusSearchBar()
+            if (isAdded && view != null) {
+                updateStatusSearchBar()
+            }
         }
     }
 

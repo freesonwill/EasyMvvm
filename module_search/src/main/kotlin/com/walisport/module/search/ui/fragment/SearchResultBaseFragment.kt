@@ -7,6 +7,8 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
@@ -175,20 +177,30 @@ class SearchResultBaseFragment :
                         }.let { overlay ->
                             addView(overlay, childCount)
                             overlay.doOnLayout {
-                                parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
-                                findNavController().popBackStack(R.id.searchFragment, false)
-
-                                AnimationUtils.loadAnimation(requireContext(), RC.anim.slide_out_right).apply {
-                                    setAnimationListener(object: Animation.AnimationListener {
-                                        override fun onAnimationRepeat(p0: Animation?) = Unit
-                                        override fun onAnimationStart(p0: Animation?) = Unit
-                                        override fun onAnimationEnd(p0: Animation?) {
-                                            removeView(overlay)
+                                parentFragmentManager.apply {
+                                    run {
+                                        object : FragmentManager.FragmentLifecycleCallbacks() {
+                                            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                                                if (f is SearchFragment) {
+                                                    fm.unregisterFragmentLifecycleCallbacks(this)
+                                                    AnimationUtils.loadAnimation(requireContext(), RC.anim.slide_out_right).apply {
+                                                        setAnimationListener(object: Animation.AnimationListener {
+                                                            override fun onAnimationRepeat(p0: Animation?) = Unit
+                                                            override fun onAnimationStart(p0: Animation?) = Unit
+                                                            override fun onAnimationEnd(p0: Animation?) {
+                                                                removeView(overlay)
+                                                            }
+                                                        })
+                                                    }?.let { anim ->
+                                                        overlay.startAnimation(anim)
+                                                    }
+                                                }
+                                            }
                                         }
-                                    })
-                                }.let { anim ->
-                                    overlay.startAnimation(anim)
+                                    }.let { callback -> registerFragmentLifecycleCallbacks(callback, true) }
+                                    setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
                                 }
+                                findNavController().popBackStack(R.id.searchFragment, false)
                             }
                         }
                     }
