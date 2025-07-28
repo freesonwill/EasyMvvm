@@ -182,6 +182,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
                     _currentSoftKeyboard.value = softKeyBoardListener.value
                 }
                 null -> {
+                    toastLiveData.value = R.string.insufficient_fali.getString()
                     _softKeyBoardListener.value = KeyBoardType.NONE
                 }
             }

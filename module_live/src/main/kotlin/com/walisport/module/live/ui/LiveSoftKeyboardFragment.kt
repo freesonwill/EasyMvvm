@@ -34,7 +34,9 @@ import com.walisport.module.live.ui.viewmodel.LiveChatViewModel
 import com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel
 import com.walisport.module.live.utils.EditTextUtils
 import com.walisport.module.live.utils.EmojiEditFilter
+import com.walisport.module.live.utils.EmojiUtils.BID_EMOJI_REGEX
 import kotlinx.coroutines.launch
+import java.util.regex.Pattern
 import kotlin.reflect.KClass
 
 
@@ -52,7 +54,14 @@ class LiveSoftKeyboardFragment :
     //表情点击
     private val itemListener = object : RecyclerItemListener<EmojiData> {
         override fun onItemClick(item: EmojiData?, position: Int) {
+            val emojiPattern: Pattern = Pattern.compile(BID_EMOJI_REGEX)
+            if(item?.key?.let { emojiPattern.matcher(it).find() } == true){
+                chatViewModel.sendMsgToChat(item?.key)
+                return
+            }
             mBinding.liveChatEtInput.text?.append(item?.key)
+            mBinding.liveChatEtInput.requestFocus()
+            mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
         }
     }
 
@@ -69,9 +78,17 @@ class LiveSoftKeyboardFragment :
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun initListener() {
         mBinding.emojiDel.setOnClickListener {
-            val ic = mBinding.liveChatEtInput.onCreateInputConnection(EditorInfo())
-            ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-            ic?.sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
+            mBinding.liveChatEtInput.apply {
+                dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
+                dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
+                mBinding.liveChatEtInput.requestFocus()
+                mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+            }
+//            mBinding.liveChatEtInput.text?.let {
+//                if (it.isNotEmpty()) {
+//                    it.delete(it.length - 1, it.length)
+//                }
+//            }
         }
 
         mBinding.liveChatEtInput.setOnClickListener {
@@ -81,8 +98,8 @@ class LiveSoftKeyboardFragment :
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.EMOJI)
         }
         mBinding.liveChatTvSend.setOnClickListener {
-            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
             sendText()
+            chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
         }
         mBinding.liveChatIvKeyboard.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
@@ -128,7 +145,6 @@ class LiveSoftKeyboardFragment :
         }
         mBinding.liveChatEtInput.filters = arrayOf(EmojiEditFilter(mBinding.liveChatTvSize))
 
-
         ViewCompat.setOnApplyWindowInsetsListener(view!!) { v: View?, insets: WindowInsetsCompat ->
             if (insets.isVisible(WindowInsetsCompat.Type.ime())) {
                 // 键盘显示
@@ -155,20 +171,12 @@ class LiveSoftKeyboardFragment :
         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
     }
 
-    override fun onBackPressed(): Boolean {
-        if(mBinding.liveChatEtInput.hasFocus()){
-         chatViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
-        }
-        return super.onBackPressed()
-    }
-
     /**
      * 发送消息
      * */
     private fun sendText() {
         val text = mBinding.liveChatEtInput.text.toString()
         chatViewModel.sendMsgToChat(text)
-        mBinding.liveChatEtInput.text?.clear()
     }
 
     override fun createObserver() {
@@ -268,6 +276,8 @@ class LiveSoftKeyboardFragment :
             liveChatTvSend.isVisible = false
             liveChatIvKeyboard.isVisible = false
             liveChatTvSize.isVisible = false
+            liveChatIvShare.isVisible = true
+            liveChatEtInput.text?.clear()
             main.setBackgroundResource(
                 SkinnableResourceManager.getTargetResourceId(
                     requireContext(),
@@ -277,6 +287,7 @@ class LiveSoftKeyboardFragment :
         }
         updateEmojiView(false)
         updateWhenKeyBoardVisible(KeyBoardType.NONE)
+
     }
 
     /**
@@ -327,6 +338,7 @@ class LiveSoftKeyboardFragment :
         mBinding.apply {
             liveChatIvKeyboard.isVisible = isVisible
             keyboardTb.isVisible = isVisible
+            keyboardTvAll.isVisible = isVisible
             keyboardEmojiRecycler.isVisible = isVisible
             emojiDel.isVisible = isVisible
             line.isVisible = isVisible

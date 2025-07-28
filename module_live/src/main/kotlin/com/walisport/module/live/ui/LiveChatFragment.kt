@@ -100,7 +100,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             mViewModel.setArguments(mainViewModel.matchId.value)
         }
 
-        mainViewModel.mainMatch.observe(viewLifecycleOwner){
+        mainViewModel.mainMatch.observe(viewLifecycleOwner) {
             updateChatUi()
         }
 
@@ -141,7 +141,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         mViewModel.checkBetAmountLiveData.observe(viewLifecycleOwner) {
         }
 
-        mViewModel.toastLiveData.observe(viewLifecycleOwner){
+        mViewModel.toastLiveData.observe(viewLifecycleOwner) {
             showToast(it)
         }
 
@@ -164,18 +164,19 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             launch {
                 mViewModel.softKeyBoardListener.collect {
                     val flag1 = !mViewModel.checkSoftKeyboardVisible()
-                    if(it != KeyBoardType.NONE && flag1){
+                    if (it != KeyBoardType.NONE && flag1) {
                         mViewModel.checkSoftKeyBoardBetAmount()
                         return@collect
                     }
-                    when(it){
+                    when (it) {
                         KeyBoardType.EMOJI -> {
                             showChatAnimation(true, true)
                         }
+
                         else -> {
-                            if(mViewModel.currentSoftKeyboard.value == KeyBoardType.EMOJI){
-                                showChatAnimation(false,true)
-                            }else{
+                            if (mViewModel.currentSoftKeyboard.value == KeyBoardType.EMOJI) {
+                                showChatAnimation(false, true)
+                            } else {
                                 mViewModel.updateSoftKeyBoard()
                                 showChatAnimation(false, isEmoji = false)
                             }
@@ -199,8 +200,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     private fun showChatAnimation(isKeyBoardVisible: Boolean, isEmoji: Boolean) {
         val height = if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
         if (isEmoji) {
-            val params = if (isKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(0f, (keyBoardHeight - 62.dp2px).toFloat())
-            val animator = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
+            val params =
+                if (isKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(
+                    0f,
+                    (keyBoardHeight - 62.dp2px).toFloat()
+                )
+            val animator =
+                ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
             animator.addListener(onStart = {
                 if (isKeyBoardVisible) {
                     mBinding.liveChatKeyboard.layoutParams.height = height
@@ -247,6 +253,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * 接收到新数据做更新
      * */
     private fun refreshChatList() {
+         if(!mBinding.liveChatRecycler.isVisible && mViewModel.msgLists.isNotEmpty()){
+             updateChatList()
+         }else if(mBinding.liveChatRecycler.isVisible && mViewModel.msgLists.isEmpty()){
+             updateChatList()
+         }
         val adapter = mBinding.liveChatRecycler.adapter?.let { it as LiveChatAdapter }
         val allList = arrayListOf<ChatMsg>()
         allList.addAll(mViewModel.msgLists)
@@ -276,8 +287,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     it.liveChatTvStatus.setText(R.string.live_chat_end)
                 }
                 MatchStatus.IN_PROGRESS, MatchStatus.PAUSED, MatchStatus.INTERRUPTED -> {
-                    it.liveChatGroupChat.isVisible = true
-                    it.liveChatGroupStatus.isVisible = false
+                    updateChatList()
                 }
                 else -> {
                     it.liveChatGroupChat.isVisible = false
@@ -289,6 +299,21 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
     }
 
+    private fun updateChatList() {
+        mBinding.apply {
+            if (mViewModel.msgLists.isEmpty()) {
+                liveChatRecycler.isVisible = false
+                liveChatKeyboard.isVisible = true
+                liveChatGroupStatus.isVisible = true
+                liveChatIvStatus.setBackgroundResource(arch.cayenne.lib.common.R.drawable.icon_empty)
+                liveChatTvStatus.setText(R.string.live_chat_first_chat)
+            }else{
+                liveChatRecycler.isVisible = true
+                liveChatKeyboard.isVisible = true
+                liveChatGroupStatus.isVisible = false
+            }
+        }
+    }
 
     override fun onStop() {
         mViewModel.leaveRoom()
