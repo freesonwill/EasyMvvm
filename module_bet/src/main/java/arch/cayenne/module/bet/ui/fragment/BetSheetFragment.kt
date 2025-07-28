@@ -134,7 +134,9 @@ class BetSheetFragment private constructor() :
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            showEnterAnim()
+            if (bundle?.containsKey(Config.KEY_NON_ANIM) == false) {
+                showEnterAnim()
+            }
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
         }
