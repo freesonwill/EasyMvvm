@@ -38,6 +38,7 @@
                 android:paddingTop="11dp"
                 android:paddingBottom="11dp"
                 android:src="@drawable/ic_home_sidebar"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -16,6 +16,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -97,7 +98,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.clickNoRepeat {
+        mBinding.ivLeagueClose.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
             findNavController().navigateUp()
         }
     }
