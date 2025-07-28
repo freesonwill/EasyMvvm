@@ -150,7 +150,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.tournamentId = tournamentId
                 this.cursorMatchId = cursorMatchId
                 this.cursorMatchStartTime = cursorMatchStartTime
-                this.size = 10
+                this.size = 50
             }.build()
         }
         if (result.error == null && result.data != null) {
