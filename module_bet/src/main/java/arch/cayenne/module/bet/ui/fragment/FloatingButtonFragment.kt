@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.module.bet.data.Config.KEY_RESULT
-import arch.cayenne.module.bet.data.Config.VALUE_DISMISS
 import arch.cayenne.module.bet.databinding.FragmentFloatingButtonBinding
 import arch.cayenne.module.bet.viewmodel.FloatingButtonViewModel
 import java.util.concurrent.ConcurrentHashMap
