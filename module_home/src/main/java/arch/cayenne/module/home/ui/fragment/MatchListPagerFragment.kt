@@ -229,7 +229,7 @@ class MatchListPagerFragment :
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
-                    DataState.LoadSuccess -> {
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
