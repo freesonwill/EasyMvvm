@@ -14,6 +14,7 @@ import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.BetTypeEnum
@@ -59,7 +60,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun initListener() {
-        mBinding.ivClose.setOnClickListener {
+        mBinding.ivClose.apply { addScaleOnTouchAnimation() }.setOnClickListener {
             val type = mViewModel.betTypeListener.value
             if (type != BetTypeEnum.COMBO) {
                 mViewModel.removeBet()
