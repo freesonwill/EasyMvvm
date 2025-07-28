@@ -5,32 +5,34 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="true">
+    android:background="@color/app_bg"
+    android:fitsSystemWindows="false"
+   >
 
-    <arch.cayenne.lib.common.ui.view.TitleBarView
-        android:id="@+id/title_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
 
     <ImageView
+        android:id="@+id/bgLightSet"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_335"
         android:alpha="0.3"
         android:background="@drawable/bg_light_set" />
 
     <LinearLayout
+        android:id="@+id/llConttnet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_20"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@+id/title_bar">
-
+        <arch.cayenne.lib.common.ui.view.TitleBarView
+            android:id="@+id/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_20"
             android:orientation="horizontal">
 
             <androidx.constraintlayout.widget.ConstraintLayout
