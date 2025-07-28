@@ -81,7 +81,15 @@ class ClearableEditText : SkinnableEditText, OnTouchListener,
 
     override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
         val x = motionEvent.x.toInt()
-        if (x > width - paddingRight - clearTextIcon!!.intrinsicWidth) {
+
+        // 計算原始 icon 起始點
+        val iconStartX = width - paddingRight - clearTextIcon!!.intrinsicWidth
+
+        // 放大範圍（1.5 倍）
+        val extraArea = (clearTextIcon!!.intrinsicWidth * 0.5f).toInt()
+        val extendedStartX = iconStartX - extraArea
+
+        if (x > extendedStartX) {
             if (motionEvent.action == MotionEvent.ACTION_DOWN) {
                 if (clearTextIcon!!.isVisible) {
                     error = null

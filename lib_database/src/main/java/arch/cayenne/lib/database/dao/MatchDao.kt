@@ -34,7 +34,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract suspend fun insertSelections(selections: List<SelectionBean>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insertMatchMarketCrossRef(crossRef: List<MatchMarketCrossRef>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -96,7 +96,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     @Query("SELECT market.marketId as marketId, market.marketName as marketName, market.status as status, ref.selectionCount as defaultSelectionCount " +
             "FROM MarketBean market " +
             "INNER JOIN  MatchMarketCrossRef ref ON ref.matchId = :matchId " +
-            "WHERE market.marketId = ref.marketId ")
+            "WHERE market.marketId = ref.marketId ORDER BY ref.`index` ")
     abstract suspend fun getMarkets(matchId: Long): List<MarketBeanLite>
 
     @Transaction
@@ -112,7 +112,7 @@ abstract class MatchDao : BaseDao<MatchBean>() {
                 "0 as trend " +
             "FROM SelectionBean sel " +
             "INNER JOIN  MarketSelectCrossRef ref ON ref.matchId = :matchId AND ref.marketId = :marketId " +
-            "WHERE sel.selectionId = ref.selectionId ")
+            "WHERE sel.selectionId = ref.selectionId ORDER BY ref.`order`")
     abstract suspend fun getSelectionLites(matchId: Long, marketId: Long): List<SelectionBeanLite>
 
     @Transaction
@@ -306,13 +306,14 @@ abstract class MatchDao : BaseDao<MatchBean>() {
     }
     //針對market id不同selection做些特殊處理
     private fun specialHandling(marketId: Long, originSelections: List<SelectionBeanLite>): List<SelectionBeanLite> {
-        return if (marketId == 1L && originSelections.size == 3) {
-            originSelections
-                .toMutableList()
-                .apply {
-                    this[1] = this[2].also { this[2] = this[1] }
-                }
-        } else { originSelections }
+//        return if (marketId == 1L && originSelections.size == 3) {
+//            originSelections
+//                .toMutableList()
+//                .apply {
+//                    this[1] = this[2].also { this[2] = this[1] }
+//                }
+//        } else { originSelections }
+        return originSelections
     }
 
     @Transaction

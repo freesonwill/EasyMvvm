@@ -17,7 +17,7 @@
             android:id="@+id/group_home_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container,iv_tournament_more,ll_tournaments_dropdown" />
+            app:constraint_referenced_ids="cl_first_navbar,cl_second_navbar,layout_container" />
 
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/cl_first_navbar"

@@ -128,7 +128,7 @@ class ViewPagerAnimHelper {
 
 
             viewPager.startSafeAnimateSet({
-                duration = 200L
+                duration = 300L
                 playTogether(animationList)
                 addListener(object : android.animation.AnimatorListenerAdapter() {
                     override fun onAnimationStart(animation: Animator) {

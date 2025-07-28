@@ -83,7 +83,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
 
             val displayText = when (selectedNames.size) {
                 1 -> selectedNames.first()
-                else -> selectedNames.joinToString(", ")
+                else -> selectedNames.joinToString("/")
             }
 
             mBinding.tvSportFilter.text = displayText

@@ -20,9 +20,9 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
+import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.ComboMultiBetBean
 import arch.cayenne.module.bet.data.Config
@@ -102,8 +102,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        mBinding.rvBet.itemAnimator = null
         mBinding.rvMultiBet.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
@@ -195,8 +193,12 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mViewModel.onMultiLayoutExpendListener.observe(viewLifecycleOwner) {
             if (it) {
                 mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_collapse)
+                val drawable = SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_combo_bet_ham_down)
+                mBinding.ivMultiBetExpand.setImageDrawable(drawable)
             } else {
                 mBinding.tvMultiBetExpand.text = getString(R.string.title_combo_bet_odds_expand)
+                val drawable = SkinnableResourceManager.getDrawable(requireContext(), R.drawable.icon_combo_bet_ham)
+                mBinding.ivMultiBetExpand.setImageDrawable(drawable)
             }
             if (mViewModel.onBetListListener.value != null && mViewModel.onComboMultiBetBeanListener.value != null) {
                 setMultiLayoutExpandedHeight(it)
@@ -361,15 +363,11 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "${mViewModel.moneySymbol}${sumMoney.getMoney()}"
+        val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        val sumWinMoney =
-            getString(R.string.btn_bet_win_money).format(
-                mViewModel.moneySymbol,
-                winMoney.getMoney()
-            )
+        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 

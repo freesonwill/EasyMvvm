@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:background="@drawable/ripple_effect_top"
             android:paddingTop="@dimen/dp_12"
             android:paddingStart="@dimen/dp_12"
             android:paddingEnd="@dimen/dp_10"
@@ -99,6 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:paddingHorizontal="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_12"
+            android:background="@drawable/ripple_effect_rectangle"
             >
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/cl_icon_1"
@@ -161,6 +163,7 @@
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/item_notification_1"
             app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/ripple_effect_rectangle"
             android:paddingHorizontal="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_16">
             <androidx.constraintlayout.widget.ConstraintLayout

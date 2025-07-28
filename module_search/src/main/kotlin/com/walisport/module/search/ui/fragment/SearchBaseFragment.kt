@@ -38,6 +38,7 @@ import arch.cayenne.lib.skin.res.SkinnableResourceManager.getDrawable
 import arch.cayenne.lib.skin.widget.SkinnableImageView
 import com.walisport.module.search.R
 import com.walisport.module.search.databinding.FragmentSearchBaseBinding
+import com.walisport.module.search.ui.fragment.SearchResultBaseFragment.Companion.GO_BACK_TO_MAIN
 import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -124,6 +125,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     @CallSuper
     open fun toSearchResult(word: String) {
+        parentFragmentManager.clearFragmentResult(GO_BACK_TO_MAIN)
         if (findNavController().currentDestination?.id != R.id.searchFragment) {
             parentFragmentManager.setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to word))
             findNavController().popBackStack(R.id.searchResultBaseFragment, false)
@@ -147,11 +149,13 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
 
     protected fun setTempScreenShot() {
         val view = mBinding.clRoot
+        view.doOnLayout {
         val bitmap = createBitmap(view.width, view.height)
         val canvas = Canvas(bitmap)
         view.draw(canvas)
 
         sharedViewModel.setTempScreenShot(bitmap)
+            }
     }
 
     protected fun getTempScreenShot(): Bitmap? {

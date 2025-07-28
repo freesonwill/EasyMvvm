@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.extractDate
 import arch.cayenne.lib.common.utils.ext.toChineseMonth
@@ -156,7 +157,10 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
             }
             this.calendarBtnCancel.clickNoRepeat {
                 this.calendarView.scrollToCurrent()
-                setSelectedDateTab(selectedDate)
+                val currDate ="${calendarView.curYear}${calendarView.curMonth}${calendarView.curDay}"
+                onDataSelectedListener?.invoke(DateUtils.getMonthDay(currDate))
+                val minRangeDate = calendarView.minRangeCalendar
+                calendarView.scrollToCalendar(minRangeDate.year,minRangeDate.month,minRangeDate.day)
                 dismiss() // 關閉 Popup
             }
             this.calendarBtnOk.clickNoRepeat {
@@ -215,22 +219,24 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
                 map[schemeCalendar.toString()] = schemeCalendar
             }
         }
-        //可選取日期區間為未來第31天
+        //可選取日期區間為未來7天
+        val startDateTriple = list.first()
+        val startDateArray = startDateTriple.day.split("-")
         val endDateTriple = list.last()
         val endDateArray = endDateTriple.day.split("-")
         //設定可以選取的日期區間，目前設定為31天
         with(binding as HomeTourPopupCalendarViewBinding) {
             calendarView.setRange(
-                calendarView.curYear,
-                calendarView.curMonth,
-                calendarView.curDay,
+                startDateArray[0].toInt(),
+                startDateArray[1].toInt(),
+                startDateArray[2].toInt(),
                 endDateArray[0].toInt(),
                 endDateArray[1].toInt(),
                 endDateArray[2].toInt()
             )
             calendarView.setSchemeDate(map)
+            calendarView.scrollToCalendar(startDateArray[0].toInt(),  startDateArray[1].toInt(),  startDateArray[2].toInt())
         }
-
     }
 
     private fun getSchemeCalendar(

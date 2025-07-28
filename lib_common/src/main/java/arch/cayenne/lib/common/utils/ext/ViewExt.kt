@@ -5,10 +5,13 @@ import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.annotation.SuppressLint
 import android.content.ContextWrapper
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.RippleDrawable
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnAttachStateChangeListener
@@ -16,14 +19,14 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.children
-import androidx.core.view.doOnAttach
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.common.R
+import com.google.android.material.shape.CornerFamily
+import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 
 private var lastClickTime: Long = 0L
+
 /**
  * 将view转为bitmap
  */
@@ -72,6 +75,7 @@ fun View.clickNoRepeat(
         action(it)
     }
 }
+
 /**
  * 防止重复点击事件，0.5秒内所有控件不可同时触发
  * @param interval 时间间隔 默认500毫秒（0.5秒）
@@ -130,18 +134,18 @@ fun View.startSafeObjectAnimator(
     interpolator: TimeInterpolator,
     repeatCount: Int = 0,
     repeatMode: Int = ObjectAnimator.RESTART,
-    start:Boolean
+    start: Boolean
 ): ObjectAnimator {
     val animator = ObjectAnimator.ofFloat(this, property, *values).apply {
         this.duration = duration
         this.repeatCount = repeatCount
         this.repeatMode = repeatMode
         this.interpolator = interpolator
-        if(start) start()
+        if (start) start()
     }
 
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+    addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {}
         override fun onViewDetachedFromWindow(v: View) {
             removeOnAttachStateChangeListener(this)
@@ -157,7 +161,7 @@ fun View.startSafeObjectAnimator(
 ): ObjectAnimator {
     val animator = ObjectAnimator.ofFloat(this, property, *values)
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+    addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {}
         override fun onViewDetachedFromWindow(v: View) {
             removeOnAttachStateChangeListener(this)
@@ -180,16 +184,16 @@ fun View.startSafeAnimateSet(
     config: AnimatorSet.() -> Unit,
     duration: Long? = null,
     interpolator: TimeInterpolator? = null,
-    start:Boolean,
+    start: Boolean,
 ): AnimatorSet {
     val animator = AnimatorSet().apply {
         this.config()
-        if(duration != null) this.duration = duration
-        if(interpolator != null) this.interpolator = interpolator
-        if(start) start()
+        if (duration != null) this.duration = duration
+        if (interpolator != null) this.interpolator = interpolator
+        if (start) start()
     }
     // 绑定生命周期，在 viewLifecycleOwner 销毁时 cancel 动画
-    addOnAttachStateChangeListener(object :OnAttachStateChangeListener {
+    addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View) {}
         override fun onViewDetachedFromWindow(v: View) {
             removeOnAttachStateChangeListener(this)
@@ -198,6 +202,7 @@ fun View.startSafeAnimateSet(
     })
     return animator
 }
+
 /**
  * 為 View 添加觸摸時縮放的動畫效果。
  * @param targetView 實際要進行縮放動畫的 View，預設為觸摸的 View 本身
@@ -222,6 +227,7 @@ fun View.addScaleOnTouchAnimation(
                     .setDuration(duration)
                     .start()
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 // 放開或取消觸摸時，取消任何正在進行的動畫，並開始恢復動畫
                 targetView.animate().cancel()
@@ -236,6 +242,7 @@ fun View.addScaleOnTouchAnimation(
         return@setOnTouchListener false
     }
 }
+
 /**
  * 仿iOS滑動列表頂/底部回彈效果
  *
@@ -337,4 +344,76 @@ fun RecyclerView.enableRecyclerViewBounce(
         }
         false
     }
+}
+/**
+ * 水波纹效果，支持自定义圆角和颜色
+ *
+ * @param cornerRadiusDp
+ * @param backgroundColor
+ * @param rippleColor
+ */
+fun View.addRippleEffect(
+    rippleColor: String = "#ff0000",
+    backgroundColor: String = "#00000000",
+    cornerRadiusDp: Float,
+) {
+    val shapeAppearanceModel = ShapeAppearanceModel.builder()
+        .setAllCornerSizes(
+            TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                cornerRadiusDp,
+                context.resources.displayMetrics
+            )
+        )
+        .build()
+
+    val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
+        fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
+    }
+
+    val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
+    val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
+    this.background = rippleDrawable
+}
+
+/**
+ * 水波纹效果，支持自定义圆角和颜色
+ *
+ * @param topLeftDp
+ * @param topRightDp
+ * @param bottomRightDp
+ * @param bottomLeftDp
+ * @param backgroundColor
+ * @param rippleColor
+ */
+fun View.addRippleEffect(
+    rippleColor: String = "#ff0000",
+    backgroundColor: String = "#00000000",
+    bottomLeftDp: Float = 0f,
+    topLeftDp: Float = 0f,
+    topRightDp: Float = 0f,
+    bottomRightDp: Float = 0f,
+) {
+    val dm = context.resources.displayMetrics
+    val topLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topLeftDp, dm)
+    val topRightPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, topRightDp, dm)
+    val bottomRightPx =
+        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomRightDp, dm)
+    val bottomLeftPx = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, bottomLeftDp, dm)
+
+    val shapeAppearanceModel = ShapeAppearanceModel.builder()
+        .setTopLeftCorner(CornerFamily.ROUNDED, topLeftPx)
+        .setTopRightCorner(CornerFamily.ROUNDED, topRightPx)
+        .setBottomRightCorner(CornerFamily.ROUNDED, bottomRightPx)
+        .setBottomLeftCorner(CornerFamily.ROUNDED, bottomLeftPx)
+        .build()
+
+    val backgroundDrawable = MaterialShapeDrawable(shapeAppearanceModel).apply {
+        fillColor = ColorStateList.valueOf(Color.parseColor(backgroundColor))
+    }
+
+    val rippleColorState = ColorStateList.valueOf(Color.parseColor(rippleColor))
+    val rippleDrawable = RippleDrawable(rippleColorState, backgroundDrawable, null)
+
+    this.background = rippleDrawable
 }

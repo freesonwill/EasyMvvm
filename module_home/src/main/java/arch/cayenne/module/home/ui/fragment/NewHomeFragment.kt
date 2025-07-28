@@ -119,7 +119,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //init 三級導航欄位與日期
     private fun initTournamentLayout() {
         // 取得未來 31 天 (MMDD, 星期, timeStamp)
-        val dateTabs = getFutureThirtyOneDays()
+        val dateTabs = getFutureSevenDays()
         with(mBinding.layoutContainer) {
             //聯賽
             vpGameList.isSaveEnabled = false
@@ -139,7 +139,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 var tabSelectedDate: String
                 val index = tlDateList.selectedTabPosition
                 if (index >= 0) {
-                    val endDateTriple = mViewModel.recently31MatchScheduleCount.value?.peekContent()?.getOrNull(index)
+                    val endDateTriple = mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.getOrNull(index)
                     tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
                 } else {
                     tabSelectedDate = "0"
@@ -155,7 +155,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
         }
 
-        mBinding.ivTournamentMore.clickNoRepeat {
+        mBinding.ivTournamentMore.apply {addScaleOnTouchAnimation()}.clickNoRepeat {
             toggleTournamentMoreSection(true, TournamentListType.MORE)
         }
         mBinding.llHomeTournamentMore.clickNoRepeat {
@@ -170,7 +170,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 mBinding.layoutContainer.tvTabAll.isSelected = false
 
                 tab?.position?.let { index ->
-                    val dateTriple = getFutureThirtyOneDays().getOrNull(index)
+                    val dateTriple = getFutureSevenDays().getOrNull(index)
                     val dateTimestamp = dateTriple?.third ?: return
                     lifecycleScope.launch {
                         mViewModel.selectedDate(dateTimestamp)
@@ -261,7 +261,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 this,
                 HomeTourPopupCalendarViewBinding::inflate
             ).setOnDateSelectedListener {selectedDate ->
-                val index = getFutureThirtyOneDays().indexOfFirst{
+                val index = getFutureSevenDays().indexOfFirst{
                     it.first == selectedDate
                 }
                 setSelectedDateTab(index)
@@ -280,8 +280,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-
-    private fun getFutureThirtyOneDays() = DateUtils.getFutureDays(31, Locale.getDefault())
+    //API是取未來31天，依照Linear IssueWLS-1171要求，改成取未來7天【早盘】的快捷选择日期，默认展示明日往后推7天内的日期，超出该范围的数据不予显示
+    private fun getFutureSevenDays() = DateUtils.getFutureDays(7, Locale.getDefault())
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
@@ -429,15 +429,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             llFavoriteEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())
             }
-            llFavoriteEntry.addScaleOnTouchAnimation(tvFavoriteIcon)
+            llFavoriteEntry.addScaleOnTouchAnimation()
             llSearchEntry.setOnClickListener {
                 navigate(arch.cayenne.lib.res.R.string.nav_module_search_fragment.deeplink())
             }
-            llSearchEntry.addScaleOnTouchAnimation(tvSearchIcon)
+            llSearchEntry.addScaleOnTouchAnimation()
             llBetEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetEntry.addScaleOnTouchAnimation(tvBetIcon)
+            llBetEntry.addScaleOnTouchAnimation()
         }
     }
 
@@ -490,7 +490,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 )
             }
         }
-        mViewModel.recently31MatchScheduleCount.observeEvent(viewLifecycleOwner, this) {list->
+        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
             setCalendarPopup()
             customPopup?.setSchemeDate(list)
         }
@@ -502,7 +502,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
-            val index = getFutureThirtyOneDays().indexOfFirst{ it.third == select }
+            val index = getFutureSevenDays().indexOfFirst{ it.third == select }
             setSelectedDateTab(index)
         }
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
