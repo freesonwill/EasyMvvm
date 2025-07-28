@@ -24,12 +24,18 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override val vbClass: KClass<FragmentDrawerContentBinding> = FragmentDrawerContentBinding::class
     override val vmClass: KClass<DrawerContentViewModel> = DrawerContentViewModel::class
     private var onFunctionClick: (() -> Unit)? = null
+    private val showBtnLogin = false
     companion object {
         const val TAG = "DrawerContentFragment"
     }
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
+        mBinding.btnLogin.visibility = if (showBtnLogin) {
+            View.VISIBLE
+        }else {
+            View.GONE
+        }
     }
 
     override fun initData() {
@@ -72,7 +78,10 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetSlip.addScaleOnTouchAnimation()
+            llBetSlip.addScaleOnTouchAnimation(ivBetSlip)
+            btnLogin.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_login_fragment.deeplink("userId" to "abcd"))
+            }
         }
     }
 

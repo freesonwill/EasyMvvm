@@ -17,7 +17,7 @@ import arch.cayenne.lib.common.R
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.skin.widget.SkinnableEditText
 
-class ClearableEditText : SkinnableEditText, OnTouchListener,
+open class ClearableEditText : SkinnableEditText, OnTouchListener,
     OnFocusChangeListener, TextWatcher {
     private var clearTextIcon: Drawable? = null
     private var mOnFocusChangeListener: OnFocusChangeListener? = null

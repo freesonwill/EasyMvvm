@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 选中状态 -->
+    <item android:state_checked="true" android:drawable="@drawable/checkbox_login_selected_white_blue"/>
+    <item android:state_checked="true" android:drawable="@drawable/checkbox_login_normal_white_blue"/>
+</selector>

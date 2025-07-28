@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 狀態：當 View 被聚焦時 -->
+    <!-- 注意：這個 item 必須放在預設 item 的前面 -->
+    <item android:state_focused="true"
+        android:drawable="@drawable/ic_keyboard_2_bg_focus_white_green" />
+
+    <!-- 預設狀態 (沒有任何特殊狀態時) -->
+    <item android:drawable="@drawable/ic_keyboard_2_bg_white_green" />
+
+</selector>
