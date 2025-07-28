@@ -1,15 +1,18 @@
 package arch.cayenne.module.home.ui.fragment
 
+import android.animation.ValueAnimator
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -41,9 +44,9 @@ import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
-import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.launch
 import java.util.Locale
+import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
@@ -363,20 +366,28 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
 
             vpGameList.currentItem = 0
-
             vpGameList.adapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
                 lifecycle = viewLifecycleOwner.lifecycle,
                 tournament = tournaments,
                 playTypeId = mViewModel.currentPlayTypeId
             )
+            vpGameList.offsetLeftAndRight(1)
 
-            TabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
-                tournaments.getOrNull(position)?.let {
-                    tab.customView = createTournamentTabView(it)
-                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
+            tlLeagueList.removeAllTabs()
+            tournaments.forEachIndexed { _, tournament ->
+                val tab = tlLeagueList.newTab().apply {
+                    customView = createTournamentTabView(tournament)
+                    view.setPadding(0, 0, 10f.dp2px, 0)
                 }
-            }.also { it.attach() }
+                tlLeagueList.addTab(tab)
+            }
+            vpGameList.registerOnPageChangeCallback(object : OnPageChangeCallback() {
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    tlLeagueList.getTabAt(position)?.select()
+                }
+            })
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
@@ -386,17 +397,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
             tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
-                    viewPagerAnimHelper.doViewPagerAnim(
-                        targetPosition = tab?.position ?: 0,
-                        viewPager = mBinding.layoutContainer.vpGameList,
-                        fakeViewPager = mBinding.layoutContainer.ivFaker
-                    )
-                    tab?.customView?.isSelected = true
-                    val selectedIndex = tab?.position ?: 0
-                    getSelectedRecently31Scheduled(selectedIndex)
+                    tab?.let {
+                        viewPagerAnimHelper.doNewHomeViewPagerAnim(
+                            targetPosition = tab.position,
+                            viewPager = mBinding.layoutContainer.vpGameList,
+                            fakeViewPager = mBinding.layoutContainer.ivFaker
+                        )
 
-                    tournaments.getOrNull(selectedIndex)?.id?.apply {
-                        mViewModel.setCurrentTournamentId(this)
+                        getSelectedRecently31Scheduled(it.position)
+                        tournaments.getOrNull(it.position)?.id
+                            ?.let { id -> mViewModel.setCurrentTournamentId(id)}
+
                     }
                 }
 
