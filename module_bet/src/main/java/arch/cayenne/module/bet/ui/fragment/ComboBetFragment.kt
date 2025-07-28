@@ -102,8 +102,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        (mBinding.rvBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        mBinding.rvBet.itemAnimator = null
         mBinding.rvMultiBet.itemAnimator = null
 
         mBinding.rvBet.adapter = betSelectionAdapter
@@ -369,11 +367,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
-        val sumWinMoney =
-            getString(R.string.btn_bet_win_money).format(
-                mViewModel.moneySymbol,
-                winMoney.getFormalMoney()
-            )
+        val sumWinMoney = "${mViewModel.moneySymbol}${winMoney.getFormalMoney()}"
         mBinding.tvBetMoney.text = sumWinMoney
     }
 
