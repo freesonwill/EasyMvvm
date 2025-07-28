@@ -10,6 +10,8 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -321,7 +323,15 @@ class SearchResultDirectMatchFragment :
 
         datePicker =
             SearchDatePickerFragment.Builder().apply {
-                setMarginTop(contentBinding.clBasicInfo.height + contentBinding.clDate.height + 14.dp2px)
+                val statusBarHeight =
+                    ViewCompat.getRootWindowInsets(requireView())
+                        ?.getInsets(WindowInsetsCompat.Type.statusBars())?.top ?: 0
+                val clDateBottom = run {
+                    IntArray(2).apply {
+                        contentBinding.clDate.getLocationOnScreen(this)
+                    }[1] + contentBinding.clDate.height
+                }
+                setMarginTop(clDateBottom - statusBarHeight)
                 setMarginStart(8.dp2px)
                 setMarginEnd(8.dp2px)
                 setSchemeDates(mViewModel.racedDateMap)
