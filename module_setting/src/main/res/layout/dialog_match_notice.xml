@@ -129,8 +129,7 @@
             android:layout_height="@dimen/dp_62"
             android:layout_marginTop="@dimen/dp_14"
             android:focusable="true"
-            android:clickable="true"
-            android:background="@drawable/ripple_effect_rectangle">
+            android:clickable="true">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -176,10 +175,9 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/fav_item"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_62"
-            android:focusable="true"
+            android:layout_height="67dp"
             android:clickable="true"
-            android:background="@drawable/ripple_effect_rectangle">
+            android:focusable="true">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -227,8 +225,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_62"
             android:focusable="true"
-            android:clickable="true"
-            android:background="@drawable/ripple_effect_rectangle">
+            android:clickable="true">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
