@@ -32,6 +32,7 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         TitleBarPersonalInfoBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
     private var personalInfoAdapter = PersonalInfoAdapter()
+
     override fun initView(savedInstanceState: Bundle?) {
         val layoutManager = object : GridLayoutManager(context, 4) {
             override fun canScrollVertically() = false
@@ -130,6 +131,5 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
     }
 
     override fun createObserver() {
-//        TODO("Not yet implemented")
     }
 }
