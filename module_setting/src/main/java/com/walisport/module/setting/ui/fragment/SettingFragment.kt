@@ -34,7 +34,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         })
         updateSelectItem()
 
-        if (BuildConfig.DEBUG) {
+        if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.BUILD_TYPE == "qatest") {
             mBinding.tvVersion.isVisible = true
             val appGame = Utils.getApp()
             val pi = appGame.packageManager.getPackageInfo(appGame.packageName, 0)
