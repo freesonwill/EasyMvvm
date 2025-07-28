@@ -75,7 +75,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                 )
             )
         )
-        match.marketList.forEach { market ->
+        match.marketList.forEachIndexed { index, market ->
             val marketId = market.marketId
             markets.add(
                 MarketBean(
@@ -88,7 +88,7 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
             var selectionCount = 0
             market.marketDetailList.forEachIndexed { index, detail ->
                 selectionCount += detail.selectionList.size
-                detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
+                detail.selectionList.filter { it.selectionId != 0L }.forEachIndexed { selectionIndex, selection ->
                     val selectionId = selection.selectionId
                     selections.add(
                         SelectionBean(
@@ -106,11 +106,11 @@ fun List<Common.Match>.toRoomData() : MatchFullData {
                             parlay = selection.parlay,
                         )
                     )
-                    marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
+                    marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId, selectionIndex))
                 }
             }
             matchMarketCrossRefs.add(
-                MatchMarketCrossRef(matchId,marketId, selectionCount)
+                MatchMarketCrossRef(matchId,marketId, selectionCount, index)
             )
         }
     }
@@ -169,7 +169,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
             )
         }
 
-        matchNotify.marketUpdateList.forEach { market ->
+        matchNotify.marketUpdateList.forEachIndexed { index, market ->
             val marketId = market.marketId
             markets.add(
                 MarketBean(
@@ -181,7 +181,7 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
             var selectionCount = 0
             market.marketDetailList.forEachIndexed { index, detail ->
                 selectionCount += detail.selectionList.size
-                detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
+                detail.selectionList.filter { it.selectionId != 0L }.forEachIndexed { selectionIndex, selection ->
                     val selectionId = selection.selectionId
                     selections.add(
                         SelectionBean(
@@ -199,11 +199,11 @@ fun List<Client.MatchNotify>.toRoomData() : MatchUpdateData {
                             parlay = selection.parlay,
                         )
                     )
-                    marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
+                    marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId, selectionIndex))
                 }
             }
             matchMarketCrossRefs.add(
-                MatchMarketCrossRef(matchId,marketId,selectionCount)
+                MatchMarketCrossRef(matchId,marketId,selectionCount, index)
             )
         }
     }
@@ -248,7 +248,7 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
             )
         )
     )
-    this.marketUpdateList.forEach { market ->
+    this.marketUpdateList.forEachIndexed { marketIndex, market ->
         val marketId = market.marketId
         markets.add(
             MarketBean(
@@ -260,7 +260,7 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
         var selectionCount = 0
         market.marketDetailList.forEachIndexed { index, detail ->
             selectionCount += detail.selectionList.size
-            detail.selectionList.filter { it.selectionId != 0L }.forEach { selection ->
+            detail.selectionList.filter { it.selectionId != 0L }.forEachIndexed { selectionIndex, selection ->
                 val selectionId = selection.selectionId
                 selections.add(
                     SelectionBean(
@@ -278,11 +278,11 @@ fun Client.MatchInfoNotify.toRoomData() : MatchUpdateData {
                         parlay = selection.parlay,
                     )
                 )
-                marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId))
+                marketSelectCrossRef.add(MarketSelectCrossRef(matchId, marketId, selectionId, selectionIndex))
             }
         }
         matchMarketCrossRefs.add(
-            MatchMarketCrossRef(matchId,marketId,selectionCount)
+            MatchMarketCrossRef(matchId,marketId,selectionCount, marketIndex)
         )
     }
 
