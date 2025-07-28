@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.BetResultToastView
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarColorExt
 import arch.cayenne.lib.common.utils.ImmersionBarUtils.immersionBarSkinTypeExt
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -38,6 +39,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+
+        val metrics = resources.displayMetrics
+        DensityInfo.density = metrics.density
+        DensityInfo.scaledDensity = metrics.scaledDensity
         super.initView(savedInstanceState)
         fabFragment.show(this)
         notifyFragment.show(this)
