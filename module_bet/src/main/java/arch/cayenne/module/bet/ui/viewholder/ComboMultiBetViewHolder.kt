@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.viewholder
 
 import android.annotation.SuppressLint
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getOdds
 import arch.cayenne.module.bet.R
@@ -41,9 +42,9 @@ class ComboMultiBetViewHolder(private val mBinding: ItemComboMultiBetBinding, pr
         }
         val moneyHint = "$moneySymbol ${getString(R.string.et_money_hint).format(item.minAmount.getMoney(), item.maxAmount.getMoney())}"
         mBinding.etMoney.hint = moneyHint
-        val amountMoney = "$moneySymbol${item.amount.getMoney()}"
+        val amountMoney = "$moneySymbol${item.amount.getFormalMoney()}"
         mBinding.tvMoney.text = amountMoney
-        val maxMoney = "$moneySymbol${item.maxWinMoney.getMoney()}"
+        val maxMoney = "$moneySymbol${item.maxWinMoney.getFormalMoney()}"
         mBinding.tvMaxMoney.text = maxMoney
     }
 }

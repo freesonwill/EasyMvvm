@@ -20,7 +20,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
-import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.module.bet.R
@@ -361,14 +360,14 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
 
     private fun setSumBetMoney(data: List<ComboMultiBetBean>) {
         val sumMoney = data.sumOf { it.amount }
-        val money = "${mViewModel.moneySymbol}${sumMoney.getMoney()}"
+        val money = "${mViewModel.moneySymbol}${sumMoney.getFormalMoney()}"
         mBinding.tvSumBetMoney.text = money
 
         val winMoney = data.sumOf { it.maxWinMoney }
         val sumWinMoney =
             getString(R.string.btn_bet_win_money).format(
                 mViewModel.moneySymbol,
-                winMoney.getMoney()
+                winMoney.getFormalMoney()
             )
         mBinding.tvBetMoney.text = sumWinMoney
     }
