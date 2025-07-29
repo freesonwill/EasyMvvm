@@ -1,16 +1,15 @@
 package arch.cayenne.module.home.ui.fragment
 
-import android.animation.ValueAnimator
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.view.GravityCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import arch.cayenne.lib.base.data.constants.StatusBarMode
@@ -27,6 +26,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -46,7 +46,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.coroutines.launch
 import java.util.Locale
-import kotlin.math.abs
 import kotlin.reflect.KClass
 
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
@@ -114,6 +113,9 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             rvSportsList.apply {
                 layoutManager =
                     LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                edgeEffectFactory = BounceEdgeEffectHelper(requireContext())
+                overScrollMode = RecyclerView.OVER_SCROLL_ALWAYS
+                isNestedScrollingEnabled = false
                 adapter = sportsListAdapter
             }
         }
