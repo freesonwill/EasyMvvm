@@ -7,10 +7,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -66,10 +68,21 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     }
 
     override fun createObserver() {
+        launch(Lifecycle.State.RESUMED) {
+            mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    DataState.NetworkUnavailable -> {
+                        mBinding.mainLayout.setState(
+                            States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                    }
+                }
+            }
             mViewModel.competitionTables.observe(viewLifecycleOwner) {
                 if (it.isEmpty() && standsAdapter.itemCount == 0) {
                     mBinding.mainLayout.setState(
-                        DynamicStateLayout.States.DATA_EMPTY,
+                        States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
                     )
                 } else {
@@ -82,6 +95,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                     val leagueID = it.basicInfo.tournamentId
                     mViewModel.getCompetitionData(leagueID)
                 }
+            }
         }
     }
 }

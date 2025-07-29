@@ -7,10 +7,12 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.lifecycle.Lifecycle
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
@@ -56,11 +58,18 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     }
 
     override fun createObserver() {
-
-            //监听比赛id变化
-            mainViewModel.matchId.observe(viewLifecycleOwner){
-                mViewModel.geMatchLineupDetail(it)
+        mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.NetworkUnavailable->{
+                    mBinding.llContent.visibility = View.INVISIBLE
+                    mBinding.main.setState(
+                        States.NETWORK_ANOMALY,
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
             }
+        }
+
             mViewModel.matchLineupDetail.observe(viewLifecycleOwner) { it ->
                 it?.let {
                     mBinding.main.setVisibilityGone()
@@ -90,6 +99,7 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
                     mBinding.awaySubstituteName.text = it.basicInfo.awayTeam
                     mBinding.homeIncidentsName.text = it.basicInfo.homeTeam
                     mBinding.awayIncidentsName.text = it.basicInfo.awayTeam
+                    mViewModel.geMatchLineupDetail(it.matchId)
                 }
             }
     }

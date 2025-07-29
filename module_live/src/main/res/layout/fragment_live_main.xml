@@ -8,17 +8,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
-<arch.cayenne.lib.common.ui.view.DynamicStateLayout
-    android:id="@+id/clDynamics"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="@color/app_bg"
-    android:orientation="vertical">
+
 <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
     android:id="@+id/liveMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/app_bg"
+    android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <arch.cayenne.lib.common.ui.view.TitleBarView
@@ -69,10 +65,6 @@
         app:layout_constraintStart_toStartOf="@id/vp_page"
         app:layout_constraintTop_toTopOf="@id/vp_page" />
 </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
-
-
-
-</arch.cayenne.lib.common.ui.view.DynamicStateLayout>
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="312dp"

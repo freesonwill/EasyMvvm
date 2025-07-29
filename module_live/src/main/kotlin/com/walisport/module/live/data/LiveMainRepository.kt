@@ -1,5 +1,8 @@
 package com.walisport.module.live.data
 
+import android.annotation.SuppressLint
+import androidx.room.Transaction
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
 import arch.cayenne.lib.database.GameDatabase
 import arch.cayenne.lib.database.entity.InfoBean
@@ -9,6 +12,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.LiveRemoteManager
 import galaxy.client.proto.Client.MatchBasicUpdate
 import galaxy.client.proto.Sloth
+import galaxy.common.proto.Common
 import galaxy.common.proto.Common.Market
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,23 +29,27 @@ class LiveMainRepository(
     override val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
     fun observeBalance(): Flow<InfoBean> = database.infoDao().observeBalance().flowOn(Dispatchers.IO)
     fun observeMatchBean(matchId: Long) = database.liveMatchDao().observeMatchById(matchId).flowOn(Dispatchers.IO)
-    fun observeConnectStateFlow(): Flow<ConnectState> = remoteManager.getConnectStateFlow()
-
+    fun observeLoginChange() = database.infoDao().observeIsLogin()
     // 500-1003: 获取比赛详情
-    suspend fun getMatchRes(matchId: Long): LiveMatchBean? {
+    @SuppressLint("SuspiciousIndentation")
+    @Transaction
+    suspend fun getMatchRes(matchId: Long):ApiResponseState = withContext(scope.coroutineContext)  {
         clearMatchCache()
-        val matchFullData = remoteManager.getMatchReq(scope, matchId)?.toRoomData()
-        if (matchFullData != null) {
-            database.liveMatchDao().insertFullMatch(
-                matches = matchFullData.match,
-                markets = matchFullData.markets,
-                selections = matchFullData.selections,
-                selectionsRecord = matchFullData.selectionsRecord,
-            )
-
-            return matchFullData.match.find { it.matchId == matchId }
+        val state :ApiResponseState= remoteManager.getMatchReq(scope, matchId)
+        if (state is ApiResponseState.Succeeded<*>) {
+         val data : Common.Match? =  state.data as Common.Match
+          val matchFullData = data?.toRoomData()
+            if (matchFullData != null) {
+                database.liveMatchDao().insertFullMatch(
+                    matches = matchFullData.match,
+                    markets = matchFullData.markets,
+                    selections = matchFullData.selections,
+                    selectionsRecord = matchFullData.selectionsRecord,
+                )
+                return@withContext( ApiResponseState.Succeeded(matchFullData.match.find { it.matchId == matchId }))
+            }
         }
-        return null
+        return@withContext(state)
     }
 
     private fun clearMatchCache() {

@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -161,6 +162,19 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
     }
 
     override fun createObserver() {
+        mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.NetworkUnavailable->{
+                    mBinding.LLCBetOn.visibility = View.GONE
+                    mBinding.ivMenu.visibility = View.GONE
+                    mBinding.clDynamics.setState(
+                        States.NETWORK_ANOMALY,
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
+            }
+        }
+
         liveBetOnAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
 
