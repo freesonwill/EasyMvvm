@@ -10,49 +10,54 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ll_root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-            android:id="@+id/ct_source"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_root"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/video_source_portrait_height"
-            android:layout_marginTop="@dimen/video_source_portrait_margin_top"
-            android:background="@color/video_source_fragment_bkg">
+            android:layout_height="wrap_content">
 
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_10"
-                android:text="@string/choose_source"
-                android:textColor="@color/video_source_fragment_title_color"
-                android:textSize="@dimen/sp_13"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_close"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
-                android:layout_marginEnd="@dimen/dp_2"
-                android:padding="@dimen/dp_10"
-                android:src="@drawable/shape_choose_source_close"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_source"
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:id="@+id/ct_source"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_110"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:layout_height="@dimen/video_source_portrait_height"
+                android:layout_marginTop="@dimen/video_source_portrait_margin_top"
+                android:background="@color/video_source_fragment_bkg">
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:text="@string/choose_source"
+                    android:textColor="@color/video_source_fragment_title_color"
+                    android:textSize="@dimen/sp_13"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
-        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_close"
+                    android:layout_width="@dimen/dp_40"
+                    android:layout_height="@dimen/dp_40"
+                    android:layout_marginEnd="@dimen/dp_2"
+                    android:padding="@dimen/dp_10"
+                    android:src="@drawable/shape_choose_source_close"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_110"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+
+
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </layout>
