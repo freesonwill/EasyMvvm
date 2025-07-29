@@ -36,6 +36,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     }
 
     override fun refreshData(status: BetSlipEnum) {
+
         if (type == null) {
             type = status
             repo.registerObserveOrderBean(status.value)

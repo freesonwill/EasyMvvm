@@ -1,14 +1,17 @@
 package arch.cayenne.module.betslip.ui.fragment
 
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
 import arch.cayenne.module.betslip.R
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
@@ -37,6 +40,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     override fun createObserver() {
         filterViewModel?.apply {
             onFilterChangeListener.observe(viewLifecycleOwner) {
+                loadingState()
                 mViewModel.setIds(it.matchId, it.sportIds)
                 mViewModel.setTime(it.startTime, it.endTime)
                 mViewModel.refreshData(getBetSlipEnum())
@@ -57,8 +61,17 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
         if (filterViewModel == null) {
             mViewModel.setIds(-1, -1)
             mViewModel.setTime(null, null)
+            loadingState()
             mViewModel.refreshData(getBetSlipEnum())
         }
+    }
+
+    private fun loadingState(){
+        val recyclerView = mBinding.root.findViewById<RecyclerView>(R.id.recyclerView)
+        val emptyState = mBinding.root.findViewById<DynamicStateLayout>(R.id.empty_state)
+        emptyState.setState(DynamicStateLayout.States.LOADING, arch.cayenne.lib.common.R.string.loading.getString())
+        recyclerView.isVisible = false
+        emptyState.isVisible = true
     }
 
     private fun updateState(state: DataState){
@@ -73,7 +86,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
              DataState.DataEmpty,
              DataState.NetworkUnavailable ->{
                  emptyState.showEmptyData(true, recyclerView)
-                 val resId = if(DataState.DataEmpty == state)  R.string.lineup_empty else  arch.cayenne.lib.common.R.string.error_net
+                 val resId = if(DataState.DataEmpty == state)  R.string.betslip_list_empty else  arch.cayenne.lib.common.R.string.error_net
                  val newState = if (DataState.DataEmpty == state) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NETWORK_ANOMALY
                  emptyState.setState(newState,getString(resId))
              }

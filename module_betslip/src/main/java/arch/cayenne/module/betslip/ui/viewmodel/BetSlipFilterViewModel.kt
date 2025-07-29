@@ -42,10 +42,10 @@ class BetSlipFilterViewModel: BaseViewModel() {
      * 检查matchId 和 sportId,不做重复查询
      * */
     fun checkUpdate(){
-        val filter = onFilterChangeListener.value
-        if(filter?.matchId != matchId){
+//        val filter = onFilterChangeListener.value
+//        if(filter?.matchId != matchId){
             updateFilter()
-        }
+//        }
     }
 
     private fun updateFilter() {
