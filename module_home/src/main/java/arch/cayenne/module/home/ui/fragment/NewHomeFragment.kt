@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -39,6 +38,7 @@ import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
+import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
 import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
@@ -60,9 +60,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -379,50 +376,25 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             )
             vpGameList.offsetLeftAndRight(1)
 
-            tlLeagueList.removeAllTabs()
-            tlLeagueList.clearOnTabSelectedListeners()
-            tournaments.forEachIndexed { index, tournament ->
-                val tab = tlLeagueList.newTab().apply {
-                    customView = createTournamentTabView(tournament)
-                    view.setPadding(0, 0, 7f.dp2px, 0)
-                }
-                tlLeagueList.addTab(tab, tournament.isSelected)
-                if (tournament.isSelected) {
-                    getSelectedRecently31Scheduled(index)
-                    vpGameList.setCurrentItem(index, false)
-                }
-            }
-            vpGameList.registerOnPageChangeCallback(object : OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    super.onPageSelected(position)
-                    tlLeagueList.getTabAt(position)?.select()
-                }
-            })
-
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
 
             //因為一開始有觸發resetHome(),觸發resetLiveData()，所以observe livedata tournaments可能會是空的
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
-            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.let {
-                        viewPagerAnimHelper.doNewHomeViewPagerAnim(
-                            targetPosition = tab.position,
-                            viewPager = mBinding.layoutContainer.vpGameList,
-                            fakeViewPager = mBinding.layoutContainer.ivFaker
-                        )
-                        getSelectedRecently31Scheduled(it.position)
-                        tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
 
-                    }
+            CustomTabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
+                tournaments.getOrNull(position)?.let {
+                    tab.customView = createTournamentTabView(it)
+                    tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
-
+            }.also {
+                it.attach(mBinding.layoutContainer.ivFaker) { position ->
+                    getSelectedRecently31Scheduled(position)
+                    tournaments.getOrNull(position)?.id
+                        ?.let { id -> mViewModel.setCurrentTournamentId(id) }
+                }
+            }
         }
     }
 
