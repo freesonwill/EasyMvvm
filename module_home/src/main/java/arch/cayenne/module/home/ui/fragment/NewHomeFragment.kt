@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -213,6 +214,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         expanded: Boolean,
         type: TournamentListType
     ) {
+        "KC_ toggleTournamentMoreSection ${expanded}".logi()
         val tag = "tournament_dropdown"
         val fm = childFragmentManager
         val container = mBinding.llTournamentsDropdown
@@ -241,7 +243,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
                 }
                 remove(fragment)
-                commitAllowingStateLoss()
+                commitNow()
             }
         }
     }
