@@ -61,7 +61,7 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "ref.matchId as championMatchId " +
             "FROM TournamentBean bean " +
             "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
-            "WHERE ref.playType =:playTypeId and ref.sportId =:sportId AND ref.matchId != null " +
+            "WHERE ref.playType =:playTypeId and ref.sportId =:sportId " +
             "order by weight desc, `index` asc"
     )
     abstract suspend fun queryChampionTournaments(playTypeId: Int, sportId: Int): List<ChampionTournamentDataModel>

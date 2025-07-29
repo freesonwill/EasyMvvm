@@ -2,7 +2,6 @@ package arch.cayenne.module.home.data.repo
 
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.repository.BaseRepository
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.database.dao.InfoDao
 import arch.cayenne.lib.database.dao.TournamentDao
 import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
@@ -12,7 +11,6 @@ import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.extension.sendAndWaitProtoMessageResponse
 import arch.cayenne.module.home.data.constants.PlayType
-import arch.cayenne.module.home.ui.fragment.TournamentListType
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,22 +22,7 @@ class TournamentListRepository(
     private val infoDao: InfoDao,
 ) : BaseRepository() {
 
-    suspend fun getAllTournaments(type: TournamentListType, playTypeId: Int, sportId: Int): ApiResponseState {
-        return if (type == TournamentListType.MORE) {
-            ApiResponseState.Succeeded(tournamentDao.queryTournaments(playTypeId, sportId))
-        } else {
-            tournamentDao.queryChampionTournaments(PlayType.CHAMPION.id, sportId).let {
-                if (it.isNotEmpty()) {
-                    ApiResponseState.Succeeded(this)
-                } else {
-                    getChampionTournament(sportId)
-                }
-            }
-
-        }
-    }
-
-    private suspend fun getChampionTournament(sportId: Int): ApiResponseState { //先暫時用TournamentDataModel
+    suspend fun getChampionTournament(sportId: Int): ApiResponseState { //先暫時用TournamentDataModel
         val res = socketManager.sendAndWaitProtoMessageResponse<Client.ListOutrightMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
