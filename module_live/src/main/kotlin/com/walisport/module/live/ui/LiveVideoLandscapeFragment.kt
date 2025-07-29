@@ -24,6 +24,7 @@ import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
@@ -568,6 +569,16 @@ class LiveVideoLandscapeFragment :
         super.onDestroy()
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig, mBinding.root)
+
+        val metrics = resources.displayMetrics
+
+        //density和scaledDensity被篡改，尝试恢复
+        if (metrics.density != DensityInfo.density && DensityInfo.density > 0) {
+            metrics.density = DensityInfo.density
+        }
+        if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
+            metrics.scaledDensity = DensityInfo.scaledDensity
+        }
     }
 
 
