@@ -67,12 +67,13 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
-            "combotyoe ${order.comboType}".logd("aaa")
             it.betUnsettledTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
-            val earlyAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)}"
-            it.betUnsettledBtAmount.text = earlyAmount
+            val earlyAmount = BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)
+            val earlyAmountStr = "${CurrencySymbols.getSymbol(order.currency)}${earlyAmount}"
+            it.betUnsettledBtAmount.text = earlyAmountStr
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
+            it.betUnsettledBtSettle.isVisible = (earlyAmount.toDoubleOrNull() ?: 0.0) >= 10
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
                 val comboValue = "$combo*${order.comboCount}"
@@ -88,6 +89,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                 }
             }
         }
+
         earlySettleStatus(order.earlySettlePrice.settleStatus)
     }
 
@@ -107,7 +109,6 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                 it.betUnsettledBtProgress.isVisible = false
             }
         }
-
     }
 
     fun setEarlySettleSubmitListener(listener: RecyclerItemListener<String>) {
