@@ -306,9 +306,9 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_tournament_more"
-            android:layout_width="35dp"
+            android:layout_width="50dp"
             android:layout_height="@dimen/dp_48"
-            android:paddingStart="@dimen/dp_1"
+            android:paddingStart="@dimen/dp_16"
             android:paddingTop="@dimen/dp_10"
             android:paddingEnd="@dimen/dp_10"
             android:paddingBottom="@dimen/dp_10"
