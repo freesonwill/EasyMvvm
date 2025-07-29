@@ -264,11 +264,12 @@
 
         <arch.cayenne.lib.skin.widget.SkinnableView
             android:id="@+id/v_league_more_mask"
-            android:layout_width="65dp"
-            android:layout_height="@dimen/dp_48"
+            android:layout_width="70dp"
+            android:layout_height="@dimen/dp_52"
             android:background="@drawable/gradient_league_tab_more"
             android:paddingTop="@dimen/dp_10"
             android:paddingBottom="@dimen/dp_14"
+            android:layout_marginEnd="35dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cl_second_navbar" />
 
@@ -276,8 +277,9 @@
             android:id="@+id/ll_home_tournament_more"
             android:layout_width="@dimen/dp_62"
             android:layout_height="@dimen/dp_34"
-            android:layout_marginTop="@dimen/dp_3"
+            android:layout_marginTop="@dimen/dp_4"
             android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_4"
             android:background="@drawable/shape_tournament_more_bg"
             android:orientation="horizontal"
             android:visibility="gone"
@@ -292,6 +294,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_1"
                 android:text="@string/home_tournament_more"
                 android:textColor="@color/secondary_text"
                 android:textSize="@dimen/sp_14" />
@@ -301,17 +304,18 @@
                 android:layout_height="8dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginTop="@dimen/dp_1"
+                android:layout_marginBottom="@dimen/dp_1"
                 android:src="@drawable/ic_tournament_more" />
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
         <arch.cayenne.lib.skin.widget.SkinnableImageView
             android:id="@+id/iv_tournament_more"
-            android:layout_width="50dp"
-            android:layout_height="@dimen/dp_48"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_10"
+            android:layout_width="@dimen/dp_52"
+            android:layout_height="@dimen/dp_52"
+            android:paddingStart="@dimen/dp_18"
+            android:paddingTop="@dimen/dp_13"
             android:paddingEnd="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_16"
             android:src="@drawable/ic_league_tabs_expand"
             app:layout_constraintBottom_toBottomOf="@+id/v_league_more_mask"
             app:layout_constraintEnd_toEndOf="parent"
