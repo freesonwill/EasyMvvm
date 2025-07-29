@@ -46,6 +46,7 @@ import plugin.koin.KoinViewModel
 class HomeViewModel : BaseViewModel() {
     companion object {
         const val TOURNAMENT_ALL_ID = 0
+        const val DEFAULT_DATE = -1L  //預設值，如果任何livedata收到這個預設值可以先略過要做的事情，主要拿來避免頁面生成時拿到舊的date
     }
 
     private val _currentPlayTypeId: MutableStateFlow<Int> = MutableStateFlow(PlayType.TODAY.id)
@@ -290,6 +291,7 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的二級選項(各項運動)
     fun setCurrentSport(sportId: Int) {
+        _selectedDate.value = Event(DEFAULT_DATE)  //先送出一個初始值，避免MatchListPage生成時會拿到舊值先拿取資料
         _currentSportId.value = sportId
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)

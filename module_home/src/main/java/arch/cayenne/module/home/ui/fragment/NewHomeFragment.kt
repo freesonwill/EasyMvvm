@@ -283,7 +283,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 tlDateList.getTabAt(index)?.select()
             } else {
                 resetDateTabs()
-                addDateTabListener()
             }
         }
     }
@@ -507,6 +506,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
+            if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
             val index = getFutureSevenDays().indexOfFirst{ it.third == select }
             setSelectedDateTab(index)
         }
