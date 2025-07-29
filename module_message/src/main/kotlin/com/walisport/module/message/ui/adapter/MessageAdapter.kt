@@ -31,7 +31,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
@@ -43,7 +43,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
@@ -55,7 +55,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
+                binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {

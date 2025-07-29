@@ -35,6 +35,7 @@
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_12"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 android:background="@drawable/icon_message_delete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
