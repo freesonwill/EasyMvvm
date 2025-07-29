@@ -33,27 +33,33 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             findNavController().navigateUp()
         })
         updateSelectItem()
-
         if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.BUILD_TYPE == "qatest") {
             mBinding.tvVersion.isVisible = true
             val appGame = Utils.getApp()
             val pi = appGame.packageManager.getPackageInfo(appGame.packageName, 0)
-            mBinding.tvVersion.text = "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
+            mBinding.tvVersion.text =
+                "ver.${pi.versionName}_${arch.cayenne.lib.common.BuildConfig.BUILD_TIME}"
         }
     }
 
     override fun initListener() {
         mBinding.settingOdds.clickNoRepeat {
-            //showOddsDisplayDialog()
+            showOddsDisplayDialog()
         }
         mBinding.settingNotice.clickNoRepeat {
-            //navigate(R.id.action_settingFragment_to_noticedFragment)
+            mBinding.settingBg.postDelayed({
+                navigate(R.id.action_settingFragment_to_noticedFragment)
+            }, 400)
         }
         mBinding.settingBg.clickNoRepeat {
-            navigate(R.id.action_settingFragment_to_backgroundFragment)
+            mBinding.settingBg.postDelayed({
+                navigate(R.id.action_settingFragment_to_backgroundFragment)
+            }, 400)
         }
         mBinding.settingLanguage.clickNoRepeat {
-            //navigate(R.id.action_settingFragment_to_languageFragment)
+            mBinding.settingBg.postDelayed({
+                navigate(R.id.action_settingFragment_to_languageFragment)
+            }, 400)
         }
     }
 
