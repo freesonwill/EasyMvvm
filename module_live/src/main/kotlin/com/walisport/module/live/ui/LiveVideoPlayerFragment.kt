@@ -131,7 +131,8 @@ class LiveVideoPlayerFragment :
                         // 默认不加密
                         it.audioDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
                         it.videoDecrypt = DecryptMode.DECRYPT_MODE_NONE.transformToInt()
-                        it.reconnectCount = -1 // Demo重试一百次, -1不限制
+                        it.reconnectCount = 10 // 重试10次, -1不限制
+                        it.reconnectTime = 15
                         //开启硬件加速
                         it.isHWDecode = true
 
