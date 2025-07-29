@@ -124,6 +124,7 @@ class HomeRepository(
                         weight = Int.MAX_VALUE,
                         index = 0,
                         coordinateY = 0,
+                        matchId = null,
                     )
                 }
             )
@@ -151,6 +152,7 @@ class HomeRepository(
                         weight = tournament.weight,
                         index = index+1,
                         coordinateY = 0,
+                        matchId = null,
                     )
                 }
             )

@@ -244,7 +244,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     setCustomAnimations(0, R.anim.slide_out_to_top)
                 }
                 remove(fragment)
-                commitAllowingStateLoss()
+                commitNow()
             }
         }
     }
