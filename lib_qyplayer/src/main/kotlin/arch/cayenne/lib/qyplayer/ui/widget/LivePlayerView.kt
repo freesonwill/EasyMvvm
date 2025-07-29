@@ -57,6 +57,7 @@ class LivePlayerView @JvmOverloads constructor(
 
     private lateinit var mPlayerMode: PlayerMode
 
+    private var bufferingTimeoutJob: Job? = null
 
     fun init(playerMode: PlayerMode) {
         mPlayerMode = playerMode
@@ -389,13 +390,22 @@ class LivePlayerView @JvmOverloads constructor(
 
         when (mPlayerState) {
             PlayerState.PLAYING -> {
-
+                bufferingTimeoutJob?.cancel()
             }
 
             PlayerState.PAUSED -> {
                 //没有暂停按钮，
             }
 
+            PlayerState.CACHING, PlayerState.CONNECTING -> {
+                // 启动协程，10秒超时
+                // 如果10秒后还在loading状态， 展示加载失败页面
+                bufferingTimeoutJob?.cancel()
+                bufferingTimeoutJob = findViewTreeLifecycleOwner()?.lifecycleScope?.launch {
+                    delay(10000) //这里延迟10s，如果用MainScope会造成泄漏，因为LivePlayerView存在复用
+                    playerStateListener?.invoke(PlayerState.ERROR)
+                }
+            }
 
             else -> {
 
