@@ -50,7 +50,6 @@
                 android:drawablePadding="@dimen/dp_5"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="shjhfahks"
                 android:gravity="center_vertical"
                 android:textColor="@color/title_bar"
                 android:textSize="15sp"

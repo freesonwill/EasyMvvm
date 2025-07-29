@@ -1,5 +1,6 @@
 package com.walisport.module.live
 
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.data.ApiCode
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okio.utf8Size
 
 class LiveRemoteManager(private val socketManager: WebSocketManager) {
@@ -59,7 +61,7 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
     }
 
     // 500-1003: 获取比赛详情
-    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): Common.Match? {
+    suspend fun getMatchReq(scope: CoroutineScope, matchId: Long): ApiResponseState = withContext(scope.coroutineContext) {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.GetMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
@@ -69,11 +71,11 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
                 this.matchId = matchId
             }.build()
         }
-        if (result.error == null && result.data != null) {
-        //    LogUtils.dTag("result", "matchMainMatchResult----->${result.toString()}")
-            return result.data!!.match
+        return@withContext if (result.error == null && result.data != null) {
+            ApiResponseState.Succeeded(result.data!!.match)
+        } else {
+            ApiResponseState.Failed(result.error)
         }
-        return null
     }
 
     // 500-1102: 订阅比赛详情

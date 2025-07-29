@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -73,7 +74,7 @@ class LiveMainViewModel(
     private val _observeMainMatch = MutableLiveData<LiveMatchBean>()
     val observeMainMatch: LiveData<LiveMatchBean> = _observeMainMatch
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
-    fun observeConnectStateFlow(): Flow<ConnectState> = repo.observeConnectStateFlow()
+    fun observeLoginChange(): Flow<Boolean> = repo.observeLoginChange()
 
     //监听matchId和sportId，并设置1s的防抖
     @OptIn(FlowPreview::class)
@@ -116,15 +117,13 @@ class LiveMainViewModel(
     }
 
     fun getMainMatch(matchId: Long) {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
+            callApi({
                 repo.getMatchRes(matchId)
-            }
-            result?.let {
-                _mainMatch.value = it  // 主线程更新 LiveData
-
-            }
-        }
+            },{
+                if (it is ApiResponseState.Succeeded<*>) {
+                    _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
+                }
+            })
     }
 
     fun observeMatchBean(matchId: Long) {

@@ -3,9 +3,11 @@ package com.walisport.module.live.ui
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Lifecycle
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
+import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.walisport.module.live.R
@@ -52,12 +54,21 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
 
     override fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
-            mainViewModel.matchId.observe(viewLifecycleOwner) {
-                mainViewModel.registerStatisticsNotify(it)
-                mainViewModel.observeMatchStaticsNotify()
+            mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    DataState.NetworkUnavailable -> {
+                        mBinding.mainLayout.setState(
+                            States.NETWORK_ANOMALY,
+                            arch.cayenne.lib.common.R.string.error_net.getString()
+                        )
+                    }
+                }
             }
+
             mainViewModel.mainMatch.observe(viewLifecycleOwner) {
                 it?.let {
+                    mainViewModel.registerStatisticsNotify(it.matchId)
+                    mainViewModel.observeMatchStaticsNotify()
                     homeName = it.basicInfo.homeTeam
                     homeLogo = it.basicInfo.homeTeamIcon
                     awayName = it.basicInfo.awayTeam
@@ -69,20 +80,22 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
             }
             //比赛技术统计推送数据(WebSocket接口)
             mainViewModel.statisticData.observe(viewLifecycleOwner) {
-                it?.let {
-                    mBinding.mainLayout.setVisibilityGone()
-                    if (it.matchTrendData.data.isEmpty()) {
-                        mBinding.llContent.visibility = View.INVISIBLE
-                        mBinding.mainLayout.setState(
-                            DynamicStateLayout.States.DATA_EMPTY,
-                            R.string.lineup_empty.getString()
-                        )
-                    } else {
-                        mBinding.llContent.visibility = View.VISIBLE
-                        parseTrendData(it.matchTrendData)          //比赛趋势信息
-                        parseStatsData(it.stats)                   //统计进球红黄牌等信息
-                        parseHalfTeamData(it.team)                 //统计进度条相关信息
-                        parseTextLive(it.incidents)                //文字直播相关信息
+                if (mainViewModel.apiStateListener.value != DataState.NetworkUnavailable) {
+                    it?.let {
+                        mBinding.mainLayout.setVisibilityGone()
+                        if (it.matchTrendData.data.isEmpty()) {
+                            mBinding.llContent.visibility = View.INVISIBLE
+                            mBinding.mainLayout.setState(
+                                States.DATA_EMPTY,
+                                R.string.lineup_empty.getString()
+                            )
+                        } else {
+                            mBinding.llContent.visibility = View.VISIBLE
+                            parseTrendData(it.matchTrendData)          //比赛趋势信息
+                            parseStatsData(it.stats)                   //统计进球红黄牌等信息
+                            parseHalfTeamData(it.team)                 //统计进度条相关信息
+                            parseTextLive(it.incidents)                //文字直播相关信息
+                        }
                     }
                 }
             }

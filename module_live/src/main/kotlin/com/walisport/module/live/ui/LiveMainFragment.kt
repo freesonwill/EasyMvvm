@@ -13,10 +13,12 @@ import androidx.core.view.GravityCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -45,6 +47,7 @@ import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.data.constants.MatchStatus
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.filter
 
 /**
  * 直播详情页
@@ -184,6 +187,22 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
 
     @SuppressLint("SetTextI18n")
     override fun createObserver() {
+        launch {
+            //网络异常登陆成功后才获取数据
+            mViewModel.observeLoginChange()
+                .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    if (it) {
+                        mViewModel.matchId.value?.let { matchId ->
+                            mViewModel.registerMatchInfoNotify(matchId)
+                            mViewModel.registerStatisticsNotify(matchId)
+                            if (mViewModel.mainMatch.value == null) {
+                                mViewModel.getMainMatch(matchId)
+                            }
+                        }
+                    }
+                }
+        }
         mViewModel.liveBetOnMenu.observe(viewLifecycleOwner) {
             when (it!!) {
                 BetOnMenuStatus.OPEN -> {
@@ -221,7 +240,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 //比赛开始后开启聊天服务
                 val code = it.basicInfo.status
-                if(code in arrayOf(2,5,8)){
+                if (code in arrayOf(2, 5, 8)) {
                     mViewModel.startChatServer()
                 }
             }
@@ -229,34 +248,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         launch(Lifecycle.State.RESUMED) {
             mViewModel.matchIdSportIdObserver.collect {
                 refreshBetSlip()
-            }
-        }
-        launch(Lifecycle.State.RESUMED) {
-            mViewModel.observeConnectStateFlow().collect {
-                //监听连接变化
-                when (it) {
-                    //网络异常
-                    ConnectState.NetworkUnavailable -> {
-                        mBinding.liveMain.visibility = View.GONE
-                        mBinding.clDynamics.setState(
-                            States.NETWORK_ANOMALY,
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        ) {
-                            mViewModel.reconnect()
-                        }
-                    }
-                    //连接成功
-                    ConnectState.ConnectSuccess -> {
-                        mBinding.liveMain.visibility = View.VISIBLE
-                        mBinding.clDynamics.setVisibilityGone()
-                        mViewModel.matchId.value?.let { matchId ->
-                            mViewModel.registerMatchInfoNotify(matchId)
-                            mViewModel.registerStatisticsNotify(matchId)
-                        }
-                    }
-
-                    else -> {}
-                }
             }
         }
     }
@@ -297,12 +288,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         with(mBinding) {
             mBinding.tabLayout.removeAllTabs()
             val list = listOf(
-                    PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
-                    PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
-                    PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
-                    PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
-                    PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
-                    PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
+                PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
+                PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
+                PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
+                PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
+                PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
+                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch(Lifecycle.State.RESUMED) {
                 delay(500)

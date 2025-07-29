@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.model.UnPeekLiveData
+import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.LiveMatchBean
 import arch.cayenne.lib.database.entity.LiveVideoBean
@@ -147,15 +148,13 @@ class LiveVideoPlayerViewModel(
     }
 
     fun getMainMatch(matchId: Long) {
-        viewModelScope.launch {
-            val result = withContext(Dispatchers.IO) {
-                mainRepo.getMatchRes(matchId)
+        callApi({
+            mainRepo.getMatchRes(matchId)
+        },{
+            if (it is ApiResponseState.Succeeded<*>) {
+                _mainMatch.value = it.data!! as LiveMatchBean? // 主线程更新 LiveData
             }
-            result?.let {
-                _mainMatch.value = it  // 主线程更新 LiveData }
-
-            }
-        }
+        })
     }
 
     fun setPlayerState(it: PlayerState) {
