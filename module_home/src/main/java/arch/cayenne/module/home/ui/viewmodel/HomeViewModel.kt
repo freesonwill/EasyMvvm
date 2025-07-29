@@ -165,17 +165,7 @@ class HomeViewModel : BaseViewModel() {
                             }
                         withContext(Dispatchers.Main) {
                             val list = mutableListOf<TournamentDataModel>()
-                            if (it.isEmpty()) {
-                                tournaments.value = Event(
-                                    arrayListOf(
-                                        TournamentDataModel.createAllItem(
-                                            currentPlayTypeId,
-                                            currentSportId
-                                        )
-                                    )
-                                )
-                                return@withContext
-                            }
+                            if (it.isEmpty()) { return@withContext }
                             list.add(
                                 TournamentDataModel.createAllItem(
                                     currentPlayTypeId,
@@ -292,6 +282,15 @@ class HomeViewModel : BaseViewModel() {
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Sport.LoadSuccess)
+            } else if (it is ApiResponseState.Failed && tournaments.value?.peekContent()?.isEmpty() == true) {
+                tournaments.value = Event(
+                    arrayListOf(
+                        TournamentDataModel.createAllItem(
+                            currentPlayTypeId,
+                            currentSportId
+                        )
+                    )
+                )
             }
         })
     }
@@ -303,6 +302,7 @@ class HomeViewModel : BaseViewModel() {
             repository.updateSelectedSportId(currentPlayTypeId, currentSportId)
         }
         if (currentPlayTypeId != PlayType.CHAMPION.id) {
+            tournaments.value = Event(arrayListOf())
             setCurrentSelectedDate()   //目前日期跟著球類走，ex:早盤日期目前是7.11，不管點擊哪一個聯賽都是7.11資料，所以設定完當前選擇的球類後先設定日期
             getCurrentTournament()
         } else {
