@@ -199,9 +199,12 @@ class HomeRepository(
     suspend fun getCurrentSelectedSportId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.sportId
 
     suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) {
-        getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId)?.apply {
-            homeSelectedDao.insert(this)
-        }
+        getCurrentHomeSelectedData(playType)
+            ?.takeIf { it.tournamentId != tournamentId }
+            ?.copy(tournamentId = tournamentId)
+            ?.apply {
+                homeSelectedDao.insert(this)
+            }
     }
     suspend fun getCurrentSelectedTournamentId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.tournamentId
 

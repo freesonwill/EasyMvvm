@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -187,7 +186,6 @@ class TournamentListFragment :
 
     override fun createObserver() {
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            "KC_ state ${it::class.java.name}".logd()
             with(mBinding) {
                 when(it) {
                     is DataState.NetworkUnavailable -> {

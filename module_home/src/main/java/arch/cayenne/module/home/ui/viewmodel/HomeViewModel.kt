@@ -76,9 +76,6 @@ class HomeViewModel : BaseViewModel() {
     private val _selectedDate = MutableLiveData<Event<Long>>() // Pair<leagueId, date>
     val selectedDate: MutableLiveData<Event<Long>> = _selectedDate
 
-    private val _selectedTournamentId = MutableLiveData<Event<Int>>()
-    val selectedTournamentId: MutableLiveData<Event<Int>> = _selectedTournamentId
-
     private val _collapseTournamentDropdown = MutableLiveData<Event<Boolean>>()
     val collapseTournamentDropdown: MutableLiveData<Event<Boolean>> = _collapseTournamentDropdown
 
@@ -156,7 +153,14 @@ class HomeViewModel : BaseViewModel() {
                     }
                 }.map {
                     it.take(10)  //limit
-                }.distinctUntilChanged()
+                }.distinctUntilChanged { old, new ->
+                    if (old.size != new.size) return@distinctUntilChanged false
+                    return@distinctUntilChanged old.indices.all { index ->
+                        old[index].id == new[index].id
+                                && old[index].playTypeId == new[index].playTypeId
+                                && old[index].sportId == new[index].sportId
+                    }
+                }
                 .collect {
                     if (currentPlayTypeId != PlayType.CHAMPION.id) {
                         val selectedTournament =
@@ -173,15 +177,18 @@ class HomeViewModel : BaseViewModel() {
                                 )
                             )
                             list.addAll(it)
-
-                            tournaments.value = Event(list)
                             if (selectedTournament == null) {
                                 setCurrentTournamentId(0)
+                                list.find { it.id == 0 }?.isSelected = true
                             } else if (!it.any { data -> data.id == selectedTournament.id }) {  //有在目前聯賽中，但是沒有在前10筆資料中，所以新增第11筆，並且點擊它
-                                addNewTournament(selectedTournament)
+                                setCurrentTournamentId(selectedTournament.id)
+                                selectedTournament.isSelected = true
+                                list.add(selectedTournament)
                             } else {
+                                list.find { it.id == selectedTournament.id }?.isSelected = true
                                 setCurrentTournamentId(selectedTournament.id)
                             }
+                            tournaments.value = Event(list)
                         }
                     }
                 }
@@ -211,27 +218,13 @@ class HomeViewModel : BaseViewModel() {
         _collapseTournamentDropdown.value = Event(false)
     }
 
-    private fun addNewTournament(tournament: TournamentDataModel) {
-        viewModelScope.launch(Dispatchers.Main) {
-            val currentList = tournaments.value?.peekContent().orEmpty()
-            val existsInCurrent = currentList.any { it.id == tournament.id }
-            if (!existsInCurrent) {
-                val fullList = withContext(Dispatchers.IO) {
-                    val updatedList = currentList
-                        .filterNot { it.id == TOURNAMENT_ALL_ID || it.id == tournament.id }
-                        .toMutableList()
-                        .apply { add(tournament) }
-                    listOf(TournamentDataModel.createAllItem(currentPlayTypeId, currentSportId)) + updatedList
-                }
-                tournaments.value = Event(fullList)
-            }
-            setCurrentTournamentId(tournament.id)
-        }
-    }
-
     fun onTournamentListSelected(tournament: BaseTournamentData) {
         if (tournament is TournamentDataModel) {
-            addNewTournament(tournament)
+            val currentList = tournaments.value?.peekContent() ?: return
+            setCurrentTournamentId(tournament.id)
+            if (!currentList.any { it.id == tournament.id }) {
+                tournaments.value = Event(currentList + tournament)
+            }
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
 
@@ -312,7 +305,6 @@ class HomeViewModel : BaseViewModel() {
 
     //切換當前的三級選項(聯賽)
     fun setCurrentTournamentId(tournamentId: Int) {
-        _selectedTournamentId.postValue(Event(tournamentId))
         viewModelScope.launch(Dispatchers.IO) {
             repository.updateSelectedTournamentId(currentPlayTypeId, tournamentId)
         }

@@ -27,7 +27,8 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "bean.simpleName as simpleName, " +
             "bean.icon as icon, " +
             "ref.weight as weight, " +
-            "ref.hot as hot " +
+            "ref.hot as hot, " +
+            "0 as isSelected " +
             "FROM TournamentBean bean " +
             "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
             "order by weight desc, `index` asc "
@@ -41,7 +42,8 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "bean.simpleName as simpleName, " +
             "bean.icon as icon, " +
             "ref.weight as weight, " +
-            "ref.hot as hot " +
+            "ref.hot as hot, " +
+            "0 as isSelected " +
             "FROM TournamentBean bean " +
             "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
             "WHERE ref.playType =:playTypeId and ref.sportId =:sportId " +
@@ -56,7 +58,8 @@ abstract class TournamentDao: BaseDao<TournamentBean>() {
             "bean.simpleName as simpleName, " +
             "bean.icon as icon, " +
             "ref.weight as weight, " +
-            "ref.hot as hot " +
+            "ref.hot as hot, " +
+            "0 as isSelected " +
             "FROM TournamentBean bean " +
             "INNER JOIN SportTournamentCrossRef ref ON ref.tournamentId = bean.id " +
             "WHERE ref.playType =:playTypeId and ref.sportId =:sportId and tournamentId = :tournamentId " +

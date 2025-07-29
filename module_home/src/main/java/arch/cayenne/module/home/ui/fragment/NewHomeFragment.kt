@@ -378,12 +378,12 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.offsetLeftAndRight(1)
 
             tlLeagueList.removeAllTabs()
-            tournaments.forEachIndexed { _, tournament ->
+            tournaments.forEachIndexed { index, tournament ->
                 val tab = tlLeagueList.newTab().apply {
                     customView = createTournamentTabView(tournament)
                     view.setPadding(0, 0, 10f.dp2px, 0)
                 }
-                tlLeagueList.addTab(tab)
+                tlLeagueList.addTab(tab, tournament.isSelected)
             }
             vpGameList.registerOnPageChangeCallback(object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -408,8 +408,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         )
 
                         getSelectedRecently31Scheduled(it.position)
-                        tournaments.getOrNull(it.position)?.id
-                            ?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                        tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
 
                     }
                 }
@@ -464,16 +463,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.tournaments.observeEvent(viewLifecycleOwner, this) { list ->
             setTournamentAndViewPagerLayout(list)
-        }
-
-        mViewModel.selectedTournamentId.observeEvent(viewLifecycleOwner, this) { id ->
-            val list = mViewModel.tournaments.value?.peekContent().orEmpty()
-            val index = list.indexOfFirst { it.id == id }
-            if (index != 0) {
-                mBinding.layoutContainer.tlLeagueList.post {
-                    mBinding.layoutContainer.tlLeagueList.getTabAt(index)?.select()
-                }
-            }
         }
 
         mViewModel.collapseTournamentDropdown.observeEvent(viewLifecycleOwner, this) { shouldCollapse ->
