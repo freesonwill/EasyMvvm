@@ -29,6 +29,7 @@ import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
+import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
 import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
@@ -103,6 +104,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     //當一級導航改變時，先把底下的view資料清除，等待讀取最新的資料，避免api取得過久，導致UI不協調
     private fun resetHomeView() {
         toggleTournamentMoreSection(false, TournamentListType.NONE)
+        mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
+        mBinding.layoutContainer.llOtherDate.visibility = View.GONE
+        mBinding.layoutContainer.tlLeagueList.visibility = View.GONE
+        mBinding.ivTournamentMore.visibility = View.GONE
     }
 
     //init 二級導航欄位
@@ -360,13 +365,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
     private fun setTournamentAndViewPagerLayout(tournaments: List<TournamentDataModel>) {
         with(mBinding.layoutContainer) {
-            if (mViewModel.currentPlayTypeId == PlayType.TODAY.id) {
-                llDateFilterContainer.visibility = View.GONE
-                llOtherDate.visibility = View.GONE
-            } else if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-                llDateFilterContainer.visibility = View.VISIBLE
-                llOtherDate.visibility = View.VISIBLE
-            }
 
             vpGameList.adapter = LeaguePagerAdapter(
                 fragmentManager = childFragmentManager,
@@ -525,6 +523,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         mViewModel.tournamentSlideOutEnd.observeEvent(viewLifecycleOwner, this) {
             mBinding.ivTournamentMore.visibility = View.VISIBLE
             mBinding.llTournamentsDropdown.visibility = View.GONE
+        }
+
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it is HomeState.Tournament.LoadSuccess) {
+                if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
+                    mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+                    mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+                }
+                mBinding.layoutContainer.tlLeagueList.visibility = View.VISIBLE
+            }
         }
     }
 
