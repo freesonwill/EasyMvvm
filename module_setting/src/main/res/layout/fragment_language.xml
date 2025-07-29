@@ -65,7 +65,7 @@
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item">
+            android:background="@drawable/bg_set_item_rect">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_english"
@@ -104,7 +104,7 @@
             android:layout_height="@dimen/dp_52"
             android:layout_marginStart="@dimen/dp_12"
             android:layout_marginEnd="@dimen/dp_12"
-            android:background="@drawable/bg_set_item">
+            android:background="@drawable/bg_set_item_rect">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView
                 android:id="@+id/tv_indonesia"

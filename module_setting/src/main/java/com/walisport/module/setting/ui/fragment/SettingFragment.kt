@@ -44,16 +44,16 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override fun initListener() {
         mBinding.settingOdds.clickNoRepeat {
-            showOddsDisplayDialog()
+            //showOddsDisplayDialog()
         }
         mBinding.settingNotice.clickNoRepeat {
-            navigate(R.id.action_settingFragment_to_noticedFragment)
+            //navigate(R.id.action_settingFragment_to_noticedFragment)
         }
         mBinding.settingBg.clickNoRepeat {
             navigate(R.id.action_settingFragment_to_backgroundFragment)
         }
         mBinding.settingLanguage.clickNoRepeat {
-            navigate(R.id.action_settingFragment_to_languageFragment)
+            //navigate(R.id.action_settingFragment_to_languageFragment)
         }
     }
 
