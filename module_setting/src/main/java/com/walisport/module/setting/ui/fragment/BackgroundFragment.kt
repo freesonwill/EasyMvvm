@@ -55,33 +55,14 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
 
     override fun onStart() {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
-        setStatusBar(StatusBarConfig, mBinding.root)
+        mBinding.root.fitsSystemWindows = false
+        setStatusBar(StatusBarConfig, mBinding.llConttnet)
         super.onStart()
     }
 
     override fun initListener() {
-        mBinding.layClassic.clickNoRepeat {
-            skinType = SkinType.SKIN_CLASSIC.value
-            mViewModel.setSkinType(skinType)
-            setImmColor(skinType)
-        }
-        mBinding.layBlackBlue.clickNoRepeat {
-            skinType = SkinType.SKIN_BLACK_BLUE.value
-            mViewModel.setSkinType(skinType)
-            setImmColor(skinType)
-        }
         mBinding.layBlackGreen.clickNoRepeat {
             skinType = SkinType.SKIN_BLACK_GREEN.value
-            mViewModel.setSkinType(skinType)
-            setImmColor(skinType)
-        }
-        mBinding.layBlackRed.clickNoRepeat {
-            skinType = SkinType.SKIN_BLACK_RED.value
-            mViewModel.setSkinType(skinType)
-            setImmColor(skinType)
-        }
-        mBinding.layWhiteBlue.clickNoRepeat {
-            skinType = SkinType.SKIN_WHITE_BLUE.value
             mViewModel.setSkinType(skinType)
             setImmColor(skinType)
         }
@@ -94,10 +75,10 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
 
     private fun setImmColor(type: String) {
         immColor = immersionBarColorExt(type)
-        StatusBarConfig.statusBarColor = immColor
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
+        mBinding.root.fitsSystemWindows = false
         StatusBarConfig.statusBarDarkFont = immersionBarSkinTypeExt(skinType)
-        setStatusBar(StatusBarConfig, mBinding.root)
+        setStatusBar(StatusBarConfig, mBinding.llConttnet)
     }
 
     override fun createObserver() {
@@ -109,18 +90,10 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
     private fun changeSkinType(type: String) {
         if ("" == type)
             return
-        mBinding.radioClassic.isSelected = false
-        mBinding.radioBlackBlue.isSelected = false
-        mBinding.radioBlackRed.isSelected = false
         mBinding.radioBlackGreen.isSelected = false
         mBinding.radioWhiteGreen.isSelected = false
-        mBinding.radioWhiteBlue.isSelected = false
         when (type) {
-            SkinType.SKIN_CLASSIC.value -> mBinding.radioClassic.isSelected = true
-            SkinType.SKIN_BLACK_BLUE.value -> mBinding.radioBlackBlue.isSelected = true
             SkinType.SKIN_BLACK_GREEN.value -> mBinding.radioBlackGreen.isSelected = true
-            SkinType.SKIN_BLACK_RED.value -> mBinding.radioBlackRed.isSelected = true
-            SkinType.SKIN_WHITE_BLUE.value -> mBinding.radioWhiteBlue.isSelected = true
             SkinType.SKIN_WHITE_GREEN.value -> mBinding.radioWhiteGreen.isSelected = true
         }
     }

@@ -3,7 +3,6 @@ package com.walisport.module.search.ui.fragment
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +15,6 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import com.walisport.module.search.R
-import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultListItemType
 import com.walisport.module.search.data.constants.SearchResultTypeEnum
 import com.walisport.module.search.data.constants.SearchTypeEnum
@@ -27,8 +25,8 @@ import com.walisport.module.search.data.model.SearchResultTournamentBean
 import com.walisport.module.search.databinding.FragmentSearchResultPageBinding
 import com.walisport.module.search.ui.adapter.SearchResultPageGridAdapter
 import com.walisport.module.search.ui.adapter.SearchResultPageLinearAdapter
+import com.walisport.module.search.ui.viewmodel.SearchBaseViewModel
 import com.walisport.module.search.ui.viewmodel.SearchResultPageViewModel
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
@@ -39,15 +37,15 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     override val vmClass: KClass<SearchResultPageViewModel>
         get() = SearchResultPageViewModel::class
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
-    private val onItemClick = { id: String, keyword: String, type: SearchTypeEnum ->
-        addSearchKeyWord(keyword)
-        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(keyword = keyword, id = id, type = type))
-    }
+    private val sharedViewModel: SearchBaseViewModel by sharedViewModel<SearchBaseViewModel, SearchFragment>()
+    private var onItemClick: ((id: String, keyword: String, type: SearchTypeEnum) -> Unit)? = null
 
     private val gridAdapter by lazy {
         SearchResultPageGridAdapter().apply {
-            onItemClick = this@SearchResultPageFragment.onItemClick
+            onItemClick = { id, keyword, type ->
+                addSearchKeyWord(keyword)
+                this@SearchResultPageFragment.onItemClick?.invoke(id, keyword, type)
+            }
             onMoreClick = { type ->
                 (requireParentFragment() as SearchResultListFragment).switchTab(
                     when (type) {
@@ -63,14 +61,18 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     private val linearAdapter by lazy {
         SearchResultPageLinearAdapter(getType()).apply {
-            onItemClick = this@SearchResultPageFragment.onItemClick
+            onItemClick = { id, keyword, type ->
+                addSearchKeyWord(keyword)
+                this@SearchResultPageFragment.onItemClick?.invoke(id, keyword, type)
+            }
         }
     }
 
     companion object {
-        fun newInstance(type: String, data: SearchResultBean) =
+        fun newInstance(type: String, data: SearchResultBean, onItemClick: (id: String, keyword: String, type: SearchTypeEnum) -> Unit) =
             SearchResultPageFragment(data).apply {
                 arguments = Bundle().apply { putString("type", type) }
+                this.onItemClick = onItemClick
             }
 
         internal const val TYPE_ALL = "TYPE_ALL"
@@ -163,10 +165,12 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                                 }
                             })
                         }
+                        itemAnimator = null
                     }
                     gridAdapter.submitList(getLimitGroupSearResults(groupData.value))
                 } else {
-                    val source = groupData.value.filterIsInstance<SearchResultListItemType.Item>().map { it.data }
+                    val source = groupData.value.filterIsInstance<SearchResultListItemType.Item>()
+                        .map { it.data }
                     val list = when (getType()) {
                         TYPE_TOURNAMENT -> source.filterIsInstance<SearchResultTournamentBean>()
                         TYPE_TEAM -> source.filterIsInstance<SearchResultTeamBean>()
@@ -191,6 +195,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
                             layoutManager =
                                 LinearLayoutManager(context, RecyclerView.VERTICAL, false)
                             adapter = linearAdapter
+                            itemAnimator = null
                         }
                         linearAdapter.submitList(list)
                     }
@@ -206,11 +211,6 @@ class SearchResultPageFragment(val data: SearchResultBean) :
     private fun addSearchKeyWord(keyWord: String) {
         with(sharedViewModel) {
             addOneRecord(keyWord)
-            setSearchKeyWord(keyWord)
         }
-    }
-
-    private fun navigateTo(event: SearchNavigationEvent) {
-        sharedViewModel.setNavigationEvent(event)
     }
 }

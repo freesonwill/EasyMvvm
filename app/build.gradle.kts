@@ -18,7 +18,7 @@ android {
         minSdk = 24
         targetSdk = 34
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -92,4 +92,5 @@ dependencies {
     implementation(libs.immersionbar)
     debugImplementation(libs.leakcanary)
     debugImplementation(project(":external:blockcanary"))
+    debugImplementation(project(":external:lib_perf"))
 }

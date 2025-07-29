@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
@@ -10,8 +11,8 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -37,16 +38,14 @@ import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
-import com.walisport.module.live.data.constants.MatchStatus
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import android.animation.ObjectAnimator;
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -75,10 +74,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
     }
 
     //init DrawerLayout Content
     private fun drawerContent() {
+        mBinding.drawerLayout.setIsAnimationRunning(false)
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(
@@ -142,7 +143,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
-                    mBinding.vpPage.setCurrentItem(it.position, false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -255,7 +255,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, false)
+        mBinding.vpPage.setCurrentItem(1)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -286,7 +286,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private fun loadFragment() {
         val tabSelectPosition = 1
         with(mBinding) {
-            mBinding.tabLayout.removeAllTabs()
             val list = listOf(
                 PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
                 PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
@@ -295,11 +294,11 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
                 PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            launch(Lifecycle.State.RESUMED) {
+            launch {
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
-            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
@@ -322,8 +321,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
-            mBinding.tabLayout.getTabAt(1)?.select()
-            mBinding.vpPage.setCurrentItem(1, false)
+            tabLayout.clearOnTabSelectedListeners()
+            tabLayout.getTabAt(1)?.select()
+            vpPage.setCurrentItem(1,false)
             tabLayout.removeAllTips()
         }
     }

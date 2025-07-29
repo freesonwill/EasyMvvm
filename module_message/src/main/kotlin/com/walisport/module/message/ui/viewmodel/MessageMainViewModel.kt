@@ -15,14 +15,10 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     private val _notificationBean = MutableLiveData<List<NotificationBean>>()
     val notificationBean: LiveData<List<NotificationBean>> = _notificationBean
 
-    private val _notificationSelect = MutableLiveData<List<NotificationBean>>()
-    val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
-
     private var cursorId: Long = 0L
     private var cursorType: Int = 0
 
     companion object {
-        const val TYPE_DEFAULT = 0
         const val STATUS_READ = 2
         const val STATUS_DEL = 3
     }
@@ -40,11 +36,7 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
                         createTime = item.time
                     )
                 }
-                if (cursorType == TYPE_DEFAULT) {
-                    _notificationBean.value = temp
-                } else {
-                    _notificationBean.value = temp.filter { it.type == cursorType }
-                }
+                _notificationBean.postValue(temp)
             }
         }
     }
@@ -60,9 +52,9 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     }
 
     //获取系统消息列表
-    fun getMessageList() {
+    fun getMessageList(type: Int) {
         cursorId = 0L
-        val result = repo.getMessageList(cursorId, cursorType)
+        val result = repo.getMessageList(cursorId, type)
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
@@ -76,18 +68,6 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
-            }
-        }
-    }
-
-    fun selectMessage(type: Int) {
-        cursorType = type
-        val list = _notificationBean.value?.toMutableList()
-        list?.let {
-            if (type == 0) {
-                _notificationSelect.value = list.ifEmpty { emptyList() }
-            } else {
-                _notificationSelect.value = list.filter { it.type == type }
             }
         }
     }

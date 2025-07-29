@@ -10,7 +10,7 @@ enum class SkinType(val value: String) {
     SKIN_WHITE_GREEN("white_green");
 
     companion object {
-        val DEFAULT = SKIN_CLASSIC.value
+        val DEFAULT = SKIN_BLACK_GREEN.value
         fun of(v: String): SkinType? = SkinType.values().find { it.value == v }
     }
 }

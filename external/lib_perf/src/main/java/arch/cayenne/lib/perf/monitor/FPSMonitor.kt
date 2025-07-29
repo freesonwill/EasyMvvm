@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.utils.monitor
+package arch.cayenne.lib.perf.monitor
 
 import android.view.Choreographer
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd

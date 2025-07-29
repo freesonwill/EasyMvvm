@@ -85,8 +85,8 @@ class HomeViewModel : BaseViewModel() {
     private val _navigateToChampion = MutableLiveData<Event<ChampionTournamentDataModel>>()
     val navigationToChampion: LiveData<Event<ChampionTournamentDataModel>> = _navigateToChampion
 
-    private var _recently31MatchScheduleCount = MutableLiveData<Event<List<Common.DailyMatchCount>>>()
-    val recently31MatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> = _recently31MatchScheduleCount
+    private var _recently7DayMatchScheduleCount = MutableLiveData<Event<List<Common.DailyMatchCount>>>()
+    val recently7DayMatchScheduleCount: LiveData<Event<List<Common.DailyMatchCount>>> = _recently7DayMatchScheduleCount
 
     private var timerJob: Job? = null
     private val _timer = MutableLiveData<Event<Long>>()
@@ -381,7 +381,12 @@ class HomeViewModel : BaseViewModel() {
             if (it is ApiResponseState.Succeeded<*>) {
                 val data: List<Common.DailyMatchCount>? = it.dataAs()
                 if (!data.isNullOrEmpty()) {
-                    _recently31MatchScheduleCount.value = Event(data)
+                    //API是取未來31天，依照Linear IssueWLS-1171要求，改成取未來7天【早盘】的快捷选择日期，默认展示明日往后推7天内的日期，超出该范围的数据不予显示
+                    if (data.count() > 7) {
+                        _recently7DayMatchScheduleCount.value = Event(data.take(7))
+                    } else  {
+                        _recently7DayMatchScheduleCount.value = Event(data)
+                    }
                     setState(HomeState.Schedule.LoadSuccess)
                 }
             }

@@ -19,7 +19,8 @@ data class SportTournamentCrossRef(
     val hot: Boolean,
     val weight: Int,
     val index: Int,
-    val coordinateY: Int,
+    val coordinateY: Int,    //目前這個聯賽的賽事卡片滑動的位置，今日和早盤用的
+    val matchId: Long?,       //這個冠軍聯賽取得冠軍比賽所用的matchId，冠軍用的
 )
 
 abstract class BaseTournamentData {

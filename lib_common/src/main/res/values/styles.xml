@@ -11,6 +11,8 @@
     <style name="CustomToolbarImgStyle">
         <item name="android:layout_height">32dp</item>
         <item name="android:layout_width">32dp</item>
+        <item name="android:stateListAnimator">@animator/layout_alpha_animator</item>
+        <item name="srcCompat">@drawable/universal_icon_back</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>

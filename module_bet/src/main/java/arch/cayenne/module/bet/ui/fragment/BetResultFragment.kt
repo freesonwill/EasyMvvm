@@ -10,6 +10,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.BetResultToastView
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getMoney
 import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.database.entity.BetDetailBean
@@ -106,6 +107,8 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         } else {
             getString(R.string.title_result_pending_bet)
         }
+        mBinding.btnContinueBet.isEnabled = false
+        mBinding.btnContinueBet.alpha = 0.5f
     }
 
     private fun setComplete(type: BetTypeEnum) {
@@ -118,12 +121,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 getString(arch.cayenne.lib.common.R.string.title_result_success_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                arch.cayenne.lib.common.R.color.brand_color
-            )
-        )
+        mBinding.btnContinueBet.alpha = 1.0f
     }
 
     private fun setFail(type: BetTypeEnum) {
@@ -136,20 +134,15 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
                 getString(arch.cayenne.lib.common.R.string.title_result_fail_bet)
         }
         mBinding.btnContinueBet.isEnabled = true
-        mBinding.btnContinueBet.setTextColor(
-            ContextCompat.getColor(
-                requireContext(),
-                arch.cayenne.lib.common.R.color.brand_color
-            )
-        )
+        mBinding.btnContinueBet.alpha = 1.0f
     }
 
     private fun setAmount(data: List<BetDetailBean>) {
         val symbols = mViewModel.moneySymbol
-        val total = "$symbols${data.sumOf { it.inputMoney }.getMoney()}"
+        val total = "$symbols${data.sumOf { it.inputMoney }.getFormalMoney()}"
         mBinding.tvAmountMoney.text = total
         val win =
-            "$symbols${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getMoney()}"
+            "$symbols${data.sumOf { it.inputMoney.getMoney(it.sumOdds).toMoney() }.getFormalMoney()}"
         mBinding.tvMaxWinMoney.text = win
     }
 

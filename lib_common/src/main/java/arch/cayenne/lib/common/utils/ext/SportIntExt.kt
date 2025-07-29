@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils.ext
 
+import android.text.TextUtils
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -78,6 +79,39 @@ object SportIntExt {
     }
 
     /**
+     * @return string: 123456 轉換為 1,234.56, 123456789 轉換為 1,234,567.89
+     */
+    fun BigDecimal.getFormalMoney(): String {
+        if (this == BigDecimal(0)) return "0"
+
+        val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
+            maximumFractionDigits = 2
+            minimumFractionDigits = if (this@getFormalMoney.scale() > 0) 2 else 0
+            isGroupingUsed = true // 千分位
+        }
+
+        return numberFormat.format(this.toDouble())
+    }
+
+    fun Long.getFormalMoney(multiply: Int): String {
+        if (this == 0L || multiply == 0) return "0" // ← 明確處理 0
+
+        val result = this * multiply
+        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+            .setScale(2, RoundingMode.DOWN)
+
+        val stripped = decimal.stripTrailingZeros()
+
+        val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
+            maximumFractionDigits = 2
+            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
+            isGroupingUsed = true // 千分位
+        }
+
+        return numberFormat.format(decimal)
+    }
+
+    /**
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(): String {
@@ -98,5 +132,13 @@ object SportIntExt {
 
     fun Long.percent(p: Int): Long {
         return this * p / 100
+    }
+
+    fun String.stringToMoney():String{
+        if(this.toDoubleOrNull() ==  null){
+            return ""
+        }
+      return BigDecimal(this).multiply(BigDecimal(100)).toLong().getMoneyForScale()
+
     }
 }

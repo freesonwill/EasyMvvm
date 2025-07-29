@@ -1,5 +1,8 @@
 package arch.cayenne.module.bet.ui.custom
 
+import android.animation.Animator
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -21,10 +24,16 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
     private var dY = 0f
     private val binding: LayoutMovableFloatingButtonBinding
     private var performClick: (() -> Unit)? = null
+    private var mAnimator: AnimatorSet? = null
+    private var currentCount = 1
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    )
 
     init {
         val layoutInflater = LayoutInflater.from(context)
@@ -42,6 +51,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 dY = v.y - downRawY
                 return true
             }
+
             MotionEvent.ACTION_MOVE -> {
                 val vWidth = v.width
                 val vHeight = v.height
@@ -73,6 +83,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
 
                 return true
             }
+
             MotionEvent.ACTION_UP -> {
                 playZoomInAnimation()
                 val upRawX = event.rawX
@@ -85,6 +96,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 }
                 return true
             }
+
             MotionEvent.ACTION_CANCEL -> {
                 playZoomInAnimation()
                 downRawX = 0f
@@ -93,6 +105,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                 dY = 0f
                 return true
             }
+
             else -> return super.onTouchEvent(event)
         }
     }
@@ -110,18 +123,20 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
     }
 
     fun setCount(newCount: Int) {
-        val oldCount = binding.tvFloatPin.text.toString().toIntOrNull() ?: 0
-        if (oldCount == newCount) return
+        if (currentCount == newCount) return
+        mAnimator?.cancel()
 
-        val direction = if (newCount > oldCount) -1 else 1
-        val translationDistance = direction * binding.tvFloatPin.height.toFloat()
+        val direction = if (newCount > currentCount) -1 else 1
         val animTextView = createAnimatedTextView(newCount, direction)
 
-        (binding.tvFloatPin.parent as ViewGroup).addView(animTextView)
+        (binding.tvFloatPin.parent as ViewGroup).apply {
+            this.clipChildren = false
+            this.clipToPadding = false
+        }.addView(animTextView)
 
         playBounceAnimation()
-        playOldTextOutAnimation(direction, newCount, animTextView)
-        playNewTextInAnimation(animTextView, translationDistance)
+        playTextAnimation(direction, newCount, animTextView)
+        currentCount = newCount
     }
 
     private fun createAnimatedTextView(newCount: Int, direction: Int): TextView {
@@ -132,9 +147,7 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
             typeface = binding.tvFloatPin.typeface
             gravity = binding.tvFloatPin.gravity
             layoutParams = binding.tvFloatPin.layoutParams
-            x = binding.tvFloatPin.x
-            y = binding.tvFloatPin.y - direction * binding.tvFloatPin.height
-            alpha = 0f
+            translationY = direction * binding.tvFloatPin.height.toFloat()
         }
         return textView
     }
@@ -152,6 +165,47 @@ class MovableFloatingButton : LinearLayout, View.OnTouchListener {
                     .start()
             }
             .start()
+    }
+
+    private fun playTextAnimation(direction: Int, newCount: Int, animTextView: TextView) {
+        val translationDistance = direction * binding.tvFloatPin.height.toFloat()
+
+        val parent = binding.tvFloatPin.parent as ViewGroup
+
+        val textAnimation =
+            ObjectAnimator.ofFloat(binding.tvFloatPin, "translationY", 0f, translationDistance)
+        val newTextAnimation =
+            ObjectAnimator.ofFloat(animTextView, "translationY", -translationDistance, 0f)
+
+        fun finish() {
+            binding.tvFloatPin.text = newCount.toString()
+            binding.tvFloatPin.translationY = 0f
+            mAnimator = null
+            parent.removeView(animTextView)
+        }
+        mAnimator = AnimatorSet().apply {
+            duration = 100
+            playTogether(textAnimation, newTextAnimation)
+            addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animation: Animator) {
+                }
+
+                override fun onAnimationEnd(animation: Animator) {
+                    finish()
+                }
+
+                override fun onAnimationCancel(animation: Animator) {
+                    finish()
+                }
+
+                override fun onAnimationRepeat(animation: Animator) {
+                }
+
+            })
+            start()
+        }
+
+
     }
 
     private fun playOldTextOutAnimation(direction: Int, newCount: Int, animTextView: TextView) {

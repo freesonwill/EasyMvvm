@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.enableRecyclerViewBounce
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.module.home.R
@@ -149,7 +149,7 @@ class TournamentListFragment :
                 })
             }
 
-            ivHomeLeagueCollapse.setOnClickListener {
+            ivHomeLeagueCollapse.apply{addScaleOnTouchAnimation()}.setOnClickListener {
                 homeViewModel.requestCollapseTournamentDropdown()
             }
 
@@ -186,9 +186,11 @@ class TournamentListFragment :
 
     override fun createObserver() {
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            "KC_ state ${it::class.java.name}".logd()
             with(mBinding) {
                 when(it) {
+                    is DataState.Loading -> {
+                        loadingView.visibility = View.VISIBLE
+                    }
                     is DataState.NetworkUnavailable -> {
                         clDynamics.setState(
                             DynamicStateLayout.States.NETWORK_ANOMALY,
@@ -197,24 +199,23 @@ class TournamentListFragment :
                         clDynamics.visibility = View.VISIBLE
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
+                        loadingView.visibility = View.GONE
                     }
                     is DataState.LoadSuccess -> {
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
                         ivHomeLeagueCollapse.isVisible = mViewModel.getType() == TournamentListType.MORE
                         llIndexContainer.visibility = View.VISIBLE
+                        loadingView.visibility = View.GONE
                     }
                     HomeState.TournamentListState.InitList -> {
                         setupAZIndex()
-
                     }
-
                     HomeState.TournamentListState.RestoreList -> {
                         clDynamics.visibility = View.GONE
                         groupTop.visibility = View.VISIBLE
                         llIndexContainer.visibility = View.VISIBLE
                     }
-
                     HomeState.TournamentListState.ListDataEmpty -> {
                         clDynamics.setState(
                             DynamicStateLayout.States.DATA_EMPTY,
@@ -223,6 +224,7 @@ class TournamentListFragment :
                         clDynamics.visibility = View.VISIBLE
                         groupTop.visibility = View.GONE
                         llIndexContainer.visibility = View.GONE
+                        loadingView.visibility = View.GONE
                     }
 
                     HomeState.TournamentListState.SearchMatch -> {

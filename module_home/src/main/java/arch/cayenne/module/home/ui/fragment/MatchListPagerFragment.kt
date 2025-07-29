@@ -70,9 +70,6 @@ class MatchListPagerFragment :
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
-                        if (status !is AddSelectionStatus.Failure) {
-                            mViewModel.triggerAllBetRefresh()
-                        }
                         if (status is AddSelectionStatus.Success.Single) {
                             BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
@@ -232,7 +229,7 @@ class MatchListPagerFragment :
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
-                    DataState.LoadSuccess -> {
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()

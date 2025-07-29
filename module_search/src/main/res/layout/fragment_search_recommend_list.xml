@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_search_recommend"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/search_main_bg"
+    android:clickable="true"
+    android:focusable="true"
+    android:visibility="gone"
+    tools:visibility="visible">
+
+    <arch.cayenne.lib.skin.widget.SkinnableRecyclerView
+        android:id="@+id/rv_search_recommend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:overScrollMode="never"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>

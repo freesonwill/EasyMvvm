@@ -53,7 +53,6 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
     }
 
     override fun createObserver() {
-        launch(Lifecycle.State.RESUMED) {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {
@@ -99,7 +98,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
                     }
                 }
             }
-        }
+
     }
 
     private fun parseTrendData(data: MatchTrendData) {

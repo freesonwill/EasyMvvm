@@ -7,7 +7,6 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.updatePadding
 import androidx.viewbinding.ViewBinding
@@ -29,10 +28,6 @@ class RecommendAdapter(var onClick: ((String) -> Unit?)? = null) :
     fun updateMatchKeyword(keyword: String?) {
         this.keyword = keyword
         notifyDataSetChanged()
-    }
-
-    fun setOnClickListener(onClick: (String) -> Unit) {
-        this.onClick = onClick
     }
 
     private fun getHighlightedText(context: Context, word: String, keyword: String?): CharSequence {

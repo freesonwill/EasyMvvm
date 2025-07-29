@@ -29,11 +29,11 @@ import kotlin.reflect.KClass
 abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     BottomSheetDialogFragment(), IView {
 
+    protected val TAG by lazy { this::class.java.simpleName }
     private var mScrollY: Int? = null
     private var backgroundView: View? = null
     private var sheetContainer: View? = null
     private var isDismissing = false
-
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
@@ -102,11 +102,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         return dialog
     }
 
+    protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
+
     private fun playEnterAnimations() {
         sheetContainer?.let {  scv ->
             // bottom sheet 上滑動畫
-            val sheetAnim = AnimationUtils.loadAnimation(requireContext(), R.anim.slide_bottom_sheet_up)
-
+            val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
                     backgroundView?.visibility = View.VISIBLE

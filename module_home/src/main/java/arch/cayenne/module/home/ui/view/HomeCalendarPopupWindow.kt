@@ -42,7 +42,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
     val binding: VB = bindingInflater(LayoutInflater.from(context))
 
     private val onDataSelectedListener: ((String) -> Unit)? = builder.onDateSelectedListener
-
+    private val onCalendarDismissListener: (() -> Unit)? = builder.onCalendarDismissListener
     private val popupWindow: PopupWindow = PopupWindow(
         binding.root,
         builder.width,
@@ -65,6 +65,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         builder.elevation?.let { popupWindow.elevation = it }
 
         popupWindow.inputMethodMode = PopupWindow.INPUT_METHOD_NOT_NEEDED
+        popupWindow.setOnDismissListener {
+            onCalendarDismissListener?.invoke()
+        }
     }
 
     /**
@@ -156,7 +159,10 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
             }
             this.calendarBtnCancel.clickNoRepeat {
                 this.calendarView.scrollToCurrent()
-                setSelectedDateTab(selectedDate)
+                val currDate ="${calendarView.curYear}${calendarView.curMonth}${calendarView.curDay}"
+                onDataSelectedListener?.invoke(DateUtils.getMonthDay(currDate))
+                val minRangeDate = calendarView.minRangeCalendar
+                calendarView.scrollToCalendar(minRangeDate.year,minRangeDate.month,minRangeDate.day)
                 dismiss() // 關閉 Popup
             }
             this.calendarBtnOk.clickNoRepeat {
@@ -215,22 +221,24 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
                 map[schemeCalendar.toString()] = schemeCalendar
             }
         }
-        //可選取日期區間為未來第31天
+        //可選取日期區間為未來7天
+        val startDateTriple = list.first()
+        val startDateArray = startDateTriple.day.split("-")
         val endDateTriple = list.last()
         val endDateArray = endDateTriple.day.split("-")
         //設定可以選取的日期區間，目前設定為31天
         with(binding as HomeTourPopupCalendarViewBinding) {
             calendarView.setRange(
-                calendarView.curYear,
-                calendarView.curMonth,
-                calendarView.curDay,
+                startDateArray[0].toInt(),
+                startDateArray[1].toInt(),
+                startDateArray[2].toInt(),
                 endDateArray[0].toInt(),
                 endDateArray[1].toInt(),
                 endDateArray[2].toInt()
             )
             calendarView.setSchemeDate(map)
+            calendarView.scrollToCalendar(startDateArray[0].toInt(),  startDateArray[1].toInt(),  startDateArray[2].toInt())
         }
-
     }
 
     private fun getSchemeCalendar(
@@ -378,6 +386,7 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         internal var onDismissListener: PopupWindow.OnDismissListener? = null
         internal var elevation: Float? = null
         internal var onDateSelectedListener: ((String) -> Unit)? = null
+        internal var onCalendarDismissListener: (()-> Unit)? = null
 
         /**
          * 提供一個公開的方法讓外部設定監聽器
@@ -385,7 +394,9 @@ class HomeCalendarPopupWindow<VB : ViewBinding>(
         fun setOnDateSelectedListener(listener: (String) -> Unit) = apply {
             this.onDateSelectedListener = listener
         }
-
+        fun setOnCalendarDismissListener(listener: () -> Unit) = apply {
+            this.onCalendarDismissListener = listener
+        }
         open fun build(): HomeCalendarPopupWindow<VB> {
             return HomeCalendarPopupWindow(context, lifecycleOwner, bindingInflater, this)
         }

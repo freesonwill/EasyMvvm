@@ -1,7 +1,6 @@
 package com.walisport.module.message.ui.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
@@ -10,8 +9,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.fragment.inflateMethod
-import com.bumptech.glide.Glide
-import com.walisport.module.message.R
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import com.walisport.module.message.data.MessageCompare
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.ItemMessageActivityBinding
@@ -33,8 +31,11 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.setOnClickListener {
+                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
+                }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
                 }
             }
 
@@ -42,7 +43,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.setOnClickListener {
+                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
@@ -54,7 +55,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
                 binding.tvMsgContent.text = item.content
-                binding.ivMsgDelete.setOnClickListener {
+                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
@@ -64,7 +65,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             }
 
             is ItemMessageWalletBinding -> {
-                binding.ivMsgDelete.setOnClickListener {
+                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {

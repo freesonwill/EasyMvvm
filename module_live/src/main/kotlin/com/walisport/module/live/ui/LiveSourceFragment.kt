@@ -1,26 +1,26 @@
 package com.walisport.module.live.ui
 
 import android.animation.ValueAnimator
-import android.app.Dialog
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.MotionEvent
+import android.view.Gravity
 import android.view.View
 import android.view.View.OnLayoutChangeListener
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.LinearLayout
-import androidx.activity.ComponentDialog
 import androidx.core.animation.doOnEnd
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import arch.cayenne.lib.base.ui.fragment.LocationFixedDialogFragment
+import arch.cayenne.lib.base.ui.fragment.BaseDialogFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getDimensionPixelSize
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
-import com.walisport.module.live.R
 import com.walisport.module.live.compare.VideoSourceBeanCompare
 import com.walisport.module.live.databinding.FragmentLiveSourcePortraitBinding
 import com.walisport.module.live.ui.adapter.LiveVideoSourceHorizontalAdapter
@@ -28,21 +28,22 @@ import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
 import com.walisport.module.live.ui.viewmodel.LiveVideoSourceViewModel
 import kotlin.reflect.KClass
 
-/**
- * 竖屏播放时的视频源页面
- */
-class LiveVideoSourcePortraitFragment :
-    LocationFixedDialogFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
+class LiveSourceFragment :
+    BaseDialogFragment<LiveVideoSourceViewModel, FragmentLiveSourcePortraitBinding>() {
 
     override val vbClass: KClass<FragmentLiveSourcePortraitBinding> =
         FragmentLiveSourcePortraitBinding::class
     override val vmClass: KClass<LiveVideoSourceViewModel> = LiveVideoSourceViewModel::class
 
+    override val dialogBackground: Drawable?
+        get() = ContextCompat.getDrawable(
+            requireContext(),
+            com.walisport.module.live.R.drawable.bg_source_dialog
+        )
+
     private val mediaViewModel: LiveMatchMediaViewModel by sharedViewModel<LiveMatchMediaViewModel, LiveMatchMediaFragment>()
 
-
     private var isDismissing = false
-
 
     override fun initView(savedInstanceState: Bundle?) {
         val matchId = arguments?.getLong("matchId") ?: 0
@@ -90,7 +91,6 @@ class LiveVideoSourcePortraitFragment :
                 }
             }
         })
-
     }
 
     override fun initListener() {
@@ -100,11 +100,10 @@ class LiveVideoSourcePortraitFragment :
             }
         }
 
-
     }
 
-    override fun createObserver() {
 
+    override fun createObserver() {
         with(mViewModel) {
 
             liveVideoBean.observe(viewLifecycleOwner) {
@@ -119,49 +118,32 @@ class LiveVideoSourcePortraitFragment :
                 }
             }
         }
+
     }
 
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = object : ComponentDialog(requireContext()) {
-            override fun dispatchKeyEvent(event: KeyEvent): Boolean {
-                if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) {
-                    this@LiveVideoSourcePortraitFragment.dismiss()
-                    return true
-                } else {
-                    return super.dispatchKeyEvent(event)
-                }
-            }
-
-            override fun onTouchEvent(event: MotionEvent): Boolean {
-                if (event.action == MotionEvent.ACTION_DOWN && isOutOfBounds(event)) {
-                    this@LiveVideoSourcePortraitFragment.dismiss() // 关闭对话框
-                    return true
-                }
-                return super.onTouchEvent(event)
-            }
-
-            private fun isOutOfBounds(event: MotionEvent): Boolean {
-                val x = event.x.toInt()
-                val y = event.y.toInt()
-                val contentView = window?.decorView?.findViewById<View>(android.R.id.content)
-                val rect = Rect()
-                contentView?.getHitRect(rect)
-                return !rect.contains(x, y)
+    override fun onStart() {
+        super.onStart()
+        if (this.dialog != null) {
+            val window = this.dialog!!.window
+            if (window != null) {
+                val windowParams = window.attributes;
+                windowParams.dimAmount = 0f// 50% dimming
+                windowParams.gravity = Gravity.BOTTOM
+                windowParams.width = WindowManager.LayoutParams.MATCH_PARENT // 宽度占满
+                val height = requireArguments().getInt(HEIGHT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                windowParams.height =height
+                window.setAttributes(windowParams);
             }
         }
-        dialog.setCanceledOnTouchOutside(false)
-
-        dialog.window?.setWindowAnimations(R.style.NoAnimationDialog)
-
-        return dialog
     }
+
 
     private fun playEnterAnimations() {
         mBinding.ctSource.startSafeAnimateSet({
             playTogether(
                 ValueAnimator.ofInt(
-                    R.dimen.video_source_portrait_margin_top.getDimensionPixelSize(),
+                    com.walisport.module.live.R.dimen.video_source_portrait_margin_top.getDimensionPixelSize(),
                     0
                 ).apply {
                     addUpdateListener {
@@ -176,7 +158,6 @@ class LiveVideoSourcePortraitFragment :
 
     }
 
-
     override fun dismiss() {
         if (isDismissing) return
         isDismissing = true
@@ -185,7 +166,7 @@ class LiveVideoSourcePortraitFragment :
             playTogether(
                 ValueAnimator.ofInt(
                     0,
-                    R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
+                    com.walisport.module.live.R.dimen.video_source_portrait_margin_top.getDimensionPixelSize()
                 ).apply {
                     addUpdateListener {
                         val lp = mBinding.ctSource.layoutParams as LinearLayout.LayoutParams
@@ -204,7 +185,6 @@ class LiveVideoSourcePortraitFragment :
     private fun superDismiss() {
         super.dismiss()
     }
-
 
     class HorizontalItemDecoration(
         private val spacing: Int = 12.dp2px,         // 常规间距大小（像素）
@@ -227,4 +207,12 @@ class LiveVideoSourcePortraitFragment :
             outRect.right = if (position == itemCount - 1) bottomSpacing else spacing
         }
     }
+
+
+    companion object {
+
+        const val WIDTH = "width"
+        const val HEIGHT = "height"
+    }
+
 }

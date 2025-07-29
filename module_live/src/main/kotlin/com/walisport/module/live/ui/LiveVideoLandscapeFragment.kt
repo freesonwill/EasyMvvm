@@ -3,8 +3,13 @@ package com.walisport.module.live.ui
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.content.pm.ActivityInfo
+import android.database.ContentObserver
+import android.media.AudioManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
@@ -18,6 +23,7 @@ import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
@@ -71,6 +77,19 @@ class LiveVideoLandscapeFragment :
      * 视频加载时的动画
      */
     private var loadingAnim: ObjectAnimator? = null
+
+    private lateinit var audioManager: AudioManager
+    private var volumeObserver: VolumeObserver? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 初始化 AudioManager
+        audioManager = requireContext().getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        // 初始化 VolumeObserver
+        volumeObserver = VolumeObserver(Handler(Looper.getMainLooper()))
+    }
 
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -207,7 +226,6 @@ class LiveVideoLandscapeFragment :
             showChooseSourceView()
         }
 
-
         mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
             reduce(
@@ -220,6 +238,11 @@ class LiveVideoLandscapeFragment :
 
             setStatisticsView()
             showStatisticsView()
+        }
+
+        mBinding.ivSoundToggle.clickNoRepeat {
+            scheduleHideButtons()
+            mViewModel.changeMuteStatus()
         }
 
     }
@@ -261,6 +284,14 @@ class LiveVideoLandscapeFragment :
 
             playerState.observe(viewLifecycleOwner) {
                 onPlayerStateReceived(it)
+            }
+
+            mutedData().observe(viewLifecycleOwner) {
+                mBinding.ivSoundToggle.setImageResource(
+                    if (it) R.drawable.shape_muted else R.drawable.shape_immuted
+                )
+
+                videoView.setMute(it)
             }
         }
 
@@ -788,6 +819,25 @@ class LiveVideoLandscapeFragment :
             }
         }
 
+    }
+
+    private inner class VolumeObserver(handler: Handler) : ContentObserver(handler) {
+        override fun onChange(selfChange: Boolean) {
+            super.onChange(selfChange)
+            // 获取当前媒体音量
+            val mediaVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+            // 可以获取其他音量类型，如铃声：STREAM_RING，闹钟：STREAM_ALARM 等
+            "媒体音量变化: $mediaVolume".logd(TAG)
+
+            // 在这里添加音量变化后的处理逻辑
+            // 例如：更新 UI 或触发其他操作
+            if (mediaVolume > 0) {
+                mViewModel.unMute()
+            } else {
+                mViewModel.mute()
+            }
+
+        }
     }
 
     companion object {

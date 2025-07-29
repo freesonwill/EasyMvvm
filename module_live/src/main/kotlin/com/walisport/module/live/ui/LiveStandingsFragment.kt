@@ -95,7 +95,6 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                     val leagueID = it.basicInfo.tournamentId
                     mViewModel.getCompetitionData(leagueID)
                 }
-            }
         }
     }
 }

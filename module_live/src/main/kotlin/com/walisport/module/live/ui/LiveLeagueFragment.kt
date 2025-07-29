@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -16,14 +17,13 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
 import com.walisport.module.live.databinding.FragmentLeagueBinding
 import com.walisport.module.live.ui.adapter.LeagueAdapter
 import com.walisport.module.live.ui.viewmodel.LeagueViewModel
-import com.ym521.skeleton.Skeleton
-import com.ym521.skeleton.core.RecyclerViewSkeletonScreen
 import kotlin.reflect.KClass
 
 class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>() {
@@ -34,7 +34,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     private var leagueID: Int = 0
     private var leagueName: String = ""
     private var leagueLogo: String = ""
-    private lateinit var skeleton: RecyclerViewSkeletonScreen
 
     class LeagueItemDecoration(
         private val spacing: Int = 12.dp2px,
@@ -67,9 +66,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         leagueLogo = arguments?.getString("leagueLogo") ?: ""
         mBinding.apply {
             refreshLayout.setLeagueMode()
-            refreshLayout.setOnRefreshListener {
-                mViewModel.getMatchLeagueData(leagueID)
-            }
+            refreshLayout.setEnableRefresh(false)
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.getMoreMatchLeagueData(leagueID)
             }
@@ -80,8 +77,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
             }
             tvLeagueName.text = leagueName
         }
-        Glide.with(this).load(leagueLogo).error(R.drawable.title_league_icon)
-            .into(mBinding.ivLeagueLogo)
+        Glide.with(this).load(leagueLogo).into(mBinding.ivLeagueLogo)
         standsAdapter.setMatchID(matchID)
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId
@@ -93,16 +89,6 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                 )
             )
         }
-        //列表骨架屏
-        skeleton = Skeleton.bind(mBinding.recyclerLeague)
-            .load(R.layout.skeleton_view_item)
-            .adapter(standsAdapter)
-            .angle(20)
-            .duration(1000)
-            .count(5)
-            .shimmer(true)
-            .show()
-        skeleton.show()
     }
 
     override fun initData() {
@@ -111,19 +97,24 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.clickNoRepeat {
+        mBinding.ivLeagueClose.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
             findNavController().navigateUp()
         }
     }
 
     override fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it == DataState.NoMoreData) {
+                mBinding.refreshLayout.setEnableLoadMore(false)
+                mBinding.refreshLayout.setNoMoreData(true)
+            }
+        }
         mViewModel.leagueData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
             it?.let {
                 mBinding.leagueMain.setVisibilityGone()
                 if (it.match.isEmpty() && standsAdapter.currentList.isEmpty()) {
-                    skeleton.dismiss()
                     mBinding.leagueMain.setState(
                         DynamicStateLayout.States.DATA_EMPTY,
                         R.string.lineup_empty.getString()
@@ -142,12 +133,11 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     mBinding.leagueRoot.background = gradientDrawable
                     //更新联赛数据
                     mBinding.leagueRoot.postDelayed({
-                        skeleton.dismiss()
                         standsAdapter.submitList(it.match)
+                        mViewModel.setItemCount(standsAdapter.itemCount)
                     }, 1000)
                 }
             } ?: run {
-                skeleton.dismiss()
                 if (standsAdapter.currentList.isEmpty()) {
                     mBinding.leagueMain.setState(
                         DynamicStateLayout.States.DATA_EMPTY,

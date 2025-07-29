@@ -1,4 +1,4 @@
-package arch.cayenne.lib.base.utils.log
+package arch.cayenne.lib.perf.monitor
 
 import android.os.Build
 import android.os.Handler
@@ -112,4 +112,3 @@ class FrameDropLogger(private val threshold: Long = FRAME_THRESHOLD_MS) : Choreo
         }
     }
 }
-

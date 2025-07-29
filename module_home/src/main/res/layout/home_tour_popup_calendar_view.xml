@@ -56,7 +56,7 @@
         app:current_day_text_color="#ffffff"
         app:current_month_text_color="#C0C0C0"
         app:month_view="arch.cayenne.module.home.ui.view.HomeCalendarMonthView"
-        app:month_view_scrollable="false"
+        app:month_view_scrollable="true"
         app:other_month_text_color="#606060"
         app:scheme_theme_color="@android:color/transparent"
         app:scheme_text_color="#ff0000"
@@ -82,7 +82,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/calendar_btn_cancel"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center"
             android:background="@drawable/shape_home_calendar_cancel"
             android:text="@string/home_calendar_reset"
@@ -98,7 +98,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableButton
             android:id="@+id/calendar_btn_ok"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_40"
+            android:layout_height="@dimen/dp_48"
             android:gravity="center"
             android:background="@drawable/shape_home_calendar_ok_white_green"
             android:text="@string/home_calendar_ok"
