@@ -50,6 +50,11 @@ class SportPickerViewModel(private val repo: SportPickerRepository): BaseViewMod
                     id -> sport.copy(isSelected = !sport.isSelected)
                     else -> sport
                 }
+            }.apply {
+                // 確保至少有一個選擇（全选)
+                if(count { it.isSelected } == 0) {
+                    find { it.sportId ==  SportFilterBean.ALL_TYPE_ID}!!.isSelected = true
+                }
             }
         }
 

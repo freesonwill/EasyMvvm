@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.database.entity.BaseTournamentData
+import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.module.home.data.TournamentListItem
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.repo.TournamentListRepository
@@ -80,22 +81,40 @@ class TournamentListViewModel : BaseViewModel() {
     fun getType() = type
 
     fun getTournaments() {
-        viewModelScope.launch {
-            callApi({
-                repo.getAllTournaments(type, playTypeId, sportId)
-            }, {
-                if (it is ApiResponseState.Succeeded<*>) {
-                    val list = it.dataAs<List<BaseTournamentData>>() ?: return@callApi
-                    viewModelScope.launch(Dispatchers.IO) {
-                        val groupedList = processTournamentList(list)
-                        withContext(Dispatchers.Main) {
-                            _tournamentList = list
-                            lastGroupedList = groupedList
-                            updateUiModel(true)
-                        }
+        if (type == TournamentListType.MORE) {
+            getMoreTournaments()
+        } else {
+            getChampionTournaments()
+        }
+    }
+
+    private fun getMoreTournaments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val list = repo.queryTournaments(playTypeId, sportId)
+            processAndUpdateTournamentList(list)
+        }
+    }
+
+    private fun getChampionTournaments() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.queryChampionTournaments(sportId).apply {
+                if (isNotEmpty()) {
+                    processAndUpdateTournamentList(this)
+                } else {
+                    launch(Dispatchers.Main) {
+                        callApi({
+                            repo.getChampionTournament(sportId)
+                        },{
+                            if (it is ApiResponseState.Succeeded<*>) {
+                                val list = it.dataAs<List<ChampionTournamentDataModel>>() ?: return@callApi
+                                viewModelScope.launch {
+                                    processAndUpdateTournamentList(list)
+                                }
+                            }
+                        })
                     }
                 }
-            })
+            }
         }
     }
 
@@ -129,7 +148,7 @@ class TournamentListViewModel : BaseViewModel() {
         val displayList = when (state) {
             HomeState.TournamentListState.InitList, HomeState.TournamentListState.RestoreList -> lastGroupedList
             HomeState.TournamentListState.ListDataEmpty -> emptyList()
-            HomeState.TournamentListState.SearcgInit -> emptyList()
+            HomeState.TournamentListState.SearcgInit -> lastGroupedList
             HomeState.TournamentListState.SearchMatch -> searchResult
             HomeState.TournamentListState.SearchDataEmpty -> emptyList()
         }
@@ -137,8 +156,8 @@ class TournamentListViewModel : BaseViewModel() {
         setState(state)
     }
 
-    private suspend fun processTournamentList(tournaments: List<BaseTournamentData>): List<TournamentListItem> {
-        return withContext(Dispatchers.IO) {
+    private suspend fun processAndUpdateTournamentList(tournaments: List<BaseTournamentData>) {
+        withContext(Dispatchers.IO) {
             val groupedMap = mutableMapOf<Char, MutableList<BaseTournamentData>>()
             val hotList = mutableListOf<BaseTournamentData>()
             val otherList = mutableListOf<BaseTournamentData>()
@@ -187,7 +206,11 @@ class TournamentListViewModel : BaseViewModel() {
                 })
             }
 
-            displayList
+            _tournamentList = tournaments
+            lastGroupedList = displayList
+            withContext(Dispatchers.Main) {
+                updateUiModel(true)
+            }
         }
     }
 

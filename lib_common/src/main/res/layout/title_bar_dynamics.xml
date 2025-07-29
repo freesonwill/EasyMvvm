@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/tran_0"
     style="@style/CustomToolbarStyle">
+
     <arch.cayenne.lib.skin.widget.SkinnableImageView
         android:id="@+id/iv_back"
         style="@style/CustomToolbarImgStyle"
-        tools:ignore="MissingConstraints"
-        app:srcCompat="@drawable/bg_left_arrow"
+        app:srcCompat="@drawable/universal_icon_back"
         android:visibility="gone"
         />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clDynamics"
         android:layout_width="match_parent"

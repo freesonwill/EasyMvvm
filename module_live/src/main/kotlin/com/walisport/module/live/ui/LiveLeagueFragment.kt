@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -16,6 +17,7 @@ import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import com.bumptech.glide.Glide
 import com.walisport.module.live.R
@@ -64,9 +66,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         leagueLogo = arguments?.getString("leagueLogo") ?: ""
         mBinding.apply {
             refreshLayout.setLeagueMode()
-            refreshLayout.setOnRefreshListener {
-                mViewModel.getMatchLeagueData(leagueID)
-            }
+            refreshLayout.setEnableRefresh(false)
             refreshLayout.setOnLoadMoreListener {
                 mViewModel.getMoreMatchLeagueData(leagueID)
             }
@@ -97,12 +97,18 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
     }
 
     override fun initListener() {
-        mBinding.ivLeagueClose.clickNoRepeat {
+        mBinding.ivLeagueClose.apply { addScaleOnTouchAnimation() }.clickNoRepeat {
             findNavController().navigateUp()
         }
     }
 
     override fun createObserver() {
+        mViewModel.apiStateListener.observe(viewLifecycleOwner) {
+            if (it == DataState.NoMoreData) {
+                mBinding.refreshLayout.setEnableLoadMore(false)
+                mBinding.refreshLayout.setNoMoreData(true)
+            }
+        }
         mViewModel.leagueData.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()
@@ -128,6 +134,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     //更新联赛数据
                     mBinding.leagueRoot.postDelayed({
                         standsAdapter.submitList(it.match)
+                        mViewModel.setItemCount(standsAdapter.itemCount)
                     }, 1000)
                 }
             } ?: run {

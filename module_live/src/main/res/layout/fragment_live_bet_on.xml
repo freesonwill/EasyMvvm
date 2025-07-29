@@ -40,6 +40,7 @@
                     android:layout_height="@dimen/dp_25"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
+                    android:stateListAnimator="@animator/layout_alpha_animator"
                     android:src="@drawable/live_bet_on_menu" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
