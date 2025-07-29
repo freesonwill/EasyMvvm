@@ -387,7 +387,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tournaments.forEachIndexed { _, tournament ->
                 val tab = tlLeagueList.newTab().apply {
                     customView = createTournamentTabView(tournament)
-                    view.setPadding(0, 0, 10f.dp2px, 0)
+                    view.setPadding(0, 0, 7f.dp2px, 0)
                 }
                 tlLeagueList.addTab(tab)
             }
