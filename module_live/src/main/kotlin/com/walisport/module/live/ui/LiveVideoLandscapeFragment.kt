@@ -780,7 +780,7 @@ class LiveVideoLandscapeFragment :
                 //没有暂停按钮，
             }
 
-            PlayerState.CACHING, PlayerState.CONNECTING -> {
+            PlayerState.CONNECTING -> {
                 // 创建旋转动画
                 loadingAnim = mBinding.ivVideoLoading.startSafeObjectAnimator(
                     "rotation",  // 属性名称
