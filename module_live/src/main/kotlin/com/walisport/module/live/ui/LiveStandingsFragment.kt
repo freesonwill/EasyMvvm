@@ -71,7 +71,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
         launch(Lifecycle.State.RESUMED) {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
-                    DataState.NetworkUnavailable->{
+                    DataState.NetworkUnavailable -> {
                         mBinding.mainLayout.setState(
                             States.NETWORK_ANOMALY,
                             arch.cayenne.lib.common.R.string.error_net.getString()
@@ -95,6 +95,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
                     val leagueID = it.basicInfo.tournamentId
                     mViewModel.getCompetitionData(leagueID)
                 }
+            }
         }
     }
 }
