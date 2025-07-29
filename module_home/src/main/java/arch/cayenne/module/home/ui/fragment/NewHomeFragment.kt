@@ -377,12 +377,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             vpGameList.offsetLeftAndRight(1)
 
             tlLeagueList.removeAllTabs()
+            tlLeagueList.clearOnTabSelectedListeners()
             tournaments.forEachIndexed { index, tournament ->
                 val tab = tlLeagueList.newTab().apply {
                     customView = createTournamentTabView(tournament)
                     view.setPadding(0, 0, 10f.dp2px, 0)
                 }
                 tlLeagueList.addTab(tab, tournament.isSelected)
+                if (tournament.isSelected) {
+                    vpGameList.setCurrentItem(index, false)
+                }
             }
             vpGameList.registerOnPageChangeCallback(object : OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -405,7 +409,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             viewPager = mBinding.layoutContainer.vpGameList,
                             fakeViewPager = mBinding.layoutContainer.ivFaker
                         )
-
+                        //TODO 不能在這裡做
                         getSelectedRecently31Scheduled(it.position)
                         tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
 
