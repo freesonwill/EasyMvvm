@@ -152,7 +152,7 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
     }
 
     protected fun removeDim() {
-        dialog?.window?.setDimAmount(0f)
+        setDim(0f)
     }
 
     private fun setDim(amount: Float) {
