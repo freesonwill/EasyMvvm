@@ -129,7 +129,7 @@ class TournamentListViewModel : BaseViewModel() {
         val displayList = when (state) {
             HomeState.TournamentListState.InitList, HomeState.TournamentListState.RestoreList -> lastGroupedList
             HomeState.TournamentListState.ListDataEmpty -> emptyList()
-            HomeState.TournamentListState.SearcgInit -> emptyList()
+            HomeState.TournamentListState.SearcgInit -> lastGroupedList
             HomeState.TournamentListState.SearchMatch -> searchResult
             HomeState.TournamentListState.SearchDataEmpty -> emptyList()
         }
