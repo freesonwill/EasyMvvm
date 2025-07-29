@@ -76,4 +76,11 @@
         <attr name="draw_circle_action_up" format="boolean" />
         <attr name="show_pop" format="boolean" />
     </declare-styleable>
+
+    <style name="CommonDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
+    </style>
+
+
 </resources>
