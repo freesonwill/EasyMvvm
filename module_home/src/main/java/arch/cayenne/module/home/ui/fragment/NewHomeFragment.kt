@@ -383,12 +383,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
 
-            CustomTabLayoutMediator(tlLeagueList, vpGameList) { tab, position ->
+            CustomTabLayoutMediator(
+                tabLayout = tlLeagueList,
+                viewPager = vpGameList
+            ) { tab, position ->
                 tournaments.getOrNull(position)?.let {
                     tab.customView = createTournamentTabView(it)
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also {
+                // 要放在 clearOnTabSelectedListeners 後設置，
+                // 避免裡面設置的 OnTabSelectedListener 被清空
                 it.attach(mBinding.layoutContainer.ivFaker) { position ->
                     getSelectedRecently31Scheduled(position)
                     tournaments.getOrNull(position)?.id

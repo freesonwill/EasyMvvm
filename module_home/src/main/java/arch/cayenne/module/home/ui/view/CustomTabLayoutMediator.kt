@@ -21,12 +21,15 @@ class CustomTabLayoutMediator(
     private var onTabSelectedListener: TabLayout.OnTabSelectedListener? = null
     private var pagerAdapterObserver: RecyclerView.AdapterDataObserver? = null
 
+
+    // 實際執行 TabLayout 滾動的地方，用映射的方式叫用 animationTo 來達到 smoothScroll 效果
     private val doOnClick: (Int) -> Unit = { position ->
         try {
             val method = TabLayout::class.java.getDeclaredMethod("animateToTab", Int::class.java)
             method.isAccessible = true
             method.invoke(tabLayout, position)
 
+            // 手動切換被選擇的 tab
             tabLayout.getTabAt(position)?.select()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -62,6 +65,7 @@ class CustomTabLayoutMediator(
         populateTabsFromPagerAdapter()
         tabLayout.setScrollPosition(viewPager.currentItem, 0f, true)
         if(tabLayout is CustomTabLayout) {
+            // 設置自訂的 ClickListener
             tabLayout.onTabClick = { position ->
                 doOnClick(position)
             }
@@ -118,11 +122,13 @@ class CustomTabLayoutMediator(
             }
         }
 
+        // 移除 TabLayout 原生的 select tab 邏輯，避免觸發原生的滑動效果
         override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) = Unit
 
         override fun onPageSelected(position: Int) {
             val tabLayout = tabLayoutRef.get() ?: return
             if (position != tabLayout.selectedTabPosition && position < tabLayout.tabCount) {
+                // 設置自訂的滑動效果
                 doOnClick(position)
             }
         }

@@ -82,6 +82,7 @@ class CustomTabLayout: TabLayout {
         tabLayoutHelper.loadFromAttributes(attrs, defStyleAttr)
     }
 
+    // 攔截點擊事件，並將事件重送至自訂 onTabClick ，避免觸發 TabLayout 原本內建的滑動方法
     @SuppressLint("ClickableViewAccessibility")
     private fun disableTabClick(tab: Tab) {
         val tabView = getTabView(tab) ?: return
