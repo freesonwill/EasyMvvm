@@ -3,12 +3,16 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -30,12 +34,25 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
+
+        //更改导航栏样式调整底部偏移
+        ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val navBarHeight = ViewUtils.getNavigationBarHeight(requireContext())
+            //"导航栏 bottom = ${navInsets.bottom},navBarHeight:$navBarHeight".logd(TAG)
+            mBinding.clDrawerBottom.layoutParams.let{ lp-> lp as MarginLayoutParams
+                lp.bottomMargin = if(navInsets.bottom == 0) navBarHeight else 0
+            }
+            ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
+            insets
+        }
     }
 
     override fun initData() {
         super.initData()
         mViewModel.getMessageList()
     }
+
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
