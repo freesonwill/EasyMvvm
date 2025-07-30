@@ -155,29 +155,33 @@ class TournamentListFragment :
 
             rvTournamentList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    if (pendingJumpIndex != null) return
+                    // 檢查是否有待處理的跳轉
+                    pendingJumpIndex?.let { index ->
+                        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager
+                        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: -1
+                        val lastVisible = layoutManager?.findLastVisibleItemPosition() ?: -1
 
-                    val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
-                    val firstVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
-                    if (firstVisible == RecyclerView.NO_POSITION) return
-
-                    val newIndex = when (adapter.currentList.getOrNull(firstVisible)) {
-                        is TournamentListItem.Header -> firstVisible
-                        else -> (firstVisible downTo 0).firstOrNull {
-                            adapter.currentList[it] is TournamentListItem.Header
+                        // 如果目標位置在可見範圍內，或者已經到達邊界，則完成跳轉
+                        if (index >= firstVisible && index <= lastVisible ||
+                            (index > lastVisible && lastVisible == adapter.itemCount - 1) ||
+                            (index < firstVisible && firstVisible == 0)
+                        ) {
+                            mViewModel.setActiveHeaderIndex(index)
+                            pendingJumpIndex = null
+                            return
                         }
                     }
-                    if (newIndex != null) {
-                        mViewModel.setActiveHeaderIndex(newIndex)
-                    }
+
+                    // 沒有待處理的跳轉時，正常更新活動標題
+                    updateActiveHeaderIndex(recyclerView)
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        pendingJumpIndex?.let {
-                            mViewModel.setActiveHeaderIndex(it)
+                    when (newState) {
+                        RecyclerView.SCROLL_STATE_DRAGGING -> {
+                            // 用戶開始拖動時，清理待處理的跳轉
+                            pendingJumpIndex = null
                         }
-                        pendingJumpIndex = null
                     }
                 }
             })
@@ -270,16 +274,20 @@ class TournamentListFragment :
         val index = mViewModel.getHeaderIndex(letter) ?: return
         val layoutManager =
             mBinding.rvTournamentList.layoutManager as? LinearLayoutManager ?: return
+        
         pendingJumpIndex = index
+        // 直接設置選中的字母
+        mBinding.llIndexContainer.setSelectedLetter(letter)
 
-        updateAZIndexHighlight()
-
-        val scroller = createFastScroller(context, layoutManager, index)
+        val scroller = createFastScroller(context, layoutManager, index, 0.06f)
         layoutManager.startSmoothScroll(scroller)
     }
 
     private fun updateAZIndexHighlight() {
-        val currentIndex = mViewModel.getActiveHeaderIndex()
+        // 如果有待處理的跳轉，不更新高亮
+        if (pendingJumpIndex != null) return
+
+        val currentIndex = mViewModel.getActiveHeaderIndex() ?: return
         val currentLetter = mViewModel.getAvailableIndexLetters().firstOrNull {
             mViewModel.getHeaderIndex(it) == currentIndex
         } ?: return
@@ -325,7 +333,7 @@ class TournamentListFragment :
         context: Context?,
         layoutManager: LinearLayoutManager,
         targetPosition: Int,
-        speedPerPixel: Float = 0.08f
+        speedPerPixel: Float
     ): LinearSmoothScroller {
         return object : LinearSmoothScroller(context) {
             override fun getVerticalSnapPreference(): Int = SNAP_TO_START
@@ -346,10 +354,27 @@ class TournamentListFragment :
             mBinding.rvTournamentList.removeItemDecoration(it)
         }
         stickyHeaderDecoration = null
+        pendingJumpIndex = null
+        
         // 通知聯賽收回上滑動畫已結束
         if (mViewModel.getType() == TournamentListType.MORE) {
             homeViewModel.notifyTournamentSlideOutEnd()
         }
+    }
+
+    private fun updateActiveHeaderIndex(recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager as? LinearLayoutManager ?: return
+        val firstVisible = layoutManager.findFirstCompletelyVisibleItemPosition()
+        if (firstVisible == RecyclerView.NO_POSITION) return
+
+        val newIndex = when (adapter.currentList.getOrNull(firstVisible)) {
+            is TournamentListItem.Header -> firstVisible
+            else -> (firstVisible downTo 0).firstOrNull {
+                adapter.currentList[it] is TournamentListItem.Header
+            }
+        }
+
+        newIndex?.let { mViewModel.setActiveHeaderIndex(it) }
     }
     companion object {
         private const val ARG_TOURNAMENT_TYPE = "tournament_type"

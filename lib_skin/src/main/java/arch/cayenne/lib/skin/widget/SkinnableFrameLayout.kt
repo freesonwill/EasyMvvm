@@ -2,12 +2,12 @@ package arch.cayenne.lib.skin.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.RelativeLayout
+import android.widget.FrameLayout
 import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
 import arch.cayenne.lib.skin.widget.biz.SkinnableBizImpl
 
-class SkinnableRelativeLayout:RelativeLayout {
-    private lateinit var biz: ISkinnableBiz
+open class SkinnableFrameLayout : FrameLayout {
+    private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context) {
         initView(context)

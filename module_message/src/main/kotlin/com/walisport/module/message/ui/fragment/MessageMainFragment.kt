@@ -2,12 +2,14 @@ package com.walisport.module.message.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
@@ -21,6 +23,10 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
+
+    private val viewPagerAnimHelper by lazy {
+        ViewPagerAnimHelper()
+    }
 
     companion object {
         const val MSG_ALL = 0
@@ -71,11 +77,62 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         selectMessageType(MSG_ALL)
     }
 
+    //未读消息红点显示
     override fun createObserver() {
+        mViewModel.allUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgAllUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgAllUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.sysUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgSysUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgSysUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.actUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgActUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgActUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.matUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgMatUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgMatUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.payUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgPayUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgPayUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
     }
 
     private fun selectMessageType(type: Int) {
-        mBinding.vpMessage.currentItem = type
+        //ViewPager切换动画
+        viewPagerAnimHelper.doViewPagerAnim(
+            targetPosition = type,
+            viewPager = mBinding.vpMessage,
+            fakeViewPager = mBinding.fragmentFakeViewPager,
+        )
         mBinding.ivMsgAll.isSelected = false
         mBinding.ivMsgSys.isSelected = false
         mBinding.ivMsgAct.isSelected = false

@@ -54,6 +54,12 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             clNotificationHeader.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
+            itemNotification1.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
+            }
+            itemNotification2.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
+            }
             llRecharge.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
