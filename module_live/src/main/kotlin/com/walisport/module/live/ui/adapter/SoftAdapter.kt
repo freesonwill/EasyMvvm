@@ -3,6 +3,7 @@ package com.walisport.module.live.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
@@ -21,6 +22,7 @@ import com.walisport.module.live.databinding.ItemSoftAdapterBinding
 class SoftAdapter :
     BaseAdapter<SoftData, SoftAdapter.SoftViewHolder, ItemSoftAdapterBinding>(compare = SoftDataCompare()) {
     private var itemListener: RecyclerItemListener<EmojiData>? = null
+    var delListener:(() ->Unit)? = null
 
     fun setItemListener(itemListener: RecyclerItemListener<EmojiData>) {
         this.itemListener = itemListener
@@ -33,6 +35,11 @@ class SoftAdapter :
             val manager = GridLayoutManager(nBinding.softRecycler.context,8)
             nBinding.softRecycler.layoutManager = manager
             nBinding.softRecycler.adapter = adapter
+        }
+        fun initListener(){
+            nBinding.emojiDel.setOnClickListener {
+                delListener?.invoke()
+            }
         }
     }
 
@@ -50,6 +57,7 @@ class SoftAdapter :
             nAdapter?.submitList(data.emojis)
             adapter = nAdapter
         }
+        binding.emojiDel.isVisible = position == 0
     }
 
     override fun createViewBinding(
@@ -63,6 +71,7 @@ class SoftAdapter :
     override fun createViewHolder(binding: ItemSoftAdapterBinding, viewType: Int): SoftViewHolder {
         val holder = SoftViewHolder(binding)
         holder.iniAdapter()
+        holder.initListener()
         return holder
     }
 }

@@ -70,7 +70,9 @@
                 android:layout_marginEnd="7.85dp"
                 android:layout_gravity="center_vertical"
                 android:scaleType="fitXY"
-                android:src="@drawable/icon_softkeyboard" />
+                android:src="@drawable/icon_softkeyboard"
+                android:stateListAnimator="@animator/layout_alpha_animator"
+                />
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:id="@+id/live_chat_iv_emoji"
@@ -80,7 +82,9 @@
                 android:layout_marginEnd="7.85dp"
                 android:src="@drawable/icon_input_emoji"
                 android:visibility="gone"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:stateListAnimator="@animator/layout_alpha_animator"
+                />
 
         </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 
@@ -165,15 +169,15 @@
             app:layout_constraintBottom_toTopOf="@id/bottom"
             app:layout_constraintTop_toBottomOf="@id/keyboard_tv_all" />
 
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/emoji_del"
-            android:layout_width="89dp"
-            android:layout_height="46dp"
-            android:layout_marginRight="@dimen/dp_2"
-            android:src="@drawable/icon_emoji_del"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@id/bottom"
-            app:layout_constraintRight_toRightOf="parent" />
+<!--        <arch.cayenne.lib.skin.widget.SkinnableImageView-->
+<!--            android:id="@+id/emoji_del"-->
+<!--            android:layout_width="89dp"-->
+<!--            android:layout_height="46dp"-->
+<!--            android:layout_marginEnd="@dimen/dp_2"-->
+<!--            android:src="@drawable/icon_emoji_del"-->
+<!--            android:visibility="gone"-->
+<!--            app:layout_constraintBottom_toTopOf="@id/bottom"-->
+<!--            app:layout_constraintRight_toRightOf="parent" />-->
 
         <View
             android:id="@+id/bottom"

@@ -32,6 +32,7 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     private val _newMsgFLow = MutableStateFlow<MsgNotify?>(null)
     private val _checkBetAmountLiveData = MutableLiveData<CheckBetResultEnum>()
     private val _softKeyBoardListener = MutableStateFlow(KeyBoardType.NONE)
+    private val _openSoftKeyBoardLiveData = MutableLiveData<KeyBoardType>()
 
     //检查是否可以发送消息
     var checkBetAmountLiveData: LiveData<CheckBetResultEnum> = _checkBetAmountLiveData
@@ -66,8 +67,13 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
     //监听LiveSoftKeyBoardFragment点击事件
     val softKeyBoardListener: StateFlow<KeyBoardType> = _softKeyBoardListener
 
+    //打开软件盘
+    val openSoftKeyBoardLiveData:LiveData<KeyBoardType> = _openSoftKeyBoardLiveData
+
     val toastLiveData: MutableLiveData<String> = MutableLiveData()
 
+    //软件盘高度
+    var softKeyBoardHeight:Int = 0
 
     fun setArguments(matchId: Long?) {
         this.matchId = matchId
@@ -213,7 +219,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * */
     fun updateSoftKeyBoard() {
         _currentSoftKeyboard.value = softKeyBoardListener.value
-
     }
 
     /**
@@ -262,9 +267,15 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 
     fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType) {
         _softKeyBoardListener.tryEmit(keyBoardType)
+        if(softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
+            openSoftKeyBoard(KeyBoardType.SOFT_KEYBOARD)
+        }
+    }
+
+    fun openSoftKeyBoard(keyBoardType: KeyBoardType){
+        _openSoftKeyBoardLiveData.value = keyBoardType
     }
 
     fun getConnectStateFlow(): StateFlow<SocketConnectState> = chatRepo.getConnectStateFlow()
-
 
 }
