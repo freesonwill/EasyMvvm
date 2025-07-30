@@ -44,7 +44,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageActivityBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
@@ -56,7 +56,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageMatchBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
