@@ -531,12 +531,15 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            if (it is HomeState.Tournament.LoadSuccess) {
-                if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-                    mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
-                    mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+            when(it) {
+                is HomeState.Tournament.LoadSuccess, HomeState.Tournament.LoadFailure, HomeState.Sport.LoadFailure -> {
+                    if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
+                        mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+                        mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+                    }
+                    mBinding.layoutContainer.tlLeagueList.visibility = View.VISIBLE
                 }
-                mBinding.layoutContainer.tlLeagueList.visibility = View.VISIBLE
+                else -> Unit
             }
         }
     }

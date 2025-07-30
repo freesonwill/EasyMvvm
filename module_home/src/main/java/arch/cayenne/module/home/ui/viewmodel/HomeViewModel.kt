@@ -285,6 +285,7 @@ class HomeViewModel : BaseViewModel() {
                         )
                     )
                 )
+                setState(HomeState.Sport.LoadFailure)
             }
         })
     }
@@ -319,6 +320,16 @@ class HomeViewModel : BaseViewModel() {
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Tournament.LoadSuccess)
+            } else if (it is ApiResponseState.Failed && tournaments.value?.peekContent()?.isEmpty() == true) {
+                tournaments.value = Event(
+                    arrayListOf(
+                        TournamentDataModel.createAllItem(
+                            currentPlayTypeId,
+                            currentSportId
+                        )
+                    )
+                )
+                setState(HomeState.Tournament.LoadFailure)
             }
         })
     }
