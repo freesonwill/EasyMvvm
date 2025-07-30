@@ -205,7 +205,16 @@ class MatchListPagerFragment :
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                     }
+
+                    DataState.NoMoreData -> {
+                        mViewModel.changePageEnd(true)
+                        refreshLayout.setEnableLoadMore(false)
+                        refreshLayout.finishLoadMoreWithNoMoreData()
+                        matchAdapter.showNoMoreData(true)
+                    }
+
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
