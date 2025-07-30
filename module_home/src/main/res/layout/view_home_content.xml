@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <arch.cayenne.lib.skin.widget.SkinnableTabLayout
+        <arch.cayenne.module.home.ui.view.CustomTabLayout
             android:id="@+id/tl_league_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

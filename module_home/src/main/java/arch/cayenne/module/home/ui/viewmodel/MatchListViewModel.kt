@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.viewmodel
 
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.base.data.remote.ApiResponseState.Start.dataAs
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
@@ -39,6 +40,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
         if (_tournamentId == id) return
         _tournamentId = id
     }
+
     fun setPlayTypeId(id: Int) {
         _playType = id
     }
@@ -106,9 +108,14 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         Pair(0L, 0L)
                     }
                 } else {
-                    Pair(_selectedDate.value, _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP)
+                    Pair(
+                        _selectedDate.value,
+                        _selectedDate.value + BaseMatchRepository.ONE_DAY_TIME_STAMP
+                    )
                 }
-                "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(TAG)
+                "取得比賽資料  PlayType = $_playType sportId = $_sportId tournamentId = $_tournamentId page = $page startTime = $startTime endTime = $endTime".logi(
+                    TAG
+                )
                 callApi(
                     {
                         repository.getAllMatch(
@@ -125,10 +132,15 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                         if (it is ApiResponseState.Failed) {
                             matchListChange.value = arrayListOf()
                         } else if (it is ApiResponseState.Succeeded<*>) {
-                            val isEmpty = (it.dataAs<List<Common.Match>>()?.size ?: 0) == 0
+                            val size = it.dataAs<List<Common.Match>>()?.size ?: 0
+                            val isEmpty = size == 0
                             if (page == 1 && isEmpty) {
                                 matchListChange.value = arrayListOf()
                                 setState(HomeState.Match.DataEmpty)
+                            }
+                            //如果返回成功，但是数据size小于10，则表明列表已经加载到底部
+                            if (size < 10) {
+                                setState(DataState.NoMoreData)
                             }
                         }
                     }
@@ -143,7 +155,9 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             val old = matchListChange.value!!.toMutableList()
             matchWithMarket?.apply {
                 val index = old.indexOfFirst { it.match.matchId == matchWithMarket.match.matchId }
-                if (index != -1) { old[index] = matchWithMarket }
+                if (index != -1) {
+                    old[index] = matchWithMarket
+                }
             }
             withContext(Dispatchers.Main) {
                 matchListChange.value = old
