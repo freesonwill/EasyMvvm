@@ -19,6 +19,8 @@ import com.walisport.module.message.databinding.ItemMessageSystemBinding
 import com.walisport.module.message.databinding.ItemMessageWalletBinding
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding>(
     MessageCompare()
@@ -31,7 +33,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageSystemBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
@@ -48,7 +50,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageActivityBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
@@ -65,7 +67,7 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageMatchBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
@@ -113,6 +115,16 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
         val date = Date(timestamp)
         val sdf = SimpleDateFormat("MM-dd HH:mm")
         return sdf.format(date)
+    }
+
+    private fun getHtmlText(html: String): String {
+        var content = ""
+        val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
+        val matcher: Matcher = pattern.matcher(html)
+        while (matcher.find()) {
+            content = matcher.group(1)?.toString() ?: ""
+        }
+        return content
     }
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {

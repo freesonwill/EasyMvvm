@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="model"
             type="com.walisport.module.message.ui.viewmodel.MessageMainViewModel" />
@@ -25,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginHorizontal="@dimen/dp_6"
             android:orientation="horizontal">
 
             <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
@@ -56,7 +56,7 @@
                     android:id="@+id/tv_msg_all"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/notification_all"
                     android:textColor="@drawable/selector_message_text"
@@ -94,7 +94,7 @@
                     android:id="@+id/tv_msg_sys"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/notification_sys"
                     android:textColor="@drawable/selector_message_text"
@@ -132,7 +132,7 @@
                     android:id="@+id/tv_msg_act"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/notification_activity"
                     android:textColor="@drawable/selector_message_text"
@@ -170,7 +170,7 @@
                     android:id="@+id/tv_msg_mat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/notification_match"
                     android:textColor="@drawable/selector_message_text"
@@ -208,7 +208,7 @@
                     android:id="@+id/tv_msg_pay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginTop="@dimen/dp_4"
                     android:gravity="center_horizontal"
                     android:text="@string/notification_wallet"
                     android:textColor="@drawable/selector_message_text"
@@ -223,7 +223,7 @@
             android:id="@+id/vp_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/dp_10" />
+            android:layout_marginTop="@dimen/dp_5"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/fragment_fake_view_pager"
