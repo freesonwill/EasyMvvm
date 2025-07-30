@@ -112,7 +112,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvBet.addItemDecoration(decoration)
 
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
-        mBinding.rvMultiBet.isNestedScrollingEnabled = false
         setSumBetMoney(emptyList())
         setMultiLayoutHeight()
     }
