@@ -2,6 +2,7 @@ package com.walisport.module.message.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,11 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
+                }
             }
 
             is ItemMessageActivityBinding -> {
@@ -48,6 +54,11 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 }
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
             }
 
@@ -61,6 +72,11 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
                 }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
+                }
                 //Glide.with(binding.root).load(item.url).into(binding.ivMsgImage)
             }
 
@@ -70,6 +86,11 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
                 }
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
             }
         }

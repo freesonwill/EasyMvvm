@@ -2,6 +2,7 @@ package com.walisport.module.message.ui.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.view.View
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
@@ -76,7 +77,53 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         selectMessageType(MSG_ALL)
     }
 
+    //未读消息红点显示
     override fun createObserver() {
+        mViewModel.allUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgAllUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgAllUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.sysUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgSysUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgSysUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.actUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgActUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgActUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.matUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgMatUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgMatUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
+        mViewModel.payUnreadMsg.observe(viewLifecycleOwner) {
+            it.let {
+                if (it > 0) {
+                    mBinding.ivMsgPayUnread.visibility = View.VISIBLE
+                } else {
+                    mBinding.ivMsgPayUnread.visibility = View.INVISIBLE
+                }
+            }
+        }
     }
 
     private fun selectMessageType(type: Int) {
