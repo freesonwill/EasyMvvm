@@ -2,295 +2,313 @@
 <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/item_match_card"
     android:layout_width="match_parent"
-    android:layout_height="213dp"
+    android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/dp_8"
     android:background="@drawable/bg_match_item_card">
 
-    <!-- 頂部賽事名稱 -->
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_tournament_icon"
-        android:layout_width="21dp"
-        android:layout_height="21dp"
-        android:layout_marginStart="@dimen/dp_12"
-        android:layout_marginTop="@dimen/dp_6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <arch.cayenne.lib.skin.widget.SkinnableTextView
-        android:id="@+id/tv_tournament_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_3"
-        android:paddingBottom="@dimen/dp_1"
-        android:textColor="@color/secondary_text"
-        android:textSize="13sp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_tournament_icon"
-        app:layout_constraintStart_toEndOf="@id/iv_tournament_icon"
-        app:layout_constraintTop_toTopOf="@id/iv_tournament_icon"
-        tools:text="2026美加墨世界盃" />
-    <!-- 上下半場 + 比賽時間 -->
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-        android:id="@+id/cl_left_info_entry"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:paddingStart="@dimen/dp_16"
-        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/layout_odds_title"
-        app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title">
-        <TextView
-            android:id="@+id/tv_roll"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_match_item_card_roll"
-            android:textColor="@color/match_item_roll"
-            android:text="@string/match_item_roll_title"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:textSize="@dimen/sp_13"
+        android:id="@+id/item_match_card"
+        android:layout_width="match_parent"
+        android:layout_height="213dp"
+        android:background="@drawable/bg_match_item_card">
+
+        <!-- 頂部賽事名稱 -->
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_tournament_icon"
+            android:layout_width="21dp"
+            android:layout_height="21dp"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_6"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_game_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondary_text"
-            android:layout_marginStart="@dimen/dp_4"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/tv_roll"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="加時下半場" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_game_time"
+            android:id="@+id/tv_tournament_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_3"
+            android:paddingBottom="@dimen/dp_1"
             android:textColor="@color/secondary_text"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/tv_game_status"
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="@id/iv_tournament_icon"
+            app:layout_constraintStart_toEndOf="@id/iv_tournament_icon"
+            app:layout_constraintTop_toTopOf="@id/iv_tournament_icon"
+            tools:text="2026美加墨世界盃" />
+        <!-- 上下半場 + 比賽時間 -->
+        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+            android:id="@+id/cl_left_info_entry"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingStart="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="@+id/layout_odds_title"
+            app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layout_odds_title">
+
+            <TextView
+                android:id="@+id/tv_roll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_match_item_card_roll"
+                android:paddingStart="@dimen/dp_8"
+                android:paddingEnd="@dimen/dp_8"
+                android:text="@string/match_item_roll_title"
+                android:textColor="@color/match_item_roll"
+                android:textSize="@dimen/sp_13"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_game_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_roll"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="加時下半場" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_game_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:textColor="@color/secondary_text"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_game_status"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="117’" />
+
+        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+        <!-- 賠率標題 -->
+        <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
+            android:id="@+id/layout_odds_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="43dp"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:paddingEnd="@dimen/dp_12"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!--    賠率recyclerview、主隊、客隊  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginBottom="@dimen/dp_10"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:text="117’" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_odds_title">
+            <!-- 垂直分隔 guideline -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_vertical_inner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.46" />
+            <!-- Guideline 對齊第一個 child 的中心 -->
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_child1_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.166" />
+            <!-- 主隊區塊 -->
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:id="@+id/layout_home_team"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="@+id/guide_child1_center"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_inner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guide_child1_center">
 
-    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_home_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- 賠率標題 -->
-    <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-        android:id="@+id/layout_odds_title"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="43dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/dp_12"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
-        app:layout_constraintTop_toTopOf="parent" />
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_home_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/home_main_text"
+                    android:textSize="14sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tv_home_score"
+                    app:layout_constraintStart_toEndOf="@id/iv_home_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="馬恩島" />
 
-    <!--    賠率recyclerview、主隊、客隊  -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginBottom="@dimen/dp_10"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_odds_title"
-        app:layout_constraintBottom_toBottomOf="parent">
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_home_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/brand_color"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+            <!-- 客隊區塊 -->
+            <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+                android:id="@+id/layout_away_team"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_inner"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <arch.cayenne.lib.skin.widget.SkinnableImageView
+                    android:id="@+id/iv_away_icon"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_away_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:textColor="@color/home_main_text"
+                    android:textSize="14sp"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/tv_away_score"
+                    app:layout_constraintStart_toEndOf="@id/iv_away_icon"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="阿根廷" />
+
+                <arch.cayenne.lib.skin.widget.SkinnableTextView
+                    android:id="@+id/tv_away_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dp_12"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/brand_color"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="1" />
+            </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+            <!--   賠率 column recyclerview   -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_odds_grid"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:paddingEnd="@dimen/dp_14"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/guideline_vertical_inner"
+                app:layout_constraintTop_toTopOf="parent"
+                app:spanCount="3" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 觀看人數/直播 -->
+        <LinearLayout
+            android:id="@+id/layout_live_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dp_16"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_live_animation"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:stateListAnimator="@animator/layout_alpha_animator" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_live_video"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:stateListAnimator="@animator/layout_alpha_animator" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableTextView
+                android:id="@+id/tv_watch_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_10"
+                android:textColor="@color/home_main_text"
+                android:textSize="12sp"
+                tools:text="127" />
+
+            <arch.cayenne.lib.skin.widget.SkinnableImageView
+                android:id="@+id/iv_arrow"
+                android:layout_width="9dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/ic_arrow"
+                android:stateListAnimator="@animator/layout_alpha_animator" />
+        </LinearLayout>
+
         <!-- 垂直分隔 guideline -->
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline_vertical_inner"
+            android:id="@+id/guideline_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_percent="0.46" />
-        <!-- Guideline 對齊第一個 child 的中心 -->
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guide_child1_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.166" />
-        <!-- 主隊區塊 -->
-        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-            android:id="@+id/layout_home_team"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_inner"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guide_child1_center"
-            app:layout_constraintBottom_toBottomOf="@+id/guide_child1_center">
 
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_home_icon"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_home_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:textColor="@color/home_main_text"
-                android:textSize="14sp"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_home_score"
-                app:layout_constraintStart_toEndOf="@id/iv_home_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="馬恩島" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_home_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:gravity="center_vertical"
-                android:textColor="@color/brand_color"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1" />
-        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-        <!-- 客隊區塊 -->
-        <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
-            android:id="@+id/layout_away_team"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_vertical_inner"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-            <arch.cayenne.lib.skin.widget.SkinnableImageView
-                android:id="@+id/iv_away_icon"
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_away_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:textColor="@color/home_main_text"
-                android:textSize="14sp"
-                app:layout_constrainedWidth="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/tv_away_score"
-                app:layout_constraintStart_toEndOf="@id/iv_away_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="阿根廷" />
-
-            <arch.cayenne.lib.skin.widget.SkinnableTextView
-                android:id="@+id/tv_away_score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/dp_12"
-                android:gravity="center_vertical"
-                android:textColor="@color/brand_color"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="1" />
-        </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
-
-        <!--   賠率 column recyclerview   -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_odds_grid"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:paddingEnd="@dimen/dp_14"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/guideline_vertical_inner"
-            app:layout_constraintTop_toTopOf="parent"
+        <!--  收藏按鈕  -->
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="@dimen/dp_46"
+            android:layout_height="@dimen/dp_34"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingEnd="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_10"
+            android:src="@drawable/layer_favorite_crossfade"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:spanCount="3" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- 觀看人數/直播 -->
-    <LinearLayout
-        android:id="@+id/layout_live_entry"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:paddingStart="@dimen/dp_16"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_live_animation"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center_vertical"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            android:layout_marginEnd="@dimen/dp_16" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_live_video"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:stateListAnimator="@animator/layout_alpha_animator"/>
-
-        <arch.cayenne.lib.skin.widget.SkinnableTextView
-            android:id="@+id/tv_watch_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_10"
-            android:textColor="@color/home_main_text"
-            android:textSize="12sp"
-            tools:text="127" />
-
-        <arch.cayenne.lib.skin.widget.SkinnableImageView
-            android:id="@+id/iv_arrow"
-            android:layout_width="9dp"
-            android:layout_height="20dp"
-            android:stateListAnimator="@animator/layout_alpha_animator"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/ic_arrow" />
-    </LinearLayout>
-
-    <!-- 垂直分隔 guideline -->
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.46" />
-    
-    <!--  收藏按鈕  -->
-    <arch.cayenne.lib.skin.widget.SkinnableImageView
-        android:id="@+id/iv_favorite"
-        android:layout_width="@dimen/dp_46"
-        android:layout_height="@dimen/dp_34"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingTop="@dimen/dp_2"
-        android:paddingEnd="@dimen/dp_12"
-        android:src="@drawable/layer_favorite_crossfade"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+    <arch.cayenne.lib.skin.widget.SkinnableTextView
+        android:id="@+id/tv_no_more_data"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:gravity="center"
+        android:text="@string/no_more_data"
+        android:textColor="@color/secondary_text"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone" />
 </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
