@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -83,8 +82,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
             backgroundView = root.getChildAt(0).apply {
                 visibility = View.INVISIBLE
-                setBackgroundColor(Color.BLACK)
-                alpha = 0.75f
+//                setBackgroundColor(Color.BLACK)
+//                alpha = 0.75f
                 setOnClickListener {
                     if (isCancelable) {
                         dismiss()

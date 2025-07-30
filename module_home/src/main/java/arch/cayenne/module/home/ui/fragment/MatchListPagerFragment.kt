@@ -71,7 +71,7 @@ class MatchListPagerFragment :
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -242,7 +242,8 @@ class MatchListPagerFragment :
         }
 
         homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            if (homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+            if (date  == HomeViewModel.DEFAULT_DATE
+                || homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
                 || homeViewModel.currentSportId != mViewModel.getSportId())
                 return@observeEvent
             refreshListByDate(date)

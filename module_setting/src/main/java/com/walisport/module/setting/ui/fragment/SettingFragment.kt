@@ -32,7 +32,6 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         mBinding.titleBar.loadGeneralTitleBar(R.string.setting, {
             findNavController().navigateUp()
         })
-        updateSelectItem()
         if (BuildConfig.BUILD_TYPE == "debug" || BuildConfig.BUILD_TYPE == "qatest") {
             mBinding.tvVersion.isVisible = true
             val appGame = Utils.getApp()
@@ -64,25 +63,16 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
     }
 
     override fun createObserver() {
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            //更新UI界面
-            updateSelectItem()
+        mViewModel.displayType.observe(viewLifecycleOwner) { value ->
+            mBinding.tvDisplay.text = getSkinnableOddsString(value)
+        }
+        mViewModel.language.observe(viewLifecycleOwner) { value ->
+            mBinding.tvLanguageType.text = getSkinnableLanguageString(value)
+            mViewModel.displayType.value?.let { oddsType ->
+                mBinding.tvDisplay.text = getSkinnableOddsString(oddsType)
+            }
         }
     }
-
-    private fun updateSelectItem() {
-        val skinType = mViewModel.getSkinType()
-        mViewModel.setSkinType(skinType)
-        val oddsType = mViewModel.getOddsType()
-        mBinding.tvDisplay.text = getSkinnableOddsString(oddsType)
-        val langType = mViewModel.getLanguageType()
-        mBinding.tvLanguageType.text = getSkinnableLanguageString(langType)
-    }
-
     private fun showOddsDisplayDialog() {
         OddsDisplayDialogFragment().apply {
             val language = mViewModel.getLanguageType()

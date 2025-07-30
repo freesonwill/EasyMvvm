@@ -43,6 +43,7 @@ data class TournamentDataModel(
     override val icon: String,
     override val hot: Boolean,
     override val weight: Int,
+    var isSelected: Boolean = false,
 ) : BaseTournamentData() {
     companion object {
         fun createAllItem(playTypeId: Int, sportId: Int): TournamentDataModel {
