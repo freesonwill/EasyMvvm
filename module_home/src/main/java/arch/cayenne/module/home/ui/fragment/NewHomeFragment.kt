@@ -176,9 +176,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 mBinding.layoutContainer.tvTabAll.isSelected = false
 
-                tab?.position?.let { index ->
-                    val dateTriple = getFutureSevenDays().getOrNull(index)
-                    val dateTimestamp = dateTriple?.third ?: return
+                tab?.tag?.apply {
+                    val dateTimestamp = getFuture31Days().find { it.first == this }?.third ?: return
                     lifecycleScope.launch {
                         mViewModel.selectedDate(dateTimestamp)
                     }
@@ -271,10 +270,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 this,
                 HomeTourPopupCalendarViewBinding::inflate
             ).setOnDateSelectedListener {selectedDate ->
-                val index = getFutureSevenDays().indexOfFirst{
-                    it.first == selectedDate
-                }
-                setSelectedDateTab(index)
+                setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
             }.setOnCalendarDismissListener {
                 with(mBinding.layoutContainer) {
                     llOtherDate.isSelected = false
@@ -284,17 +280,48 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     }
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
-    private fun setSelectedDateTab(index: Int) {
+    private fun setSelectedDateTab(dateTriple: Triple<String, String, Long>?) {
         with(mBinding.layoutContainer) {
-            if (index != -1) {
-                tlDateList.getTabAt(index)?.select()
-            } else {
+            if (dateTriple == null) {
                 resetDateTabs()
+                return
+            }
+            var indexOfTabs = -1
+            for( i in 0 until tlDateList.tabCount) {   //尋找是否在目前的tab內已經存在，存在的話跳到該tab就好
+                val tab = tlDateList.getTabAt(i)
+                if (tab?.tag == dateTriple.first){
+                    indexOfTabs = i
+                    break
+                }
+            }
+            if (indexOfTabs != -1) {
+                tlDateList.getTabAt(indexOfTabs)?.select()
+            } else {
+                tlDateList.addTab(createDateTab(dateTriple.first, dateTriple.second), true)
+                setupDateTabLayoutParams(tlDateList, false)
             }
         }
     }
-    //API是取未來31天，依照Linear IssueWLS-1171要求，改成取未來7天【早盘】的快捷选择日期，默认展示明日往后推7天内的日期，超出该范围的数据不予显示
-    private fun getFutureSevenDays() = DateUtils.getFutureDays(7, Locale.getDefault())
+
+    private fun setupDateTabLayoutParams(tabLayout: TabLayout, clearSelected: Boolean) {
+        tabLayout.post {
+            val tabStrip = tabLayout.getChildAt(0) as LinearLayout
+            for (i in 0 until tabStrip.childCount) {
+                tabStrip.getChildAt(i).apply {
+                    val params = layoutParams as LinearLayout.LayoutParams
+                    params.width = 56.dp2px
+                    params.height = 50.dp2px
+                    params.marginStart = 5.dp2px
+                    layoutParams = params
+                    setBackgroundResource(R.drawable.selector_date_tab_bg)
+                    if (clearSelected) isSelected = false
+                }
+            }
+        }
+
+    }
+    private fun getFutureSevenDays() = getFuture31Days().take(7)
+    private fun getFuture31Days() = DateUtils.getFutureDays(31, Locale.getDefault())
 
     //init DrawerLayout Content
     private fun initDrawerContent() {
@@ -336,21 +363,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 val tab = createDateTab(date, weekday)
                 addTab(tab)
             }
-            post {
-                selectTab(null)
-                val tabStrip = getChildAt(0) as? LinearLayout ?: return@post
-                for (i in 0 until tabStrip.childCount) {
-                    tabStrip.getChildAt(i).apply {
-                        val params = layoutParams as LinearLayout.LayoutParams
-                        params.width = 56.dp2px
-                        params.height = 50.dp2px
-                        params.marginStart = 5.dp2px
-                        layoutParams = params
-                        setBackgroundResource(R.drawable.selector_date_tab_bg)
-                        isSelected = false
-                    }
-                }
-            }
+            setupDateTabLayoutParams(tlDateList, true)
         }
     }
 
@@ -362,6 +375,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             tvWeekDay.text = weekday
         }
         tab.customView = tabView.root
+        tab.tag = date
         return tab
     }
 
@@ -491,8 +505,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
 
         mViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { select ->
             if (select == HomeViewModel.DEFAULT_DATE) return@observeEvent
-            val index = getFutureSevenDays().indexOfFirst{ it.third == select }
-            setSelectedDateTab(index)
+            setSelectedDateTab(getFuture31Days().find { it.third == select })
         }
         mViewModel.playTypeIndexChange.observeEvent(viewLifecycleOwner, this) {
             mBinding.tlHome.getTabAt(it)?.select()

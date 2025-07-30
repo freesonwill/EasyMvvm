@@ -57,6 +57,7 @@ class MatchItemViewHolder(
             rvOddsGrid.apply {
                 setRecycledViewPool(viewPool)
                 setHasFixedSize(true)
+                isNestedScrollingEnabled = false
                 layoutManager = GridLayoutManager(root.context, 3)
                 adapter = oddsColumnAdapter
 
