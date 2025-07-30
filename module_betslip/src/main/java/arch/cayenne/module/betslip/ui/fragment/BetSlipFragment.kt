@@ -49,7 +49,7 @@ class BetSlipFragment :
 
     override fun onResume() {
         super.onResume()
-        betSlipFilterViewModel.checkUpdate()
+//        betSlipFilterViewModel.checkUpdate()
     }
 
 

@@ -29,23 +29,13 @@ class BetSlipFilterViewModel: BaseViewModel() {
     fun setIds(matchId: Long, sportId: Int) {
         this.matchId = matchId
         this.sportId = listOf(sportId)
+        updateFilter()
     }
 
     fun setIds(matchId: Long, sportIds: List<Int>) {
         this.matchId = matchId
         this.sportId = sportIds
         updateFilter()
-    }
-
-    /**
-     * 在Fragment OnResume时，更新matchId，
-     * 检查matchId 和 sportId,不做重复查询
-     * */
-    fun checkUpdate(){
-//        val filter = onFilterChangeListener.value
-//        if(filter?.matchId != matchId){
-            updateFilter()
-//        }
     }
 
     private fun updateFilter() {
