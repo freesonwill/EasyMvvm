@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.widget.FrameLayout
 import androidx.core.view.doOnLayout
 import com.google.android.material.tabs.TabLayout
@@ -22,6 +23,10 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
     private val maxOverScroll by lazy { 150 * resources.displayMetrics.density } // 最大允許的過度滑動距離（dp），提供更明顯的回彈效果
     private val overScrollThreshold = 5f                                        // 判斷是否進入回彈狀態的滑動距離閾值（dp）
 
+    private var isUserTouching = false                                          // 是否處於使用者手指觸控狀態（不論是點擊還是滑動）
+    private var hasDraggedEnoughToBeConsideredScroll = false                    // 是否手指移動距離已經超過系統定義的滑動閾值（touchSlop），用來區分單純點擊與實際滑動，避免點擊也觸發回彈效果
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop      // 系統定義的最小滑動距離（dp），小於這個距離的滑動會被視為點擊而非滑動，用來判斷是否「足夠滑動」才進入 scroll 狀態
+
     private val tabLayout: TabLayout?
         get() = getChildAt(0) as? TabLayout
 
@@ -38,6 +43,9 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 MotionEvent.ACTION_DOWN -> {
                     // 初始化觸控狀態
                     resetState()
+
+                    isUserTouching = true
+                    hasDraggedEnoughToBeConsideredScroll = false
                     lastX = ev.x
                     initialTouchX = ev.x
                     activePointerId = ev.getPointerId(0)
@@ -50,8 +58,13 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                     val x = ev.getX(pointerIndex)
                     val dx = x - lastX
 
+                    val totalDx = abs(x - initialTouchX)
+                    if (totalDx > touchSlop) {
+                        hasDraggedEnoughToBeConsideredScroll = true
+                    }
+
                     // 若符合回彈條件則攔截事件
-                    if (shouldOverScroll(it, dx)) {
+                    if (isUserTouching && hasDraggedEnoughToBeConsideredScroll && shouldOverScroll(it, dx)) {
                         startIntercept = true
                         lastX = x
                         return true
@@ -63,6 +76,9 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     // 結束時重置狀態
                     resetState()
+
+                    isUserTouching = false
+                    hasDraggedEnoughToBeConsideredScroll = false
                 }
             }
             return false
@@ -170,7 +186,7 @@ class BounceTabLayoutContainer @JvmOverloads constructor(
             val canScrollRight = layout.canScrollHorizontally(1)
             val isAtEdge = !canScrollLeft || !canScrollRight
 
-            if (isAtEdge && layout.translationX == 0f) {
+            if (isUserTouching && hasDraggedEnoughToBeConsideredScroll && isAtEdge && layout.translationX == 0f) {
                 triggerFlingBounce()
             }
         } ?: return
