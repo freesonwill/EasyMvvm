@@ -124,7 +124,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             MSG_PAY -> {
                 mBinding.tvMsgPay.isSelected = true
                 mBinding.ivMsgPay.isSelected = true
-                mBinding.tvMsgMat.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
+                mBinding.tvMsgPay.typeface = Typeface.defaultFromStyle(Typeface.BOLD)
             }
         }
     }
