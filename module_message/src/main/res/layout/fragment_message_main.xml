@@ -157,5 +157,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_10" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/fragment_fake_view_pager"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:overScrollMode="ifContentScrolls"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"/>
     </arch.cayenne.lib.skin.widget.SkinnableLinearLayout>
 </layout>
