@@ -135,7 +135,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    viewPagerAnimHelper.doViewPagerAnim(
+                    viewPagerAnimHelper.doDirectViewPagerAnim(
                         targetPosition = tab.position,
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,

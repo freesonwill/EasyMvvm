@@ -145,7 +145,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     private fun selectMessageType(type: Int) {
         //ViewPager切换动画
-        viewPagerAnimHelper.doViewPagerAnim(
+        viewPagerAnimHelper.doDirectViewPagerAnim(
             targetPosition = type,
             viewPager = mBinding.vpMessage,
             fakeViewPager = mBinding.fragmentFakeViewPager,

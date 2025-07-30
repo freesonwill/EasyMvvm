@@ -145,7 +145,7 @@ class CustomTabLayoutMediator(
         private val onChangeFinished: ((position: Int) -> Unit)?
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
-            ViewPagerAnimHelper().doViewPagerAnim(
+            ViewPagerAnimHelper().doDirectViewPagerAnim(
                 targetPosition = tab.position,
                 viewPager = viewPager,
                 fakeViewPager = fakeViewPager
