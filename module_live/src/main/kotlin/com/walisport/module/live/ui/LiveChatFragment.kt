@@ -1,5 +1,6 @@
 package com.walisport.module.live.ui
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -203,9 +204,12 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
 //        "softkeyboardHeight ${mViewModel.softKeyBoardHeight}   keyboardHeight $keyBoardHeight".logd("aaa")
         if (isEmoji) {
             val params = if (emojiKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(0f, (mViewModel.softKeyBoardHeight).toFloat())
+            val alphaParam =if(emojiKeyBoardVisible) floatArrayOf(0f,1f) else floatArrayOf( 1f,0f)
 
-            val animator = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
-            animator.addListener(onStart = {
+            val transAnimation = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
+            val alphaAnimation = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard,"alpha",*alphaParam)
+            val animatorSet = AnimatorSet()
+            animatorSet.addListener(onStart = {
                 if (emojiKeyBoardVisible) {
                     mBinding.liveChatKeyboard.layoutParams.height = height
                     mViewModel.updateSoftKeyBoard()
@@ -220,9 +224,11 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
                     mBinding.liveChatKeyboard.translationY = 0f
                     mViewModel.updateSoftKeyBoard()
                 }
+                mBinding.liveChatKeyboard.alpha = 1f
             })
-            animator.duration = 250L
-            animator.start()
+            animatorSet.duration = 300L
+            animatorSet.playTogether(transAnimation,alphaAnimation)
+            animatorSet.start()
         } else {
             mViewModel.updateSoftKeyBoard()
             mBinding.liveChatKeyboard.layoutParams.height = height

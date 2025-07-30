@@ -72,15 +72,6 @@ class LiveSoftKeyboardFragment :
 
     @SuppressLint("SetTextI18n", "ClickableViewAccessibility")
     override fun initListener() {
-        mBinding.emojiDel.setOnClickListener {
-            mBinding.liveChatEtInput.apply {
-                dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL))
-                dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP,KeyEvent.KEYCODE_DEL))
-                mBinding.liveChatEtInput.requestFocus()
-                mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
-            }
-        }
-
         mBinding.liveChatEtInput.setOnClickListener {
             chatViewModel.addSoftKeyBoardEvent(KeyBoardType.SOFT_KEYBOARD)
         }
@@ -188,7 +179,6 @@ class LiveSoftKeyboardFragment :
                     val position = it.position
                     val iv = tab.view.findViewById<ImageView>(R.id.iv)
                     iv.setImageResource(list[position].select)
-                    mBinding.emojiDel.isVisible = position == 0
 
                     when (position) {
                         0,
@@ -220,13 +210,24 @@ class LiveSoftKeyboardFragment :
     private fun initSoftRecycler() {
         val snapHelper = PagerSnapHelper()
         mBinding.keyboardEmojiRecycler.apply {
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             val softAdapter = SoftAdapter()
             softAdapter.setItemListener(itemListener)
+            softAdapter.delListener = {
+                mBinding.liveChatEtInput.apply {
+                    if(mBinding.liveChatEtInput.text?.length == 0){
+                        return@apply
+                    }
+                    dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                    dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
+                    mBinding.liveChatEtInput.requestFocus()
+                    mBinding.liveChatEtInput.setSelection(mBinding.liveChatEtInput.length())
+                }
+            }
             softAdapter.submitList(mViewModel.softData())
             adapter = softAdapter
             snapHelper.attachToRecyclerView(this)
+
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -314,7 +315,6 @@ class LiveSoftKeyboardFragment :
             keyboardTb.isVisible = isVisible
             keyboardTvAll.isVisible = isVisible
             keyboardEmojiRecycler.isVisible = isVisible
-            emojiDel.isVisible = isVisible
             line.isVisible = isVisible
             bottom.isVisible = isVisible
         }
