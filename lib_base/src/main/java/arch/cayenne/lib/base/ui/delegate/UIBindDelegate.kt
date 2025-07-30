@@ -9,12 +9,16 @@ import android.view.ViewGroup
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import kotlinx.coroutines.launch
 
 
 /**
@@ -64,7 +68,17 @@ class UIBindDelegate<UIOwner, VM, VB>(
         viewModel.initViewModel()
         uiOwner.initView(savedInstanceState)
         uiOwner.initListener()
-        uiOwner.createObserver()
+        uiOwner.createObserverAtState().let { state->
+            if(state == Lifecycle.State.CREATED){
+                uiOwner.createObserver()
+            } else {
+                uiOwner.lifecycleScope.launch {
+                    uiOwner.lifecycle.repeatOnLifecycle(state) {
+                        uiOwner.createObserver()
+                    }
+                }
+            }
+        }
         uiOwner.initData()
         if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
     }
