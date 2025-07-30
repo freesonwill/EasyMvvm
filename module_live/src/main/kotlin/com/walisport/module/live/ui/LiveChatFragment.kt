@@ -201,7 +201,6 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
      * */
     private fun showChatAnimation(emojiKeyBoardVisible: Boolean, isEmoji: Boolean) {
         val height = if (emojiKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
-//        "softkeyboardHeight ${mViewModel.softKeyBoardHeight}   keyboardHeight $keyBoardHeight".logd("aaa")
         if (isEmoji) {
             val params = if (emojiKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(0f, (mViewModel.softKeyBoardHeight).toFloat())
             val alphaParam =if(emojiKeyBoardVisible) floatArrayOf(0f,1f) else floatArrayOf( 1f,0f)

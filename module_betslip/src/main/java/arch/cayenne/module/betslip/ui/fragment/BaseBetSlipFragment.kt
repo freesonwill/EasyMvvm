@@ -35,15 +35,21 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
 
     protected abstract val betSlipAdapter: BetSlipAdapter
 
+    private val recyclerView:RecyclerView by lazy { mBinding.root.findViewById(R.id.recyclerView) }
+    private val dynamicState:DynamicStateLayout by lazy { mBinding.root.findViewById(R.id.empty_state) }
+    private val refreshLayout:PullRefreshLayout by lazy { mBinding.root.findViewById(R.id.refreshLayout) }
+    private val lock = Any()
+
     abstract fun getBetSlipEnum(): BetSlipEnum
 
     override fun createObserver() {
         filterViewModel?.apply {
             onFilterChangeListener.observe(viewLifecycleOwner) {
-                loadingState()
                 mViewModel.setIds(it.matchId, it.sportIds)
                 mViewModel.setTime(it.startTime, it.endTime)
-                mViewModel.refreshData(getBetSlipEnum())
+                if(it.matchId == -1L){ //首页注单加载使用
+                    refreshData()
+                }
             }
         }
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
@@ -54,6 +60,22 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
                 showToast(getString(arch.cayenne.lib.common.R.string.toast_server_disconnected))
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //直播间注单返回单前页后每次都要刷新，首页注单不用每次更新
+        if (filterViewModel?.onFilterChangeListener?.value?.matchId != -1L) {
+            refreshData()
+            if (betSlipAdapter.currentList.isNotEmpty()) {
+                recyclerView.scrollToPosition(0)
+            }
+        }
+    }
+
+    private fun refreshData(){
+        loadingState()
+        mViewModel.refreshData(getBetSlipEnum())
     }
 
     override fun initData() {
@@ -67,17 +89,13 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     }
 
     private fun loadingState(){
-        val recyclerView = mBinding.root.findViewById<RecyclerView>(R.id.recyclerView)
-        val emptyState = mBinding.root.findViewById<DynamicStateLayout>(R.id.empty_state)
-        emptyState.setState(DynamicStateLayout.States.LOADING, arch.cayenne.lib.common.R.string.loading.getString())
+        dynamicState.setState(DynamicStateLayout.States.LOADING, arch.cayenne.lib.common.R.string.loading.getString())
         recyclerView.isVisible = false
-        emptyState.isVisible = true
+        dynamicState.isVisible = true
     }
 
     private fun updateState(state: DataState){
-         val refreshLayout = mBinding.root.findViewById<PullRefreshLayout>(R.id.refreshLayout)
-         val emptyState = mBinding.root.findViewById<DynamicStateLayout>(R.id.empty_state)
-         val recyclerView = mBinding.root.findViewById<RecyclerView>(R.id.recyclerView)
+
          refreshLayout.setEnableLoadMore(mViewModel.canLoadMore())
          refreshLayout.finishRefresh()
          refreshLayout.finishLoadMore()
@@ -85,13 +103,13 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
          when(state){
              DataState.DataEmpty,
              DataState.NetworkUnavailable ->{
-                 emptyState.showEmptyData(true, recyclerView)
+                 dynamicState.showEmptyData(true, recyclerView)
                  val resId = if(DataState.DataEmpty == state)  R.string.betslip_list_empty else  arch.cayenne.lib.common.R.string.error_net
                  val newState = if (DataState.DataEmpty == state) DynamicStateLayout.States.DATA_EMPTY else DynamicStateLayout.States.NETWORK_ANOMALY
-                 emptyState.setState(newState,getString(resId))
+                 dynamicState.setState(newState,getString(resId))
              }
              else -> {
-                 emptyState.showEmptyData(false, recyclerView)
+                 dynamicState.showEmptyData(false, recyclerView)
              }
          }
     }
