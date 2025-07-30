@@ -25,13 +25,11 @@ import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
  * @property uiOwner: UI宿主
  * @property vmProvider： 提供viewModel
  * @property vbProvider： 提供viewBinding
- * @property keepViewOnNavigation: 在导航（Navigation）时是否保留 View（原生的会销毁）
  */
 class UIBindDelegate<UIOwner, VM, VB>(
     private val uiOwner: UIOwner,
     private val vmProvider: () -> VM,
     private val vbProvider: (container: ViewGroup?) -> VB,
-    private val keepViewOnNavigation:Boolean
 ) where UIOwner : IView, UIOwner : LifecycleOwner,
         VM : BaseViewModel,
         VB : ViewBinding {
@@ -48,34 +46,26 @@ class UIBindDelegate<UIOwner, VM, VB>(
             
     fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?):View {
         destroyRunnable?.let { binding.root.removeCallbacks(it) }
-        if(_binding == null || !keepViewOnNavigation) {
-            firstInit = true
-            _binding = vbProvider(container)
-            _viewModel = vmProvider()
-            (binding as? ViewDataBinding)?.let {
-                it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
-            }
-        } else {
-            firstInit = false
+        firstInit = true
+        _binding = vbProvider(container)
+        _viewModel = vmProvider()
+        (binding as? ViewDataBinding)?.let {
+            it.lifecycleOwner = if (uiOwner is Fragment) uiOwner.viewLifecycleOwner else uiOwner
         }
         if(logEnabled) "onCreateView==>$uiOwner".logd(TAG)
         return _binding!!.root
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if(firstInit) {
-            //根Fragment或者Activity需要fitsSystemWindows设置为true
-            view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
-                    || uiOwner is Activity
-            trackLoadingTime()
-            viewModel.initViewModel()
-            uiOwner.initView(savedInstanceState)
-            uiOwner.initListener()
-            uiOwner.createObserver()
-            uiOwner.initData()
-        } else {
-            uiOwner.createObserver()
-        }
+        //根Fragment或者Activity需要fitsSystemWindows设置为true
+        view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
+                || uiOwner is Activity
+        trackLoadingTime()
+        viewModel.initViewModel()
+        uiOwner.initView(savedInstanceState)
+        uiOwner.initListener()
+        uiOwner.createObserver()
+        uiOwner.initData()
         if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
     }
 
@@ -96,7 +86,6 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     fun onDestroyView() {
-        if(!keepViewOnNavigation) performDestroy()
         if(logEnabled) "onDestroyView==>$uiOwner".logd(TAG)
     }
 

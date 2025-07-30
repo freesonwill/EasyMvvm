@@ -43,7 +43,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB,
-            keepViewOnNavigation = keepViewOnNavigation
         )
     }
 

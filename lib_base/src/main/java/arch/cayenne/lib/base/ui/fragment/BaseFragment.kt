@@ -53,7 +53,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB,
-            keepViewOnNavigation = keepViewOnNavigation
         )
     }
     protected open fun createVB(container: ViewGroup?): VB {
@@ -63,8 +62,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
-    //navigation跳转时是否保留view（true:保留；false：销毁）
-    open val keepViewOnNavigation:Boolean = false
 
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
