@@ -29,8 +29,7 @@ import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 //聊天
-class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>(),
-    LiveSoftKeyboardFragment.LiveChatSoftKeyListener {
+class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding>(){
     override val vbClass: KClass<FragmentLiveChatBinding> = FragmentLiveChatBinding::class
     override val vmClass: KClass<LiveChatViewModel> = LiveChatViewModel::class
     private val mainViewModel: LiveMainViewModel by sharedViewModel<LiveMainViewModel, LiveMainFragment>()
@@ -88,9 +87,13 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        showChat()
+    }
+
     private fun initFragment() {
         val fragment = LiveSoftKeyboardFragment()
-        fragment.setSoftKeyListener(this)
         childFragmentManager.beginTransaction()
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
     }
@@ -163,21 +166,19 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             }
             launch {
                 mViewModel.softKeyBoardListener.collect {
-                    val flag1 = !mViewModel.checkSoftKeyboardVisible()
-                    if (it != KeyBoardType.NONE && flag1) {
-                        mViewModel.checkSoftKeyBoardBetAmount()
-                        return@collect
-                    }
+//                    val flag1 = !mViewModel.checkSoftKeyboardVisible()
+//                    if (it != KeyBoardType.NONE && flag1) {
+//                        mViewModel.checkSoftKeyBoardBetAmount()
+//                        return@collect
+//                    }
                     when (it) {
                         KeyBoardType.EMOJI -> {
                             showChatAnimation(true, true)
                         }
-
                         else -> {
                             if (mViewModel.currentSoftKeyboard.value == KeyBoardType.EMOJI) {
                                 showChatAnimation(false, true)
                             } else {
-                                mViewModel.updateSoftKeyBoard()
                                 showChatAnimation(false, isEmoji = false)
                             }
                         }
@@ -190,52 +191,42 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     /**
      * 显示聊天界面时隐藏键盘界面
      * */
-    private fun showChat() {
+    private fun showChat( ) {
         mViewModel.addSoftKeyBoardEvent(KeyBoardType.NONE)
     }
 
     /**
      * 如果要隐藏和显示表情键盘时使用动画
      * */
-    private fun showChatAnimation(isKeyBoardVisible: Boolean, isEmoji: Boolean) {
-        val height = if (isKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+    private fun showChatAnimation(emojiKeyBoardVisible: Boolean, isEmoji: Boolean) {
+        val height = if (emojiKeyBoardVisible && isEmoji) keyBoardHeight else 62.dp2px
+//        "softkeyboardHeight ${mViewModel.softKeyBoardHeight}   keyboardHeight $keyBoardHeight".logd("aaa")
         if (isEmoji) {
-            val params =
-                if (isKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(
-                    0f,
-                    (keyBoardHeight - 62.dp2px).toFloat()
-                )
-            val animator =
-                ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
+            val params = if (emojiKeyBoardVisible) floatArrayOf(keyBoardHeight.toFloat(), 0f) else floatArrayOf(0f, (mViewModel.softKeyBoardHeight).toFloat())
+
+            val animator = ObjectAnimator.ofFloat(mBinding.liveChatKeyboard, "translationY", *params)
             animator.addListener(onStart = {
-                if (isKeyBoardVisible) {
+                if (emojiKeyBoardVisible) {
                     mBinding.liveChatKeyboard.layoutParams.height = height
                     mViewModel.updateSoftKeyBoard()
+                }else{
+                    if(mViewModel.softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
+                        mViewModel.openSoftKeyBoard(KeyBoardType.SOFT_KEYBOARD)
+                    }
                 }
             }, onEnd = {
-                if (!isKeyBoardVisible) {
+                if (!emojiKeyBoardVisible) {
                     mBinding.liveChatKeyboard.layoutParams.height = height
                     mBinding.liveChatKeyboard.translationY = 0f
                     mViewModel.updateSoftKeyBoard()
                 }
             })
-            animator.duration = 300
+            animator.duration = 250L
             animator.start()
         } else {
+            mViewModel.updateSoftKeyBoard()
             mBinding.liveChatKeyboard.layoutParams.height = height
         }
-    }
-
-    /**
-     * 显示键盘时调用
-     * */
-    override fun showKeyBoard(isEmoji: Boolean) {
-    }
-
-    /**
-     * 隐藏键盘时调用
-     * */
-    override fun hideKeyboard() {
     }
 
     /**
@@ -277,7 +268,8 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
     fun updateChatUi() {
         //比赛状态 0-已结束 1-推迟 2-中断 3-取消 4-未开赛 5-进行中 6-延迟 7-废弃 8-暂停
         val code = mainViewModel.mainMatch.value?.basicInfo?.status
-        val status = MatchStatus.entries.find { status -> status.code == code }
+//        val status = MatchStatus.entries.find { status -> status.code == code }
+        val status = MatchStatus.IN_PROGRESS
         mBinding.also {
             when (status) {
                 MatchStatus.FINISHED, MatchStatus.CANCELED, MatchStatus.ABANDONED -> {
