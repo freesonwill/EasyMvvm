@@ -28,7 +28,7 @@
         android:id="@+id/tvNumber"
         android:layout_width="@dimen/dp_14"
         android:layout_height="@dimen/dp_14"
-        android:background="@drawable/circle_badge_blue"
+        android:background="@drawable/circle_badge"
         android:gravity="center"
         android:textColor="#FFFFFF"
         android:textSize="10sp"

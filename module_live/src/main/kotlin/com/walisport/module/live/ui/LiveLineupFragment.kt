@@ -208,9 +208,9 @@ class LiveLineupFragment : BaseFragment<LiveLineupViewModel, FragmentLiveLineupB
     @SuppressLint("SetTextI18n")
     private fun incidents(list: List<PlayerIncident>, positionName: String, isHome: Boolean) {
         list.forEach { itData ->
-            isIncidents = true
             LogUtils.d("homeIncidents,itData.inPlayer-name${itData.inPlayer.name}---itData.outPlayer-name${itData.outPlayer.name}")
             if (itData.inPlayer.name.isNotEmpty()) {
+                isIncidents = true
                 val binding = LineupSubstitutionItemBinding.inflate(
                     LayoutInflater.from(context),
                     if (isHome) mBinding.llcHome else mBinding.llcAway,
