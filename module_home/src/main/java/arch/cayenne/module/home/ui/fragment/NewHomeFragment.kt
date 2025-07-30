@@ -383,6 +383,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
                 tlLeagueList.addTab(tab, tournament.isSelected)
                 if (tournament.isSelected) {
+                    getSelectedRecently31Scheduled(index)
                     vpGameList.setCurrentItem(index, false)
                 }
             }
@@ -407,7 +408,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                             viewPager = mBinding.layoutContainer.vpGameList,
                             fakeViewPager = mBinding.layoutContainer.ivFaker
                         )
-                        //TODO 不能在這裡做
                         getSelectedRecently31Scheduled(it.position)
                         tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
 
