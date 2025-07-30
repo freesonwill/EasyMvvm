@@ -3,13 +3,14 @@ package arch.cayenne.lib.common.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.Rect
-import android.view.KeyEvent
+import android.os.Build
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import androidx.window.layout.WindowMetricsCalculator
 
 object ViewUtils {
 
@@ -33,13 +34,36 @@ object ViewUtils {
     }
 
     fun getNavigationBarHeight(context: Context): Int {
-        val metrics = context.resources.displayMetrics
-        val usableHeight = metrics.heightPixels
+        val key = if (context.resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                "navigation_bar_height"
+            } else {
+                "navigation_bar_height_landscape"
+            }
+        return getInternalDimensionSize(context, key)
+    }
 
-        val realMetrics =
-            WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(context).bounds
-        val realHeight = realMetrics.height()
+    private fun getInternalDimensionSize(context: Context, key: String): Int {
+        val result = 0
+        try {
+            val resourceId = Resources.getSystem().getIdentifier(key, "dimen", "android")
+            if (resourceId > 0) {
+                val sizeOne = context.resources.getDimensionPixelSize(resourceId)
+                val sizeTwo = Resources.getSystem().getDimensionPixelSize(resourceId)
 
-        return if (realHeight > usableHeight) realHeight - usableHeight else 0
+                if (sizeTwo >= sizeOne && !(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                            key != "status_bar_height")
+                ) {
+                    return sizeTwo
+                } else {
+                    val densityOne = context.resources.displayMetrics.density
+                    val densityTwo = Resources.getSystem().displayMetrics.density
+                    val f = sizeOne * densityTwo / densityOne
+                    return (if ((f >= 0)) (f + 0.5f) else (f - 0.5f)).toInt()
+                }
+            }
+        } catch (ignored: Resources.NotFoundException) {
+            return 0
+        }
+        return result
     }
 }

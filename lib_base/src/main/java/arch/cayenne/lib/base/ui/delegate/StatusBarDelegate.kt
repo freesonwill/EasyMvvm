@@ -4,7 +4,6 @@ import android.app.Activity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
-import android.view.WindowManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.children
@@ -37,10 +36,6 @@ class StatusBarDelegate : IStatusBar {
     }
 
     constructor(fragment: DialogFragment) {
-//        fragment.dialog?.window?.let { window ->
-//            window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND)
-//        }
         immersionBar = ImmersionBar.with(fragment)
     }
 

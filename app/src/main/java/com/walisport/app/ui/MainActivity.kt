@@ -39,7 +39,6 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-
         val metrics = resources.displayMetrics
         DensityInfo.density = metrics.density
         DensityInfo.scaledDensity = metrics.scaledDensity
