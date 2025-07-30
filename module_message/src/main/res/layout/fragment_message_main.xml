@@ -47,7 +47,7 @@
                     android:id="@+id/iv_msg_all_unread"
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
-                    android:visibility="visible"
+                    android:visibility="invisible"
                     android:background="@drawable/icon_notice_unread"
                     app:layout_constraintEnd_toEndOf="@+id/iv_msg_all"
                     app:layout_constraintTop_toTopOf="@+id/iv_msg_all"/>
@@ -85,6 +85,7 @@
                     android:id="@+id/iv_msg_sys_unread"
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
+                    android:visibility="invisible"
                     android:background="@drawable/icon_notice_unread"
                     app:layout_constraintEnd_toEndOf="@+id/iv_msg_sys"
                     app:layout_constraintTop_toTopOf="@+id/iv_msg_sys"/>
@@ -122,6 +123,7 @@
                     android:id="@+id/iv_msg_act_unread"
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
+                    android:visibility="invisible"
                     android:background="@drawable/icon_notice_unread"
                     app:layout_constraintEnd_toEndOf="@+id/iv_msg_act"
                     app:layout_constraintTop_toTopOf="@+id/iv_msg_act"/>
@@ -159,6 +161,7 @@
                     android:id="@+id/iv_msg_mat_unread"
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
+                    android:visibility="invisible"
                     android:background="@drawable/icon_notice_unread"
                     app:layout_constraintEnd_toEndOf="@+id/iv_msg_mat"
                     app:layout_constraintTop_toTopOf="@+id/iv_msg_mat"/>
@@ -196,6 +199,7 @@
                     android:id="@+id/iv_msg_pay_unread"
                     android:layout_width="@dimen/dp_10"
                     android:layout_height="@dimen/dp_10"
+                    android:visibility="invisible"
                     android:background="@drawable/icon_notice_unread"
                     app:layout_constraintEnd_toEndOf="@+id/iv_msg_pay"
                     app:layout_constraintTop_toTopOf="@+id/iv_msg_pay"/>
