@@ -75,6 +75,10 @@ class UIBindDelegate<UIOwner, VM, VB>(
 
     fun onResume() {
         if(logEnabled) "onResume==>$uiOwner".logd(TAG)
+        if(firstInit) {
+            uiOwner.lazyLoadData()
+            firstInit = false
+        }
     }
 
     fun onPause() {

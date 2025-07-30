@@ -29,6 +29,11 @@ interface IView : OnNewIntentListener {
     fun initData() {}
 
     /**
+     * 懒加载数据
+     */
+    fun lazyLoadData() {}
+
+    /**
      * 是否追踪加载时间（DEBUG用）
      */
     fun enableTrackLoadTime() = false
