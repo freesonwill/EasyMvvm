@@ -562,6 +562,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
             return true
         }
+        if(isExpanded){
+            toggleTournamentMoreSection(false, TournamentListType.MORE)
+            return true
+        }
         return super.onBackPressed()
     }
 
