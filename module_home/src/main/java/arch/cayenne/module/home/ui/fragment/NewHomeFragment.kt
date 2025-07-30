@@ -108,7 +108,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         toggleTournamentMoreSection(false, TournamentListType.NONE)
         mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
         mBinding.layoutContainer.llOtherDate.visibility = View.GONE
-        mBinding.layoutContainer.tlLeagueList.visibility = View.GONE
         mBinding.ivTournamentMore.visibility = View.GONE
     }
 
@@ -537,7 +536,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
                         mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
                     }
-                    mBinding.layoutContainer.tlLeagueList.visibility = View.VISIBLE
                 }
                 else -> Unit
             }
