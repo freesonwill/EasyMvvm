@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="@dimen/dp_8"
-    android:background="@drawable/bg_match_item_card">
+    android:layout_marginHorizontal="@dimen/dp_8">
 
     <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
         android:id="@+id/item_match_card"
