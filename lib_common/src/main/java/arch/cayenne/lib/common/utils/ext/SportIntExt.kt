@@ -134,12 +134,4 @@ object SportIntExt {
     fun Long.percent(p: Int): Long {
         return this * p / 100
     }
-
-    fun String.stringToMoney():String{
-        if(this.toDoubleOrNull() ==  null){
-            return ""
-        }
-      return BigDecimal(this).multiply(BigDecimal(100)).toLong().getMoneyForScale()
-
-    }
 }
