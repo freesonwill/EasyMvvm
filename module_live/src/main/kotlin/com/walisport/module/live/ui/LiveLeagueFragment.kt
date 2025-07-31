@@ -15,7 +15,9 @@ import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -82,12 +84,12 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         standsAdapter.setOnItemClickListener { pos ->
             val matchId = standsAdapter.currentList[pos].matchId
             val sportId = standsAdapter.currentList[pos].sportId
-            navigate(
-                LiveLeagueFragmentDirections.actionLeagueFragmentToLiveMainFragment(
-                    matchId,
-                    sportId
-                )
-            )
+            val result = Bundle().apply {
+                putLong("matchId", matchId)
+                putInt("sportId", sportId)
+            }
+            sendResult(LiveMainFragment.CHANGE_MATCH, result)
+            navigateUp()
         }
     }
 

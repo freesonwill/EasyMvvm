@@ -46,6 +46,7 @@ import arch.cayenne.lib.websocket.data.ConnectState
 import com.walisport.module.live.data.BetOnMenuStatus
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -53,7 +54,9 @@ import kotlinx.coroutines.flow.filter
  */
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
-
+    companion object{
+        const val CHANGE_MATCH = "CHANGE_MATCH"
+    }
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
@@ -65,7 +68,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         ViewPagerAnimHelper()
     }
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
@@ -185,9 +187,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
     }
 
-    @SuppressLint("SetTextI18n")
     override fun createObserver() {
-        launch {
+        observeResult<Bundle>(CHANGE_MATCH){
+            val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            if (this.args.equal(newArgs)) return@observeResult
+            this.args = newArgs
+            updateMatchId(newArgs.matchId)
+        }
+        mViewModel.observeMatchInfoNotify()
+        launch(Lifecycle.State.RESUMED) {
             //网络异常登陆成功后才获取数据
             mViewModel.observeLoginChange()
                 .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
@@ -255,7 +264,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1)
+        mBinding.vpPage.setCurrentItem(1,true)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -272,14 +281,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
-                        putLong(
-                            "matchId",
-                            value
-                        )
+                        putLong("matchId", value)
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .commitNow()
             }
     }
 
@@ -292,7 +299,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
-                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
+                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
+            )
+
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch {
                 delay(500)
@@ -359,19 +368,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             mViewModel.registerMatchInfoNotify(it)
         }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
-        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${
-            this.args.equal(
-                newArgs
-            )
-        }".logd(TAG)
-        if (this.args.equal(newArgs)) return
-        this.args = newArgs
-        updateMatchId(newArgs.matchId)
     }
 
     override fun onStop() {
