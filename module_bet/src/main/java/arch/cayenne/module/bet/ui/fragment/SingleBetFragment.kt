@@ -211,7 +211,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     private fun hideKeyboard() {
-        ViewHelper.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
+        ViewUtils.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
         mBinding.etMoney.clearFocus()
         mBinding.clMoney.isFocusableInTouchMode = false
         mBinding.clMoney.isFocusable = false
@@ -219,7 +219,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
 
     private fun showKeyboard() {
         if (!mBinding.clKeyboard.isVisible) {
-            ViewHelper.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
+            ViewUtils.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
             mBinding.etMoney.requestFocus()
             mBinding.clMoney.isFocusableInTouchMode = true
             mBinding.clMoney.isFocusable = true
