@@ -2,6 +2,7 @@ package arch.cayenne.module.bet.ui.fragment
 
 import android.animation.ValueAnimator
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -103,6 +104,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return super.onCreateView(inflater, container, savedInstanceState).apply {
+            setMultiLayoutHeight()
+        }
+    }
+
     override fun initView(savedInstanceState: Bundle?) {
         (mBinding.rvMultiBet.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         mBinding.rvMultiBet.itemAnimator = null
@@ -115,7 +126,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         mBinding.rvMultiBet.adapter = comboMultiBetAdapter
         mBinding.rvMultiBet.isNestedScrollingEnabled = false
         setSumBetMoney(emptyList())
-        setMultiLayoutHeight()
     }
 
     override fun initListener() {
@@ -163,13 +173,10 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
             }
         }
         mViewModel.onComboMultiBetBeanListener.observe(viewLifecycleOwner) { data ->
-            val lastSize = comboMultiBetAdapter.itemCount
             comboMultiBetAdapter.submitList(data) {
-                if (lastSize == 0) {
-                    initMultiLayout(data.size)
-                } else if (data.size <= 1) {
+                if (data.size <= 1) {
                     mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-                        this.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
+                        this.height = getMultiItemHeight()
                     }
                     restoreBetLayoutPosition()
                     mBinding.rvMultiBet.post {
@@ -231,17 +238,6 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     private fun forceUpdateLayout() {
         if (betSelectionAdapter.itemCount == 0 || mViewModel.onBetListListener.value?.size == 1) return
         adjustLayoutHeight()
-    }
-
-    private fun initMultiLayout(size: Int) {
-        if (size == 0 ) {
-            restoreBetLayoutPosition()
-        } else {
-            val targetHeight = getMultiItemHeight() * size.coerceAtMost(1)
-            mBinding.rvMultiBet.layoutParams = mBinding.rvMultiBet.layoutParams.apply {
-                this.height = targetHeight
-            }
-        }
     }
 
     private fun adjustLayoutHeight() {
@@ -381,15 +377,16 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     private fun getMultiItemHeight(): Int {
-        val layoutManager = mBinding.rvMultiBet.layoutManager as? LinearLayoutManager
-        val firstVisibleItemView =
-            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
-        return if (firstVisibleItemView == null) {
-            90.dp2px
-        } else {
-            // 不知道為什麼高度會少bottom(8dp)空白間距
-            firstVisibleItemView.height + 8.dp2px
-        }
+//        val layoutManager = mBinding.rvMultiBet.layoutManager as? LinearLayoutManager
+//        val firstVisibleItemView =
+//            layoutManager?.findViewByPosition(layoutManager.findFirstVisibleItemPosition())
+//        return if (firstVisibleItemView == null) {
+//            90.dp2px
+//        } else {
+//            // 不知道為什麼高度會少bottom空白間距
+//            firstVisibleItemView.height + 11.dp2px
+//        }
+        return 90.dp2px
     }
 
     private fun getBetItemHeight(): Int {
