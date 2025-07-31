@@ -2,12 +2,12 @@ package arch.cayenne.module.betslip.ui.viewholder
 
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.utils.ext.SportIntExt.stringToMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipConfirmBinding
@@ -49,7 +49,7 @@ class BetSlipConfirmViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum) :
                 it.betConfirmTvDate.text = order.betTime.getDetailFormatDate()
                 it.betConfirmTvBetcodeValue.text = order.betId
                 it.betConfirmTvOddsValue.text = order.odds
-                val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.stringToMoney()}"
+                val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
                 it.betConfirmTvBettingValue.text = betAmount
                 val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
                 it.betConfirmTvExceptValue.text = exceptAmount
