@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipInvalidBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
@@ -14,8 +15,7 @@ import arch.cayenne.module.betslip.utisl.BetSlipViewExt.betSlipInit
 import kotlin.reflect.KClass
 
 //注单失效
-class BetSlipInvalidFragment :
-    BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipInvalidBinding>() {
+class BetSlipInvalidFragment : BaseBetSlipFragment<OrderSlipViewModel, FragmentLiveBetslipInvalidBinding>() {
     override val vbClass: KClass<FragmentLiveBetslipInvalidBinding> =
         FragmentLiveBetslipInvalidBinding::class
     override val vmClass: KClass<OrderSlipViewModel> = OrderSlipViewModel::class
@@ -66,7 +66,11 @@ class BetSlipInvalidFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it)
+            betSlipAdapter.submitList(it){
+                val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
+                mBinding.recyclerView.scrollToPosition(position)
+                mViewModel.loadDataType = LoadDataType.NONE
+            }
         }
     }
 

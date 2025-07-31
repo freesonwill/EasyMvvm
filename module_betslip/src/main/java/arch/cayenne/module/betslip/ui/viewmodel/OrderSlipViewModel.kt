@@ -7,6 +7,7 @@ import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.data.repo.OrderSlipRepository
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     val orderLiveData: LiveData<List<BetSlipOrderBean>> = _orderLiveData
 
     private var type: BetSlipEnum? = null
+    var loadDataType: LoadDataType = LoadDataType.NONE
     private var lastCount = 0
 
     init {
@@ -36,7 +38,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     }
 
     override fun refreshData(status: BetSlipEnum) {
-
+        loadDataType = LoadDataType.REFRESH_ING
         if (type == null) {
             type = status
             repo.registerObserveOrderBean(status.value)
@@ -55,6 +57,7 @@ open class OrderSlipViewModel(private val repo: OrderSlipRepository): BaseBetSli
     }
 
     override fun loadMoreData(status: BetSlipEnum) {
+        loadDataType = LoadDataType.LOAD_MORE
         val list = _orderLiveData.value
         callApi({
             repo.loadMoreOrder(
