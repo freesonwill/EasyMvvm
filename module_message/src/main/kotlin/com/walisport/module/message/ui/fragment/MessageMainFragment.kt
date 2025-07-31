@@ -10,7 +10,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
@@ -24,10 +24,6 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     companion object {
         const val MSG_ALL = 0
@@ -145,9 +141,8 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     private fun selectMessageType(type: Int) {
         //ViewPager切换动画
-        viewPagerAnimHelper.doDirectViewPagerAnim(
+        mBinding.vpMessage.doSmartAnim(
             targetPosition = type,
-            viewPager = mBinding.vpMessage,
             fakeViewPager = mBinding.fragmentFakeViewPager,
         )
         mBinding.ivMsgAll.isSelected = false
