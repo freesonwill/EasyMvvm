@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipConfirmBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.ConfirmingSlipViewModel
@@ -15,8 +16,7 @@ import kotlin.reflect.KClass
 
 
 //注单确认‰‰
-class BetSlipConfirmFragment :
-    BaseBetSlipFragment<ConfirmingSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
+class BetSlipConfirmFragment : BaseBetSlipFragment<ConfirmingSlipViewModel, FragmentLiveBetslipConfirmBinding>() {
 
     override val vbClass: KClass<FragmentLiveBetslipConfirmBinding> =
         FragmentLiveBetslipConfirmBinding::class
@@ -69,7 +69,11 @@ class BetSlipConfirmFragment :
     override fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it)
+            betSlipAdapter.submitList(it){
+                val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
+                mBinding.recyclerView.scrollToPosition(position)
+                mViewModel.loadDataType = LoadDataType.NONE
+            }
         }
     }
 
