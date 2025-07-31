@@ -22,11 +22,11 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
+import arch.cayenne.lib.common.utils.ext.TabLayoutExt.selectTabWithoutAnimation
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
@@ -403,15 +403,26 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.customView = createTournamentTabView(it)
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
-            }.also {
-                // 要放在 clearOnTabSelectedListeners 後設置，
-                // 避免裡面設置的 OnTabSelectedListener 被清空
-                it.attach(mBinding.layoutContainer.ivFaker) { position ->
-                    getSelectedRecently31Scheduled(position)
-                    tournaments.getOrNull(position)?.id
-                        ?.let { id -> mViewModel.setCurrentTournamentId(id) }
-                }
+            }.also { layoutMediator ->
+                layoutMediator.attach(mBinding.layoutContainer.ivFaker)
+                val selectedPosition = tournaments.indexOfFirst { it.isSelected }
+                getSelectedRecently31Scheduled(selectedPosition)
+                tlLeagueList.post{ tlLeagueList.selectTabWithoutAnimation(selectedPosition) }
+                vpGameList.setCurrentItem(selectedPosition, false)
             }
+
+            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab?) {
+                    tab?.let {
+                        getSelectedRecently31Scheduled(it.position)
+                        tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                    }
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab?) {}
+                override fun onTabReselected(tab: TabLayout.Tab?) {}
+            })
+
         }
     }
 
