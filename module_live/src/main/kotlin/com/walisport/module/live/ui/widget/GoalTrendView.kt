@@ -143,7 +143,7 @@ class GoalTrendView @JvmOverloads constructor(
                 val type = eventList[i].type
                 val pos = eventList[i].position
                 //只显示5种事件：1进攻 2角球 3黄牌 4红牌 9换人
-                val left = (time * unitWidth).toInt()
+                val left = ((time - 1) * unitWidth).toInt()
                 when (type) {
                     EventEnum.EVENT_GOAL.type -> {
                         if (pos == 1) {//1-主队、2-客队
