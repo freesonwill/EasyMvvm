@@ -18,7 +18,6 @@ import arch.cayenne.lib.database.entity.ChampionTournamentDataModel
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.lib.database.entity.SportDataModel
 import arch.cayenne.lib.database.entity.TournamentDataModel
-import arch.cayenne.lib.skin.SkinnableManager
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.data.constants.playTypeToShowType
@@ -67,7 +66,6 @@ class HomeViewModel : BaseViewModel() {
 
     private val repository: HomeRepository by inject()
     private val balanceRepository: BalanceRepository by inject()
-    private val skinManager: SkinnableManager by inject { parametersOf(viewModelScope) }
     val currentBalanceChange by lazy { MutableLiveData<InfoBean>() }
 
     val sportsStatistical by lazy { MutableLiveData<Event<List<SportDataModel>>>() }
@@ -89,9 +87,6 @@ class HomeViewModel : BaseViewModel() {
     private var timerJob: Job? = null
     private val _timer = MutableLiveData<Event<Long>>()
     val timer: LiveData<Event<Long>> = _timer
-
-    private val _selectedSkinType = MutableLiveData<Event<String>>()
-    val selectedSkinType: LiveData<Event<String>> = _selectedSkinType
 
     //聯賽收回上滑動畫結束事件
     private val _tournamentSlideOutEnd = MutableLiveData<Event<Unit>>()
@@ -244,14 +239,6 @@ class HomeViewModel : BaseViewModel() {
                 }
             }
         }
-        viewModelScope.launch(Dispatchers.IO) {
-            //觀察換肤type
-            skinManager.skinFlow.collect {
-                withContext(Dispatchers.Main) {
-                    _selectedSkinType.value = Event(it)
-                }
-            }
-        }
         startTimer()
     }
 
@@ -391,7 +378,7 @@ class HomeViewModel : BaseViewModel() {
             if (it is ApiResponseState.Succeeded<*>) {
                 val data: List<Common.DailyMatchCount>? = it.dataAs()
                 if (!data.isNullOrEmpty()) {
-                    _recently7DayMatchScheduleCount.value = Event(data)
+                    _recently7DayMatchScheduleCount.value = Event(data.take(7))
                     setState(HomeState.Schedule.LoadSuccess)
                 }
             }
