@@ -12,6 +12,7 @@ import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSelectionBean
 import arch.cayenne.lib.database.entity.InfoBean
 import arch.cayenne.module.bet.data.ComboMultiBetBean
+import arch.cayenne.module.bet.data.remote.ComboRiskDataModel
 import arch.cayenne.module.bet.repo.ComboBetRepository
 import kotlinx.coroutines.launch
 
@@ -189,6 +190,19 @@ class ComboBetViewModel(
     }
 
     private fun setBetList(betList: List<BetSelectionBean>) {
+        val betData = _onBetListListener.value
+        val multiData = _onComboMultiBetBeanListener.value
+        if (!betData.isNullOrEmpty() && !multiData.isNullOrEmpty()) {
+            if (betData.size == betList.size) {
+                repo.updateLocalMultiBet(betList, multiData.map {
+                    ComboRiskDataModel(
+                        serialValue = it.serialValue,
+                        minAmount = it.minAmount,
+                        maxAmount = it.maxAmount
+                    )
+                }.sortedBy { it.serialValue })
+            }
+        }
         _onBetListListener.value = betList
     }
 

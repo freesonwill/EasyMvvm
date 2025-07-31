@@ -275,4 +275,12 @@ class ComboBetRepository(
             betDao.getSelections(it.betId).size
         } ?: 0
     }
+
+    fun updateLocalMultiBet(data: List<BetSelectionBean>, riskList: List<ComboRiskDataModel>) {
+        calculateMultiBetSums(data, riskList).let { multiBet ->
+            scope.launch {
+                comboMultiBetFlow.emit(multiBet)
+            }
+        }
+    }
 }
