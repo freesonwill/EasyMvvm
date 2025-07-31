@@ -172,6 +172,9 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
                         this.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
                     }
                     restoreBetLayoutPosition()
+                    mBinding.rvMultiBet.post {
+                        adjustLayoutHeight()
+                    }
                 }
             }
             setSumBetMoney(data)
