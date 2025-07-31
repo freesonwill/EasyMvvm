@@ -190,6 +190,7 @@ class HomeViewModel : BaseViewModel() {
                                 setCurrentTournamentId(selectedTournament.id)
                             }
                             tournaments.value = Event(list)
+                            setState(HomeState.Tournament.LoadSuccess)
                         }
                     }
                 }
@@ -276,15 +277,18 @@ class HomeViewModel : BaseViewModel() {
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Sport.LoadSuccess)
-            } else if (it is ApiResponseState.Failed && tournaments.value?.peekContent()?.isEmpty() == true) {
-                tournaments.value = Event(
-                    arrayListOf(
-                        TournamentDataModel.createAllItem(
-                            currentPlayTypeId,
-                            currentSportId
+            } else if (it is ApiResponseState.Failed) {
+                if (tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true) {
+                    tournaments.value = Event(
+                        arrayListOf(
+                            TournamentDataModel.createAllItem(
+                                currentPlayTypeId,
+                                currentSportId
+                            )
                         )
                     )
-                )
+                }
+                setState(HomeState.Sport.LoadFailure)
             }
         })
     }
@@ -319,6 +323,18 @@ class HomeViewModel : BaseViewModel() {
         }, {
             if (it is ApiResponseState.Succeeded<*>) {
                 setState(HomeState.Tournament.LoadSuccess)
+            } else if (it is ApiResponseState.Failed) {
+                if ((tournaments.value?.peekContent() == null || tournaments.value?.peekContent()?.isEmpty() == true)) {
+                    tournaments.value = Event(
+                        arrayListOf(
+                            TournamentDataModel.createAllItem(
+                                currentPlayTypeId,
+                                currentSportId
+                            )
+                        )
+                    )
+                }
+                setState(HomeState.Tournament.LoadFailure)
             }
         })
     }

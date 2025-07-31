@@ -52,7 +52,6 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-    override val keepViewOnNavigation: Boolean = true
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
@@ -105,7 +104,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         toggleTournamentMoreSection(false, TournamentListType.NONE)
         mBinding.layoutContainer.llDateFilterContainer.visibility = View.GONE
         mBinding.layoutContainer.llOtherDate.visibility = View.GONE
-        mBinding.layoutContainer.tlLeagueList.visibility = View.GONE
         mBinding.ivTournamentMore.visibility = View.GONE
     }
 
@@ -521,12 +519,14 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
 
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
-            if (it is HomeState.Tournament.LoadSuccess) {
-                if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
-                    mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
-                    mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+            when(it) {
+                is HomeState.Tournament.LoadSuccess, HomeState.Tournament.LoadFailure, HomeState.Sport.LoadFailure -> {
+                    if (mViewModel.currentPlayTypeId == PlayType.EARLY.id) {
+                        mBinding.layoutContainer.llDateFilterContainer.visibility = View.VISIBLE
+                        mBinding.layoutContainer.llOtherDate.visibility = View.VISIBLE
+                    }
                 }
-                mBinding.layoutContainer.tlLeagueList.visibility = View.VISIBLE
+                else -> Unit
             }
         }
     }
@@ -560,6 +560,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         //如果抽屉打开，截获此次返回事件，关闭抽屉
         if(mBinding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
             mBinding.drawerLayout.closeDrawer(GravityCompat.START)
+            return true
+        }
+        if(isExpanded){
+            toggleTournamentMoreSection(false, TournamentListType.MORE)
             return true
         }
         return super.onBackPressed()

@@ -10,6 +10,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import androidx.core.view.isVisible
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -145,6 +146,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
         }
     }
 
+    override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
     override fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {

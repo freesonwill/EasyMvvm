@@ -48,7 +48,6 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB,
-            keepViewOnNavigation = keepViewOnNavigation
         )
     }
     protected open fun createVB(container: ViewGroup?): VB {
