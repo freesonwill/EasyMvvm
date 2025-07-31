@@ -26,7 +26,6 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
@@ -55,6 +54,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
+            if (mViewModel.currentSportId == id) return@SportsListAdapter
             mViewModel.setCurrentSport(id)
         }
     }
