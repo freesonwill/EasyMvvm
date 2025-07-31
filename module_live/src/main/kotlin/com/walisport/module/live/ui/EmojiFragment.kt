@@ -30,7 +30,7 @@ class EmojiFragment(type: Int) : BaseFragment<EmojiViewModel, FragmentSoftkeyboa
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
     fun setEmojiItemClick(listener: RecyclerItemListener<EmojiData>) {

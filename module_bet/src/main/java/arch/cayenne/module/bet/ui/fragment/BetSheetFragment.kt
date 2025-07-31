@@ -164,7 +164,7 @@ class BetSheetFragment private constructor() :
         navController.setGraph(navGraph, Bundle())
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->

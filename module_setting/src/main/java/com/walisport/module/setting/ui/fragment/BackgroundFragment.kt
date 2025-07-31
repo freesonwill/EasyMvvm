@@ -81,7 +81,7 @@ class BackgroundFragment : BaseFragment<SettingViewModel, FragmentBackgroundBind
         setStatusBar(StatusBarConfig, mBinding.llConttnet)
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.skinType.observe(viewLifecycleOwner) {
             changeSkinType(it)
         }

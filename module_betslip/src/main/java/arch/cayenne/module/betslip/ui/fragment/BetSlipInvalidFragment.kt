@@ -63,7 +63,7 @@ class BetSlipInvalidFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it)

@@ -203,7 +203,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
 

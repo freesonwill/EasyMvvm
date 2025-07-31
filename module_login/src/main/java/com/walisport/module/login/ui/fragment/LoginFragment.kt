@@ -33,6 +33,6 @@ class LoginFragment : BaseFragment<EmptyViewModel, FragmentLoginBinding>() {
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

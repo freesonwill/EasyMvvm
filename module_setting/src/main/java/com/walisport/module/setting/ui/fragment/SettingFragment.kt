@@ -62,7 +62,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.displayType.observe(viewLifecycleOwner) { value ->
             mBinding.tvDisplay.text = getSkinnableOddsString(value)
         }

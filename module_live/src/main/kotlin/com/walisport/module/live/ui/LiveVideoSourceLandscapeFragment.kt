@@ -47,7 +47,7 @@ class LiveVideoSourceLandscapeFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {

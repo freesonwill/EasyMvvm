@@ -44,7 +44,7 @@ class SearchRecommendListFragment : BaseFragment<SearchRecommendListViewModel, F
 
     override fun initListener() =  Unit
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(mViewModel) {
             launch(Lifecycle.State.RESUMED) {
                 launch {

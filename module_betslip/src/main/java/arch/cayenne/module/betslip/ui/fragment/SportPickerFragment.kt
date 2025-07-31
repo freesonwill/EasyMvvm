@@ -88,7 +88,7 @@ class SportPickerFragment private constructor(): BaseFragment<SportPickerViewMod
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onSportListener.observe(viewLifecycleOwner){
             sportAdapter.submitList(it) {
                 if (mBinding.clFilter.visibility != View.VISIBLE) {

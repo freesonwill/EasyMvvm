@@ -111,7 +111,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 }

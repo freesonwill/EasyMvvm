@@ -47,7 +47,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         notifyFragment.show(this)
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         mViewModel.betResultListener.observe(this) {
             if (BetResultToastView.canShowToast(this)) {

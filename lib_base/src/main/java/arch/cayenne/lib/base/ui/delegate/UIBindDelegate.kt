@@ -62,16 +62,18 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //根Fragment或者Activity需要fitsSystemWindows设置为true
-        view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
-                || uiOwner is Activity
-        trackLoadingTime()
-        viewModel.initViewModel()
-        uiOwner.initView(savedInstanceState)
-        uiOwner.initListener()
-        createObserver(uiOwner)
-        uiOwner.initData()
-        if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
+        uiOwner.lifecycleScope.launch {
+            //根Fragment或者Activity需要fitsSystemWindows设置为true
+            view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
+                    || uiOwner is Activity
+            trackLoadingTime()
+            viewModel.initViewModel()
+            uiOwner.initView(savedInstanceState)
+            uiOwner.initListener()
+            createObserver(uiOwner)
+            uiOwner.initData()
+            if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
+        }
     }
 
     fun onStart(){
@@ -154,7 +156,7 @@ class UIBindDelegate<UIOwner, VM, VB>(
         })
     }
 
-    private fun createObserver(uiOwner: UIOwner) {
+    private suspend fun createObserver(uiOwner: UIOwner) {
         when (val state = uiOwner.createObserverAtState()) {
             Lifecycle.State.CREATED -> {
                 uiOwner.createObserver()

@@ -74,7 +74,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onDateFilter.observe(viewLifecycleOwner) {
             mBinding.tvDateFilter.text = it.title
         }

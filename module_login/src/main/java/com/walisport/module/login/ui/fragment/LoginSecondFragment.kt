@@ -17,7 +17,7 @@ class LoginSecondFragment : BaseFragment<EmptyViewModel, FragmentLoginSecondBind
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
 }

@@ -95,7 +95,7 @@ abstract class SearchBaseFragment<VM : BaseViewModel, CVB : ViewBinding>: BaseFr
     override fun initListener() = Unit
 
     @CallSuper
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(sharedViewModel) {
             launch(Lifecycle.State.STARTED) {
                 launch {

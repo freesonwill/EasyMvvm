@@ -119,7 +119,7 @@ abstract class BaseDialogFragment<VM : BaseViewModel, VB : ViewBinding> : Dialog
         uiBind.onNewIntent(intent)
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
     fun show(manager: FragmentManager) {

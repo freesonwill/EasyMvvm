@@ -115,7 +115,7 @@ class SearchResultDirectMatchFragment :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {

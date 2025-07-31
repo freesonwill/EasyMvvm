@@ -130,6 +130,6 @@ class  PersonalInfoFragment : BaseFragment<PersonalInfoViewModel, FragmentPerson
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

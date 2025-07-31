@@ -186,7 +186,7 @@ class ReserveDialogFragment private constructor() : BaseDialogFragment<ReserveDi
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             val text = "@$it"
             mBinding.etRate.setText(text)

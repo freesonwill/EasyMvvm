@@ -451,7 +451,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.sportsStatistical.observeEvent(viewLifecycleOwner, this) {
             sportsListAdapter.submitList(it)
         }
