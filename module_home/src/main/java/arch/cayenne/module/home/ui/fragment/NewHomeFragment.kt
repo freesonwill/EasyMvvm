@@ -52,7 +52,6 @@ import kotlin.reflect.KClass
 class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
-    override val keepViewOnNavigation: Boolean = true
     private var drawerContentFragment: DrawerContentFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->

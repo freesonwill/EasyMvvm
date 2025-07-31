@@ -32,8 +32,6 @@ class ThirdFragment : BaseFragment<ThirdViewModel, FragmentTestThirdBinding>() {
         refreshUI()
     }
 
-    override val keepViewOnNavigation: Boolean = false
-
     override fun initListener() {
         mBinding.root.setOnClickListener {
             //sendResult("hello","ThirdFragment:${System.currentTimeMillis()}")
