@@ -115,19 +115,20 @@ object SportIntExt {
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(): String {
-        if (this == 0) return "0.00" // ← 明確處理 0
+        if (this == 0) return "0"
 
         val rate = this / 100f
         val adjusted = if (rate < 0.01f) 0.01f else rate
-        return String.format("%.2f", adjusted)
+
+        return adjusted.toBigDecimal().stripTrailingZeros().toPlainString()
     }
 
     fun Int.getOdds(multiply: Int): String {
-        if (this == 0 || multiply == 0) return "0.00" // ← 明確處理 0
+        if (this == 0 || multiply == 0) return "0" // ← 明確處理 0
 
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
-        return decimal.setScale(2, RoundingMode.DOWN).toPlainString()
+        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
     fun Long.percent(p: Int): Long {
