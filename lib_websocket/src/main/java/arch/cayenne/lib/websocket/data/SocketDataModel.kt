@@ -83,4 +83,9 @@ data class InvalidNetworkError(
 data class InvalidEncryptDataError(
     override val msg: String = "Invalid encrypted data, decryption failed!",
     override val code: Int? = null
+) : IResponse, SocketResponseError,ApiFailedState
+
+data class SimpleResponseError(
+    override val msg: String = "",
+    override val code: Int? = null
 ) : IResponse, SocketResponseError, ApiFailedState
