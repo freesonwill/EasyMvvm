@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:focusable="true">
+
+    <View
+        android:id="@+id/mask_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:alpha="0"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
+        android:id="@+id/cl_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_home_calendar_background"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_prev_month"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:padding="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img_arrow_left" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableImageView
+            android:id="@+id/iv_next_month"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:padding="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/img_arrow_right" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_calendar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#C0C0C0"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/iv_prev_month"
+            app:layout_constraintEnd_toStartOf="@id/iv_next_month"
+            app:layout_constraintStart_toEndOf="@id/iv_prev_month"
+            app:layout_constraintTop_toTopOf="@id/iv_prev_month"
+            tools:text="三月 2025" />
+        <com.haibin.calendarview.CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="280dp"
+            android:layout_marginTop="10dp"
+            app:calendar_height="40dp"
+            app:current_month_lunar_text_color="#CFCFCF"
+            app:layout_constraintTop_toBottomOf="@+id/tv_calendar_title"
+            app:min_year="2024"
+            app:current_day_text_color="#ffffff"
+            app:current_month_text_color="#C0C0C0"
+            app:month_view="arch.cayenne.module.home.ui.view.HomeCalendarMonthView"
+            app:month_view_scrollable="true"
+            app:other_month_text_color="#606060"
+            app:scheme_theme_color="@android:color/transparent"
+            app:scheme_text_color="#ff0000"
+            app:selected_text_color="#ffffff"
+            app:selected_theme_color="#00B9D4"
+            app:week_background="@color/home_calendar_background"
+            app:week_text_color="#C0C0C0"
+            app:week_text_size="@dimen/sp_13"
+            app:week_view="arch.cayenne.module.home.ui.view.HomeCalendarWeekView"
+            app:week_bar_view="arch.cayenne.module.home.ui.view.HomeCalendarWeekBar"
+            app:week_bar_height="17dp"
+            app:day_text_size="@dimen/sp_12"
+            app:week_view_scrollable="false"
+            app:year_view_scrollable="false"
+            app:month_view_show_mode="mode_fix"/>
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_reset"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:background="@drawable/shape_home_calendar_cancel"
+            android:text="@string/home_calendar_reset"
+            android:textColor="@color/title_bar"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tv_confirm"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/calendarView" />
+
+        <arch.cayenne.lib.skin.widget.SkinnableTextView
+            android:id="@+id/tv_confirm"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:background="@drawable/shape_home_calendar_ok_white_green"
+            android:text="@string/home_calendar_ok"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toEndOf="@id/tv_reset"
+            app:layout_constraintTop_toBottomOf="@id/calendarView" />
+
+    </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
