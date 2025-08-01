@@ -22,7 +22,6 @@ import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
-import arch.cayenne.lib.common.utils.ext.TabLayoutExt.selectTabWithoutAnimation
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
@@ -60,6 +59,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
     private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
+    private var tournamentTabLayoutMediator: CustomTabLayoutMediator? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -396,7 +396,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             //導致tabLayout沒有資料時又多設定一次OnTabSelectedListener，因此要先清除之前的listener
             mBinding.layoutContainer.tlLeagueList.clearOnTabSelectedListeners()
 
-            CustomTabLayoutMediator(
+            tournamentTabLayoutMediator?.detach()
+            tournamentTabLayoutMediator = CustomTabLayoutMediator(
                 tabLayout = tlLeagueList,
                 viewPager = vpGameList
             ) { tab, position ->
@@ -405,25 +406,17 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                     tab.view.setPadding(0, 0, 10f.dp2px, 0)
                 }
             }.also { layoutMediator ->
-                layoutMediator.attach(mBinding.layoutContainer.ivFaker)
+                layoutMediator.attach(
+                    fakeViewPager = mBinding.layoutContainer.ivFaker,
+                    afterTabSelected = { position ->
+                        getSelectedRecently31Scheduled(position)
+                        tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
+                    }
+                )
                 val selectedPosition = tournaments.indexOfFirst { it.isSelected }
                 getSelectedRecently31Scheduled(selectedPosition)
-                tlLeagueList.post{ tlLeagueList.selectTabWithoutAnimation(selectedPosition) }
-                vpGameList.setCurrentItem(selectedPosition, false)
+                tlLeagueList.post{ layoutMediator.selectTabWithoutAnimation(selectedPosition) }
             }
-
-            tlLeagueList.addOnTabSelectedListener(object : OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.let {
-                        getSelectedRecently31Scheduled(it.position)
-                        tournaments.getOrNull(it.position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}
-                    }
-                }
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-            })
-
         }
     }
 
