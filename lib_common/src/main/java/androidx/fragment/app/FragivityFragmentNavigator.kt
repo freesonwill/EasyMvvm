@@ -15,6 +15,7 @@ import androidx.navigation.Navigator
 import androidx.navigation.fragment.FragmentNavigator
 import arch.cayenne.lib.base.ui._interface.OnNewIntentListener
 import arch.cayenne.lib.base.ui.fragment.launch
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.FragmentExt.plusAssign
 import arch.cayenne.lib.common.utils.ext.FragmentExt.replaceAll
 import kotlinx.coroutines.delay
@@ -28,7 +29,8 @@ class FragivityFragmentNavigator(
 
     private val backStack = ArrayDeque<Int>()
     private val descendingBackStack = backStack.asReversed()
-
+    // 用于记录Fragment的延迟隐藏状态
+    private val fragmentDelayedHideMap = mutableMapOf<String, Boolean>()
     private var mIsPendingAddToBackStackOperation = false
     private var mIsPendingPopBackStackOperation = false
     private val savedIds = mutableSetOf<String>()
@@ -122,10 +124,10 @@ class FragivityFragmentNavigator(
         }
 
         if (enterAnim != -1 || exitAnim != -1 || popEnterAnim != -1 || popExitAnim != -1) {
-            enterAnim = if (enterAnim != -1) enterAnim else 0
-            exitAnim = if (exitAnim != -1) exitAnim else 0
-            popEnterAnim = if (popEnterAnim != -1) popEnterAnim else 0
-            popExitAnim = if (popExitAnim != -1) popExitAnim else 0
+            enterAnim = if (enterAnim != -1) enterAnim else -1
+            exitAnim = if (exitAnim != -1) exitAnim else -1
+            popEnterAnim = if (popEnterAnim != -1) popEnterAnim else -1
+            popExitAnim = if (popExitAnim != -1) popExitAnim else -1
             ft.setCustomAnimations(enterAnim, exitAnim, popEnterAnim, popExitAnim)
         }
 
@@ -192,7 +194,7 @@ class FragivityFragmentNavigator(
         }
 
         if (isAdded && prevFragment != null) {
-            execAfterAnim(fragment,enterAnim) {
+            execAfterAnim(fragment,enterAnim,exitAnim,prevFragment.tag!!) {
                 if(it) {
                     ft.hide(prevFragment)
                 }else {
@@ -256,16 +258,19 @@ class FragivityFragmentNavigator(
 
     private fun execAfterAnim(nextFragment:Fragment,
                               enterAnim:Int,
+                              exitAnim:Int,
+                              tag:String,
                               action:(isImmediate:Boolean)->Unit
     ){
-        if (enterAnim != -1) {
+        //"execAfterAnim==>$nextFragment,enterAnim:$enterAnim,exitAnim:$exitAnim,tag:${tag}".logd(TAG)
+        if (exitAnim == -1) { //没有动画需要延时
             nextFragment.launch(Lifecycle.State.RESUMED, lifecycleScope = nextFragment.lifecycleScope) {
                 val anim = AnimationUtils.loadAnimation(nextFragment.requireContext(), enterAnim)
                 val duration = anim.duration
                 //"execAfterAnim==>$nextFragment,duration:$duration".logd(TAG)
                 delay(duration)
                 action(false)
-                //"execAfterAnim==>$nextFragment".logd(TAG)
+                fragmentDelayedHideMap[tag] = true
             }
         } else {
             action(true)
@@ -313,9 +318,13 @@ class FragivityFragmentNavigator(
                 val tag = generateBackStackName(backStack.size - 2,
                     backStack[backStack.size - 2])
                 val prevFragment = fragmentManager.findFragmentByTag(tag)!!
-                fragmentManager.beginTransaction()
-                    .show(prevFragment)
-                    .commit()
+                //"popBackStack==>$prevFragment,tag:$tag,${fragmentDelayedHideMap[tag]}".logd(TAG)
+                if(fragmentDelayedHideMap[tag] == true){
+                    fragmentManager.beginTransaction()
+                        .show(prevFragment)
+                        .commit()
+                }
+                fragmentDelayedHideMap.remove(tag)
             }
             val backStackName = generateBackStackName(backStack.size, backStack.last())
             fragmentManager.popBackStack(backStackName, FragmentManager.POP_BACK_STACK_INCLUSIVE)
