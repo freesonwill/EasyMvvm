@@ -1,6 +1,7 @@
 package arch.cayenne.module.home.ui.fragment
 
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -16,6 +17,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
+import androidx.core.view.doOnLayout
 import androidx.fragment.app.FragmentManager
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.viewmodel.EmptyViewModel
@@ -40,14 +42,23 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
         get() = FragmentHomeCalendarBinding::class
     override val vmClass: KClass<EmptyViewModel>
         get() = EmptyViewModel::class
+
+    enum class AnimState {
+        EXPANDING, EXPAND, COLLAPSING, COLLAPSE
+    }
+
     private val defaultAnimDuration = 300L
     private var tabSelectedDate: String = "0"
     private var marginTop: Int = 0
     private var marginStart: Int = 0
     private var marginEnd: Int = 0
     private var schemeDates: List<Common.DailyMatchCount> = emptyList()
+    private var heightAnimator: ValueAnimator? = null
+    private var currentAnimState: AnimState? = null
+
     // 回傳結果的Bundle
     private val resultBundle by lazy { Bundle() }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         with(mBinding.clCalendar) {
@@ -64,7 +75,6 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
         mBinding.maskView.background = createMaskGradient()
         setCalendarView()
         setSchemeDate()
-        setMaskViewAlpha(true)
         expandView()
     }
     private fun setCalendarView() {
@@ -149,12 +159,18 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
     }
     override fun initListener() {
         with(mBinding) {
-            // 獲取當前日期
-            maskView.clickNoRepeat {
-                setMaskDismissResult()
-                close()
-                dismiss()
+            // 為了跟手不使用clickNoRepeat
+            maskView.setOnClickListener {
+                when(currentAnimState) {
+                    AnimState.EXPANDING -> collapseView()
+                    AnimState.EXPAND -> {
+                        setMaskDismissResult()
+                        close()
+                    }
+                    else -> expandView()
+                }
             }
+            // 獲取當前日期
             var selectedDate = if (tabSelectedDate == "0") {
                 "${this.calendarView.selectedCalendar}"
             } else tabSelectedDate
@@ -217,14 +233,20 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
         schemeDates = dates
     }
     private fun close() {
-        setMaskViewAlpha(false)
         collapseView() // 關閉 Popup
     }
 
     private fun expandView() {
         with(mBinding.clCalendar) {
-            post {
-                ValueAnimator.ofInt(1, height).apply {
+            layoutParams = layoutParams.apply { height = 1 }
+            doOnLayout {
+                val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+                val fullyHeight = getFullyHeight()
+                heightAnimator?.cancel()
+                val startHeight =
+                    if(fullyHeight == currentHeight) 1 else currentHeight
+
+                heightAnimator = ValueAnimator.ofInt(startHeight, fullyHeight).apply {
                     addUpdateListener {
                         layoutParams =
                             layoutParams.apply {
@@ -234,9 +256,10 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
                     duration = defaultAnimDuration
                     interpolator = DecelerateInterpolator()
                     doOnStart {
+                        currentAnimState = AnimState.EXPANDING
                         layoutParams =
                             layoutParams.apply {
-                                height = 1
+                                height = currentHeight
                             }
                         visibility = View.VISIBLE
                         with(mBinding) {
@@ -244,13 +267,27 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
                             tvReset.visibility = View.VISIBLE
                             tvConfirm.visibility = View.VISIBLE
                         }
-
+                        setMaskViewAlpha(true)
+                    }
+                    doOnEnd {
+                        currentAnimState = AnimState.EXPAND
                     }
                     start()
                 }
             }
         }
     }
+
+    private fun getFullyHeight(): Int {
+        with(mBinding.clCalendar) {
+            measure(
+                View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+            )
+            return measuredHeight
+        }
+    }
+
     private fun createMaskGradient(): Drawable {
         val defaultColor = 0x80000000
         val defaultStartAt = 0.3f
@@ -292,12 +329,17 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
     }
     private fun setMaskViewAlpha(visible: Boolean) {
         with(mBinding.maskView) {
-            post {
-                animate()
-                    .alpha(if (visible) 1f else 0f)
-                    .setDuration(defaultAnimDuration)
-                    .start()
-            }
+            animate().cancel()
+
+            val targetAlpha = if (visible) 1f else 0f
+            val currentAlpha = alpha
+
+            if (currentAlpha == targetAlpha) return
+
+            animate()
+                .alpha(targetAlpha)
+                .setDuration(defaultAnimDuration)
+                .start()
         }
     }
 
@@ -354,7 +396,6 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
                     .commitAllowingStateLoss()
             }
         }
-        setMaskViewAlpha(false)
     }
 
     private fun sendResult(selectedDate: String) {
@@ -365,7 +406,10 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
     }
     private fun collapseView() {
         with(mBinding.clCalendar) {
-            ValueAnimator.ofInt(height, 1).apply {
+            val currentHeight = (heightAnimator?.animatedValue as? Int) ?: height
+            heightAnimator?.cancel()
+
+            heightAnimator = ValueAnimator.ofInt(currentHeight, 1).apply {
                 addUpdateListener {
                     layoutParams =
                         layoutParams.apply {
@@ -374,10 +418,15 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
                 }
                 duration = defaultAnimDuration
                 interpolator = DecelerateInterpolator()
+                doOnStart {
+                    currentAnimState = AnimState.COLLAPSING
+                    setMaskViewAlpha(false)
+                }
                 doOnEnd {
+                    currentAnimState = AnimState.COLLAPSE
                     visibility = View.INVISIBLE
                     mBinding.root.postDelayed({
-                        dismiss()
+                        if(currentAnimState == AnimState.COLLAPSE) dismiss()
                     }, 100L)
                 }
                 start()
@@ -400,6 +449,8 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
     }
     //設定標記紅色日期及可選取日期範圍
     private fun setSchemeDate() {
+        if(schemeDates.isEmpty()) return
+
         val map: MutableMap<String, com.haibin.calendarview.Calendar> = HashMap()
         for (date in schemeDates) {
             //API回傳資料，有比賽的日期才需要標記紅字
