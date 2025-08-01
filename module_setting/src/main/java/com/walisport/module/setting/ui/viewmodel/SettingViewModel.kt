@@ -75,6 +75,13 @@ class SettingViewModel : BaseViewModel() {
         }
     }
 
+    fun resetSkinType(type: String) {
+        viewModelScope.launch {
+            val logicSkin = getLogicSkinType(type)
+            skinManager.loadSkin(logicSkin)
+        }
+    }
+
     //点击确认按钮后才会写入数据，否则只是换肤显示
     fun setSkinRecord(type: String) {
         repository.setSkinType(type)
