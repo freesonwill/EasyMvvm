@@ -19,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
@@ -182,11 +183,13 @@ class LiveVideoPlayerFragment :
     override fun initListener() {
 
         with(mBinding) {
+            ivChooseSource.addScaleOnTouchAnimation()
             ivChooseSource.setOnClickListener {
                 scheduleHideButtons()
                 mediaViewModel.chooseSourceView()
             }
 
+            ivToFullscreen.addScaleOnTouchAnimation()
             ivToFullscreen.clickNoRepeat {
                 mBinding.videoViewContainer.removeAllViews()
                 navigate(
@@ -194,11 +197,13 @@ class LiveVideoPlayerFragment :
                         .apply { arguments.putLong("matchId", mViewModel.matchId()) })
             }
 
+            ivSoundToggle.addScaleOnTouchAnimation()
             ivSoundToggle.clickNoRepeat {
                 scheduleHideButtons()
                 mViewModel.changeMuteStatus()
             }
 
+            ivAnimationEntry.addScaleOnTouchAnimation()
             ivAnimationEntry.clickNoRepeat { mediaViewModel.switchToAnimation() }
         }
 

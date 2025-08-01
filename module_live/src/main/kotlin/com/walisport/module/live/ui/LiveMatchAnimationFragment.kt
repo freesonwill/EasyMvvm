@@ -12,6 +12,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
@@ -63,6 +64,7 @@ class LiveMatchAnimationFragment :
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+        mBinding.ivChooseSource.addScaleOnTouchAnimation()
         mBinding.ivChooseSource.setOnClickListener {
 //            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
