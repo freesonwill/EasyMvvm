@@ -41,6 +41,7 @@ import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
 
@@ -58,9 +59,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
-    }
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -135,9 +133,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    viewPagerAnimHelper.doViewPagerAnim(
+                    mBinding.vpPage.doSmartAnim(
                         targetPosition = tab.position,
-                        viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
                 }
