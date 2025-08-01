@@ -7,7 +7,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -100,13 +99,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
 
     protected fun playEnterAnimations() {
-        Log.d("abcd", "playEnterAnimations $sheetContainer")
         sheetContainer?.let {  scv ->
             // bottom sheet 上滑動畫
             val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
-                    Log.d("abcd", "startAnim ${this.hashCode()}")
                     backgroundView?.visibility = View.VISIBLE
                     scv.visibility = View.VISIBLE
                     mBinding.root.visibility = View.VISIBLE
@@ -196,7 +193,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         val unhideableBehavior = UnhideableBottomSheetBehavior<View>(requireContext(), null)
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                Log.d("abcd", "state $newState")
                 if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)&& !autoPlayAnimation) {
                     setCustomCollapseSetting()
                 }
@@ -220,7 +216,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             dialog?.window?.decorView?.visibility = View.INVISIBLE
         }
         uiBind.onStart()
-        Log.d("abcd", "++start")
     }
 
     private fun setSheetContainer() {
@@ -252,14 +247,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     override fun onPause() {
-        Log.d("abcd", "onPause")
         super.onPause()
         uiBind.onPause()
     }
 
     @CallSuper
     override fun onStop() {
-        Log.d("abcd", "++stop")
         super.onStop()
         uiBind.onStop()
     }
@@ -272,7 +265,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     override fun onDestroy() {
-        Log.d("abcd", "++destroy")
         super.onDestroy()
         uiBind.onDestroy()
     }
@@ -311,13 +303,11 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     fun customCreate(activity: FragmentActivity, newTag: String) {
         autoPlayAnimation = false
         show(activity.supportFragmentManager, newTag)
-        Log.d("abcd", "customCreate ${this.hashCode()}")
     }
 
     @CallSuper
     open fun customShow() {
         isDismissing = false
-        Log.d("abcd", "customShow ${this.hashCode()}")
         setCustomExpendSetting()
         playEnterAnimations()
     }
@@ -325,7 +315,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     @CallSuper
     open fun customHide() {
         isDismissing = true
-        Log.d("abcd", "customHide ${this.hashCode()}")
         playExitAnimations()
     }
 
@@ -334,7 +323,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
 
     override fun dismiss() {
-        Log.d("abcd", "dismiss ${this.hashCode()}")
         if (isDismissing || sheetContainer == null) {
             superDismiss()
             return
@@ -344,7 +332,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     override fun onDismiss(dialog: DialogInterface) {
-        Log.d("abcd", "++onDismiss")
         if (autoPlayAnimation) {
             super.onDismiss(dialog)
         }
@@ -356,7 +343,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        Log.d("abcd", "onCancel ${this.hashCode()}")
         if (autoPlayAnimation) {
             super.onCancel(dialog)
         }
