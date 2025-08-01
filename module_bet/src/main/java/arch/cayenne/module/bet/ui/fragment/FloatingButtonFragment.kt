@@ -35,7 +35,7 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
 
     override fun initListener() {
         mBinding.fab.setPerformClick {
-            BetSheetFragment.newInstance(mViewModel.count).show(requireActivity().supportFragmentManager)
+            BetSheetFragment.show(requireActivity())
         }
     }
 

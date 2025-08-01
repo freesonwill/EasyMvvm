@@ -38,7 +38,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     private var mScrollY: Int? = null
     private var backgroundView: View? = null
     private var sheetContainer: View? = null
-    private var isDismissing = false
+    protected var isDismissing = false
     //#region VB,VM
     protected val mBinding: VB get() = uiBind.binding
     protected val mViewModel: VM get() = uiBind.viewModel
@@ -300,9 +300,16 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
-    fun customCreate(activity: FragmentActivity) {
+    override fun show(manager: FragmentManager, tag: String?) {
+        val f = manager.findFragmentByTag(tag)
+        if (f == null || !f.isAdded) {
+            super.show(manager, tag)
+        }
+    }
+
+    fun customCreate(activity: FragmentActivity, newTag: String) {
         autoPlayAnimation = false
-        show(activity.supportFragmentManager)
+        show(activity.supportFragmentManager, newTag)
         Log.d("abcd", "customCreate ${this.hashCode()}")
     }
 
