@@ -82,10 +82,10 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             override fun onBackPressed() {
                 if (autoPlayAnimation) {
                     this@BaseBottomSheetFragment.dismiss()
+                    super.onBackPressed()
                 } else {
                     customHide()
                 }
-                super.onBackPressed()
             }
         }
 
