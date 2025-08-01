@@ -177,7 +177,7 @@ class AppNotifyFragment : BaseFragment<TodayMatchViewModel, FragmentAppNotifyBin
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

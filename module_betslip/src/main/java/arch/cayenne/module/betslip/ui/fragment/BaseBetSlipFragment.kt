@@ -40,7 +40,7 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
 
     abstract fun getBetSlipEnum(): BetSlipEnum
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         filterViewModel?.apply {
             onFilterChangeListener.observe(viewLifecycleOwner) {
                 mViewModel.setIds(it.matchId, it.sportIds)

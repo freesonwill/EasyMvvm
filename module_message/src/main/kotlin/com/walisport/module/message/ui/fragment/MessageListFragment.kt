@@ -97,7 +97,7 @@ class MessageListFragment : BaseFragment<MessageMainViewModel, FragmentMessageLi
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.notificationBean.observe(viewLifecycleOwner) {
             mBinding.refreshLayout.finishRefresh()
             mBinding.refreshLayout.finishLoadMore()

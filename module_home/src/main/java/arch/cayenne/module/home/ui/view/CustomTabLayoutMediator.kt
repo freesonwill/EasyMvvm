@@ -3,7 +3,7 @@ package arch.cayenne.module.home.ui.view
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
 import java.lang.ref.WeakReference
 
@@ -145,9 +145,8 @@ class CustomTabLayoutMediator(
         private val onChangeFinished: ((position: Int) -> Unit)?
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
-            ViewPagerAnimHelper().doViewPagerAnim(
+            viewPager.doSmartAnim(
                 targetPosition = tab.position,
-                viewPager = viewPager,
                 fakeViewPager = fakeViewPager
             )
             onChangeFinished?.invoke(tab.position)

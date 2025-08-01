@@ -107,7 +107,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         onFunctionClick = listener
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
             with (mViewModel) {
                 launch {
@@ -125,12 +125,13 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                                 itemNotification1.visibility = View.VISIBLE
                                 itemNotification2.visibility = View.GONE
                                 tvMessage1.text = item.title
-                                ivMessage1Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
+                                //status = 1未读 2已读 3删除
+                                ivMessage1Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
                             } else {
                                 itemNotification2.visibility = View.VISIBLE
                                 tvMessage2.text = item.title
-                                ivMessage2Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
+                                ivMessage2Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime2.text = DateUtils.getMessageTime(item.createTime)
                             }
                         }

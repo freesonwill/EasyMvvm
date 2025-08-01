@@ -1,7 +1,5 @@
 package com.walisport.module.live.ui
 
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -19,15 +17,15 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -35,25 +33,26 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
-import arch.cayenne.lib.websocket.data.ConnectState
-import com.walisport.module.live.data.BetOnMenuStatus
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlinx.coroutines.flow.filter
+import kotlin.reflect.KClass
 
 /**
  * 直播详情页
  */
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
-
+    companion object{
+        const val CHANGE_MATCH = "CHANGE_MATCH"
+    }
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
     private lateinit var args: LiveMainFragmentArgs
@@ -61,11 +60,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
@@ -138,9 +133,8 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    viewPagerAnimHelper.doViewPagerAnim(
+                    mBinding.vpPage.doSmartAnim(
                         targetPosition = tab.position,
-                        viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
                 }
@@ -185,9 +179,16 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun createObserver() {
-        launch {
+    override suspend fun createObserver() {
+        observeResult<Bundle>(CHANGE_MATCH){
+            val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)
+            if (this.args.equal(newArgs)) return@observeResult
+            this.args = newArgs
+            updateMatchId(newArgs.matchId)
+        }
+        mViewModel.observeMatchInfoNotify()
+        launch(Lifecycle.State.RESUMED) {
             //网络异常登陆成功后才获取数据
             mViewModel.observeLoginChange()
                 .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
@@ -255,7 +256,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1)
+        mBinding.vpPage.setCurrentItem(1,true)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -272,14 +273,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
-                        putLong(
-                            "matchId",
-                            value
-                        )
+                        putLong("matchId", value)
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .commitNow()
             }
     }
 
@@ -292,7 +291,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
                 PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
                 PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
-                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
+                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
+            )
+
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
             launch {
                 delay(500)
@@ -359,19 +360,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             mViewModel.registerMatchInfoNotify(it)
         }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
-        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${
-            this.args.equal(
-                newArgs
-            )
-        }".logd(TAG)
-        if (this.args.equal(newArgs)) return
-        this.args = newArgs
-        updateMatchId(newArgs.matchId)
     }
 
     override fun onStop() {

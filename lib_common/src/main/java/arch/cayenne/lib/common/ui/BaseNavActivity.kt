@@ -42,6 +42,6 @@ abstract class BaseNavActivity<VM: BaseViewModel> : BaseActivity<VM, ActvityBase
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

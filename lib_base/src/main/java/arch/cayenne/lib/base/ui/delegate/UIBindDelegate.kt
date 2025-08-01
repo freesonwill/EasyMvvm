@@ -18,6 +18,7 @@ import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import arch.cayenne.lib.base.utils.ext.FragmentExt.isRootFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
 
@@ -61,26 +62,18 @@ class UIBindDelegate<UIOwner, VM, VB>(
     }
 
     fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        //根Fragment或者Activity需要fitsSystemWindows设置为true
-        view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
-                || uiOwner is Activity
-        trackLoadingTime()
-        viewModel.initViewModel()
-        uiOwner.initView(savedInstanceState)
-        uiOwner.initListener()
-        uiOwner.createObserverAtState().let { state->
-            if(state == Lifecycle.State.CREATED){
-                uiOwner.createObserver()
-            } else {
-                uiOwner.lifecycleScope.launch {
-                    uiOwner.lifecycle.repeatOnLifecycle(state) {
-                        uiOwner.createObserver()
-                    }
-                }
-            }
+        uiOwner.lifecycleScope.launch {
+            //根Fragment或者Activity需要fitsSystemWindows设置为true
+            view.fitsSystemWindows = (uiOwner is Fragment && uiOwner.isRootFragment)
+                    || uiOwner is Activity
+            trackLoadingTime()
+            viewModel.initViewModel()
+            uiOwner.initView(savedInstanceState)
+            uiOwner.initListener()
+            createObserver(uiOwner)
+            uiOwner.initData()
+            if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
         }
-        uiOwner.initData()
-        if(logEnabled) "onViewCreated==>$uiOwner".logd(TAG)
     }
 
     fun onStart(){
@@ -161,5 +154,26 @@ class UIBindDelegate<UIOwner, VM, VB>(
                 uiOwner.lifecycle.removeObserver(this)
             }
         })
+    }
+
+    private suspend fun createObserver(uiOwner: UIOwner) {
+        when (val state = uiOwner.createObserverAtState()) {
+            Lifecycle.State.CREATED -> {
+                uiOwner.createObserver()
+            }
+
+            Lifecycle.State.STARTED, Lifecycle.State.RESUMED -> {
+                uiOwner.lifecycleScope.launch {
+                    uiOwner.repeatOnLifecycle(state) {
+                        uiOwner.createObserver()
+                        this@launch.cancel() // 只执行一次
+                    }
+                }
+            }
+
+            else -> {
+                throw IllegalStateException("Unsupported lifecycle state: $state for createObserver")
+            }
+        }
     }
 }

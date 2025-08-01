@@ -41,7 +41,7 @@ class BetSlipUnsettledFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
             mViewModel.orderLiveData.observe(viewLifecycleOwner) {
                 betSlipAdapter.submitList(it) {
@@ -65,7 +65,9 @@ class BetSlipUnsettledFragment :
                 return@observe
             }
             mViewModel.selectOrder?.let { order ->
-                val money = BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)
+                val money = BetSlipUtils.earlySettlePrice(
+                    order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
+                )
                 BetSlipEarlySettledFragment.instance(money, it.settleMin,order.currency).apply {
                     setOnEarlySettleListener { money ->
                         mViewModel.earlyPartSettled(it.betId, money, it.price)

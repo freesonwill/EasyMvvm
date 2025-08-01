@@ -1,6 +1,5 @@
 package arch.cayenne.lib.common.utils.ext
 
-import android.text.TextUtils
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.text.NumberFormat
@@ -78,23 +77,26 @@ object SportIntExt {
         return numberFormat.format(value)
     }
 
-    /**
-     * @return string: 123456 轉換為 1,234.56, 123456789 轉換為 1,234,567.89
-     */
-    fun BigDecimal.getFormalMoney(): String {
-        if (this == BigDecimal(0)) return "0"
+    fun Long.getFormalMoney(multiply: Int): String {
+        if (this == 0L || multiply == 0) return "0" // ← 明確處理 0
+
+        val result = this * multiply
+        val decimal = BigDecimal(result).divide(BigDecimal(10000))
+            .setScale(2, RoundingMode.DOWN)
+
+        val stripped = decimal.stripTrailingZeros()
 
         val numberFormat = NumberFormat.getNumberInstance(Locale.US).apply {
             maximumFractionDigits = 2
-            minimumFractionDigits = if (this@getFormalMoney.scale() > 0) 2 else 0
+            minimumFractionDigits = if (stripped.scale() > 0) 2 else 0
             isGroupingUsed = true // 千分位
         }
 
-        return numberFormat.format(this.toDouble())
+        return numberFormat.format(decimal)
     }
 
-    fun Long.getFormalMoney(multiply: Int): String {
-        if (this == 0L || multiply == 0) return "0" // ← 明確處理 0
+    fun Long.getFormalMoney(multiply: Long): String {
+        if (this == 0L || multiply == 0L) return "0" // ← 明確處理 0
 
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
@@ -115,30 +117,23 @@ object SportIntExt {
      * @return string: 1234 轉換為 12.34, 1000 轉換為 10.00
      */
     fun Int.getOdds(): String {
-        if (this == 0) return "0.00" // ← 明確處理 0
+        if (this == 0) return "0"
 
         val rate = this / 100f
         val adjusted = if (rate < 0.01f) 0.01f else rate
-        return String.format("%.2f", adjusted)
+
+        return adjusted.toBigDecimal().stripTrailingZeros().toPlainString()
     }
 
     fun Int.getOdds(multiply: Int): String {
-        if (this == 0 || multiply == 0) return "0.00" // ← 明確處理 0
+        if (this == 0 || multiply == 0) return "0" // ← 明確處理 0
 
         val result = this * multiply
         val decimal = BigDecimal(result).divide(BigDecimal(10000))
-        return decimal.setScale(2, RoundingMode.DOWN).toPlainString()
+        return decimal.setScale(2, RoundingMode.DOWN).stripTrailingZeros().toPlainString()
     }
 
     fun Long.percent(p: Int): Long {
         return this * p / 100
-    }
-
-    fun String.stringToMoney():String{
-        if(this.toDoubleOrNull() ==  null){
-            return ""
-        }
-      return BigDecimal(this).multiply(BigDecimal(100)).toLong().getMoneyForScale()
-
     }
 }

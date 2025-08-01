@@ -133,7 +133,7 @@ class SplashActivity : BaseActivity<SplashViewModel, ActivitySplashBinding>() {
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.homeTimeSeconds.observe(this) { seconds ->
             if (seconds > 0) {
                 mBinding.splashCounterDown.text =

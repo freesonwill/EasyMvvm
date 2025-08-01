@@ -1,11 +1,9 @@
 package arch.cayenne.module.betslip.ui.dialog
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.core.animation.addListener
 import androidx.core.content.ContextCompat
-import androidx.core.view.isInvisible
+import androidx.core.view.isVisible
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
 import arch.cayenne.lib.common.ui.view.NumberKeyboardView
 import arch.cayenne.lib.common.utils.ViewUtils
@@ -59,11 +57,7 @@ class BetSlipEarlySettledFragment private constructor() :
         with(mBinding) {
             initTab(tabLayout = llTab)
             ViewUtils.hideKeyboard(requireContext(), etMoney) { _ ->
-                if (mBinding.groupKeyboard.isInvisible) {
-                    collapseAnimation(true, onStart = {
-                        mBinding.groupKeyboard.isInvisible = false
-                    })
-                }
+                showKeyboard()
             }
             etMoney.requestFocus()
             numberKeyboard.setOnCalculatorClickListener(object :
@@ -164,9 +158,7 @@ class BetSlipEarlySettledFragment private constructor() :
             btnClear.setOnClickListener { mViewModel.clearNumber() }
             btnDouble.setOnClickListener { mViewModel.doubleNumber() }
             btnCollapse.setOnClickListener {
-                collapseAnimation(false, onEnd = {
-                    groupKeyboard.isInvisible = true
-                })
+                hideKeyboard()
             }
             btnPartSettle.clickNoRepeat {
                 sendMoney()
@@ -175,34 +167,20 @@ class BetSlipEarlySettledFragment private constructor() :
         }
     }
 
-    /**
-     * 键盘收获或展开动画
-     * */
-    private fun collapseAnimation(
-        isShow: Boolean,
-        onStart: (() -> Unit)? = null,
-        onEnd: (() -> Unit)? = null
-    ) {
-        val height = mBinding.numberKeyboard.height
-        val animationArray = if (isShow)
-            floatArrayOf(height.toFloat(), 0f)
-        else
-            floatArrayOf(0f, height.toFloat())
+    private fun hideKeyboard() {
+        ViewUtils.collapseView(mBinding.clKeyboard, mBinding.ivFakerView)
+        mBinding.etMoney.clearFocus()
+        mBinding.clMoney.isFocusableInTouchMode = false
+        mBinding.clMoney.isFocusable = false
+    }
 
-        ObjectAnimator.ofFloat(mBinding.clCalculator, "translationY", *animationArray)
-            .also {
-                it.duration = 200
-                it.addListener(onStart = {
-                    if (isShow) {
-                        onStart?.invoke()
-                    }
-                }, onEnd = {
-                    if (!isShow) {
-                        onEnd?.invoke()
-                    }
-                })
-                it.start()
-            }
+    private fun showKeyboard() {
+        if (!mBinding.clKeyboard.isVisible) {
+            ViewUtils.expandView(mBinding.clKeyboard, mBinding.ivFakerView)
+            mBinding.etMoney.requestFocus()
+            mBinding.clMoney.isFocusableInTouchMode = true
+            mBinding.clMoney.isFocusable = true
+        }
     }
 
 
@@ -210,7 +188,7 @@ class BetSlipEarlySettledFragment private constructor() :
         this.onEarlySettleClick = listener
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length

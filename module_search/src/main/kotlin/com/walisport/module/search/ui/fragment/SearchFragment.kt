@@ -68,7 +68,7 @@ class SearchFragment : SearchBaseFragment<SearchViewModel, FragmentSearchBinding
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         with(contentBinding) {
             with(mViewModel) {

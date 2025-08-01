@@ -99,7 +99,7 @@ class LiveChatFragment : BaseFragment<LiveChatViewModel, FragmentLiveChatBinding
             .replace(mBinding.liveChatKeyboard.id, fragment, LiveSoftKeyboardFragment.TAG).commit()
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setArguments(mainViewModel.matchId.value)
         }

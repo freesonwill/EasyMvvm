@@ -77,7 +77,7 @@ class FeedbackMainFragment : BaseFragment<FeedbackMainViewModel, FragmentFeedbac
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(mViewModel) {
             btnEnabled.observe(viewLifecycleOwner) {
                 mBinding.buttonSubmit.isEnabled = it

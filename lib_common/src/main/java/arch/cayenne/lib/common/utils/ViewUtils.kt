@@ -1,5 +1,6 @@
 package arch.cayenne.lib.common.utils
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -9,8 +10,13 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.ImageView
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
+import androidx.core.view.drawToBitmap
 
 object ViewUtils {
 
@@ -65,5 +71,75 @@ object ViewUtils {
             return 0
         }
         return result
+    }
+
+    // 必須使用faker view才能解決子view設置0dp會顯示錯誤問題
+    fun collapseView(view: View, fakerView: ImageView) {
+        val snapshot = view.drawToBitmap()
+        fakerView.setImageBitmap(snapshot)
+
+        val initialHeight = view.height
+
+        val animator = ValueAnimator.ofInt(initialHeight, 1)
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
+
+        animator.addUpdateListener { valueAnimator ->
+            val animatedValue = valueAnimator.animatedValue as Int
+            val layoutParams = fakerView.layoutParams
+            layoutParams.height = animatedValue
+            fakerView.layoutParams = layoutParams
+        }
+        animator.doOnStart {
+            val layoutParams = fakerView.layoutParams
+            layoutParams.height = initialHeight
+            fakerView.layoutParams = layoutParams
+            fakerView.visibility = View.VISIBLE
+            view.visibility = View.GONE
+        }
+
+        animator.doOnEnd {
+            fakerView.visibility = View.GONE
+        }
+
+        animator.start()
+    }
+
+    fun expandView(view: View, fakerView: ImageView) {
+
+        // 先確保原始 view 是隱藏狀態
+        view.visibility = View.GONE
+
+        // 把實際要展出的畫面先截圖給 fakerView
+        val snapshot = view.drawToBitmap()
+        fakerView.setImageBitmap(snapshot)
+
+        // 先設為 0 高度，逐步展開
+        val targetHeight = snapshot.height
+        val animator = ValueAnimator.ofInt(1, targetHeight)
+        animator.duration = 200L
+        animator.interpolator = LinearInterpolator()
+
+        animator.addUpdateListener { valueAnimator ->
+            val animatedValue = valueAnimator.animatedValue as Int
+            val layoutParams = fakerView.layoutParams
+            layoutParams.height = animatedValue
+            fakerView.layoutParams = layoutParams
+        }
+
+        animator.doOnStart {
+            val layoutParams = fakerView.layoutParams
+            layoutParams.height = 0
+            fakerView.layoutParams = layoutParams
+            fakerView.visibility = View.VISIBLE
+        }
+
+        animator.doOnEnd {
+            // 展開完成後切回原始 view，隱藏 fakerView
+            fakerView.visibility = View.GONE
+            view.visibility = View.VISIBLE
+        }
+
+        animator.start()
     }
 }
