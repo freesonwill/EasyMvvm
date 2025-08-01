@@ -384,7 +384,7 @@ class HomeFragment : BaseFragment<HomeViewModel, FragmentHomeBinding>() {
         navigate(R.id.LoginActivity, bundle, null, extras)
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.number.observe(this) { number ->
             "==>HomeFragment observe Number==>: $number".logd(TAG)
         }

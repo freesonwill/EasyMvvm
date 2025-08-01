@@ -26,6 +26,7 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
 import arch.cayenne.lib.common.utils.ext.startSafeObjectAnimator
@@ -173,6 +174,7 @@ class LiveVideoLandscapeFragment :
     }
 
     override fun initListener() {
+        mBinding.ivBack.addScaleOnTouchAnimation()
         mBinding.ivBack.clickNoRepeat {
             findNavController().navigateUp()
         }
@@ -199,7 +201,7 @@ class LiveVideoLandscapeFragment :
             }
         }
 
-
+        mBinding.ivShare.addScaleOnTouchAnimation()
         mBinding.ivShare.clickNoRepeat {
             hideButtons()
             reduce(
@@ -213,6 +215,7 @@ class LiveVideoLandscapeFragment :
             showShareView()
         }
 
+        mBinding.llChooseSource.addScaleOnTouchAnimation()
         mBinding.llChooseSource.clickNoRepeat {
             hideButtons()
             reduce(
@@ -227,6 +230,7 @@ class LiveVideoLandscapeFragment :
             showChooseSourceView()
         }
 
+        mBinding.tvStatistics.addScaleOnTouchAnimation()
         mBinding.tvStatistics.clickNoRepeat {
             hideButtons()
             reduce(
@@ -241,6 +245,7 @@ class LiveVideoLandscapeFragment :
             showStatisticsView()
         }
 
+        mBinding.ivSoundToggle.addScaleOnTouchAnimation()
         mBinding.ivSoundToggle.clickNoRepeat {
             scheduleHideButtons()
             mViewModel.changeMuteStatus()
@@ -248,7 +253,7 @@ class LiveVideoLandscapeFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(mViewModel) {
             liveVideoBean.observe(viewLifecycleOwner) {
                 it?.let {

@@ -84,7 +84,7 @@ class SkinnableRippleView : ConstraintLayout {
     /**
      * 水波纹持续时间
      */
-    private var rippleDuration = 200
+    private var rippleDuration = 100
 
 
     /**
@@ -143,19 +143,16 @@ class SkinnableRippleView : ConstraintLayout {
      */
     private var durationEmpty = -1
 
-
     /**
      * 最大圆半径
      */
     private var radiusMax = 0f
-
 
     /**
      * 水波纹圆的坐标点
      */
     private var x = -1f
     private var y = -1f
-
 
     private var originBitmap: Bitmap? = null
 
@@ -335,7 +332,6 @@ class SkinnableRippleView : ConstraintLayout {
             if (timer == 0) {
                 canvas.save()
             }
-
             canvas.drawCircle(
                 x, y, (radiusMax * ((timer.toFloat() * frameRate) / rippleDuration)),
                 paint!!
@@ -407,7 +403,7 @@ class SkinnableRippleView : ConstraintLayout {
             if (hasToZoom!!) {
                 this.startAnimation(scaleAnimation)
             }
-            radiusMax = WIDTH.toFloat()
+            radiusMax = (1.5 * WIDTH).toFloat()
             if (isCentered!! || rippleType == 1) {
                 this.x = (measuredWidth / 2).toFloat()
                 this.y = (measuredHeight / 2).toFloat()

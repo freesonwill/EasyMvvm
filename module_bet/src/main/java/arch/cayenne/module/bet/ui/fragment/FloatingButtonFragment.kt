@@ -39,7 +39,7 @@ class FloatingButtonFragment private constructor(): BaseFragment<FloatingButtonV
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onBettingCount.observe(viewLifecycleOwner) {
             setVisibility(it)
         }

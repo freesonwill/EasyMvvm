@@ -70,7 +70,7 @@ class OddsDisplayDialogFragment :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         mViewModel.displayType.observe(viewLifecycleOwner) { displayType ->
             mBinding.radioEp.isSelected = displayType == OddsDisplayEnum.EU

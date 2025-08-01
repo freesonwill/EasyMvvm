@@ -43,26 +43,28 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
 
     override fun initListener() {
         mBinding.settingOdds.clickNoRepeat {
-            showOddsDisplayDialog()
+            mBinding.settingOdds.postDelayed({
+                showOddsDisplayDialog()
+            }, 150)
         }
         mBinding.settingNotice.clickNoRepeat {
-            mBinding.settingBg.postDelayed({
+            mBinding.settingNotice.postDelayed({
                 navigate(R.id.action_settingFragment_to_noticedFragment)
-            }, 400)
+            }, 150)
         }
         mBinding.settingBg.clickNoRepeat {
             mBinding.settingBg.postDelayed({
                 navigate(R.id.action_settingFragment_to_backgroundFragment)
-            }, 400)
+            }, 150)
         }
         mBinding.settingLanguage.clickNoRepeat {
-            mBinding.settingBg.postDelayed({
+            mBinding.settingLanguage.postDelayed({
                 navigate(R.id.action_settingFragment_to_languageFragment)
-            }, 400)
+            }, 150)
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.displayType.observe(viewLifecycleOwner) { value ->
             mBinding.tvDisplay.text = getSkinnableOddsString(value)
         }
@@ -73,6 +75,7 @@ class SettingFragment : BaseFragment<SettingViewModel, FragmentSettingBinding>()
             }
         }
     }
+
     private fun showOddsDisplayDialog() {
         OddsDisplayDialogFragment().apply {
             val language = mViewModel.getLanguageType()

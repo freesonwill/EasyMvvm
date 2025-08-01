@@ -59,6 +59,6 @@ class MessageDetailFragment : BaseFragment<MessageMainViewModel, FragmentMessage
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

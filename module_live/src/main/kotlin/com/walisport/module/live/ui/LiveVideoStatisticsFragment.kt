@@ -47,7 +47,7 @@ class LiveVideoStatisticsFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.mainMatch.observe(viewLifecycleOwner) {
             it?.let {
                 val homeName = it.basicInfo.homeTeam

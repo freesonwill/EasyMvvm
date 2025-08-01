@@ -21,7 +21,11 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.R
+import arch.cayenne.lib.base.data.constants.StatusBarMode
+import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui._interface.IStatusBar
 import arch.cayenne.lib.base.ui._interface.IView
+import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -43,13 +47,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     protected val mViewModel: VM get() = uiBind.viewModel
     abstract val vbClass: KClass<VB>
     abstract val vmClass: KClass<VM>
-    private val uiBind by lazy {
-        UIBindDelegate(
-            uiOwner = this,
-            vmProvider = ::createVM,
-            vbProvider = ::createVB,
-        )
-    }
+    private val uiBind by lazy { UIBindDelegate(uiOwner = this, vmProvider = ::createVM, vbProvider = ::createVB,) }
 
     private var autoPlayAnimation = true
 
@@ -64,6 +62,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     //navigation跳转时是否保留view（true:保留；false：销毁）
     open val keepViewOnNavigation: Boolean = false
     //#endregion VB,VM
+    //#endregion VB,VM
+    //设置颜色，默认根据主题颜色设定
+    private val statusBar: IStatusBar by lazy { StatusBarDelegate(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +96,13 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
         return dialog
     }
+
+    private fun setStatusBar() {
+        StatusBarConfig.statusBarType = StatusBarMode.DEFAULT
+        statusBar.setStatusBar(StatusBarConfig, mBinding.root)
+        statusBar.configStatusBar().statusBarColor = R.color.black_75
+    }
+
 
     protected open fun enterAnimation():Animation = AnimationUtils.loadAnimation(requireContext(),R.anim.slide_bottom_sheet_up)
 
@@ -216,7 +224,8 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             dialog?.window?.decorView?.visibility = View.INVISIBLE
         }
         uiBind.onStart()
-    }
+        setStatusBar()
+  }
 
     private fun setSheetContainer() {
         val d = dialog as BottomSheetDialog
@@ -286,6 +295,9 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
     }
 
+    override suspend fun createObserver() {
+    }
+
     fun show(manager: FragmentManager) {
         val f = manager.findFragmentByTag(this::class.java.simpleName)
         if (f == null || !f.isAdded) {
@@ -316,9 +328,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     open fun customHide() {
         isDismissing = true
         playExitAnimations()
-    }
-
-    override fun createObserver() {
     }
 
 

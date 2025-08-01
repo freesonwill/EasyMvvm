@@ -161,7 +161,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
             when (state) {
                 DataState.NetworkUnavailable->{

@@ -27,7 +27,7 @@ interface IView : OnNewIntentListener {
     /**
      * 创建数据观察者
      */
-    fun createObserver()
+    suspend fun createObserver()
 
     /**
      * 初始化数据

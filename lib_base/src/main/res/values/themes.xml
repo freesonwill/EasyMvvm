@@ -8,7 +8,7 @@
     <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.Dialog">
         <item name="bottomSheetStyle">@style/ArchButtonSheetStyle</item>
         <item name="android:windowBackground">@color/black_75</item>
-        <item name="android:statusBarColor">@color/black_75</item>
+<!--        <item name="android:statusBarColor">@color/black_75</item>-->
     </style>
 
     <style name="ArchButtonSheetStyle" parent="Widget.Design.BottomSheet.Modal">

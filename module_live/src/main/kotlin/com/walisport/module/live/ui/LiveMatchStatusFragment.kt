@@ -33,7 +33,7 @@ class LiveMatchStatusFragment : BaseFragment<LiveMatchStatusViewModel, FragmentL
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner){
             mViewModel.setMatchId(it)

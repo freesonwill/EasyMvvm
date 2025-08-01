@@ -3,7 +3,8 @@ package arch.cayenne.module.home.ui.view
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.google.android.material.tabs.TabLayout
 import java.lang.ref.WeakReference
 
@@ -16,20 +17,46 @@ class CustomTabLayoutMediator(
 
     private var adapter: RecyclerView.Adapter<*>? = null
     private var attached = false
+    private var skipAnyAnim = false
+    private var fakeViewPager: ImageView? = null
 
     private var onPageChangeCallback: TabLayoutOnPageChangeCallback? = null
     private var onTabSelectedListener: TabLayout.OnTabSelectedListener? = null
     private var pagerAdapterObserver: RecyclerView.AdapterDataObserver? = null
 
-
-    // 實際執行 TabLayout 滾動的地方，用映射的方式叫用 animationTo 來達到 smoothScroll 效果
-    private val doOnClick: (Int) -> Unit = { position ->
+    /**
+     * 執行 TabLayout 滾動到指定位置
+     * 用映射的方式叫用 animationTo 或 setScrollPosition 來控制是否需要 smoothScroll 效果
+     * @param position 目標位置
+     * @param noAnim 是否不需要動畫效果，默認為 false
+     */
+    private fun doOnClick(position: Int, noAnim: Boolean = false) {
         try {
-            val method = TabLayout::class.java.getDeclaredMethod("animateToTab", Int::class.java)
-            method.isAccessible = true
-            method.invoke(tabLayout, position)
+            if (!noAnim) {
+                TabLayout::class.java
+                    .getDeclaredMethod("animateToTab", Int::class.java)
+                    .apply {
+                        isAccessible = true
+                        invoke(tabLayout, position)
+                    }
+            } else {
+                TabLayout::class.java
+                    .getDeclaredMethod(
+                        "setScrollPosition",
+                        Int::class.java,
+                        Float::class.java,
+                        Boolean::class.java,
+                        Boolean::class.java
+                    ).apply {
+                        isAccessible = true
+                        invoke(tabLayout, position, 0f, true, false)
+                    }
 
-            // 手動切換被選擇的 tab
+                // 清空之前的切換紀錄
+                fakeViewPager?.let { viewPager.getAnimHelper(it).resetHistory() }
+            }
+
+            skipAnyAnim = noAnim
             tabLayout.getTabAt(position)?.select()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -40,7 +67,12 @@ class CustomTabLayoutMediator(
         fun onConfigureTab(tab: TabLayout.Tab, position: Int)
     }
 
-    fun attach(fakeViewPager: ImageView, onChangeFinished: ((position: Int) -> Unit)? = null) {
+    /**
+     * 將 TabLayoutMediator 綁定到 TabLayout 和 ViewPager2。
+     * @param fakeViewPager 一個用來模擬 ViewPager2 動畫效果的假 ImageView。
+     * @param afterTabSelected 可選的 CallBack 函式，在標籤切換動畫結束時觸發。
+     */
+    fun attach(fakeViewPager: ImageView, afterTabSelected: ((position: Int) -> Unit)? = null) {
         if (attached) throw IllegalStateException("TabLayoutMediator is already attached")
 
         adapter = viewPager.adapter ?: throw IllegalStateException(
@@ -48,11 +80,15 @@ class CustomTabLayoutMediator(
         )
         attached = true
 
+        this.fakeViewPager = fakeViewPager
+        // 清空之前的切換紀錄
+        viewPager.getAnimHelper(fakeViewPager).resetHistory()
+
         onPageChangeCallback = TabLayoutOnPageChangeCallback(tabLayout).also {
             viewPager.registerOnPageChangeCallback(it)
         }
 
-        onTabSelectedListener = ViewPagerOnTabSelectedListener(viewPager, fakeViewPager, onChangeFinished).also {
+        onTabSelectedListener = ViewPagerOnTabSelectedListener(viewPager, fakeViewPager, afterTabSelected).also {
             tabLayout.addOnTabSelectedListener(it)
         }
 
@@ -86,6 +122,10 @@ class CustomTabLayoutMediator(
     }
 
     fun isAttached(): Boolean = attached
+
+    fun selectTabWithoutAnimation(position: Int) {
+        doOnClick(position, true)
+    }
 
     internal fun populateTabsFromPagerAdapter() {
         tabLayout.removeAllTabs()
@@ -139,18 +179,22 @@ class CustomTabLayoutMediator(
         }
     }
 
-    private class ViewPagerOnTabSelectedListener(
+    private inner class ViewPagerOnTabSelectedListener(
         private val viewPager: ViewPager2,
         private val fakeViewPager: ImageView,
-        private val onChangeFinished: ((position: Int) -> Unit)?
+        private val afterTabSelected: ((position: Int) -> Unit)?
     ) : TabLayout.OnTabSelectedListener {
         override fun onTabSelected(tab: TabLayout.Tab) {
-            ViewPagerAnimHelper().doViewPagerAnim(
-                targetPosition = tab.position,
-                viewPager = viewPager,
-                fakeViewPager = fakeViewPager
-            )
-            onChangeFinished?.invoke(tab.position)
+            if (skipAnyAnim) {
+                viewPager.setCurrentItem(tab.position, false)
+                skipAnyAnim = false
+            } else {
+                viewPager.doSmartAnim(
+                    targetPosition = tab.position,
+                    fakeViewPager = fakeViewPager
+                )
+            }
+            afterTabSelected?.invoke(tab.position)
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {}

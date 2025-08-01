@@ -188,7 +188,7 @@ class BetSlipEarlySettledFragment private constructor() :
         this.onEarlySettleClick = listener
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length

@@ -1,9 +1,7 @@
 package arch.cayenne.module.handicap.ui.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
@@ -14,9 +12,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.skin.widget.SkinnableTextView
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
@@ -33,9 +29,6 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
     override val vbClass: KClass<FragmentHandicapBinding> = FragmentHandicapBinding::class
     override val vmClass: KClass<HandicapViewModel> = HandicapViewModel::class
     private val args : HandicapFragmentArgs by navArgs()
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
@@ -66,9 +59,8 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
                     "1111".loge("测试")
-                    viewPagerAnimHelper.doViewPagerAnim(
+                    mBinding.viewpager.doSmartAnim(
                         targetPosition = tab.position,
-                        viewPager = mBinding.viewpager,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
                 }
@@ -111,7 +103,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 }

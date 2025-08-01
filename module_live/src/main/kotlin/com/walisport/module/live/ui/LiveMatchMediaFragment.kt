@@ -10,6 +10,7 @@ import com.walisport.module.live.data.constants.MatchStatus
 import com.walisport.module.live.databinding.FragmentLiveMatchMediaBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 
 
@@ -33,7 +34,8 @@ class LiveMatchMediaFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
+        delay(200)
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)

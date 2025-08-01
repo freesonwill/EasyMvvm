@@ -52,23 +52,29 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
             val bet = mViewModel.getSystemBet()
             val fav = mViewModel.getSystemFav()
             val all = mViewModel.getSystemAll()
-            showMatchNoticeDialog(TYPE_SYS_GOAL, bet, fav, all)
+            mBinding.noticeGoal.postDelayed({
+                showMatchNoticeDialog(TYPE_SYS_GOAL, bet, fav, all)
+            }, 150)
         }
         mBinding.noticeStart.clickNoRepeat {
             val bet = mViewModel.getKickBet()
             val fav = mViewModel.getKickFav()
             val all = mViewModel.getKickAll()
-            showMatchNoticeDialog(TYPE_SYS_MATCH, bet, fav, all)
+            mBinding.noticeStart.postDelayed({
+                showMatchNoticeDialog(TYPE_SYS_MATCH, bet, fav, all)
+            }, 150)
         }
         mBinding.noticeAppGoal.clickNoRepeat {
             val bet = mViewModel.getAppBet()
             val fav = mViewModel.getAppFav()
             val all = mViewModel.getAppAll()
-            showMatchNoticeDialog(TYPE_APP_GOAL, bet, fav, all)
+            mBinding.noticeAppGoal.postDelayed({
+                showMatchNoticeDialog(TYPE_APP_GOAL, bet, fav, all)
+            }, 150)
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

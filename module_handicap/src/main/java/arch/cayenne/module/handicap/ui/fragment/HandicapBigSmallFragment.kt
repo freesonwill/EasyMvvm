@@ -57,7 +57,7 @@ class HandicapBigSmallFragment : BaseFragment<HandicapBigSmallViewModel, Fragmen
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.bigSmallData.observe(viewLifecycleOwner) {
             if (it != null) {
                 bigSmallAdapter.submitList(it)

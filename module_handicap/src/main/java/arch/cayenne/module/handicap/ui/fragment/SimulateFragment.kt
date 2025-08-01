@@ -38,7 +38,7 @@ class SimulateFragment : BaseFragment<SimulateViewModel, FragmentSimulateBinding
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
     private fun initFlipper() {

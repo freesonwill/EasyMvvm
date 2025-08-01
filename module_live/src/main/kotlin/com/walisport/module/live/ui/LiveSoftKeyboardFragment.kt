@@ -141,7 +141,7 @@ class LiveSoftKeyboardFragment :
         chatViewModel.sendMsgToChat(text)
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         viewLifecycleOwner.lifecycleScope.launch {
             chatViewModel.currentSoftKeyboard.collect {
                 when (it) {

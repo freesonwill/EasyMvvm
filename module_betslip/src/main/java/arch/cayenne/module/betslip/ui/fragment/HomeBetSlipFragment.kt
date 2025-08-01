@@ -14,7 +14,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
@@ -35,9 +35,6 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
     override val vbClass: KClass<FragmentHomeBetslipBinding> = FragmentHomeBetslipBinding::class
     override val vmClass: KClass<HomeBetSlipViewModel> = HomeBetSlipViewModel::class
     private val betSlipFilterViewModel: BetSlipFilterViewModel by viewModel()
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
         val array = resources.getStringArray(R.array.bet_slip_menus)
@@ -74,7 +71,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onDateFilter.observe(viewLifecycleOwner) {
             mBinding.tvDateFilter.text = it.title
         }
@@ -136,9 +133,8 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
-                    viewPagerAnimHelper.doDirectViewPagerAnim(
+                    mBinding.viewPager.doSmartAnim(
                         targetPosition = tab?.position ?: 0,
-                        viewPager = mBinding.viewPager,
                         fakeViewPager = mBinding.ivFaker
                     )
                 }

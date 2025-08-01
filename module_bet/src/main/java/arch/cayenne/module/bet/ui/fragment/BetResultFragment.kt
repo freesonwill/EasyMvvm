@@ -66,7 +66,7 @@ class BetResultFragment : BaseFragment<BetResultViewModel, FragmentBetResultBind
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onBetSheetListener.observe(viewLifecycleOwner) {
             mBinding.rvComboOdds.isVisible = it.size > 1
             betSelectionAdapter.submitList(it) {

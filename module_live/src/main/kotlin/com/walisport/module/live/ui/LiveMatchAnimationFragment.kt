@@ -9,9 +9,11 @@ import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.utils.DensityInfo
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getColor
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import com.github.lzyzsd.jsbridge.BridgeWebViewClient
 import com.github.lzyzsd.jsbridge.DefaultHandler
@@ -19,6 +21,8 @@ import com.walisport.module.live.databinding.FragmentLiveMatchAnimationBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchAnimationViewModel
 import com.walisport.module.live.ui.viewmodel.LiveMatchMediaViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 
 
@@ -55,14 +59,16 @@ class LiveMatchAnimationFragment :
         if (metrics.scaledDensity != DensityInfo.scaledDensity && DensityInfo.scaledDensity > 0) {
             metrics.scaledDensity = DensityInfo.scaledDensity
         }
-
-        initWebView()
+        launch {
+            initWebView()
+        }
 //        scheduleHideButtons()
     }
 
 
     @SuppressLint("ClickableViewAccessibility")
     override fun initListener() {
+        mBinding.ivChooseSource.addScaleOnTouchAnimation()
         mBinding.ivChooseSource.setOnClickListener {
 //            scheduleHideButtons()
             mediaViewModel.chooseSourceView()
@@ -89,7 +95,7 @@ class LiveMatchAnimationFragment :
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         //监听比赛id变化
         mainViewModel.matchId.observe(viewLifecycleOwner) {
             mViewModel.setMatchId(it)
@@ -126,7 +132,7 @@ class LiveMatchAnimationFragment :
         mViewModel.createObserver()
     }
 
-    private fun initWebView() {
+    private suspend fun initWebView() {
         val webSettings = mBinding.animationView.settings
 
         with(webSettings) {
@@ -137,10 +143,12 @@ class LiveMatchAnimationFragment :
             blockNetworkImage = false
             setGeolocationEnabled(true)
             setGeolocationDatabasePath(
-                requireActivity().applicationContext.getDir(
-                    "database",
-                    android.content.Context.MODE_PRIVATE
-                ).path
+                withContext(Dispatchers.IO){
+                    requireActivity().applicationContext.getDir(
+                        "database",
+                        android.content.Context.MODE_PRIVATE
+                    ).path
+                }
             )
             useWideViewPort = true
             loadWithOverviewMode = true

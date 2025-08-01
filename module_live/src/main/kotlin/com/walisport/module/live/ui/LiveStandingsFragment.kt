@@ -67,7 +67,7 @@ class LiveStandingsFragment : BaseFragment<LiveStandingsViewModel, FragmentLiveS
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {

@@ -10,7 +10,7 @@ import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import com.walisport.module.message.R
 import com.walisport.module.message.databinding.FragmentMessageMainBinding
 import com.walisport.module.message.ui.viewmodel.MessageMainViewModel
@@ -24,10 +24,6 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
 
     override val vbClass: KClass<FragmentMessageMainBinding> = FragmentMessageMainBinding::class
     override val vmClass: KClass<MessageMainViewModel> = MessageMainViewModel::class
-
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
 
     companion object {
         const val MSG_ALL = 0
@@ -57,25 +53,25 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     override fun initListener() {
         mBinding.layMsgAll.addScaleOnTouchAnimation()
         mBinding.layMsgAll.clickNoRepeat {
-            selectMessageType(MSG_ALL)
+            selectMessageType(MSG_ALL, true)
         }
         mBinding.layMsgSys.addScaleOnTouchAnimation()
         mBinding.layMsgSys.clickNoRepeat {
-            selectMessageType(MSG_SYS)
+            selectMessageType(MSG_SYS, true)
         }
         mBinding.layMsgAct.addScaleOnTouchAnimation()
         mBinding.layMsgAct.clickNoRepeat {
-            selectMessageType(MSG_ACT)
+            selectMessageType(MSG_ACT, true)
         }
         mBinding.layMsgMatch.addScaleOnTouchAnimation()
         mBinding.layMsgMatch.clickNoRepeat {
-            selectMessageType(MSG_MAT)
+            selectMessageType(MSG_MAT, true)
         }
         mBinding.layMsgPay.addScaleOnTouchAnimation()
         mBinding.layMsgPay.clickNoRepeat {
-            selectMessageType(MSG_PAY)
+            selectMessageType(MSG_PAY, true)
         }
-        selectMessageType(MSG_ALL)
+        selectMessageType(MSG_ALL, false)
         mBinding.vpMessage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int,
@@ -85,7 +81,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             }
 
             override fun onPageSelected(position: Int) {
-                selectMessageType(position)
+                selectMessageType(position, false)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -95,7 +91,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     }
 
     //未读消息红点显示
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.allUnreadMsg.observe(viewLifecycleOwner) {
             it.let {
                 if (it > 0) {
@@ -143,13 +139,14 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         }
     }
 
-    private fun selectMessageType(type: Int) {
+    private fun selectMessageType(type: Int, anim: Boolean) {
         //ViewPager切换动画
-        viewPagerAnimHelper.doViewPagerAnim(
-            targetPosition = type,
-            viewPager = mBinding.vpMessage,
-            fakeViewPager = mBinding.fragmentFakeViewPager,
-        )
+        if (anim) {
+            mBinding.vpMessage.doSmartAnim(
+                targetPosition = type,
+                fakeViewPager = mBinding.fragmentFakeViewPager,
+            )
+        }
         mBinding.ivMsgAll.isSelected = false
         mBinding.ivMsgSys.isSelected = false
         mBinding.ivMsgAct.isSelected = false

@@ -146,7 +146,8 @@ class LiveRemoteManager(private val socketManager: WebSocketManager) {
         val result = socketManager.sendAndWaitProtoMessageResponse<Client.TournamentMatchResp>(
             scope = scope,
             dispatcher = Dispatchers.IO,
-            apiCode = ApiCode.MATCH_LEAGUE
+            apiCode = ApiCode.MATCH_LEAGUE,
+            timeout = 1000L
         ) {
             Client.TournamentMatchReq.newBuilder().apply {
                 this.tournamentId = tournamentId
