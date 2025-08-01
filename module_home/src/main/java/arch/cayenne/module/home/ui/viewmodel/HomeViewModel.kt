@@ -225,7 +225,9 @@ class HomeViewModel : BaseViewModel() {
             val currentList = tournaments.value?.peekContent() ?: return
             setCurrentTournamentId(tournament.id)
             if (!currentList.any { it.id == tournament.id }) {
-                tournaments.value = Event(currentList + tournament)
+                tournaments.value = Event(currentList.map { it.apply { isSelected = false } }  + tournament.apply { isSelected = true })
+            } else {
+                tournaments.value = Event(currentList.map { it.apply { isSelected = tournament.id == id } })
             }
         } else if (tournament is ChampionTournamentDataModel) {
             _navigateToChampion.value = Event(tournament)
