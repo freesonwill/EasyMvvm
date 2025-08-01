@@ -6,6 +6,7 @@ import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.BettingRemoteManager
 import galaxy.client.proto.Client
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -73,6 +74,8 @@ class BetSheetRepository(
 
     fun removeSingleBet() {
         scope.launch {
+            //TOOD 暫時方法
+            delay(200L)
             betDao.getCurrentBet()?.let {
                 if (it.betType == BetTypeEnum.SINGLE || it.betType == BetTypeEnum.RESERVE) {
                     betDao.removeBet(it.betId)
