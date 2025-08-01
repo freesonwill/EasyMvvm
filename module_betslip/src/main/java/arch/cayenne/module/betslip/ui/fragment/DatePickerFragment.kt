@@ -149,7 +149,7 @@ class DatePickerFragment private constructor() :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.dateTitleListener.observe(viewLifecycleOwner) {
             datePickerAdapter.submitList(it)
         }

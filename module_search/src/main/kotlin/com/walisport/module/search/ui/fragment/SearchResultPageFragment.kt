@@ -92,7 +92,7 @@ class SearchResultPageFragment(val data: SearchResultBean) :
 
     override fun initListener() = Unit
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
                 launch {

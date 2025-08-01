@@ -182,7 +182,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         observeResult<Bundle>(CHANGE_MATCH){
             val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
             "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(TAG)

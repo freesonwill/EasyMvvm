@@ -177,7 +177,7 @@ class MatchListPagerFragment :
         }
 
     }
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()

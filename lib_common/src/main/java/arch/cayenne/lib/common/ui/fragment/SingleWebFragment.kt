@@ -74,7 +74,7 @@ class SingleWebFragment : BaseFragment<EmptyViewModel, FragmentSingleWebBinding>
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

@@ -95,7 +95,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     }
 
     //未读消息红点显示
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.allUnreadMsg.observe(viewLifecycleOwner) {
             it.let {
                 if (it > 0) {

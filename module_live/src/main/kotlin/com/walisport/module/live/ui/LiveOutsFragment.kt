@@ -52,7 +52,7 @@ class LiveOutsFragment : BaseFragment<LiveOutsViewModel, FragmentLiveOutsBinding
         })
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
             mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DataState.NetworkUnavailable -> {

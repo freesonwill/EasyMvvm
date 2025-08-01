@@ -178,7 +178,7 @@ class SearchDatePickerFragment private constructor(): BaseFragment<SearchDatePic
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         launch(Lifecycle.State.STARTED) {
             sharedViewModel.currentLanguage.collect {
                 // 更新日曆標題

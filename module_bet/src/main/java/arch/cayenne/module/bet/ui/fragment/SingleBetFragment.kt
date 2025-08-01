@@ -125,7 +125,7 @@ class SingleBetFragment : BaseFragment<SingleBetViewModel, FragmentSingleBetBind
     }
 
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onEditNumber.observe(viewLifecycleOwner) {
             mBinding.etMoney.setText(it)
             val length = it.length

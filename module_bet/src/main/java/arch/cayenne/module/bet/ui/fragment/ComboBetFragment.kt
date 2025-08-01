@@ -147,7 +147,7 @@ class ComboBetFragment : BaseFragment<ComboBetViewModel, FragmentComboBetBinding
     }
 
     override fun createObserverAtState(): Lifecycle.State = Lifecycle.State.RESUMED
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.onBetListListener.observe(viewLifecycleOwner) {
             if (it.isEmpty()) {
                 dismiss()

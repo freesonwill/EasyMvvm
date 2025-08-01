@@ -68,7 +68,7 @@ class NoticeFragment : BaseFragment<SettingViewModel, FragmentNoticeBinding>() {
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

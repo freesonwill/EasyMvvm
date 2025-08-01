@@ -188,7 +188,7 @@ class TournamentListFragment :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             with(mBinding) {
                 when(it) {

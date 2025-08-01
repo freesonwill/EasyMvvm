@@ -107,7 +107,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         onFunctionClick = listener
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
             with (mViewModel) {
                 launch {
