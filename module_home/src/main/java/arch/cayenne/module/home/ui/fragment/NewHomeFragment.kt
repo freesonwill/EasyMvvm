@@ -64,10 +64,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         }
     }
 
-    private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
-    }
-
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
     override fun initView(savedInstanceState: Bundle?) {
