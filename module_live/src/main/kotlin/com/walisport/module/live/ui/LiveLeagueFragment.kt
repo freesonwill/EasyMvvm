@@ -16,7 +16,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -134,10 +133,8 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
                     gradientDrawable.shape = GradientDrawable.RECTANGLE
                     mBinding.leagueRoot.background = gradientDrawable
                     //更新联赛数据
-                    mBinding.leagueRoot.postDelayed({
-                        standsAdapter.submitList(it.match)
-                        mViewModel.setItemCount(standsAdapter.itemCount)
-                    }, 1000)
+                    standsAdapter.submitList(it.match)
+                    mViewModel.setItemCount(standsAdapter.itemCount)
                 }
             } ?: run {
                 if (standsAdapter.currentList.isEmpty()) {
