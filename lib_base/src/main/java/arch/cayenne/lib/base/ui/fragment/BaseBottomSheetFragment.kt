@@ -197,7 +197,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         unhideableBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 Log.d("abcd", "state $newState")
-                if (newState == BottomSheetBehavior.STATE_COLLAPSED && !autoPlayAnimation) {
+                if ((newState == BottomSheetBehavior.STATE_COLLAPSED || newState == BottomSheetBehavior.STATE_HIDDEN)&& !autoPlayAnimation) {
                     setCustomCollapseSetting()
                 }
             }
@@ -252,6 +252,7 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
 
     @CallSuper
     override fun onPause() {
+        Log.d("abcd", "onPause")
         super.onPause()
         uiBind.onPause()
     }
@@ -313,14 +314,16 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         Log.d("abcd", "customCreate ${this.hashCode()}")
     }
 
-    fun customShow() {
+    @CallSuper
+    open fun customShow() {
         isDismissing = false
         Log.d("abcd", "customShow ${this.hashCode()}")
         setCustomExpendSetting()
         playEnterAnimations()
     }
 
-    fun customHide() {
+    @CallSuper
+    open fun customHide() {
         isDismissing = true
         Log.d("abcd", "customHide ${this.hashCode()}")
         playExitAnimations()
