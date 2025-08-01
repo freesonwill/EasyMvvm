@@ -444,7 +444,7 @@ class HomeCalendarFragment : BaseFragment<EmptyViewModel, FragmentHomeCalendarBi
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
     //設定標記紅色日期及可選取日期範圍
