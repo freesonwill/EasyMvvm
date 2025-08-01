@@ -403,7 +403,7 @@ class SkinnableRippleView : ConstraintLayout {
             if (hasToZoom!!) {
                 this.startAnimation(scaleAnimation)
             }
-            radiusMax = WIDTH.toFloat()
+            radiusMax = (1.5 * WIDTH).toFloat()
             if (isCentered!! || rippleType == 1) {
                 this.x = (measuredWidth / 2).toFloat()
                 this.y = (measuredHeight / 2).toFloat()
