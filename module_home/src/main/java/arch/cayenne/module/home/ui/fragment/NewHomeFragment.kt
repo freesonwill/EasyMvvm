@@ -25,6 +25,7 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.getFormatDate
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
@@ -145,8 +146,10 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 var tabSelectedDate: String
                 val index = tlDateList.selectedTabPosition
                 if (index >= 0) {
-                    val endDateTriple = mViewModel.recently7DayMatchScheduleCount.value?.peekContent()?.getOrNull(index)
-                    tabSelectedDate = endDateTriple?.day?.replace("-","") ?: "0"
+                    val tag = tlDateList.getTabAt(tlDateList.selectedTabPosition)?.tag
+                    val triple = getFuture31Days().find { it.first == tag }
+                    triple?.third?.getFormatDate()?.replace("/", "")
+                    tabSelectedDate = triple?.third?.getFormatDate()?.replace("/", "") ?: "0"
                 } else {
                     tabSelectedDate = "0"
                 }
@@ -274,6 +277,8 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 with(mBinding.layoutContainer) {
                     llOtherDate.isSelected = false
                 }
+            }.setOnResetDateListener {
+                resetDateTabs()
             }.build()
         }
     }
