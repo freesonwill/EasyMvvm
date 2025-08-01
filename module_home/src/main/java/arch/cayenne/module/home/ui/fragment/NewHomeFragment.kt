@@ -388,6 +388,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 playTypeId = mViewModel.currentPlayTypeId
             )
             vpGameList.offsetLeftAndRight(1)
+            vpGameList.offscreenPageLimit = 1
 
             // 使用 reflexMargin 擴展方法設置更小的 tab 間距
             tlLeagueList.reflexMargin(2.dp2px, 2.dp2px, 1.dp2px)
