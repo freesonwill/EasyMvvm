@@ -53,25 +53,25 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
     override fun initListener() {
         mBinding.layMsgAll.addScaleOnTouchAnimation()
         mBinding.layMsgAll.clickNoRepeat {
-            selectMessageType(MSG_ALL)
+            selectMessageType(MSG_ALL, true)
         }
         mBinding.layMsgSys.addScaleOnTouchAnimation()
         mBinding.layMsgSys.clickNoRepeat {
-            selectMessageType(MSG_SYS)
+            selectMessageType(MSG_SYS, true)
         }
         mBinding.layMsgAct.addScaleOnTouchAnimation()
         mBinding.layMsgAct.clickNoRepeat {
-            selectMessageType(MSG_ACT)
+            selectMessageType(MSG_ACT, true)
         }
         mBinding.layMsgMatch.addScaleOnTouchAnimation()
         mBinding.layMsgMatch.clickNoRepeat {
-            selectMessageType(MSG_MAT)
+            selectMessageType(MSG_MAT, true)
         }
         mBinding.layMsgPay.addScaleOnTouchAnimation()
         mBinding.layMsgPay.clickNoRepeat {
-            selectMessageType(MSG_PAY)
+            selectMessageType(MSG_PAY, true)
         }
-        selectMessageType(MSG_ALL)
+        selectMessageType(MSG_ALL, false)
         mBinding.vpMessage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrolled(
                 position: Int,
@@ -81,7 +81,7 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             }
 
             override fun onPageSelected(position: Int) {
-                selectMessageType(position)
+                selectMessageType(position, false)
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -139,12 +139,14 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
         }
     }
 
-    private fun selectMessageType(type: Int) {
+    private fun selectMessageType(type: Int, anim: Boolean) {
         //ViewPager切换动画
-        mBinding.vpMessage.doSmartAnim(
-            targetPosition = type,
-            fakeViewPager = mBinding.fragmentFakeViewPager,
-        )
+        if (anim) {
+            mBinding.vpMessage.doSmartAnim(
+                targetPosition = type,
+                fakeViewPager = mBinding.fragmentFakeViewPager,
+            )
+        }
         mBinding.ivMsgAll.isSelected = false
         mBinding.ivMsgSys.isSelected = false
         mBinding.ivMsgAct.isSelected = false
