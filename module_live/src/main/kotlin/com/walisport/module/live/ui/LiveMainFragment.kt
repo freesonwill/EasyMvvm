@@ -1,13 +1,11 @@
 package com.walisport.module.live.ui
 
-import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
@@ -19,13 +17,11 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -41,6 +37,7 @@ import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.helper.LiveViewPagerAnimHelper
 import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import kotlinx.coroutines.flow.filter
 import kotlin.reflect.KClass
@@ -59,6 +56,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
     private var drawerContentFragment: LiveBetOnMenuFragment? = null
     private val titleBarBinding: TitleBarLiveBinding by lazy {
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
+    }
+    private val viewPagerAnimHelper by lazy {
+        LiveViewPagerAnimHelper()
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -133,8 +133,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 tab?.let {
-                    mBinding.vpPage.doSmartAnim(
+                    viewPagerAnimHelper.doViewPagerAnim(
                         targetPosition = tab.position,
+                        viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
                 }
@@ -146,12 +147,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         )
                     )
                     textView.typeface = Typeface.DEFAULT_BOLD
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicator
-                        )
-                    }, 4.dp2px)
                 }
             }
 
@@ -164,12 +159,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         )
                     )
                     textView.typeface = Typeface.DEFAULT
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 3.dp2px)
                 }
             }
 
@@ -303,12 +292,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 4.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(

@@ -34,11 +34,11 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:background="@color/live_main_tab_bg"
-        android:paddingBottom="2dp"
-        app:tabGravity="start"
+        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorAnimationMode="linear"
+        app:tabIndicatorColor="@color/tab_indicator_color"
         app:tabMode="fixed"
-        app:tabIndicatorHeight="0dp"
-        app:tabRippleColor="@null"
+        android:paddingBottom="@dimen/dp_1"
         tools:ignore="SpeakableTextPresentCheck" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
