@@ -219,6 +219,9 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
      * */
     fun updateSoftKeyBoard() {
         _currentSoftKeyboard.value = softKeyBoardListener.value
+        if(_currentSoftKeyboard.value == KeyBoardType.SOFT_KEYBOARD){
+            openSoftKeyBoard(KeyBoardType.SOFT_KEYBOARD)
+        }
     }
 
     /**
@@ -267,9 +270,6 @@ class LiveChatViewModel(private val chatRepo: LiveChatRepository) : BaseViewMode
 
     fun addSoftKeyBoardEvent(keyBoardType: KeyBoardType) {
         _softKeyBoardListener.tryEmit(keyBoardType)
-        if(softKeyBoardListener.value == KeyBoardType.SOFT_KEYBOARD){
-            openSoftKeyBoard(KeyBoardType.SOFT_KEYBOARD)
-        }
     }
 
     fun openSoftKeyBoard(keyBoardType: KeyBoardType){
