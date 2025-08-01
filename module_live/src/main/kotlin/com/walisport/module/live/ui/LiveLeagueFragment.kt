@@ -16,7 +16,6 @@ import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavResultExt.sendResult
-import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigateUp
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -108,7 +107,7 @@ class LiveLeagueFragment : BaseFragment<LeagueViewModel, FragmentLeagueBinding>(
         mViewModel.apiStateListener.observe(viewLifecycleOwner) {
             if (it == DataState.NoMoreData) {
                 mBinding.refreshLayout.setEnableLoadMore(false)
-                mBinding.refreshLayout.setNoMoreData(true)
+                mBinding.refreshLayout.finishLoadMoreWithNoMoreData()
             }
         }
         mViewModel.leagueData.observe(viewLifecycleOwner) {
