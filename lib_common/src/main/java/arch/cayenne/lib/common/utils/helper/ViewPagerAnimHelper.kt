@@ -17,26 +17,36 @@ import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.common.utils.ext.startSafeAnimateSet
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getHelper
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper.Companion.getAnimHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 fun ViewPager2.doSmartAnim(targetPosition: Int, fakeViewPager: ImageView) {
-    getHelper(this, fakeViewPager)
+    getAnimHelper(fakeViewPager)
         .let { helper ->
-            helper.printLog("收到 doSmartAnim 請求，targetPosition=$targetPosition")
+            helper.printLog("收到 doSmartAnim 請求，lastPosition=${if(helper.targetHistory.isEmpty()) "為空" else helper.lastPosition},targetPosition=$targetPosition")
 
             if (helper.targetHistory.isEmpty()) {
-                helper.printLog("targetHistory 為空，執行動畫")
-                helper.targetHistory.add(targetPosition)
-                helper.doAnim()
+                helper.printLog("targetHistory 為空，等待加入目前頁面")
+                post {
+                    helper.printLog("目前頁面為 $currentItem，加入 targetHistory，並重新發送需求")
+                    helper.targetHistory.add(currentItem)
+                    doSmartAnim(targetPosition, fakeViewPager)
+                }
                 return
             }
 
             if (targetPosition == helper.lastPosition) {
                 helper.printLog("目的地與上一個相同（$targetPosition），跳過動畫")
+                return
+            }
+
+            if (targetPosition in listOf(helper.lastPosition - 1, helper.lastPosition + 1)) {
+                helper.printLog("目的地（$targetPosition）與上一個（${helper.lastPosition}）相鄰，執行 ViewPager 預設動畫")
+                helper.targetHistory.add(targetPosition)
+                setCurrentItem(targetPosition, true)
                 return
             }
 
@@ -60,7 +70,7 @@ class ViewPagerAnimHelper(
     private val viewPager: ViewPager2,
     private val fakeViewPager: ImageView
 ) {
-    internal val targetHistory = mutableListOf(viewPager.currentItem)
+    internal val targetHistory = mutableListOf<Int>()
     internal val lastPosition: Int
         get() = targetHistory.last()
     internal val secondLastPosition: Int
@@ -86,6 +96,11 @@ class ViewPagerAnimHelper(
         check(viewPager.parent == fakeViewPager.parent) {
             "ViewPagerAnimHelper -> ViewPager 和 FakeViewPager 必須有相同的父層"
         }
+    }
+
+    fun resetHistory() {
+        printLog("resetHistory: 清空 targetHistory")
+        targetHistory.clear()
     }
 
     internal fun printLog(message: String) {
@@ -250,11 +265,9 @@ class ViewPagerAnimHelper(
         private const val TAG = "ViewPagerAnimHelper"
         private const val KEY = 0x7f5a0123
 
-        fun ViewPager2.getHelper(
-            viewPager: ViewPager2, fakeViewPager: ImageView
-        ): ViewPagerAnimHelper {
+        fun ViewPager2.getAnimHelper(fakeViewPager: ImageView): ViewPagerAnimHelper {
             return getTag(KEY) as? ViewPagerAnimHelper
-                ?: ViewPagerAnimHelper(viewPager, fakeViewPager)
+                ?: ViewPagerAnimHelper(this, fakeViewPager)
                     .also { setTag(KEY, it) }
         }
     }
