@@ -317,9 +317,9 @@ class FragivityFragmentNavigator(
             if(backStack.size > 1){
                 val tag = generateBackStackName(backStack.size - 2,
                     backStack[backStack.size - 2])
-                val prevFragment = fragmentManager.findFragmentByTag(tag)!!
                 //"popBackStack==>$prevFragment,tag:$tag,${fragmentDelayedHideMap[tag]}".logd(TAG)
                 if(fragmentDelayedHideMap[tag] == true){
+                    val prevFragment = fragmentManager.findFragmentByTag(tag)!!
                     fragmentManager.beginTransaction()
                         .show(prevFragment)
                         .commit()

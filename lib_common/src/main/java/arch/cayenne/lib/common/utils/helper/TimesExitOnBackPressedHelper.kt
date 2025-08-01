@@ -2,7 +2,7 @@ package arch.cayenne.lib.common.utils.helper
 
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.FragmentActivity
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
+import kotlin.system.exitProcess
 
 
 /**
@@ -43,6 +43,7 @@ class TimesExitOnBackPressedHelper(
                 ToastHelper.instance.forceCancel()
                 activity.finish()
                 remain = times
+                exitProcess(0)
             } else {
                 onExit?.invoke(remain,times)
             }
