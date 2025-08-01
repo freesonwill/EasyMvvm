@@ -53,10 +53,11 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledTvDate.text = order.betTime.getDetailFormatDate()
 
             // 支援提前結算 且 仍有可結算次數 且 可結算金額大於等於最小結算金額
-            it.betUnsettledBtSettle.isEnabled =
-                order.earlySupport && order.earlySettleTimes < order.earlySettlePrice.settleTotal && BetSlipUtils.calculateMinSettlePrice(
-                    order.betAmount, order.earlyBetAmount, order.earlySettlePrice.settleMin
-                )
+            val settlePrice = BetSlipUtils.earlySettlePrice(
+                order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
+            )
+            it.betUnsettledBtSettle.isEnabled = settlePrice.toMoney() > 1000 && order.earlySupport
+
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
@@ -65,12 +66,11 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount
             it.betUnsettledTvExcept.setTextRes(if(order.comboType == 0) R.string.live_bet_except_win else R.string.live_bet_except_max_win)
-            val earlyAmount = BetSlipUtils.earlySettlePrice(order.betAmount, order.earlyBetAmount)
-            val earlyAmountStr = "${CurrencySymbols.getSymbol(order.currency)}${earlyAmount}"
+            val earlyAmountStr = "${CurrencySymbols.getSymbol(order.currency)}${settlePrice}"
             it.betUnsettledBtAmount.text = earlyAmountStr
             val flag = order.comboType != 0  // 0 - 单关 1-串关 2-全窜关
             it.groupCrossborder.isVisible = flag
-            it.betUnsettledBtSettle.isVisible = (earlyAmount.toDoubleOrNull() ?: 0.0) >= 10
+
             if (flag) {
                 val combo = R.string.title_combo_bet_odds.getString(order.comboK, order.comboV)
                 val comboValue = "$combo*${order.comboCount}"
