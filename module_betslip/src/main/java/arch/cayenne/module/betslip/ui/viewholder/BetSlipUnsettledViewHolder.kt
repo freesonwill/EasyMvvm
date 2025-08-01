@@ -1,19 +1,16 @@
 package arch.cayenne.module.betslip.ui.viewholder
 
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.viewbinding.ViewBinding
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
-import arch.cayenne.lib.common.ui.view.ProgressDrawable
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
-import arch.cayenne.lib.common.utils.ext.SportIntExt.stringToMoney
+import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.SportStringExt.toMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.getDetailFormatDate
 import arch.cayenne.lib.database.entity.BetSlipData
 import arch.cayenne.lib.database.entity.BetSlipOrderBean
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
 import arch.cayenne.module.betslip.databinding.AdapterLiveBetSlipUnsettleBinding
@@ -63,7 +60,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
-            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.stringToMoney()}"
+            val betAmount = "${CurrencySymbols.getSymbol(order.currency)}${order.betAmount.toMoney().getFormalMoney()}"
             it.betUnsettledTvBettingValue.text = betAmount
             val exceptAmount = "${CurrencySymbols.getSymbol(order.currency)}${BetSlipUtils.expectMaxAmount(order.betAmount, order.odds)}"
             it.betUnsettledTvExceptValue.text = exceptAmount

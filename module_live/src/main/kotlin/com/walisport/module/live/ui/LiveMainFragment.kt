@@ -1,7 +1,5 @@
 package com.walisport.module.live.ui
 
-import android.animation.ValueAnimator
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
@@ -19,15 +17,15 @@ import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
-import arch.cayenne.lib.base.utils.LogUtils
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
+import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.lib.skin.widget.SkinnableTextView
 import arch.cayenne.module.betslip.ui.fragment.BetSlipFragment
@@ -35,19 +33,16 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
-import arch.cayenne.lib.websocket.data.ConnectState
-import com.walisport.module.live.data.BetOnMenuStatus
 import kotlinx.coroutines.delay
 import android.animation.ObjectAnimator;
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
 import kotlinx.coroutines.flow.filter
+import kotlin.reflect.KClass
 
 /**
  * 直播详情页

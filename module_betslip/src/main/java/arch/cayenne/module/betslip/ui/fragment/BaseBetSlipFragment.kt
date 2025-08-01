@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.view.PullRefreshLayout
 import arch.cayenne.module.betslip.R
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -38,7 +37,6 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
     private val recyclerView:RecyclerView by lazy { mBinding.root.findViewById(R.id.recyclerView) }
     private val dynamicState:DynamicStateLayout by lazy { mBinding.root.findViewById(R.id.empty_state) }
     private val refreshLayout:PullRefreshLayout by lazy { mBinding.root.findViewById(R.id.refreshLayout) }
-    private val lock = Any()
 
     abstract fun getBetSlipEnum(): BetSlipEnum
 
@@ -67,9 +65,6 @@ abstract class BaseBetSlipFragment<VM: BaseBetSlipViewModel, VB : ViewBinding>: 
         //直播间注单返回单前页后每次都要刷新，首页注单不用每次更新
         if (filterViewModel?.onFilterChangeListener?.value?.matchId != -1L) {
             refreshData()
-            if (betSlipAdapter.currentList.isNotEmpty()) {
-                recyclerView.scrollToPosition(0)
-            }
         }
     }
 
