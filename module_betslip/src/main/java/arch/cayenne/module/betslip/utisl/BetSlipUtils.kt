@@ -17,25 +17,13 @@ internal object BetSlipUtils {
         return result.getFormalMoney()
     }
 
-    /***
-     * 提前结算金额
-     * */
-    fun earlySettlePrice(betAmount: String, earlyBetAmount: String): String {
-        val nBetAmount = betAmount.toMoney()
-        val nEarlyBetAmount = earlyBetAmount.toMoney()
-        val result = nBetAmount.minus(nEarlyBetAmount)
-        return result.getFormalMoney()
-    }
 
-    /***
-     * 计算最小结算金额
-     * */
-    fun calculateMinSettlePrice(betAmount: String, earlyBetAmount: String, minSettleAmount: String): Boolean {
+    fun earlySettlePrice(betAmount: String, earlyBetAmount: String, price: String): String {
         val nBetAmount = betAmount.toMoney()
         val nEarlyBetAmount = earlyBetAmount.toMoney()
-        val nMinSettleAmount = minSettleAmount.toMoney()
+        val nPrice = price.toMoney()
         val result = nBetAmount.minus(nEarlyBetAmount)
-        return result >= nMinSettleAmount
+        return result.getFormalMoney(nPrice)
     }
 
 }
