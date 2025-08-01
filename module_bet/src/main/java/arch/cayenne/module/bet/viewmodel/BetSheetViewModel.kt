@@ -12,6 +12,9 @@ class BetSheetViewModel(private val repo: BetSheetRepository) : BaseViewModel() 
     private val _betSheetSizeListener = MutableLiveData<Int>()
     val betSheetSizeListener: LiveData<Int> get() = _betSheetSizeListener
 
+    val count: Int
+        get() = _betSheetSizeListener.value ?: 0
+
     init {
         repo.register()
         viewModelScope.launch {

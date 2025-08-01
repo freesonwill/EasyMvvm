@@ -72,6 +72,11 @@ class ComboBetViewModel(
         }
 
         addSource(_onBetListListener) {
+            if (it.size > lastBetSize) {
+                value = true
+                lastBetSize = it.size
+                return@addSource
+            }
             checkBothLoaded()
             if (lastBetSize != it.size) {
                 updateBox = Pair(true, updateBox.second)

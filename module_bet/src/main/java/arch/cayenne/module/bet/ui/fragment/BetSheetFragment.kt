@@ -101,17 +101,13 @@ class BetSheetFragment private constructor() :
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        initDestination()
-        super.onViewCreated(view, savedInstanceState)
-    }
 
     override fun initView(savedInstanceState: Bundle?) {
 
     }
 
     private fun initDestination() {
-        setStartDestination(1)
+        setStartDestination(mViewModel.count)
     }
 
     override fun initListener() {
@@ -167,17 +163,6 @@ class BetSheetFragment private constructor() :
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
         }
-        var lastCount = 0
-        mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
-            if (isDismissing) {
-                if (lastCount == 1 && it > 1) {
-                    controller.navigate(SingleBetFragmentDirections.actionSingleBetFragmentToComboBetFragment(), null)
-                } else if (lastCount > 1 && it == 1) {
-                    controller.navigate(ComboBetFragmentDirections.actionComboBetFragmentToSingleBetFragment(), null)
-                }
-                lastCount = it
-            }
-        }
     }
 
     private fun removeLastObserver() {
@@ -208,6 +193,16 @@ class BetSheetFragment private constructor() :
     override fun onDismiss(dialog: DialogInterface) {
         mViewModel.removeSingleBet()
         super.onDismiss(dialog)
+    }
+
+    override fun customShow() {
+        initDestination()
+        super.customShow()
+    }
+
+    override fun customHide() {
+        super.customHide()
+        mViewModel.removeSingleBet()
     }
 }
 
