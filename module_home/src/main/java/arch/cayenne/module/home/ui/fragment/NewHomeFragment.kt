@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -28,21 +27,19 @@ import arch.cayenne.lib.common.utils.ext.TabLayoutExt.setupEndTabMoreAnimation
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.helper.BounceEdgeEffectHelper
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
 import arch.cayenne.lib.database.entity.TournamentDataModel
 import arch.cayenne.lib.skin.res.SkinnableResourceManager
 import arch.cayenne.module.home.R
 import arch.cayenne.module.home.data.constants.HomeState
 import arch.cayenne.module.home.data.constants.PlayType
 import arch.cayenne.module.home.databinding.FragmentNewHomeBinding
+import arch.cayenne.module.home.databinding.HomeTourPopupCalendarViewBinding
 import arch.cayenne.module.home.databinding.ItemDateTabBinding
 import arch.cayenne.module.home.databinding.ItemLeagueTabBinding
 import arch.cayenne.module.home.ui.adapter.LeaguePagerAdapter
 import arch.cayenne.module.home.ui.adapter.SportsListAdapter
-import arch.cayenne.module.home.ui.fragment.HomeCalendarFragment.Companion.RESULT_KEY
-import arch.cayenne.module.home.ui.fragment.HomeCalendarFragment.Companion.RESULT_KEY_DATE
-import arch.cayenne.module.home.ui.fragment.HomeCalendarFragment.Companion.RESULT_MASK_DISMISS
 import arch.cayenne.module.home.ui.view.CustomTabLayoutMediator
+import arch.cayenne.module.home.ui.view.HomeCalendarPopupWindow
 import arch.cayenne.module.home.ui.viewmodel.HomeViewModel
 import arch.cayenne.module.home.utils.DateUtils
 import com.bumptech.glide.Glide
@@ -56,13 +53,13 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
     override val vbClass: KClass<FragmentNewHomeBinding> = FragmentNewHomeBinding::class
     override val vmClass: KClass<HomeViewModel> = HomeViewModel::class
     private var drawerContentFragment: DrawerContentFragment? = null
-    private var datePicker: HomeCalendarFragment? = null
     private val sportsListAdapter by lazy {
         SportsListAdapter { id ->
             if (mViewModel.currentSportId == id) return@SportsListAdapter
             mViewModel.setCurrentSport(id)
         }
     }
+    private var customPopup : HomeCalendarPopupWindow<HomeTourPopupCalendarViewBinding>? = null
 
     //    private val tournamentListFragment  = TournamentListFragment.newInstance()
     private var isExpanded = false
@@ -80,7 +77,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
         setStatusBar(StatusBarConfig,mBinding.clMain)
         super.onStart()
     }
-
 
     //init 一級導航欄位
     private fun initPlayTypeLayout() {
@@ -154,8 +150,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 } else {
                     tabSelectedDate = "0"
                 }
-                openPicker(tabSelectedDate)
-//                showHomeCalendar(tabSelectedDate)
+                showHomeCalendar(tabSelectedDate)
             }
 
             // 初始化 TabLayout end more跟手動畫
@@ -255,51 +250,32 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
             }
         }
     }
-    private fun openPicker(selectedDate: String) {
+
+    private fun showHomeCalendar(tabSelectedDate: String) {
         with(mBinding.layoutContainer) {
             llOtherDate.isSelected = true
         }
-        with(mBinding.layoutContainer) {
-            setCalendarPopup()
-            childFragmentManager.setFragmentResultListener(RESULT_KEY, viewLifecycleOwner) { _, bundle ->
-                childFragmentManager.clearFragmentResultListener(RESULT_KEY)
-                bundle.getString(RESULT_KEY_DATE)?.let { date ->
-                    val index = getFutureSevenDays().indexOfFirst{
-                        it.first == date
-                    }
-                    mBinding.layoutContainer.llOtherDate.isSelected = false
-//                    setSelectedDateTab(index)
-                }
-                bundle.getBoolean(RESULT_MASK_DISMISS, false).let { isDismiss ->
-                    "isDismiss: $isDismiss".logd()
-                    mBinding.layoutContainer.llOtherDate.isSelected = false
-                }
-                datePicker = null
-            }
-
-            datePicker?.show(childFragmentManager, mBinding.root.id)
-        }
-
-
+        // 使用 Builder 創建 Popup
+        setCalendarPopup()
+        customPopup?.updateCalendarSkin()
+        customPopup?.setUIListener(tabSelectedDate)
+        // 顯示 Popup
+        customPopup!!.showAsDropDown(mBinding.layoutContainer.tlDateList)
     }
 
     private fun setCalendarPopup() {
-        if (datePicker == null) {
-            datePicker = HomeCalendarFragment.Builder().apply {
-                val clDateBottom = run {
-                    IntArray(2).apply {
-                        mBinding.layoutContainer.clAnchor.getLocationOnScreen(this)
-                    }[1]
+        if (customPopup == null) {
+            customPopup = HomeCalendarPopupWindow.Builder(
+                this,
+                HomeTourPopupCalendarViewBinding::inflate
+            ).setOnDateSelectedListener {selectedDate ->
+                setSelectedDateTab(getFuture31Days().find { it.first == selectedDate })
+            }.setOnCalendarDismissListener {
+                with(mBinding.layoutContainer) {
+                    llOtherDate.isSelected = false
                 }
-                setMarginTop(clDateBottom)
             }.build()
         }
-        datePicker?.apply {
-            mViewModel.recently7DayMatchScheduleCount.value?.peekContent()
-                ?.let { setSchemeDateList(it) }
-
-        }
-
     }
 
     //選取日期後按確定時連動至早盤日期tab,選取對應的日期
@@ -524,6 +500,16 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                         icon = data.icon
                     )
                 )
+            }
+        }
+        mViewModel.recently7DayMatchScheduleCount.observeEvent(viewLifecycleOwner, this) { list->
+            setCalendarPopup()
+            customPopup?.setSchemeDate(list)
+        }
+
+        mViewModel.selectedSkinType.observeEvent(viewLifecycleOwner, this) { _ ->
+            mBinding.apply {
+                customPopup?.updateCalendarSkin()
             }
         }
 
