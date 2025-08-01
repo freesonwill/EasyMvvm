@@ -1,11 +1,13 @@
 package arch.cayenne.lib.websocket.extension
 
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logi
 import arch.cayenne.lib.websocket.WebSocketManager
 import arch.cayenne.lib.websocket.WebSocketManager.Companion.responseTimeout
 import arch.cayenne.lib.websocket.data.ApiCode
 import arch.cayenne.lib.websocket.data.InvalidProtoTypeResponseError
 import arch.cayenne.lib.websocket.data.ResponseTimeOutError
+import arch.cayenne.lib.websocket.data.SimpleResponseError
 import arch.cayenne.lib.websocket.data.SocketOriginResponseData
 import arch.cayenne.lib.websocket.data.SocketRequestData
 import arch.cayenne.lib.websocket.data.SocketResponseData
@@ -42,12 +44,20 @@ inline fun <reified T: GeneratedMessageLite<*,*>> WebSocketManager.observeProtoM
                 T::class.java.getMethod("parseFrom", ByteArray::class.java)
                     .invoke(null, byteArray) as T
             }
-            "observeProtoMessage map proto success sid -> ${it.sid}".logi(WebSocketManager::class.java.simpleName)
+
+            val error = runCatching { T::class.java.getMethod("getMessage").invoke(proto) as String }
+                .getOrNull().let{ if( it.isNullOrEmpty()) null else it }
+            if(error == null) {
+                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},success".logi(WebSocketManager::class.java.simpleName)
+            } else {
+                "sendAndWaitProtoMessageResponse map proto apiCode:$apiCode,rid:${it.rid},error:$error".loge(WebSocketManager::class.java.simpleName)
+            }
             return@map SocketResponseData(
                 mid = it.mid,
                 sid = it.sid,
                 rid = it.rid,
-                data = proto,
+                data = error ?.let { null } ?:proto,
+                error = error ?.let { SimpleResponseError(it) }
             )
         } catch (e: Exception) {
             e.printStackTrace()

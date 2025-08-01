@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.findNavController
+import androidx.viewpager2.widget.ViewPager2
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
@@ -75,6 +76,22 @@ class MessageMainFragment : BaseFragment<MessageMainViewModel, FragmentMessageMa
             selectMessageType(MSG_PAY)
         }
         selectMessageType(MSG_ALL)
+        mBinding.vpMessage.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                selectMessageType(position)
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+
+            }
+        })
     }
 
     //未读消息红点显示

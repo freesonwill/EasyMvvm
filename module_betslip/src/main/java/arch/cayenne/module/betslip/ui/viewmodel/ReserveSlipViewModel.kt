@@ -8,6 +8,7 @@ import arch.cayenne.lib.base.data.remote.ApiResponseState
 import arch.cayenne.lib.common.ui.viewmodel.Event
 import arch.cayenne.lib.database.entity.BetSlipReserveBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.data.repo.ReserveSlipRepository
 import kotlinx.coroutines.launch
 
@@ -26,6 +27,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     val modifyOddsLiveData: LiveData<Event<Boolean>> = _modifyOddsLiveData
 
     private var lastCount = 0
+    var loadDataType: LoadDataType = LoadDataType.NONE
 
     init {
         viewModelScope.launch {
@@ -60,6 +62,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     }
 
     override fun refreshData(status: BetSlipEnum) {
+        loadDataType = LoadDataType.REFRESH_ING
         callApi({
             repo.getReserveOrder(
                 startTime,
@@ -73,6 +76,7 @@ class ReserveSlipViewModel(private val repo: ReserveSlipRepository) : BaseBetSli
     }
 
     override fun loadMoreData(status: BetSlipEnum) {
+        loadDataType = LoadDataType.LOAD_MORE
         val list = _reserveLiveData.value
         callApi({
             repo.loadMoreReserveOrder(

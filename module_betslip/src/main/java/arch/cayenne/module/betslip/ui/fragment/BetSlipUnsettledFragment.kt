@@ -3,6 +3,7 @@ package arch.cayenne.module.betslip.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.ui.adapter.RecyclerItemListener
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -11,6 +12,7 @@ import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipUnsettledBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.adapter.BetSlipUnsettledAdapter
@@ -41,16 +43,18 @@ class BetSlipUnsettledFragment :
 
     override fun createObserver() {
         super.createObserver()
-        mViewModel.orderLiveData.observe(viewLifecycleOwner) {
-            betSlipAdapter.submitList(it)
+            mViewModel.orderLiveData.observe(viewLifecycleOwner) {
+                betSlipAdapter.submitList(it) {
+                    val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
+                    mBinding.recyclerView.scrollToPosition(position)
+                    mViewModel.loadDataType = LoadDataType.NONE
+                }
         }
         mViewModel.earlySettledResultLiveData.observe(viewLifecycleOwner) { event ->
             event.getContentIfNotHandled(viewLifecycleOwner)?.let {
                 showToast(if (it) getString(R.string.early_settle_success) else getString(R.string.early_settle_faile))
                 if (it) {
-                    parentFragmentManager.setFragmentResult("BetSlip", Bundle().apply {
-                        putBoolean("EarlySettled", true)
-                    })
+                    parentFragmentManager.setFragmentResult("BetSlip", Bundle().apply { putBoolean("EarlySettled", true) })
                 }
             }
         }
@@ -66,11 +70,7 @@ class BetSlipUnsettledFragment :
                 )
                 BetSlipEarlySettledFragment.instance(money, it.settleMin,order.currency).apply {
                     setOnEarlySettleListener { money ->
-                        mViewModel.earlyPartSettled(
-                            it.betId,
-                            money,
-                            it.price
-                        )
+                        mViewModel.earlyPartSettled(it.betId, money, it.price)
                     }
                 }.show(childFragmentManager)
             }
