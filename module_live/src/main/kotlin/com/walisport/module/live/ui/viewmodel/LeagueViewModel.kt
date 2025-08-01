@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.data.repository.LiveLeagueRepository
 import kotlinx.coroutines.launch
@@ -64,9 +63,7 @@ class LeagueViewModel : BaseViewModel() {
     }
 
     fun setItemCount(count: Int) {
-        "当前界面显示===$count=====$maxItemCount".loge("测试")
         if (count >= maxItemCount) {
-            "当前界面显示===$count=====$maxItemCount".loge("测试")
             setState(DataState.NoMoreData)
         }
     }
