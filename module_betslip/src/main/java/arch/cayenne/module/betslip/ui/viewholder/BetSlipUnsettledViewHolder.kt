@@ -57,7 +57,7 @@ class BetSlipUnsettledViewHolder(binding: ViewBinding, betSlipType: BetSlipEnum)
                 order.betAmount, order.earlyBetAmount, order.earlySettlePrice.price
             )
             it.betUnsettledBtSettle.isEnabled = settlePrice.toMoney() > 1000 && order.earlySupport
-
+            it.betUnsettledBtSettle.isVisible = order.earlySupport
             it.betUnsettledBtSettle.tag = adapterPosition
             it.betUnsettledTvBetcodeValue.text = order.betId
             it.betUnsettledTvOddsValue.text = order.odds
