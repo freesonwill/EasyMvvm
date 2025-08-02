@@ -38,6 +38,11 @@
         app:tabIndicatorAnimationMode="linear"
         app:tabIndicatorColor="@color/tab_indicator_color"
         app:tabMode="fixed"
+        app:tabMinWidth="@dimen/dp_60"
+        app:tabMaxWidth="@dimen/dp_80"
+        app:tabPaddingStart="0dp"
+        app:tabPaddingEnd="0dp"
+        app:tabRippleColor="@null"
         android:paddingBottom="@dimen/dp_1"
         tools:ignore="SpeakableTextPresentCheck" />
 
