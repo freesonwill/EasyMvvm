@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
@@ -445,9 +444,7 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 addScaleOnTouchAnimation(ivWalletAdd)
             }.setOnClickListener {
                 //navigate(Uri.parse("walisport://module_home/homeFragment"))
-                //navigate(Uri.parse("walisport://module_topup/topUpFragment"))
-                "aaaa----SimpleBottomFragment--click".logd(TAG)
-                SimpleBottomFragment().show(requireActivity().supportFragmentManager,"SimpleBottomFragment")
+                navigate(Uri.parse("walisport://module_topup/topUpFragment"))
             }
             llFavoriteEntry.setOnClickListener {
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToCollectListFragment())

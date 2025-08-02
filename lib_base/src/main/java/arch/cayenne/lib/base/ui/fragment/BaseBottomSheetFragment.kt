@@ -28,7 +28,6 @@ import arch.cayenne.lib.base.ui._interface.IView
 import arch.cayenne.lib.base.ui.delegate.StatusBarDelegate
 import arch.cayenne.lib.base.ui.delegate.UIBindDelegate
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
-import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -77,7 +76,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        "aaaa----onCreateDialog".logd(TAG)
         val dialog = object : BottomSheetDialog(requireContext(), theme) {
             override fun onBackPressed() {
                 if (autoPlayAnimation) {
@@ -90,7 +88,6 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
         }
 
         dialog.setOnShowListener {
-            "aaaa----setOnShowListener,autoPlayAnimation:$autoPlayAnimation".logd(TAG)
             // 彈出動畫
             if (autoPlayAnimation) {
                 playEnterAnimations()
@@ -115,14 +112,12 @@ abstract class BaseBottomSheetFragment<VM : BaseViewModel, VB : ViewBinding> :
             val sheetAnim = enterAnimation()
             sheetAnim.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart(animation: Animation?) {
-                    "aaaa----onAnimationStart".logd(TAG)
                     backgroundView?.visibility = View.VISIBLE
                     scv.visibility = View.VISIBLE
                     mBinding.root.visibility = View.VISIBLE
                 }
 
                 override fun onAnimationEnd(animation: Animation?) {
-                    "aaaa----onAnimationEnd".logd(TAG)
                 }
 
                 override fun onAnimationRepeat(animation: Animation?) {}
