@@ -57,17 +57,5 @@
                 android:orientation="horizontal" />
 
 <!--        </arch.cayenne.lib.common.ui.view.InnerViewPager2Container>-->
-
-        <ImageView
-            android:id="@+id/iv_faker"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@id/view_pager"
-            app:layout_constraintEnd_toEndOf="@id/view_pager"
-            app:layout_constraintStart_toStartOf="@id/view_pager"
-            app:layout_constraintTop_toTopOf="@id/view_pager" />
-
-
-
     </arch.cayenne.lib.skin.widget.SkinnableConstraintLayout>
 </layout>

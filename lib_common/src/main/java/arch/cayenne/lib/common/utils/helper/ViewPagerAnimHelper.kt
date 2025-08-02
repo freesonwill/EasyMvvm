@@ -23,8 +23,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-fun ViewPager2.doSmartAnim(targetPosition: Int, fakeViewPager: ImageView) {
-    getAnimHelper(fakeViewPager)
+fun ViewPager2.doSmartAnim(targetPosition: Int) {
+    getAnimHelper()
         .let { helper ->
             helper.printLog("收到 doSmartAnim 請求，lastPosition=${if(helper.targetHistory.isEmpty()) "為空" else helper.lastPosition},targetPosition=$targetPosition")
 
@@ -33,7 +33,7 @@ fun ViewPager2.doSmartAnim(targetPosition: Int, fakeViewPager: ImageView) {
                 post {
                     helper.printLog("目前頁面為 $currentItem，加入 targetHistory，並重新發送需求")
                     helper.targetHistory.add(currentItem)
-                    doSmartAnim(targetPosition, fakeViewPager)
+                    doSmartAnim(targetPosition)
                 }
                 return
             }
@@ -66,10 +66,7 @@ fun ViewPager2.doSmartAnim(targetPosition: Int, fakeViewPager: ImageView) {
         }
 }
 
-class ViewPagerAnimHelper(
-    private val viewPager: ViewPager2,
-    private val fakeViewPager: ImageView
-) {
+class ViewPagerAnimHelper(private val viewPager: ViewPager2) {
     internal val targetHistory = mutableListOf<Int>()
     internal val lastPosition: Int
         get() = targetHistory.last()
@@ -80,6 +77,9 @@ class ViewPagerAnimHelper(
 
     private val scope: CoroutineScope = viewPager.findViewTreeLifecycleOwner()!!.lifecycleScope
     internal var job: Job? = null
+
+    private val fakeViewPager: ImageView
+
     private var viewPagerAnimator: ValueAnimator? = null
     private var fakeViewPagerAnimator: ValueAnimator? = null
     private var animatorSet: AnimatorSet? = null
@@ -93,8 +93,21 @@ class ViewPagerAnimHelper(
         check(viewPager.parent is ConstraintLayout) {
             "ViewPagerAnimHelper -> ViewPager 的父層必須為 ConstraintLayout"
         }
-        check(viewPager.parent == fakeViewPager.parent) {
-            "ViewPagerAnimHelper -> ViewPager 和 FakeViewPager 必須有相同的父層"
+
+        // 自動創建 fakeViewPager
+        fakeViewPager = ImageView(viewPager.context).apply {
+            id = ImageView.generateViewId()
+            isVisible = false
+            layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
+            ).apply {
+                topToTop = viewPager.id
+                bottomToBottom = viewPager.id
+                startToStart = viewPager.id
+                endToEnd = viewPager.id
+            }
+            (viewPager.parent as ConstraintLayout).addView(this)
         }
     }
 
@@ -265,9 +278,9 @@ class ViewPagerAnimHelper(
         private const val TAG = "ViewPagerAnimHelper"
         private const val KEY = 0x7f5a0123
 
-        fun ViewPager2.getAnimHelper(fakeViewPager: ImageView): ViewPagerAnimHelper {
+        fun ViewPager2.getAnimHelper(): ViewPagerAnimHelper {
             return getTag(KEY) as? ViewPagerAnimHelper
-                ?: ViewPagerAnimHelper(this, fakeViewPager)
+                ?: ViewPagerAnimHelper(this)
                     .also { setTag(KEY, it) }
         }
     }
