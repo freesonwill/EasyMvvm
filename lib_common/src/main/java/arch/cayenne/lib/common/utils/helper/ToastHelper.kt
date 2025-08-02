@@ -34,13 +34,14 @@ class ToastHelper private constructor() {
         toastGesture?.let {
             initGesture(view, tag, it)
         }
-        queueMap[tag]?.let {
-            checkToastInQueue(view, animInterface, tag, it)
-        }
-        showToastInternal(view, animInterface, tag, toastGesture)
+        val item = createToastItem(view, animInterface, tag, toastGesture)
+        showToastInternal(item, tag)
+        checkToastInQueue(view, animInterface, tag)
+        saveToastInQueue(item, tag)
     }
 
-    private fun checkToastInQueue(view: View, animInterface: ToastAnimation, tag: String, currentQueue: Queue<ToastQueueItem>) {
+    private fun checkToastInQueue(view: View, animInterface: ToastAnimation, tag: String) {
+        val currentQueue = queueMap[tag] ?: return
         if (!animInterface.isPlayQueueAnim()) {
             currentQueue.peek()?.let { item ->
                 item.view?.let { v ->
@@ -63,9 +64,16 @@ class ToastHelper private constructor() {
         }
     }
 
-    private fun showToastInternal(view: View, animInterface: ToastAnimation, tag: String, toastGesture: ToastGesture?) {
+    private fun saveToastInQueue(item: ToastQueueItem, tag: String) {
+        if (!queueMap.containsKey(tag)) {
+            queueMap[tag] = LinkedList()
+        }
+        val queue = queueMap[tag] ?: return
+        queue.offer(item)
+    }
+
+    private fun createToastItem(view: View, animInterface: ToastAnimation, tag: String, toastGesture: ToastGesture?): ToastQueueItem {
         val context = view.context
-//        removeToast(context, tag) // 保險起見
         val wm = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val layoutParams = animInterface.getLayoutParams(view)
         animInterface.onBeforeAddView(view)
@@ -73,8 +81,15 @@ class ToastHelper private constructor() {
         animInterface.onAfterAddView(view)
 
         val scope = CoroutineScope(Dispatchers.Main)
+        return ToastQueueItem(WeakReference(view), scope, animInterface, toastGesture)
+    }
 
-        scope.launch {
+    private fun showToastInternal(item: ToastQueueItem, tag: String) {
+        val view = item.view ?: return
+        val context = view.context
+        val animInterface = item.animInterface
+        val toastGesture = item.gesture
+        item.scope.launch {
             animInterface.playShowAnim(view)
             delay(animInterface.showDuration)
             if (toastGesture == null || toastGesture.canAutoRemove()) {
@@ -83,11 +98,6 @@ class ToastHelper private constructor() {
                 removeToast(context, tag)
             }
         }
-        if (!queueMap.containsKey(tag)) {
-            queueMap[tag] = LinkedList()
-        }
-        val queue = queueMap[tag] ?: return
-        queue.offer(ToastQueueItem(WeakReference(view), scope, animInterface, toastGesture))
     }
 
     private fun removeToast(context: Context, tag: String) {
