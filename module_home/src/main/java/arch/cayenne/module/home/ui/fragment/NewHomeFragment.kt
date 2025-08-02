@@ -431,7 +431,6 @@ class NewHomeFragment : BaseFragment<HomeViewModel, FragmentNewHomeBinding>() {
                 }
             }.also { layoutMediator ->
                 layoutMediator.attach(
-                    fakeViewPager = mBinding.layoutContainer.ivFaker,
                     afterTabSelected = { position ->
                         getSelectedRecently31Scheduled(position)
                         tournaments.getOrNull(position)?.id?.let { id -> mViewModel.setCurrentTournamentId(id)}

@@ -133,10 +133,7 @@ class HomeBetSlipFragment : BaseFragment<HomeBetSlipViewModel, FragmentHomeBetsl
             mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab?) {
                     (tab?.customView as? TextView)?.setTypeface(null, Typeface.BOLD)
-                    mBinding.viewPager.doSmartAnim(
-                        targetPosition = tab?.position ?: 0,
-                        fakeViewPager = mBinding.ivFaker
-                    )
+                    mBinding.viewPager.doSmartAnim(targetPosition = tab?.position ?: 0)
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
