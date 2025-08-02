@@ -75,14 +75,15 @@ class MatchListRepository(
                     order = page * 100 + index
                 )
             }
-            matchDao.insertTournamentMatchRef(tournamentMatchRefs)
-            matchDao.insertMatch(
+            val refIds = matchDao.insertMatch(
+                tournamentMatchRefs = tournamentMatchRefs,
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
+            "New match data from api insert success : $refIds".logi(this::class.java.simpleName)
             return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
         return ApiResponseState.Failed(resp.error)

@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.Flow
 abstract class MatchDao : BaseDao<MatchBean>() {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>)
+    abstract suspend fun insertTournamentMatchRef(crossRef: List<TournamentMatchRef>) : List<Long>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract suspend fun insertMatch(match: List<MatchBean>)
@@ -191,6 +191,19 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         "UPDATE MatchBean SET collect = :collect WHERE matchId = :matchId")
     abstract fun updateOnlyMatchCollect(matchId: Long, collect: Boolean)
 
+    @Transaction
+    open suspend fun insertMatch(
+        tournamentMatchRefs: List<TournamentMatchRef>,
+        matches: List<MatchBean>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+    ) : List<Long> {
+        val ids = insertTournamentMatchRef(tournamentMatchRefs)
+        insertMatch(matches, markets, selections, marketCrossRef, marketSelectCrossRefs)
+        return ids
+    }
 
     @Transaction
     open suspend fun insertMatch(
