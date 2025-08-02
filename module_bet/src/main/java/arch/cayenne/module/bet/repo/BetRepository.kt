@@ -23,7 +23,7 @@ class BetRepository(
         private const val MAX_LIMIT_SIZE = 10
     }
 
-    val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentSelections()
+    val observerAllBet: Flow<List<BetSelectionLiteBean>> = betDao.observeCurrentLiteSelections()
     fun observerSelectionByMatchId(matchId: Long): Flow<Long?> =
         betDao.observeCurrentSelectionsByMatchId(matchId).distinctUntilChanged()
 

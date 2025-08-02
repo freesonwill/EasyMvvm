@@ -15,6 +15,7 @@ import arch.cayenne.lib.common.utils.helper.showToast
 import arch.cayenne.lib.common.utils.helper.toastAnim.ToastSlideAnimation
 import arch.cayenne.lib.common.utils.helper.toastGesture.ToastSlideGesture
 import arch.cayenne.lib.database.entity.BetResultLiteBean
+import arch.cayenne.module.bet.ui.fragment.BetSheetFragment
 import arch.cayenne.module.bet.ui.fragment.FloatingButtonFragment
 import arch.cayenne.module.bet.viewmodel.FloatingButtonControlViewModel
 import arch.cayenne.module.betslip.ui.fragment.HomeBetSlipFragment
@@ -43,6 +44,7 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         DensityInfo.density = metrics.density
         DensityInfo.scaledDensity = metrics.scaledDensity
         super.initView(savedInstanceState)
+        createBetSheet()
         fabFragment.show(this)
         notifyFragment.show(this)
     }
@@ -144,6 +146,10 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
         transaction.add(mBinding.navHost.id, HomeBetSlipFragment(), tag)
         transaction.addToBackStack(tag)
         transaction.commit()
+    }
+
+    private fun createBetSheet() {
+        BetSheetFragment.create(this)
     }
 
 }
