@@ -34,9 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
         android:background="@color/live_main_tab_bg"
-        app:tabIndicatorHeight="2dp"
-        app:tabIndicatorAnimationMode="linear"
-        app:tabIndicatorColor="@color/tab_indicator_color"
+        app:tabIndicatorHeight="0dp"
         app:tabMode="fixed"
         app:tabMinWidth="@dimen/dp_60"
         app:tabMaxWidth="@dimen/dp_80"
@@ -45,7 +43,12 @@
         app:tabRippleColor="@null"
         android:paddingBottom="@dimen/dp_1"
         tools:ignore="SpeakableTextPresentCheck" />
-
+    <com.walisport.module.live.ui.widget.CustomTabIndicator
+        android:id="@+id/customIndicator"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/live_main_tab_bg"
+         />
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
