@@ -56,6 +56,7 @@ class EmojiEditFilter(val tvSize:TextView) : InputFilter {
             // 如果输入的是普通文本
             !source.toString().contains(normalEmojiPattern) && !source.toString()
                 .contains(bidEmojiPattern) -> {
+                tvSize.text = "${remaining+originalEffectiveLength}/$maxLength"
                 source.subSequence(start, start + remaining)
             }
 

@@ -27,7 +27,6 @@ class OddsCellViewHolder(
                     it.getLocationOnScreen(location)
                     val x = location[0] + it.width / 2
                     val y = location[1] + it.height / 2
-                    clOddsCell.isSelected = !clOddsCell.isSelected
                     onMatchItemClickListener?.onOddsCellClick(item, x.toFloat(), y.toFloat())
                 }
             }

@@ -64,4 +64,5 @@
     <string name="balance_format">%s%s</string>
     <string name="format_month_year" translatable="false">%1$s %2$s</string>
     <string name="collect_list_empty">暂无收藏</string>
+    <string name="no_more_data">没有更多了</string>
 </resources>

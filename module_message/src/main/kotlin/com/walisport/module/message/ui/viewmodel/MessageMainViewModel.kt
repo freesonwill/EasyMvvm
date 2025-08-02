@@ -15,36 +15,81 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     private val _notificationBean = MutableLiveData<List<NotificationBean>>()
     val notificationBean: LiveData<List<NotificationBean>> = _notificationBean
 
-    private val _notificationSelect = MutableLiveData<List<NotificationBean>>()
-    val notificationSelect: LiveData<List<NotificationBean>> = _notificationSelect
-
     private var cursorId: Long = 0L
     private var cursorType: Int = 0
 
+    //全部未读消息
+    private val _allUnreadMsg = MutableLiveData<Int>()
+    val allUnreadMsg: LiveData<Int> = _allUnreadMsg
+
+    private val _sysUnreadMsg = MutableLiveData<Int>()
+    val sysUnreadMsg: LiveData<Int> = _sysUnreadMsg
+
+    private val _actUnreadMsg = MutableLiveData<Int>()
+    val actUnreadMsg: LiveData<Int> = _actUnreadMsg
+
+    private val _matUnreadMsg = MutableLiveData<Int>()
+    val matUnreadMsg: LiveData<Int> = _matUnreadMsg
+
+    private val _payUnreadMsg = MutableLiveData<Int>()
+    val payUnreadMsg: LiveData<Int> = _payUnreadMsg
+
     companion object {
-        const val TYPE_DEFAULT = 0
         const val STATUS_READ = 2
         const val STATUS_DEL = 3
+
+        const val MSG_SYS = 1
+        const val MSG_ACT = 2
+        const val MSG_MAT = 3
+        const val MSG_PAY = 4
     }
 
     init {
         viewModelScope.launch {
             repo.observeMessageBean().collect { data ->
+                var allUnreadNum = 0
+                var sysUnreadNum = 0
+                var actUnreadNum = 0
+                var matUnreadNum = 0
+                var payUnreadNum = 0
                 val temp = data.mapIndexed { _, item ->
+                    val status = item.status
+                    val type = item.type
+                    if (status == 0) {
+                        allUnreadNum += 1
+                        when (type) {
+                            MSG_SYS -> {
+                                sysUnreadNum += 1
+                            }
+
+                            MSG_ACT -> {
+                                actUnreadNum += 1
+                            }
+
+                            MSG_MAT -> {
+                                matUnreadNum += 1
+                            }
+
+                            MSG_PAY -> {
+                                payUnreadNum += 1
+                            }
+                        }
+                    }
                     NotificationBean(
                         id = item.id,
-                        type = item.type,
-                        state = item.status,
+                        type = type,
+                        state = status,
                         title = item.title,
                         content = item.content,
                         createTime = item.time
                     )
                 }
-                if (cursorType == TYPE_DEFAULT) {
-                    _notificationBean.value = temp
-                } else {
-                    _notificationBean.value = temp.filter { it.type == cursorType }
-                }
+                _allUnreadMsg.postValue(allUnreadNum)
+                _sysUnreadMsg.postValue(sysUnreadNum)
+                _actUnreadMsg.postValue(actUnreadNum)
+                _matUnreadMsg.postValue(matUnreadNum)
+                _payUnreadMsg.postValue(payUnreadNum)
+                _notificationBean.postValue(temp)
             }
         }
     }
@@ -60,9 +105,9 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
     }
 
     //获取系统消息列表
-    fun getMessageList() {
+    fun getMessageList(type: Int) {
         cursorId = 0L
-        val result = repo.getMessageList(cursorId, cursorType)
+        val result = repo.getMessageList(cursorId, type)
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
@@ -76,18 +121,6 @@ class MessageMainViewModel(private val repo: MessageMainRepository) : BaseViewMo
         result.let {
             if (result.isNotEmpty()) {
                 cursorId = result.last().id
-            }
-        }
-    }
-
-    fun selectMessage(type: Int) {
-        cursorType = type
-        val list = _notificationBean.value?.toMutableList()
-        list?.let {
-            if (type == 0) {
-                _notificationSelect.value = list.ifEmpty { emptyList() }
-            } else {
-                _notificationSelect.value = list.filter { it.type == type }
             }
         }
     }

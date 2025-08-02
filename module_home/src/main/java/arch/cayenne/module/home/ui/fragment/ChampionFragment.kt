@@ -65,11 +65,8 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
                     override fun onOddsCellClick(selection: SelectionBeanLite) {
                         lifecycleScope.launch {
                             val status = mViewModel.setSelection(selection.selectionId)
-                            if (status is AddSelectionStatus.Failure) {
-                                mViewModel.triggerAllBetRefresh()
-                            }
                             if (status is AddSelectionStatus.Success.Single) {
-                                BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                                BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                             } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                                 showToast(getString(R.string.disabled_to_combo))
                             } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -95,7 +92,7 @@ class ChampionFragment : BaseFragment<ChampionViewModel, FragmentChampionBinding
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             tittleBarBinding.tvMoney.text =
                 getString(R.string.balance_format, CurrencySymbols.getSymbol(it.currency), it.balance.getFormalMoney())

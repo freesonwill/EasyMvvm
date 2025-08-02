@@ -1,13 +1,18 @@
 package com.walisport.module.setting.ui.fragment
 
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.forEach
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.data.constants.LanguageType
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.skin.widget.SkinnableTextView
 import com.walisport.module.setting.R
 import com.walisport.module.setting.databinding.FragmentLanguageBinding
 import com.walisport.module.setting.ui.viewmodel.LanguageViewModel
+import java.util.Locale
 import kotlin.reflect.KClass
 
 /**
@@ -47,9 +52,20 @@ class LanguageFragment : BaseFragment<LanguageViewModel, FragmentLanguageBinding
         mBinding.radioPortuguese.isSelected = type == LanguageType.LANGUAGE_PT
     }
 
-    override fun createObserver() {
+    private fun updateLanguage(locale: Locale, v: View) {
+        if (v is ViewGroup) {
+            v.forEach {
+                updateLanguage(locale, it)
+            }
+        } else if (v is SkinnableTextView) {
+            v.updateLanguage(locale)
+        }
+    }
+
+    override suspend fun createObserver() {
         mViewModel.languageType.observe(viewLifecycleOwner) {
             changeLanguageType(it)
+            updateLanguage(Locale(it.value), mBinding.root)
         }
     }
 

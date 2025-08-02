@@ -7,6 +7,7 @@ import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.database.entity.BetSlipSelectionData
 import arch.cayenne.lib.database.entity.OrderSelectionBean
 import arch.cayenne.module.betslip.data.constants.BetSlipEnum
+import arch.cayenne.module.betslip.data.constants.LoadDataType
 import arch.cayenne.module.betslip.databinding.FragmentLiveBetslipSettledLayoutBinding
 import arch.cayenne.module.betslip.ui.adapter.BetSlipAdapter
 import arch.cayenne.module.betslip.ui.viewmodel.OrderSlipViewModel
@@ -64,10 +65,13 @@ class BetSlipSettledFragment :
     override fun initListener() {
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         super.createObserver()
         mViewModel.orderLiveData.observe(viewLifecycleOwner) {
             betSlipAdapter.submitList(it) {
+                val position = if (mViewModel.loadDataType == LoadDataType.LOAD_MORE) betSlipAdapter.itemCount - 1 else 0
+                mBinding.recyclerView.scrollToPosition(position)
+                mViewModel.loadDataType = LoadDataType.NONE
                 registerListener()
             }
         }

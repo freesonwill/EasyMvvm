@@ -1,25 +1,22 @@
 package com.walisport.module.live.ui
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.base.utils.ext.LogUtilsExt.logd
 import arch.cayenne.lib.common.data.constants.CurrencySymbols
-import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
@@ -32,25 +29,27 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.walisport.module.live.R
+import com.walisport.module.live.data.BetOnMenuStatus
 import com.walisport.module.live.databinding.FragmentLiveMainBinding
 import com.walisport.module.live.databinding.TitleBarLiveBinding
 import com.walisport.module.live.ui.viewmodel.LiveMainViewModel
-import kotlinx.coroutines.launch
-import kotlin.reflect.KClass
 import com.walisport.module.live.utils.TextViewExt.setBottomDrawable
-import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
-import arch.cayenne.lib.common.utils.helper.ViewPagerAnimHelper
-import arch.cayenne.lib.websocket.data.ConnectState
-import com.walisport.module.live.data.BetOnMenuStatus
-import com.walisport.module.live.data.constants.MatchStatus
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import android.animation.ObjectAnimator;
+import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResult
+import arch.cayenne.lib.common.utils.helper.LiveViewPagerAnimHelper
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
+import kotlinx.coroutines.flow.filter
+import kotlin.reflect.KClass
 
 /**
  * 直播详情页
  */
 
 class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding>() {
+    companion object {
+        const val CHANGE_MATCH = "CHANGE_MATCH"
+    }
 
     override val vbClass: KClass<FragmentLiveMainBinding> = FragmentLiveMainBinding::class
     override val vmClass: KClass<LiveMainViewModel> = LiveMainViewModel::class
@@ -60,10 +59,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         TitleBarLiveBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
     private val viewPagerAnimHelper by lazy {
-        ViewPagerAnimHelper()
+        LiveViewPagerAnimHelper()
     }
 
-    @SuppressLint("SetTextI18n")
     override fun initView(savedInstanceState: Bundle?) {
         args = LiveMainFragmentArgs.fromBundle(requireArguments())
         mBinding.titleBar.loadDynamicsTitleBar(titleBarBinding.root)
@@ -72,10 +70,15 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         setVideoView()
         loadFragment()
         mViewModel.observeMatchInfoNotify()
+        mBinding.drawerLayout.setDrawerLockMode(
+            DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+            GravityCompat.END
+        )
     }
 
     //init DrawerLayout Content
     private fun drawerContent() {
+        mBinding.drawerLayout.setIsAnimationRunning(false)
         //蒙層顏色依照版型作變化
         mBinding.drawerLayout.setScrimColor(
             SkinnableResourceManager.getColor(
@@ -106,24 +109,28 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 findNavController().navigateUp()
             }
             llcLeagueNameLogo.clickNoRepeat {
-                navigate(
-                    LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
-                        .apply {
-                            mViewModel.matchId.value?.let { value ->
-                                arguments.putLong(
-                                    "matchID",
-                                    value
-                                )
-                            }
-                            mViewModel.leagueID.value?.let { value ->
-                                arguments.putInt(
-                                    "leagueID",
-                                    value
-                                )
-                            }
-                            arguments.putString("leagueName", mViewModel.leagueName.value)
-                            arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
-                        })
+                val nav = findNavController()
+                val dest = R.id.leagueFragment
+                if (nav.currentDestination?.id != dest) {
+                    navigate(
+                        LiveMainFragmentDirections.actionLiveMainFragmentToLeagueFragment()
+                            .apply {
+                                mViewModel.matchId.value?.let { value ->
+                                    arguments.putLong(
+                                        "matchID",
+                                        value
+                                    )
+                                }
+                                mViewModel.leagueID.value?.let { value ->
+                                    arguments.putInt(
+                                        "leagueID",
+                                        value
+                                    )
+                                }
+                                arguments.putString("leagueName", mViewModel.leagueName.value)
+                                arguments.putString("leagueLogo", mViewModel.leagueLogo.value)
+                            })
+                }
             }
 
             tvMoney.clickNoRepeat {
@@ -139,7 +146,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         viewPager = mBinding.vpPage,
                         fakeViewPager = mBinding.fragmentFakeViewPager,
                     )
-                    mBinding.vpPage.setCurrentItem(it.position, false)
                 }
                 tab?.view?.findViewById<SkinnableTextView>(R.id.tabText)?.let { textView ->
                     textView.setTextColor(
@@ -149,12 +155,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         )
                     )
                     textView.typeface = Typeface.DEFAULT_BOLD
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicator
-                        )
-                    }, 4.dp2px)
                 }
             }
 
@@ -167,12 +167,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                         )
                     )
                     textView.typeface = Typeface.DEFAULT
-                    textView.setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 3.dp2px)
                 }
             }
 
@@ -182,8 +176,33 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         })
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun createObserver() {
+    override suspend fun createObserver() {
+        observeResult<Bundle>(CHANGE_MATCH) {
+            val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(it)
+            "observeResult-->newArgs--->$newArgs,args:${args},extras:${it},${this.args.equal(newArgs)}".logd(
+                TAG
+            )
+            if (this.args.equal(newArgs)) return@observeResult
+            this.args = newArgs
+            updateMatchId(newArgs.matchId)
+        }
+        mViewModel.observeMatchInfoNotify()
+        launch(Lifecycle.State.RESUMED) {
+            //网络异常登陆成功后才获取数据
+            mViewModel.observeLoginChange()
+                .filter { it && mViewModel.apiStateListener.value == DataState.NetworkUnavailable }
+                .collect {
+                    if (it) {
+                        mViewModel.matchId.value?.let { matchId ->
+                            mViewModel.registerMatchInfoNotify(matchId)
+                            mViewModel.registerStatisticsNotify(matchId)
+                            if (mViewModel.mainMatch.value == null) {
+                                mViewModel.getMainMatch(matchId)
+                            }
+                        }
+                    }
+                }
+        }
         mViewModel.liveBetOnMenu.observe(viewLifecycleOwner) {
             when (it!!) {
                 BetOnMenuStatus.OPEN -> {
@@ -221,7 +240,7 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 titleBarBinding.tvCompetitionName.text = it.basicInfo.matchName
                 //比赛开始后开启聊天服务
                 val code = it.basicInfo.status
-                if(code in arrayOf(2,5,8)){
+                if (code in arrayOf(2, 5, 8)) {
                     mViewModel.startChatServer()
                 }
             }
@@ -231,40 +250,12 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 refreshBetSlip()
             }
         }
-        launch(Lifecycle.State.RESUMED) {
-            mViewModel.observeConnectStateFlow().collect {
-                //监听连接变化
-                when (it) {
-                    //网络异常
-                    ConnectState.NetworkUnavailable -> {
-                        mBinding.liveMain.visibility = View.GONE
-                        mBinding.clDynamics.setState(
-                            States.NETWORK_ANOMALY,
-                            arch.cayenne.lib.common.R.string.error_net.getString()
-                        ) {
-                            mViewModel.reconnect()
-                        }
-                    }
-                    //连接成功
-                    ConnectState.ConnectSuccess -> {
-                        mBinding.liveMain.visibility = View.VISIBLE
-                        mBinding.clDynamics.setVisibilityGone()
-                        mViewModel.matchId.value?.let { matchId ->
-                            mViewModel.registerMatchInfoNotify(matchId)
-                            mViewModel.registerStatisticsNotify(matchId)
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-        }
     }
 
     //比赛ID发生变化,取消订阅,数据请空
     private fun updateMatchId(matchId: Long) {
         mBinding.tabLayout.getTabAt(1)?.select()
-        mBinding.vpPage.setCurrentItem(1, false)
+        mBinding.vpPage.setCurrentItem(1, true)
         mViewModel.matchId.value?.let {
             deleteDataAndSubscriptions(matchId)
             mViewModel.setMatchId(matchId)
@@ -281,43 +272,36 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
             ?: LiveMatchMediaFragment().also {
                 it.arguments = Bundle().apply {
                     mViewModel.matchId.value?.let { value ->
-                        putLong(
-                            "matchId",
-                            value
-                        )
+                        putLong("matchId", value)
                     }
                 }
                 childFragmentManager.beginTransaction()
-                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG).commitNow()
+                    .replace(mBinding.fragmentVideo.id, it, LiveMatchMediaFragment.TAG)
+                    .commitNow()
             }
     }
 
     private fun loadFragment() {
         val tabSelectPosition = 1
         with(mBinding) {
-            mBinding.tabLayout.removeAllTabs()
             val list = listOf(
-                    PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
-                    PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
-                    PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
-                    PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
-                    PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
-                    PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() })
+                PagerBean(R.string.live_note_order.getString()) { BetSlipFragment() },
+                PagerBean(R.string.live_bet_on.getString()) { LiveBetOnFragment() },
+                PagerBean(R.string.live_chat.getString()) { LiveChatFragment() },
+                PagerBean(R.string.live_outs.getString()) { LiveOutsFragment() },
+                PagerBean(R.string.live_lineup.getString()) { LiveLineupFragment() },
+                PagerBean(R.string.live_standings.getString()) { LiveStandingsFragment() }
+            )
+
             vpPage.adapter = PagerAdapter(childFragmentManager, lifecycle, list)
-            launch(Lifecycle.State.RESUMED) {
+            launch {
                 delay(500)
                 vpPage.offscreenPageLimit = list.size
             }
-            TabLayoutMediator(tabLayout, vpPage, false) { tab, position ->
+            TabLayoutMediator(tabLayout, vpPage) { tab, position ->
                 tab.text = list[position].title
                 tab.setCustomView(R.layout.custom_tab)
                 tab.customView?.findViewById<SkinnableTextView>(R.id.tabText)?.apply {
-                    setBottomDrawable(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            if (position == tabSelectPosition) R.drawable.live_tab_indicator else R.drawable.live_tab_indicatort_tan
-                        )
-                    }, 4.dp2px)
                     text = list[position].title
                     setTextColor(
                         SkinnableResourceManager.getColor(
@@ -331,8 +315,9 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
                 }
                 tab.view.setOnClickListener { /* Handle click */ }
             }.attach()
-            mBinding.tabLayout.getTabAt(1)?.select()
-            mBinding.vpPage.setCurrentItem(1, false)
+            tabLayout.clearOnTabSelectedListeners()
+            tabLayout.getTabAt(1)?.select()
+            vpPage.setCurrentItem(1, false)
             tabLayout.removeAllTips()
         }
     }
@@ -368,19 +353,6 @@ class LiveMainFragment : BaseFragment<LiveMainViewModel, FragmentLiveMainBinding
         mViewModel.matchId.value?.let {
             mViewModel.registerMatchInfoNotify(it)
         }
-    }
-
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        val newArgs: LiveMainFragmentArgs = LiveMainFragmentArgs.fromBundle(intent.extras!!)
-        "onNewIntent-->newArgs--->$newArgs,args:${args},extras:${intent.extras},${
-            this.args.equal(
-                newArgs
-            )
-        }".logd(TAG)
-        if (this.args.equal(newArgs)) return
-        this.args = newArgs
-        updateMatchId(newArgs.matchId)
     }
 
     override fun onStop() {

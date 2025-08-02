@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
@@ -41,7 +40,6 @@ class MatchListPagerFragment :
     override val vbClass: KClass<FragmentMatchListPagerBinding> =
         FragmentMatchListPagerBinding::class
     override val vmClass: KClass<MatchListViewModel> = MatchListViewModel::class
-    override val keepViewOnNavigation: Boolean = false
     private val homeViewModel: HomeViewModel by sharedViewModel<HomeViewModel, NewHomeFragment>()
     private lateinit var matchAdapter: MatchItemAdapter
     private val gameLayoutManager by lazy { LinearLayoutManager(context) }
@@ -70,11 +68,8 @@ class MatchListPagerFragment :
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
-                        if (status !is AddSelectionStatus.Failure) {
-                            mViewModel.triggerAllBetRefresh()
-                        }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -93,7 +88,7 @@ class MatchListPagerFragment :
                 this.adapter = matchAdapter
                 addItemDecoration(decoration)
             }
-            (rvHomeGameList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+            rvHomeGameList.itemAnimator  = null
             rvHomeGameList.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
@@ -181,7 +176,7 @@ class MatchListPagerFragment :
         }
 
     }
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
         homeViewModel.timer.observeEvent(viewLifecycleOwner, this) {
             mViewModel.updateMatchLiveData()
@@ -208,7 +203,16 @@ class MatchListPagerFragment :
                         mViewModel.changePageEnd(true)
                         refreshLayout.finishLoadMore()
                         refreshLayout.setEnableLoadMore(false)
+                        matchAdapter.showNoMoreData(true)
                     }
+
+                    DataState.NoMoreData -> {
+                        mViewModel.changePageEnd(true)
+                        refreshLayout.setEnableLoadMore(false)
+                        refreshLayout.finishLoadMoreWithNoMoreData()
+                        matchAdapter.showNoMoreData(true)
+                    }
+
                     HomeState.Match.DataEmpty -> {  //這個DataEmpty表示真的從第一頁就抓不到資料，表示當前的選擇沒有任何賽事
                         lvMatchLoading.visibility = View.GONE
                         refreshLayout.finishRefresh()
@@ -232,7 +236,7 @@ class MatchListPagerFragment :
                     HomeState.Match.LoadingNext -> {
                         clDynamics.visibility = View.GONE
                     }
-                    DataState.LoadSuccess -> {
+                    DataState.LoadSuccess, HomeState.Match.LoadSuccess -> {
                         lvMatchLoading.visibility = View.GONE
                         if (refreshLayout.isRefreshing) refreshLayout.finishRefresh()
                         refreshLayout.finishLoadMore()
@@ -245,7 +249,8 @@ class MatchListPagerFragment :
         }
 
         homeViewModel.selectedDate.observeEvent(viewLifecycleOwner, this) { date ->
-            if (homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
+            if (date  == HomeViewModel.DEFAULT_DATE
+                || homeViewModel.currentPlayTypeId != mViewModel.getPlayTypeId()
                 || homeViewModel.currentSportId != mViewModel.getSportId())
                 return@observeEvent
             refreshListByDate(date)

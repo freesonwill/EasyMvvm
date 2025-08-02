@@ -8,11 +8,13 @@ sealed class HomeState: DataState {
     sealed class Sport: HomeState() {
         data object Loading : Sport()
         data object LoadSuccess : Sport()
+        data object LoadFailure : Sport()
     }
 
     sealed class Tournament: HomeState() {
         data object Loading : Tournament()
         data object LoadSuccess : Tournament()
+        data object LoadFailure : Tournament()
         data object LoadListSuccess : Tournament()
     }
 

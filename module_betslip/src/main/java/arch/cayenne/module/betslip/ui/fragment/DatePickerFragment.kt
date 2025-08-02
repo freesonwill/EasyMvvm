@@ -2,10 +2,14 @@ package arch.cayenne.module.betslip.ui.fragment
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
+import android.view.animation.TranslateAnimation
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.common.data.constants.AnimationConstants
 import arch.cayenne.module.betslip.R
 import arch.cayenne.module.betslip.data.constants.BetSlipDateFilterEnum
 import arch.cayenne.module.betslip.data.constants.Config
@@ -54,6 +58,18 @@ class DatePickerFragment private constructor() :
                 mViewModel.cancel()
             }
         })
+    }
+    override fun enterAnimation(): Animation {
+        val slideIn = TranslateAnimation(
+            Animation.RELATIVE_TO_PARENT, 0f,
+            Animation.RELATIVE_TO_PARENT, 0f,
+            Animation.RELATIVE_TO_PARENT, 1f,  // fromYDelta = 100%p
+            Animation.RELATIVE_TO_PARENT, 0f   // toYDelta = 0
+        ).apply {
+            duration = AnimationConstants.DIALOG_POPUP_DURATION
+            interpolator = LinearInterpolator()
+        }
+        return slideIn
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -133,7 +149,7 @@ class DatePickerFragment private constructor() :
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.dateTitleListener.observe(viewLifecycleOwner) {
             datePickerAdapter.submitList(it)
         }

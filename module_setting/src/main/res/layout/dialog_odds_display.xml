@@ -34,8 +34,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/item_ep"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_52"
-            android:background="@drawable/ripple_effect_rectangle">
+            android:layout_height="@dimen/dp_52">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -63,9 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
-                android:maxWidth="@dimen/dp_180"
-                android:lines="1"
                 android:ellipsize="end"
+                android:lines="1"
+                android:maxWidth="@dimen/dp_180"
                 android:text="@string/display_odds_ben"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_14"
@@ -95,8 +94,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/item_hk"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_52"
-            android:background="@drawable/ripple_effect_rectangle">
+            android:layout_height="@dimen/dp_52">
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
                 android:layout_width="@dimen/dp_20"
@@ -114,7 +112,7 @@
                 android:layout_marginStart="@dimen/dp_60"
                 android:text="@string/menu_hk"
                 android:textColor="@color/notice_title"
-                android:textSize="@dimen/sp_15"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -124,9 +122,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_10"
-                android:maxWidth="@dimen/dp_180"
-                android:lines="1"
                 android:ellipsize="end"
+                android:lines="1"
+                android:maxWidth="@dimen/dp_180"
                 android:text="@string/display_odds_not"
                 android:textColor="@color/color_929298"
                 android:textSize="@dimen/sp_14"

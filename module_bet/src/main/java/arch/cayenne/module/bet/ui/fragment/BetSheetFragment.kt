@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import arch.cayenne.lib.base.ui.fragment.BaseBottomSheetFragment
+import arch.cayenne.lib.database.entity.BetTypeEnum
 import arch.cayenne.module.bet.R
 import arch.cayenne.module.bet.data.Config
 import arch.cayenne.module.bet.data.Config.KEY_RESULT
@@ -28,12 +29,29 @@ class BetSheetFragment private constructor() :
 
     companion object {
 
+        private const val KEY_TYPE = "key_type"
+
         /***
          * 調起投注彈窗
          * 調起前需先將注單加入到資料庫 (BetBean)
          */
-        fun newInstance(): BetSheetFragment {
-            return BetSheetFragment()
+        fun newInstance(type: BetTypeEnum? = null): BetSheetFragment {
+            return BetSheetFragment().apply {
+                type?.let {
+                    arguments = Bundle().apply {
+                        putInt(KEY_TYPE, it.ordinal)
+                    }
+                }
+            }
+        }
+
+        fun newInstance(size: Int): BetSheetFragment {
+            val type = if (size == 1) {
+                BetTypeEnum.SINGLE
+            } else {
+                BetTypeEnum.COMBO
+            }
+            return newInstance(type)
         }
     }
 
@@ -81,15 +99,31 @@ class BetSheetFragment private constructor() :
     override fun initView(savedInstanceState: Bundle?) {
         initMaxHeight()
         setFitToContents()
-        lifecycleScope.launch {
-            mViewModel.getSelectionSize().let { size ->
-                if (size == 0) {
+        val typeOrdinal = arguments?.getInt(KEY_TYPE)
+        if (typeOrdinal == null) {
+            lifecycleScope.launch {
+                mViewModel.getSelectionSize().let { size ->
+                    if (size == 0) {
+                        dismiss()
+                    } else {
+                        setStartDestination(size)
+                    }
+                }
+            }
+        } else {
+            when (BetTypeEnum.entries[typeOrdinal]) {
+                BetTypeEnum.SINGLE, BetTypeEnum.RESERVE -> {
+                    setStartDestination(1)
+                }
+                BetTypeEnum.COMBO -> {
+                    setStartDestination(2)
+                }
+                else -> {
                     dismiss()
-                } else {
-                    setStartDestination(size)
                 }
             }
         }
+
     }
 
     override fun initListener() {
@@ -130,11 +164,13 @@ class BetSheetFragment private constructor() :
         navController.setGraph(navGraph, Bundle())
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         // navigation的fragment沒有收起彈窗方法，必須靠回調頂層bottom sheet收起彈窗
         val navController = NavHostFragment.findNavController(mBinding.mainNav.getFragment())
         navController.addOnDestinationChangedListener { _, destination, bundle ->
-            showEnterAnim()
+            if (bundle?.containsKey(Config.KEY_NON_ANIM) == false) {
+                showEnterAnim()
+            }
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
         }
@@ -167,9 +203,6 @@ class BetSheetFragment private constructor() :
 
     override fun onDismiss(dialog: DialogInterface) {
         mViewModel.removeSingleBet()
-        parentFragmentManager.setFragmentResult(KEY_RESULT, Bundle().apply {
-            putString(VALUE_DISMISS, VALUE_DISMISS)
-        })
         super.onDismiss(dialog)
     }
 }

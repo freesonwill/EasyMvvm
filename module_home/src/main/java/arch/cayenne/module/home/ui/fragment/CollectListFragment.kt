@@ -22,6 +22,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.SportIntExt.getFormalMoney
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -49,7 +50,6 @@ import kotlin.reflect.KClass
 class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectListBinding>() {
     override val vbClass: KClass<FragmentCollectListBinding> = FragmentCollectListBinding::class
     override val vmClass: KClass<CollectListViewModel> = CollectListViewModel::class
-    override val keepViewOnNavigation: Boolean = true
     private val titleBarBinding: TitleBarFavoriteBinding by lazy {
         TitleBarFavoriteBinding.inflate(LayoutInflater.from(context), mBinding.titleBar, false)
     }
@@ -84,11 +84,8 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
                 override fun onOddsCellClick(selection: SelectionBeanLite, x: Float, y: Float) {
                     lifecycleScope.launch {
                         val status = mViewModel.setSelection(selection.selectionId)
-                        if (status is AddSelectionStatus.Failure) {
-                            mViewModel.triggerAllBetRefresh()
-                        }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -139,10 +136,11 @@ class CollectListFragment : BaseFragment<CollectListViewModel, FragmentCollectLi
         titleBarBinding.llWalletEntry.clickNoRepeat {
             navigate(Uri.parse("walisport://module_topup/topUpFragment"))
         }
+        titleBarBinding.llWalletEntry.addScaleOnTouchAnimation(titleBarBinding.ivWalletAdd)
     }
 
     @SuppressLint("SetTextI18n")
-    override fun createObserver() {
+    override suspend fun createObserver() {
         mViewModel.currentBalanceChange.observe(viewLifecycleOwner) {
             titleBarBinding.tvMoney.text = "${CurrencySymbols.getSymbol(it.currency)} ${it.balance.getFormalMoney()}"
         }

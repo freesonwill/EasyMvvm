@@ -124,6 +124,7 @@ class HomeRepository(
                         weight = Int.MAX_VALUE,
                         index = 0,
                         coordinateY = 0,
+                        matchId = null,
                     )
                 }
             )
@@ -151,6 +152,7 @@ class HomeRepository(
                         weight = tournament.weight,
                         index = index+1,
                         coordinateY = 0,
+                        matchId = null,
                     )
                 }
             )
@@ -199,9 +201,12 @@ class HomeRepository(
     suspend fun getCurrentSelectedSportId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.sportId
 
     suspend fun updateSelectedTournamentId(playType: Int, tournamentId: Int) {
-        getCurrentHomeSelectedData(playType)?.copy(tournamentId = tournamentId)?.apply {
-            homeSelectedDao.insert(this)
-        }
+        getCurrentHomeSelectedData(playType)
+            ?.takeIf { it.tournamentId != tournamentId }
+            ?.copy(tournamentId = tournamentId)
+            ?.apply {
+                homeSelectedDao.insert(this)
+            }
     }
     suspend fun getCurrentSelectedTournamentId(playType: Int): Int? = getCurrentHomeSelectedData(playType)?.tournamentId
 

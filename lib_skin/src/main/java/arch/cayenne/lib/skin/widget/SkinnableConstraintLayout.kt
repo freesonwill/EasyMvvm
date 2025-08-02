@@ -1,23 +1,17 @@
 package arch.cayenne.lib.skin.widget
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.lifecycle.findViewTreeLifecycleOwner
-import androidx.lifecycle.lifecycleScope
-import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
-import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
+import arch.cayenne.lib.skin.widget.biz.ISkinnableBiz
+import arch.cayenne.lib.skin.widget.biz.SkinnableBizImpl
 
-//2131362349
 open class SkinnableConstraintLayout : ConstraintLayout {
-    private lateinit var backGroundHelper: SkinnableBackGroundHelper
-    private val flowHelper = SkinnableViewFlowHelper()
+    private lateinit var biz:ISkinnableBiz
 
     constructor(context: Context) : super(context) {
         initView(context)
     }
-
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initView(context, attrs)
     }
@@ -27,22 +21,18 @@ open class SkinnableConstraintLayout : ConstraintLayout {
         initView(context, attrs, defStyleAttr)
     }
 
-    @SuppressLint("SuspiciousIndentation")
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        flowHelper.startSkinFlow(findViewTreeLifecycleOwner()?.lifecycleScope) {
-            backGroundHelper.updateSkin()
-        }
+        biz.onAttachedToWindow()
     }
 
     private fun initView(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) {
-        backGroundHelper = SkinnableBackGroundHelper(this)
-        backGroundHelper.loadFromAttributes(attrs, defStyleAttr)
+        biz = SkinnableBizImpl(this)
+        biz.initView(context, attrs, defStyleAttr)
     }
 
     override fun onDetachedFromWindow() {
-        flowHelper.destroyFlow()
+        biz.onDetachedFromWindow()
         super.onDetachedFromWindow()
     }
-
 }

@@ -3,12 +3,16 @@ package arch.cayenne.module.home.ui.fragment
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.viewmodel.observeEvent
+import arch.cayenne.lib.common.utils.ViewUtils
 import arch.cayenne.lib.common.utils.ext.DeeplinkExt.deeplink
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
@@ -30,12 +34,25 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
     override fun initView(savedInstanceState: Bundle?) {
         StatusBarConfig.statusBarType = StatusBarMode.DRAW_BEHIND()
         setStatusBar(StatusBarConfig,mBinding.root)
+
+        //更改导航栏样式调整底部偏移
+        ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView) { v, insets ->
+            val navInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val navBarHeight = ViewUtils.getNavigationBarHeight(requireContext())
+            //"导航栏 bottom = ${navInsets.bottom},navBarHeight:$navBarHeight".logd(TAG)
+            mBinding.clDrawerBottom.layoutParams.let{ lp-> lp as MarginLayoutParams
+                lp.bottomMargin = if(navInsets.bottom == 0) navBarHeight else 0
+            }
+            ViewCompat.setOnApplyWindowInsetsListener(requireActivity().window.decorView, null)
+            insets
+        }
     }
 
     override fun initData() {
         super.initData()
         mViewModel.getMessageList()
     }
+
     override fun initListener() {
         with(mBinding) {
             clDrawerNickname.clickNoRepeat {
@@ -54,14 +71,20 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
             clNotificationHeader.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
             }
+            itemNotification1.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
+            }
+            itemNotification2.clickNoRepeat {
+                navigatePage(arch.cayenne.lib.res.R.string.nav_module_message_fragment.deeplink())
+            }
             llRecharge.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_topup_fragment.deeplink())
             }
-            llRecharge.addScaleOnTouchAnimation(ivRecharge)
+            llRecharge.addScaleOnTouchAnimation()
             llDrawerTutorial.clickNoRepeat {
                 navigatePage(Uri.parse("walisport://module_handicap/HandicapFragment?homeId=${R.id.newHomeFragment}"))
             }
-            llDrawerTutorial.addScaleOnTouchAnimation(ivDrawerTutorial)
+            llDrawerTutorial.addScaleOnTouchAnimation()
             llDrawerSetting.clickNoRepeat {
                 navigatePage(arch.cayenne.lib.res.R.string.nav_module_setting_fragment.deeplink())
             }
@@ -72,7 +95,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                 onFunctionClick?.invoke()
                 navigate(NewHomeFragmentDirections.actionNewHomeFragmentToHomeBetSlipFragment())
             }
-            llBetSlip.addScaleOnTouchAnimation(ivBetSlip)
+            llBetSlip.addScaleOnTouchAnimation()
         }
     }
 
@@ -84,7 +107,7 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
         onFunctionClick = listener
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
             with (mViewModel) {
                 launch {
@@ -102,12 +125,13 @@ class DrawerContentFragment : BaseFragment<DrawerContentViewModel, FragmentDrawe
                                 itemNotification1.visibility = View.VISIBLE
                                 itemNotification2.visibility = View.GONE
                                 tvMessage1.text = item.title
-                                ivMessage1Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
+                                //status = 1未读 2已读 3删除
+                                ivMessage1Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime1.text = DateUtils.getMessageTime(item.createTime)
                             } else {
                                 itemNotification2.visibility = View.VISIBLE
                                 tvMessage2.text = item.title
-                                ivMessage2Dot.visibility = if (item.state == 1) View.INVISIBLE else View.VISIBLE
+                                ivMessage2Dot.visibility = if (item.state == 2) View.INVISIBLE else View.VISIBLE
                                 tvTime2.text = DateUtils.getMessageTime(item.createTime)
                             }
                         }

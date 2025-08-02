@@ -28,6 +28,7 @@
     <string name="and">和</string>
     <string name="live_chat_empty">直播间聊天暂未开启</string>
     <string name="live_chat_end">直播间聊天已结束</string>
+    <string name="live_chat_first_chat">快来抢首评吧</string>
     <string name="live_chat_talk">和大家聊聊...</string>
     <string name="live_chat_speak">说点什么...</string>
     <string name="live_chat_send">发送</string>
@@ -119,8 +120,10 @@
     <string name="live_video_loading">加载中...</string>
     <string name="live_video_error">加载失败</string>
     <string name="no_live_stream">当前比赛无直播源</string>
-    <string name="insufficient_bet_amount">有效投注额不足</string>
-    <string name="insufficient_balance">余额不足</string>
+    <string name="insufficient_bet_amount">有效投注≥¥100后才可以聊天哦</string>
+    <string name="insufficient_balance">余额≥¥100才可以聊天哦</string>
+    <string name="insufficient_fali">检查有效投注失败</string>
+
     <string name="not_implemented">暂未实现</string>
 
     <string name="event_jq">进球</string>

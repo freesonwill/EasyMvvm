@@ -12,7 +12,6 @@ import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
@@ -48,7 +47,6 @@ abstract class BaseActivity<VM : BaseViewModel,VB : ViewBinding> : AppCompatActi
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB,
-            keepViewOnNavigation = keepViewOnNavigation
         )
     }
     protected open fun createVB(container: ViewGroup?): VB {
@@ -145,9 +143,13 @@ fun AppCompatActivity.launch(
     start: CoroutineStart = CoroutineStart.DEFAULT,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
+    @Suppress("DEPRECATION")
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
-    else lifecycleScope.launch(context = context, start = start) {
-        repeatOnLifecycle(state, block)
+    else when(state) {
+        Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated(block)
+        Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted(block)
+        Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed(block)
+        else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
     }
 }
 

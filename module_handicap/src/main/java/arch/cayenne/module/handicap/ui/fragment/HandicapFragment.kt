@@ -7,10 +7,12 @@ import androidx.navigation.fragment.navArgs
 import arch.cayenne.lib.base.data.model.PagerBean
 import arch.cayenne.lib.base.ui.adapter.PagerAdapter
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
+import arch.cayenne.lib.base.utils.ext.LogUtilsExt.loge
 import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.NavigationExt.navigate
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.removeAllTips
+import arch.cayenne.lib.common.utils.helper.doSmartAnim
 import arch.cayenne.module.handicap.R
 import arch.cayenne.module.handicap.databinding.FragmentHandicapBinding
 import arch.cayenne.module.handicap.ui.viewmodel.HandicapViewModel
@@ -26,8 +28,8 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
 
     override val vbClass: KClass<FragmentHandicapBinding> = FragmentHandicapBinding::class
     override val vmClass: KClass<HandicapViewModel> = HandicapViewModel::class
-
     private val args : HandicapFragmentArgs by navArgs()
+
     override fun initView(savedInstanceState: Bundle?) {
         with(mBinding) {
             titleBar.loadGeneralTitleBar(
@@ -46,9 +48,32 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
             TabLayoutMediator(tabLayout, viewpager) { tab, position ->
                 tab.text = list[position].title
             }.attach()
+            setViewPagerAnim()
             tabLayout.removeAllTips()
             reflexPadding(tabLayout)
         }
+    }
+
+    private fun setViewPagerAnim(){
+        mBinding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                tab?.let {
+                    "1111".loge("测试")
+                    mBinding.viewpager.doSmartAnim(
+                        targetPosition = tab.position,
+                        fakeViewPager = mBinding.fragmentFakeViewPager,
+                    )
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+        })
     }
 
     private fun reflexPadding(tabLayout: TabLayout) {
@@ -78,7 +103,7 @@ class HandicapFragment : BaseFragment<HandicapViewModel, FragmentHandicapBinding
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 }

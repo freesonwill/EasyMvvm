@@ -1,8 +1,8 @@
 package com.walisport.module.message.ui.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +10,7 @@ import androidx.viewbinding.ViewBinding
 import arch.cayenne.lib.base.ui.adapter.BaseAdapter
 import arch.cayenne.lib.base.ui.adapter.BaseViewHolder
 import arch.cayenne.lib.base.ui.fragment.inflateMethod
-import com.bumptech.glide.Glide
-import com.walisport.module.message.R
+import arch.cayenne.lib.common.utils.ext.addScaleOnTouchAnimation
 import com.walisport.module.message.data.MessageCompare
 import com.walisport.module.message.data.NotificationBean
 import com.walisport.module.message.databinding.ItemMessageActivityBinding
@@ -20,6 +19,8 @@ import com.walisport.module.message.databinding.ItemMessageSystemBinding
 import com.walisport.module.message.databinding.ItemMessageWalletBinding
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding>(
     MessageCompare()
@@ -32,43 +33,66 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
             is ItemMessageSystemBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
+                }
+                binding.layDetail.setOnClickListener {
+                    clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
             }
 
             is ItemMessageActivityBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
             }
 
             is ItemMessageMatchBinding -> {
                 binding.tvMsgTime.text = getTime(item.createTime)
                 binding.tvMsgTitle.text = item.title
-                binding.tvMsgContent.text = item.content
+                binding.tvMsgContent.text = getHtmlText(item.content)
                 binding.ivMsgDelete.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
                 //Glide.with(binding.root).load(item.url).into(binding.ivMsgImage)
             }
 
             is ItemMessageWalletBinding -> {
-                binding.ivMsgDelete.setOnClickListener {
+                binding.ivMsgDelete.apply { addScaleOnTouchAnimation() }.setOnClickListener {
                     clicklistener?.onDelete(item.id)
                 }
                 binding.layDetail.setOnClickListener {
                     clicklistener?.onDetail(item)
+                }
+                if (item.state == 0) {
+                    binding.ivMsgUnread.visibility = View.VISIBLE
+                } else {
+                    binding.ivMsgUnread.visibility = View.INVISIBLE
                 }
             }
         }
@@ -91,6 +115,16 @@ class MessageAdapter : BaseAdapter<NotificationBean, BaseViewHolder, ViewBinding
         val date = Date(timestamp)
         val sdf = SimpleDateFormat("MM-dd HH:mm")
         return sdf.format(date)
+    }
+
+    private fun getHtmlText(html: String): String {
+        var content = ""
+        val pattern: Pattern = Pattern.compile("<p>(.*?)</p>")
+        val matcher: Matcher = pattern.matcher(html)
+        while (matcher.find()) {
+            content = matcher.group(1)?.toString() ?: ""
+        }
+        return content
     }
 
     override fun createViewHolder(binding: ViewBinding, viewType: Int): BaseViewHolder {

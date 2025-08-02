@@ -53,9 +53,10 @@
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_time"
-        android:layout_width="@dimen/dp_53"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_28"
         android:layout_marginTop="@dimen/dp_21"
+        android:paddingHorizontal="@dimen/dp_10"
         android:background="@drawable/shape_bg_time"
         android:gravity="center"
         android:textColor="@color/white"

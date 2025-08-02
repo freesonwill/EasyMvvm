@@ -11,6 +11,8 @@
     <style name="CustomToolbarImgStyle">
         <item name="android:layout_height">32dp</item>
         <item name="android:layout_width">32dp</item>
+        <item name="android:stateListAnimator">@animator/layout_alpha_animator</item>
+        <item name="srcCompat">@drawable/universal_icon_back</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
@@ -74,4 +76,11 @@
         <attr name="draw_circle_action_up" format="boolean" />
         <attr name="show_pop" format="boolean" />
     </declare-styleable>
+
+    <style name="CommonDialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/dialog_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/dialog_scale_out</item>
+    </style>
+
+
 </resources>

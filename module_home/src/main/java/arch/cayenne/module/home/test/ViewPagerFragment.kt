@@ -37,7 +37,7 @@ class ViewPagerFragment : BaseFragment<EmptyViewModel, FragmentTestViewPagerBind
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 
    /* override fun onDestroyView() {

@@ -33,7 +33,7 @@ class TopUpMainFragment : BaseFragment<TopUpMainViewModel, FragmentTopupMainBind
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
 
     }
 

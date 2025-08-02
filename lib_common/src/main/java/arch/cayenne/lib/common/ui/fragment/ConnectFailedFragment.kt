@@ -35,7 +35,7 @@ class ConnectFailedFragment : BaseFragment<EmptyViewModel, FragmentConnectFailed
 
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         connectFailedViewModel.curConnectFailedType.observe(viewLifecycleOwner) {
             when(it) {
                 CurConnectFailedType.SHOW_MASK -> {

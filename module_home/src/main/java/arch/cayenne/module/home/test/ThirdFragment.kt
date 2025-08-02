@@ -32,8 +32,6 @@ class ThirdFragment : BaseFragment<ThirdViewModel, FragmentTestThirdBinding>() {
         refreshUI()
     }
 
-    override val keepViewOnNavigation: Boolean = false
-
     override fun initListener() {
         mBinding.root.setOnClickListener {
             //sendResult("hello","ThirdFragment:${System.currentTimeMillis()}")
@@ -68,7 +66,7 @@ class ThirdFragment : BaseFragment<ThirdViewModel, FragmentTestThirdBinding>() {
         mViewModel.textString?.let { mBinding.tv.text = it }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
         launch(Lifecycle.State.RESUMED) {
             launch {
                 mViewModel.textStringFlow.collect {

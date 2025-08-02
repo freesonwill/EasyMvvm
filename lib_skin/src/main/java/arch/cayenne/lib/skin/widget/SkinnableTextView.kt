@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import arch.cayenne.lib.skin.widget.helper.SkinnableBackGroundHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableTextHelper
 import arch.cayenne.lib.skin.widget.helper.SkinnableViewFlowHelper
+import java.util.Locale
 
 
 class SkinnableTextView : AppCompatTextView {
@@ -97,5 +98,9 @@ class SkinnableTextView : AppCompatTextView {
     override fun onDetachedFromWindow() {
         flowHelper.destroyFlow()
         super.onDetachedFromWindow()
+    }
+
+    fun updateLanguage(locale: Locale) {
+        textHelper.updateLanguage(locale)
     }
 }

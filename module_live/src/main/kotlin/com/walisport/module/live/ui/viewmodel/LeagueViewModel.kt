@@ -3,6 +3,7 @@ package com.walisport.module.live.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.viewmodel.BaseViewModel
 import com.walisport.module.live.data.model.LeagueMatchBean
 import com.walisport.module.live.data.repository.LiveLeagueRepository
@@ -17,6 +18,7 @@ class LeagueViewModel : BaseViewModel() {
     val leagueData: LiveData<LeagueMatchBean?> get() = _leagueData
     private var cursorMatchId: Long = 0L
     private var cursorMatchStartTime: Long = 0L
+    private var maxItemCount = 0
 
     fun getMatchLeagueData(leagueId: Int) {
         cursorMatchId = 0L
@@ -24,6 +26,7 @@ class LeagueViewModel : BaseViewModel() {
         viewModelScope.launch {
             val result = repo.getMatchLeagueData(leagueId, cursorMatchId, cursorMatchStartTime)
             result?.let {
+                maxItemCount = it.match.size
                 if (it.match.isNotEmpty()) {
                     cursorMatchId = it.match.last().matchId
                     cursorMatchStartTime = it.match.last().startTime
@@ -37,6 +40,7 @@ class LeagueViewModel : BaseViewModel() {
         viewModelScope.launch {
             val result = repo.getMatchLeagueData(leagueId, cursorMatchId, cursorMatchStartTime)
             result?.let {
+                maxItemCount = it.size
                 if (it.match.isNotEmpty()) {
                     cursorMatchId = it.match.last().matchId
                     cursorMatchStartTime = it.match.last().startTime
@@ -49,11 +53,18 @@ class LeagueViewModel : BaseViewModel() {
                     match = list,
                     tournamentName = it.tournamentName,
                     tournamentShortName = it.tournamentShortName,
+                    size = it.size,
                     logo = it.logo,
                     color = it.color
                 )
             }
             _leagueData.value = tmp
+        }
+    }
+
+    fun setItemCount(count: Int) {
+        if (count >= maxItemCount) {
+            setState(DataState.NoMoreData)
         }
     }
 }

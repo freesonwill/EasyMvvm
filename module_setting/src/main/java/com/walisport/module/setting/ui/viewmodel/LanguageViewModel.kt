@@ -37,7 +37,6 @@ class LanguageViewModel(private val repo: LanguageRepository): BaseViewModel() {
     //设置语言类型
     fun setLanguageType(type: LanguageType) {
         _languageType.value = type
-        repo.setLanguageType(type)
         if (forceUpdate) {
             saveLanguageType()
         }

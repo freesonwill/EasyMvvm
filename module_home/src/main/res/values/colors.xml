@@ -11,6 +11,7 @@
     <color name="bg_card_gradient_start">#00161823</color>
     <color name="bg_sport_selected">#1BAF6A</color>
     <color name="bg_sport_unselect">#3F434B</color>
+    <color name="bg_other_date_selected">#1A24EE8A</color>
     <color name="bg_sport_list_gradient_start">#00232530</color>
     <color name="sport_item_text_select">#FFFFFF</color>
     <color name="sport_item_text_unselect">#929298</color>
@@ -30,8 +31,10 @@
     <color name="home_card_odds_background">#232530</color>
     <color name="brand_color_index_unselect">#4D24EE8A</color>
     <color name="linear_gradient">#161823</color>
+    <color name="linear_gradient_50_opacity">#80161823</color>
     <color name="calendar_ok_button">#24EE8A</color>
     <color name="calendar_cancel_button">#30303E</color>
     <color name="home_calendar_background">#232530</color>
     <color name="home_calendar_selected_theme_color">#00D271</color>
+    <color name="other_date_text_selected">#24EE8A</color>
 </resources>

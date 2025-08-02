@@ -33,27 +33,27 @@ class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
     }
 
     override fun convertPlus(
-        holder: BaseViewHolder, mBinding: ViewBinding, position: Int
+        holder: BaseViewHolder, binding: ViewBinding, position: Int
     ) {
         val item = getItem(position)
-        if (mBinding is ItemLeagueBinding) {
-            mBinding.tvHomeName.text = item.homeName
-            mBinding.tvAwayName.text = item.awayName
-            mBinding.tvTime.text = convertStampToStr(item.startTime)
-            mBinding.itemRoot.setOnClickListener {
+        if (binding is ItemLeagueBinding) {
+            binding.tvHomeName.text = item.homeName
+            binding.tvAwayName.text = item.awayName
+            binding.tvTime.text = convertStampToStr(item.startTime, item.isToday)
+            binding.itemRoot.setOnClickListener {
                 listener?.onItemClick(position)
             }
             if (item.matchId == matchID) {
-                mBinding.itemRoot.background = R.drawable.shape_bg_item_league_dark.getDrawable()
+                binding.itemRoot.background = R.drawable.shape_bg_item_league_dark.getDrawable()
             } else {
-                mBinding.itemRoot.background = R.drawable.shape_bg_item_league.getDrawable()
+                binding.itemRoot.background = R.drawable.shape_bg_item_league.getDrawable()
             }
-            Glide.with(mBinding.root).load(item.homeLogo).error(R.drawable.icon_error_logo_big)
-                .placeholder(R.drawable.icon_error_logo_big).into(mBinding.ivHomeLogo)
-            Glide.with(mBinding.root).load(item.awayLogo).error(R.drawable.icon_error_logo_big)
-                .placeholder(R.drawable.icon_error_logo_big).into(mBinding.ivAwayLogo)
-        } else if (mBinding is ItemWeekBinding) {
-            mBinding.tvLeagueWeek.text = item.weekDay
+            Glide.with(binding.root).load(item.homeLogo).error(R.drawable.icon_error_logo_big)
+                .placeholder(R.drawable.icon_error_logo_big).into(binding.ivHomeLogo)
+            Glide.with(binding.root).load(item.awayLogo).error(R.drawable.icon_error_logo_big)
+                .placeholder(R.drawable.icon_error_logo_big).into(binding.ivAwayLogo)
+        } else if (binding is ItemWeekBinding) {
+            binding.tvLeagueWeek.text = item.weekDay
         }
     }
 
@@ -79,10 +79,17 @@ class LeagueAdapter : BaseAdapter<MatchBean, BaseViewHolder, ViewBinding>(
         return item.isWeekHead
     }
 
-    private fun convertStampToStr(timeStamp: Long): String {
+    private fun convertStampToStr(timeStamp: Long, isToday: Boolean): String {
         val date = Date(timeStamp)
-        val format = SimpleDateFormat("HH:mm", Locale.getDefault())
-        return format.format(date)
+        var str = ""
+        if (isToday) {
+            val format = SimpleDateFormat("HH:mm", Locale.getDefault())
+            str = format.format(date)
+        } else {
+            val format = SimpleDateFormat("MM-dd HH:mm", Locale.getDefault())
+            str = format.format(date)
+        }
+        return str
     }
 
     fun setOnItemClickListener(onItemClickListener: OnItemClickListener) {

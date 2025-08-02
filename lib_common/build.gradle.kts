@@ -1,3 +1,7 @@
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +10,7 @@ plugins {
 apply(from = rootProject.file("gradle/flavor.gradle"))
 apply(from = rootProject.file("gradle/_duplicate_color_names.gradle.kt"))
 
+val buildTime = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
 android {
     namespace = "arch.cayenne.lib.common"
     compileSdk = 34
@@ -15,6 +20,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+        buildConfigField("String", "BUILD_TIME", "\"$buildTime\"")
     }
 
     buildTypes {

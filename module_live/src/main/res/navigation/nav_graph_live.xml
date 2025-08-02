@@ -46,20 +46,6 @@
 
         <deepLink app:uri="@string/nav_module_league_fragment" />
 
-        <!--从联赛日程页跳转到直播详情页-->
-        <action
-            android:id="@+id/action_leagueFragment_to_liveMainFragment"
-            app:destination="@id/liveMainFragment"
-            app:popUpTo="@id/liveMainFragment"
-            app:popUpToInclusive="false"
-            >
-            <argument
-                android:name="matchId"
-                app:argType="long" />
-            <argument
-                android:name="sportId"
-                app:argType="integer" />
-        </action>
     </fragment>
 
 

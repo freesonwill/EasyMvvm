@@ -23,6 +23,6 @@ class FourthFragment : BaseFragment<EmptyViewModel, FragmentTestFourthBinding>()
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
     }
 }

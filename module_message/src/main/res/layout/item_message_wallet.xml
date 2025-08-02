@@ -15,6 +15,7 @@
             android:layout_height="@dimen/dp_42">
 
             <ImageView
+                android:id="@+id/iv_msg_icon"
                 android:layout_width="@dimen/dp_24"
                 android:layout_height="@dimen/dp_24"
                 android:layout_marginStart="@dimen/dp_12"
@@ -24,10 +25,22 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
+                android:id="@+id/iv_msg_unread"
+                android:layout_width="@dimen/dp_10"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="-1dp"
+                android:layout_marginEnd="-1dp"
+                android:visibility="invisible"
+                android:background="@drawable/icon_notice_unread"
+                app:layout_constraintEnd_toEndOf="@+id/iv_msg_icon"
+                app:layout_constraintTop_toTopOf="@+id/iv_msg_icon"/>
+
+            <ImageView
                 android:id="@+id/iv_msg_delete"
                 android:layout_width="@dimen/dp_20"
                 android:layout_height="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_12"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 android:background="@drawable/icon_message_delete"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -133,6 +146,7 @@
         <arch.cayenne.lib.skin.widget.SkinnableConstraintLayout
             android:id="@+id/lay_detail"
             android:layout_width="match_parent"
+            android:background="@drawable/ripple_effect_bottom"
             android:layout_height="@dimen/dp_45">
 
             <arch.cayenne.lib.skin.widget.SkinnableTextView

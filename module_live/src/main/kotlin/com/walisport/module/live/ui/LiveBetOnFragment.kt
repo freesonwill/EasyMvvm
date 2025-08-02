@@ -7,6 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import arch.cayenne.lib.base.data.constants.DataState
 import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout.States
@@ -14,6 +15,7 @@ import arch.cayenne.lib.common.utils.ext.DimensionExt.dp2px
 import arch.cayenne.lib.common.utils.ext.ResourceExt.getString
 import arch.cayenne.lib.common.utils.ext.TabLayoutExt.reflexMargin
 import arch.cayenne.lib.common.utils.ext.clickNoRepeat
+import arch.cayenne.lib.common.utils.ext.clickNoRepeatSingle
 import arch.cayenne.lib.common.utils.ext.removeAllTips
 import arch.cayenne.lib.common.utils.ext.sharedViewModel
 import arch.cayenne.lib.common.utils.helper.showToast
@@ -75,7 +77,7 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
                             mViewModel.setSelection(it, selectionId)
                         }
                         if (status is AddSelectionStatus.Success.Single) {
-                            BetSheetFragment.newInstance().show(requireActivity().supportFragmentManager)
+                            BetSheetFragment.newInstance(1).show(requireActivity().supportFragmentManager)
                         } else if (status is AddSelectionStatus.Failure.DisableComboForParlay) {
                             showToast(getString(R.string.disabled_to_combo))
                         } else if (status is AddSelectionStatus.Failure.DisableComboForProvider) {
@@ -154,12 +156,25 @@ class LiveBetOnFragment : BaseFragment<LiveBetOnViewModel, FragmentLiveBetOnBind
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
 
-        mBinding.ivMenu.clickNoRepeat {
+        mBinding.ivMenu.clickNoRepeatSingle{
             mainViewModel.setLiveBetOnMen(BetOnMenuStatus.OPEN)
         }
     }
 
-    override fun createObserver() {
+    override suspend fun createObserver() {
+        mainViewModel.apiStateListener.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                DataState.NetworkUnavailable->{
+                    mBinding.LLCBetOn.visibility = View.GONE
+                    mBinding.ivMenu.visibility = View.GONE
+                    mBinding.clDynamics.setState(
+                        States.NETWORK_ANOMALY,
+                        arch.cayenne.lib.common.R.string.error_net.getString()
+                    )
+                }
+            }
+        }
+
         liveBetOnAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onChanged() {
 

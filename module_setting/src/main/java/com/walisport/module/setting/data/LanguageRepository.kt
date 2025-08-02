@@ -43,7 +43,7 @@ class LanguageRepository(
         return LanguageType.findLanguage(lang)
     }
 
-    fun setLanguageType(type: LanguageType) {
+    private fun setLanguageType(type: LanguageType) {
         scope.launch {
             manager.setKeyValue(UserDataKey.KEY_LANGUAGE, type.value)
             languageManager.changeLanguage(Locale(type.value))
@@ -62,6 +62,7 @@ class LanguageRepository(
             }.build()
         }
         if (resp.error == null && resp.data != null) {
+            setLanguageType(type)
             updateBet()
             ApiResponseState.Succeeded(resp.data)
         } else {

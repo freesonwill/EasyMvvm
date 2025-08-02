@@ -1,47 +1,76 @@
 package com.walisport.module.search.ui.fragment
 
-import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.ImageView
+import androidx.core.os.bundleOf
+import androidx.core.view.doOnLayout
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.NavDirections
 import androidx.navigation.fragment.findNavController
 import arch.cayenne.lib.base.data.constants.DataState
-import arch.cayenne.lib.base.ui.fragment.BaseFragment
 import arch.cayenne.lib.base.ui.fragment.launch
 import arch.cayenne.lib.common.ui.view.DynamicStateLayout
 import arch.cayenne.lib.common.utils.ext.NavResultExt.observeResultOnce
-import arch.cayenne.lib.common.utils.ext.sharedViewModel
-import arch.cayenne.lib.skin.res.SkinnableResourceManager
-import arch.cayenne.lib.common.R as RC
 import com.walisport.module.search.R
-import com.walisport.module.search.data.constants.SearchNavigationEvent
 import com.walisport.module.search.data.constants.SearchResultUiState.DirectMatch
 import com.walisport.module.search.data.constants.SearchResultUiState.ResultList
+import com.walisport.module.search.data.constants.SearchTypeEnum
 import com.walisport.module.search.data.model.SearchResultBean
 import com.walisport.module.search.databinding.FragmentSearchResultBaseBinding
 import com.walisport.module.search.ui.viewmodel.SearchResultBaseViewModel
-import com.walisport.module.search.ui.viewmodel.SearchViewModel
 import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
+import arch.cayenne.lib.common.R as RC
 
 class SearchResultBaseFragment :
-    BaseFragment<SearchResultBaseViewModel, FragmentSearchResultBaseBinding>() {
-    override val vbClass: KClass<FragmentSearchResultBaseBinding>
-        get() = FragmentSearchResultBaseBinding::class
+    SearchBaseFragment<SearchResultBaseViewModel, FragmentSearchResultBaseBinding>() {
     override val vmClass: KClass<SearchResultBaseViewModel>
         get() = SearchResultBaseViewModel::class
+    override val contentVbClass: KClass<FragmentSearchResultBaseBinding>
+        get() = FragmentSearchResultBaseBinding::class
 
-    private val sharedViewModel: SearchViewModel by sharedViewModel<SearchViewModel, SearchFragment>()
-
-    override fun initView(savedInstanceState: Bundle?) = Unit
+    private var currentKeyword: String = ""
 
     override fun initData() {
         super.initData()
-        doSearch()
+
+        // 等待換頁動畫完成
+        view?.postDelayed({
+            // 處理navigate過來的（第一次搜尋的）
+            findNavController().also { nav ->
+                nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
+                    observeResultOnce<String>(
+                        key = SEARCH_KEY,
+                        fromId = fromId,
+                        navController = nav
+                    ) { key ->
+                        currentKeyword = key
+                        doSearch()
+                    }
+                }
+            }
+        }, 300)
     }
 
-    override fun initListener() = Unit
+    override fun initListener() {
+        super.initListener()
 
-    override fun createObserver() {
+        // 處理popBack過來的（再次搜尋的）
+        parentFragmentManager.setFragmentResultListener(SEARCH_KEY, viewLifecycleOwner) { _, bundle ->
+            bundle.getString(SEARCH_KEY)?.let { keyword ->
+                currentKeyword = keyword
+                doSearch()
+            }
+        }
+    }
+
+    override suspend fun createObserver() {
+        super.createObserver()
         with(mViewModel) {
             launch(Lifecycle.State.STARTED) {
                 launch {
@@ -58,8 +87,8 @@ class SearchResultBaseFragment :
                 launch {
                     uiState.collect {
                         when (it) {
-                            is ResultList -> goToListResult(it.data)
-                            is DirectMatch -> goToDirectMatch(it.data)
+                            is ResultList -> goToListResult(it.data, currentKeyword)
+                            is DirectMatch -> goToDirectMatch(it.data, currentKeyword)
                         }
                     }
                 }
@@ -67,38 +96,27 @@ class SearchResultBaseFragment :
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        clearTempScreenShot()
+    }
+
     private fun doSearch() {
-        findNavController().also { nav ->
-            nav.backQueue.getOrNull(nav.backQueue.size - 2)?.destination?.id?.let { fromId ->
-                observeResultOnce<String>(
-                    key = SearchFragment.SEARCH_KEY,
-                    fromId = fromId,
-                    navController = nav
-                ) { key ->
-                    mViewModel.getSearchResult(key)
-                }
-            }
-        }
+        updateSearchText(currentKeyword)
+        addSearchRecord(currentKeyword)
+        mViewModel.getSearchResult(currentKeyword)
     }
 
     private fun setEmptyView(state: DataState) {
-        with(mBinding) {
+        with(contentBinding) {
             val layoutState =
                 if(state == DataState.NetworkUnavailable) DynamicStateLayout.States.NETWORK_ANOMALY
                 else DynamicStateLayout.States.DATA_EMPTY
             val errorStr =
                 if(state == DataState.NetworkUnavailable) {
-                    SkinnableResourceManager.getString(
-                        requireContext(),
-                        RC.string.error_net,
-                        sharedViewModel.getCurrentLanguage()
-                    )
+                    RC.string.error_net.toTranslatedStr()
                 } else {
-                    SkinnableResourceManager.getString(
-                        requireContext(),
-                        R.string.no_search_result,
-                        sharedViewModel.getCurrentLanguage()
-                    )
+                    R.string.no_search_result.toTranslatedStr()
                 }
             val onRefresh: (() -> Unit)? =
                 if(state == DataState.NetworkUnavailable) { ::doSearch }
@@ -109,7 +127,7 @@ class SearchResultBaseFragment :
     }
 
     private fun switchUi(state: DataState) {
-        with(mBinding) {
+        with(contentBinding) {
             val isLoading = state == DataState.Loading
 
             if(!isLoading) {
@@ -125,15 +143,74 @@ class SearchResultBaseFragment :
         }
     }
 
-    private fun goToListResult(data: SearchResultBean) {
-        navigateTo(SearchNavigationEvent.ToSearchList(data))
+    private fun goToListResult(data: SearchResultBean, keyword: String) {
+        val action = SearchResultBaseFragmentDirections
+            .actionSearchResultBaseFragmentToSearchResultListFragment(data, keyword)
+        navigateTo(action)
     }
 
-    private fun goToDirectMatch(data: SearchResultBean) {
-        navigateTo(SearchNavigationEvent.ToSearchDirectMatch(data))
+    private fun goToDirectMatch(data: SearchResultBean, keyword: String) {
+        val action =
+            SearchResultBaseFragmentDirections
+                .actionSearchResultBaseFragmentToSearchResultDirectMatchFragment(
+                    data, keyword, null, SearchTypeEnum.UNKNOWN
+                )
+        navigateTo(action)
     }
 
-    private fun navigateTo(event: SearchNavigationEvent) {
-        sharedViewModel.setNavigationEvent(event)
+    private fun navigateTo(action: NavDirections) {
+        parentFragmentManager.setFragmentResultListener(GO_BACK_TO_MAIN, viewLifecycleOwner) { _, bundle ->
+            parentFragmentManager.clearFragmentResultListener(GO_BACK_TO_MAIN)
+
+            bundle.getBoolean(GO_BACK_TO_MAIN).let {
+                if (it) {
+                    // 攔截返回時機，加入畫面截圖遮罩並延遲 popBackStack，
+                    // 避免中間頁閃爍，實現從 SearchResultListFragment / SearchResultDirectMatchFragment
+                    // 直接返回 SearchFragment 的流暢轉場效果
+                    (requireActivity().window.decorView as ViewGroup).apply {
+                        ImageView(requireContext()).apply {
+                            layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                            setImageBitmap(getTempScreenShot())
+                        }.let { overlay ->
+                            addView(overlay, childCount)
+                            overlay.doOnLayout {
+                                parentFragmentManager.apply {
+                                    run {
+                                        object : FragmentManager.FragmentLifecycleCallbacks() {
+                                            override fun onFragmentStarted(fm: FragmentManager, f: Fragment) {
+                                                if (f is SearchFragment) {
+                                                    fm.unregisterFragmentLifecycleCallbacks(this)
+                                                    AnimationUtils.loadAnimation(requireContext(), RC.anim.slide_out_right).apply {
+                                                        setAnimationListener(object: Animation.AnimationListener {
+                                                            override fun onAnimationRepeat(p0: Animation?) = Unit
+                                                            override fun onAnimationStart(p0: Animation?) = Unit
+                                                            override fun onAnimationEnd(p0: Animation?) {
+                                                                removeView(overlay)
+                                                            }
+                                                        })
+                                                    }?.let { anim ->
+                                                        overlay.startAnimation(anim)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }.let { callback -> registerFragmentLifecycleCallbacks(callback, true) }
+                                    setFragmentResult(SEARCH_KEY, bundleOf(SEARCH_KEY to currentKeyword))
+                                }
+                                findNavController().popBackStack(R.id.searchFragment, false)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        findNavController().navigate(action)
+    }
+
+    companion object {
+        const val GO_BACK_TO_MAIN = "GO_BACK_TO_MAIN"
     }
 }

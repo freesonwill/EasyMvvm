@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowInsets
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -53,7 +51,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
             uiOwner = this,
             vmProvider = ::createVM,
             vbProvider = ::createVB,
-            keepViewOnNavigation = keepViewOnNavigation
         )
     }
     protected open fun createVB(container: ViewGroup?): VB {
@@ -63,8 +60,6 @@ abstract class BaseFragment<VM : BaseViewModel, VB : ViewBinding> : Fragment(), 
     protected open fun createVM(): VM {
         return viewModelForClass(vmClass).value
     }
-    //navigation跳转时是否保留view（true:保留；false：销毁）
-    open val keepViewOnNavigation:Boolean = false
 
     //#endregion VB,VM
     //设置颜色，默认根据主题颜色设定
@@ -190,10 +185,14 @@ fun Fragment.launch(
     lifecycleScope:LifecycleCoroutineScope = viewLifecycleOwner.lifecycleScope,
     block: suspend CoroutineScope.() -> Unit
 ): Job {
+    @Suppress("DEPRECATION")
     return if (state == null) lifecycleScope.launch(block = block, context = context, start = start)
-    else lifecycleScope.launch(context = context, start = start) {
-        repeatOnLifecycle(state, block)
-    }
+    else when(state) {
+            Lifecycle.State.CREATED -> lifecycleScope.launchWhenCreated(block)
+            Lifecycle.State.STARTED -> lifecycleScope.launchWhenStarted(block)
+            Lifecycle.State.RESUMED -> lifecycleScope.launchWhenResumed(block)
+            else -> throw IllegalArgumentException("Unsupported lifecycle state: $state")
+        }
 }
 
 /**
