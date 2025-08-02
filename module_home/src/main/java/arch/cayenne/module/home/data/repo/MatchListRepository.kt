@@ -75,15 +75,15 @@ class MatchListRepository(
                     order = page * 100 + index
                 )
             }
-            val res = matchDao.insertTournamentMatchRef(tournamentMatchRefs)
-            "KC_ 新增聯賽到賽事表內成功了$res".logi()
-            matchDao.insertMatch(
+            val refIds = matchDao.insertMatch(
+                tournamentMatchRefs = tournamentMatchRefs,
                 matches = matchFullData.match,
                 markets = matchFullData.markets,
                 selections = matchFullData.selections,
                 marketCrossRef = matchFullData.matchMarketCrossRefs,
                 marketSelectCrossRefs = matchFullData.marketSelectCrossRefs,
             )
+            "KC_ 新增聯賽到賽事表內成功了$refIds".logi()
             return ApiResponseState.Succeeded(resp.data!!.matchList)
         }
         return ApiResponseState.Failed(resp.error)

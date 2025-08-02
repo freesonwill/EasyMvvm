@@ -74,11 +74,13 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
             ) { selectedDate, refs ->
                 selectedDate to refs
             }.collect { (selectedDate, refs) ->
+                "KC_ collect MatchChange 的開頭條件 playType = $_playType, sportId = ${_sportId} tournament = $_tournamentId selectedDate = $selectedDate".logi()
                 val currentDateRefs = refs.filter { it.date == selectedDate }
                 if (currentDateRefs.isEmpty()) {
                     if (apiStateListener.value == null) {
                         setState(HomeState.Match.Loading)
                     }
+                    "KC_ 拿到的TournamentMatchRef是空的，重新拿取賽事".logi()
                     getMatchListData()
                     return@collect
                 }
@@ -88,7 +90,7 @@ class MatchListViewModel : BaseMatchViewModel<MatchListRepository>() {
                 val list = repository.queryFullMatches(
                     currentDateRefs.map { it.matchId }
                 )
-
+                "KC_ queryFullMatches 結果：${list.map { it.match.matchId }}".logi()
                 withContext(Dispatchers.Main) {
                     setState(HomeState.Match.LoadSuccess)
                     matchListChange.value = list

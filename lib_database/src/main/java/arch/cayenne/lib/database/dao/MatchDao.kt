@@ -191,6 +191,19 @@ abstract class MatchDao : BaseDao<MatchBean>() {
         "UPDATE MatchBean SET collect = :collect WHERE matchId = :matchId")
     abstract fun updateOnlyMatchCollect(matchId: Long, collect: Boolean)
 
+    @Transaction
+    open suspend fun insertMatch(
+        tournamentMatchRefs: List<TournamentMatchRef>,
+        matches: List<MatchBean>,
+        markets: List<MarketBean>,
+        selections: List<SelectionBean>,
+        marketCrossRef: List<MatchMarketCrossRef>,
+        marketSelectCrossRefs: List<MarketSelectCrossRef>,
+    ) : List<Long> {
+        val ids = insertTournamentMatchRef(tournamentMatchRefs)
+        insertMatch(matches, markets, selections, marketCrossRef, marketSelectCrossRefs)
+        return ids
+    }
 
     @Transaction
     open suspend fun insertMatch(
