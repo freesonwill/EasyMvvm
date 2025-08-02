@@ -2,8 +2,10 @@ package com.walisport.app.ui
 
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import arch.cayenne.lib.base.data.constants.StatusBarMode
 import arch.cayenne.lib.base.data.model.StatusBarConfig
+import arch.cayenne.lib.base.ui.launch
 import arch.cayenne.lib.common.ui.BaseNavActivity
 import arch.cayenne.lib.common.ui.dialog.CommonDialog
 import arch.cayenne.lib.common.ui.view.BetResultToastView
@@ -149,7 +151,9 @@ class MainActivity : BaseNavActivity<MainViewModel>() {
     }
 
     private fun createBetSheet() {
-        BetSheetFragment.create(this)
+        launch(Lifecycle.State.RESUMED) {
+            BetSheetFragment.create(this@MainActivity)
+        }
     }
 
 }
