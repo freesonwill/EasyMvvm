@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -100,13 +101,18 @@ class BetSheetFragment private constructor() :
         }
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        initDestination()
+        super.onViewCreated(view, savedInstanceState)
+    }
+
 
     override fun initView(savedInstanceState: Bundle?) {
 
     }
 
     private fun initDestination() {
-        setStartDestination(mViewModel.count)
+        setStartDestination(1)
     }
 
     override fun initListener() {
@@ -161,6 +167,17 @@ class BetSheetFragment private constructor() :
             }
             removeLastObserver()
             handleDismissObserve(navController, destination.id)
+        }
+        var lastCount = 0
+        mViewModel.betSheetSizeListener.observe(viewLifecycleOwner) {
+            if (isDismissing) {
+                if (lastCount != it && it >= 2) {
+                    setStartDestination(2)
+                } else if (lastCount > 1 && it == 0) {
+                    setStartDestination(1)
+                }
+                lastCount = it
+            }
         }
     }
 

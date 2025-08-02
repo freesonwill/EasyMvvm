@@ -29,20 +29,18 @@ class SingleBetRepository(
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
+    private var init = false
+
     init {
         scope.launch {
-            betDao.getCurrentBet()?.let { bet ->
-                launch {
-                    betDao.observeSelections(bet.betId).collect {
-                        val data = it.firstOrNull() ?: return@collect
-                        selectionFlow.emit(data)
+            betDao.observeCurrentSelections().collect {
+                if (it.isNotEmpty() && it.size == 1) {
+                    val data = it.first()
+                    selectionFlow.emit(data)
+                    if (!init) {
+                        setComboMulti(data)
                     }
-                }
-                // TODO 之後可能改為盤口變動就須獲取限額
-                launch {
-                    val selection = betDao.getSelections(bet.betId)
-                    val data = selection.firstOrNull() ?: return@launch
-                    setComboMulti(data)
+                    init = true
                 }
             }
         }

@@ -33,23 +33,24 @@ class ComboBetRepository(
     val isConnected: Boolean
         get() = remoteManager.isConnected
 
+    private var lastSize = 0
+
     init {
         scope.launch {
             betDao.getCurrentBet()?.let { bet ->
                 launch {
                     betDao.observeSelections(bet.betId).collect {
                         selectionFlow.emit(it)
-                    }
-                }
-                // TODO 之後可能改為盤口變動就須獲取限額
-                launch {
-                    val selection = betDao.getSelections(bet.betId)
-                    if (selection.isNotEmpty()) {
-                        val emptyRisk = getEmptyRiskList(selection.size)
-                        if (emptyRisk.isNotEmpty()) {
-                            comboMultiBetFlow.emit(calculateMultiBetSums(selection, emptyRisk))
+                        if (lastSize != it.size) {
+                            if (lastSize == 0) {
+                                val emptyRisk = getEmptyRiskList(it.size)
+                                if (emptyRisk.isNotEmpty()) {
+                                    comboMultiBetFlow.emit(calculateMultiBetSums(it, emptyRisk))
+                                }
+                                setComboMulti(it)
+                            }
+                            lastSize = it.size
                         }
-                        setComboMulti(selection)
                     }
                 }
             }
