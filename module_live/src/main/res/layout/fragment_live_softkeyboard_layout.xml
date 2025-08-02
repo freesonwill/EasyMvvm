@@ -3,12 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
         <variable
             name="viewModel"
             type="com.walisport.module.live.ui.viewmodel.LiveSoftKeyboardViewModel" />
     </data>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -24,7 +22,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <arch.cayenne.lib.skin.widget.SkinnableLinearLayout
-            android:id="@+id/live_chat_ll_search"
+            android:id="@+id/live_chat_ll_input"
             android:layout_width="0dp"
             android:layout_height="40dp"
             android:layout_marginStart="@dimen/dp_10"
@@ -92,11 +90,11 @@
             android:id="@+id/fl_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_search"
-            app:layout_constraintTop_toTopOf="@id/live_chat_ll_search"
+            app:layout_constraintBottom_toBottomOf="@id/live_chat_ll_input"
+            app:layout_constraintTop_toTopOf="@id/live_chat_ll_input"
             app:layout_constraintRight_toRightOf="parent"
             android:layout_marginEnd="@dimen/dp_10"
-            app:layout_constraintLeft_toRightOf="@id/live_chat_ll_search"
+            app:layout_constraintLeft_toRightOf="@id/live_chat_ll_input"
             >
 
             <arch.cayenne.lib.skin.widget.SkinnableImageView
@@ -106,6 +104,7 @@
                 android:layout_marginStart="@dimen/dp_8"
                 android:background="@drawable/icon_input_circle"
                 android:paddingHorizontal="7dp"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 android:paddingTop="@dimen/dp_6"
                 android:paddingBottom="@dimen/dp_8"
                 android:src="@drawable/icn_input_arrow"
@@ -118,6 +117,7 @@
                 android:layout_marginStart="@dimen/dp_4"
                 android:background="@drawable/bg_keyboard_send"
                 android:gravity="center"
+                android:stateListAnimator="@animator/layout_alpha_animator"
                 android:text="@string/send"
                 android:textColor="@color/text_on_theme_color" />
 
