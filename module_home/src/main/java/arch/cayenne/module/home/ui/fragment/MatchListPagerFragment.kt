@@ -273,6 +273,10 @@ class MatchListPagerFragment :
             mViewModel.setPlayTypeId(this.getInt(ARG_PLAY_TYPE_ID))
             mViewModel.setPosition(this.getInt(ARG_POSITION))
         }
+//        mViewModel.startObserveMatch()
+    }
+
+    fun startObserveMatch() {
         mViewModel.startObserveMatch()
     }
 
